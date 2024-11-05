@@ -141,7 +141,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -158,7 +158,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -184,7 +184,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -200,7 +200,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -275,7 +275,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -292,7 +292,7 @@ public class MemoryDataManagerTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null && jedis.isConnected() ){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -348,7 +348,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -383,7 +383,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -463,7 +463,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -515,14 +515,10 @@ public class MemoryDataManagerTask {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		
-		
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
         	return;
         }
-		
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
@@ -531,7 +527,6 @@ public class MemoryDataManagerTask {
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
-			
 			while(rs.next()){
 				DataMapping dataMapping=new DataMapping();
 				dataMapping.setId(rs.getInt(1));
@@ -544,7 +539,6 @@ public class MemoryDataManagerTask {
 				loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
 			}
 			dataModelMap.put("ProtocolMappingColumn", loadProtocolMappingColumnMap);
-			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
 				jedis.del("ProtocolMappingColumn".getBytes());
@@ -557,7 +551,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -620,7 +614,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -641,7 +635,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -756,7 +750,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -780,7 +774,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -800,7 +794,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -856,7 +850,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -884,7 +878,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -910,7 +904,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1185,7 +1179,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1210,7 +1204,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1235,7 +1229,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1273,7 +1267,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1497,7 +1491,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -1751,7 +1745,7 @@ public class MemoryDataManagerTask {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally{
-//			if(jedis!=null&&jedis.isConnected()){
+//			if(jedis!=null){
 //				jedis.close();
 //			}
 //		}
@@ -1995,7 +1989,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2104,7 +2098,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+e);
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -2250,7 +2244,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2368,7 +2362,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -2543,7 +2537,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2664,7 +2658,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2807,7 +2801,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2829,7 +2823,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2851,7 +2845,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2964,7 +2958,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -2986,7 +2980,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3046,7 +3040,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3068,7 +3062,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3101,7 +3095,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3123,7 +3117,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3207,7 +3201,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3229,7 +3223,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3292,7 +3286,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3314,7 +3308,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3349,7 +3343,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3371,7 +3365,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3470,7 +3464,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3492,7 +3486,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3570,7 +3564,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3592,7 +3586,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3627,7 +3621,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3649,7 +3643,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3680,7 +3674,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3700,7 +3694,7 @@ public class MemoryDataManagerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3793,7 +3787,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -3884,7 +3878,7 @@ public class MemoryDataManagerTask {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -3905,7 +3899,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3927,7 +3921,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3948,7 +3942,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -3967,7 +3961,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4079,7 +4073,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -4100,7 +4094,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4163,7 +4157,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4181,7 +4175,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4195,7 +4189,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4215,7 +4209,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4298,7 +4292,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4372,7 +4366,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4507,7 +4501,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4529,7 +4523,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4547,7 +4541,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4663,7 +4657,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4720,7 +4714,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4785,7 +4779,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4977,7 +4971,7 @@ public class MemoryDataManagerTask {
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -4996,7 +4990,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -5025,7 +5019,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -5082,7 +5076,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}
@@ -5139,7 +5133,7 @@ public class MemoryDataManagerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null&&jedis.isConnected()){
+			if(jedis!=null){
 				jedis.close();
 			}
 		}

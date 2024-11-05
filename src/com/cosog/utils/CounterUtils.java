@@ -16,6 +16,7 @@ public class CounterUtils {
 	public static LongAdder exceptionCalCount = new LongAdder();
 	public static CountDownLatch countDownLatch;
 	private static final Logger logger = Logger.getLogger(CounterUtils.class.getName());
+	private static Timer timer=null;
     public static void incr() {
         count.increment();
     }
@@ -52,7 +53,10 @@ public class CounterUtils {
     }
     
     public static void timer(){
-    	Timer timer = new Timer();
+    	if(timer!=null){
+    		timer.cancel();
+    	}
+    	timer = new Timer();
         // 创建定时器任务
         TimerTask timerTask = new TimerTask() {
             @Override

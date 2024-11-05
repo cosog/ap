@@ -7,6 +7,7 @@ import java.util.List;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 public class RedisUtil implements Serializable{
     
@@ -40,7 +41,7 @@ public class RedisUtil implements Serializable{
     //在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
     private static boolean testOnBorrow=true;
     
-    public static Jedis jedis;//非切片额客户端连接
+//    public static Jedis jedis;//非切片额客户端连接
     
     public static JedisPool jedisPool;//非切片连接池
     
@@ -62,6 +63,7 @@ public class RedisUtil implements Serializable{
         config.setMinIdle(maxIdle);
         config.setMaxWaitMillis(maxWait); 
         config.setTestOnBorrow(testOnBorrow);
+        config.setTestOnReturn(true);
         if(StringManagerUtils.isNotNull(auth)){
         	jedisPool = new JedisPool(config, addr, port,timeOut,auth);
         }else{
@@ -72,6 +74,7 @@ public class RedisUtil implements Serializable{
     public  static void afterPropertiesSet(){
         // TODO Auto-generated method stub
         initialPool(); 
+        Jedis jedis=null;
         try {
         	jedis = jedisPool.getResource();
         	jedis.configSet("maxmemory", maxMemory+"MB");
@@ -80,10 +83,32 @@ public class RedisUtil implements Serializable{
             System.out.println("连接jedisPool失败!");
         } finally{
         	if(jedis!=null){
-				jedis.close();
+        		jedis.close();
 			}
         }
     }
+    
+//    public static Jedis getConn(){
+//    	Jedis jedis=null;
+//    	try{
+//			jedis = jedisPool.getResource();
+//        }catch(JedisConnectionException e){
+//        	jedisPool.returnBrokenResource(jedis);
+//        }
+//    	return jedis;
+//    }
+//    
+//    public static void returnResource(Jedis jedis){
+//    	if(jedis!=null){
+//    		jedisPool.returnResource(jedis);
+//    	}
+//    }
+//    
+//    public static void returnBrokenResource(Jedis jedis){
+//    	if(jedis!=null){
+//    		jedisPool.returnBrokenResource(jedis);
+//    	}
+//    }
 
     public String getAddr() {
         return addr;

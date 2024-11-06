@@ -28,6 +28,7 @@ import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
+import com.cosog.thread.calculate.RedisConnTestThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;
@@ -55,6 +56,11 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
+//		RedisConnTestThread t1=new RedisConnTestThread(1);
+//		RedisConnTestThread t2=new RedisConnTestThread(2);
+//		t1.start();
+//		t2.start();
+		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		
@@ -406,23 +412,23 @@ public class EquipmentDriverServerTask {
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
-				sendCycle=60;
+//				sendCycle=60;
 //				timeDifference=0;
 				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
-//				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
-//				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
-//				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
-//				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
-//				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
-//				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
-//				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
-//				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
-//				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
+				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
+				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
+				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
+				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
+				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
+				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
+				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
+				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
+				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
 //				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
 //				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
 				
-//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

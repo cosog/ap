@@ -87,28 +87,6 @@ public class RedisUtil implements Serializable{
 			}
         }
     }
-    
-//    public static Jedis getConn(){
-//    	Jedis jedis=null;
-//    	try{
-//			jedis = jedisPool.getResource();
-//        }catch(JedisConnectionException e){
-//        	jedisPool.returnBrokenResource(jedis);
-//        }
-//    	return jedis;
-//    }
-//    
-//    public static void returnResource(Jedis jedis){
-//    	if(jedis!=null){
-//    		jedisPool.returnResource(jedis);
-//    	}
-//    }
-//    
-//    public static void returnBrokenResource(Jedis jedis){
-//    	if(jedis!=null){
-//    		jedisPool.returnBrokenResource(jedis);
-//    	}
-//    }
 
     public String getAddr() {
         return addr;

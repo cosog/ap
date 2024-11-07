@@ -289,9 +289,10 @@ function realTimeDataRefresh(){
 	 	}
 	Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
 	Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
-	if(!removeFESdiagramResultStatGraphPanel){//如果删除了工况统计，则不刷新表格，由统计tabchange刷新
-		refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
-	}
+//	if(!removeFESdiagramResultStatGraphPanel){//如果删除了工况统计，则不刷新表格，由统计tabchange刷新
+//		refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+//	}
+	refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
 }
 
 function createRealTimeMonitoringStatColumn(columnInfo) {

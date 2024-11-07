@@ -656,25 +656,11 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-	public static  int getCount(String sql){  
+	public static  int getCount(String sql){
         int result=0;
-        Connection conn=null;
-		PreparedStatement pstmt = null; 
-        ResultSet rs=null;
-        try{
-        	conn=OracleJdbcUtis.getConnection();
-            if(conn==null){
-            	return -1;
-            }
-            pstmt = conn.prepareStatement(sql); 
-            rs=pstmt.executeQuery();
-    		while(rs.next()){
-    			result=rs.getInt(1);
-    		}
-        }catch(Exception e){
-        	e.printStackTrace();
-        }finally{
-        	OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+        List<Object[]> list=OracleJdbcUtis.query(sql);
+        if(list!=null){
+        	result=StringManagerUtils.stringToInteger(list.get(0)[0]+"");
         }
         return result;
     }

@@ -1119,8 +1119,9 @@ public class DriverAPIController extends BaseController{
 						&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
 					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 					if(alarmLevel>0){
+						acquisitionItemInfo.setAlarmLevel(alarmLevel);
 						acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
-						acquisitionItemInfo.setAlarmType(4);
+						acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
 						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
@@ -1149,14 +1150,15 @@ public class DriverAPIController extends BaseController{
 						lowerLimit=lowerLimit+hystersis;
 					}
 					
-					if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+					if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"") 
+							&& StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
 						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 						if(alarmLevel>0){
 							acquisitionItemInfo.setAlarmLevel(alarmLevel);
 							acquisitionItemInfo.setHystersis(hystersis);
 							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
 							acquisitionItemInfo.setAlarmInfo("高报");
-							acquisitionItemInfo.setAlarmType(5);
+							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
 							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
@@ -1168,7 +1170,7 @@ public class DriverAPIController extends BaseController{
 							acquisitionItemInfo.setHystersis(hystersis);
 							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
 							acquisitionItemInfo.setAlarmInfo("低报");
-							acquisitionItemInfo.setAlarmType(5);
+							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
 							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
@@ -2470,6 +2472,7 @@ public class DriverAPIController extends BaseController{
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
+//								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
 						}

@@ -297,16 +297,11 @@ public class ResourceMonitoringTask {
         String sql="SELECT tablespace_name,file_id,file_name,round(bytes / (1024 * 1024), 2) total_space "
         		+ " FROM dba_data_files t"
         		+ " where tablespace_name='AP_JF_DATA'";
-        conn=OracleJdbcUtis.getConnection();
-        if(conn==null){
-        	return -1;
-        }
-		pstmt = conn.prepareStatement(sql); 
-		rs=pstmt.executeQuery();
-		while(rs.next()){
-			result=rs.getFloat(4);
+        List<Object[]> list=OracleJdbcUtis.query(sql);
+        
+		for(Object[] obj:list){
+			result=StringManagerUtils.stringToFloat(obj[3]+"");
 		}
-		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return result;
     }
 	
@@ -373,24 +368,17 @@ public class ResourceMonitoringTask {
 	@SuppressWarnings("resource")
 	public static  int getDeviceAmount() throws IOException, SQLException{
 		int deviceAmount=0;
-		Connection conn=null;
-		PreparedStatement pstmt = null; 
-        ResultSet rs=null;
         boolean jedisStatus=MemoryDataManagerTask.getJedisStatus();
 		try {
 			if(jedisStatus){
 				List<DeviceInfo> deviceList=MemoryDataManagerTask.getDeviceInfo();
 				deviceAmount=(deviceList!=null?deviceList.size():0);
 			}else{
-				conn=OracleJdbcUtis.getConnection();
-		        if(conn!=null){
-		        	String sql="select count(1) from tbl_device t";
-		        	pstmt = conn.prepareStatement(sql); 
-		            rs=pstmt.executeQuery();
-		    		while(rs.next()){
-		    			deviceAmount=rs.getInt(1);
-		    		}
-		        }
+	        	String sql="select count(1) from tbl_device t";
+	        	List<Object[]> list=OracleJdbcUtis.query(sql);
+	        	if(list.size()>0){
+	        		deviceAmount=StringManagerUtils.stringToInteger(list.get(0)[0]+"");
+	        	}
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();

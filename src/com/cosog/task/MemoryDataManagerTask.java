@@ -376,17 +376,7 @@ public class MemoryDataManagerTask {
 		String protocolConfigData="";
 		java.lang.reflect.Type type=null;
 		//添加Modbus协议配置
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
-		
-		
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfigWithoutReLoad();
 		
 		if(modbusProtocolConfig==null){
 			modbusProtocolConfig=new ModbusProtocolConfig();
@@ -397,27 +387,24 @@ public class MemoryDataManagerTask {
 		try {
 			StringBuffer protocolBuff=null;
 			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype from TBL_PROTOCOL t where 1=1 ";
-//			sql+=" and t.devicetype<>2";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
-			}	
-					
+			}
 			sql+= "order by t.sort,t.id";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
 				try {
-					String itemsStr=StringManagerUtils.CLOBtoString2(rs.getClob(4));
+					String itemsStr=obj[3]+"";
 					if(!StringManagerUtils.isNotNull(itemsStr)){
 						itemsStr="[]";
 					}
 					protocolBuff=new StringBuffer();
 					protocolBuff.append("{");
-					protocolBuff.append("\"Id\":\""+rs.getInt(1)+"\",");
-					protocolBuff.append("\"Name\":\""+rs.getString(2)+"\",");
-					protocolBuff.append("\"Code\":\""+rs.getString(3)+"\",");
-					protocolBuff.append("\"Sort\":"+rs.getInt(5)+",");
-					protocolBuff.append("\"DeviceType\":"+rs.getInt(6)+",");
+					protocolBuff.append("\"Id\":\""+StringManagerUtils.stringToInteger(obj[0]+"")+"\",");
+					protocolBuff.append("\"Name\":\""+obj[1]+"\",");
+					protocolBuff.append("\"Code\":\""+obj[2]+"\",");
+					protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
+					protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
 					protocolBuff.append("\"Items\":"+itemsStr+"");
 					protocolBuff.append("}");
 					
@@ -449,25 +436,13 @@ public class MemoryDataManagerTask {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		
 		if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
 			Collections.sort(modbusProtocolConfig.getProtocol());
 		}
 		
-		Jedis jedis=null;
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
+		updateProtocolConfig(modbusProtocolConfig);
 		
 		StringManagerUtils.printLog("驱动加载结束");
 	}
@@ -513,30 +488,23 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadProtocolMappingColumn(){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnMap=new LinkedHashMap<String,DataMapping>();
 			
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
 				DataMapping dataMapping=new DataMapping();
-				dataMapping.setId(rs.getInt(1));
-				dataMapping.setName(rs.getString(2));
-				dataMapping.setMappingColumn(rs.getString(3));
-				dataMapping.setCalColumn(rs.getString(4));
-				dataMapping.setProtocolType(rs.getInt(5));
-				dataMapping.setMappingMode(rs.getInt(6));
-				dataMapping.setRepetitionTimes(rs.getInt(7));
+				dataMapping.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+				dataMapping.setName(obj[1]+"");
+				dataMapping.setMappingColumn(obj[2]+"");
+				dataMapping.setCalColumn(obj[3]+"");
+				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[4]+""));
+				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[5]+""));
+				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[6]+""));
 				loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
 			}
 			dataModelMap.put("ProtocolMappingColumn", loadProtocolMappingColumnMap);
@@ -555,7 +523,6 @@ public class MemoryDataManagerTask {
 			if(jedis!=null){
 				jedis.close();
 			}
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -574,38 +541,29 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadProtocolMappingColumnByTitle(){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=new LinkedHashMap<String,DataMapping>();
 			
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
+			List<Object[]> list=OracleJdbcUtis.query(sql);
 			
-			while(rs.next()){
+			for(Object[] obj:list){
 				DataMapping dataMapping=new DataMapping();
-				dataMapping.setId(rs.getInt(1));
-				dataMapping.setName(rs.getString(2));
-				dataMapping.setMappingColumn(rs.getString(3));
-				dataMapping.setCalColumn(rs.getString(4));
-				dataMapping.setProtocolType(rs.getInt(5));
-				dataMapping.setMappingMode(rs.getInt(6));
-				dataMapping.setRepetitionTimes(rs.getInt(7));
+				dataMapping.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+				dataMapping.setName(obj[1]+"");
+				dataMapping.setMappingColumn(obj[2]+"");
+				dataMapping.setCalColumn(obj[3]+"");
+				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[4]+""));
+				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[5]+""));
+				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[6]+""));
 				loadProtocolMappingColumnByTitleMap.put(dataMapping.getName(), dataMapping);
 			}
 			dataModelMap.put("ProtocolMappingColumnByTitle", loadProtocolMappingColumnByTitleMap);
 			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
-//				jedis.del("ProtocolMappingColumn".getBytes());
 				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnByTitleMap.entrySet()) {
 				    String key = entry.getKey();
 				    DataMapping dataMapping = entry.getValue();
@@ -618,7 +576,6 @@ public class MemoryDataManagerTask {
 			if(jedis!=null){
 				jedis.close();
 			}
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -644,13 +601,6 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadProtocolRunStatusConfig(){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -659,23 +609,22 @@ public class MemoryDataManagerTask {
 					+ " t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition,"
 					+ " t.protocoltype "
 					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
 				ProtocolRunStatusConfig protocolRunStatusConfig=new ProtocolRunStatusConfig();
-				protocolRunStatusConfig.setId(rs.getInt(1));
-				protocolRunStatusConfig.setProtocol(rs.getString(2));
-				protocolRunStatusConfig.setItemName(rs.getString(3));
-				protocolRunStatusConfig.setItemMappingColumn(rs.getString(4));
-				protocolRunStatusConfig.setResolutionMode(rs.getInt(5));
+				protocolRunStatusConfig.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+				protocolRunStatusConfig.setProtocol(obj[1]+"");
+				protocolRunStatusConfig.setItemName(obj[2]+"");
+				protocolRunStatusConfig.setItemMappingColumn(obj[3]+"");
+				protocolRunStatusConfig.setResolutionMode(StringManagerUtils.stringToInteger(obj[4]+""));
 				
-				String runValueStr=rs.getString(6);
-				String stopValueStr=rs.getString(7);
+				String runValueStr=obj[5]+"";
+				String stopValueStr=obj[6]+"";
 				
-				String runConditionStr=rs.getString(8);
-				String stopConditionStr=rs.getString(9);
+				String runConditionStr=obj[7]+"";
+				String stopConditionStr=obj[8]+"";
 				
-				protocolRunStatusConfig.setProtocolType(rs.getInt(10));
+				protocolRunStatusConfig.setProtocolType(StringManagerUtils.stringToInteger(obj[9]+""));
 				protocolRunStatusConfig.setRunValue(new ArrayList<Integer>());
 				protocolRunStatusConfig.setStopValue(new ArrayList<Integer>());
 				
@@ -754,7 +703,6 @@ public class MemoryDataManagerTask {
 			if(jedis!=null){
 				jedis.close();
 			}
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -1499,27 +1447,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByPumpingAuxiliaryId(String auxiliaryId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select distinct(t.id) from tbl_device t,tbl_auxiliary2master t2 where t.id = t2.masterid and t2.auxiliaryid in("+auxiliaryId+")";
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1527,27 +1464,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByPumpingId(String pumpingModelId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t,tbl_pumpingmodel t2 where t.pumpingmodelid=t2.id and t2.id= "+pumpingModelId;
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1555,27 +1481,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1583,27 +1498,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t where t.instancecode= '"+instanceCode+"'";
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1611,27 +1515,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByDisplayInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1639,27 +1532,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t where t.displayinstancecode= '"+instanceCode+"'";
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1667,27 +1549,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByAlarmInstanceId(String instanceId,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1695,27 +1566,16 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<String> wellList =new ArrayList<String>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String sql="select t.id from tbl_device t where t.alarminstancecode= '"+instanceCode+"'";
-		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				wellList.add(rs.getInt(1)+"");
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
 			loadDeviceInfo(wellList,0,method);
@@ -1853,127 +1713,77 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadAcqInstanceOwnItemByCode(String instanceCode,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
 				instanceSql+=" and t.code='"+instanceCode+"'";
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAcqInstanceOwnItemByName(String instanceName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAcqInstanceOwnItemByGroupId(String groupId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(groupId)){
 				instanceSql+=" and t.unitid in (select t6.unitid from tbl_acq_group2unit_conf t6 where t6.groupid="+groupId+")";
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAcqInstanceOwnItemByUnitId(String unitId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(unitId)){
 				instanceSql+=" and t.unitid ="+unitId;
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAcqInstanceOwnItemByProtocolName(String protocolName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				instanceSql+=" and t.unitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"' )";
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -2117,156 +1927,92 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadDisplayInstanceOwnItemByUnitId(String unitId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(unitId)){
 				instanceSql+=" and t.displayunitid="+unitId;
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadDisplayInstanceOwnItemByAcqGroupId(String groupId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String sql="select t4.id "
 					+ " from tbl_acq_unit_conf t,tbl_acq_group2unit_conf t2,tbl_acq_group_conf t3,tbl_protocoldisplayinstance t4,tbl_display_unit_conf t5 "
 					+ " where t.id=t2.unitid and t2.groupid=t3.id and t5.acqunitid=t.id and t4.displayunitid=t5.id"
 					+ " and t3.id="+groupId+"";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadDisplayInstanceOwnItemByAcqUnitId(String unitId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String sql="select t2.id "
 					+ " from tbl_acq_unit_conf t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3 "
 					+ " where t3.acqunitid=t.id and t2.displayunitid=t3.id"
 					+ " and t.id="+unitId+"";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadDisplayInstanceOwnItemByCode(String instanceCode,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
 				instanceSql+=" and t.code='"+instanceCode+"'";
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadDisplayInstanceOwnItemByName(String instanceName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadDisplayInstanceOwnItemByProtocolName(String protocolName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				instanceSql+=" and t.displayunitid in( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -2412,110 +2158,62 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadAlarmInstanceOwnItemByCode(String instanceCode,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		int result=0;
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
 				instanceSql+=" and t.code='"+instanceCode+"'";
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAlarmInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAlarmInstanceOwnItemByName(String instanceName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		int result=0;
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
 			}
-			
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAlarmInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAlarmInstanceOwnItemByUnitId(String unitId,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(unitId)){
 				instanceSql+=" and t.alarmunitid="+unitId;
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAlarmInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadAlarmInstanceOwnItemByProtocolName(String protocolName,String method){
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				instanceSql+=" and t.alarmunitid in (select t2.id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"')";
 			}
-			pstmt = conn.prepareStatement(instanceSql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAlarmInstanceOwnItemById(obj[0]+"",method);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -3449,13 +3147,6 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadUserInfo(List<String> userList,int condition,String method){//condition 0 -用户id 1-用户账号
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3505,28 +3196,27 @@ public class MemoryDataManagerTask {
 				}
 			}
 			sql+= " order by t.user_no";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
 				UserInfo userInfo=new UserInfo();
-				userInfo.setUserNo(rs.getInt(1));
-				userInfo.setUserId(rs.getString(2));
-				userInfo.setUserName(rs.getString(3));
-				userInfo.setUserPwd(rs.getString(4));
-				userInfo.setUserOrgid(rs.getInt(5));
+				userInfo.setUserNo(StringManagerUtils.stringToInteger(obj[0]+""));
+				userInfo.setUserId(obj[1]+"");
+				userInfo.setUserName(obj[2]+"");
+				userInfo.setUserPwd(obj[3]+"");
+				userInfo.setUserOrgid(StringManagerUtils.stringToInteger(obj[4]+""));
 				
-				userInfo.setUserInEmail(rs.getString(6));
-				userInfo.setUserPhone(rs.getString(7));
+				userInfo.setUserInEmail(obj[5]+"");
+				userInfo.setUserPhone(obj[6]+"");
 				
-				userInfo.setUserQuickLogin(rs.getInt(8));
-				userInfo.setUserEnable(rs.getInt(9));
-				userInfo.setReceiveSMS(rs.getInt(10));
-				userInfo.setReceiveMail(rs.getInt(11));
+				userInfo.setUserQuickLogin(StringManagerUtils.stringToInteger(obj[7]+""));
+				userInfo.setUserEnable(StringManagerUtils.stringToInteger(obj[8]+""));
+				userInfo.setReceiveSMS(StringManagerUtils.stringToInteger(obj[9]+""));
+				userInfo.setReceiveMail(StringManagerUtils.stringToInteger(obj[10]+""));
 				
-				userInfo.setUserType(rs.getInt(12));
-				userInfo.setRoleName(rs.getString(13));
-				userInfo.setRoleLevel(rs.getInt(14));
-				userInfo.setRoleShowLevel(rs.getInt(15));
+				userInfo.setUserType(StringManagerUtils.stringToInteger(obj[11]+""));
+				userInfo.setRoleName(obj[12]+"");
+				userInfo.setRoleLevel(StringManagerUtils.stringToInteger(obj[13]+""));
+				userInfo.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[14]+""));
 				
 				String key=userInfo.getUserNo()+"";
 				jedis.hset("UserInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)
@@ -3537,98 +3227,68 @@ public class MemoryDataManagerTask {
 			if(jedis!=null){
 				jedis.close();
 			}
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadUserInfoByRoleId(String roleId,String method){//condition 0 -用户id 1-用户账号
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		List<String> roleList=new ArrayList<String>();
         String sql="select t.user_no from TBL_USER t where t.user_type="+roleId;
         try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				roleList.add(rs.getInt(1)+"");
+        	List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				roleList.add(obj[0]+"");
 			}
 			if(roleList.size()>0){
 				loadUserInfo(roleList,0,method);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadUserInfoByOrgId(String orgId,String method){//condition 0 -用户id 1-用户账号
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		List<String> roleList=new ArrayList<String>();
         String sql="select t.user_no from TBL_USER t where t.user_orgid="+orgId;
         try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				roleList.add(rs.getInt(1)+"");
+        	List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				roleList.add(obj[0]+"");
 			}
 			if(roleList.size()>0){
 				loadUserInfo(roleList,0,method);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
 	public static void loadRPCWorkType(){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String sql="select t.id,t.resultcode,t.resultname,t.resultdescription,t.optimizationsuggestion,t.remark "
 					+ " from TBL_RPC_WORKTYPE t order by t.resultcode";
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
 				WorkType workType=new WorkType();
-				workType.setId(rs.getInt(1));
-				workType.setResultCode(rs.getInt(2));
-				workType.setResultName(rs.getString(3));
-				workType.setResultDescription(rs.getString(4));
-				workType.setOptimizationSuggestion(rs.getString(5));
-				workType.setRemark(rs.getString(6));
+				workType.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+				workType.setResultCode(StringManagerUtils.stringToInteger(obj[1]+""));
+				workType.setResultName(obj[2]+"");
+				workType.setResultDescription(obj[3]+"");
+				workType.setOptimizationSuggestion(obj[4]+"");
+				workType.setRemark(obj[5]+"");
 				String key=workType.getResultCode()+"";
 				String keyByName=workType.getResultName()+"";
 				
 				jedis.hset("RPCWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
 				jedis.hset("RPCWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
 			}
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null){
 				jedis.close();
 			}
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 	}
 	
@@ -3836,7 +3496,28 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			modbusProtocolConfig=(ModbusProtocolConfig)SerializeObjectUnils.unserizlize(jedis.get("modbusProtocolConfig".getBytes()));
+			if(jedis.exists("modbusProtocolConfig".getBytes())){
+				modbusProtocolConfig=(ModbusProtocolConfig)SerializeObjectUnils.unserizlize(jedis.get("modbusProtocolConfig".getBytes()));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return modbusProtocolConfig;
+	}
+	
+	public static ModbusProtocolConfig getModbusProtocolConfigWithoutReLoad(){
+		Jedis jedis=null;
+		ModbusProtocolConfig modbusProtocolConfig=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.exists("modbusProtocolConfig".getBytes())){
+				modbusProtocolConfig=(ModbusProtocolConfig)SerializeObjectUnils.unserizlize(jedis.get("modbusProtocolConfig".getBytes()));
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4412,15 +4093,8 @@ public class MemoryDataManagerTask {
 	
 	@SuppressWarnings("static-access")
 	public static void loadUIKitAccessToken(List<Integer> idList,String method ){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -4436,15 +4110,14 @@ public class MemoryDataManagerTask {
 					sql+=" and t.id in("+ids+")";
 				}
 				sql+=" order by t.id";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
+				List<Object[]> list=OracleJdbcUtis.query(sql);
+				for(Object[] obj:list){
 					VideoKey videoKey=new VideoKey();
-					videoKey.setId(rs.getInt(1));
-					videoKey.setOrgId(rs.getInt(2));
-					videoKey.setAccount(rs.getString(3));
-					videoKey.setAppkey(rs.getString(4));
-					videoKey.setSecret(rs.getString(5));
+					videoKey.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+					videoKey.setOrgId(StringManagerUtils.stringToInteger(obj[1]+""));
+					videoKey.setAccount(obj[2]+"");
+					videoKey.setAppkey(obj[3]+"");
+					videoKey.setSecret(obj[4]+"");
 					
 					String appKey=videoKey.getAppkey();
 					String appSecret=videoKey.getSecret();
@@ -4469,14 +4142,7 @@ public class MemoryDataManagerTask {
 	
 	@SuppressWarnings("static-access")
 	public static void loadUIKitAccessTokenByName(List<String> nameList,String method ){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		List<Integer> idList =new ArrayList<>();
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
 		String names=StringManagerUtils.joinStringArr2(nameList, ",");
 		String sql="select t.id from TBL_VIDEOKEY t "
 				+ " where 1=1 ";
@@ -4486,16 +4152,13 @@ public class MemoryDataManagerTask {
 		sql+=" order by t.id";
 		
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				idList.add(rs.getInt(1));
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				idList.add(StringManagerUtils.stringToInteger(obj[0]+""));
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(idList.size()>0){
 			loadUIKitAccessToken(idList,method);

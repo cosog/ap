@@ -2892,7 +2892,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from tbl_resourcemonitoring t "
+		if("jedisStatus".equalsIgnoreCase(itemCode)){
+			itemCode="round(t.cachemaxmemory/(1024*1024),2)||';'|| round(t.cacheusedmemory/(1024*1024),2) as jedisStatus";
+		}
+		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode
+				+" from tbl_resourcemonitoring t "
 				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " order by t.acqTime";
 		int resourceMonitoringVacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringVacuateThreshold();

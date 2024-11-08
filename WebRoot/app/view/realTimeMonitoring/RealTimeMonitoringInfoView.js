@@ -117,9 +117,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         id:"CPUUsedPercentLabel_id",
 //                        width: 180,
                         height:25,
-                        text: 'CPU:',
+                        text: 'cpu:',
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("CPU使用率(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cpu usage(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("cpuUsedPercent");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -130,10 +130,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"memUsedPercentLabel_id",
-                        text: '内存:',
+                        text: 'mem:',
 //                        width: 130,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("内存使用率(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("mem usage(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("memUsedPercent");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -144,10 +144,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"tableSpaceSizeProbeLabel_id",
-                        text: '表空间:',
+                        text: 'db tablespaces:',
 //                        width: 130,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("表空间使用率(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("db tablespaces usage(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -158,10 +158,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"redisRunStatusProbeLabel_id",
-                        text: 'redis',
+                        text: 'cache',
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("实时数据库运行状态");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cache db memory(mb)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -176,7 +176,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         hidden: !IoTConfig,
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ad运行状态");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ad status");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("adRunStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -190,7 +190,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         text: 'ac',
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ac运行状态");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ac status");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("acRunStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -201,7 +201,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"adLicenseStatusProbeLabel_id",
-                        text: 'License超限:',
+                        text: 'License:',
                         hidden: true,
                         handler: function (v, o) {}
                 	},{
@@ -386,7 +386,7 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     var tickInterval = 1;
     var data = get_rawData.totalRoot;
     tickInterval = Math.floor(data.length / 10) + 1;
-    var title = itemName.split("(")[0] + "曲线";
+    var title = itemName.split("(")[0];
     var legend=false;
     var legendName = [itemName];
     
@@ -394,8 +394,6 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     if(data.length>0 && get_rawData.minAcqTime.split(' ')[0]==get_rawData.maxAcqTime.split(' ')[0]){
 	    timeFormat='%H:%M';
     }
-    
-    
     
     if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
     	legendName = [];
@@ -405,7 +403,7 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
         		if(cpus.length>legendName.length){
         			legendName = [];
         			for(var j = 0; j < cpus.length; j++){
-        				legendName.push("CPU"+(j+1));
+        				legendName.push("cpu"+(j+1)+"(%)");
         			}
         		}
     		}
@@ -413,7 +411,14 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     	}
     	legend=true;
     	ytitle='CPU使用率(%)';
+    }else if(itemCode.toUpperCase()=='jedisStatus'.toUpperCase()){
+    	legendName = [];
+    	legendName.push("maxmemory(mb)");
+    	legendName.push("usedmemory(mb)");
+    	legend=true;
     }
+    
+    
     var series = "[";
     for (var i = 0; i < legendName.length; i++) {
         series += "{\"name\":\"" + legendName[i] + "\",";
@@ -427,6 +432,17 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
             var minute = parseInt(data[j].acqTime.split(" ")[1].split(":")[1]);
             var second = parseInt(data[j].acqTime.split(" ")[1].split(":")[2]);
             if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
+            	if(isNotVal(data[j].value)){
+            		var values=data[j].value.split(";");
+            		if(values.length>i){
+            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            		}else{
+            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		}
+            	}else{
+            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            	}
+            }else if(itemCode.toUpperCase()=='jedisStatus'.toUpperCase()){
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){

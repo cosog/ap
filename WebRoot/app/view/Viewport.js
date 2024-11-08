@@ -522,41 +522,41 @@ function websocketOnMessage(evt) {
     } else if (data.functionCode.toUpperCase() == "ResourceMonitoringData".toUpperCase()) { //接收到资源监测数据
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
             if (data.cpuUsedPercentAlarmLevel == 1) {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#F09614 >CPU:" + data.cpuUsedPercent + "</font>");
+                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#F09614 >cpu:" + data.cpuUsedPercent + "</font>");
             } else if (data.cpuUsedPercentAlarmLevel == 2) {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#DC2828 >CPU:" + data.cpuUsedPercent + "</font>");
+                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#DC2828 >cpu:" + data.cpuUsedPercent + "</font>");
             } else {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:" + data.cpuUsedPercent);
+                Ext.getCmp("CPUUsedPercentLabel_id").setText("cpu:" + data.cpuUsedPercent);
             }
 
             if (data.memUsedPercentAlarmLevel == 1) {
-                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#F09614 >内存:" + data.memUsedPercent + "</font>");
+                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#F09614 >mem:" + data.memUsedPercent + "</font>");
             } else if (data.memUsedPercentAlarmLevel == 2) {
-                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#DC2828 >内存:" + data.memUsedPercent + "</font>");
+                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#DC2828 >mem:" + data.memUsedPercent + "</font>");
             } else {
-                Ext.getCmp("memUsedPercentLabel_id").setText("内存:" + data.memUsedPercent);
+                Ext.getCmp("memUsedPercentLabel_id").setText("mem:" + data.memUsedPercent);
             }
 
             if (data.dbConnStatus == 1) {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
                 if (data.tableSpaceUsedPercentAlarmLevel == 1) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >oracle表空间:" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >db tablespaces:" + data.tableSpaceUsedPercent + "</font>");
                 } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >oracle表空间:" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >db tablespaces:" + data.tableSpaceUsedPercent + "</font>");
                 } else {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("oracle表空间:" + data.tableSpaceUsedPercent);
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("db tablespaces:" + data.tableSpaceUsedPercent);
                 }
             } else {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("oracle");
+                Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("db");
             }
 
             if (data.redisStatus == 1) {
                 Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtgreen");
-                Ext.getCmp("redisRunStatusProbeLabel_id").setText("redis v" + data.redisVersion);
+                Ext.getCmp("redisRunStatusProbeLabel_id").setText("cache " + data.cacheUsedMemory+"mb/"+data.cacheMaxMemory+"mb");
             } else {
                 Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("redisRunStatusProbeLabel_id").setText("redis");
+                Ext.getCmp("redisRunStatusProbeLabel_id").setText("cache");
             }
 
             if (data.adRunStatus == 1) {
@@ -569,7 +569,7 @@ function websocketOnMessage(evt) {
 
 
             if (data.licenseSign) {
-                Ext.getCmp("adLicenseStatusProbeLabel_id").setText("<font color=#DC2828 >License超限:" + data.deviceAmount + "/" + data.license + "</font>");
+                Ext.getCmp("adLicenseStatusProbeLabel_id").setText("<font color=#DC2828 >License:" + data.deviceAmount + "/" + data.license + "</font>");
                 Ext.getCmp("adLicenseStatusProbeLabel_id").show();
             } else {
                 Ext.getCmp("adLicenseStatusProbeLabel_id").setText("");

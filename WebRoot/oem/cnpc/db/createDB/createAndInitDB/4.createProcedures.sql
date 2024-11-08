@@ -1149,6 +1149,8 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_memUsedPercent in number,
   v_tableSpaceSize in number,
   v_jedisStatus in number,
+  v_cacheMaxMemory in number,
+  v_cacheUsedMemory in number,
   v_resourceMonitoringSaveData in number
   ) is
   p_msg varchar2(3000) := 'error';
@@ -1163,7 +1165,9 @@ begin
         t.acrunstatus=v_acRunStatus,t.acversion=v_acVersion,t.cpuusedpercent=v_cpuUsedPercent,
         t.adrunstatus=v_adRunStatus,t.adversion=v_adVersion,
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
-        t.jedisStatus=v_jedisStatus
+        t.jedisStatus=v_jedisStatus,
+        t.cachemaxmemory=v_cacheMaxMemory,
+        t.cacheusedmemory=v_cacheUsedMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
      p_msg := '删除多余记录并更新成功';
@@ -1173,13 +1177,16 @@ begin
         t.acrunstatus=v_acRunStatus,t.acversion=v_acVersion,t.cpuusedpercent=v_cpuUsedPercent,
         t.adrunstatus=v_adRunStatus,t.adversion=v_adVersion,
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
-        t.jedisStatus=v_jedisStatus
+        t.jedisStatus=v_jedisStatus,
+        t.cachemaxmemory=v_cacheMaxMemory,
+        t.cacheusedmemory=v_cacheUsedMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
     p_msg := '更新成功';
    elsif counts<v_resourceMonitoringSaveData then
      insert into tbl_resourcemonitoring (
-         acqtime,acrunstatus,acversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize,jedisStatus
+         acqtime,acrunstatus,acversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize,
+         jedisStatus,cachemaxmemory,cacheusedmemory
       )values(
          to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          v_acRunStatus,
@@ -1189,7 +1196,9 @@ begin
          v_adVersion,
          v_memUsedPercent,
          v_tableSpaceSize,
-         v_jedisStatus
+         v_jedisStatus,
+         v_cacheMaxMemory,
+         v_cacheUsedMemory
       );
       commit;
       p_msg := '插入成功';

@@ -677,6 +677,9 @@ public class StringManagerUtils {
         } else {
             result = value;
         }
+        if(value.endsWith(".00")){
+        	value=value.substring(0, value.indexOf(".00"));
+        }
         return result;
     }
 
@@ -1581,18 +1584,25 @@ public class StringManagerUtils {
 
     public static String floatToString(float value, int bit) {
         StringBuffer buf = new StringBuffer();
+        StringBuffer buf2 = new StringBuffer();
+        
         buf.append("0.");
+        buf2.append(".");
         for (int i = 1; i <= bit; i++) {
             buf.append("0");
+            buf2.append("0");
         }
         String sbit = buf.toString();
+        String sbit2 = buf2.toString();
         DecimalFormat sumd = new DecimalFormat(sbit);
         float sum = 0;
         if (StringManagerUtils.isNotNull(value + "")) {
             sum = Float.parseFloat(value + "");
         }
-        String sumstr = "";
-        sumstr = sumd.format(sum);
+        String sumstr = sumd.format(sum);
+        if(sumstr.endsWith(sbit2)){
+        	sumstr=sumstr.substring(0, sumstr.indexOf(sbit2));
+        }
         return sumstr;
     }
 

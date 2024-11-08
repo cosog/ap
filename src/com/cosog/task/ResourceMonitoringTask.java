@@ -112,6 +112,14 @@ public class ResourceMonitoringTask {
 		
 		RedisInfo redisInfo=MemoryDataManagerTask.getJedisInfo();
 		redisVersion=redisInfo.getVersion();
+		long cacheMaxMemory=redisInfo.getMaxmemory();
+		long cacheUsedMemory=redisInfo.getUsed_memory();
+		
+		String cacheMaxMemory_human=StringManagerUtils.floatToString((cacheMaxMemory)/((float)(1024*1024)), 2);
+		String cacheUsedMemory_human=StringManagerUtils.floatToString(cacheUsedMemory/((float)(1024*1024)), 2);
+		
+		
+		
 		if(redisInfo.getStatus()==1){
 			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
@@ -217,11 +225,10 @@ public class ResourceMonitoringTask {
 				memUsedPercentAlarmLevel=0;
 			}
 		}
-		
 		try{
 			conn=OracleJdbcUtis.getConnection();
 			if(conn!=null){
-				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?)}");
 				cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				cs.setInt(2, acRunStatus);
 				cs.setString(3, acVersion);
@@ -231,14 +238,10 @@ public class ResourceMonitoringTask {
 				cs.setString(7, memUsedPercentValue);
 				cs.setFloat(8, tableSpaceInfo.getUsedPercent());
 				cs.setInt(9, redisStatus);
-				cs.setInt(10, resourceMonitoringSaveData);
+				cs.setLong(10, cacheMaxMemory);
+				cs.setLong(11, cacheUsedMemory);
+				cs.setInt(12, resourceMonitoringSaveData);
 				cs.executeUpdate();
-				if(cs!=null){
-					cs.close();
-				}
-				if(conn!=null){
-					conn.close();
-				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -277,7 +280,9 @@ public class ResourceMonitoringTask {
 				+ "\"deviceAmount\":"+deviceAmount+","
 				+ "\"license\":"+acLicense+","
 				+ "\"redisVersion\":\""+redisVersion+"\","
-				+ "\"redisStatus\":\""+redisStatus+"\""
+				+ "\"redisStatus\":\""+redisStatus+"\","
+				+ "\"cacheMaxMemory\":\""+cacheMaxMemory_human+"\","
+				+ "\"cacheUsedMemory\":\""+cacheUsedMemory_human+"\""
 				+ "}";
 		try {
 			infoHandler().sendMessageToBy("ApWebSocketClient", sendData);

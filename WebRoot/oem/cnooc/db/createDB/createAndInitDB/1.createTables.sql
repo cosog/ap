@@ -2037,7 +2037,9 @@ create table TBL_RESOURCEMONITORING
   cpuusedpercent VARCHAR2(50),
   memusedpercent NUMBER(8,2),
   tablespacesize NUMBER(10,2),
-  jedisstatus    NUMBER(2)
+  jedisstatus    NUMBER(2),
+  cachemaxmemory  NUMBER(20),
+  cacheusedmemory NUMBER(20)
 )
 tablespace AP_DATA
   storage

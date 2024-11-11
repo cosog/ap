@@ -553,7 +553,7 @@ function websocketOnMessage(evt) {
 
             if (data.redisStatus == 1) {
                 Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtgreen");
-                Ext.getCmp("redisRunStatusProbeLabel_id").setText("cache " + data.cacheUsedMemory+"mb/"+data.cacheMaxMemory+"mb");
+                Ext.getCmp("redisRunStatusProbeLabel_id").setText("cache " + data.cacheUsedMemory+"m/"+data.cacheMaxMemory+"m");
             } else {
                 Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtyellow");
                 Ext.getCmp("redisRunStatusProbeLabel_id").setText("cache");

@@ -161,7 +161,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         text: 'cache',
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cache db memory(mb)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cache db memory(m)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -413,8 +413,8 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     	ytitle='CPU使用率(%)';
     }else if(itemCode.toUpperCase()=='jedisStatus'.toUpperCase()){
     	legendName = [];
-    	legendName.push("maxmemory(mb)");
-    	legendName.push("usedmemory(mb)");
+    	legendName.push("maxmemory(m)");
+    	legendName.push("usedmemory(m)");
     	legend=true;
     }
     
@@ -435,7 +435,11 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){
-            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            			if(isNumber(values[i])){
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            			}else{
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			}
             		}else{
             			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
             		}
@@ -446,7 +450,11 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){
-            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            			if(isNumber(values[i])){
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            			}else{
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			}
             		}else{
             			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
             		}
@@ -535,6 +543,7 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
       }],
         tooltip: {
             crosshairs: true, //十字准线
+            shared: true,
             style: {
                 color: '#333333',
                 fontSize: '12px',

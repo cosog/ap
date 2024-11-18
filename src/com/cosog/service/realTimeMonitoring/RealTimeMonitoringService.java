@@ -624,9 +624,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
+					+ "decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
 					+ "t.calculateType";//18
 			
@@ -721,12 +721,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				result_json.append("\"deviceTypeName\":\""+obj[6]+"\",");
 				result_json.append("\"acqTime\":\""+obj[7]+"\",");
-				result_json.append("\"commStatus\":"+obj[8]+",");
+				result_json.append("\"commStatus\":\""+obj[8]+"\",");
 				result_json.append("\"commStatusName\":\""+obj[9]+"\",");
 				result_json.append("\"commTime\":\""+obj[10]+"\",");
 				result_json.append("\"commTimeEfficiency\":\""+obj[11]+"\",");
 				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
-				result_json.append("\"runStatus\":"+obj[13]+",");
+				result_json.append("\"runStatus\":\""+obj[13]+"\",");
 				result_json.append("\"runStatusName\":\""+obj[14]+"\",");
 				result_json.append("\"runTime\":\""+obj[15]+"\",");
 				result_json.append("\"runTimeEfficiency\":\""+obj[16]+"\",");

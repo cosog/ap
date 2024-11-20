@@ -43,7 +43,7 @@ public class AppInitServlet extends HttpServlet {
 	public void init() {
 		contextPath = getServletContext().getRealPath("/");
 		try {
-			locale = Config.getInstance().configFile.getAp().getOthers().getLanguage();
+			locale = Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 			initCode();
 		} catch (DocumentException e) {
 			log.error("【ERROR：应用系统启动时出现错误，请检查代码配置文件！】");

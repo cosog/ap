@@ -237,7 +237,7 @@ public class OEMConfigFile {
 		
 		private boolean cache;
 
-	    private String language;
+	    private String loginLanguage;
 
 	    private int pageSize;
 
@@ -289,12 +289,7 @@ public class OEMConfigFile {
 	    public boolean getCache(){
 	        return this.cache;
 	    }
-	    public void setLanguage(String language){
-	        this.language = language;
-	    }
-	    public String getLanguage(){
-	        return this.language;
-	    }
+	    
 	    public void setPageSize(int pageSize){
 	        this.pageSize = pageSize;
 	    }
@@ -432,6 +427,12 @@ public class OEMConfigFile {
 		}
 		public void setResourceMonitoringVacuateThreshold(int resourceMonitoringVacuateThreshold) {
 			this.resourceMonitoringVacuateThreshold = resourceMonitoringVacuateThreshold;
+		}
+		public String getLoginLanguage() {
+			return loginLanguage;
+		}
+		public void setLoginLanguage(String loginLanguage) {
+			this.loginLanguage = loginLanguage;
 		}
 	}
 	

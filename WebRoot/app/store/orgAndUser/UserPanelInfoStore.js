@@ -207,6 +207,25 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
+                        header: '语言',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userLanguageName',
+                        flex:2,
+                        editor: {
+                            xtype: 'combo',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            allowBlank: false,
+                            editable: false,
+                            store: get_rawData.languageList,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
                         header: '使能',
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,

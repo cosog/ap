@@ -160,7 +160,7 @@ public class UserLoginManagerController extends BaseController {
 		String clientIp=StringManagerUtils.getIpAddr(request);
 		
 		HttpSession session=request.getSession();
-		String locale=Config.getInstance().configFile.getAp().getOthers().getLanguage();
+		String locale=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Locale l = Locale.getDefault(); 
 		
 		if(flag!=null && flag.equals("1")){

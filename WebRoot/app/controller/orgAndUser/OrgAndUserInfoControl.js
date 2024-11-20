@@ -516,6 +516,7 @@ function updateUserInfoByGridBtn(record) {
     var receiveSMSName=record.get("receiveSMSName");
     var receiveMailName=record.get("receiveMailName");
     var userEnableName=record.get("userEnableName");
+    var userLanguageName=record.get("userLanguageName");
 	
     Ext.Ajax.request({
 		url : context + '/userManagerController/updateUserInfo',
@@ -530,7 +531,8 @@ function updateUserInfoByGridBtn(record) {
 			userQuickLoginName : userQuickLoginName,
 			receiveSMSName : receiveSMSName,
 			receiveMailName : receiveMailName,
-			userEnableName : userEnableName
+			userEnableName : userEnableName,
+			userLanguageName : userLanguageName
 		},
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);

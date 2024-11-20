@@ -43,6 +43,8 @@ public class User implements java.io.Serializable {
 	private Integer userEnable;
 	private Integer receiveSMS;
 	private Integer receiveMail;
+	private Integer language;
+	private String languageName;
 	private String userOrgids;
 	private String userOrgNames;
 	private String userParentOrgids;
@@ -185,6 +187,15 @@ public class User implements java.io.Serializable {
 
 	public void setReceiveMail(Integer receiveMail) {
 		this.receiveMail = receiveMail;
+	}
+
+	@Column(name = "USER_LANGUAGE", precision = 38, scale = 0)
+	public Integer getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Integer language) {
+		this.language = language;
 	}
 
 	public void setOrgName(String orgName) {
@@ -390,5 +401,14 @@ public class User implements java.io.Serializable {
 
 	public void setModuleList(String moduleList) {
 		this.moduleList = moduleList;
+	}
+
+	@Transient
+	public String getLanguageName() {
+		return languageName;
+	}
+
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
 	}
 }

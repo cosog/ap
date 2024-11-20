@@ -3185,9 +3185,11 @@ public class MemoryDataManagerTask {
 					+ " t.user_in_email,t.user_phone,"
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
 					+ " t.user_type,"
-					+ " t2.role_name,t2.role_level,t2.showlevel "
-					+ " from tbl_user t,tbl_role t2 "
-					+ " where t.user_type=t2.role_id";
+					+ " t2.role_name,t2.role_level,t2.showlevel,"
+					+ " t.user_language,c.itemname as languageName"
+					+ " from tbl_user t,tbl_role t2,tbl_code c "
+					+ " where t.user_type=t2.role_id "
+					+ " and upper(c.itemCode)='LANGUAGE' and t.user_language=c.itemValue     ";
 			if(StringManagerUtils.isNotNull(users)){
 				if(condition==0){
 					sql+=" and t.user_no in("+users+")";
@@ -3217,6 +3219,9 @@ public class MemoryDataManagerTask {
 				userInfo.setRoleName(obj[12]+"");
 				userInfo.setRoleLevel(StringManagerUtils.stringToInteger(obj[13]+""));
 				userInfo.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[14]+""));
+				
+				userInfo.setLanguage(StringManagerUtils.stringToInteger(obj[15]+""));
+				userInfo.setLanguageName(obj[16]+"");
 				
 				String key=userInfo.getUserNo()+"";
 				jedis.hset("UserInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)

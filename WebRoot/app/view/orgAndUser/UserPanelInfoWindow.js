@@ -70,6 +70,50 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 }
             });
         
+        
+        var languageComboxStore = new Ext.data.SimpleStore({
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/userManagerController/loadLanguageList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json'
+                }
+            },
+            autoLoad: false
+        });
+
+        var languageCombox = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: '语言<font color=red>*</font>',
+                id: 'userLanguage_Id1',
+                anchor: '100%',
+                value: '',
+                store: languageComboxStore,
+                emptyText: '--请选择语言--',
+                blankText: '--请选择语言--',
+                typeAhead: true,
+                allowBlank: false,
+                blankText: cosog.string.required,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                listeners: {
+                    select: function () {
+                        Ext.getCmp("userLanguage_Id").setValue(this.value);
+                    }
+                }
+            });
+        
         var postEditUserForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -95,6 +139,12 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                     anchor: '100%',
                     value: '',
                     name: 'user.userType'
+            }, {
+                xtype: "hidden",
+                id: 'userLanguage_Id',
+                anchor: '100%',
+                value: '',
+                name: 'user.language'
             },{
                     fieldLabel: cosog.string.userName + '<font color=red>*</font>',
                     id: 'userName_Id',
@@ -243,7 +293,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                         id:'userReceiveMailRadio0_Id'
                     }
                 ]
-            },{
+            },languageCombox,{
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',
@@ -267,18 +317,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                         id:'userEnableRadio0_Id'
                     }
                 ]
-            }
-//            , {
-//                xtype: 'datetimefield',
-//                id: 'userRegTime_Id',
-//                format: 'Y-m-d H:i:s',
-//                anchor: '100%',
-//                hidden:true,
-//                fieldLabel: cosog.string.userRegTime,
-//                value: new Date(),
-//                name: "user.userRegtime"
-//            }
-            ],
+            }],
             buttons: [{
                 id: 'addFormUser_Id',
                 xtype: 'button',

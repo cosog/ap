@@ -17,24 +17,6 @@ var MonitorRATast=Ext.TaskManager.newTask({
 		}
 	}
 });
-createPageBbar=function(store){
-	     //分页工具栏
- var bbar = new Ext.PageNumberToolbar({
-					    store:store,
-						pageSize :defaultPageSize,	
-						displayInfo : true,
-						displayMsg : cosog.string.currentRecord,
-						emptyMsg : cosog.string.nodataDisplay,
-						prevText : cosog.string.lastPage,
-						nextText : cosog.string.nextPage,
-						refreshText : cosog.string.refresh,
-						lastText : cosog.string.finalPage,
-						firstText : cosog.string.firstPage,
-						beforePageText : cosog.string.currentPage,
-						afterPageText :cosog.string.gong
-					});	
-			return  bbar;
-}
 /**
  * xx.trim()
  */

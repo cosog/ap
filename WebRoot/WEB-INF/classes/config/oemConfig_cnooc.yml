@@ -30,7 +30,7 @@ email:                #邮件发送账号配置
 others:
    deviceShowName: 设备名称
    cache: false
-   language: zh_CN
+   loginLanguage: zh_CN
    pageSize: 100
    syncOrAsync: false
    expandedAll: true

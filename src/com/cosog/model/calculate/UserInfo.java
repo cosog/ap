@@ -25,13 +25,16 @@ public class UserInfo implements Serializable {
 	private String roleName;
 	private Integer roleLevel;
 	private Integer roleShowLevel;
+	
+	private Integer language;
+	private String languageName;
 	public UserInfo() {
 		super();
 	}
 	public UserInfo(Integer userNo, Integer userOrgid, String userId, String userName, String userPwd,
 			String userInEmail, String userPhone, Integer userQuickLogin, Integer userEnable, Integer receiveSMS,
 			Integer receiveMail, Integer userType, String roleName, Integer roleLevel,
-			Integer roleShowLevel) {
+			Integer roleShowLevel,Integer language,String languageName) {
 		super();
 		this.userNo = userNo;
 		this.userOrgid = userOrgid;
@@ -48,6 +51,8 @@ public class UserInfo implements Serializable {
 		this.roleName = roleName;
 		this.roleLevel = roleLevel;
 		this.roleShowLevel = roleShowLevel;
+		this.language = language;
+		this.languageName = languageName;
 	}
 	public Integer getUserNo() {
 		return userNo;
@@ -138,6 +143,18 @@ public class UserInfo implements Serializable {
 	}
 	public void setRoleShowLevel(Integer roleShowLevel) {
 		this.roleShowLevel = roleShowLevel;
+	}
+	public Integer getLanguage() {
+		return language;
+	}
+	public void setLanguage(Integer language) {
+		this.language = language;
+	}
+	public String getLanguageName() {
+		return languageName;
+	}
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
 	}
 	
 }

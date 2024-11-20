@@ -29,20 +29,6 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
             displayField: 'findtatName',
             valueField: 'findtatId'
         });
-//        var bbar = new Ext.PageNumberToolbar({
-//            store: appEditDataItesmStore,
-//            pageSize: defaultPageSize,
-//            displayInfo: true,
-//            displayMsg: cosog.string.currentRecord,
-//            emptyMsg: cosog.string.nodataDisplay,
-//            prevText: cosog.string.lastPage,
-//            nextText: cosog.string.nextPage,
-//            refreshText: cosog.string.refresh,
-//            lastText: cosog.string.finalPage,
-//            firstText: cosog.string.firstPage,
-//            beforePageText: cosog.string.currentPage,
-//            afterPageText: cosog.string.gong
-//        });
         
         var bbar = new Ext.PagingToolbar({
         	store: appEditDataItesmStore,

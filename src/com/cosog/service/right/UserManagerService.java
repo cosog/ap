@@ -119,22 +119,28 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer sqlwhere = new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer role_json = new StringBuffer();
+		StringBuffer language_json = new StringBuffer();
 		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage");
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " order by t.role_id";
+		String languageSql="select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)='LANGUAGE' order by t.itemvalue";
 		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name as orgName,u.user_id as userId,"
-				+ " u.user_pwd as userPwd,u.user_type as userType,r.role_name as userTypeName,u.user_phone as userPhone,u.user_in_email as userInEmail,"
+				+ " u.user_pwd as userPwd,"
+				+ " u.user_type as userType,r.role_name as userTypeName,"
+				+ " u.user_phone as userPhone,u.user_in_email as userInEmail,"
 				+ " to_char(u.user_regtime,'YYYY-MM-DD hh24:mi:ss') as userRegtime,"
 				+ " u.user_quicklogin as userQuickLogin,decode(u.user_quicklogin,0,'否','是') as userQuickLoginName,"
 				+ " u.user_receivesms as receiveSMS,decode(u.user_receivesms,1,'是','否') as receiveSMSName,"
 				+ " u.user_receivemail as receiveMail,decode(u.user_receivemail,1,'是','否') as receiveMailName,"
 				+ " u.user_enable as userEnable,decode(u.user_enable,1,'使能','失效') as userEnableName,"
+				+ " u.user_language as userLanguage,c.itemname as userLanguageName,"
 				+ " o.allpath"
 				+ " from tbl_user u"
 				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
+				+ " left outer join tbl_code c on upper(c.itemCode)='LANGUAGE' and u.user_language=c.itemValue"
 				+ " where u.user_orgid in (" + orgIds + ")"
 				+ " and ("
 				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
@@ -146,8 +152,10 @@ public class UserManagerService<T> extends BaseService<T> {
 		sql+=" order by r.role_level,user_no,u.user_no";
 		
 		List<?> roleList = this.findCallSql(roleSql);
+		List<?> languageList = this.findCallSql(languageSql);
 		List<?> list = this.findCallSql(sql);
 		role_json.append("[");
+		language_json.append("[");
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",");
 		for (Object o : roleList) {
 			Object[] obj = (Object[]) o;
@@ -157,7 +165,18 @@ public class UserManagerService<T> extends BaseService<T> {
 			role_json.deleteCharAt(role_json.length() - 1);
 		}
 		role_json.append("]");
+		
+		for (Object o : languageList) {
+			Object[] obj = (Object[]) o;
+			language_json.append("['"+obj[1]+"','"+obj[1]+"'],");
+		}
+		if (language_json.toString().endsWith(",")) {
+			language_json.deleteCharAt(language_json.length() - 1);
+		}
+		language_json.append("]");
+		
 		result_json.append("\"roleList\":"+role_json+",");
+		result_json.append("\"languageList\":"+language_json+",");
 		result_json.append("\"totalRoot\":[");
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
@@ -180,16 +199,15 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"receiveMailName\":"+(StringManagerUtils.stringToInteger(obj[15]+"")==1)+",");
 			result_json.append("\"userEnable\":\""+obj[17]+"\",");
 			result_json.append("\"userEnableName\":"+(StringManagerUtils.stringToInteger(obj[17]+"")==1)+",");
-			result_json.append("\"allPath\":\""+obj[19]+"\"},");
+			result_json.append("\"userLanguage\":\""+obj[19]+"\",");
+			result_json.append("\"userLanguageName\":\""+obj[20]+"\",");
+			result_json.append("\"allPath\":\""+obj[21]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
-		
-//		return this.findPageBySqlEntity(sql.toString(),columnsString,  "",pager);
-
 	}
 
 	public String getUserList(Map map) {
@@ -309,6 +327,35 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("]");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
+	public String loadLanguageList() throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)='LANGUAGE' order by t.itemvalue";
+		try {
+			List<?> list = this.getSQLObjects(sql);
+			result_json.append("[");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result_json = new StringBuffer();
+			result_json.append("[]");
 		}
 		return result_json.toString();
 	}
@@ -538,6 +585,7 @@ public class UserManagerService<T> extends BaseService<T> {
 						+ "t.user_enable="+user.getUserEnable()+", ";
 			}	
 			sql+= "t.user_name='"+user.getUserName()+"', "
+				+ "t.user_language=(select c.itemvalue from TBL_CODE c where upper(c.itemcode)='LANGUAGE' and c.itemname='"+user.getLanguageName()+"'),"
 				+ "t.user_phone='"+user.getUserPhone()+"', "
 				+ "t.user_in_email='"+user.getUserInEmail()+"', "
 				+ "t.user_quicklogin="+user.getUserQuickLogin()+", "

@@ -355,12 +355,14 @@ public class UserManagerController extends BaseController {
 			String receiveSMSName = ParamUtils.getParameter(request, "receiveSMSName");
 			String receiveMailName = ParamUtils.getParameter(request, "receiveMailName");
 			String userEnableName = ParamUtils.getParameter(request, "userEnableName");
+			String userLanguageName = ParamUtils.getParameter(request, "userLanguageName");
 			
 			User user=new User();
 			user.setUserNo(StringManagerUtils.stringToInteger(userNo));
 			user.setUserName(userName);
 			user.setUserId(userId);
 			user.setUserTypeName(userTypeName);
+			user.setLanguageName(userLanguageName);
 			user.setUserPhone(userPhone);
 			user.setUserInEmail(userInEmail);
 			user.setUserQuickLogin("true".equalsIgnoreCase(userQuickLoginName)?1:0);
@@ -511,6 +513,20 @@ public class UserManagerController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		String json = this.userService.loadUserType(user);
 		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadLanguageList")
+	public String loadLanguageList() throws Exception {
+		HttpSession session=request.getSession();
+		String json = this.userService.loadLanguageList();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

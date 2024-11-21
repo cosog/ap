@@ -2040,6 +2040,16 @@ public class StringManagerUtils {
         }
         return result;
     }
+    
+    public static File getFile(String path) {
+        File file = null;
+        try {
+        	file = new File(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
 
     //读文件，返回字符串
     public static String readFile(String path) {

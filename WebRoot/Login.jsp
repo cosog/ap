@@ -104,6 +104,7 @@
 	var oem = ${configFile}.ap.oem;
 	var loginBackgroundImage=oem.loginBackgroundImage;
 	loginBackgroundImage=context+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
+	var loginLanguageResource=${loginLanguageResource};
 	
 	$(function () {
 		initDisplayInformation();
@@ -113,7 +114,7 @@
 			cache:false,
 			success:function(data){
 				//alert(data);
-				var optionString="<option value=\'\' data-password=\'\'>我自己</option>";
+				var optionString="<option value=\'\' data-password=\'\' selected>"+loginLanguageResource.myself+"</option>";
 				optionString+="<option data-divider='true'></option>";
 				for(var i=0;i<data.length;i++){
 					optionString += "<option value=\'"+ data[i].useraccount +"\' data-password=\'"+data[i].userpwd+"\'>" + data[i].username + "</option>";
@@ -127,16 +128,17 @@
 	
 	function initDisplayInformation(){
 		
-		$("#login_userlogin").html(cosog.string.userlogin);
+		$("#login_userlogin").html(loginLanguageResource.userLogin);
 		$("#login_loginInfo").html(oem.profile);
 		$("#login_title").html(oem.title);
-		$("#login_myself").html(cosog.string.myself);
-		$("#userId").attr("placeholder", cosog.string.entername);
-		$("#userPwd").attr("placeholder", cosog.string.enterpwd);
-		$("#login_rememberpassword").html(cosog.string.rememberpassword);
-		$("#login_forgerpassword").html(cosog.string.forgerpassword);
-		$("#login_contact").html(cosog.string.contact);
-		$("#login_loginButton").html(cosog.string.login);
+		//$("#login_myself").html(loginLanguageResource.myself);
+		$("#userSelectpicker").html(loginLanguageResource.myself);
+		$("#userId").attr("placeholder", loginLanguageResource.enterUserName);
+		$("#userPwd").attr("placeholder", loginLanguageResource.enterPassword);
+		$("#login_rememberpassword").html(loginLanguageResource.rememberPassword);
+		$("#login_forgerpassword").html(loginLanguageResource.forgerPassword);
+		$("#login_contact").html(loginLanguageResource.contact);
+		$("#login_loginButton").html(loginLanguageResource.login);
 		$("#login_copy").html(oem.copy);
 		$("#login_link").text(oem.linkshow);
 		$('#login_link').attr('href',oem.linkaddress);
@@ -173,7 +175,7 @@
 		var get_name=$("#userId").val();
 		var get_pwd=$("#userPwd").val();
 		if(null!=get_name&&get_name!=""&&null!=get_pwd&&get_pwd!=""){
-			$("#errorName").html("<font style='color:#666666'>"+cosog.string.logining+"</font>");
+			$("#errorName").html("<font style='color:#666666'>"+loginLanguageResource.logining+"</font>");
 			$("#errorPwd").html("");
 			verifyFn();
 		}else if(null==get_name||get_name==""){
@@ -222,7 +224,7 @@
 	 };
 	 //自动登录
 	 function verifyAutoFn(selectUsername,selectUserpwd){
-		 	$("#errorName").html("<font style='color:#666666'>"+cosog.string.logining+"</font>");
+		 	$("#errorName").html("<font style='color:#666666'>"+loginLanguageResource.logining+"</font>");
 			$("#errorPwd").html("");
 			var getTime=new Date();
 			var getSeconds=getTime.getMinutes()+getTime.getSeconds();
@@ -270,14 +272,14 @@
 	// 登录账号处理
 	 function error_NameFn(){
 	     $("#userId").focus();
-	     $("#errorName").html(cosog.string.entername);
+	     $("#errorName").html(loginLanguageResource.enterUserName);
 	     return false;
 	 }
 	 
 	 // 登录密码处理
 	 function error_PwdFn(){
 	     $("#userPwd").focus();
-	     $("#errorName").html(cosog.string.enterpwd); 
+	     $("#errorName").html(loginLanguageResource.enterPassword); 
 	     return false;
 	 }
 	</script>
@@ -307,8 +309,8 @@
                         <!-- <p class="hidden-xs"></p> -->
                         <form id="frmlogin" class="login-form fv-form fv-form-bootstrap" method="post">
 							<div class="form-group " >
-								<select  class="selectpicker form-control"  title="我自己" id="userSelectpicker" onchange="userSelectpickerChange(this)">
-									<option ><span  id= "login_myself"></span></option>
+								<select  class="selectpicker form-control" id="userSelectpicker" onchange="userSelectpickerChange(this)">
+									<!-- <option ><span  id= "login_myself"></span></option> -->
 								</select>
 							</div>
                             <div class="form-group">

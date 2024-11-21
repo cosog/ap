@@ -32,6 +32,7 @@ import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.service.right.UserManagerService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
@@ -198,6 +199,9 @@ public class UserLoginManagerController extends BaseController {
 			}
 			if (user != null&&user.getUserEnable()==1) {
 				service.setUserRoleRight(user);
+				service.setUserLanguage(user);
+				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(user.getLanguageName());
+				
 				user.setPicUrl(picUrl);// 通过session传到前台
 				int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize();
 				boolean SyncOrAsync=Config.getInstance().configFile.getAp().getOthers().getSyncOrAsync();
@@ -216,8 +220,11 @@ public class UserLoginManagerController extends BaseController {
 				user.setDeviceTypeIds(tabInfoManagerService.queryTabs(user));
 				user.setLoginIp(clientIp);
 				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+				
+				
 				session.setAttribute("userLogin", user);
 				session.setAttribute("SESSION_USERNAME", username);
+				session.setAttribute("loginUserLanguageResource", languageResourceStr);
 				SessionLockHelper.putSession(session);
 				out.print("{success:true,flag:'normal'}");
 				this.service.saveSystemLog(user,0,"用户登录");

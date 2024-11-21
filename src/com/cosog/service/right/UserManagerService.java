@@ -634,6 +634,16 @@ public class UserManagerService<T> extends BaseService<T> {
 		return childIds;
 	}
 	
+	public void setUserLanguage(User user){
+		String languageName="";
+		String sql="select t.itemname from tbl_code t where upper(t.itemcode)='LANGUAGE' and t.itemvalue="+user.getLanguage();
+		List<?> list=getBaseDao().findCallSql(sql);
+		if(list.size()>0){
+			languageName=list.get(0)+"";
+		}
+		user.setLanguageName(languageName);
+	}
+	
 	public void setUserRoleRight(User user){
 		Gson gson=new Gson();
 		String sql="select t.role_level,t.showlevel,t.role_videokeyedit "

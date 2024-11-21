@@ -116,6 +116,8 @@
         var tabInfo=${tabInfo};
         
         var resourceMonitoringSaveData=${configFile}.ap.others.resourceMonitoringSaveData; 
+        
+        var loginUserLanguageResource=${loginUserLanguageResource};
 
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");

@@ -1,5 +1,6 @@
 package com.cosog.task;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +21,8 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
@@ -60,6 +63,7 @@ import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -76,6 +80,8 @@ public class MemoryDataManagerTask {
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public static void loadMemoryData(){
+		MemoryDataManagerTask.loadLanguageResource();
+		
 		cleanData();
 		
 		loadProtocolConfig("");
@@ -4341,6 +4347,70 @@ public class MemoryDataManagerTask {
 			this.dataSource = dataSource;
 		}
 	}
+	
+	public static String getLanguageResourceStr(String language){
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageMap=getLanguageResource(language);
+		result_json.append("{");
+		if(languageMap!=null){
+			Iterator<Map.Entry<String, String>> iterator = languageMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+			    Map.Entry<String, String> entry = iterator.next();
+			    String key = entry.getKey();
+			    String value = entry.getValue();
+			    result_json.append("\""+key+"\":\""+value+"\",");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("}");
+		return result_json.toString();
+	}
+	
+	public static Map<String,String> getLanguageResource(String language){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,String> languageMap=new LinkedHashMap<>();
+		String key="languageResource-"+language;
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(key);
+		}
+		languageMap=(Map<String, String>) dataModelMap.get(key);
+		return languageMap;
+	}
+	
+	public static void loadLanguageResource(){
+		loadLanguageResource("zh_CN");
+		loadLanguageResource("en");
+		loadLanguageResource("ru");
+	}
+	
+	public static void loadLanguageResource(String language){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,String> languageMap=new LinkedHashMap<>();
+		
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String path=stringManagerUtils.getFilePath("locale/locale-"+language+".xlsx");
+		File file=StringManagerUtils.getFile(path);
+		try {
+			JSONArray arr=ExcelUtils.readFile(file);
+			for(int i=0;i<arr.size();i++){
+				JSONObject obj=arr.getJSONObject(i);
+				String item=obj.getString("ITEM");
+				String value=obj.getString("VALUE");
+				if(StringManagerUtils.isNotNull(item)){
+					languageMap.put(item, value);
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dataModelMap.put("languageResource-"+language, languageMap);
+		
+	}
+	
+	
 	
 	@SuppressWarnings("static-access")
 	public static void loadReportTemplateConfig(){

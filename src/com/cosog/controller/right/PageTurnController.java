@@ -13,6 +13,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.TabInfoManagerService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.OrgRecursion;
@@ -31,6 +32,8 @@ public class PageTurnController extends BaseController {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")
 		ConfigFile configFile=Config.getInstance().configFile;
+		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
+		String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(loginLanguage);
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		session.setAttribute("configFile", gson.toJson(configFile));
@@ -41,6 +44,7 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
+		session.setAttribute("loginLanguageResource", languageResourceStr);
 		return "Login";
 	}
 	@RequestMapping("/toTouchLogin")

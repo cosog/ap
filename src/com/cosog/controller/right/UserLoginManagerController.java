@@ -176,16 +176,9 @@ public class UserLoginManagerController extends BaseController {
 			session.setAttribute("flag", flag);
 		}
 		
-		if(locale==null){ 
-		l = new Locale("zh", "CN"); 
-		}else if (locale.equals("zh_CN")) { 
-		l = new Locale("zh", "CN"); 
-		} else if (locale.equals("en")) { 
-		l = new Locale("en", "US"); 
-		} 
+		
 //		ActionContext.getContext().setLocale(l);   
-		session.setAttribute("WW_TRANS_I18N_LOCALE", l);
-		session.setAttribute("browserLang", locale);
+		
 		if (null == username || "".equals(username)) {
 			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
 		} else if (null == userPass || "".equals(userPass)) {
@@ -200,7 +193,8 @@ public class UserLoginManagerController extends BaseController {
 			if (user != null&&user.getUserEnable()==1) {
 				service.setUserRoleRight(user);
 				service.setUserLanguage(user);
-				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(user.getLanguageName());
+				locale=user.getLanguageName();
+				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
 				
 				user.setPicUrl(picUrl);// 通过session传到前台
 				int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize();
@@ -235,9 +229,24 @@ public class UserLoginManagerController extends BaseController {
 					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "的账号或密码错误 !</font>' }");
 				}else if(locale.equalsIgnoreCase("en")){
 					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">User "+ username +"\\'s account or password is wrong!</font>' }");
+				}else if(locale.equalsIgnoreCase("ru")){
+					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">Аккаунт пользователя "+username+" или ошибка пароля!</font>' }");
 				}
 			}
 		}
+		
+		if(locale==null){ 
+			l = new Locale("zh", "CN"); 
+		}else if (locale.equals("zh_CN")) { 
+			l = new Locale("zh", "CN"); 
+		}else if (locale.equals("en")) { 
+			l = new Locale("en", "US"); 
+		}else if (locale.equals("ru")) { 
+			l = new Locale("ru", "RU"); 
+		}
+		session.setAttribute("WW_TRANS_I18N_LOCALE", l);
+		session.setAttribute("browserLang", locale);
+		
 		return null;
 
 	}

@@ -1,14 +1,10 @@
 //国际化数据信息列表
 
 var cosog = {};    
-cosog.string = {};    
-
-//项目名称
-//cosog.string.title='AgileProduction 敏捷生产 V7.1';
+cosog.string = {};
 
 //登录信息
 cosog.string.userlogin='用户登录';
-//cosog.string.loginInfo='AgileProduction 油气生产敏捷计算分析系统 V7.1主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。';
 cosog.string.myself='我自己';
 cosog.string.entername='请输入用户名';
 cosog.string.enterpwd='请输入密码';
@@ -18,33 +14,13 @@ cosog.string.contact='请联系管理员重置密码。';
 cosog.string.login='立即登录';
 cosog.string.logining='系统正在登录中...';
 
-//版权信息
-//cosog.string.copy='';
-//cosog.string.linkaddress='http://www.cosogoil.com';
-//cosog.string.linkshow='';
 
-
-//分页工具栏
-cosog.string.currentRecord='当前记录 {0} -- {1} 条 共 {2} 条记录';
-cosog.string.nodataDisplay='没有记录可显示';
-cosog.string.lastPage='上一页';
-cosog.string.nextPage='下一页';
-cosog.string.finalPage='最后页';
-cosog.string.firstPage='第一页';
-cosog.string.currentPage='当前页';
-cosog.string.gong='共{0}页';
 cosog.string.totalCount='总记录数';
-
-cosog.string.pumpUnit='抽油机井';
-cosog.string.screwPump='螺杆泵井';
-
-cosog.string.realtimedata='实时数据采集时间';
 
 //加载数据
 cosog.string.loading='数据加载中，请稍后...';
 
 //组织信息
-cosog.string.superOrg = '上级单位';    
 cosog.string.chooseOrg='--请选择单位--';
 cosog.string.pleaseCheckOrg='请选择单位';
 cosog.string.tips='信息提示';
@@ -68,14 +44,7 @@ cosog.string.no='否';
 cosog.string.sure='确认';
 cosog.string.name='名称';
 cosog.string.search='查询';
-cosog.string.collapse='收缩';
-cosog.string.collapseAll='收缩全部';
-cosog.string.expand='展开';
-cosog.string.expandAll='展开全部';
-cosog.string.refresh='刷新';
-cosog.string.refreshAll='刷新菜单';
 cosog.string.sendServer='正在向服务器提交数据';
-cosog.string.bdZDynSuccess='标准功图标定成功';
 cosog.string.ts='提示';
 cosog.string.success='成功创建';
 cosog.string.dataInfo='数据信息'
@@ -239,7 +208,6 @@ cosog.string.setCoord='设置坐标';
 cosog.string.showLevel='显示级别';
 
 //主界面信息
-cosog.string.exportExcel='导出';
 cosog.string.backAdmin='后台管理';
 cosog.string.navPanel='功能导航';
 cosog.string.orgNav='组织导航';

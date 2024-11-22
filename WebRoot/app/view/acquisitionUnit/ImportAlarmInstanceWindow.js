@@ -228,7 +228,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                          }
                     }
                 },{
-                	title:'工况诊断',
+                	title:loginUserLanguageResource.workType,
                 	id:"importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id",
                 	 layout: 'fit',
                      html:'<div class="importAlarmInstanceFESDiagramResultItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id"></div></div>',
@@ -249,7 +249,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                           }
                      }
                 },{
-                	title:'运行状态',
+                	title:loginUserLanguageResource.runStatus,
                 	id:"importAlarmInstanceRunStatusItemsTableInfoPanel_Id",
                 	 layout: 'fit',
                      html:'<div class="importAlarmInstanceRunStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceRunStatusItemsConfigTableInfoDiv_id"></div></div>',
@@ -270,7 +270,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                           }
                       }
                 },{
-                	title:'通信状态',
+                	title:loginUserLanguageResource.commStatus,
                 	id:"importAlarmInstanceCommStatusItemsTableInfoPanel_Id",
                 	 layout: 'fit',
                      html:'<div class="importAlarmInstanceCommStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceCommStatusItemsConfigTableInfoDiv_id"></div></div>',

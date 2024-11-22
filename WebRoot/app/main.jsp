@@ -108,9 +108,7 @@
         var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
         
-        var deviceShowName = ${configFile}.ap.others.deviceShowName; 
-        var deviceShowNameLength=getStringLength(deviceShowName);
-
+        
 
         var defaultPageSize = ${configFile}.ap.others.pageSize;
         var tabInfo=${tabInfo};
@@ -118,7 +116,9 @@
         var resourceMonitoringSaveData=${configFile}.ap.others.resourceMonitoringSaveData; 
         
         var loginUserLanguageResource=${loginUserLanguageResource};
-
+        //var deviceShowName = ${configFile}.ap.others.deviceShowName; 
+		var deviceShowName=loginUserLanguageResource.deviceName;
+		var deviceShowNameLength=getStringLength(deviceShowName);
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
             $("#banner_help").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
@@ -129,7 +129,7 @@
             	$('#bannerLogoImg').css('display', 'block');
             	$("#bannerLogoImg").attr("src", bannerLogoImg + "?timestamp="+oemStaticResourceTimestamp);
             }
-            $('#bannerTitle').html(oem.title);
+            $('#bannerTitle').html(loginUserLanguageResource.projectName);
         }
 
     </script>

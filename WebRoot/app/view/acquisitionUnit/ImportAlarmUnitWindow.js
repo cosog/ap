@@ -240,7 +240,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         }
                   }]
               }, {
-                    title: '工况诊断',
+                    title: loginUserLanguageResource.workType,
                     id: "importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
                     layout: 'fit',
                     html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
@@ -261,7 +261,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                          }
                     }
               }, {
-                    title: '运行状态',
+                    title: loginUserLanguageResource.runStatus,
                     id: "importAlarmUnitRunStatusConfigTableInfoPanel_Id",
                     layout: 'fit',
                     html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
@@ -282,7 +282,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                          }
                     }
               }, {
-                    title: '通信状态',
+                    title: loginUserLanguageResource.commStatus,
                     id: "importAlarmUnitCommStatusConfigTableInfoPanel_Id",
                     layout: 'fit',
                     html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',

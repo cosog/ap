@@ -23,7 +23,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     hidden: true
                 },{
                     xtype: 'button',
-                    text: cosog.string.refresh,
+                    text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {
@@ -62,7 +62,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导出',
+        			text: loginUserLanguageResource.exportData,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolWindow");
@@ -70,7 +70,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导入',
+        			text: loginUserLanguageResource.importData,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'import',
         			handler: function (v, o) {

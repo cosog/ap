@@ -29,7 +29,7 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 value: 0
             },{
                 xtype: 'button',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {

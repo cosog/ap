@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import com.cosog.model.User;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.StringManagerUtils;
 
 /**
  * <p>描述：用户登录权限控制filter</p>
@@ -56,17 +57,20 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 		String browserLang = null;
 		String locale=null;
 		locale = Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+		if(user!=null && StringManagerUtils.isNotNull(user.getLanguageName())){
+			locale=user.getLanguageName();
+		}
 		Locale l = Locale.getDefault(); 
-		if(locale==null){ 
-		l = new Locale("zh", "CN"); 
+		if(locale==null){
+			l = new Locale("zh", "CN"); 
 		}else if (locale.equals("zh_CN")) { 
-		l = new Locale("zh", "CN"); 
+			l = new Locale("zh", "CN"); 
 		} else if (locale.equals("en")) { 
-		l = new Locale("en", "US"); 
+			l = new Locale("en", "US"); 
 		} 
 		//ActionContext.getContext().setLocale(l);   
-		request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
-		request.getSession().setAttribute("browserLang",locale);
+//		request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
+//		request.getSession().setAttribute("browserLang",locale);
 //		// 取会话中的语言版本
 //		browserLang = (String) request.getSession().getAttribute("locale");
 //		// 如果会话中没有指定，则取浏览器的语言版本

@@ -58,8 +58,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                 valueField: "boxkey",
                 pageSize: comboxPagingStatus,
                 minChars: 0,
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
                 listeners: {
                     expand: function (sm, selections) {
                     	pumpingManufacturerCombo.getStore().loadPage(1);
@@ -123,8 +123,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                 valueField: "boxkey",
                 pageSize: comboxPagingStatus,
                 minChars: 0,
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
                 listeners: {
                     expand: function (sm, selections) {
                     	pumpingModelCombo.getStore().loadPage(1);
@@ -172,7 +172,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         hidden: true
                     },{
                         xtype: 'button',
-                        text: cosog.string.refresh,
+                        text: loginUserLanguageResource.refresh,
                         iconCls: 'note-refresh',
                         hidden:false,
                         handler: function (v, o) {
@@ -193,7 +193,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
 
                     },'-',{
                         xtype: 'button',
-                        text: cosog.string.exportExcel,
+                        text: loginUserLanguageResource.exportData,
                         iconCls: 'export',
                         hidden: false,
                         handler: function (v, o) {
@@ -369,8 +369,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         value: '',
                         allowBlank: true,
                         editable: false,
-                        emptyText: cosog.string.all,
-                        blankText: cosog.string.all,
+                        emptyText: '--'+loginUserLanguageResource.all+'--',
+                        blankText: '--'+loginUserLanguageResource.all+'--',
                         store: new Ext.data.SimpleStore({
                             fields: ['boxkey', 'boxval'],
                             data: [['','']]

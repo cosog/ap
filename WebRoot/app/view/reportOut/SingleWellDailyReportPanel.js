@@ -53,8 +53,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 labelWidth: 8*deviceShowNameLength,
                 width: (8*deviceShowNameLength+110),
                 queryMode: 'remote',
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
                 typeAhead: true,
                 autoSelect: false,
                 allowBlank: true,
@@ -80,7 +80,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
         Ext.apply(me, {
             tbar: [{
                 xtype: 'button',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
@@ -296,7 +296,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
             				}
                         }, '->',{
                             xtype: 'button',
-                            text: cosog.string.exportExcel,
+                            text: loginUserLanguageResource.exportData,
                             iconCls: 'export',
                             handler: function (v, o) {
                             	ExportSingleWellDailyReportData();
@@ -368,7 +368,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                     	id:'SingleWellRangeReportPanel_id',
                     	tbar:['->',{
                             xtype: 'button',
-                            text: cosog.string.exportExcel,
+                            text: loginUserLanguageResource.exportData,
                             iconCls: 'export',
                             handler: function (v, o) {
                             	ExportSingleWellRangeReportData();

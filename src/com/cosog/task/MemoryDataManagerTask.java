@@ -4388,18 +4388,25 @@ public class MemoryDataManagerTask {
 	public static void loadLanguageResource(String language){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();
-		
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("locale/locale-"+language+".xlsx");
+		String languageResourcePath=Config.getInstance().configFile.getAp().getOem().getLanguageResourcePath();
+		String path=stringManagerUtils.getFilePath(languageResourcePath+"/locale-"+language+".xlsx");
 		File file=StringManagerUtils.getFile(path);
 		try {
-			JSONArray arr=ExcelUtils.readFile(file);
-			for(int i=0;i<arr.size();i++){
-				JSONObject obj=arr.getJSONObject(i);
-				String item=obj.getString("ITEM");
-				String value=obj.getString("VALUE");
-				if(StringManagerUtils.isNotNull(item)){
-					languageMap.put(item, value);
+//			JSONArray arr=ExcelUtils.readFile(file);
+			Map<String, JSONArray> sheetMap= ExcelUtils.readFileManySheet(file);
+			Iterator<Map.Entry<String, JSONArray>> iterator = sheetMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, JSONArray> entry = iterator.next();
+			    String key = entry.getKey();
+			    JSONArray arr = entry.getValue();
+			    for(int i=0;i<arr.size();i++){
+					JSONObject obj=arr.getJSONObject(i);
+					String item=obj.getString("ITEM");
+					String value=obj.getString("VALUE");
+					if(StringManagerUtils.isNotNull(item)){
+						languageMap.put(item, value);
+					}
 				}
 			}
 		} catch (Exception e) {

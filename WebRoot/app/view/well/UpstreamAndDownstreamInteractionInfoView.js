@@ -58,8 +58,8 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     valueField: "boxkey",
                     pageSize:comboxPagingStatus,
                     minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                             rpcDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -95,7 +95,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                         hidden: true
                      },{
                          xtype: 'button',
-                         text: cosog.string.refresh,
+                         text: loginUserLanguageResource.refresh,
                          iconCls: 'note-refresh',
                          hidden:false,
                          handler: function (v, o) {
@@ -224,7 +224,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             hidden: true
                         },'->',{
                             xtype: 'button',
-                            text: cosog.string.exportExcel,
+                            text: loginUserLanguageResource.exportData,
                             id:'UpstreamAndDownstreamInteractionExportWaterCutBtn_Id',
                             iconCls: 'export',
                             hidden: false,

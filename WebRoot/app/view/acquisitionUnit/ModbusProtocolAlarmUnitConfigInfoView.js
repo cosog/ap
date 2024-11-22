@@ -34,7 +34,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     hidden: true
                 },{
                     xtype: 'button',
-                    text: cosog.string.refresh,
+                    text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {
@@ -75,7 +75,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导出',
+        			text: loginUserLanguageResource.exportData,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAlarmUnitWindow");
@@ -83,7 +83,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导入',
+        			text: loginUserLanguageResource.importData,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'import',
         			handler: function (v, o) {
@@ -294,7 +294,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             }
                         }]
                     },{
-                    	title:'工况诊断',
+                    	title:loginUserLanguageResource.workType,
                     	id:"ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         hidden: onlyMonitor,
@@ -317,7 +317,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             }
                         }
                     },{
-                    	title:'运行状态',
+                    	title:loginUserLanguageResource.runStatus,
                     	id:"ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
@@ -339,7 +339,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             }
                         }
                     },{
-                    	title:'通信状态',
+                    	title:loginUserLanguageResource.commStatus,
                     	id:"ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',

@@ -45,15 +45,8 @@ public class OEMConfigFile {
 	
 	public static class Oem
 	{
-	    private String title;
-
-	    private String profile;
-
-	    private String copy;
-
-	    private String linkaddress;
-
-	    private String linkshow;
+	    
+	    private String languageResourcePath;
 	    
 	    private String logo;
 	    
@@ -79,36 +72,6 @@ public class OEMConfigFile {
 	    
 	    private String helpDocumentTimestamp;
 
-	    public void setTitle(String title){
-	        this.title = title;
-	    }
-	    public String getTitle(){
-	        return this.title;
-	    }
-	    public void setProfile(String profile){
-	        this.profile = profile;
-	    }
-	    public String getProfile(){
-	        return this.profile;
-	    }
-	    public void setCopy(String copy){
-	        this.copy = copy;
-	    }
-	    public String getCopy(){
-	        return this.copy;
-	    }
-	    public void setLinkaddress(String linkaddress){
-	        this.linkaddress = linkaddress;
-	    }
-	    public String getLinkaddress(){
-	        return this.linkaddress;
-	    }
-	    public void setLinkshow(String linkshow){
-	        this.linkshow = linkshow;
-	    }
-	    public String getLinkshow(){
-	        return this.linkshow;
-	    }
 		public String getLoginCSS() {
 			return loginCSS;
 		}
@@ -180,6 +143,12 @@ public class OEMConfigFile {
 		}
 		public void setZoomoutButtonIcon(String zoomoutButtonIcon) {
 			this.zoomoutButtonIcon = zoomoutButtonIcon;
+		}
+		public String getLanguageResourcePath() {
+			return languageResourcePath;
+		}
+		public void setLanguageResourcePath(String languageResourcePath) {
+			this.languageResourcePath = languageResourcePath;
 		}
 	}
 	

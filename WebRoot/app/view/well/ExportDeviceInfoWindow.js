@@ -30,7 +30,7 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
                 value: ''
             },'->',{
                 xtype: 'button',
-                text: cosog.string.exportExcel,
+                text: loginUserLanguageResource.exportData,
                 iconCls: 'export',
                 handler: function (v, o) {
                   var fields = "";

@@ -26,7 +26,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportUnitWindow", {
             tbar:['->',{
             	xtype: 'button',
             	id:'ExportProtocolReportUnitWindowExportBtn_Id',
-    			text: '导出',
+    			text: loginUserLanguageResource.exportData,
     			iconCls: 'export',
     			handler: function (v, o) {
     				var exportReportUnitList = [];

@@ -51,7 +51,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     		if(!isNotVal(deviceInfoGridPanel)){
     			deviceInfoGridPanel=Ext.create('Ext.grid.Panel', {
     				id:'RealTimeMonitoringDeviceInfoDataGridPanel_Id',
-//    				title:'附加信息',
     				border: false,
     				columnLines: true,
     				forceFit: false,

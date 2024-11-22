@@ -73,8 +73,8 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                 valueField: "boxkey",
                 pageSize: comboxPagingStatus,
                 minChars: 0,
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
                 listeners: {
                     expand: function (sm, selections) {
                         deviceCombo.getStore().loadPage(1); // 加载井下拉框的store

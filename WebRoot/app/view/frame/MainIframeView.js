@@ -22,9 +22,9 @@ Ext.define('AP.view.frame.MainIframeView', {
 								hidden: false,
 								items : [{
 											iconCls : 'icon-collapse-all', // 收缩按钮
-											text : '收缩',
+											text : loginUserLanguageResource.collapse,
 											tooltip : {
-												text : '收缩全部'
+												text : loginUserLanguageResource.collapseAll
 											},
 											handler : function() {
 												moduleTree.collapseAll();
@@ -32,17 +32,16 @@ Ext.define('AP.view.frame.MainIframeView', {
 										}, '-', {
 											iconCls : 'icon-expand-all',// 展开按钮
 											tooltip : {
-												text : '展开全部'
+												text : loginUserLanguageResource.expandAll
 											},
-											text : '展开',
+											text : loginUserLanguageResource.expand,
 											handler : function() {
 												moduleTree.expandAll();
 											}
 										}, '-', {
 							                iconCls: 'note-refresh',
-//							                text: cosog.string.refresh,
 							                tooltip: {
-							                    text: cosog.string.refresh
+							                    text: loginUserLanguageResource.refresh
 							                },
 							                handler: function () {
 							                	moduleTree.getStore().load();

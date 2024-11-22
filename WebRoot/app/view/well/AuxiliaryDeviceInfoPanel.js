@@ -20,7 +20,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 hidden: true
             },{
                 xtype: 'button',
-                text: cosog.string.exportExcel,
+                text: loginUserLanguageResource.exportData,
 //                pressed: true,
                 iconCls: 'export',
                 hidden: false,
@@ -40,7 +40,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         heads = heads.substring(0, heads.length - 1);
                     }
                     
-                    var fileName=deviceTypeName+'辅件设备';
+                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
                     var title=fileName;
 
                     var param = "&fields=" + fields 
@@ -55,7 +55,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
             }, '-', {
                 xtype: 'button',
                 iconCls: 'note-refresh',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
 //                pressed: true,
                 hidden: false,
                 handler: function (v, o) {

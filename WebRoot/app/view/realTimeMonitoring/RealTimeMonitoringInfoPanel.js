@@ -1,6 +1,6 @@
 var deviceRealTimeMonitoringDataHandsontableHelper=null;
 var realtimeStatTabItems=[{
-	title:'工况诊断',
+	title:loginUserLanguageResource.workType,
 	layout: 'fit',
 	closable:false,
 	closeAction:'hide',
@@ -27,7 +27,7 @@ var realtimeStatTabItems=[{
         }
     }
 },{
-	title:'通信状态',
+	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
 	closable:false,
 	hidden: onlyFESDiagramCal,
@@ -52,7 +52,7 @@ var realtimeStatTabItems=[{
         }
     }
 },{
-	title:'运行状态',
+	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	closable:false,
 	iconCls: onlyMonitor?'check3':null,
@@ -103,7 +103,7 @@ var realtimeStatTabItems=[{
 }];
 
 var realtimeCurveAndTableTabPanelItems=[{
-	title: '井筒分析',
+	title: loginUserLanguageResource.wellboreAnalysis,
 	margin: '0 0 0 0',
     padding: 0,
     autoScroll:false,
@@ -194,7 +194,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     	    }]
     	}]
 },{
-	title: '地面分析',
+	title: loginUserLanguageResource.surfaceAnalysis,
 	margin: '0 0 0 0',
     padding: 0,
     autoScroll:false,
@@ -288,35 +288,9 @@ var realtimeCurveAndTableTabPanelItems=[{
                 }
     	    }]
     	}
-//    	,{
-//    		border: false,
-////    		flex: 1,
-//    		margin: '0 0 0 0',
-//    		layout: {
-//    	        type: 'hbox',
-//    	        pack: 'start',
-//    	        align: 'stretch'
-//    	    },
-//    	    items:[{
-//    	    	border: true,
-//    	    	layout: 'fit',
-//    	    	margin: '1 0 0 0',
-//                flex: 1,
-//                height:300,
-//                align:'stretch',
-//                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
-//                listeners: {
-//                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts()!=undefined){
-//                			highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
-//                		}
-//                    }
-//                }
-//    	    }]
-//    	}
     ]
 },{
-	title:'趋势曲线',
+	title:loginUserLanguageResource.trendCurve,
 	id:"RealTimeMonitoringCurveTabPanel_Id",
 	layout: 'border',
 	iconCls: onlyMonitor?'check3':null,
@@ -345,7 +319,7 @@ var realtimeCurveAndTableTabPanelItems=[{
         }
 	}]
 },{
-	title:'动态数据',
+	title:loginUserLanguageResource.dynamicData,
 	id:"RealTimeMonitoringTableTabPanel_Id",
 	layout: 'border',
     border: false,
@@ -376,7 +350,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 }];
 
 var RealTimeMonitoringRightTabPanelItems=[{
-	title:'设备控制',
+	title:loginUserLanguageResource.deviceControl,
 	border: false,
 	hidden: onlyFESDiagramCal,
 	iconCls: onlyFESDiagramCal?null:'check3',
@@ -444,20 +418,20 @@ var RealTimeMonitoringRightTabPanelItems=[{
     	}]
     }]
 },{
-	title:'设备信息',
+	title:loginUserLanguageResource.deviceInformation,
 	layout: 'border',
 	id:'RealTimeMonitoringRightDeviceInfoPanel',
 	iconCls: onlyFESDiagramCal?'check3':null,
 	items:[{
 		region: 'center',
 		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
-		title:'附加信息',
+		title:loginUserLanguageResource.additionalInformation,
         border: false,
         layout: 'fit'
 	},{
 		region: 'south',
 		id: 'RealTimeMonitoringRightAuxiliaryDeviceInfoPanel',
-		title:'辅件设备',
+		title:loginUserLanguageResource.auxiliaryDevice,
 		height: '50%',
 		border: false,
         layout: 'fit',
@@ -529,8 +503,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     valueField: "boxkey",
                     pageSize:comboxPagingStatus,
                     minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -552,7 +526,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     id:'RealTimeMonitoringCenterPanel_Id',
                     items:[{
                     	region: 'center',
-                    	title:'设备概览',
+                    	title:loginUserLanguageResource.deviceOverview,
                     	id:'RealTimeMonitoringInfoDeviceListPanel_Id',
                         border: false,
                         layout: 'fit',
@@ -588,7 +562,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              hidden: true
                          },{
                              xtype: 'button',
-                             text: cosog.string.refresh,
+                             text: loginUserLanguageResource.refresh,
                              iconCls: 'note-refresh',
                              hidden:false,
                              handler: function (v, o) {
@@ -596,7 +570,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     		}
                  		},'-',deviceCombo,'-', {
                              xtype: 'button',
-                             text: cosog.string.exportExcel,
+                             text: loginUserLanguageResource.exportData,
                              iconCls: 'export',
                              hidden:false,
                              handler: function (v, o) {
@@ -614,7 +588,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              }
                          }, '->', {
                          	xtype: 'button',
-                            text:'查看历史',
+                            text:loginUserLanguageResource.showHistory,
                             tooltip:'点击按钮或者双击表格，查看历史数据',
                             handler: function (v, o) {
                             	var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();

@@ -4,7 +4,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     alias: 'widget.deviceControlCheckPassWindow',
     id: 'DeviceControlCheckPassWindow_Id',
     layout: 'fit',
-    title:'设备控制',
+    title:loginUserLanguageResource.deviceControl,
     border: false,
     hidden: false,
     collapsible: true,

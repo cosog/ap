@@ -35,7 +35,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		id:'OrgAndUserOrgInfoPanel_Id',
         		tbar: [{
                     xtype: 'button',
-                    text: cosog.string.refresh,
+                    text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {

@@ -42,7 +42,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
             },'->',{
             	xtype: 'button',
             	id:'ExportProtocolWindowExportBtn_Id',
-    			text: '导出',
+    			text: loginUserLanguageResource.exportData,
     			iconCls: 'export',
     			handler: function (v, o) {
     				var type = Ext.getCmp("ExportProtocolWindowDataType_Id").getValue().type;

@@ -58,8 +58,8 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                     valueField: "boxkey",
                     pageSize: comboxPagingStatus,
                     minChars: 0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                         	userCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -127,8 +127,8 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                     valueField: "boxkey",
                     pageSize: comboxPagingStatus,
                     minChars: 0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                         	actionCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -161,7 +161,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 hidden: true
             },{
                 xtype: 'button',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
@@ -390,7 +390,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 }
             },'-', {
                 xtype: 'button',
-                text: cosog.string.exportExcel,
+                text: loginUserLanguageResource.exportData,
                 iconCls: 'export',
                 hidden:false,
                 handler: function (v, o) {

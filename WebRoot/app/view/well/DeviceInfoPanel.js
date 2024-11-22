@@ -69,8 +69,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 valueField: "boxkey",
                 pageSize: comboxPagingStatus,
                 minChars: 0,
-                emptyText: cosog.string.all,
-                blankText: cosog.string.all,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
                 listeners: {
                     expand: function (sm, selections) {
                     	deviceListDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -88,7 +88,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         Ext.apply(this, {
             tbar: [{
                 xtype: 'button',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {
@@ -114,7 +114,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 }
             },'-',{
                 xtype: 'button',
-                text: cosog.string.exportExcel,
+                text: loginUserLanguageResource.exportData,
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
@@ -399,7 +399,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     }]
             	},
             	items: [{
-            		title:'附加信息',
+            		title:loginUserLanguageResource.additionalInformation,
             		id:'DeviceAdditionalInfoPanel_Id',
             		iconCls: 'check3',
             		html: '<div class="DeviceAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAdditionalInfoTableDiv_id"></div></div>',
@@ -420,7 +420,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         }
                     }
             	},{
-            		title:'辅件设备',
+            		title:loginUserLanguageResource.auxiliaryDevice,
             		id:'DeviceAuxiliaryDevicePanel_Id',
             		html: '<div class="DeviceAuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAuxiliaryDeviceTableDiv_id"></div></div>',
                     listeners: {

@@ -20,7 +20,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     hidden: true
                 },{
                     xtype: 'button',
-                    text: cosog.string.refresh,
+                    text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {
@@ -49,7 +49,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导出',
+        			text: loginUserLanguageResource.exportData,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolDisplayInstanceWindow");
@@ -57,7 +57,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '导入',
+        			text: loginUserLanguageResource.importData,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'import',
         			handler: function (v, o) {
@@ -492,7 +492,7 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 				protocolDisplayInstanceAcqItemsHandsontableHelper = ProtocolDisplayInstanceAcqItemsHandsontableHelper.createNew("ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id");
 				var colHeaders = "[" 
                 	+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
-                	+"['','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线']," 
+                	+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
                 	+"['序号','名称','单位','显示级别'," 
                 	+"'字段顺序','前景色','背景色','曲线配置'," 
                 	+"'字段顺序','前景色','背景色','曲线配置']"
@@ -708,7 +708,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 				
 				var colHeaders="[" 
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'']," 
-					+"['','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线','']," 
+					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','']," 
 					+"['序号','名称','单位','显示级别'," 
 					+"'字段顺序','前景色','背景色','曲线配置'," 
 					+"'字段顺序','前景色','背景色','曲线配置'," 
@@ -926,7 +926,7 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 				protocolDisplayInstanceInputItemsHandsontableHelper = ProtocolDisplayInstanceInputItemsHandsontableHelper.createNew("ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
-					+"['','','','',{label: '动态数据', colspan: 3},'趋势曲线',{label: '历史数据', colspan: 3},'趋势曲线']," 
+					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
 					+"['序号','名称','单位','显示级别'," 
 					+"'字段顺序','前景色','背景色','曲线配置'," 
 					+"'字段顺序','前景色','背景色','曲线配置']" 

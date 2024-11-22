@@ -1,6 +1,7 @@
 package com.cosog.controller.right;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -34,11 +35,17 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
 		String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(loginLanguage);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
+		String viewProjectName="";
+		if(languageResourceMap.containsKey("projectName")){
+			viewProjectName=languageResourceMap.get("projectName");
+		}
+		
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
-		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("viewProjectName", viewProjectName);
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("loginCSS", configFile.getAp().getOem().getLoginCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
@@ -60,6 +67,20 @@ public class PageTurnController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		List<?> list = this.tabInfoManagerService.queryTabs(DeviceTypeInfo.class,user);
+		
+		
+		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
+		String viewProjectName="";
+		if(user!=null){
+			loginLanguage=user.getLanguageName();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
+			if(languageResourceMap.containsKey("projectName")){
+				viewProjectName=languageResourceMap.get("projectName");
+			}
+		}
+		String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(loginLanguage);
+		
+		
 		String tabInfoJson = "";
 		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		if (list != null) {
@@ -77,7 +98,7 @@ public class PageTurnController extends BaseController {
 		
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
-		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("viewProjectName", viewProjectName);
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("bannerCSS", configFile.getAp().getOem().getBannerCSS());
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());

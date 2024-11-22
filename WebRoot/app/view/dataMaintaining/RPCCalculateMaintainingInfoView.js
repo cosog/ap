@@ -64,8 +64,8 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                     labelWidth: 8*deviceShowNameLength,
                     width: (8*deviceShowNameLength+110),
                     queryMode: 'remote',
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     typeAhead: true,
                     autoSelect: false,
                     allowBlank: true,
@@ -137,8 +137,8 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                     labelWidth: 60,
                     width: 160,
                     queryMode: 'remote',
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     typeAhead: false,
                     autoSelect: false,
                     allowBlank: true,
@@ -184,7 +184,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 hidden: true
             },{
                 xtype: 'button',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
                 hidden:false,
                 handler: function (v, o) {

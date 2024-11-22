@@ -206,8 +206,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     valueField: "boxkey",
                     pageSize:comboxPagingStatus,
                     minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -243,7 +243,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     hidden: true
                 },{
                     xtype: 'button',
-                    text: cosog.string.refresh,
+                    text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {
@@ -269,8 +269,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
     			    value:'',
     			    allowBlank: false,
     				editable : false,
-    				emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+    				emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
     				store : new Ext.data.SimpleStore({
     							fields : ['boxkey', 'boxval'],
     							data : [['', '选择全部'],[100, '一级报警'],[200, '二级报警'],[300, '三级报警']]
@@ -300,8 +300,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
     			    value:'',
     			    allowBlank: false,
     				editable : false,
-    				emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+    				emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
     				store : new Ext.data.SimpleStore({
     							fields : ['boxkey', 'boxval'],
     							data : [['', '选择全部'],[1, '是'],[0, '否']]

@@ -71,7 +71,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <!--<fmt:setBundle basename="config/messages" />-->
-    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303300850"></script>
+    <!--<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303300850"></script>-->
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
@@ -129,9 +129,8 @@
 	function initDisplayInformation(){
 		
 		$("#login_userlogin").html(loginLanguageResource.userLogin);
-		$("#login_loginInfo").html(oem.profile);
-		$("#login_title").html(oem.title);
-		//$("#login_myself").html(loginLanguageResource.myself);
+		$("#login_loginInfo").html(loginLanguageResource.projectProfile);
+		$("#login_title").html(loginLanguageResource.projectName);
 		$("#userSelectpicker").html(loginLanguageResource.myself);
 		$("#userId").attr("placeholder", loginLanguageResource.enterUserName);
 		$("#userPwd").attr("placeholder", loginLanguageResource.enterPassword);
@@ -139,9 +138,9 @@
 		$("#login_forgerpassword").html(loginLanguageResource.forgerPassword);
 		$("#login_contact").html(loginLanguageResource.contact);
 		$("#login_loginButton").html(loginLanguageResource.login);
-		$("#login_copy").html(oem.copy);
-		$("#login_link").text(oem.linkshow);
-		$('#login_link').attr('href',oem.linkaddress);
+		$("#login_copy").html(loginLanguageResource.copy);
+		$("#login_link").text(loginLanguageResource.linkshow);
+		$('#login_link').attr('href',loginLanguageResource.linkaddress);
 		
 		//$(".page-login:before").css("background-image", "url("+loginBackgroundImage+")");
 		

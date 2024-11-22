@@ -7,6 +7,7 @@ String bannerCSS=(String)session.getAttribute("bannerCSS");
 bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
 
 boolean showVideo=(boolean)session.getAttribute("showVideo");
+String browserLang=(String)session.getAttribute("browserLang");
 
 String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
@@ -42,7 +43,7 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/CellEditing.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <!-- Extjs 中文脚本 -->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script> 
+<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/ext-locale-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script> 
 <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 
@@ -68,8 +69,9 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-zh_CN.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-
+<%if(!"en".equalsIgnoreCase(browserLang)){ %>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<%} %>
 
 <!-- handsontable -->
 <script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable.full.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

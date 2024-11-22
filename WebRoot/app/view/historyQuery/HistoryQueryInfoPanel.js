@@ -1,5 +1,5 @@
 var historyStatTabItems=[{
-	title:'工况诊断',
+	title:loginUserLanguageResource.workType,
 	layout: 'fit',
 	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
 	hidden: onlyMonitor,
@@ -22,7 +22,7 @@ var historyStatTabItems=[{
         }
     }
 },{
-	title:'通信状态',
+	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
 	hidden: onlyFESDiagramCal,
 	id:'HistoryQueryStatGraphPanel_Id',
@@ -44,7 +44,7 @@ var historyStatTabItems=[{
         }
     }
 },{
-	title:'运行状态',
+	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	id:'HistoryQueryRunStatusStatGraphPanel_Id',
 	iconCls: onlyMonitor?'check3':null,
@@ -90,7 +90,7 @@ var historyStatTabItems=[{
 }];
 
 var historyQueryCenterTabPanelItems=[{
-	title: '趋势曲线',
+	title: loginUserLanguageResource.trendCurve,
 	id:"HistoryDataTabPanel",
     layout: 'border',
     border: false,
@@ -311,8 +311,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     valueField: "boxkey",
                     pageSize:comboxPagingStatus,
                     minChars:0,
-                    emptyText: cosog.string.all,
-                    blankText: cosog.string.all,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
                             deviceListCombo.getStore().loadPage(1); // 加载井下拉框的store
@@ -384,7 +384,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             hidden: true
                         },{
                             xtype: 'button',
-                            text: cosog.string.refresh,
+                            text: loginUserLanguageResource.refresh,
                             iconCls: 'note-refresh',
                             hidden:false,
                             handler: function (v, o) {
@@ -392,7 +392,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     		}
                 		},'-',deviceListCombo,'-', {
                             xtype: 'button',
-                            text: cosog.string.exportExcel,
+                            text: loginUserLanguageResource.exportData,
                             iconCls: 'export',
                             hidden:false,
                             handler: function (v, o) {
@@ -674,7 +674,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         }
                     }, {
                         xtype: 'button',
-                        text: cosog.string.exportExcel,
+                        text: loginUserLanguageResource.exportData,
                         iconCls: 'export',
                         id:'HistoryDiagramOverlayExportBtn_Id',
                         hidden:true,
@@ -740,7 +740,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         }
                     }, {
                         xtype: 'button',
-                        text: cosog.string.exportExcel,
+                        text: loginUserLanguageResource.exportData,
                         iconCls: 'export',
                         id:'HistoryFESDiagramDataExportBtn_Id',
                         hidden:true,
@@ -805,7 +805,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         }
                     }, {
                         xtype: 'button',
-                        text: cosog.string.exportExcel,
+                        text: loginUserLanguageResource.exportData,
                         iconCls: 'export',
                         id:'HistoryDataExportBtn_Id',
                         hidden:false,

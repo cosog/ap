@@ -11,32 +11,32 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
         Ext.apply(moduleTree, {
             tbar: [{
                 iconCls: 'icon-collapse-all', // 收缩按钮
-                text: cosog.string.collapse,
+                text: loginUserLanguageResource.collapse,
                 tooltip: {
-                    text: cosog.string.collapseAll
+                    text: loginUserLanguageResource.collapseAll
                 },
                 handler: function () {
                     Ext.getCmp("moduleInfoTreeGridView_Id").collapseAll();
                 }
-         }, '-', {
+            }, '-', {
                 iconCls: 'icon-expand-all', // 展开按钮
-                text: cosog.string.expand,
+                text: loginUserLanguageResource.expand,
                 tooltip: {
-                    text: cosog.string.expandAll
+                    text: loginUserLanguageResource.expandAll
                 },
                 handler: function () {
                     Ext.getCmp("moduleInfoTreeGridView_Id").expandAll();
                 }
-         }, '-', {
+            }, '-', {
                 iconCls: 'note-refresh',
-                text: cosog.string.refresh,
+                text: loginUserLanguageResource.refresh,
                 tooltip: {
-                    text: cosog.string.refreshAll
+                    text: loginUserLanguageResource.refresh
                 },
                 handler: function () {
                     moduleStore.load();
                 }
-         }, {
+            }, {
                 fieldLabel: cosog.string.moduleName,
                 id: 'module_name_Id',
                 name: 'module_name',
@@ -45,14 +45,14 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 labelAlign: 'right',
                 width: 165,
                 xtype: 'textfield'
-         }, {
+            }, {
                 xtype: 'button',
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 handler: function () {
                     moduleStore.load();
                 }
-         }, '->', {
+            }, '->', {
                 xtype: 'button',
                 itemId: 'addmoduleLableClassBtnId',
                 id: 'addmoduleLableClassBtn_Id',
@@ -60,7 +60,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 text: cosog.string.add,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
-         }, "-", {
+            }, "-", {
                 xtype: 'button',
                 itemId: 'editmoduleLableClassBtnId',
                 id: 'editmoduleLableClassBtn_Id',
@@ -69,7 +69,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 disabled: false,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'edit'
-         }, "-", {
+            }, "-", {
                 xtype: 'button',
                 itemId: 'delmoduleLableClassBtnId',
                 id: 'delmoduleLableClassBtn_Id',
@@ -78,7 +78,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 text: cosog.string.del,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
-         }]
+            }]
         });
 
         this.callParent(arguments);

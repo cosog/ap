@@ -26,7 +26,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAlarmInstanceWindow", {
             tbar:['->',{
             	xtype: 'button',
             	id:'ExportProtocolAlarmInstanceWindowExportBtn_Id',
-    			text: '导出',
+    			text: loginUserLanguageResource.exportData,
     			iconCls: 'export',
     			handler: function (v, o) {
     				var exportAlarmInstanceList = [];

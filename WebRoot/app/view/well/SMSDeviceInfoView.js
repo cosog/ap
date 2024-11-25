@@ -96,7 +96,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 }
     		},'-', SMSDeviceCombo, '-', {
                 xtype: 'button',
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 hidden: false,
                 handler: function (v, o) {
@@ -360,7 +360,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
         },
         failure: function () {
         	Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
         	deviceName: deviceName,

@@ -66,7 +66,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                     },
                     select: function (combo, record, index) {
                     	Ext.getCmp('pumpingModelListComb_Id').setValue('');
-                    	Ext.getCmp('pumpingModelListComb_Id').setRawValue('选择全部');
+                    	Ext.getCmp('pumpingModelListComb_Id').setRawValue(loginUserLanguageResource.selectAll);
                     }
                 }
             });
@@ -177,14 +177,14 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         hidden:false,
                         handler: function (v, o) {
                         	Ext.getCmp('pumpingManufacturerListComb_Id').setValue('');
-                        	Ext.getCmp('pumpingManufacturerListComb_Id').setRawValue('选择全部');
+                        	Ext.getCmp('pumpingManufacturerListComb_Id').setRawValue(loginUserLanguageResource.selectAll);
                         	Ext.getCmp('pumpingModelListComb_Id').setValue('');
-                        	Ext.getCmp('pumpingModelListComb_Id').setRawValue('选择全部');
+                        	Ext.getCmp('pumpingModelListComb_Id').setRawValue(loginUserLanguageResource.selectAll);
                         	CreateAndLoadPumpingModelInfoTable();
                         }
             		},'-',pumpingManufacturerCombo,'-',pumpingModelCombo,'-',{
                         xtype: 'button',
-                        text: cosog.string.search,
+                        text: loginUserLanguageResource.search,
                         iconCls: 'search',
                         hidden: false,
                         handler: function (v, o) {
@@ -496,7 +496,7 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
             });
         },
         failure: function () {
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
         	manufacturer: pumpingManufacturer,
@@ -861,7 +861,7 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
         },
         failure: function () {
         	Ext.getCmp("PumpingUnitPTFPanel_Id").getEl().unmask();
-        	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
         	recordId: recordId,

@@ -456,7 +456,7 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 		},
 		failure:function(){
 			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName: protocolName,
@@ -649,7 +649,7 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unit
 		},
 		failure:function(){
 			Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName: protocolName,
@@ -814,7 +814,7 @@ function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitN
 		},
 		failure:function(){
 			Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName: protocolName,
@@ -1007,7 +1007,7 @@ function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,uni
 		},
 		failure:function(){
 			Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName: protocolName,

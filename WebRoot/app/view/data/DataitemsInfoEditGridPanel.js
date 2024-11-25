@@ -60,7 +60,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                 {
                     xtype: 'button',
                     id: "findtattxtInfoBtnId",
-                    text: cosog.string.search,
+                    text: loginUserLanguageResource.search,
                     iconCls: 'search',
                     action: 'findtattxtInfoBtnAction',
                     handler: function () {

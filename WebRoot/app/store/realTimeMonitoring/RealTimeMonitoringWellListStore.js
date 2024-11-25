@@ -31,8 +31,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                 var bbar = new Ext.PagingToolbar({
                 	id:'RealTimeMonitoringListGridPagingToolbar',
                 	store: store,
-                	displayInfo: true,
-                	displayMsg: '共 {2}条'
+//                	displayMsg: '共 {2}条',
+                	displayInfo: true
     	        });
                 
                 gridPanel = Ext.create('Ext.grid.Panel', {

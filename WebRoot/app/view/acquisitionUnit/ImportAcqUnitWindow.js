@@ -256,7 +256,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 		},
 		failure:function(){
 			Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,

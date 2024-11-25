@@ -296,7 +296,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			}
 		},
 		failure:function(){
-//			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+//			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			
@@ -529,7 +529,7 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			id:id,

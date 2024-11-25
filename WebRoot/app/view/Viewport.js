@@ -698,7 +698,7 @@ function getDeviceFESDiagramResultTotal() {
 
             },
             failure: function () {
-                Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
             },
             params: {
                 orgId: orgId,
@@ -752,7 +752,7 @@ function getDeviceCommStatusTotal() {
                 }
             },
             failure: function () {
-                Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
             },
             params: {
                 orgId: orgId,
@@ -807,7 +807,7 @@ function getDeviceRunStatusTotal() {
                 }
             },
             failure: function () {
-                Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
             },
             params: {
                 orgId: orgId,

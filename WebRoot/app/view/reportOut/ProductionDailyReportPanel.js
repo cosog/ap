@@ -114,9 +114,9 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 xtype: 'datefield',
                 anchor: '100%',
                 hidden: false,
-                fieldLabel: '至',
-                labelWidth: 15,
-                width: 115,
+                fieldLabel: loginUserLanguageResource.timeTo,
+                labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+                width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
                 format: 'Y-m-d ',
                 id: 'ProductionDailyReportEndDate_Id',
                 value: new Date(),
@@ -134,7 +134,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 }
             },'-',{
                 xtype: 'button',
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
@@ -169,14 +169,14 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 tabPosition: 'top',
                 items: [{
                 	id:'ProductionRangeReportTabPanel_id',
-                	title:'日报表',
+                	title:loginUserLanguageResource.dailyReport,
                 	iconCls: 'check3',
                 	layout:'border',
                 	border: false,
                 	items:[{
                 		region:'north',
                 		height:'50%',
-                		title:'报表曲线',
+                		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
@@ -192,13 +192,13 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         }
                 	},{
                 		region: 'center',
-                		title:'报表数据',
+                		title:loginUserLanguageResource.reportData,
                         layout: "fit",
                     	id:'ProductionDailyReportPanel_id',
                         border: false,
                         tbar:[{
                             xtype: 'button',
-                            text: '前一天',
+                            text: loginUserLanguageResource.forward,
                             iconCls: 'forward',
                             id:'ProductionDailyReportForwardBtn_Id',
                             handler: function (v, o) {
@@ -246,7 +246,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: '后一天',
+                            text: loginUserLanguageResource.backward,
                             id:'ProductionDailyReportBackwardsBtn_Id',
                             iconCls: 'backwards',
                             handler: function (v, o) {
@@ -482,7 +482,7 @@ function CreateProductionDailyReportTable(){
 			Ext.getCmp("ProductionDailyReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -1067,7 +1067,7 @@ function CreateProductionDailyReportCurve(){
 		    initProductionDailyReportCurveChartFn(series, tickInterval, 'ProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -1154,7 +1154,7 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
 //            			,dafaultMenuItem[2],{
-//            				text: '图形设置',
+//            				text: loginUserLanguageResource.diagramSet,
 //            				onclick: function() {
 //            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
 //                                    title: '报表曲线设置'

@@ -164,7 +164,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     		layout: 'border',
     		items: [{
     			region: 'center',
-    			title:'设备列表',
+    			title:loginUserLanguageResource.deviceList,
         		header: true,
         		layout: 'fit',
         		id:'AuxiliaryDeviceListPanel_Id',
@@ -297,7 +297,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             
         },
         failure: function () {
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
             deviceType: deviceType,
@@ -747,7 +747,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceId:deviceId,

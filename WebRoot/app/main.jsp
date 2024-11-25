@@ -119,6 +119,8 @@
         //var deviceShowName = ${configFile}.ap.others.deviceShowName; 
 		var deviceShowName=loginUserLanguageResource.deviceName;
 		var deviceShowNameLength=getStringLength(deviceShowName);
+		
+		var browserLang=${browserLang};
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
             $("#banner_help").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");

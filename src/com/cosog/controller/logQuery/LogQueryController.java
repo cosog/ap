@@ -294,8 +294,14 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/loadSystemLogActionComboxList")
 	public String loadSystemLogActionComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		
-		String json = this.logQueryService.loadSystemLogActionComboxList();
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.logQueryService.loadSystemLogActionComboxList(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

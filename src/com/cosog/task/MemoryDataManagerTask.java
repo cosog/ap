@@ -4368,6 +4368,15 @@ public class MemoryDataManagerTask {
 		return result_json.toString();
 	}
 	
+	public static String getLanguageResourceItem(String language,String code){
+		String value="";
+		Map<String,String> languageMap=getLanguageResource(language);
+		if(languageMap.containsKey(code)){
+			value=languageMap.get(code);
+		}
+		return value;
+	}
+	
 	public static Map<String,String> getLanguageResource(String language){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();

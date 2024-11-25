@@ -106,7 +106,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 hidden: true
             }, '-', {
                 xtype: 'button',
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 hidden: false,
                 handler: function (v, o) {
@@ -145,7 +145,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     + "&deviceType="+deviceType
                     + "&deviceName=" + URLencode(URLencode(deviceName)) 
                     + "&recordCount=10000" 
-                    + "&fileName=" + URLencode(URLencode(deviceTypeName+"设备列表")) 
+                    + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
                     + "&title=" + URLencode(URLencode(deviceTypeName))
                     + '&key='+key;
                     exportDataMask(key,maskPanelId,cosog.string.loading);
@@ -354,7 +354,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             layout: 'border',
             items: [{
             	region: 'center',
-        		title:'设备列表',
+        		title:loginUserLanguageResource.deviceList,
         		header: true,
         		layout: 'fit',
         		id:'DeviceTablePanel_id',
@@ -930,7 +930,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         },
         failure: function () {
         	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
-        	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
         	deviceName: deviceName,
@@ -2014,7 +2014,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 			},
 			failure:function(){
 				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
 				deviceId:deviceId,
@@ -2253,7 +2253,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 				}
 			},
 			failure:function(){
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
 				deviceId:deviceId,
@@ -2473,7 +2473,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		},
 		failure:function(){
 			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceId:deviceId,
@@ -2657,7 +2657,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceId:deviceId,
@@ -2844,7 +2844,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceId:deviceId,

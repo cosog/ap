@@ -29,7 +29,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             if (!isNotVal(gridPanel)) {
                 var newColumns = Ext.JSON.decode(column);
                 var clickColumn={
-                		text: '详细', 
+                		text: loginUserLanguageResource.details, 
                 		dataIndex: 'details',
                 		locked:true,
                 		align:'center',
@@ -43,8 +43,8 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                 newColumns.splice(1, 0, clickColumn);
                 var bbar = new Ext.PagingToolbar({
                 	store: store,
-                	displayInfo: true,
-                	displayMsg: '当前 {0}~{1}条  共 {2} 条'
+//                	displayMsg: '当前 {0}~{1}条  共 {2} 条',
+                	displayInfo: true
     	        });
                 
                 gridPanel = Ext.create('Ext.grid.Panel', {

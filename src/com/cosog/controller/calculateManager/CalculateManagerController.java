@@ -204,10 +204,16 @@ public class CalculateManagerController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
+		
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			User user = null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserOrgid();
 			}
@@ -229,7 +235,7 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
-		String json = this.calculateManagerService.getCalculateStatusList(orgId,deviceName,calculateType,startDate,endDate);
+		String json = this.calculateManagerService.getCalculateStatusList(orgId,deviceName,calculateType,startDate,endDate,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

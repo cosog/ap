@@ -178,12 +178,16 @@ public class WellInformationManagerController extends BaseController {
 		User user = null;
 		HttpSession session=request.getSession();
 		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, deviceName,deviceType,calculateType);
+		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, deviceName,deviceType,calculateType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -197,7 +201,16 @@ public class WellInformationManagerController extends BaseController {
 	public String loadPumpingManufacturerComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
 		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
-		String json = this.wellInformationManagerService.loadPumpingManufacturerComboxList(manufacturer);
+		
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		
+		String json = this.wellInformationManagerService.loadPumpingManufacturerComboxList(manufacturer,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -252,7 +265,14 @@ public class WellInformationManagerController extends BaseController {
 		this.pager=new Page("pageForm",request);
 		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
 		String model = ParamUtils.getParameter(request, "model");
-		String json = this.wellInformationManagerService.loadPumpingModelComboxList(manufacturer,model);
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadPumpingModelComboxList(manufacturer,model,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -445,7 +465,14 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/loadDeviceTypeComboxList")
 	public String loadDeviceTypeComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String json = this.wellInformationManagerService.loadDeviceTypeComboxList();
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadDeviceTypeComboxList(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -458,7 +485,14 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/loadDeviceTypeComboxListFromTab")
 	public String loadDeviceTypeComboxListFromTab() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String json = this.wellInformationManagerService.loadDeviceTypeComboxListFromTab();
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadDeviceTypeComboxListFromTab(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -472,7 +506,14 @@ public class WellInformationManagerController extends BaseController {
 	public String loadDataDictionaryComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
 		String itemCode = ParamUtils.getParameter(request, "itemCode");
-		String json = this.wellInformationManagerService.loadDataDictionaryComboxList(itemCode);
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadDataDictionaryComboxList(itemCode,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

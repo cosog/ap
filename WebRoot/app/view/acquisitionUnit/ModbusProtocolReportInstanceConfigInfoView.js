@@ -509,7 +509,7 @@ function CreateReportInstanceSingleWellRangeReportTemplateInfoTable(calculateTyp
 		},
 		failure:function(){
 			Ext.getCmp("ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:0,
@@ -736,7 +736,7 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellRangeReportContentHandsontableHelper==null || reportInstanceSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellRangeReportContentHandsontableHelper = ReportInstanceSingleWellRangeReportContentHandsontableHelper.createNew("ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -760,7 +760,7 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,se
 		},
 		failure:function(){
 			Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			calculateType:calculateType,
@@ -915,7 +915,7 @@ function CreateReportInstanceSingleWellDailyReportTemplateInfoTable(calculateTyp
 		},
 		failure:function(){
 			Ext.getCmp("ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:2,
@@ -1142,7 +1142,7 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellDailyReportContentHandsontableHelper==null || reportInstanceSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellDailyReportContentHandsontableHelper = ReportInstanceSingleWellDailyReportContentHandsontableHelper.createNew("ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1166,7 +1166,7 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,se
 		},
 		failure:function(){
 			Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			calculateType:calculateType,
@@ -1315,7 +1315,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1348,7 +1348,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 		},
 		failure:function(){
 			Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			calculateType:calculateType,
@@ -1586,7 +1586,7 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 			}
 		},
 		failure:function(){
-//			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+//			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			
@@ -1761,7 +1761,7 @@ function CreateReportInstanceProductionTemplateInfoTable(calculateType,code,sele
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:1,

@@ -106,7 +106,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     xtype: 'textfield'
         		},"-", {
                     xtype: 'button',
-                    text: cosog.string.search,
+                    text: loginUserLanguageResource.search,
                     iconCls: 'search',
                     handler: function () {
                     	var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");

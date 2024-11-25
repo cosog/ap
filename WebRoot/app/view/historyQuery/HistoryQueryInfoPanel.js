@@ -15,7 +15,7 @@ var historyStatTabItems=[{
             		Ext.create('Ext.tip.ToolTip', {
                         id:'HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id',
                 		target: 'HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id',
-                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                        html: loginUserLanguageResource.statPieChartToolTip
                     });
             	}
             }
@@ -37,7 +37,7 @@ var historyStatTabItems=[{
             		Ext.create('Ext.tip.ToolTip', {
                         id:'HistoryQueryStatGraphPanelPieToolTip_Id',
                 		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
-                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                        html: loginUserLanguageResource.statPieChartToolTip
                     });
             	}
             }
@@ -59,7 +59,7 @@ var historyStatTabItems=[{
             		Ext.create('Ext.tip.ToolTip', {
                         id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
                 		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
-                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                        html: loginUserLanguageResource.statPieChartToolTip
                     });
             	}
             }
@@ -81,7 +81,7 @@ var historyStatTabItems=[{
             		Ext.create('Ext.tip.ToolTip', {
                         id:'HistoryQueryDeviceTypeStatPieToolTip_Id',
                 		target: 'HistoryQueryDeviceTypeStatPieDiv_Id',
-                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                        html: loginUserLanguageResource.statPieChartToolTip
                     });
             	}
             }
@@ -98,7 +98,7 @@ var historyQueryCenterTabPanelItems=[{
     items: [{
     	region: 'north',
     	height: '50%',
-    	title: '历史曲线',
+    	title: loginUserLanguageResource.historyCurve,
     	layout: 'fit',
     	header: false,
     	border: true,
@@ -115,14 +115,14 @@ var historyQueryCenterTabPanelItems=[{
         }
     },{
     	region: 'center',
-    	title: '历史数据',
+    	title: loginUserLanguageResource.historyData,
     	header: false,
     	id: "HistoryQueryDataInfoPanel_Id",
     	layout: 'fit',
     	border: true
     }]
 },{
-	title: '图形平铺',
+	title: loginUserLanguageResource.tiledDiagram,
 	id:"HistoryDiagramTabPanel",
 	hidden:onlyMonitor,
 	border: false,
@@ -170,7 +170,7 @@ var historyQueryCenterTabPanelItems=[{
         }
     }
 },{
-	title: '图形叠加',
+	title: loginUserLanguageResource.diagramOverlay,
 	id:"HistoryDiagramOverlayTabPanel",
 	hidden:onlyMonitor,
 	layout: 'border',
@@ -338,7 +338,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		header:false,
                     items:[{
                     	region: 'center',
-                        title:'设备列表',
+                        title:loginUserLanguageResource.deviceList,
                         id:'HistoryQueryInfoDeviceListPanel_Id',
                         border: false,
                         layout: 'fit',
@@ -456,9 +456,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		tbar:[{
                         xtype: 'datefield',
                         anchor: '100%',
-                        fieldLabel: '区间',
-                        labelWidth: 30,
-                        width: 130,
+                        fieldLabel: loginUserLanguageResource.range,
+                        labelWidth: getStringLength(loginUserLanguageResource.range)*8,
+                        width: getStringLength(loginUserLanguageResource.range)*8+100,
                         format: 'Y-m-d ',
                         value: '',
                         id: 'HistoryQueryStartDate_Id',
@@ -470,9 +470,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryStartTime_Hour_Id',
-                        fieldLabel: '时',
-                        labelWidth: 15,
-                        width: 60,
+                        fieldLabel: loginUserLanguageResource.hour,
+                        labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                        width: getStringLength(loginUserLanguageResource.hour)*8+45,
                         minValue: 0,
                         maxValue: 23,
                         value:'',
@@ -483,7 +483,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -491,9 +491,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryStartTime_Minute_Id',
-                        fieldLabel: '分',
-                        labelWidth: 15,
-                        width: 60,
+                    	fieldLabel: loginUserLanguageResource.minute,
+                        labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                        width: getStringLength(loginUserLanguageResource.minute)*8+45,
                         minValue: 0,
                         maxValue: 59,
                         value:'',
@@ -504,7 +504,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -512,9 +512,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryStartTime_Second_Id',
-                        fieldLabel: '秒',
-                        labelWidth: 15,
-                        width: 60,
+                        fieldLabel: loginUserLanguageResource.second,
+                        labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                        width: getStringLength(loginUserLanguageResource.second)*8+45,
                         minValue: 0,
                         maxValue: 59,
                         value:'',
@@ -525,7 +525,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -533,9 +533,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                         xtype: 'datefield',
                         anchor: '100%',
-                        fieldLabel: '至',
-                        labelWidth: 15,
-                        width: 115,
+                        fieldLabel: loginUserLanguageResource.timeTo,
+                        labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+                        width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
                         format: 'Y-m-d ',
                         value: '',
                         id: 'HistoryQueryEndDate_Id',
@@ -547,9 +547,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryEndTime_Hour_Id',
-                        fieldLabel: '时',
-                        labelWidth: 15,
-                        width: 60,
+                    	fieldLabel: loginUserLanguageResource.hour,
+                        labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                        width: getStringLength(loginUserLanguageResource.hour)*8+45,
                         minValue: 0,
                         maxValue: 23,
                         value:'',
@@ -560,7 +560,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -568,9 +568,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryEndTime_Minute_Id',
-                        fieldLabel: '分',
-                        labelWidth: 15,
-                        width: 60,
+                        fieldLabel: loginUserLanguageResource.minute,
+                        labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                        width: getStringLength(loginUserLanguageResource.minute)*8+45,
                         minValue: 0,
                         maxValue: 59,
                         value:'',
@@ -581,7 +581,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -589,9 +589,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },{
                     	xtype: 'numberfield',
                     	id: 'HistoryQueryEndTime_Second_Id',
-                        fieldLabel: '秒',
-                        labelWidth: 15,
-                        width: 60,
+                    	fieldLabel: loginUserLanguageResource.second,
+                        labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                        width: getStringLength(loginUserLanguageResource.second)*8+45,
                         minValue: 0,
                         maxValue: 59,
                         value:'',
@@ -602,52 +602,52 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         			field.focus(true, 100);
                         		}
                             }
                         }
                     },'-',{
                         xtype: 'button',
-                        text: cosog.string.search,
+                        text: loginUserLanguageResource.search,
                         iconCls: 'search',
                         handler: function () {
                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                         	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                         	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
                         	if(!r2.test(startTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
                         		return;
                         	}
                         	
                         	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                         	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                         	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
                         	if(!r2.test(endTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
                         		return;
                         	}
@@ -683,38 +683,38 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                         	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                         	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
                         	if(!r2.test(startTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
                         		return;
                         	}
                         	
                         	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                         	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                         	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
                         	if(!r2.test(endTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
                         		return;
                         	}
@@ -749,38 +749,38 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                         	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                         	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
                         	if(!r2.test(startTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
                         		return;
                         	}
                         	
                         	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                         	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                         	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
                         	if(!r2.test(endTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
                         		return;
                         	}
@@ -814,38 +814,38 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                         	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                         	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
                         	if(!r2.test(startTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
                         		return;
                         	}
                         	
                         	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                         	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                         	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
                         	if(!r2.test(endTime_Second)){
-                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                         		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
                         		return;
                         	}
@@ -865,8 +865,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
                             var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-                       	 	var fileName=deviceName+'历史数据';
-                       	 	var title=deviceName+'历史数据';
+                       	 	var fileName=deviceName+loginUserLanguageResource.historyData;
+                       	 	var title=deviceName+loginUserLanguageResource.historyData;
                        	 	var columnStr=Ext.getCmp("HistoryQueryDataColumnStr_Id").getValue();
                        	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }

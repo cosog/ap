@@ -2786,19 +2786,19 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 	var liquidProduction=gtdata.liquidProduction;     // 日产液量
 	var resultName=gtdata.resultName;     // 工况类型
 	var optimizationSuggestion=gtdata.optimizationSuggestion;     // 优化建议
-	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
+	var xtext='<span style="text-align:center;">'+loginUserLanguageResource.displacement+'(m)'+'<br />';
 	var productionUnitStr='t/d';
     if(productionUnit!=0){
     	productionUnitStr='m^3/d';
     }
-    xtext+='点数:'+pointCount+"";
-    xtext+=' 最大载荷:'+fmax+'kN';
-    xtext+=' 最小载荷:'+fmin+'kN';
-    xtext+=' 冲程:'+stroke+'m';
-    xtext+=' 冲次:'+spm+'/min';
-    xtext+=' 产液:'+liquidProduction+productionUnitStr;
-    xtext+=' 工况:'+resultName;
-    xtext+=' 优化建议:'+optimizationSuggestion;
+    xtext+=loginUserLanguageResource.pointCount+':'+pointCount+" ";
+    xtext+=loginUserLanguageResource.fMax+':'+fmax+'kN ';
+    xtext+=loginUserLanguageResource.fMin+':'+fmin+'kN ';
+    xtext+=loginUserLanguageResource.stroke+':'+stroke+'m ';
+    xtext+=loginUserLanguageResource.SPM+':'+spm+'/min ';
+    xtext+=loginUserLanguageResource.liquidProduction+':'+liquidProduction+productionUnitStr+' ';
+    xtext+=loginUserLanguageResource.FSDiagramWorkType+':'+resultName+' ';
+    xtext+=loginUserLanguageResource.optimizationSuggestion+':'+optimizationSuggestion;
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+10;
@@ -2814,7 +2814,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		            reflow: true
 		        },                                                                                   
 		        title: {
-		        	text: cosog.string.FSDiagram  // 光杆功图                        
+		        	text: loginUserLanguageResource.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
 		        	text: deviceName+' ['+acqTime+']'                                                      
@@ -2840,7 +2840,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.load   // 载荷（kN） 
+		                text: loginUserLanguageResource.load+'(kN)'   // 载荷（kN） 
                     },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: '',   // 不显示次刻度线
@@ -2848,7 +2848,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:deviceName+'光杆功图-'+acqTime,    
+                    filename:deviceName+loginUserLanguageResource.FSDiagram+'-'+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -2892,7 +2892,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		    		color: '#d12',
 		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
 		    		lineWidth:2,
-		    		name: '理论上载荷线',
+		    		name: loginUserLanguageResource.upperLoadLine,
 		    		data: [[0, parseFloat(upperLoadLine)], [parseFloat(stroke), parseFloat(upperLoadLine)]],
 		    		marker: {
 		    			enabled: false
@@ -2908,7 +2908,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
 		    		color: '#d12',
 		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
 		    		lineWidth:2,
-		    		name: '理论下载荷线',
+		    		name: loginUserLanguageResource.lowerLoadLine,
 		    		data: [[0, parseFloat(lowerLoadLine)], [parseFloat(stroke), parseFloat(lowerLoadLine)]],
 		    		marker: {
 		    			enabled: false
@@ -2936,23 +2936,23 @@ showRodPress = function(result, divId) {
 	var rodStressRatio2=changeTwoDecimal(parseFloat(result.rodStressRatio2)*100);              // 二级应力百分比
 	var rodStressRatio3=changeTwoDecimal(parseFloat(result.rodStressRatio3)*100);              // 三级应力百分比
 	var rodStressRatio4=changeTwoDecimal(parseFloat(result.rodStressRatio4)*100);              // 四级应力百分比
-	var yjg=cosog.string.rod1;   // 一级杆
-	var ejg=cosog.string.rod2;   // 二级杆
-	var sjg=cosog.string.rod3;   // 三级杆
-	var sijg=cosog.string.rod4;   // 四级杆
+	var rod1=loginUserLanguageResource.rod1;   // 一级杆
+	var rod2=loginUserLanguageResource.rod2;   // 二级杆
+	var rod3=loginUserLanguageResource.rod3;   // 三级杆
+	var rod4=loginUserLanguageResource.rod4;   // 四级杆
 	var xdata = "[";
 	var ydata = "[";
 	if(rodStressRatio1>0){
-		xdata +="'" + yjg + "'" ;
+		xdata +="'" + rod1 + "'" ;
 		ydata +=rodStressRatio1 ;
 		if(rodStressRatio2>0){
-			xdata +=",'" + ejg + "'" ;
+			xdata +=",'" + rod2 + "'" ;
 			ydata +="," + rodStressRatio2 ;
 			if(rodStressRatio3>0){
-				xdata +=",'" + sjg + "'" ;
+				xdata +=",'" + rod3 + "'" ;
 				ydata +="," + rodStressRatio3 ;
 				if(rodStressRatio4>0){
-					xdata +=",'" + sijg + "'" ;
+					xdata +=",'" + rod4 + "'" ;
 					ydata +="," + rodStressRatio4 ;
 				}
 			}
@@ -2996,7 +2996,7 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		            }
 		        },                                                                                   
 		        title: {                                                                             
-		            text: cosog.string.rodStress,              // 杆柱应力      
+		            text: loginUserLanguageResource.rodStress,              // 杆柱应力      
 		            style: {
 		            	fontSize: '13px'
 		            }
@@ -3024,14 +3024,14 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		        	min: 0,
 		        	max:100,
 		            title: {                                                                         
-		                text: cosog.string.rodStressRatio  // 应力百分比(%)                                                          
+		                text: loginUserLanguageResource.rodStressRatio+'(%)'  // 应力百分比(%)                                                          
 		            },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: ''    // 不显示次刻度线
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:deviceName+"杆柱应力-"+acqTime,    
+                    filename:deviceName+loginUserLanguageResource.rodStress+"-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3046,7 +3046,7 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 			        } 
 				},
 		        series: [{
-		            name: cosog.string.rodStressRatio,  // 应力百分比(%)
+		            name: loginUserLanguageResource.rodStressRatio+'(%)',  // 应力百分比(%)
 		            data: ydata,
 		            dataLabels: {
 		                enabled: true,
@@ -3111,7 +3111,7 @@ showPumpCard = function(result,divId) {
 	}
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
-	title = cosog.string.pumpFSDiagram;  // 泵功图
+	title = loginUserLanguageResource.pumpFSDiagram;  // 泵功图
 	initMultiSurfaceCardChart(pointdata, title, deviceName, acqTime, divId);
 	return false;
 }
@@ -3136,7 +3136,7 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
 		        xAxis: {                                                                             
 		            title: {                                                                         
 		                enabled: true,                                                               
-		                text: cosog.string.position,    // 位移（m）
+		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
 		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
 		                style: {
 		                	fontSize: '12px',
@@ -3151,7 +3151,7 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.load                                    
+		                text: loginUserLanguageResource.load+'(kN)'
 		            },
 		            allowDecimals: false, 
 		            minorTickInterval: '',
@@ -3182,7 +3182,7 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:deviceName+"泵功图-"+acqTime,    
+                    filename:deviceName+loginUserLanguageResource.pumpFSDiagram+"-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3249,7 +3249,7 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		            zoomType: 'xy'                   
 		        },                                                                                   
 		        title: {                                                                                      
-		            text: cosog.string.pumpEff             
+		            text: loginUserLanguageResource.pumpEfficiencyComposition
 		        },
 		        subtitle: {                                                                                   
 		            text: deviceName+' ['+acqTime+']'                                                      
@@ -3260,11 +3260,11 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        },
 		        xAxis: { 
 		        	categories: [
-		        	                cosog.string.pumpEff1,
-		        	                cosog.string.pumpEff2,
-		        	                cosog.string.pumpEff3,
-		        	                cosog.string.pumpEff4
-		        	            ],
+		        		loginUserLanguageResource.pumpEff1,
+		        		loginUserLanguageResource.pumpEff2,
+		        		loginUserLanguageResource.pumpEff3,
+		        		loginUserLanguageResource.pumpEff4
+		        	],
 		        	gridLineWidth: 0
 		        }, 
 		        tooltip: {
@@ -3273,13 +3273,13 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        yAxis: {    
 		        	min: 0,
 		            title: {                                                                         
-		                text: cosog.string.percent                                           
+		                text: loginUserLanguageResource.percent+'(%)'                                          
 		            },
 		            minorTickInterval: ''
 		        },
 		        exporting:{    
                     enabled:true,    
-                    filename:deviceName+"泵效组成-"+acqTime,    
+                    filename:deviceName+loginUserLanguageResource.pumpEfficiencyComposition+"-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
@@ -3309,16 +3309,16 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 
 showPSDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
-		title='电功图';
+		title=loginUserLanguageResource.FWattDiagram;
 	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var powerCurveData=result.powerCurveData.split(",");
-	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
+	var xtext='<span style="text-align:center;">'+loginUserLanguageResource.displacement+'(m)'+'<br />';
 	if(result.upStrokeWattMax!=undefined && result.downStrokeWattMax!=undefined){
-		xtext+='上冲程最大值:' + result.upStrokeWattMax + 'kW 下冲程最大值:'  + result.downStrokeWattMax + 'kW<br />';
+		xtext+=loginUserLanguageResource.upStrokeMaxValue+':' + result.upStrokeWattMax + 'kW '+loginUserLanguageResource.downStrokeMaxValue+':'  + result.downStrokeWattMax + 'kW<br />';
 	}
 	if(result.wattDegreeBalance!=undefined){
-		xtext+='平衡度:' + result.wattDegreeBalance + '%<br /></span>';
+		xtext+=loginUserLanguageResource.degreeBalance+':' + result.wattDegreeBalance + '%<br /></span>';
 	}
 	var data = "["; // 功图data
 	var upStrokeData = "["; // 上冲程数据
@@ -3393,7 +3393,7 @@ showPSDiagram = function(result, divId,title) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,"有功功率(kW)",['#FF6633','#009999']);
+	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,loginUserLanguageResource.activePower+"(kW)",['#FF6633','#009999']);
 	return false;
 }
 
@@ -3485,12 +3485,12 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		            }                                                                                
 		        },
 		        series: [{                                                                           
-		            name: '上冲程',                                                                  
+		            name: loginUserLanguageResource.upStroke,                                                                  
 		            color: color[0],   
 		            lineWidth:3,
 		            data:  upStrokePointdata                                                                                  
 		        },{                                                                           
-		            name: '下冲程',                                                                  
+		            name: loginUserLanguageResource.downStroke,                                                                  
 		            color: color[1],   
 		            lineWidth:3,
 		            data:  downStrokePointdata                                                                                  
@@ -3500,18 +3500,19 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 
 showASDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
-		title='电流图';
+		title=loginUserLanguageResource.FIDiagram;
 	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var currentCurveData=result.currentCurveData.split(",");
 	
-	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
+	var xtext='<span style="text-align:center;">'+loginUserLanguageResource.displacement+'(m)'+'<br />';
     
 	if(result.upStrokeIMax!=undefined && result.downStrokeIMax!=undefined){
-		xtext+='上冲程最大值:' + result.upStrokeIMax + 'A 下冲程最大值:'  + result.downStrokeIMax + 'A<br />';
+		xtext+=loginUserLanguageResource.upStrokeMaxValue+':' + result.upStrokeIMax + 'A '
+		+loginUserLanguageResource.downStrokeMaxValue+':'  + result.downStrokeIMax + 'A<br />';
 	}
 	if(result.iDegreeBalance!=undefined){
-		xtext+='平衡度:' + result.iDegreeBalance + '%<br /></span>';
+		xtext+=loginUserLanguageResource.degreeBalance+':' + result.iDegreeBalance + '%<br /></span>';
 	}
 	var data = "["; // 功图data
 	var upStrokeData = "["; // 上冲程数据
@@ -3586,7 +3587,7 @@ showASDiagram = function(result, divId,title) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initASDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,"电流(A)",['#CC0000','#0033FF']);
+	initASDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,loginUserLanguageResource.electricity+"(A)",['#CC0000','#0033FF']);
 	return false;
 }
 
@@ -3678,12 +3679,12 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		            }                                                                                
 		        },
 		        series: [{                                                                           
-		            name: '上冲程',                                                                  
+		            name: loginUserLanguageResource.upStroke,                                                                  
 		            color: color[0],   
 		            lineWidth:3,
 		            data:  upStrokePointdata                                                                                  
 		        },{                                                                           
-		            name: '下冲程',                                                                  
+		            name: loginUserLanguageResource.downStroke,                                                                  
 		            color: color[1],   
 		            lineWidth:3,
 		            data:  downStrokePointdata                                                                                  
@@ -3698,14 +3699,14 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
 	var balanceTorqueArr=balanceTorque.split(",");
 	var netTorqueArr=netTorque.split(",");
 	
-	var legendName = ['载荷','曲柄','平衡块','净扭矩'];
+	var legendName = [loginUserLanguageResource.load,loginUserLanguageResource.crankTorque,loginUserLanguageResource.balanceTorque,loginUserLanguageResource.netTorque];
 	var catagories1 = "[";
     var series1 = "[";
     if(crankAngleArr.length>0){
-    	var loadData="{\"name\":\"载荷\",\"visible\":false,\"data\":[";
-    	var crankData="{\"name\":\"曲柄\",\"visible\":false,\"data\":[";
-    	var balanceData="{\"name\":\"平衡块\",\"visible\":false,\"data\":[";
-    	var netData="{\"name\":\"净扭矩\",\"data\":[";
+    	var loadData="{\"name\":\""+loginUserLanguageResource.load+"\",\"visible\":false,\"data\":[";
+    	var crankData="{\"name\":\""+loginUserLanguageResource.crankTorque+"\",\"visible\":false,\"data\":[";
+    	var balanceData="{\"name\":\""+loginUserLanguageResource.balanceTorque+"\",\"visible\":false,\"data\":[";
+    	var netData="{\"name\":\""+loginUserLanguageResource.netTorque+"\",\"data\":[";
         for(var i=0;i<crankAngleArr.length;i++){
         	catagories1+=crankAngleArr[i];
         	loadData+=changeTwoDecimal(loadRorqueArr[i]);
@@ -3732,7 +3733,7 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
     
     var cat1 = Ext.JSON.decode(catagories1);
 	var ser1 = Ext.JSON.decode(series1);
-	initBalanceCurveChart(cat1,ser1, divId,title,deviceName,acqTime,"扭矩(kN*m)","曲柄转角(°)");
+	initBalanceCurveChart(cat1,ser1, divId,title,deviceName,acqTime,loginUserLanguageResource.torque+"(kN*m)",loginUserLanguageResource.crankAngle+"(°)");
 	return false;
 }
 
@@ -4336,7 +4337,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 		        xAxis: {                                                                             
 		            title: {                                                                         
 		                enabled: true,                                                               
-		                text: cosog.string.position,    // 位移（m）
+		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
 		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
 		                style: {
 //                          color: '#000',
@@ -4425,7 +4426,7 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 		        xAxis: {                                                                             
 		            title: {                                                                         
 		                enabled: true,                                                               
-		                text: cosog.string.position,    // 位移（m）
+		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
 		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
 		                style: {
 		                	fontSize: '12px',

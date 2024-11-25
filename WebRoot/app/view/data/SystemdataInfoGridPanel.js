@@ -52,7 +52,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
          },'-', {
                 xtype: 'button',
                 id: "findSystemdataInfoId",
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 handler: function () {
                     reFreshg("SystemdataInfoGridPanelId");

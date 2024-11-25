@@ -129,7 +129,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 		},
 		failure:function(){
 			Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			recordId: recordId,

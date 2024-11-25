@@ -162,7 +162,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			classes: classes,
@@ -604,7 +604,7 @@ function saveProtocolRunStatusConfig(){
                 }
 			},
 			failure:function(){
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
 				protocolCode: protocolCode,

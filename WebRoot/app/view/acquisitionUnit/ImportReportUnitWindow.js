@@ -612,7 +612,7 @@ function CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:2,
@@ -835,7 +835,7 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitSingleWellDailyReportContentHandsontableHelper==null || importReportUnitSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellDailyReportContentHandsontableHelper = ImportReportUnitSingleWellDailyReportContentHandsontableHelper.createNew("importReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -859,7 +859,7 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			unitName:unitName,
@@ -1016,7 +1016,7 @@ function CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:0,
@@ -1240,7 +1240,7 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitSingleWellRangeReportContentHandsontableHelper==null || importReportUnitSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellRangeReportContentHandsontableHelper = ImportReportUnitSingleWellRangeReportContentHandsontableHelper.createNew("importReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','报表曲线','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1264,7 +1264,7 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			unitName:unitName,
@@ -1417,7 +1417,7 @@ function CreateImportReportUnitProductionReportTemplateInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			reportType:1,
@@ -1641,7 +1641,7 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitProductionReportContentHandsontableHelper==null || importReportUnitProductionReportContentHandsontableHelper.hot==undefined){
 				importReportUnitProductionReportContentHandsontableHelper = ImportReportUnitProductionReportContentHandsontableHelper.createNew("importReportUnitProductionReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','报表曲线','曲线统计类型','','','']";
+				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1674,7 +1674,7 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 		},
 		failure:function(){
 			Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			unitName:unitName,

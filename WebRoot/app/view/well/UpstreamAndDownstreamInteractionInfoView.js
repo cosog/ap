@@ -83,7 +83,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     layout: 'border',
                     items: [{
                     	region: 'center',
-                    	title:'设备列表',
+                    	title:loginUserLanguageResource.deviceList,
                     	layout: 'fit',
                     	border: false,
                         id:'UpstreamAndDownstreamInteractionDeviceListPanel_Id'

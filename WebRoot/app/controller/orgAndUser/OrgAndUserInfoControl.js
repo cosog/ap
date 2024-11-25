@@ -248,7 +248,7 @@ function saveOrgCoordInfo() {
     			});
     		},
     		failure:function(){
-    			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+    			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
     		},
     		params: {
             	data: JSON.stringify(jsonArray)

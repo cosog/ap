@@ -19,7 +19,7 @@ var realtimeStatTabItems=[{
                 		Ext.create('Ext.tip.ToolTip', {
                             id:'RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id',
                     		target: 'RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id',
-                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                            html: loginUserLanguageResource.statPieChartToolTip
                         });
                 	}
                 }
@@ -44,7 +44,7 @@ var realtimeStatTabItems=[{
                 		Ext.create('Ext.tip.ToolTip', {
                             id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
                     		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
-                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                            html: loginUserLanguageResource.statPieChartToolTip
                         });
                 	}
                 }
@@ -69,7 +69,7 @@ var realtimeStatTabItems=[{
                 		Ext.create('Ext.tip.ToolTip', {
                             id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
                     		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
-                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                            html: loginUserLanguageResource.statPieChartToolTip
                         });
                 	}
                 }
@@ -93,7 +93,7 @@ var realtimeStatTabItems=[{
                 		Ext.create('Ext.tip.ToolTip', {
                             id:'RealTimeMonitoringDeviceTypeStatPieToolTip_Id',
                     		target: 'RealTimeMonitoringDeviceTypeStatPieDiv_Id',
-                            html: '点击饼图不同区域或标签，查看相应统计数据'
+                            html: loginUserLanguageResource.statPieChartToolTip
                         });
                 	}
                 }
@@ -811,7 +811,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 		},
 		failure:function(){
 			Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceId:deviceId,
@@ -1039,8 +1039,8 @@ function realTimeMonitoringCurve(item){
 //			    if(){
 //			    	
 //			    }
-			    var title = result.deviceName  + result.item + "曲线";
-			    var xTitle='采集时间';
+			    var title = result.deviceName  + result.item + loginUserLanguageResource.curve;
+			    var xTitle=loginUserLanguageResource.acqTime;
 			    var yTitle=result.item;
 			    if(isNotVal(result.unit)){
 			    	yTitle+='('+result.unit+')';
@@ -1078,7 +1078,7 @@ function realTimeMonitoringCurve(item){
 			    initTimeAndDataCurveChartFn(ser, tickInterval, "realTimeMonitoringCurveDiv_Id", title, '', xTitle, yTitle, color,false,'%H:%M:%S');
 			},
 			failure:function(){
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
 				deviceName:deviceName,

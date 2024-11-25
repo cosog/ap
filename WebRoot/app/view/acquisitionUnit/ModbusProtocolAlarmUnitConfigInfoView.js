@@ -502,7 +502,7 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -710,7 +710,7 @@ function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,co
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceType:deviceType,
@@ -1091,7 +1091,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1295,7 +1295,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1498,7 +1498,7 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1703,7 +1703,7 @@ function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1900,7 +1900,7 @@ function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,class
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,

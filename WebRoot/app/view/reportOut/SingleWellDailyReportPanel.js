@@ -8,7 +8,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
     border: false,
     initComponent: function () {
         var me = this;
-        var wellListCombStore = new Ext.data.JsonStore({
+        var deviceCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
@@ -44,39 +44,39 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 }
             }
         });
-        var wellListCombo = Ext.create(
-            'Ext.form.field.ComboBox', {
-                fieldLabel: deviceShowName,
-                id: 'SingleWellDailyReportPanelWellListCombo_Id',
-                hidden:false,
-                store: wellListCombStore,
-                labelWidth: 8*deviceShowNameLength,
-                width: (8*deviceShowNameLength+110),
-                queryMode: 'remote',
-                emptyText: '--'+loginUserLanguageResource.all+'--',
-                blankText: '--'+loginUserLanguageResource.all+'--',
-                typeAhead: true,
-                autoSelect: false,
-                allowBlank: true,
-                triggerAction: 'all',
-                editable: true,
-                displayField: "boxval",
-                valueField: "boxkey",
-                pageSize:comboxPagingStatus,
-                minChars:0,
-                listeners: {
-                    expand: function (sm, selections) {
-                        wellListCombo.getStore().loadPage(1); // 加载井下拉框的store
-                    },
-                    specialkey: function (field, e) {
-                        onEnterKeyDownFN(field, e, 'SingleWellDailyReportGridPanel_Id');
-                    },
-                    select: function (combo, record, index) {
-                    	Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
-                    	Ext.getCmp("SingleWellDailyReportGridPanel_Id").getStore().load();
+        
+        var deviceCombo = Ext.create(
+                'Ext.form.field.ComboBox', {
+                    fieldLabel: deviceShowName,
+                    id: "SingleWellDailyReportPanelWellListCombo_Id",
+                    labelWidth: 8*deviceShowNameLength,
+                    width: (8*deviceShowNameLength+110),
+                    labelAlign: 'left',
+                    queryMode: 'remote',
+                    typeAhead: true,
+                    store: deviceCombStore,
+                    autoSelect: false,
+                    editable: true,
+                    triggerAction: 'all',
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    pageSize:comboxPagingStatus,
+                    minChars:0,
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
+                    listeners: {
+                        expand: function (sm, selections) {
+                            deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
+                        },
+                        select: function (combo, record, index) {
+                        	Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("SingleWellDailyReportGridPanel_Id").getStore().load();
+                        }
                     }
-                }
-            });
+                });
+        
+        
+        
         Ext.apply(me, {
             tbar: [{
                 xtype: 'button',
@@ -91,7 +91,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
         				Ext.create('AP.store.reportOut.SingleWellDailyReportWellListStore');
         			}
                 }
-    		},'-',wellListCombo,'-', {
+    		},'-',deviceCombo,'-', {
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '日期',
@@ -118,9 +118,9 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 xtype: 'datefield',
                 anchor: '100%',
                 hidden: false,
-                fieldLabel: '至',
-                labelWidth: 15,
-                width: 115,
+                fieldLabel: loginUserLanguageResource.timeTo,
+                labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+                width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
                 format: 'Y-m-d ',
                 id: 'SingleWellDailyReportEndDate_Id',
                 value: new Date(),
@@ -140,7 +140,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 }
             },'-',{
                 xtype: 'button',
-                text: cosog.string.search,
+                text: loginUserLanguageResource.search,
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
@@ -162,7 +162,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
             items: [{
             	region: 'west',
             	width: '20%',
-            	title: '设备列表',
+            	title: loginUserLanguageResource.deviceList,
             	id: 'SingleWellDailyReportWellListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠
@@ -177,14 +177,14 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 tabPosition: 'top',
                 items: [{
                 	id:'SingleWellDailyReportTabPanel_id',
-                	title:'班报表',
+                	title:loginUserLanguageResource.hourlyReport,
                 	iconCls: 'check3',
                 	layout:'border',
                 	border: false,
                 	items:[{
                 		region:'north',
                 		height:'50%',
-                		title:'报表曲线',
+                		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
@@ -199,12 +199,12 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         }
                 	},{
                 		region: 'center',
-                		title:'报表数据',
+                		title:loginUserLanguageResource.reportData,
                         layout: "fit",
                     	id:'SingleWellDailyReportPanel_id',
                     	tbar:[{
                             xtype: 'button',
-                            text: '前一天',
+                            text: loginUserLanguageResource.forward,
                             iconCls: 'forward',
                             id:'SingleWellDailyReportForwardBtn_Id',
                             handler: function (v, o) {
@@ -253,7 +253,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: '后一天',
+                            text: loginUserLanguageResource.backward,
                             id:'SingleWellDailyReportBackwardsBtn_Id',
                             iconCls: 'backwards',
                             handler: function (v, o) {
@@ -269,10 +269,10 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             }
                         },'-',{
                         	xtype : "combobox",
-            				fieldLabel : '间隔',
+            				fieldLabel : loginUserLanguageResource.interval,
+                            labelWidth: getStringLength(loginUserLanguageResource.interval)*8,
+                            width: (getStringLength(loginUserLanguageResource.interval)*8+80),
             				id : 'SingleWellDailyReportIntervalComb_Id',
-            				labelWidth: 35,
-                            width: 115,
             				triggerAction : 'all',
             				selectOnFocus : true,
             			    forceSelection : true,
@@ -342,13 +342,13 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	}]
                 },{
                 	id:'SingleWellRangeReportTabPanel_id',
-                	title:'日报表',
+                	title:loginUserLanguageResource.dailyReport,
                 	layout:'border',
                 	border: false,
                 	items:[{
                 		region:'north',
                 		height:'50%',
-                		title:'报表曲线',
+                		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
@@ -363,7 +363,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         }
                 	},{
                 		region: 'center',
-                		title:'报表数据',
+                		title:loginUserLanguageResource.reportData,
                         layout: "fit",
                     	id:'SingleWellRangeReportPanel_id',
                     	tbar:['->',{
@@ -495,7 +495,7 @@ function CreateSingleWellRangeReportTable(){
 			Ext.getCmp("SingleWellRangeReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -896,7 +896,7 @@ function CreateSingleWellDailyReportTable(){
 			Ext.getCmp("SingleWellDailyReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -1466,7 +1466,7 @@ function CreateSingleWellRangeReportCurve(){
 		    initSingleWellDailyReportCurveChartFn(series, tickInterval, 'SingleWellRangeReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -1659,7 +1659,7 @@ function CreateSingleWellDailyReportCurve(){
 		    initSingleWellDailyReportCurveChartFn(series, tickInterval, 'SingleWellDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId: orgId,
@@ -1747,10 +1747,10 @@ function initSingleWellDailyReportCurveChartFn(series, tickInterval, divId, titl
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
             			,dafaultMenuItem[2],{
-            				text: '图形设置',
+            				text: loginUserLanguageResource.diagramSet,
             				onclick: function() {
             					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
-                                    title: '报表曲线设置'
+                                    title: loginUserLanguageResource.reportDiagramSet
                                 });
                                 window.show();
             				}

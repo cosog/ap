@@ -714,6 +714,10 @@ public class UserManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
+		String selectAll="";
+		if(user!=null){
+			selectAll=MemoryDataManagerTask.getLanguageResourceItem(user.getLanguageName(),"selectAll");
+		}
 		
 		if(user!=null){
 			String sql = "select t.user_id as boxkey,t.user_id as boxval"
@@ -735,7 +739,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			try {
 				int totals=this.getTotalCountRows(sql);
 				List<?> list = this.findCallSql(finalsql);
-				result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+				result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"},");
 				String get_key = "";
 				String get_val = "";
 				if (null != list && list.size() > 0) {
@@ -755,11 +759,11 @@ public class UserManagerService<T> extends BaseService<T> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				result_json = new StringBuffer();
-				result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+				result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"}]}");
 			}
 		}else{
 			result_json = new StringBuffer();
-			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"}]}");
 		}
 		
 		

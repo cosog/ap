@@ -530,8 +530,8 @@ function deviceHistoryQueryCurve(deviceType){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName + "趋势曲线";
-		    var xTitle='采集时间';
+		    var title = result.deviceName + loginUserLanguageResource.trendCurve;
+		    var xTitle=loginUserLanguageResource.acqTime;
 		    var legendName =result.curveItems;
 		    var legendCode =result.curveItemCodes;
 		    var curveConf=result.curveConf;
@@ -667,7 +667,7 @@ function deviceHistoryQueryCurve(deviceType){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceName:deviceName,
@@ -751,10 +751,10 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
             			,dafaultMenuItem[2],{
-            				text: '图形设置',
+            				text: loginUserLanguageResource.diagramSet,
             				onclick: function() {
             					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
-                                    title: '历史曲线设置'
+                                    title: loginUserLanguageResource.historyDiagramSet
                                 });
                                 window.show();
             				}
@@ -809,7 +809,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -820,7 +820,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 
 function initHistoryQueryStatPieOrColChat(get_rawData) {
 	var divId="HistoryQueryStatGraphPanelPieDiv_Id";
-	var title="通信状态";
+	var title=loginUserLanguageResource.commStatus;
 	var datalist=get_rawData.totalRoot;
 	
 	var colors=[];
@@ -862,7 +862,7 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -877,7 +877,7 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -943,7 +943,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -954,7 +954,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 
 function initHistoryQueryRunStatusStatPieOrColChat(get_rawData) {
 	var divId="HistoryQueryRunStatusStatGraphPanelPieDiv_Id";
-	var title="运行状态";
+	var title=loginUserLanguageResource.runStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
@@ -999,7 +999,7 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -1014,7 +1014,7 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -1075,7 +1075,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		},
 		failure:function(){
 			Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -1087,7 +1087,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 function initHistoryQueryFESDiagramResultStatPieOrColChat(get_rawData) {
 	var divId="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id";
 	
-	var title="工况诊断";
+	var title=loginUserLanguageResource.workType;
 	var datalist=get_rawData.totalRoot;
 	
 	var pieData=[];
@@ -1119,7 +1119,7 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 		},
 //		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -1134,7 +1134,7 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -1201,7 +1201,7 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -1245,7 +1245,7 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -1260,7 +1260,7 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {

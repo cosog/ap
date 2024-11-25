@@ -607,7 +607,7 @@ function CreateImportAlarmInstanceNumItemsConfigInfoTable(protocolName,unitName,
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -759,7 +759,7 @@ function CreateImportAlarmInstanceCalNumItemsConfigInfoTable(protocolName,unitNa
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -910,7 +910,7 @@ function CreateImportAlarmInstanceSwitchItemsConfigInfoTable(protocolName,unitNa
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceSwitchItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1060,7 +1060,7 @@ function CreateImportAlarmInstanceEnumItemsConfigInfoTable(protocolName,unitName
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceEnumItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1207,7 +1207,7 @@ function CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(protocolN
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1354,7 +1354,7 @@ function CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(protocolName,uni
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceRunStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1501,7 +1501,7 @@ function CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(protocolName,un
 		},
 		failure:function(){
 			Ext.getCmp("importAlarmInstanceCommStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,

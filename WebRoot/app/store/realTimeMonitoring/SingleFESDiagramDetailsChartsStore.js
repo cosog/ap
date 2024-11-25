@@ -31,15 +31,15 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             	showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
             }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
             	var deltaRadius=parseFloat(get_rawData.deltaRadius);
-            	var expectedTorqueChartTitle="扭矩曲线";
+            	var expectedTorqueChartTitle=loginUserLanguageResource.torqueCurve;
             	if(Math.abs(deltaRadius)>0){
             		if(deltaRadius>0){
-            			expectedTorqueChartTitle="外移"+deltaRadius+"cm"+expectedTorqueChartTitle;
+            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardOutside+' '+deltaRadius+"cm "+expectedTorqueChartTitle;
             		}else{
-            			expectedTorqueChartTitle="內移"+Math.abs(deltaRadius)+"cm"+expectedTorqueChartTitle;
+            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardInside+' '+Math.abs(deltaRadius)+"cm "+expectedTorqueChartTitle;
             		}
             	}else {
-            		expectedTorqueChartTitle="预期扭矩曲线";
+            		expectedTorqueChartTitle=loginUserLanguageResource.expectTorqueCurve;
             	}
             	
             	
@@ -51,7 +51,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             			get_rawData.crankTorque,
             			get_rawData.currentBalanceTorque,
             			get_rawData.currentNetTorque,
-            			"目前扭矩曲线",
+            			loginUserLanguageResource.currentTorqueCurve,
             			get_rawData.deviceName,
             			get_rawData.acqTime,
             			"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"

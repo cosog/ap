@@ -1068,47 +1068,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			}
 		}
 	}
-//	
-//	public void saveElecInverPumpingUnitData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData) throws Exception {
-//		getBaseDao().saveElecInverPumpingUnitData(elecInverCalculateManagerHandsontableChangedData);
-//	}
-//	public void saveElecInverOptimizeHandsontableData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData,String orgid) throws Exception {
-//		getBaseDao().saveElecInverOptimizeHandsontableData(elecInverCalculateManagerHandsontableChangedData,orgid);
-//	}
-//	public boolean reInverDiagram(String recordId,InversioneFSdiagramResponseData inversioneFSdiagramResponseData) throws SQLException, ParseException{
-//		String SStr="",FStr="",PStr="",AStr="",RPMStr="";
-//		String F360Str="",S360Str="",A360Str="";
-//		if(inversioneFSdiagramResponseData.getResultStatus()==1){
-//			SStr=StringUtils.join(inversioneFSdiagramResponseData.getS(), ",");
-//			FStr=StringUtils.join(inversioneFSdiagramResponseData.getF(), ",");
-//		}
-//		PStr=StringUtils.join(inversioneFSdiagramResponseData.getWatt(), ",");
-//		AStr=StringUtils.join(inversioneFSdiagramResponseData.getI(), ",");
-//		RPMStr=StringUtils.join(inversioneFSdiagramResponseData.getRPM(), ",");
-//		
-//		
-//		if(inversioneFSdiagramResponseData.getF360()!=null){
-//			F360Str=StringUtils.join(inversioneFSdiagramResponseData.getF360(), ",");
-//		}
-//		if(inversioneFSdiagramResponseData.getS360()!=null){
-//			S360Str=StringUtils.join(inversioneFSdiagramResponseData.getS360(), ",");
-//		}
-//		if(inversioneFSdiagramResponseData.getA360()!=null){
-//			A360Str=StringUtils.join(inversioneFSdiagramResponseData.getA360(), ",");
-//		}
-//		
-//		return this.getBaseDao().reInverDiagram(recordId,inversioneFSdiagramResponseData.getAcquisitionTime(),
-//				inversioneFSdiagramResponseData.getCNT(),inversioneFSdiagramResponseData.getStroke(),inversioneFSdiagramResponseData.getSPM(),
-//				inversioneFSdiagramResponseData.getMaxF(),inversioneFSdiagramResponseData.getMinF(),
-//				SStr,FStr,
-//				S360Str,A360Str,F360Str,
-//				AStr,PStr,RPMStr,
-//				inversioneFSdiagramResponseData.getUpstrokeIMax(),inversioneFSdiagramResponseData.getDownstrokeIMax(),
-//				inversioneFSdiagramResponseData.getUpstrokeWattMax(),inversioneFSdiagramResponseData.getDownstrokeWattMax(),
-//				inversioneFSdiagramResponseData.getIDegreeBalance(),inversioneFSdiagramResponseData.getWattDegreeBalance(),
-//				inversioneFSdiagramResponseData.getResultStatus());
-//	}
-	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate)throws Exception {
+	
+	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="";
 		String tableName="tbl_rpcacqdata_latest";
@@ -1130,7 +1091,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {

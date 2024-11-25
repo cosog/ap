@@ -18,6 +18,7 @@ import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
@@ -324,13 +325,13 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String loadSystemLogActionComboxList() throws Exception {
+	public String loadSystemLogActionComboxList(String language) throws Exception {
 		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='SYSTEMACTION' order by t.itemvalue";
 		StringBuffer result_json = new StringBuffer();
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			if (null != list && list.size() > 0) {
 				for (Object o : list) {
 					Object[] obj = (Object[]) o;
@@ -345,7 +346,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		} catch (Exception e) {
 			e.printStackTrace();
 			result_json = new StringBuffer();
-			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"}]}");
+			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}]}");
 		}
 		return result_json.toString();
 	}

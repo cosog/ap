@@ -23,9 +23,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
         		{
                     xtype: 'datefield',
                     anchor: '100%',
-                    fieldLabel: '区间',
-                    labelWidth: 30,
-                    width: 130,
+                    fieldLabel: loginUserLanguageResource.range,
+                    labelWidth: getStringLength(loginUserLanguageResource.range)*8,
+                    width: getStringLength(loginUserLanguageResource.range)*8+100,
                     format: 'Y-m-d ',
                     id: 'ResourceProbeHistoryCurve_from_date_Id',
                     value: 'new',
@@ -37,9 +37,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveStartTime_Hour_Id',
-                    fieldLabel: '时',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.hour,
+                    labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                    width: getStringLength(loginUserLanguageResource.hour)*8+45,
                     minValue: 0,
                     maxValue: 23,
                     value:'',
@@ -50,7 +50,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                     			field.focus(true, 100);
                     		}
                         }
@@ -58,9 +58,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveStartTime_Minute_Id',
-                    fieldLabel: '分',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.minute,
+                    labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                    width: getStringLength(loginUserLanguageResource.minute)*8+45,
                     minValue: 0,
                     maxValue: 59,
                     value:'',
@@ -71,7 +71,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                     			field.focus(true, 100);
                     		}
                         }
@@ -79,9 +79,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveStartTime_Second_Id',
-                    fieldLabel: '秒',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.second,
+                    labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                    width: getStringLength(loginUserLanguageResource.second)*8+45,
                     minValue: 0,
                     maxValue: 59,
                     value:'',
@@ -92,7 +92,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                     			field.focus(true, 100);
                     		}
                         }
@@ -100,9 +100,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 }, {
                     xtype: 'datefield',
                     anchor: '100%',
-                    fieldLabel: '至',
-                    labelWidth: 15,
-                    width: 115,
+                    fieldLabel: loginUserLanguageResource.timeTo,
+                    labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+                    width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
                     format: 'Y-m-d',
                     id: 'ResourceProbeHistoryCurve_end_date_Id',
                     value: '',
@@ -114,9 +114,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveEndTime_Hour_Id',
-                    fieldLabel: '时',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.hour,
+                    labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                    width: getStringLength(loginUserLanguageResource.hour)*8+45,
                     minValue: 0,
                     maxValue: 23,
                     value:'',
@@ -127,7 +127,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                     			field.focus(true, 100);
                     		}
                         }
@@ -135,9 +135,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveEndTime_Minute_Id',
-                    fieldLabel: '分',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.minute,
+                    labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                    width: getStringLength(loginUserLanguageResource.minute)*8+45,
                     minValue: 0,
                     maxValue: 59,
                     value:'',
@@ -148,7 +148,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                     			field.focus(true, 100);
                     		}
                         }
@@ -156,9 +156,9 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'ResourceProbeHistoryCurveEndTime_Second_Id',
-                    fieldLabel: '秒',
-                    labelWidth: 15,
-                    width: 60,
+                	fieldLabel: loginUserLanguageResource.second,
+                    labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                    width: getStringLength(loginUserLanguageResource.second)*8+45,
                     minValue: 0,
                     maxValue: 59,
                     value:'',
@@ -169,52 +169,52 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                     		var flag=r.test(field.value);
                     		if(!flag){
-                    			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                     			field.focus(true, 100);
                     		}
                         }
                     }
                 },'-',{
                     xtype: 'button',
-                    text: cosog.string.search,
+                    text: loginUserLanguageResource.search,
                     iconCls: 'search',
                     handler: function () {
                     	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                     	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                     	var startTime_Hour=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').getValue();
                     	if(!r.test(startTime_Hour)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').focus(true, 100);
                     		return;
                     	}
                     	var startTime_Minute=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').getValue();
                     	if(!r2.test(startTime_Minute)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
                     	var startTime_Second=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').getValue();
                     	if(!r2.test(startTime_Second)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').focus(true, 100);
                     		return;
                     	}
                     	
                     	var endTime_Hour=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').getValue();
                     	if(!r.test(endTime_Hour)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').focus(true, 100);
                     		return;
                     	}
                     	var endTime_Minute=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').getValue();
                     	if(!r2.test(endTime_Minute)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
                     	var endTime_Second=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').getValue();
                     	if(!r2.test(endTime_Second)){
-                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                     		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').focus(true, 100);
                     		return;
                     	}

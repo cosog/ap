@@ -521,7 +521,7 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 		},
 		failure:function(){
 			Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			id:id,
@@ -739,7 +739,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 		},
 		failure:function(){
 			Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			id:id,
@@ -954,7 +954,7 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 		},
 		failure:function(){
 			Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			id:id,
@@ -1156,7 +1156,7 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 		},
 		failure:function(){
 			Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			id:id,

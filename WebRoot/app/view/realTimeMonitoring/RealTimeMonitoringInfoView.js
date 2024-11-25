@@ -722,7 +722,7 @@ function loadAndInitFESdiagramResultStat(all){
 		},
 		failure:function(){
 			Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -734,7 +734,7 @@ function loadAndInitFESdiagramResultStat(all){
 function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id";
 	
-	var title="工况诊断";
+	var title=loginUserLanguageResource.workType;
 	var datalist=get_rawData.totalRoot;
 	
 	var pieData=[];
@@ -766,7 +766,7 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 		},
 //		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',//center left
@@ -781,7 +781,7 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -844,7 +844,7 @@ function loadAndInitCommStatusStat(all){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -858,7 +858,7 @@ function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
-	var title="通信状态";
+	var title=loginUserLanguageResource.commStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
@@ -899,7 +899,7 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -914,7 +914,7 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -999,7 +999,7 @@ function loadAndInitRunStatusStat(all){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -1013,7 +1013,7 @@ function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
-	var title="运行状态";
+	var title=loginUserLanguageResource.runStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
@@ -1058,7 +1058,7 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -1073,7 +1073,7 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -1145,7 +1145,7 @@ function loadAndInitDeviceTypeStat(all){
 			initRealTimeMonitoringDeviceTypeStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			orgId:orgId,
@@ -1189,7 +1189,7 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 		},
 		colors : colors,
 		tooltip : {
-			pointFormat : '设备数: <b>{point.y}</b> 占: <b>{point.percentage:.1f}%</b>'
+			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 		},
 		legend : {
 			align : 'center',
@@ -1204,7 +1204,7 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 					enabled : true,
 					color : '#000000',
 					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}台'
+					format : '<b>{point.name}</b>: {point.y}'
 				},
 				events: {
 					click: function(e) {
@@ -1339,7 +1339,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
                 	divId = divPrefix + i+"_Id";
                 	var xTitle='';
                 	var yTitle=legendName[i];
-                	var title = result.deviceName+":"+legendName[i].split("(")[0] + "趋势曲线";
+                	var title = result.deviceName+":"+legendName[i].split("(")[0] + loginUserLanguageResource.trendCurve;
                 	var subtitle='';
         		    var color=[];
         		    color.push(colors[i]);
@@ -1398,7 +1398,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 		},
 		failure:function(){
 			Ext.getCmp(panelId).getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceName:deviceName,
@@ -1713,7 +1713,7 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 				showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 			},
 			failure:function(){
-				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
 				videoKeyId: videoKeyId

@@ -93,7 +93,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
         	layout: 'border',
             items: [{
             	region: 'center',
-        		title:'设备列表',
+        		title:loginUserLanguageResource.deviceList,
         		layout: 'fit',
         		id:'DeviceOrgChangeWinDeviceListPanel_Id',
         		tbar:[deviceCombo,{

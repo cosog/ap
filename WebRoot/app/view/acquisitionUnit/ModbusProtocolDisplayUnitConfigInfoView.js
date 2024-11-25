@@ -302,7 +302,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
         },
         failure: function () {
             Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
             protocolName: protocolName,
@@ -645,7 +645,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceType:deviceType,
@@ -982,7 +982,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1202,7 +1202,7 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
 			deviceType:deviceType,

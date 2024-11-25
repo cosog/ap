@@ -80,7 +80,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String loadWellComboxList(Page pager,String orgId,String deviceName,String deviceTypeStr,String calculateTypeStr) throws Exception {
+	public String loadWellComboxList(Page pager,String orgId,String deviceName,String deviceTypeStr,String calculateTypeStr,String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -118,7 +118,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(finalsql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -141,7 +141,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadPumpingManufacturerComboxList(String manufacturer) {
+	public String loadPumpingManufacturerComboxList(String manufacturer,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String sql = " select distinct(t.manufacturer) from tbl_pumpingmodel t where 1=1";
 		
@@ -150,7 +150,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		sql += " order by t.manufacturer";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		String get_key = "";
 		String get_val = "";
 		if (null != list && list.size() > 0) {
@@ -250,7 +250,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadPumpingModelComboxList(String manufacturer,String model) {
+	public String loadPumpingModelComboxList(String manufacturer,String model,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "select t.model from tbl_pumpingmodel t where 1=1";
 		
@@ -262,7 +262,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		sql += " order by t.manufacturer,t.model";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		String get_key = "";
 		String get_val = "";
 		if (null != list && list.size() > 0) {
@@ -550,7 +550,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadDeviceTypeComboxList() throws Exception {
+	public String loadDeviceTypeComboxList(String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -559,7 +559,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -582,7 +582,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadDeviceTypeComboxListFromTab() throws Exception {
+	public String loadDeviceTypeComboxListFromTab(String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -594,7 +594,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -617,7 +617,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadDataDictionaryComboxList(String itemCode) throws Exception {
+	public String loadDataDictionaryComboxList(String itemCode,String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -626,7 +626,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {

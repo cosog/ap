@@ -51,7 +51,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
         
         var smsDeviceSMSInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '短信实例',
+					fieldLabel :  loginUserLanguageResource.SMSInstance,
 					emptyText : '请选择短信实例',
 					blankText : '请选择短信实例',
 					id : 'smsDeviceSMSInstanceComb_Id',
@@ -122,7 +122,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             buttons: [{
                 id: 'addFormSMSDevice_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("SMSDeviceInfoWindow_Id").down('form');
@@ -156,14 +156,14 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             }, {
                 xtype: 'button',
                 id: 'updateFormSMSDevice_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function (v, o) {
                 	
                 }
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("SMSDeviceInfoWindow_Id").close();

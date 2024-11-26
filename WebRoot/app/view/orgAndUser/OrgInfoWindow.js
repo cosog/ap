@@ -65,18 +65,18 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             buttons: [{
                 id: 'addFormOrg_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: SaveOrgDataInfoSubmitBtnForm
             }, {
                 xtype: 'button',
                 id: 'updateFormOrg_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: UpdateOrgDataInfoSubmitBtnForm
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("org_addwin_Id").close();

@@ -142,7 +142,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 id: 'SMSDeviceTotalCount_Id',
                 xtype: 'component',
                 hidden: false,
-                tpl: cosog.string.totalCount + ': {count}',
+                tpl: loginUserLanguageResource.totalCount + ': {count}',
                 style: 'margin-right:15px'
     		}, '->', {
                 xtype: 'button',
@@ -190,7 +190,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                             deleteInfo = '是否删除第' + (startRow + 1) + "行数据";
                         }
 
-                        Ext.Msg.confirm(cosog.string.yesdel, deleteInfo, function (btn) {
+                        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
                             if (btn == "yes") {
                                 for (var i = startRow; i <= endRow; i++) {
                                     var rowdata = smsDeviceInfoHandsontableHelper.hot.getDataAtRow(i);
@@ -238,7 +238,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 id: 'saveSMSDeviceDataBtn_Id',
                 disabled: false,
                 hidden: false,
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     smsDeviceInfoHandsontableHelper.saveData();

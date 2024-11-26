@@ -43,7 +43,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                         sortable: false,
                         locked: false
                     }, {
-                        text: '协议名称',
+                        text: loginUserLanguageResource.protocolName,
                         lockable: true,
                         align: 'center',
                         flex: 5,

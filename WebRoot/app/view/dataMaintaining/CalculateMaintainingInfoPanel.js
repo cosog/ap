@@ -16,7 +16,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         		tabPosition: 'top',
         		items: [{
 //        				title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">功图计算</div>',
-        				title: '功图计算',
+        				title: loginUserLanguageResource.RPCCalculate,
         				id:'RPCCalculateMaintainingInfoPanel_Id',
         				items: [RPCCalculateMaintainingInfoView],
         				iconCls: 'check3',
@@ -24,7 +24,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         				border: false
         			},{
 //        				title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">转速计产</div>',
-        				title: '转速计产',
+        				title: loginUserLanguageResource.PCPCalculate,
         				id:'PCPCalculateMaintainingInfoPanel_Id',
         				items: [PCPCalculateMaintainingInfoView],
         				layout: "fit",

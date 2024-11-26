@@ -57,14 +57,14 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 itemId: 'addmoduleLableClassBtnId',
                 id: 'addmoduleLableClassBtn_Id',
                 action: 'addmoduleAction',
-                text: cosog.string.add,
+                text: loginUserLanguageResource.add,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
             }, "-", {
                 xtype: 'button',
                 itemId: 'editmoduleLableClassBtnId',
                 id: 'editmoduleLableClassBtn_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 action: 'editmoduleInfoAction',
                 disabled: false,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
@@ -75,7 +75,7 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 id: 'delmoduleLableClassBtn_Id',
                 disabled: false,
                 action: 'delmoduleAction',
-                text: cosog.string.del,
+                text: loginUserLanguageResource.deleteData,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
             }]

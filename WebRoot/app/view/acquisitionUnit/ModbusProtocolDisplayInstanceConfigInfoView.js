@@ -41,7 +41,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         			}
         		}, "-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -107,7 +107,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -266,19 +266,19 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='显示单元';
+		item2.title=loginUserLanguageResource.displayUnit;
 		item2.value=data.displayUnitName;
 		root.push(item2);
 		
 		var item3={};
 		item3.id=3;
-		item3.title='排序序号';
+		item3.title=loginUserLanguageResource.sortNum;
 		item3.value=data.sort;
 		root.push(item3);
 	}else if(data.classes==2){
 		var item1={};
 		item1.id=1;
-		item1.title='显示单元';
+		item1.title=loginUserLanguageResource.displayUnit;
 		item1.value=data.text;
 		root.push(item1);
 	}
@@ -475,7 +475,7 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 }
 
 function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes){
-	Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceAcqItemsConfigData',
@@ -691,7 +691,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 };
 
 function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,calculateType){
-	Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCalItemsConfigData',
@@ -910,7 +910,7 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 };
 
 function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classes,calculateType){
-	Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceInputItemsConfigData',
@@ -1125,7 +1125,7 @@ var ProtocolDisplayInstanceInputItemsHandsontableHelper = {
 };
 
 function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes){
-	Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCtrlItemsConfigData',

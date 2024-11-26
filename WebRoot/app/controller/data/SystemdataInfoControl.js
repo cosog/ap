@@ -162,14 +162,14 @@ function delSystemdataInfo() {
     	//获得被选中的对象
         var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
         if (sys_row.length>0) {
-        	Ext.Msg.confirm(cosog.string.ts, cosog.string.yesdeldata,
+        	Ext.Msg.confirm(cosog.string.ts, loginUserLanguageResource.confirmDeleteData,
                     function (btn) {
                         if (btn == "yes") {
                             ExtDelspace_ObjectInfo("systemdataInfoController", "SystemdataInfoGridPanelId", sys_row, "sysdataid", "deleteSystemdataInfoById");
                         }
                     });
         } else {
-        	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
         }
     }
 };
@@ -214,7 +214,7 @@ function editSystemdataInfo() {
 	        Ext.getCmp('sysmodule_Id').setValue(moduleId);
 	        
 	    } else {
-	    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+	    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
 	    }
 	}
     return false;
@@ -259,7 +259,7 @@ function editfindtattxtInfo() {
         Ext.getCmp("sysdatasorts_Ids").setValue(sorts);
         Ext.getCmp("sysdatadatavalue_Ids").setValue(datavalue);
     }else {
-    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -301,7 +301,7 @@ function edittoSysDatasItems() {
     var edittosavedatawin = Ext.getCmp("DataitemsInfoWinId");
     var editsysdataForm = edittosavedatawin.down('form');
     if (editsysdataForm.getForm().isValid()) {
-        editsysdataForm.el.mask(cosog.string.updatewait).show();
+        editsysdataForm.el.mask(loginUserLanguageResource.updateWait+'...').show();
         editsysdataForm.getForm().submit({
             url: context + '/dataitemsInfoController/editDataitemsInfo',
             clientValidation: true,
@@ -311,10 +311,10 @@ function edittoSysDatasItems() {
                 if (action.result.msg == true) {
                     edittosavedatawin.close();
                     reFreshg("DataitemsInfoEditGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font> " + cosog.string.updatefail + "。");
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font> " + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -331,7 +331,7 @@ function editsystemdataInfoUpdata() {
 	var edittosysobjwin = Ext.getCmp("SystemdataInfoWinId");
     var editsysobjForm = edittosysobjwin.down('form');
     if (editsysobjForm.getForm().isValid()) {
-        editsysobjForm.el.mask(cosog.string.updatewait).show();
+        editsysobjForm.el.mask(loginUserLanguageResource.updateWait+'...').show();
         editsysobjForm.getForm().submit({
             url: context + '/systemdataInfoController/editSystemdataInfo',
             clientValidation: true,
@@ -341,7 +341,7 @@ function editsystemdataInfoUpdata() {
                 if (action.result.msg == true) {
                     edittosysobjwin.close();
                     reFreshg("SystemdataInfoGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 } else {
                     Ext.Msg.alert('info', "<font color=red>" + action.result.error + "。</font> ");
                 }
@@ -358,7 +358,7 @@ function editsystemdataInfoUpdata() {
 function delfindtattxtInfo() {
     var obj_row = Ext.getCmp("DataitemsInfoEditGridPanelId").getSelectionModel().getSelection();
     if (obj_row.length > 0) {
-    	Ext.Msg.confirm(cosog.string.ts, cosog.string.yesdeldata,
+    	Ext.Msg.confirm(cosog.string.ts, loginUserLanguageResource.confirmDeleteData,
                 function (btn) {
                     if (btn == "yes") {
                         //调用Grid公共方法 
@@ -366,7 +366,7 @@ function delfindtattxtInfo() {
                     }
                 });
     } else {
-    	Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 };

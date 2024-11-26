@@ -66,7 +66,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 id: 'AuxiliaryDeviceTotalCount_Id',
                 xtype: 'component',
                 hidden: false,
-                tpl: cosog.string.totalCount + ': {count}',
+                tpl: loginUserLanguageResource.totalCount + ': {count}',
                 style: 'margin-right:15px'
             }, '->',{
     			xtype: 'button',
@@ -98,7 +98,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     						deleteInfo='是否删除第'+(startRow+1)+"行数据";
     					}
     					
-    					Ext.Msg.confirm(cosog.string.yesdel, deleteInfo, function (btn) {
+    					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
     			            if (btn == "yes") {
     			            	for(var i=startRow;i<=endRow;i++){
     	    						var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(i);
@@ -143,7 +143,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 id: 'saveAuxiliaryDeviceDataBtn_Id',
                 disabled: false,
                 hidden: false,
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     auxiliaryDeviceInfoHandsontableHelper.saveData();
@@ -202,7 +202,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     cls: 'x-check-group-alt',
                     items: [
                         {boxLabel: '抽油机',name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 1},
-                        {boxLabel: '无',name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 0}
+                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 0}
                     ],
                     listeners: {
                     	change: function (radiogroup, newValue, oldValue, eOpts) {

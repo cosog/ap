@@ -92,9 +92,9 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
     		},'-',wellListCombo, {
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: '日期',
-                labelWidth: 36,
-                width: 136,
+                fieldLabel: loginUserLanguageResource.date,
+                labelWidth: getStringLength(loginUserLanguageResource.date)*8,
+                width: (getStringLength(loginUserLanguageResource.date)*8+100),
                 format: 'Y-m-d',
                 id: 'ProductionDailyReportStartDate_Id',
 //                value: new Date(),
@@ -313,7 +313,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: '批量导出',
+                            text: loginUserLanguageResource.bulkExportData,
                             iconCls: 'export',
                             handler: function (v, o) {
                             	var timestamp=new Date().getTime();
@@ -365,7 +365,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             }
                         },'-', {
                             xtype: 'button',
-                            text: cosog.string.save,
+                            text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
                             handler: function (v, o) {
@@ -374,7 +374,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         },'-', {
                             id: 'ProductionDailyReportTotalCount_Id',
                             xtype: 'component',
-                            tpl: cosog.string.totalCount + ': {count}',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
                             style: 'margin-right:15px'
                         }],
                         html:'<div class="ProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="ProductionDailyReportDiv_id"></div></div>',
@@ -939,8 +939,8 @@ function CreateProductionDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.selectedOrgName + "日报表曲线";
-		    var xTitle='日期';
+		    var title = result.selectedOrgName+ '-' + loginUserLanguageResource.daliyReportCurve;
+		    var xTitle=loginUserLanguageResource.date;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];

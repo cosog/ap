@@ -235,12 +235,12 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 layout: 'hbox',
                 items: [
                     {
-                        boxLabel:'是',
+                        boxLabel:loginUserLanguageResource.yes,
                         name:'user.userQuickLogin',
                         inputValue: '1',
                         id: 'userQuickLoginRadio1_Id'
                     }, {
-                        boxLabel: '否',
+                        boxLabel: loginUserLanguageResource.no,
                         name:'user.userQuickLogin',
                         checked:true,
                         inputValue:'0',
@@ -258,12 +258,12 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 layout: 'hbox',
                 items: [
                     {
-                        boxLabel:'是',
+                        boxLabel:loginUserLanguageResource.yes,
                         name:'user.receiveSMS',
                         inputValue: '1',
                         id: 'userReceiveSMSRadio1_Id'
                     }, {
-                        boxLabel: '否',
+                        boxLabel: loginUserLanguageResource.no,
                         name:'user.receiveSMS',
                         checked:true,
                         inputValue:'0',
@@ -281,12 +281,12 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 layout: 'hbox',
                 items: [
                     {
-                        boxLabel:'是',
+                        boxLabel:loginUserLanguageResource.yes,
                         name:'user.receiveMail',
                         inputValue: '1',
                         id: 'userReceiveMailRadio1_Id'
                     }, {
-                        boxLabel: '否',
+                        boxLabel: loginUserLanguageResource.no,
                         name:'user.receiveMail',
                         checked:true,
                         inputValue:'0',

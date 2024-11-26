@@ -160,19 +160,19 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
             	}
 		    },{
 	            id: "sysSDSaveBtnId",
-	            text: cosog.string.save,
+	            text: loginUserLanguageResource.save,
 	            iconCls: 'save',
 	            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 	            action: 'SystemdataInfoSubmitForm'
 	        },{
 	            id: "sysSDUpdBtnId",
-	            text: cosog.string.save,
+	            text: loginUserLanguageResource.save,
 	            iconCls: 'save',
 	            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 	            action: 'SystemdataInfoUpdataForm',
 	            hidden: true
 	        },{
-	            text: cosog.string.cancel,
+	            text: loginUserLanguageResource.cancel,
 	            closewin: 'SystemdataInfoWinId',
 	            iconCls: 'cancel',
 	            handler: closeWindow

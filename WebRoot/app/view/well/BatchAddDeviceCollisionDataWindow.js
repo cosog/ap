@@ -30,7 +30,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                 html: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'batchAddCollisionDeviceType_Id',
                 value: ''
             },{
@@ -40,7 +40,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                 value: ''
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var orgId = Ext.getCmp('batchAddCollisionDeviceOrg_Id').getValue();

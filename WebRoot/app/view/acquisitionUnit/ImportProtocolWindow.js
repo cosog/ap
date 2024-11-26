@@ -213,7 +213,7 @@ function submitImportedProtocolFile() {
 };
 
 function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
-	Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getUploadedProtocolItemsConfigData',

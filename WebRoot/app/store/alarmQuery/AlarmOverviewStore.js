@@ -29,8 +29,7 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                 var newColumns = Ext.JSON.decode(column);
                 var bbar = new Ext.PagingToolbar({
                 	store: store,
-                	displayInfo: true,
-                	displayMsg:''
+                	displayInfo: true
 //                	displayMsg: '当前 {0}~{1}条  共 {2} 条'
     	        });
                 

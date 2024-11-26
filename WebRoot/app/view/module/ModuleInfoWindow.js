@@ -171,18 +171,18 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
             buttons: [{
                 id: 'addFormmodule_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: SavemoduleDataInfoSubmitBtnForm
      }, {
                 xtype: 'button',
                 id: 'updateFormmodule_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: UpdatemoduleDataInfoSubmitBtnForm
      }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("module_addwin_Id").close();

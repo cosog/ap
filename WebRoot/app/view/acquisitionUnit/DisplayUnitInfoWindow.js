@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
         
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '协议名称<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.protocolName+'<font color=red>*</font>',
 					id : 'formDisplayUnitProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -217,7 +217,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, '无'],[1, '功图计算'],[2, '转速计产']]
+							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.RPCCalculate],[2, loginUserLanguageResource.PCPCalculate]]
 						}),
 				displayField : 'text',
 				valueField : 'value',
@@ -241,7 +241,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormDisplayUnit_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	SaveDisplayUnitSubmitBtnForm();
@@ -249,7 +249,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
             }, {
                 xtype: 'button',
                 id: 'updateFormaAquisitionUnit_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -257,7 +257,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                 }
             }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("displayUnit_editWin_Id").close();

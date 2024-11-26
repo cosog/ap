@@ -214,7 +214,7 @@ function submitImportedAcqUnitFile() {
 
 function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,groupName,groupType){
 	clearImportAcqUnitHandsontable();
-	Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getUploadedAcqUnitItemsConfigData',

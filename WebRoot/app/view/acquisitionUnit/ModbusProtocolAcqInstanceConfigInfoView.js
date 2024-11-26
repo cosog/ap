@@ -38,7 +38,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         			}
         		}, "-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -106,7 +106,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -187,7 +187,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item2={};
 				item2.id=2;
-				item2.title='采控单元';
+				item2.title=loginUserLanguageResource.acqUnit;
 				item2.value=data.unitName;
 				root.push(item2);
 				
@@ -267,13 +267,13 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item13={};
 				item13.id=13;
-				item13.title='排序序号';
+				item13.title=loginUserLanguageResource.sortNum;
 				item13.value=data.sort;
 				root.push(item13);
 			}else if(data.classes==2){
 				var item1={};
 				item1.id=1;
-				item1.title='采控单元';
+				item1.title=loginUserLanguageResource.acqUnit;
 				item1.value=data.text;
 				root.push(item1);
 			}
@@ -482,7 +482,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 };
 
 function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
-	Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolInstanceItemsConfigData',

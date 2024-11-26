@@ -39,7 +39,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
 			},{
                 id: 'formModbusProtocolName_Id',
                 name: "protocolModel.name",
-                fieldLabel: '协议名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.protocolName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -84,7 +84,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormModbusProtocol_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	saveModbusProtocolSubmitBtnForm();
@@ -92,7 +92,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaModbusProtocol_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -100,7 +100,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("modbusProtocol_editWin_Id").close();

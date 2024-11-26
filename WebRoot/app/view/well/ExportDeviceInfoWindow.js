@@ -25,7 +25,7 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
         Ext.apply(me, {
         	tbar: [{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'ExportDeviceInfoDeviceType_Id',
                 value: ''
             },'->',{

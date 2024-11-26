@@ -1,5 +1,5 @@
 var AlarmQuerySecondTabPanelItems=[{
-	title: '工况诊断报警',
+	title: loginUserLanguageResource.FESDiagramResultAlarm,
 	id:'FESDiagramResultAlarmInfoTabPanel_Id',
 	hidden:onlyMonitor,
 	iconCls: onlyMonitor?null:'check3',
@@ -16,14 +16,14 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
 		region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'FESDiagramResultAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]
 },{
 //	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">运行状态报警</div>',
-	title: '运行状态报警',
+	title: loginUserLanguageResource.runStatusAlarm,
 	id:'RunStatusAlarmInfoTabPanel_Id',
 	layout: "border",
 	iconCls: onlyMonitor?'check3':null,
@@ -39,14 +39,14 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
         region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'RunStatusAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]
 },{
 //	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">通信状态报警</div>',
-	title: '通信状态报警',
+	title: loginUserLanguageResource.commStatusAlarm,
 	id:'CommunicationAlarmInfoTabPanel_Id',
 	layout: "border",
 	items: [{
@@ -61,14 +61,14 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
 		region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'CommunicationAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]
 },{
 //	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">数据量报警</div>',
-	title: '数据量报警',
+	title: loginUserLanguageResource.numericValueAlarm,
 	id:'NumericValueAlarmInfoTabPanel_Id',
 	layout: "border",
 	items: [{
@@ -83,14 +83,14 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
 		region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'NumericValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]
 },{
 //	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">枚举量报警</div>',
-	title: '枚举量报警',
+	title: loginUserLanguageResource.enumValueAlarm,
 	id:'EnumValueAlarmInfoTabPanel_Id',
 //	items: [EnumValueAlarmInfoPanel],
 	layout: "border",
@@ -106,14 +106,14 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
 		region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'EnumValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]
 },{
 //	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">开关量报警</div>',
-	title: '开关量报警',
+	title: loginUserLanguageResource.switchingValueAlarm,
 	id:'SwitchingValueAlarmInfoTabPanel_Id',
 //	items: [SwitchingValueAlarmInfoPanel],
 	layout: "border",
@@ -129,7 +129,7 @@ var AlarmQuerySecondTabPanelItems=[{
 		layout: 'fit'
 	},{
 		region: 'center',
-		title: '报警数据',
+		title: loginUserLanguageResource.alarmData,
 		id: 'SwitchingValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -142,16 +142,6 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
     border: false,
     initComponent: function () {
         var me = this;
-        
-        
-        
-//        var FESDiagramResultAlarmInfoPanel = Ext.create('AP.view.alarmQuery.FESDiagramResultAlarmInfoPanel');
-//        var RunStatusAlarmInfoPanel = Ext.create('AP.view.alarmQuery.RunStatusAlarmInfoPanel');
-//        var CommunicationAlarmInfoPanel = Ext.create('AP.view.alarmQuery.CommunicationAlarmInfoPanel');
-//        var NumericValueAlarmInfoPanel = Ext.create('AP.view.alarmQuery.NumericValueAlarmInfoPanel');
-//        var EnumValueAlarmInfoPanel = Ext.create('AP.view.alarmQuery.EnumValueAlarmInfoPanel');
-//        var SwitchingValueAlarmInfoPanel = Ext.create('AP.view.alarmQuery.SwitchingValueAlarmInfoPanel');
-        
         var deviceCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
             fields: [{
@@ -256,10 +246,10 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     }
         		},'-',deviceCombo,'-',{
                 	xtype : "combobox",
-    				fieldLabel : '报警级别',
+    				fieldLabel : loginUserLanguageResource.alarmLevel,
     				id : 'AlarmLevelComb_Id',
-    				labelWidth: 55,
-                    width: 135,
+    				labelWidth: getStringLength(loginUserLanguageResource.alarmLevel)*8,
+                    width: (getStringLength(loginUserLanguageResource.alarmLevel)*8+80),
                     labelAlign: 'left',
     				triggerAction : 'all',
     				displayField: "boxval",
@@ -273,7 +263,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     blankText: '--'+loginUserLanguageResource.all+'--',
     				store : new Ext.data.SimpleStore({
     							fields : ['boxkey', 'boxval'],
-    							data : [['', loginUserLanguageResource.selectAll],[100, '一级报警'],[200, '二级报警'],[300, '三级报警']]
+    							data : [['', loginUserLanguageResource.selectAll],[100, loginUserLanguageResource.alarmLevel1],[200, loginUserLanguageResource.alarmLevel2],[300, loginUserLanguageResource.alarmLevel3]]
     						}),
     				queryMode : 'local',
     				listeners : {
@@ -286,11 +276,11 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
 //                '-',
                 {
                 	xtype : "combobox",
-    				fieldLabel : '是否发送短信',
+    				fieldLabel : loginUserLanguageResource.isSendMessage,
     				id : 'AlarmIsSendMessageComb_Id',
     				hidden: true,
-    				labelWidth: 80,
-                    width: 160,
+    				labelWidth: getStringLength(deviceShowName)*8,
+                    width: (getStringLength(deviceShowName)*8+80),
                     labelAlign: 'left',
     				triggerAction : 'all',
     				displayField: "boxval",
@@ -304,7 +294,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     blankText: '--'+loginUserLanguageResource.all+'--',
     				store : new Ext.data.SimpleStore({
     							fields : ['boxkey', 'boxval'],
-    							data : [['', loginUserLanguageResource.selectAll],[1, '是'],[0, '否']]
+    							data : [['', loginUserLanguageResource.selectAll],[1, loginUserLanguageResource.yes],[0, loginUserLanguageResource.no]]
     						}),
     				queryMode : 'local',
     				listeners : {
@@ -515,7 +505,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     }
                 },'-',{
                     xtype: 'button',
-                    text: '导出设备列表',
+                    text: loginUserLanguageResource.exportDeviceList,
                     iconCls: 'export',
                     hidden:false,
                     handler: function (v, o) {
@@ -535,7 +525,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     }
                 },'-', {
                     xtype: 'button',
-                    text: '导出报警数据',
+                    text: loginUserLanguageResource.exportAlarmData,
                     iconCls: 'export',
                     hidden:false,
                     handler: function (v, o) {

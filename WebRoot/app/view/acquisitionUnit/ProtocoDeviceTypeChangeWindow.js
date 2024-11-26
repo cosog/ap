@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
     alias: 'widget.protocoDeviceTypeChangeWindow',
     id:'protocoDeviceTypeChangeWindow_Id',
     layout: 'fit',
-    title:'协议隶属迁移',
+    title:loginUserLanguageResource.protocoDeviceTypeChange,
     border: false,
     hidden: false,
     collapsible: true,
@@ -62,7 +62,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 			var result = Ext.JSON.decode(response.responseText);
                 			Ext.getCmp("IframeView_Id").getStore().load();
                 			if (result.success == true) {
-                				Ext.Msg.alert('提示', "协议隶属迁移成功");
+                				Ext.Msg.alert('提示', loginUserLanguageResource.changeProtocolBelongToSuccess);
                 				Ext.getCmp('protocoDeviceTypeChangeWindow_Id').close();
                 				var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
                                 if (isNotVal(treeGridPanel)) {
@@ -70,7 +70,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                                 }
                 			}
                 			if (result.success == false) {
-                				Ext.Msg.alert('提示', "<font color=red>协议隶属迁移失败。</font>");
+                				Ext.Msg.alert('提示', "<font color=red>"+loginUserLanguageResource.changeProtocolBelongToFail+"</font>");
                 			}
                 		},
                 		failure : function() {
@@ -82,7 +82,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
         	layout: 'border',
             items: [{
             	region: 'center',
-        		title:'协议列表',
+        		title:loginUserLanguageResource.protocolList,
         		layout: 'fit',
         		id:'ProtocolDeviceTypeChangeWinProtocolListPanel_Id'
             },{

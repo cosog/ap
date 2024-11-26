@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
         
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '协议名称<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.protocolName+'<font color=red>*</font>',
 					id : 'formAlarmUnitProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -145,7 +145,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormAlarmUnit_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	SaveAlarmUnitSubmitBtnForm();
@@ -153,7 +153,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaAquisitionUnit_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -161,7 +161,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("alarmUnit_editWin_Id").close();

@@ -63,7 +63,7 @@ function UpdateOrgDataInfoSubmitBtnForm() {
     var getUpdateDataInfoSubmitBtnFormId = Ext.getCmp("org_addwin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("org_addwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("org_addwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataInfoSubmitBtnFormId.getForm().submit({
             url: context + '/orgManagerController/doOrgEdit',
             clientValidation: true, // 进行客户端验证
@@ -73,10 +73,10 @@ function UpdateOrgDataInfoSubmitBtnForm() {
                 Ext.getCmp('org_addwin_Id').close();
                 Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,cosog.string.updatefail + "");
+                    Ext.Msg.alert(cosog.string.ts,loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -148,7 +148,7 @@ function delOrgInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, '是否删除所选组织及其子节点', function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, '是否删除所选组织及其子节点', function (btn) {
             if (btn == "yes") {
         		Ext.Ajax.request({
         			url : context + '/orgManagerController/doOrgBulkDelete',
@@ -173,7 +173,7 @@ function delOrgInfo() {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
 };
 
@@ -194,7 +194,7 @@ function modifyOrgInfo() {
         Ext.getCmp("updateFormOrg_Id").show();
         SelectOrgDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     
     return false;
@@ -255,7 +255,7 @@ function saveOrgCoordInfo() {
             }
     	});   
     }else {
-        //Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.noDataChange);
+        //Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
     }
     
     return false;
@@ -304,7 +304,7 @@ function modifyUserInfo() {
     	UserEditPasswordWindow.show();
     	SelectedUserDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -391,7 +391,7 @@ function delUserInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
 //                ExtDel_ObjectInfo("UserInfoGridPanel_Id", _record,"userNo", delUrl);
                 
@@ -441,7 +441,7 @@ function delUserInfo() {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -451,7 +451,7 @@ function delUserInfoByGridBtn(record) {
 //  record.drop();
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
   Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-  Ext.Msg.confirm(cosog.string.yesdel, '是否删除用户'+record.get("userId"), function (btn) {
+  Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, '是否删除用户'+record.get("userId"), function (btn) {
       if (btn == "yes") {
           var deletejson = [];
           var noDelete=[];
@@ -586,16 +586,16 @@ function UpdateUserDataInfoSubmitBtnForm() {
             url: context + '/userManagerController/doUserEdit',
             clientValidation: false, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.updatewait,
+            waitMsg: loginUserLanguageResource.updateWait+'...',
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('user_addwin_Id').close();
                 Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, cosog.string.updatefail + "。");
+                    Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -617,15 +617,15 @@ function EditUserPasswordSubmitBtnForm() {
             url: context + '/userManagerController/doUserEditPassword',
             clientValidation: false, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.updatewait,
+            waitMsg: loginUserLanguageResource.updateWait+'...',
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('userEditPasswordWindow_Id').close();
                 if (action.result.flag == true) {
                 	Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
-                	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }else if (action.result.flag == false) {
-                    Ext.Msg.alert(cosog.string.ts,cosog.string.updatefail + "。");
+                    Ext.Msg.alert(cosog.string.ts,loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {

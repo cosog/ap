@@ -79,7 +79,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, '无'],[1, '功图计算'],[2, '转速计产']]
+							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.RPCCalculate],[2, loginUserLanguageResource.PCPCalculate]]
 						}),
 				displayField : 'text',
 				valueField : 'value',
@@ -110,7 +110,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormModbusProtocolReportUnit_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	saveModbusProtocolReportUnitSubmitBtnForm();
@@ -118,7 +118,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaModbusProtocolReportUnit_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -126,7 +126,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("modbusProtocolReportUnitInfoWindow_Id").close();

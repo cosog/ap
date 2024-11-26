@@ -155,9 +155,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
                         	}if(record.data.classes==2){
-                        		info='报警单元';
+                        		info=loginUserLanguageResource.alarmUnit;
                         	}else if(record.data.classes==3){
-                        		info='报警单元';
+                        		info=loginUserLanguageResource.alarmUnit;
                         	}
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,

@@ -32,17 +32,6 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     autoLoad: false,
                     columnLines: true,
                     forceFit: false,
-//                    selType: 'checkboxmodel',
-//                    multiSelect: false,
-//                    selModel:{
-//                    	selType: 'checkboxmodel',
-//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-//                    	checkOnly:false,
-//                    	allowDeselect:true,
-//                    	onHdMouseDown:function(e,t){
-//                    		alert("全选/全不选");
-//                    	}
-//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },

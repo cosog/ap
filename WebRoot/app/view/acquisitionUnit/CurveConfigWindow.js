@@ -144,7 +144,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
             }],
             buttons: [{
             	xtype: 'button',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	var sort=Ext.getCmp("curveConfigSort_Id").getValue();
@@ -236,7 +236,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 }
             },{
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("curveConfigWindow_Id").close();

@@ -61,7 +61,7 @@ function UpdatemoduleDataInfoSubmitBtnForm() {
         .down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("module_addwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("module_addwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataInfoSubmitBtnFormId.getForm().submit({
             url: context + '/moduleManagerController/doModuleEdit',
             clientValidation: true, // 进行客户端验证
@@ -71,11 +71,11 @@ function UpdatemoduleDataInfoSubmitBtnForm() {
                 Ext.getCmp('module_addwin_Id').close();
                 Ext.getCmp("moduleInfoTreeGridView_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -152,13 +152,13 @@ function delmoduleInfo() {
             // 提示是否删除数据
             Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
             Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-            Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
                 if (btn == "yes") {
                     ExtDel_ObjectInfo("moduleInfoTreeGridView_Id", _record,"mdId", delUrl);
                 }
             });
         } else {
-            Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+            Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
         }
     }
 }
@@ -183,7 +183,7 @@ function modifymoduleInfo() {
             Ext.getCmp("updateFormmodule_Id").show();
             SelectmoduleDataAttrInfoGridPanel();
         }else {
-            Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+            Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
         }
     }
 }

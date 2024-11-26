@@ -46,7 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
         			}
         		}, "-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -113,7 +113,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	border: false,
                     	collapsible: true,
                         split: true,
@@ -486,7 +486,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
 });
 
 function CreateReportInstanceSingleWellRangeReportTemplateInfoTable(calculateType,code,selectedInstanceName){
-	Ext.getCmp("ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -722,7 +722,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	};
 
 function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
-	Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportInstanceTotalCalItemsConfigData',
@@ -892,7 +892,7 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 };
 
 function CreateReportInstanceSingleWellDailyReportTemplateInfoTable(calculateType,code,selectedInstanceName){
-	Ext.getCmp("ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -1128,7 +1128,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	};
 
 function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
-	Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportInstanceTimingTotalCalItemsConfigData',
@@ -1301,7 +1301,7 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 };
 
 function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selectedUnitId,selectedInstanceName){
-	Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportInstanceTotalCalItemsConfigData',
@@ -1553,19 +1553,19 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				
 				var item2={};
 				item2.id=2;
-				item2.title='报表单元';
+				item2.title=loginUserLanguageResource.reportUnit;
 				item2.value=data.unitName;
 				root.push(item2);
 				
 				var item3={};
 				item3.id=3;
-				item3.title='排序序号';
+				item3.title=loginUserLanguageResource.sortNum;
 				item3.value=data.sort;
 				root.push(item3);
 			}else if(data.classes==2){
 				var item1={};
 				item1.id=1;
-				item1.title='报表单元';
+				item1.title=loginUserLanguageResource.reportUnit;
 				item1.value=data.text;
 				root.push(item1);
 			}
@@ -1739,7 +1739,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 };
 
 function CreateReportInstanceProductionTemplateInfoTable(calculateType,code,selectedInstanceName){
-	Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolReportInstanceProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getReportTemplateData',

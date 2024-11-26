@@ -94,9 +94,9 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
     		},'-',deviceCombo,'-', {
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: '日期',
-                labelWidth: 36,
-                width: 136,
+                fieldLabel: loginUserLanguageResource.date,
+                labelWidth: getStringLength(loginUserLanguageResource.date)*8,
+                width: (getStringLength(loginUserLanguageResource.date)*8+100),
                 format: 'Y-m-d',
                 id: 'SingleWellDailyReportStartDate_Id',
                 listeners: {
@@ -271,7 +271,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         	xtype : "combobox",
             				fieldLabel : loginUserLanguageResource.interval,
                             labelWidth: getStringLength(loginUserLanguageResource.interval)*8,
-                            width: (getStringLength(loginUserLanguageResource.interval)*8+80),
+                            width: (getStringLength(loginUserLanguageResource.interval)*8+100),
             				id : 'SingleWellDailyReportIntervalComb_Id',
             				triggerAction : 'all',
             				selectOnFocus : true,
@@ -281,13 +281,13 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
             				editable : false,
             				store : new Ext.data.SimpleStore({
             							fields : ['value', 'text'],
-            							data : [[2, '2小时'],[1, '1小时']]
+            							data : [[2, loginUserLanguageResource.twoHours],[1, loginUserLanguageResource.oneHour]]
             						}),
             				displayField : 'text',
             				valueField : 'value',
             				queryMode : 'local',
-            				emptyText : '请选择时间间隔',
-            				blankText : '请选择时间间隔',
+            				emptyText : loginUserLanguageResource.selectInterval,
+            				blankText : loginUserLanguageResource.selectInterval,
             				listeners : {
             					select:function(v,o){
             						CreateSingleWellDailyReportTable();
@@ -303,14 +303,14 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: '批量导出',
+                            text: loginUserLanguageResource.bulkExportData,
                             iconCls: 'export',
                             handler: function (v, o) {
                             	batchExportSingleWellDailyReportData();
                             }
                         },'-',{
                             xtype: 'button',
-                            text: cosog.string.save,
+                            text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
                             handler: function (v, o) {
@@ -319,7 +319,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         },'-', {
                             id: 'SingleWellDailyReportTotalCount_Id',
                             xtype: 'component',
-                            tpl: cosog.string.totalCount + ': {count}',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
                             style: 'margin-right:15px'
                         }],
                         html:'<div class="SingleWellDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="SingleWellDailyReportDiv_id"></div></div>',
@@ -375,14 +375,14 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: '批量导出',
+                            text: loginUserLanguageResource.bulkExportData,
                             iconCls: 'export',
                             handler: function (v, o) {
                             	batchExportSingleWellRangeReportData();
                             }
                         },'-',{
                             xtype: 'button',
-                            text: cosog.string.save,
+                            text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
                             handler: function (v, o) {
@@ -391,7 +391,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         },'-', {
                             id: 'SingleWellRangeReportTotalCount_Id',
                             xtype: 'component',
-                            tpl: cosog.string.totalCount + ': {count}',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
                             style: 'margin-right:15px'
                         }],
                         html:'<div class="SingleWellRangeReportContainer" style="width:100%;height:100%;"><div class="con" id="SingleWellRangeReportDiv_id"></div></div>',
@@ -1338,8 +1338,7 @@ function CreateSingleWellRangeReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName + "日报表曲线";
-		    var xTitle='日期';
+		    var title = result.deviceName+ '-' + loginUserLanguageResource.daliyReportCurve;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];
@@ -1531,8 +1530,7 @@ function CreateSingleWellDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName + "班报表曲线-"+result.reportDate;
-		    var xTitle='时间';
+		    var title = result.deviceName+ "-" + loginUserLanguageResource.hourlyReportCurve+ "-"+result.reportDate;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];

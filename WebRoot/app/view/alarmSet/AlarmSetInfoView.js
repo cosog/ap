@@ -79,7 +79,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                     itemId: 'saveAlarmColorSetBtnId',
                     id: 'saveAlarmColorSetBtnId',
                     action: '',
-                    text: cosog.string.save,
+                    text: loginUserLanguageResource.save,
         			iconCls: 'save',
                     handler: function () {
                         setAlarmLevelColor();
@@ -115,7 +115,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'overviewFirstLevelBackgroundColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -131,7 +131,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewSecondLevelBackgroundColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -147,7 +147,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewThirdLevelBackgroundColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -185,7 +185,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'overviewFirstLevelColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -201,7 +201,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewSecondLevelColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -217,7 +217,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewThirdLevelColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -278,7 +278,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'detailsFirstLevelBackgroundColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -294,7 +294,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsSecondLevelBackgroundColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -310,7 +310,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsThirdLevelBackgroundColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -348,7 +348,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'detailsFirstLevelColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -364,7 +364,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsSecondLevelColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -380,7 +380,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsThirdLevelColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -444,7 +444,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'statisticsFirstLevelBackgroundColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -460,7 +460,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsSecondLevelBackgroundColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -476,7 +476,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsThirdLevelBackgroundColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -514,7 +514,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                             	value:''
                             },{
                                 id: 'statisticsFirstLevelColor_id',
-                                fieldLabel: '一级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel1,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -530,7 +530,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsSecondLevelColor_id',
-                                fieldLabel: '二级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel2,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -546,7 +546,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsThirdLevelColor_id',
-                                fieldLabel: '三级报警',
+                                fieldLabel: loginUserLanguageResource.alarmLevel3,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',

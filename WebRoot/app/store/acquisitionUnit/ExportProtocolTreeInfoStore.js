@@ -48,7 +48,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '协议列表',
+                    	text: loginUserLanguageResource.protocolList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

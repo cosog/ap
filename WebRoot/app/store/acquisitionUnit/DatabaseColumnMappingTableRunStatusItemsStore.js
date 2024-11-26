@@ -90,9 +90,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
             	}
         	}
         	if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(protocolName+"/运行状态配置");
+				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(protocolName+"/"+loginUserLanguageResource.runStatusConfig);
 			}else{
-				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle("运行状态配置");
+				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(loginUserLanguageResource.runStatusConfig);
 			}
             
             

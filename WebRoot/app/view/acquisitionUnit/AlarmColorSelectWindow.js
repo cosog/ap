@@ -83,7 +83,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 xtype: 'button',
                 hidden: false,
                 action: '',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
     			iconCls: 'save',
                 handler: function () {
                     saveAlarmColor();
@@ -237,7 +237,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'firstLevelBackgroundColor_id',
-                        fieldLabel: '一级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel1,
                         labelWidth: 70,
                         anchor:'90%',
                         listeners : {
@@ -258,7 +258,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'secondLevelBackgroundColor_id',
-                        fieldLabel: '二级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel2,
                         labelWidth: 70,
                         anchor:'90%',
                         listeners : {
@@ -279,7 +279,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'thirdLevelBackgroundColor_id',
-                        fieldLabel: '三级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel3,
                         labelWidth: 70,
                         anchor:'90%',
                         listeners : {
@@ -452,7 +452,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'firstLevelColor_id',
-                        fieldLabel: '一级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel1,
                         labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
@@ -473,7 +473,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'secondLevelColor_id',
-                        fieldLabel: '二级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel2,
                         labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
@@ -494,7 +494,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'thirdLevelColor_id',
-                        fieldLabel: '三级报警',
+                        fieldLabel: loginUserLanguageResource.alarmLevel3,
                         labelWidth: 70,
                         anchor:'90%',
                         value:'#FFFFFF',
@@ -826,10 +826,10 @@ function saveAlarmColor(){
 	        success: function (response, action) {
 	        	if (Ext.decode(response.responseText).msg) {
 	        		Ext.getCmp("AlarmColorSelectWindow_Id").close();
-	        		Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+	        		Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
 	        	}else {
                    Ext.Msg.alert(cosog.string.ts,
-                       "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                       "<font color=red>SORRY！</font>" + loginUserLanguageResource.updatefail + "。");
                }
 	        },
 	        failure: function () {

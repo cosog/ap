@@ -164,7 +164,7 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
     var getGroupUpdateDataInfoSubmitBtnFormId = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getGroupUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("acquisitionGroup_editWin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("acquisitionGroup_editWin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getGroupUpdateDataInfoSubmitBtnFormId.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doAcquisitionGroupEdit',
             clientValidation: true, // 进行客户端验证
@@ -175,11 +175,11 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -204,7 +204,7 @@ function modifyAcquisitionGroupInfo() {
         Ext.getCmp("updateFormaAquisitionGroup_Id").show();
         SelectAcquisitionGroupDataAttrInfoGridPanel();
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -234,14 +234,14 @@ function delAcquisitionGroupInfo() {
     if (_record.length > 0) {
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
 
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -283,7 +283,7 @@ function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
     var getUpdateDataInfoSubmitBtnFormId = Ext.getCmp("acquisitionUnit_editWin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("acquisitionUnit_editWin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("acquisitionUnit_editWin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataInfoSubmitBtnFormId.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doAcquisitionUnitEdit',
             clientValidation: true, // 进行客户端验证
@@ -294,11 +294,11 @@ function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
                 Ext.getCmp("AcquisitionUnitInfoGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -323,7 +323,7 @@ function modifyAcquisitionUnitInfo() {
         Ext.getCmp("updateFormaAquisitionUnit_Id").show();
         SelectAcquisitionUnitDataAttrInfoGridPanel();
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -349,14 +349,14 @@ function delAcquisitionUnitInfo() {
     if (_record.length > 0) {
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionUnitInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
 
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -955,7 +955,7 @@ function modifyModbusProtocolSMSInstanceConfigData() {
         Ext.getCmp("updateFormaModbusprotocolSMSInstance_Id").show();
         SelectModbusProtocolSMSInstanceGridPanel();
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -1026,7 +1026,7 @@ function UpdateModbusProtocolSMSInstanceSubmitBtnForm() {
             	Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.sucupate + "</font>");
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
@@ -1049,13 +1049,13 @@ function delModbusProtocolSMSInstanceInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("ModbusProtocolSMSInstanceGridPanel_Id", _record,"id", delUrl);
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 }

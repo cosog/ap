@@ -66,8 +66,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-        						title: '全部',
-        						tpl:'全部',
+        						title: loginUserLanguageResource.all,
+        						tpl:loginUserLanguageResource.all,
 //        						iconCls:'check2',
         						layout: 'fit',
         						id: 'RealTimeMonitoringTabPanel_'+allSecondIds,
@@ -1447,7 +1447,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
     			text: '12小时'
     		}, {
     			type: 'all',
-    			text: '全部'
+    			text: loginUserLanguageResource.all
     		}],
     		inputEnabled: false,
     		selected: 0

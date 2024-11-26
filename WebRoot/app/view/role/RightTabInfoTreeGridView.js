@@ -26,7 +26,7 @@ Ext.define('AP.view.role.RightTabInfoTreeGridView', {
             selType:'',
             columns: [{
             	xtype: 'treecolumn',
-            	text: '设备类型',
+            	text: loginUserLanguageResource.deviceType,
             	flex: 8,
             	align: 'left',
             	dataIndex: 'text'

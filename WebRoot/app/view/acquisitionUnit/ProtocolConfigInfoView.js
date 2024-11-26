@@ -74,11 +74,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     initComponent: function () {
     	var me = this;
     	var ModbusProtocolConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView');
-//    	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
-//        var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
-        
-        
-        
         Ext.create('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore');
     	Ext.apply(me, {
     		layout: "border",
@@ -111,13 +106,13 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 hideMode:'offsets',
                 items: [{
                 	region: 'center',
-                	title:'设备类型',
+                	title:loginUserLanguageResource.deviceType,
                 	layout: 'fit',
                 	id:"ProtocolConfigTabTreePanel_Id"
                 },{
                 	region: 'south',
                 	height:'42%',
-                	title:'标签属性',
+                	title:loginUserLanguageResource.tabProperties,
                 	hidden:true,
                 	collapsible: true,
                     split: true,
@@ -138,20 +133,20 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 border: false,
                 tabPosition: 'bottom',
                 items: [{
-                	title:'协议配置',
+                	title:loginUserLanguageResource.protocolConfig,
                 	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
                 	items: [ModbusProtocolConfigInfoView],
     				layout: "fit",
     				iconCls: 'check1',
     				border: false
                 },{
-                	title:'单元组态',
+                	title:loginUserLanguageResource.unitConfig,
                 	id:'ScadaDriverModbusUnitConfigTabPanel_Id',
 //                	items: [ModbusProtocolUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'实例组态',
+                	title:loginUserLanguageResource.instanceConfig,
                 	id:'ScadaDriverModbusInstanceConfigTabPanel_Id',
 //                	items: [ModbusProtocolInstanceConfigInfoView],
     				layout: "fit",

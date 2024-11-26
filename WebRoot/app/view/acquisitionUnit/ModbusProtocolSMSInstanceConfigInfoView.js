@@ -47,7 +47,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
                     itemId: 'delModbusProtocolSMSInstanceBtnId',
                     id: 'delModbusProtocolSMSInstanceBtn_Id',
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
-                    text: cosog.string.del,
+                    text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete',
                     handler: function (v, o) {
                     	delModbusProtocolSMSInstanceInfo();

@@ -221,19 +221,19 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 							buttons : [{
 										id : 'addFormAlarmSet_Id',
 										xtype : 'button',
-										text : cosog.string.save,
+										text : loginUserLanguageResource.save,
 										hidden:true,
 										iconCls : 'save'
 									}, {
 										xtype : 'button',
 										id : 'updateFormAlarm_Id',
-										text : cosog.string.update,
+										text : loginUserLanguageResource.update,
 										width : 40,
 										iconCls : 'edit',
 										hidden : true,
 										handler : UpdateAlarmSetSubmitBtnForm
 									}, {
-										text : cosog.string.cancel,
+										text : loginUserLanguageResource.cancel,
 										width : 40,
 										iconCls : 'cancel',
 										handler : function() {

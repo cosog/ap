@@ -104,10 +104,10 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
     	
         var operationTypeCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '操作',
+                    fieldLabel: loginUserLanguageResource.operation,
+                    labelWidth: getStringLength(loginUserLanguageResource.operation)*8,
+                    width: (getStringLength(loginUserLanguageResource.operation)*8+110),
                     id: "DeviceOperationLogOperationTypeListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,

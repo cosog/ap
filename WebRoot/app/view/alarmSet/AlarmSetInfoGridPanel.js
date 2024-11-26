@@ -16,7 +16,7 @@ Ext.define('AP.view.alarmSet.AlarmSetInfoGridPanel', {
 								itemId : 'addAlarmSetLabelClassBtnId',
 								id : 'addAlarmSetLabelClassBtn_Id',
 								action : 'addAlarmSetAction',
-								text : cosog.string.add,
+								text : loginUserLanguageResource.add,
 								iconCls : 'add',
 								handler:function(){
 									addAlarmSet();
@@ -25,7 +25,7 @@ Ext.define('AP.view.alarmSet.AlarmSetInfoGridPanel', {
 								xtype : 'button',
 								itemId : 'editAlarmSetLabelClassBtnId',
 								id : 'editAlarmSetLabelClassBtn_Id',
-								text : cosog.string.update,
+								text : loginUserLanguageResource.update,
 								action : 'editAlarmSetInfoAction',
 								disabled : true,
 								iconCls : 'edit',
@@ -39,7 +39,7 @@ Ext.define('AP.view.alarmSet.AlarmSetInfoGridPanel', {
 								id : 'delAlarmSetLabelClassBtn_Id',
 								disabled : true,
 								action : 'delAlarmSetAction',
-								text : cosog.string.del,
+								text : loginUserLanguageResource.deleteData,
 								iconCls : 'delete',
 								handler:function(){
 									delectAlarmSet();

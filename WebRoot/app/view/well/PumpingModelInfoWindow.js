@@ -197,7 +197,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             buttons: [{
                 id: 'addFormPumpingModel_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("PumpingModelInfoWindow_Id").down('form');
@@ -232,14 +232,14 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
                 xtype: 'button',
                 id: 'updateFormPumpingModel_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function (v, o) {
                 	
                 }
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("PumpingModelInfoWindow_Id").close();

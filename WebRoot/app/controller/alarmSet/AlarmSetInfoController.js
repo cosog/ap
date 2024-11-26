@@ -60,7 +60,7 @@ function UpdateAlarmSetSubmitBtnForm() {
     var UpdateAlarmSetgWindowDataSubmitBtnFormId = Ext
         .getCmp("AlarmSetInfoWindowwin_Id").down('form');
     if (UpdateAlarmSetgWindowDataSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("AlarmSetInfoWindowwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("AlarmSetInfoWindowwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         UpdateAlarmSetgWindowDataSubmitBtnFormId.getForm().submit({
             url: context + '/alarmSetManagerController/doAlarmsSetEdit',
             clientValidation: true, // 进行客户端验证
@@ -70,11 +70,11 @@ function UpdateAlarmSetSubmitBtnForm() {
                 Ext.getCmp('AlarmSetInfoWindowwin_Id').close();
                 Ext.getCmp("AlarmSetInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -292,11 +292,11 @@ SelectAlarmSet = function () {
 	        },
 	        success: function (response, action) {
 	        	if (Ext.decode(response.responseText).msg) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
 	        	else {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
 	        },
 	        failure: function () {

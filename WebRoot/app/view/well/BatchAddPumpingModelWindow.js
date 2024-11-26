@@ -29,17 +29,17 @@ Ext.define("AP.view.well.BatchAddPumpingModelWindow", {
                 html: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'batchAddPumpingModelType_Id',
                 value: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'batchAddPumpingModelOrg_Id',
                 value: ''
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	batchAddPumpingModelHandsontableHelper.saveData();

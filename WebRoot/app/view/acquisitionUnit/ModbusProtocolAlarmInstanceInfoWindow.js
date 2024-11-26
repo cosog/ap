@@ -135,7 +135,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormModbusProtocolAlarmInstance_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	saveModbusProtocolAlarmInstanceSubmitBtnForm();
@@ -143,7 +143,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaModbusProtocolAlarmInstance_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -151,7 +151,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("modbusProtocolAlarmInstanceInfoWindow_Id").close();

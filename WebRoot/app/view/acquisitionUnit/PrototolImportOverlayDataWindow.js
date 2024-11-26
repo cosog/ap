@@ -98,7 +98,7 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                 }
             },'-', {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                 	Ext.getCmp("PrototolImportOverlayDataWindow_Id").close();
@@ -185,37 +185,37 @@ function CreateProtocolImportOverlayTreeTable(result){
 	protocolParentData.children=[];
 	
 	var acqUnitParentData={};
-	acqUnitParentData.text='采控单元';
+	acqUnitParentData.text=loginUserLanguageResource.acqUnit;
 	acqUnitParentData.iconCls='protocol';
 	acqUnitParentData.expanded=true;
 	acqUnitParentData.children=[];
 	
 	var displayUnitParentData={};
-	displayUnitParentData.text='显示单元';
+	displayUnitParentData.text=loginUserLanguageResource.displayUnit;
 	displayUnitParentData.iconCls='protocol';
 	displayUnitParentData.expanded=true;
 	displayUnitParentData.children=[];
 	
 	var alarmUnitParentData={};
-	alarmUnitParentData.text='报警单元';
+	alarmUnitParentData.text=loginUserLanguageResource.alarmUnit;
 	alarmUnitParentData.iconCls='protocol';
 	alarmUnitParentData.expanded=true;
 	alarmUnitParentData.children=[];
 	
 	var acqInstanceParentData={};
-	acqInstanceParentData.text='采控实例';
+	acqInstanceParentData.text=loginUserLanguageResource.acqInstance;
 	acqInstanceParentData.iconCls='protocol';
 	acqInstanceParentData.expanded=true;
 	acqInstanceParentData.children=[];
 	
 	var displayInstanceParentData={};
-	displayInstanceParentData.text='显示实例';
+	displayInstanceParentData.text=loginUserLanguageResource.displayInstance;
 	displayInstanceParentData.iconCls='protocol';
 	displayInstanceParentData.expanded=true;
 	displayInstanceParentData.children=[];
 	
 	var alarmInstanceParentData={};
-	alarmInstanceParentData.text='报警实例';
+	alarmInstanceParentData.text=loginUserLanguageResource.alarmInstance;
 	alarmInstanceParentData.iconCls='protocol';
 	alarmInstanceParentData.expanded=true;
 	alarmInstanceParentData.children=[];

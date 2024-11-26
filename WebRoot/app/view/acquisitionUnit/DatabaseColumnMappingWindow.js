@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.databaseColumnMappingWindow',
     layout: 'fit',
-    title:'存储字段表',
+    title:loginUserLanguageResource.columnMappingTable,
     border: false,
     hidden: false,
     collapsible: true,
@@ -36,13 +36,13 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             	border: false,
             	items: [{
             		region: 'center',
-                	title:'存储字段表',
+                	title:loginUserLanguageResource.columnMappingTable,
                 	id:'DatabaseColumnMappingTablePanel_Id',
                 	layout: 'fit',
                 	header:true,
                 	tbar: ['->',{
                     	xtype: 'button',
-            			text: cosog.string.save,
+            			text: loginUserLanguageResource.save,
             			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
             			iconCls: 'save',
             			handler: function (v, o) {
@@ -72,14 +72,14 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
 //                	height:'50%',
                 	region: 'east',
                 	width:'50%',
-                	title:'运行状态配置',
+                	title:loginUserLanguageResource.runStatusConfig,
                 	id:'DatabaseColumnMappingTableRunStatusConfigPanel_Id',
                 	layout: "border",
                 	split: true,
                     collapsible: true,
                 	tbar: ['->',{
                     	xtype: 'button',
-            			text: cosog.string.save,
+            			text: loginUserLanguageResource.save,
             			disabled: loginUserProtocolConfigModuleRight.editFlag!=1,
             			iconCls: 'save',
             			handler: function (v, o) {
@@ -90,7 +90,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		region: 'west',
                 		width:'50%',
                     	layout: 'fit',
-                    	title:'运行状态字段选择',
+                    	title:loginUserLanguageResource.runStatusColumnSelect,
                     	id:"DatabaseColumnMappingTableRunStatusItemsPanel_Id"
                 	},{
                 		region: 'center',
@@ -98,13 +98,13 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		items: [{
                     		region: 'center',
                     		layout: 'fit',
-                    		title:'隶属运行项配置',
+                    		title:loginUserLanguageResource.runConditionConfig,
                         	id:"DatabaseColumnMappingTableRunStatusMeaningPanel1_Id"
                     	},{
                     		region: 'south',
                     		height:'50%',
                     		layout: 'fit',
-                    		title:'隶属停止项配置',
+                    		title:loginUserLanguageResource.stopConditionConfig,
                         	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
                     	}]
                 	}]
@@ -135,9 +135,9 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(protocolName+"/存储字段表");
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(protocolName+"/"+loginUserLanguageResource.columnMappingTable);
 			}else{
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle("存储字段表");
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(loginUserLanguageResource.columnMappingTable);
 			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");

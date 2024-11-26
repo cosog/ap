@@ -113,7 +113,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	if(record.data.classes==0){
                         		return;
                         	}if(record.data.classes==1){
-                        		info='报表单元';
+                        		info=loginUserLanguageResource.reportUnit;
                         	}
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,

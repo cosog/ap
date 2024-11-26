@@ -38,7 +38,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             store: new Ext.data.SimpleStore({
             	autoLoad : false,
                 fields: ['roleVideoKeyEdit', 'roleVideoKeyEditName'],
-                data: [['0', '否'], ['1', '是']]
+                data: [['0', loginUserLanguageResource.no], ['1', loginUserLanguageResource.yes]]
             }),
             displayField: 'roleVideoKeyEditName',
             valueField: 'roleVideoKeyEdit',
@@ -129,10 +129,10 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'addFormrole_Id',
                 xtype: 'button',
                 iconCls: 'save',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 handler: SaveroleDataInfoSubmitBtnForm
             },{
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("role_addwin_Id").close();
@@ -320,7 +320,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     store: tabStore,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '设备类型',
+                    	text: loginUserLanguageResource.deviceType,
                     	flex: 8,
                     	align: 'left',
                     	dataIndex: 'text'

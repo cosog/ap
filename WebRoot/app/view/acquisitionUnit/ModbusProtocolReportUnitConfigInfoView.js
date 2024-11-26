@@ -46,7 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     }
         		}, "-", {
                     xtype: 'button',
-                    text: cosog.string.save,
+                    text: loginUserLanguageResource.save,
                     disabled: loginUserProtocolConfigModuleRight.editFlag != 1,
                     iconCls: 'save',
                     handler: function (v, o) {
@@ -112,7 +112,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     }, {
                         region: 'south',
                         height: '42%',
-                        title: '属性',
+                        title: loginUserLanguageResource.properties,
                         collapsible: true,
                         border: false,
                         split: true,
@@ -481,7 +481,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
 });
 
 function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code) {
-    Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -715,7 +715,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
 };
 
 function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code) {
-    Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -1011,7 +1011,7 @@ function reportUnitContentConfig(row, col, value) {
 }
 
 function CreateSingleWellRangeReportTotalItemsInfoTable() {
-    Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 
     var calculateType = 0;
     var unitId = 0;
@@ -1239,7 +1239,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 };
 
 function CreateSingleWellDailyReportTotalItemsInfoTable() {
-    Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     
     var calculateType = 0;
     var unitId = 0;
@@ -1482,7 +1482,7 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
 
         var item3 = {};
         item3.id = 3;
-        item3.title = '排序序号';
+        item3.title = loginUserLanguageResource.sortNum;
         item3.value = data.sort;
         root.push(item3);
     }
@@ -1565,7 +1565,7 @@ var ReportUnitPropertiesHandsontableHelper = {
                                 cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         	}else if (visualColIndex === 2 && visualRowIndex === 1) {
                                 this.type = 'dropdown';
-                                this.source = ['无', '功图计算', '转速计产'];
+                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.RPCCalculate, loginUserLanguageResource.PCPCalculate];
                                 this.strict = true;
                                 this.allowInvalid = false;
                             }else{
@@ -1643,7 +1643,7 @@ var ReportUnitPropertiesHandsontableHelper = {
 };
 
 function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
-    Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -1878,7 +1878,7 @@ var ProductionReportTemplateHandsontableHelper = {
 };
 
 function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitName, classes) {
-    Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     
     var calculateType = 0;
     var unitId = 0;

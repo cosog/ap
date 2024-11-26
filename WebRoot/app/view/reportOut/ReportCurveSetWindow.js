@@ -30,7 +30,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 html: '<font color=red>Y轴坐标在设置的最大最小值基础上再次自适应</font>'
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");

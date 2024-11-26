@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '协议名称<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.protocolName+'<font color=red>*</font>',
 					id : 'formAcquisitionGroupProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -258,7 +258,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormAcquisitionGroup_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	SaveAcquisitionGroupSubmitBtnForm();
@@ -266,7 +266,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaAquisitionGroup_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -274,7 +274,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("acquisitionGroup_editWin_Id").close();

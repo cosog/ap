@@ -81,7 +81,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     						deleteInfo='是否删除第'+(startRow+1)+"行数据";
     					}
     					
-    					Ext.Msg.confirm(cosog.string.yesdel, deleteInfo, function (btn) {
+    					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
     			            if (btn == "yes") {
     			            	for(var i=startRow;i<=endRow;i++){
     	    						var rowdata = videoKeyDataHandsontableHelper.hot.getDataAtRow(i);
@@ -125,7 +125,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     			}
     		},"-", {
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	videoKeyDataHandsontableHelper.saveData();

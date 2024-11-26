@@ -62,14 +62,14 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 itemId: 'addBtnId',
                 id: 'addSystemdataInfoAction_Id',
                 action: 'addSystemdataInfoAction',
-                text: cosog.string.add,
+                text: loginUserLanguageResource.add,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
          }, '-', {
                 xtype: 'button',
                 itemId: 'editBtnId',
                 id: 'editSDBtnId',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 action: 'editSystemdataInfoAction',
                 iconCls: 'edit'
@@ -80,7 +80,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 id: 'delSDBtnId',
                 disabled: false,
                 action: 'delSystemdataInfoAction',
-                text: cosog.string.del,
+                text: loginUserLanguageResource.deleteData,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
          }]

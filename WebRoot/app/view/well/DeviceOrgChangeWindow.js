@@ -165,7 +165,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
             		}]
             	},{
             		region: 'center',
-            		title:'设备类型',
+            		title:loginUserLanguageResource.deviceType,
             		layout: 'fit',
             		id:'DeviceTypeChangeWinTypeListPanel_Id',
             		tbar: ['->', {

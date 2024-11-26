@@ -9,16 +9,16 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         var bbar = new Ext.toolbar.Paging({
         	id:'RPCFESDiagramCalculateMaintainingBbar',
             pageSize: defaultPageSize,
-            displayInfo: true,
-            displayMsg: '当前 {0}~{1}条  共 {2} 条',
-            emptyMsg: "没有记录可显示",
-            prevText: "上一页",
-            nextText: "下一页",
-            refreshText: "刷新",
-            lastText: "最后页",
-            firstText: "第一页",
-            beforePageText: "当前页",
-            afterPageText: "共{0}页"
+//            displayMsg: '当前 {0}~{1}条  共 {2} 条',
+//            emptyMsg: "没有记录可显示",
+//            prevText: "上一页",
+//            nextText: "下一页",
+//            refreshText: "刷新",
+//            lastText: "最后页",
+//            firstText: "第一页",
+//            beforePageText: "当前页",
+//            afterPageText: "共{0}页",
+            displayInfo: true
         });
         var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultWellComboxSize,
@@ -131,11 +131,10 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         });
         var calculateSignComb = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '计算状态',
+                	fieldLabel: loginUserLanguageResource.resultStatus,
+                    labelWidth: getStringLength(loginUserLanguageResource.resultStatus)*8,
+                    width: (getStringLength(loginUserLanguageResource.resultStatus)*8+100),
                     id: 'RPCCalculateMaintainingCalculateSignComBox_Id',
-                    store: calculateSignStore,
-                    labelWidth: 60,
-                    width: 160,
                     queryMode: 'remote',
                     emptyText: '--'+loginUserLanguageResource.all+'--',
                     blankText: '--'+loginUserLanguageResource.all+'--',
@@ -461,7 +460,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             
     		},'->',{
                 xtype: 'button',
-                text: '修改历史数据计算',
+                text: loginUserLanguageResource.editHistoryDataCalculate,
                 disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'RPCCalculateMaintainingUpdateDataBtn',
                 pressed: false,
@@ -471,7 +470,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },"-",{
                 xtype: 'button',
-                text: '关联生产数据计算',
+                text: loginUserLanguageResource.linkProductionDataCalculate,
                 disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 pressed: false,
                 iconCls: 'save',
@@ -577,7 +576,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },"-",{
                 xtype: 'button',
-                text: '导出请求数据',
+                text: loginUserLanguageResource.exportRequestData,
                 pressed: false,
                 hidden: false,
                 iconCls: 'export',
@@ -597,7 +596,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },{
                 xtype: 'button',
-                text: '重新汇总',
+                text: loginUserLanguageResource.reTotalCalculate,
                 disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                 id:'RPCCalculateMaintainingReTotalBtn',
                 pressed: false,
@@ -608,7 +607,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },"-",{
                 xtype: 'button',
-                text: '导出请求数据',
+                text: loginUserLanguageResource.exportRequestData,
                 pressed: false,
                 hidden: true,
                 iconCls: 'export',
@@ -651,7 +650,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         		border: false,
         		tabPosition: 'bottom',
         		items: [{
-        			title: '单条记录',
+        			title: loginUserLanguageResource.singleRecord,
     				layout: "fit",
     				id:'RPCCalculateMaintainingPanel',
     				iconCls: 'check3',
@@ -678,7 +677,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                         }
                     }
         		},{
-        			title: '记录汇总',
+        			title: loginUserLanguageResource.recordTotal,
     				layout: "fit",
     				id:'RPCTotalCalculateMaintainingPanel',
     				border: false
@@ -1169,7 +1168,7 @@ function ReTotalFESDiagramData(){
             }
     	}); 
     }else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
 }
 

@@ -29,17 +29,17 @@ Ext.define("AP.view.well.BatchAddAuxiliaryDeviceWindow", {
                 html: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'batchAddAuxiliaryDeviceType_Id',
                 value: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '设备类型',
+                fieldLabel: loginUserLanguageResource.deviceType,
                 id: 'batchAddAuxiliaryDeviceOrg_Id',
                 value: ''
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	batchAddAuxiliaryDeviceHandsontableHelper.saveData();

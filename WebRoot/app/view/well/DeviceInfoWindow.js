@@ -52,7 +52,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceTypeComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '设备类型',
+					fieldLabel :  loginUserLanguageResource.deviceType,
 					emptyText : '请选择设备类型',
 					blankText : '请选择设备类型',
 					id : 'deviceTypeComb_Id',
@@ -173,7 +173,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceAcqInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '采控实例',
+					fieldLabel :  loginUserLanguageResource.acqInstance,
 					emptyText : '请选择采控实例',
 					blankText : '请选择采控实例',
 					id : 'deviceAcqInstanceComb_Id',
@@ -233,7 +233,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceDisplayInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '显示实例',
+					fieldLabel :  loginUserLanguageResource.displayInstance,
 					emptyText : '请选择显示实例',
 					blankText : '请选择显示实例',
 					id : 'deviceDisplayInstanceComb_Id',
@@ -293,7 +293,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceReportInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '报表实例',
+					fieldLabel :  loginUserLanguageResource.reportInstance,
 					emptyText : '请选择报表实例',
 					blankText : '请选择报表实例',
 					id : 'deviceReportInstanceComb_Id',
@@ -353,7 +353,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceAlarmInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '报警实例',
+					fieldLabel :  loginUserLanguageResource.alarmInstance,
 					emptyText : '请选择报警实例',
 					blankText : '请选择报警实例',
 					id : 'deviceAlarmInstanceComb_Id',
@@ -438,7 +438,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 }
             },deviceTypeComb,{
          		xtype: "textfield",
-         		fieldLabel: '设备类型',
+         		fieldLabel: loginUserLanguageResource.deviceType,
          		hidden:true,
          		id: 'addDeviceType_Id',
          		anchor: '95%',
@@ -684,7 +684,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             buttons: [{
                 id: 'addFormDevice_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("deviceInfoWindow_Id").down('form');
@@ -720,7 +720,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             }, {
                 xtype: 'button',
                 id: 'updateFormDevice_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function (v, o) {
@@ -738,7 +738,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                 CreateAndLoadDeviceInfoTable();
                                 
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                                 }
                                 if (action.result.msg == false) {
                                     Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
@@ -754,7 +754,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                     return false;
                 }
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("deviceInfoWindow_Id").close();

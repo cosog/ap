@@ -73,7 +73,7 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                 }
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var unitId=Ext.getCmp("ReportUnitContentConfig_UnitId").getValue();
@@ -174,7 +174,7 @@ function CreateReportUnitContentConfigTable() {
     
     var sort=parseInt(row)+1;
 	
-	Ext.getCmp("ReportUnitContentConfigPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ReportUnitContentConfigPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		async: false,

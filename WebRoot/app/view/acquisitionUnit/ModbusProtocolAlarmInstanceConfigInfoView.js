@@ -46,7 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
         			}
         		}, "-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -112,7 +112,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -425,19 +425,19 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='报警单元';
+		item2.title=loginUserLanguageResource.alarmUnit;
 		item2.value=data.alarmUnitName;
 		root.push(item2);
 		
 		var item3={};
 		item3.id=3;
-		item3.title='排序序号';
+		item3.title=loginUserLanguageResource.sortNum;
 		item3.value=data.sort;
 		root.push(item3);
 	}else if(data.classes==2){
 		var item1={};
 		item1.id=1;
-		item1.title='报警单元';
+		item1.title=loginUserLanguageResource.alarmUnit;
 		item1.value=data.text;
 		root.push(item1);
 	}
@@ -589,7 +589,7 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceNumItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceNumItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceNumItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceNumItemsConfigData',
@@ -600,7 +600,7 @@ function CreateProtocolAlarmInstanceNumItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigNumItemsHandsontableHelper==null || protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigNumItemsHandsontableHelper = ProtocolAlarmInstanceConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 						+"{data:'upperLimit'},"
@@ -608,10 +608,10 @@ function CreateProtocolAlarmInstanceNumItemsConfigInfoTable(id,name,classes){
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
 						+"{data:'retriggerTime'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -768,7 +768,7 @@ var ProtocolAlarmInstanceConfigNumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,name,classes,deviceType){
-	Ext.getCmp("ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceCalNumItemsConfigData',
@@ -779,7 +779,7 @@ function CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,name,classes,d
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper==null || protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigCalNumItemsHandsontableHelper = ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'unit'},"
 						+"{data:'upperLimit'},"
@@ -787,10 +787,10 @@ function CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,name,classes,d
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
 						+"{data:'retriggerTime'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']},"
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -948,7 +948,7 @@ var ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceSwitchItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceSwitchItemsTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceSwitchItemsConfigData',
@@ -958,7 +958,7 @@ function CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper==null || protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigSwitchItemsHandsontableHelper = ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceSwitchItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','地址','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 						+"{data:'bitIndex'},"
@@ -966,10 +966,10 @@ function CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,name,classes){
 						+"{data:'value'}," 
 						+"{data:'delay'}," 
 						+"{data:'retriggerTime'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1127,7 +1127,7 @@ var ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceEnumItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceEnumItemsTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceEnumItemsConfigData',
@@ -1137,17 +1137,17 @@ function CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper==null || protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigEnumItemsHandsontableHelper = ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','值','含义','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','地址','值','含义','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 					 	+"{data:'value'}," 
 						+"{data:'meaning'},"
 						+"{data:'delay'}," 
 						+"{data:'retriggerTime'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigEnumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1305,7 +1305,7 @@ var ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceFESDiagramResultItemsConfigData',
@@ -1315,14 +1315,14 @@ function CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(id,name
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper==null || protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 
-					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1479,7 +1479,7 @@ var ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceRunStatusItemsConfigData',
@@ -1489,14 +1489,14 @@ function CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,name,classe
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceRunStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 
-					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1654,7 +1654,7 @@ var ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,name,classes){
-	Ext.getCmp("ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAlarmInstanceCommStatusItemsConfigData',
@@ -1664,14 +1664,14 @@ function CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,name,class
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceCommStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','报警级别','报警使能','是否发送短信','是否发送邮件']";
+				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)',"+loginUserLanguageResource.alarmLevel+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 
-					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常','一级报警','二级报警','三级报警']}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['是','否']}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
 				protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);

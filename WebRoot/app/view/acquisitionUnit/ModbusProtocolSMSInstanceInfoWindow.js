@@ -114,7 +114,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
             buttons: [{
             	xtype: 'button',
             	id: 'addFormModbusprotocolSMSInstance_Id',
-            	text: cosog.string.save,
+            	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
                 	saveModbusProtocolSMSInstanceSubmitBtnForm();
@@ -122,7 +122,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
          }, {
                 xtype: 'button',
                 id: 'updateFormaModbusprotocolSMSInstance_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function () {
@@ -130,7 +130,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
                 }
          }, {
         	 	xtype: 'button',   
-        	 	text: cosog.string.cancel,
+        	 	text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("modbusProtocolSMSInstanceInfoWindow_Id").close();

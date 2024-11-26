@@ -74,7 +74,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     header: cosog.string.command,
                     align: 'center',
                     renderer: function () {
-                        var str = "<font color=red style='cursor:pointer'>" + cosog.string.del + "</font>";
+                        var str = "<font color=red style='cursor:pointer'>" + loginUserLanguageResource.deleteData + "</font>";
                         return str;
                     },
                     listeners: {

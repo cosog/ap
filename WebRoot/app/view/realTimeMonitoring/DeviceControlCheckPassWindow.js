@@ -173,7 +173,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 	
             	}
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("DeviceControlCheckPassWindow_Id").close();

@@ -155,7 +155,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 id: 'DeviceTotalCount_Id',
                 xtype: 'component',
                 hidden: false,
-                tpl: cosog.string.totalCount + ': {count}',
+                tpl: loginUserLanguageResource.totalCount + ': {count}',
                 style: 'margin-right:15px'
             },'->', {
     			xtype: 'button',
@@ -213,7 +213,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     						deleteInfo='是否删除第'+(startRow+1)+"行数据";
     					}
     					
-    					Ext.Msg.confirm(cosog.string.yesdel, deleteInfo, function (btn) {
+    					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
     			            if (btn == "yes") {
     			            	for(var i=startRow;i<=endRow;i++){
     	    						var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(i);
@@ -261,7 +261,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 xtype: 'button',
                 itemId: 'saveDeviceDataBtnId',
                 id: 'saveDeviceDataBtn_Id',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
@@ -485,9 +485,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         id: 'DeviceCalculateDataType_Id',
                         cls: 'x-check-group-alt',
                         items: [
-                            {boxLabel: '功图计算',name: 'deviceCalculateDataType',width: 70, inputValue: 1},
-                            {boxLabel: '转速计产',name: 'deviceCalculateDataType',width: 70, inputValue: 2},
-                            {boxLabel: '无',name: 'deviceCalculateDataType',width: 70, inputValue: 0}
+                            {boxLabel: loginUserLanguageResource.RPCCalculate,name: 'deviceCalculateDataType',width: 70, inputValue: 1},
+                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: 70, inputValue: 2},
+                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: 70, inputValue: 0}
                         ],
                         listeners: {
                         	change: function (radiogroup, newValue, oldValue, eOpts) {

@@ -120,7 +120,7 @@ function UpdateroleDataInfoSubmitBtnForm() {
     var getUpdateDataInfoSubmitBtnFormId = Ext.getCmp("role_addwin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("role_addwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("role_addwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataInfoSubmitBtnFormId.getForm().submit({
             url: context + '/roleManagerController/doRoleEdit',
             clientValidation: true, // 进行客户端验证
@@ -131,11 +131,11 @@ function UpdateroleDataInfoSubmitBtnForm() {
                 Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -201,7 +201,7 @@ function addroleInfo() {
     if(currentUserRoleVideoKeyEdit==0){
     	Ext.getCmp("roleVideoKeyEdit_Id").setValue(0);
     	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setValue(0);
-    	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setRawValue('否');
+    	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setRawValue(loginUserLanguageResource.no);
     	Ext.getCmp("roleVideoKeyEditComboxfield_Id").disable();
     }
     
@@ -223,17 +223,17 @@ function delroleInfo() {
     	if(parseInt(roleId)>1){
     		Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
             Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-            Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
                 if (btn == "yes") {
                     ExtDel_ObjectInfo("RoleInfoGridPanel_Id", _record,"roleId", delUrl);
                 }
             });
     	}else{
-    		Ext.Msg.alert(cosog.string.deleteCommand, '该角色不可删除!');
+    		Ext.Msg.alert(loginUserLanguageResource.message, '该角色不可删除!');
     	}
         
     } else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -250,7 +250,7 @@ function modifyroleInfo() {
         Ext.getCmp("updateFormrole_Id").show();
         SelectRoleDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -414,7 +414,7 @@ function delRoleInfoByGridBtn(record) {
     	deleteRoleId.push(record.data.roleId);
     	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
             	Ext.Ajax.request({
           			url : context + '/roleManagerController/doRoleBulkDelete',
@@ -440,7 +440,7 @@ function delRoleInfoByGridBtn(record) {
         });
 
     } else {
-    	Ext.Msg.alert(cosog.string.deleteCommand, '该角色不可删除!');
+    	Ext.Msg.alert(loginUserLanguageResource.message, '该角色不可删除!');
     }
 }
 

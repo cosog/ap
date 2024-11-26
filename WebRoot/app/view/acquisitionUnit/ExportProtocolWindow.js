@@ -80,7 +80,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
             items: [{
             	region: 'center',
 //            	width:'25%',
-            	title:'协议列表',
+            	title:loginUserLanguageResource.protocolList,
             	layout: 'fit',
             	split: true,
                 collapsible: false,

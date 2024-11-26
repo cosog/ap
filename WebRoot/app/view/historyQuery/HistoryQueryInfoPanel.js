@@ -66,7 +66,7 @@ var historyStatTabItems=[{
         }
     }
 },{
-	title:'设备类型',
+	title:loginUserLanguageResource.deviceType,
 	layout: 'fit',
 	hidden:true,
 	id:'HistoryQueryDeviceTypeStatGraphPanel_Id',
@@ -873,7 +873,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     },'->',{
                         id: 'SurfaceCardTotalCount_Id',
                         xtype: 'component',
-                        tpl: cosog.string.totalCount + ': {count}', // 总记录数
+                        tpl: loginUserLanguageResource.totalCount + ': {count}', // 总记录数
                         hidden:true,
                         style: 'margin-right:15px'
                     }, {

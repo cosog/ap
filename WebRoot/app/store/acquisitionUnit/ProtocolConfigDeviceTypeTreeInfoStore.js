@@ -41,7 +41,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '设备类型',
+                    	text: loginUserLanguageResource.deviceType,
                     	flex: 8,
                     	align: 'left',
                     	dataIndex: 'text'

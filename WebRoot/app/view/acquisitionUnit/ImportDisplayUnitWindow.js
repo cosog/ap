@@ -404,7 +404,7 @@ function saveAllImportedDisplayUnit(){
 }
 
 function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
@@ -610,7 +610,7 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
@@ -759,7 +759,7 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
@@ -955,7 +955,7 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',

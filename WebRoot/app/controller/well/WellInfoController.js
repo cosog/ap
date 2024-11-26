@@ -67,7 +67,7 @@ function UpdatewellInfoSubmitBtnForm() {
     var getUpdateDataSubmitBtnFormId = Ext.getCmp("wellInfo_addwin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (getUpdateDataSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("wellInfo_addwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("wellInfo_addwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataSubmitBtnFormId.getForm().submit({
             url: context + '/wellInformationManagerController/doWellInformationEdit',
             clientValidation: true, // 进行客户端验证
@@ -78,7 +78,7 @@ function UpdatewellInfoSubmitBtnForm() {
                 Ext.getCmp("wellPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.success, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.success, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                     if(mapHelperWell!=null){
     					mapHelperWell.clearOverlays();
     					SaveBackMapData(mapHelperWell,"well",m_BackDefaultZoomLevel);
@@ -86,7 +86,7 @@ function UpdatewellInfoSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.success,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
@@ -124,13 +124,13 @@ function delectwellInfo() {
 //        // 提示是否删除数据
 //        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
 //        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-//        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+//        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
 //            if (btn == "yes") {
 //                ExtDel_ObjectInfo("wellPanel_Id", _record, "jlbh",delUrl); // 第一个参数为面板的Id，选择的记录对象，当前删除对象的Id名称，url
 //            }
 //        });
 //    } else {
-//        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+//        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
 //    }
 }
 
@@ -152,7 +152,7 @@ function modifywellInfo() {
 	        SelectwellInfoPanel();
 	        //setTimeout('SelectwellInfoPanel()',1000);
 		}else{
-	        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+	        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
 	    }
         
     }
@@ -217,7 +217,7 @@ function saveWellEditerGridDataInfo() {
             }
     	});   
     }else {
-        //Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.noDataChange);
+        //Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
     }
     
     return false;

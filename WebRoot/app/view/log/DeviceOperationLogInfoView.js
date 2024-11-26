@@ -63,8 +63,8 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-        						title: '全部',
-        						tpl:'全部',
+        						title: loginUserLanguageResource.all,
+        						tpl:loginUserLanguageResource.all,
 //        						iconCls:'check2',
         						layout: 'fit',
         						id: 'DeviceOperationLogRootTabPanel_'+allSecondIds,

@@ -172,7 +172,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
             buttons: [{
                 id: 'addFormAuxiliaryDevice_Id',
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("AuxiliaryDeviceInfoWindow_Id").down('form');
@@ -207,14 +207,14 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
             }, {
                 xtype: 'button',
                 id: 'updateFormAuxiliaryDevice_Id',
-                text: cosog.string.update,
+                text: loginUserLanguageResource.update,
                 hidden: true,
                 iconCls: 'edit',
                 handler: function (v, o) {
                 	
                 }
             }, {
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("AuxiliaryDeviceInfoWindow_Id").close();

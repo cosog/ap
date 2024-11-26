@@ -99,7 +99,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
                         	}if(record.data.classes==2){
-                        		info='采控单元';
+                        		info=loginUserLanguageResource.acqUnit;
                         	}else if(record.data.classes==3){
                         		info='采控组';
                         	}

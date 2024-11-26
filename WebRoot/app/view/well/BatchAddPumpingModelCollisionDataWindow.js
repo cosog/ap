@@ -29,7 +29,7 @@ Ext.define("AP.view.well.BatchAddPumpingModelCollisionDataWindow", {
                 html: ''
             },'->',{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var isCheckout=0;

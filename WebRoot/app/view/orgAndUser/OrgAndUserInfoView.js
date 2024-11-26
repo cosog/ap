@@ -50,7 +50,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     xtype: 'button',
                     itemId: 'addOrgLableClassBtnId',
                     id: 'addOrgLableClassBtn_Id',
-                    text: cosog.string.add,
+                    text: loginUserLanguageResource.add,
                     iconCls: 'add',
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     handler: function () {
@@ -60,7 +60,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     xtype: 'button',
                     itemId: 'editOrgLableClassBtnId',
                     id: 'editOrgLableClassBtn_Id',
-                    text: cosog.string.update,
+                    text: loginUserLanguageResource.update,
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function () {
@@ -72,7 +72,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     id: 'delOrgLableClassBtn_Id',
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     action: 'delOrgAction',
-                    text: cosog.string.del,
+                    text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete',
                     handler: function () {
                     	delOrgInfo();
@@ -117,7 +117,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		}, '->', {
                     xtype: 'button',
                     id: 'addUserLableClassBtn_Id',
-                    text: cosog.string.add,
+                    text: loginUserLanguageResource.add,
                     iconCls: 'add',
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     handler: function () {

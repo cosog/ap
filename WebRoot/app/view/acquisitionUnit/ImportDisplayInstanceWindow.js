@@ -370,7 +370,7 @@ function saveAllImportedDisplayInstance(){
 }
 
 function CreateImportDisplayInstanceAcqItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
-	Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
@@ -561,7 +561,7 @@ var ImportDisplayInstanceAcqItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
-	Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
@@ -755,7 +755,7 @@ var ImportDisplayInstanceCalItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayInstanceCtrlItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
-	Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
@@ -904,7 +904,7 @@ var ImportDisplayInstanceCtrlItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
-	Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',

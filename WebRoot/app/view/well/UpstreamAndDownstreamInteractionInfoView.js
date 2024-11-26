@@ -117,8 +117,8 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             			layout: 'border',
             			tbar:[{
                              xtype: 'radiogroup',
-                             fieldLabel: '操作',
-                             labelWidth: 30,
+                             fieldLabel: loginUserLanguageResource.operation,
+                             labelWidth: getStringLength(loginUserLanguageResource.operation)*8,
                              id: 'UpstreamAndDownstreamInteractionOperation_Id',
                              cls: 'x-check-group-alt',
                              name: 'operation',
@@ -723,7 +723,7 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
     			text: '12小时'
     		}, {
     			type: 'all',
-    			text: '全部'
+    			text: loginUserLanguageResource.all
     		}],
     		inputEnabled: false,
     		selected: 0

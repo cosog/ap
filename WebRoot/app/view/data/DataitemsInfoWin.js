@@ -117,7 +117,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         },
         {
             id: "savettosysfordataFormBtnId",
-            text: cosog.string.save,
+            text: loginUserLanguageResource.save,
             iconCls: 'save',
             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'savetosysfordatasAction',
@@ -125,7 +125,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         },
         {
             id: "editttosysfordataFormBtnId",
-            text: cosog.string.save,
+            text: loginUserLanguageResource.save,
             iconCls: 'save',
             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'edittosysfordatasAction',
@@ -133,7 +133,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         },
         {
             id: "cancltosysfordataBtnId",
-            text: cosog.string.cancel,
+            text: loginUserLanguageResource.cancel,
             iconCls: 'cancel',
             closewin: 'DataitemsInfoWinId',
             handler: closeWindow

@@ -87,7 +87,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
             }],
             buttons: [{
                 xtype: 'button',
-                text: cosog.string.save,
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("VideoKeyAddWindow_Id").down('form');
@@ -115,7 +115,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                     return false;
                 }
             },{
-                text: cosog.string.cancel,
+                text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("VideoKeyAddWindow_Id").close();

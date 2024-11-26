@@ -36,7 +36,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加协议',
+                    text: loginUserLanguageResource.addProtocol,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -44,7 +44,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
         		},"-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -52,11 +52,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: '存储字段表',
+        			text: loginUserLanguageResource.columnMappingTable,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
-                            title: '存储字段表'
+                            title: loginUserLanguageResource.columnMappingTable
                         });
                         window.show();
         			}
@@ -103,12 +103,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
                 },'-', {
         			xtype: 'button',
-        			text:'协议隶属迁移',
+        			text:loginUserLanguageResource.protocoDeviceTypeChange,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'move',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
-                            title: '协议隶属迁移'
+                            title: loginUserLanguageResource.protocoDeviceTypeChange
                         });
                         window.show();
                         Ext.create("AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore");
@@ -129,13 +129,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
-                    	title:'协议配置',
+                    	title:loginUserLanguageResource.protocolConfig,
                     	layout: 'fit',
                     	id:"ModbusProtocolAddrMappingConfigPanel_Id"
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -228,7 +228,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
 });
 
 function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classes,code){
-	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolItemsConfigData',
@@ -537,24 +537,24 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		var item1={};
 		item1.id=1;
 		item1.title='根节点';
-		item1.value='协议列表';
+		item1.value=loginUserLanguageResource.protocolList;
 		root.push(item1);
 	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
-		item1.title='协议名称';
+		item1.title=loginUserLanguageResource.protocolName;
 		item1.value=data.text;
 		root.push(item1);
 		
 		var item2={};
 		item2.id=2;
-		item2.title='排序序号';
+		item2.title=loginUserLanguageResource.sortNum;
 		item2.value=data.sort;
 		root.push(item2);
 		
 		var item3={};
 		item3.id=3;
-		item3.title='协议隶属';
+		item3.title=loginUserLanguageResource.protocolBelongTo;
 		item3.value=data.deviceTypeAllPath;
 		root.push(item3);
 	}
@@ -774,7 +774,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 			}
 			saveModbusProtocolAddrMappingConfigData(configInfo);
 		}else{
-			Ext.MessageBox.alert("提示","协议名称不能为空！");
+			Ext.MessageBox.alert("提示",loginUserLanguageResource.protocolName+"不能为空！");
 		}
 	}
 };

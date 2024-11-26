@@ -63,8 +63,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         			}
         			if(panelItem.items.length>1){//添加全部标签
         				var secondTabPanel_all={
-        						title: '全部',
-        						tpl:'全部',
+        						title: loginUserLanguageResource.all,
+        						tpl:loginUserLanguageResource.all,
 //        						iconCls:'check2',
         						layout: 'fit',
         						id: 'AlarmQueryRootTabPanel_'+allSecondIds,
@@ -457,17 +457,17 @@ function getAlarmTypeNameFromTabActive(){
 	var alarmTypeTabActiveId = tabPanel.getActiveTab().id;
 	var alarmTypeName='';
 	if(alarmTypeTabActiveId=="FESDiagramResultAlarmInfoTabPanel_Id"){
-		alarmTypeName='工况诊断报警';
+		alarmTypeName=loginUserLanguageResource.FESDiagramResultAlarm;
 	}else if(alarmTypeTabActiveId=="RunStatusAlarmInfoTabPanel_Id"){
-		alarmTypeName='运行状态报警';
+		alarmTypeName=loginUserLanguageResource.runStatusAlarm;
 	}else if(alarmTypeTabActiveId=="CommunicationAlarmInfoTabPanel_Id"){
-		alarmTypeName='通信状态报警';
+		alarmTypeName=loginUserLanguageResource.commStatusAlarm;
 	}else if(alarmTypeTabActiveId=="NumericValueAlarmInfoTabPanel_Id"){
-		alarmTypeName='数据量报警';
+		alarmTypeName=loginUserLanguageResource.numericValueAlarm;
 	}else if(alarmTypeTabActiveId=="EnumValueAlarmInfoTabPanel_Id"){
-		alarmTypeName='枚举量报警';
+		alarmTypeName=loginUserLanguageResource.enumValueAlarm;
 	}else if(alarmTypeTabActiveId=="SwitchingValueAlarmInfoTabPanel_Id"){
-		alarmTypeName='开关量报警';
+		alarmTypeName=loginUserLanguageResource.switchingValueAlarm;
 	}
 	return alarmTypeName;
 }

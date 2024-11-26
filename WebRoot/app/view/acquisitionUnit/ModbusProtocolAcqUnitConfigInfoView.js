@@ -46,7 +46,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         			}
         		},"-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -111,7 +111,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -166,7 +166,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
 });
 
 function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,type){
-	Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
 		if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
 			protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
@@ -394,7 +394,7 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
-		item1.title='协议名称';
+		item1.title=loginUserLanguageResource.protocolName;
 		item1.value=data.text;
 		root.push(item1);
 	}else if(data.classes==2){

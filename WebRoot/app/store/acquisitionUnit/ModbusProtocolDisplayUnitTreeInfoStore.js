@@ -117,7 +117,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
                         	}if(record.data.classes==2){
-                        		info='显示单元';
+                        		info=loginUserLanguageResource.displayUnit;
                         	}
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,

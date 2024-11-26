@@ -117,7 +117,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                     resertForm.getForm().submit({
                         url: context + '/userLoginManagerController/resetPwdmessage',
                         method: "POST",
-                        waitMsg: cosog.string.updatewait,
+                        waitMsg: loginUserLanguageResource.updateWait+'...',
                         waitTitle: 'Please Wait...',
                         params: {
                             oldPassword: Ext.getCmp('sysreSetPasswordWinId_old_password').getValue(),
@@ -164,7 +164,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
         {
             id: "cancelsysReSetPasswordSubmitFormBtnId",
             iconCls: 'cancel',
-            text: cosog.string.cancel,
+            text: loginUserLanguageResource.cancel,
             handler: function () {
                 Ext.getCmp("SysUserEditPwdWinId").close()
             }

@@ -230,7 +230,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         id: 'PumpingModelTotalCount_Id',
                         xtype: 'component',
                         hidden: false,
-                        tpl: cosog.string.totalCount + ': {count}',
+                        tpl: loginUserLanguageResource.totalCount + ': {count}',
                         style: 'margin-right:15px'
                     }, '->',{
             			xtype: 'button',
@@ -262,7 +262,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             						deleteInfo='是否删除第'+(startRow+1)+"行数据";
             					}
             					
-            					Ext.Msg.confirm(cosog.string.yesdel, deleteInfo, function (btn) {
+            					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
             			            if (btn == "yes") {
             			            	for(var i=startRow;i<=endRow;i++){
             	    						var rowdata = pumpingModelInfoHandsontableHelper.hot.getDataAtRow(i);
@@ -307,7 +307,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         id: 'savePumpingModelDataBtn_Id',
                         disabled: false,
                         hidden: false,
-                        text: cosog.string.save,
+                        text: loginUserLanguageResource.save,
                         iconCls: 'save',
                         disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
@@ -390,7 +390,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         id: 'savePumpingPRTFDataBtn_Id',
                         disabled: false,
                         hidden: false,
-                        text: cosog.string.save,
+                        text: loginUserLanguageResource.save,
                         iconCls: 'save',
                         disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {

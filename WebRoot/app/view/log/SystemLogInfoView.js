@@ -43,10 +43,10 @@ Ext.define('AP.view.log.SystemLogInfoView', {
     	
     	var userCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '用户',
+                    fieldLabel: loginUserLanguageResource.user,
                     id: "systemLogUserListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
+                    labelWidth: getStringLength(loginUserLanguageResource.user)*8,
+                    width: (getStringLength(loginUserLanguageResource.user)*8+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
@@ -112,10 +112,10 @@ Ext.define('AP.view.log.SystemLogInfoView', {
     	
     	var actionCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '操作',
+                    fieldLabel: loginUserLanguageResource.operation,
+                    labelWidth: getStringLength(loginUserLanguageResource.operation)*8,
+                    width: (getStringLength(loginUserLanguageResource.operation)*8+110),
                     id: "systemLogActionListComb_Id",
-                    labelWidth: 35,
-                    width: 145,
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,

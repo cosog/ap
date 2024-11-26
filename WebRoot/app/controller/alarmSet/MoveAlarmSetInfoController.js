@@ -60,7 +60,7 @@ function UpdateMoveAlarmSetSubmitBtnForm() {
     var UpdateMoveAlarmSetgWindowDataSubmitBtnFormId = Ext
         .getCmp("MoveAlarmSetInfoWindowwin_Id").down('form');
     if (UpdateMoveAlarmSetgWindowDataSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("MoveAlarmSetInfoWindowwin_Id").el.mask(cosog.string.updatewait).show();
+        Ext.getCmp("MoveAlarmSetInfoWindowwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         UpdateMoveAlarmSetgWindowDataSubmitBtnFormId.getForm().submit({
             url: context + '/moveAlarmSetManagerController/doMoveAlarmsSetEdit',
             clientValidation: true, // 进行客户端验证
@@ -70,11 +70,11 @@ function UpdateMoveAlarmSetSubmitBtnForm() {
                 Ext.getCmp('MoveAlarmSetInfoWindowwin_Id').close();
                 Ext.getCmp("MoveAlarmSetInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {

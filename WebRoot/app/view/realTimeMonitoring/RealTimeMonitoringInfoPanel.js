@@ -77,7 +77,7 @@ var realtimeStatTabItems=[{
         }
     }
 },{
-	title:'设备类型',
+	title:loginUserLanguageResource.deviceType,
 	layout: 'fit',
 	hidden: true,
 	id:'RealTimeMonitoringDeviceTypeStatGraphPanel_Id',

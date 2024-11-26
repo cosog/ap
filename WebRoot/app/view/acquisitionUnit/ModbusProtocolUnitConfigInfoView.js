@@ -18,26 +18,26 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 border: false,
                 tabPosition: 'left',
                 items: [{
-                	title:'采控单元',
+                	title:loginUserLanguageResource.acqUnit,
                 	id:'ModbusProtocolAcqUnitConfigTabPanel_Id',
                 	items: [ModbusProtocolAcqUnitConfigInfoView],
     				layout: "fit",
     				iconCls: 'check2',
     				border: false
                 },{
-                	title:'显示单元',
+                	title:loginUserLanguageResource.displayUnit,
                 	id:'ModbusProtocolDisplayUnitConfigTabPanel_Id',
 //                	items: [ModbusProtocolDisplayUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'报警单元',
+                	title:loginUserLanguageResource.alarmUnit,
                 	id:'ModbusProtocolAlarmUnitConfigTabPanel_Id',
 //                	items: [ModbusProtocolAlarmUnitConfigInfoView],
     				layout: "fit",
     				border: false
                 },{
-                	title:'报表单元',
+                	title:loginUserLanguageResource.reportUnit,
                 	id:'ModbusProtocolReportUnitConfigTabPanel_Id',
 //                	items: [ModbusProtocolReportUnitConfigInfoView],
     				layout: "fit",

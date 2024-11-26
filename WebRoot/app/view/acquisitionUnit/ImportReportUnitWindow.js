@@ -589,7 +589,7 @@ function saveAllImportedReportUnit(){
 }
 
 function CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
@@ -821,7 +821,7 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',
@@ -993,7 +993,7 @@ var ImportReportUnitSingleWellDailyReportContentHandsontableHelper = {
 };
 
 function CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
@@ -1226,7 +1226,7 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',
@@ -1395,7 +1395,7 @@ var ImportReportUnitSingleWellRangeReportContentHandsontableHelper = {
 };
 
 function CreateImportReportUnitProductionReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
@@ -1627,7 +1627,7 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',

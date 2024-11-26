@@ -73,7 +73,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     itemId: 'addfindtattxtBtnId',
                     id: 'addfindtattxtBtn_Id',
                     action: 'addfindtattxtInfoAction',
-                    text: cosog.string.add,
+                    text: loginUserLanguageResource.add,
                     iconCls: 'add',
                     tooltip: cosog.string.addDataValue
                 }, '-',
@@ -81,7 +81,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     xtype: 'button',
                     itemId: 'editfindtattxtBtnId',
                     id: 'editfindtattxtBtn_Id',
-                    text: cosog.string.update,
+                    text: loginUserLanguageResource.update,
                     action: 'editfindtattxtInfoBtnAction',
                     disabled: false,
                     iconCls: 'edit',
@@ -93,7 +93,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     id: 'delfindtattxtBtn_Id',
                     disabled: false,
                     action: 'delfindtattxtInfoBtnAction',
-                    text: cosog.string.del,
+                    text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete'
                 }],
             bbar: bbar,

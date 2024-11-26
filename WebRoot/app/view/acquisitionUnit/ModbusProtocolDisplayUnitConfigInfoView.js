@@ -41,7 +41,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
         			}
         		},"-",{
                 	xtype: 'button',
-        			text: cosog.string.save,
+        			text: loginUserLanguageResource.save,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'save',
         			handler: function (v, o) {
@@ -107,7 +107,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     },{
                     	region: 'south',
                     	height:'42%',
-                    	title:'属性',
+                    	title:loginUserLanguageResource.properties,
                     	collapsible: true,
                         split: true,
                     	layout: 'fit',
@@ -250,7 +250,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
 });
 
 function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName) {
-    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
@@ -595,7 +595,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 
 
 function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCalItemsConfigData',
@@ -946,7 +946,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
-	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCtrlItemsConfigData',
@@ -1153,7 +1153,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitInputItemsConfigData',
@@ -1508,7 +1508,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
-		item1.title='协议名称';
+		item1.title=loginUserLanguageResource.protocolName;
 		item1.value=data.text;
 		root.push(item1);
 	}else if(data.classes==2){
@@ -1520,7 +1520,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		
 		var item2={};
 		item2.id=2;
-		item2.title='采控单元';
+		item2.title=loginUserLanguageResource.acqUnit;
 		item2.value=data.acqUnitName;
 		root.push(item2);
 
@@ -1618,7 +1618,7 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 				                    	cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addCellStyle;
 				                    } else if (visualColIndex === 2 && visualRowIndex === 2) {
 		                                this.type = 'dropdown';
-		                                this.source = ['无', '功图计算', '转速计产'];
+		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.RPCCalculate, loginUserLanguageResource.PCPCalculate];
 		                                this.strict = true;
 		                                this.allowInvalid = false;
 		                            }else{

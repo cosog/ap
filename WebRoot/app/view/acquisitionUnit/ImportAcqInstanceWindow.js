@@ -282,7 +282,7 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 }
 
 function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceName){
-	Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAcqInstanceItemsData',

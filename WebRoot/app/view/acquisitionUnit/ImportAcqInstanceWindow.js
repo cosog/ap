@@ -95,7 +95,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
                 		}
                 		info+="！是否执行全部保存？";
                 		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                             	saveAllImportedAcqInstance();
                             }
@@ -160,9 +160,9 @@ function submitImportedAcqInstanceFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	var importAcqInstanceContentTreeGridPanel = Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id");
@@ -173,7 +173,7 @@ function submitImportedAcqInstanceFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -208,9 +208,9 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -222,7 +222,7 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -246,9 +246,9 @@ function saveAllImportedAcqInstance(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 				
@@ -260,11 +260,11 @@ function saveAllImportedAcqInstance(){
                 }
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的实例。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>"+loginUserLanguageResource.noDataCanBeSaved+"</font>");
 	}
 }
 
@@ -307,7 +307,7 @@ function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceNam
 					+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}}," 
 					+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}}," 
 					+"{data:'unit'}," 
-					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
 					+"]";
 				importAcqInstanceConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAcqInstanceConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);

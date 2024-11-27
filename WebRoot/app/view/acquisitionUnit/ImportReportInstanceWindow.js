@@ -94,7 +94,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                 		}
                 		info+="！是否执行全部保存？";
                 		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                             	saveAllImportedReportInstance();
                             }
@@ -121,7 +121,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                 border: false,
                 tabPosition: 'top',
                 items: [{
-                	title:'单井报表',
+                	title:loginUserLanguageResource.singleDeviceReport,
                 	iconCls: 'check3',
                 	id:'importReportInstanceSingleWellReportTemplatePanel_Id',
                 	xtype: 'tabpanel',
@@ -130,7 +130,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     tabPosition: 'top',
                     items: [{
                     	id:'importReportInstanceSingleWellDailyReportTemplatePanel_Id',
-                    	title:'班报表',
+                    	title:loginUserLanguageResource.hourlyReport,
                     	iconCls: 'check3',
                     	border: false,
                     	region: 'center',
@@ -140,7 +140,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     		layout: "border",
                     		items: [{
                         		region: 'center',
-                        		title:'单井班报表模板',
+                        		title:loginUserLanguageResource.deviceHourlyReportTemplate,
                         		id:"ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id",
                                 layout: 'fit',
                                 border: false,
@@ -170,7 +170,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     	}]
                     },{
                     	id:'importReportInstanceSingleWellRangeReportTemplatePanel_Id',
-                    	title:'日报表',
+                    	title:loginUserLanguageResource.dailyReport,
                     	border: false,
                     	region: 'center',
                     	layout: "border",
@@ -179,7 +179,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     		layout: "border",
                     		items: [{
                         		region: 'center',
-                        		title:'单井日报表模板',
+                        		title:loginUserLanguageResource.deviceDailyReportTemplate,
                         		id:"ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id",
                                 layout: 'fit',
                                 border: false,
@@ -218,7 +218,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
             			}
                     }
                 },{
-                	title:'区域报表',
+                	title:loginUserLanguageResource.areaReport,
                 	id:'importReportInstanceProductionReportTemplatePanel_Id',
                 	xtype: 'tabpanel',
                 	activeTab: 0,
@@ -226,13 +226,13 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     tabPosition: 'top',
                     items: [{
                     	id:'importReportInstanceProductionRangeReportTemplatePanel_Id',
-                    	title:'日报表',
+                    	title:loginUserLanguageResource.dailyReport,
                     	iconCls: 'check3',
                     	border: false,
                 		layout: "border",
                 		items: [{
                     		region: 'center',
-                    		title:'区域日报模板',
+                    		title:loginUserLanguageResource.areaDailyReportTemplate,
                     		id:"importReportInstanceProductionTemplateTableInfoPanel_Id",
                             layout: 'fit',
                             border: false,
@@ -309,9 +309,9 @@ function submitImportedReportInstanceFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	var importReportInstanceContentTreeGridPanel = Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id");
@@ -322,7 +322,7 @@ function submitImportedReportInstanceFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -356,9 +356,9 @@ function saveSingelImportedReportInstance(instanceName,unitName){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -370,7 +370,7 @@ function saveSingelImportedReportInstance(instanceName,unitName){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -394,9 +394,9 @@ function saveAllImportedReportInstance(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id").getStore().load();
 				
@@ -408,11 +408,11 @@ function saveAllImportedReportInstance(){
                 }
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的实例。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>"+loginUserLanguageResource.noDataCanBeSaved+"</font>");
 	}
 }
 

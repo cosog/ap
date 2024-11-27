@@ -100,7 +100,7 @@ SelectOrgDataAttrInfoGridPanel = function () {
     var orgParent = dataattr_row[0].data.orgParent;
     var orgParentName = dataattr_row[0].parentNode.data.text;
     if (orgParent == '0') {
-        orgParentName = cosog.string.root;
+        orgParentName = loginUserLanguageResource.rootNode;
     }
    
     Ext.getCmp('orgOrg_Id').setValue(orgId);
@@ -159,15 +159,15 @@ function delOrgInfo() {
         			success : function(response) {
         				var result = Ext.JSON.decode(response.responseText);
         				if (result.flag == true) {
-        					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ result.deleteCount + "条数据信息。");
+        					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ result.deleteCount + "条数据信息。");
         				}
         				if (result.flag == false) {
-        					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
+        					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
         				}
         				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
         			},
         			failure : function() {
-        				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+        				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+" </font>】"+loginUserLanguageResource.contactAdmin);
         			}
         		});
             }
@@ -237,7 +237,7 @@ function saveOrgCoordInfo() {
     		method:'POST',
     		url:context + '/orgManagerController/doOrgUpdateCoord',
     		success:function(response) {
-    			Ext.MessageBox.alert("信息","组织坐标更新成功",function(){
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,"组织坐标更新成功",function(){
     				store.proxy.extraParams.tid = 0;
                     store.load();
                     store.modified = []; 
@@ -281,7 +281,7 @@ function addUserInfo() {
 	        title: cosog.string.addUser
 	    });
 	    UserInfoWindow.show();
-	    Ext.getCmp("userWinOgLabel_Id").setHtml("用户将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+	    Ext.getCmp("userWinOgLabel_Id").setHtml("用户将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 	    Ext.getCmp("userWinOgLabel_Id").show();
 	    Ext.getCmp("addFormUser_Id").show();
 	    Ext.getCmp("updateFormUser_Id").hide();
@@ -289,7 +289,7 @@ function addUserInfo() {
 	    Ext.getCmp("userPwd_Id").setValue("123456");
 	    Ext.getCmp("userPwdAgain_Id").setValue("123456");
 	}else{
-		Ext.MessageBox.alert("信息","请先添加组织");
+		Ext.MessageBox.alert(loginUserLanguageResource.message,"请先添加组织");
 	}
 	
     return false;
@@ -420,21 +420,21 @@ function delUserInfo() {
             			success : function(response) {
             				var result = Ext.JSON.decode(response.responseText);
             				if (result.flag == true) {
-            					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
+            					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
             				}
             				if (result.flag == false) {
-            					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
+            					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
             				}
             				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
             			},
             			failure : function() {
-            				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+            				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
             			}
             		});
             	}else if(noDelete.length>0){
-            		Ext.Msg.alert('提示', "<font color=red>不能删除当前登录用户。</font>");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>不能删除当前登录用户。</font>");
             	}else{
-            		Ext.Msg.alert('提示', "<font color=red>所选属性无效，删除失败。</font>");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
             	}
                 
                 
@@ -477,21 +477,21 @@ function delUserInfoByGridBtn(record) {
       			success : function(response) {
       				var result = Ext.JSON.decode(response.responseText);
       				if (result.flag == true) {
-      					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
+      					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
       				}
       				if (result.flag == false) {
-      					Ext.Msg.alert('提示', "<font color=red>删除失败。</font>");
+      					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
       				}
       				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
       			},
       			failure : function() {
-      				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+      				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
       			}
       		});
       	}else if(noDelete.length>0){
-      		Ext.Msg.alert('提示', "<font color=red>不能删除当前登录用户。</font>");
+      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>不能删除当前登录用户。</font>");
       	}else{
-      		Ext.Msg.alert('提示', "<font color=red>所选属性无效，删除失败。</font>");
+      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
       	}
       }
   });
@@ -530,16 +530,16 @@ function updateUserInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert('提示', "<font color=red>用户账号已存在,保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}else {
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }

@@ -5,7 +5,7 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
     id:'ReportUnitContentConfigWindow_Id',
     alias: 'widget.reportUnitContentConfigWindow',
     layout: 'fit',
-    title:'报表内容配置',
+    title:loginUserLanguageResource.reportContentConfig,
     border: false,
     hidden: false,
     collapsible: true,
@@ -45,7 +45,7 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                 value: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '计算类型',
+                fieldLabel: loginUserLanguageResource.calculateType,
                 id: 'ReportUnitContentConfig_CalculateType',
                 value: ''
             },{
@@ -786,7 +786,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 			if(reportUnitContentConfigColInfoHandsontableHelper==null || reportUnitContentConfigColInfoHandsontableHelper.hot==undefined){
 				reportUnitContentConfigColInfoHandsontableHelper = ReportUnitContentConfigColInfoHandsontableHelper.createNew("ReportUnitContentConfigColInfoDiv_Id");
 				var colHeaders=['序号','表头','字段','单位','数据来源','统计方式','显示级别','顺序','小数位数',
-					'求和','求平均',loginUserLanguageResource.reportCurve,'曲线配置','曲线统计类型','数据类型','字段代码','备注','数据是否改变'];
+					'求和','求平均',loginUserLanguageResource.reportCurve,'曲线配置','曲线统计类型','数据类型','字段代码',loginUserLanguageResource.remark,'数据是否改变'];
 				var columns=[
 						{data:'id'},
 						{data:'headerName'},
@@ -1041,92 +1041,6 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                    	var totalType=rowdata[5];
 	                    	Ext.getCmp("ReportUnitContentConfig_SelectedRow").setValue(startRow);
 	                    	CreateReportUnitContentConfigTable();
-	                    	
-//	                    	var reportUnitContentConfigData=reportUnitContentConfigHandsontableHelper.hot.getData();
-	                    	
-//	                    	for(var i=0;i<reportUnitContentConfigData.length;i++){
-//	                    		var contentCode=reportUnitContentConfigData[i][10];
-//	                    		if(reportType==0){
-//	                    			contentCode=reportUnitContentConfigData[i][10];
-//	                    		}
-//	                    		
-//	                    		if(contentCode.toUpperCase()==code.toUpperCase()){
-//	                    			if(reportType==0){
-//	                    				if(isNotVal(reportUnitContentConfigData[i][5])){//统计类型
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,5,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][6])){//显示级别
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,6,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][7])){//小数位数
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,7,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][8])){//曲线显示值
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,8,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][9])){//曲线配置
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,9,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][10])){//字段代码
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,10,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][11])){//数据类型
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,11,'');
-//	                    				}
-//	                    				if(isNotVal(reportUnitContentConfigData[i][12])){//备注
-//	                    					reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,12,'');
-//	                    				}
-//	                    			}
-//	                    			
-//	                    			if(!reportUnitContentConfigData[i][0]){
-//		                    			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,0,true);
-//		                    		}
-//	                    			if(reportType==0){
-//	                    				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,5,rowdata[5]);//统计类型
-//	                    				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,6,rowdata[6]);//显示级别
-//	                    				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,7,rowdata[8]);//小数位数
-//	                    				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(i,8,rowdata[11]);//曲线显示值
-//	                    			}
-//	                    			
-//	                    			break;
-//	                    		}
-//	                		}
-	                    	
-//	                    	var columns=[
-//	    						{data:'id'},
-//	    						{data:'headerName'},
-//	    						{data:'itemName'},
-//	    					 	{data:'unit'},
-//	    					 	{data:'dataSource'},
-//	    					 	{data:'totalType'},
-//	    						{data:'showLevel'},
-//	    						{data:'sort'},
-//	    						{data:'prec'},
-//	    						{data:'sumSign'},
-//	    						{data:'averageSign'},
-//	    						{data:'reportCurveConfShowValue'},
-//	    						{data:'reportCurveConf'},
-//	    						{data:'curveStatType'},
-//	    						{data:'dataType'},
-//	    						{data:'itemCode'},
-//	    						{data:'remark'}
-//	    						];
-//	                    	
-//	                    	var columns="[" 
-//	    						+"{data:'checked',type:'checkbox'}," 
-//	    						+"{data:'id'}," 
-//	    						+"{data:'title'},"
-//	    					 	+"{data:'unit'},"
-//	    					 	+"{data:'dataSource'}," 
-//	    					 	+"{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']}," 
-//	    						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}}," 
-//	    						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}}," 
-//	    						+"{data:'reportCurveConfShowValue'},"
-//	    						+"{data:'reportCurveConf'},"
-//	    						+"{data:'code'},"
-//	    						+"{data:'dataType'},"
-//	    						+"{data:'remark'}"
-//	    						+"]";
 	                	}
 	                }
 	        	});
@@ -1304,7 +1218,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                    Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
                 	CreateReportUnitContentConfigColInfoTable();
                 	CreateReportUnitContentConfigTable();
                 	if(reportType==0){
@@ -1324,7 +1238,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
             }
         });
     }else{
-    	Ext.Msg.alert(cosog.string.ts, "<font color=blue>无数据变化</font>");
+    	Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.noDataChange);
     }
     
     return false;

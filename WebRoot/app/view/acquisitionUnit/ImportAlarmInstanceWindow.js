@@ -103,7 +103,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                 		}
                 		info+="！是否执行全部保存？";
                 		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                             	saveAllImportedAlarmInstance();
                             }
@@ -132,7 +132,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                 border: false,
                 tabPosition: 'top',
                 items: [{
-                	title:'数据量',
+                	title:loginUserLanguageResource.numericValue,
                 	iconCls: 'check3',
                 	id:"importAlarmInstanceNumItemsTableInfoPanel_Id",
                 	region: 'center',
@@ -186,7 +186,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                         }
                 	}]
                 },{
-                	title:'开关量',
+                	title:loginUserLanguageResource.switchingValue,
                 	id:"importAlarmInstanceSwitchItemsTableInfoPanel_Id",
                     layout: 'fit',
                     html:'<div class="importAlarmInstanceSwitchItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceSwitchItemsConfigTableInfoDiv_id"></div></div>',
@@ -207,7 +207,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                          }
                     }
                 },{
-                	title:'枚举量',
+                	title:loginUserLanguageResource.enumValue,
                 	id:"importAlarmInstanceEnumItemsTableInfoPanel_Id",
                     layout: 'fit',
                     html:'<div class="importAlarmInstanceEnumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceEnumItemsConfigTableInfoDiv_id"></div></div>',
@@ -445,9 +445,9 @@ function submitImportedAlarmInstanceFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	var importAlarmInstanceContentTreeGridPanel = Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id");
@@ -458,7 +458,7 @@ function submitImportedAlarmInstanceFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -493,9 +493,9 @@ function saveSingelImportedAlarmInstance(instanceName,unitName,protocolName){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -507,7 +507,7 @@ function saveSingelImportedAlarmInstance(instanceName,unitName,protocolName){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -531,9 +531,9 @@ function saveAllImportedAlarmInstance(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
 				
@@ -545,11 +545,11 @@ function saveAllImportedAlarmInstance(){
                 }
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的实例。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>"+loginUserLanguageResource.noDataCanBeSaved+"</font>");
 	}
 }
 
@@ -585,7 +585,7 @@ function CreateImportAlarmInstanceNumItemsConfigInfoTable(protocolName,unitName,
 						+"{data:'lowerLimit'}," 
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -737,7 +737,7 @@ function CreateImportAlarmInstanceCalNumItemsConfigInfoTable(protocolName,unitNa
 						+"{data:'lowerLimit'}," 
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']},"
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -888,7 +888,7 @@ function CreateImportAlarmInstanceSwitchItemsConfigInfoTable(protocolName,unitNa
 						+"{data:'meaning'}," 
 						+"{data:'value'}," 
 						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -1038,7 +1038,7 @@ function CreateImportAlarmInstanceEnumItemsConfigInfoTable(protocolName,unitName
 					 	+"{data:'value'}," 
 						+"{data:'meaning'},"
 						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -1185,7 +1185,7 @@ function CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(protocolN
 				var colHeaders="['序号','名称','延时(s)',"+"+loginUserLanguageResource.alarmLevel+"+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -1332,7 +1332,7 @@ function CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(protocolName,uni
 				var colHeaders="['序号','名称','延时(s)',"+"+loginUserLanguageResource.alarmLevel+"+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
@@ -1479,7 +1479,7 @@ function CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(protocolName,un
 				var colHeaders="['序号','名称','延时(s)',"+"+loginUserLanguageResource.alarmLevel+"+",'报警使能',"+loginUserLanguageResource.isSendMessage+","+loginUserLanguageResource.isSendEmail+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['正常',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 

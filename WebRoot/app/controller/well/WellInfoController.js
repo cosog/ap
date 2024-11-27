@@ -198,7 +198,7 @@ function saveWellEditerGridDataInfo() {
     		method:'POST',
     		url:context + '/wellInformationManagerController/saveWellEditerGridData',
     		success:function(response) {
-    			Ext.MessageBox.alert("信息","更新成功",function(){
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,"更新成功",function(){
     				well_panel.getStore().load();
     				well_panel.getStore().modified = []; 
     				if(mapHelperWell!=null){

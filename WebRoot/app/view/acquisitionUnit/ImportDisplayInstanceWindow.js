@@ -98,7 +98,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                         }
                         info += "！是否执行全部保存？";
 
-                        Ext.Msg.confirm('提示', info, function (btn) {
+                        Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                                 saveAllImportedDisplayInstance();
                             }
@@ -126,7 +126,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
             		layout: "border",
             		items: [{
                 		region: 'center',
-                		title:'采集项配置',
+                		title:loginUserLanguageResource.acquisitionItemConfig,
                 		id:"importDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="importDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
@@ -149,7 +149,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                 	},{
                 		region: 'south',
                     	height:'50%',
-                    	title:'控制项配置',
+                    	title:loginUserLanguageResource.controlItemConfig,
                 		id:"importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         collapsible: true,
@@ -171,7 +171,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                 	items: [{
                 		region: 'center',
                     	layout: 'fit',
-                    	title:'录入项配置',
+                    	title:loginUserLanguageResource.inputItemConfig,
                 		id:"importDisplayInstanceInputItemsConfigTableInfoPanel_Id",
                         html:'<div class="importDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
@@ -185,7 +185,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                     	layout: 'fit',
                         collapsible: true,
                         split: true,
-                    	title:'计算项配置',
+                    	title:loginUserLanguageResource.calculateItemConfig,
                     	id:"importDisplayInstanceCalItemsConfigTableInfoPanel_Id",
                         html:'<div class="importDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
@@ -248,9 +248,9 @@ function submitImportedDisplayInstanceFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	
@@ -262,7 +262,7 @@ function submitImportedDisplayInstanceFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -313,9 +313,9 @@ function saveSingelImportedDisplayInstance(instanceName,displayUnitName,acqUnitN
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -327,7 +327,7 @@ function saveSingelImportedDisplayInstance(instanceName,displayUnitName,acqUnitN
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -350,9 +350,9 @@ function saveAllImportedDisplayInstance(){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -364,7 +364,7 @@ function saveAllImportedDisplayInstance(){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -389,8 +389,8 @@ function CreateImportDisplayInstanceAcqItemsInfoTable(protocolName,acqUnitName,d
 				var colHeaders = "[" 
                 	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
                 	+"['序号','名称','单位','显示级别'," 
-                	+"'顺序','前景色','背景色','曲线'," 
-                	+"'顺序','前景色','背景色','曲线']"
+                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']"
                 	+"]";
 				var columns="["
 					+"{data:'id'}," 
@@ -578,8 +578,8 @@ function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,d
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'']," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'数据来源']" 
 					+"]";
 				var columns="["
@@ -921,8 +921,8 @@ function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线']" 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']" 
 					+"]";
 				var columns="["
 					+"{data:'id'}," 

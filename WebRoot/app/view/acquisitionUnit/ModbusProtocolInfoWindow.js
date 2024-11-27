@@ -57,7 +57,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【协议已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.protocolExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -75,7 +75,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolSort_Id",
                 name: 'protocolModel.sort',
-                fieldLabel: '排序',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',

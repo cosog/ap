@@ -95,7 +95,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                 		}
                 		info+="！是否执行全部保存？";
                 		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                             	saveAllImportedProtocol();
                             }
@@ -191,9 +191,9 @@ function submitImportedProtocolFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	
@@ -205,7 +205,7 @@ function submitImportedProtocolFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -237,7 +237,7 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}}," 
 						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importProtocolContentHandsontableHelper);}}," 
 						+"{data:'unit'}," 
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
 						+"]";
 				importProtocolContentHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importProtocolContentHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -357,15 +357,15 @@ function saveSingelImportedProtocol(protocolName,deviceType){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
 			Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -393,19 +393,19 @@ function saveAllImportedProtocol(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
 				Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的协议。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>"+loginUserLanguageResource.noDataCanBeSaved+"</font>");
 	}
 	
 }

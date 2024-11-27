@@ -103,7 +103,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【报警实例已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.alarmInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -126,7 +126,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolAlarmInstanceSort_Id",
                 name: 'protocolAlarmInstance.sort',
-                fieldLabel: '排序',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',

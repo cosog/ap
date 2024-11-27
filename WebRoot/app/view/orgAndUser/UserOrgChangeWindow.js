@@ -22,7 +22,7 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
         Ext.apply(me, {
         	bbar: ['->', {
                 xtype: 'button',
-                text: '迁移',
+                text: loginUserLanguageResource.changeOwner,
                 iconCls: 'move',
                 style: 'margin-right: 15px;margin-bottom: 5px',
                 pressed: false,
@@ -30,11 +30,11 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
                 	var selectedUser=Ext.getCmp("UserOrgChangeUserListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedOrg=Ext.getCmp("UserOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	if(selectedUser.length==0){
-                		Ext.MessageBox.alert("信息","请选择要迁移的用户！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的用户！");
                 		return;
                 	}
                 	if(selectedOrg.length==0){
-                		Ext.MessageBox.alert("信息","请选择目的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
                 		return;
                 	}
                 	var selectedUserId="";
@@ -56,14 +56,14 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
                 			var result = Ext.JSON.decode(response.responseText);
                 			Ext.getCmp("IframeView_Id").getStore().load();
                 			if (result.success == true) {
-                				Ext.Msg.alert('提示', "用户隶属迁移成功");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
                 			}
                 			if (result.success == false) {
-                				Ext.Msg.alert('提示', "<font color=red>用户隶属迁移失败。</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
                 			}
                 		},
                 		failure : function() {
-                			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
                 		}
                 	});
                 }

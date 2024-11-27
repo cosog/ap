@@ -45,7 +45,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【该型号抽油机已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【该型号抽油机已存在】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -84,7 +84,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【该型号抽油机已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【该型号抽油机已存在】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }

@@ -61,7 +61,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
                         title: '添加视频密钥'
                     });
                     window.show();
-                    Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml("密钥将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml("密钥将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
                     Ext.getCmp("videoKeyOrg_Id").setValue(selectedOrgId);
                     return false;
     			}
@@ -99,18 +99,18 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert("信息", "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
     	    	                            //保存以后重置全局容器
     	    	                            videoKeyDataHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("VideoKeySelectRow_Id").setValue(0);
     	    	                        	Ext.getCmp("VideoKeySelectEndRow_Id").setValue(0);
     	    	                            CreateDeviceKeyDataTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert("信息", "数据保存失败");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert("信息", "请求失败");
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
     	    	                        videoKeyDataHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -120,7 +120,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert("信息","请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
     				}
     			}
     		},"-", {
@@ -396,16 +396,16 @@ var VideoKeyDataHandsontableHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	var saveInfo='保存成功';
-	                        	Ext.MessageBox.alert("信息", saveInfo);
+	                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
 	                        	videoKeyDataHandsontableHelper.clearContainer();
 	                        	CreateDeviceKeyDataTable();
 	                        } else {
-	                            Ext.MessageBox.alert("信息", "数据保存失败");
+	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert("信息", "请求失败");
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
 	                        videoKeyDataHandsontableHelper.clearContainer();
 	                    },
 	                    params: {
@@ -414,7 +414,7 @@ var VideoKeyDataHandsontableHelper = {
 	                    }
 	                });
 	        	}else{
-	        		Ext.MessageBox.alert("信息", "无记录保存！");
+	        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	        	}
 	        }
 

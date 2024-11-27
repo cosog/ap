@@ -2,7 +2,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.alarmColorSelectWindow',
     layout: 'fit',
-    title:'报警颜色配置',
+    title:loginUserLanguageResource.alarmColorConfig,
     iframe: true,
     id: 'AlarmColorSelectWindow_Id',
     closeAction: 'destroy',
@@ -107,12 +107,12 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 items: [{
                 	items:[{
                 		xtype:'displayfield',
-                    	fieldLabel: '<font color=red >背景色</font>',
+                    	fieldLabel: '<font color=red >'+loginUserLanguageResource.backgroundColor+'</font>',
                     	value:''
                     },{
                         id: 'goOnlineBackgroundColor_id',
-                        fieldLabel: '上线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.goOnline,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -132,8 +132,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'onlineBackgroundColor_id',
-                        fieldLabel: '在线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.online,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -153,8 +153,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'offlineBackgroundColor_id',
-                        fieldLabel: '离线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.offline,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -174,8 +174,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'runBackgroundColor_id',
-                        fieldLabel: '运行',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.run,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -195,8 +195,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'stopBackgroundColor_id',
-                        fieldLabel: '停止',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.stop,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -216,8 +216,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'noRunStatusDataBackgroundColor_id',
-                        fieldLabel: '无运行状态',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.runStatusNoData,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -238,7 +238,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'firstLevelBackgroundColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel1,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -259,7 +259,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'secondLevelBackgroundColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel2,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -280,7 +280,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'thirdLevelBackgroundColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel3,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                         	collapse: function (field,eOpts) {
@@ -299,8 +299,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'normalBackgroundColor_id',
-                        fieldLabel: '正常',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.normal,
+                        labelWidth: 90,
                         anchor:'90%',
                         listeners : {
                             collapse: function (field,eOpts) {
@@ -322,12 +322,12 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 },{
                 	items:[{
                 		xtype:'displayfield',
-                    	fieldLabel: '<font color=red >前景色</font>',
+                    	fieldLabel: '<font color=red >'+loginUserLanguageResource.foregroundColor+'</font>',
                     	value:''
                     },{
                         id: 'goOnlineColor_id',
-                        fieldLabel: '上线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.goOnline,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -347,8 +347,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'onlineColor_id',
-                        fieldLabel: '在线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.online,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -368,8 +368,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'offlineColor_id',
-                        fieldLabel: '离线',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.offline,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -389,8 +389,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'runColor_id',
-                        fieldLabel: '运行',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.run,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -410,8 +410,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'stopColor_id',
-                        fieldLabel: '停止',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.stop,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -431,8 +431,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'noRunStatusDataColor_id',
-                        fieldLabel: '无运行状态',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.runStatusNoData,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -453,7 +453,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'firstLevelColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel1,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -474,7 +474,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'secondLevelColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel2,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -495,7 +495,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 	},{
                         id: 'thirdLevelColor_id',
                         fieldLabel: loginUserLanguageResource.alarmLevel3,
-                        labelWidth: 70,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {
@@ -515,8 +515,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	},{
                         id: 'normalColor_id',
-                        fieldLabel: '正常',
-                        labelWidth: 70,
+                        fieldLabel: loginUserLanguageResource.normal,
+                        labelWidth: 90,
                         anchor:'90%',
                         value:'#FFFFFF',
                         listeners : {

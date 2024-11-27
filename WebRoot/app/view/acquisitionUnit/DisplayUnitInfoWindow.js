@@ -114,7 +114,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
         
         var acqUnitComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '采控单元<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.acqUnit+'<font color=red>*</font>',
 					id : 'formDisplayUnitAcqUnitComb_Id',
 					anchor : '100%',
 					store: acqUnitStore,
@@ -153,7 +153,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 			},modbusProtocolComb,acqUnitComb, {
                 id: 'formDisplayUnitName_Id',
                 name: "displayUnit.unitName",
-                fieldLabel: '单元名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.unitName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -173,7 +173,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【采控单元已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.acqUnitExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -206,7 +206,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 				name : "displayUnit.calculateType"
 			},{
             	xtype : "combobox",
-				fieldLabel : '计算类型<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
 				id : 'formDisplayUnitCalculateTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -222,8 +222,8 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择计算类型',
-				blankText : '请选择计算类型',
+				emptyText : loginUserLanguageResource.selectCalculateType,
+				blankText : loginUserLanguageResource.selectCalculateType,
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("formDisplayUnitCalculateType_Id").setValue(this.value);
@@ -233,7 +233,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
             }, {
             	id: 'displayUnitRemark_Id',
             	name: "displayUnit.remark",
-                fieldLabel: '单元描述',
+                fieldLabel: loginUserLanguageResource.unitDescription,
                 anchor: '100%',
                 value: '',
                 xtype: 'textareafield'

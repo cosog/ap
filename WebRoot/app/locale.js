@@ -191,7 +191,6 @@ cosog.string.waveAlarmSet='波动报警设置';
 cosog.string.alarmType='报警类型';
 cosog.string.alarmLevel='报警级别';
 cosog.string.alarmSign='报警状态';
-cosog.string.normal='正常';
 cosog.string.alarm='报警';
 cosog.string.remark='备注';
 cosog.string.editAlarm='修改工况报警设置信息';
@@ -199,7 +198,6 @@ cosog.string.editWaveAlarm='修改波动报警设置信息';
 cosog.string.alarmLevel1='一级报警';
 cosog.string.alarmLevel1='二级报警';
 cosog.string.alarmLevel1='三级报警';
-cosog.string.offLine='离线';
 
 //地图
 cosog.string.longitude='经度';

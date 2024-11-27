@@ -94,9 +94,9 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                             if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                             	Ext.getCmp("BatchAddDeviceCollisionDataWindow_Id").close();
                             	if(rdata.overCount>0){
-                            		Ext.MessageBox.alert("信息", "<font color=red>"+rdata.overCount+"</font>口井超限，保存失败");
+                            		Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+rdata.overCount+"</font>口井超限，保存失败");
                             	}else{
-                            		Ext.MessageBox.alert("信息", "保存成功");
+                            		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             	}
                             }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
                                 Ext.getCmp("batchAddCollisionDeviceType_Id").setValue(deviceType);
@@ -143,13 +143,13 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                                 if(rdata.overCount>0){
                                 	info+=overInfo;
                                 }
-                                Ext.MessageBox.alert("信息", info);
+                                Ext.MessageBox.alert(loginUserLanguageResource.message, info);
                             } else {
-                                Ext.MessageBox.alert("信息", "数据保存失败");
+                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                             }
                         },
                         failure: function () {
-                            Ext.MessageBox.alert("信息", "请求失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                             batchAddDeviceHandsontableHelper.clearContainer();
                         },
                         params: {

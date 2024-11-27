@@ -116,15 +116,15 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert("信息", "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
     	    	                        	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
     	    	                            CreateAndLoadAuxiliaryDeviceInfoTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert("信息", "数据保存失败");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert("信息", "请求失败");
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
     	    	                        auxiliaryDeviceInfoHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -134,7 +134,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert("信息","请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
     				}
     			}
     		}, '-', {
@@ -261,7 +261,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders="['序号','类型','设备名称','厂家','规格型号','备注','排序编号']";
+                var colHeaders="['序号','类型','设备名称','厂家','规格型号','"+loginUserLanguageResource.remark+"','排序编号']";
                 var columns="[{data:'id'}," 
                 		+"{data:'specificType'}," 
                 		+"{data:'name'}," 
@@ -567,22 +567,22 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     success: function (response) {
                     	rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo='保存成功';
+                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo='保存成功'+rdata.successCount+'条记录,保存失败:<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+rdata.successCount+'条记录,'+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>条记录';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
                         	}
-                        	Ext.MessageBox.alert("信息", saveInfo);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
                         	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadAuxiliaryDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -594,7 +594,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     }
                 });
         	}else{
-        		Ext.MessageBox.alert("信息", "无记录保存！");
+        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
             }
         }
 
@@ -607,15 +607,15 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert("信息", "保存成功");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadAuxiliaryDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -624,9 +624,9 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!auxiliaryDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
         }

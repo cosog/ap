@@ -33,7 +33,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加显示单元',
+                    text: loginUserLanguageResource.addDisplayUnit,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -80,7 +80,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportDisplayUnitWindow");
                         window.show();
-        				Ext.getCmp("ImportDisplayUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportDisplayUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportDisplayUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -101,7 +101,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
-                    	title:'显示单元配置',
+                    	title:loginUserLanguageResource.displayUnitConfig,
                     	layout: 'fit',
                     	id:"ModbusProtocolDisplayUnitConfigPanel_Id"
                     },{
@@ -139,7 +139,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 		layout: "border",
                 		items: [{
                     		region: 'center',
-                    		title:'采集项配置',
+                    		title:loginUserLanguageResource.acquisitionItemConfig,
                     		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
                             layout: 'fit',
                             html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
@@ -163,7 +163,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     	},{
                     		region: 'south',
                         	height:'50%',
-                        	title:'控制项配置',
+                        	title:loginUserLanguageResource.controlItemConfig,
                     		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
                             layout: 'fit',
                             collapsible: true,
@@ -196,7 +196,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     	items: [{
                     		region: 'center',
                         	layout: 'fit',
-                        	title:'录入项配置',
+                        	title:loginUserLanguageResource.inputItemConfig,
                     		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
                             html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -221,7 +221,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         	layout: 'fit',
                             collapsible: true,
                             split: true,
-                        	title:'计算项配置',
+                        	title:loginUserLanguageResource.calculateItemConfig,
                         	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
                             html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -258,9 +258,9 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 2) {
-                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/采集项配置');
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+acquisitionItemConfig);
             } else {
-                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle('采集项配置');
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
             }
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
@@ -268,8 +268,8 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
                 	+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','','']," 
                 	+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','','']," 
                 	+"['','序号','名称','单位','显示级别'," 
-                	+"'字段顺序','前景色','背景色','曲线配置'," 
-                	+"'字段顺序','前景色','背景色','曲线配置'," 
+                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
                 	+"'','','','','']"
                 	+"]";
                 var columns = "[" 
@@ -288,7 +288,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
                     +"{data:'historyCurveConfShowValue'}," 
                     +"{data:'realtimeCurveConf'}," 
                     +"{data:'historyCurveConf'}," 
-                    +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+                    +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
                     +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
                     +"{data:'bitIndex'}" 
                     +"]";
@@ -603,9 +603,9 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/计算项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.calculateItemConfig);
 			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle('计算项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
@@ -613,8 +613,8 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','']," 
 					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','']," 
 					+"['','序号','名称','单位','显示级别'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'','','','数据来源']" 
 					+"]";
 				var columns="[" 
@@ -954,9 +954,9 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/控制项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
 			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle('控制项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
@@ -968,7 +968,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
 						+"{data:'bitIndex'}"
 						+"]";
@@ -1161,9 +1161,9 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/录入项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.inputItemConfig);
 			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle('录入项配置');
+				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
 			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
@@ -1171,8 +1171,8 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','']," 
 					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','']," 
 					+"['','序号','名称','单位','显示级别'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'','','']" 
 					+"]";
 				var columns="[" 
@@ -1502,8 +1502,8 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='根节点';
-		item1.value='单元列表';
+		item1.title=loginUserLanguageResource.rootNode;
+		item1.value=loginUserLanguageResource.unitList;
 		root.push(item1);
 	}else if(data.classes==1){
 		var item1={};
@@ -1514,7 +1514,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	}else if(data.classes==2){
 		var item1={};
 		item1.id=1;
-		item1.title='单元名称';
+		item1.title=loginUserLanguageResource.unitName;
 		item1.value=data.text;
 		root.push(item1);
 		
@@ -1526,14 +1526,14 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 
 		var item3={};
 		item3.id=3;
-		item3.title='计算类型';
+		item3.title=loginUserLanguageResource.calculateType;
 		item3.value=data.calculateTypeName;
 		root.push(item3);
 		
 		
 		var item4={};
 		item4.id=4;
-		item4.title='备注';
+		item4.title=loginUserLanguageResource.remark;
 		item4.value=data.remark;
 		root.push(item4);
 	}
@@ -1732,17 +1732,17 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert("信息","保存成功");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	if(displayUnitSaveData.delidslist!=undefined && displayUnitSaveData.delidslist.length>0){
             		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
             	}
             	Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert("信息","采控单元数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
             displayUnitConfigHandsontableHelper.clearContainer();
 		},
 		params: {
@@ -1866,7 +1866,7 @@ var grantDisplayAcqItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
@@ -1966,7 +1966,7 @@ var grantDisplayCalItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
@@ -2047,7 +2047,7 @@ var grantDisplayCtrlItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + '控制项安排失败' + "。</font>");
@@ -2148,7 +2148,7 @@ var grantDisplayInputItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");

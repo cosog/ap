@@ -154,7 +154,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
             items: [{
             	region: 'west',
             	width: '20%',
-            	title: '报表实例列表',
+            	title: loginUserLanguageResource.reportInstanceList,
             	id: 'ProductionDailyReportInstanceListPanel_Id',
             	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠
@@ -806,17 +806,17 @@ var ProductionDailyReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息", '保存成功');
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
 	                        	productionDailyReportHelper.clearContainer();
 	                        	CreateProductionDailyReportTable();
 	                        	CreateProductionDailyReportCurve();
 	                        } else {
 	                        	productionDailyReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert("信息", "数据保存失败");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert("信息", "请求失败");
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
 	                    },
 	                    params: {
 	                    	wellId:wellId,
@@ -826,7 +826,7 @@ var ProductionDailyReportHelper = {
 	                    }
 	                });
 	        	}else{
-	        		Ext.MessageBox.alert("信息", "无数据变化！");
+	        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	        	}
 	        }
 	        productionDailyReportHelper.clearContainer = function () {

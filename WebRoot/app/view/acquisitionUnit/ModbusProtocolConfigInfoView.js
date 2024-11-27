@@ -95,7 +95,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         					var window = Ext.create("AP.view.acquisitionUnit.ImportProtocolWindow");
                             window.show();
         				}
-        				Ext.getCmp("ImportProtocolWinTabLabel_Id").setHtml("协议将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportProtocolWinTabLabel_Id").setHtml("协议将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
         			    Ext.getCmp("ImportProtocolWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportProtocolWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -162,7 +162,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 	border: true,
 //                    flex: 4,
                 	region: 'center',
-                    title:'采控项配置',
+                    title:loginUserLanguageResource.acqItemConfig,
                     id:"ModbusProtocolAddrMappingItemsConfigPanel_Id",
                     layout: "border",
                     border: true,
@@ -252,7 +252,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 						+"{data:'unit'}," 
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
 						+"]";
 				protocolItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolItemsConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -536,7 +536,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='根节点';
+		item1.title=loginUserLanguageResource.rootNode;
 		item1.value=loginUserLanguageResource.protocolList;
 		root.push(item1);
 	}else if(data.classes==1){
@@ -774,7 +774,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 			}
 			saveModbusProtocolAddrMappingConfigData(configInfo);
 		}else{
-			Ext.MessageBox.alert("提示",loginUserLanguageResource.protocolName+"不能为空！");
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.protocolName+"不能为空！");
 		}
 	}
 };
@@ -789,7 +789,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 			protocolItemsConfigHandsontableHelper.clearContainer();
 			if (data.success) {
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
-				Ext.MessageBox.alert("信息","保存成功");
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 				
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
 					Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
@@ -798,11 +798,11 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 				
             	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert("信息","数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
 			data:JSON.stringify(configInfo)

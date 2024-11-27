@@ -77,7 +77,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportAcqInstanceWindow");
                         window.show();
-        				Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportAcqInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -99,7 +99,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     items: [{
                     	region: 'center',
                     	layout: 'fit',
-                    	title:'采控实例列表',
+                    	title:loginUserLanguageResource.acqInstanceList,
 //                    	autoScroll:true,
 //                        scrollable: true,
                     	id:"ModbusProtocolInstanceConfigPanel_Id"
@@ -175,7 +175,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			if(data.classes==0){
 				var item1={};
 				item1.id=1;
-				item1.title='根节点';
+				item1.title=loginUserLanguageResource.rootNode;
 				item1.value='实例列表';
 				root.push(item1);
 			}else if(data.classes==1){
@@ -510,7 +510,7 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 					+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolInstanceConfigItemsHandsontableHelper);}}," 
 					+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolInstanceConfigItemsHandsontableHelper);}}," 
 					+"{data:'unit'}," 
-					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}" 
+					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
 					+"]";
 				protocolInstanceConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolInstanceConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -720,18 +720,18 @@ function SaveModbusProtocolAcqInstanceData(saveData){
 		success:function(response) {
 			data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
-				Ext.MessageBox.alert("信息","保存成功");
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
 				}
 				Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
             	
             } else {
-            	Ext.MessageBox.alert("信息","保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
 			data: JSON.stringify(saveData),

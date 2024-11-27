@@ -98,7 +98,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                         }
                         info += "！是否执行全部保存？";
 
-                        Ext.Msg.confirm('提示', info, function (btn) {
+                        Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                                 saveAllImportedDisplayUnit();
                             }
@@ -112,7 +112,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
             items: [{
                 region: 'west',
                 width: '25%',
-                title: '上传单元列表',
+                title: loginUserLanguageResource.uploadUnitList,
                 layout: 'fit',
                 split: true,
                 collapsible: true,
@@ -126,7 +126,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
             		layout: "border",
             		items: [{
                 		region: 'center',
-                		title:'采集项配置',
+                		title:loginUserLanguageResource.acquisitionItemConfig,
                 		id:"importDisplayUnitAcqItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="importDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
@@ -149,7 +149,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                 	},{
                 		region: 'south',
                     	height:'50%',
-                    	title:'控制项配置',
+                    	title:loginUserLanguageResource.controlItemConfig,
                 		id:"importDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         collapsible: true,
@@ -182,7 +182,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                 	items: [{
                 		region: 'center',
                     	layout: 'fit',
-                    	title:'录入项配置',
+                    	title:loginUserLanguageResource.inputItemConfig,
                 		id:"importDisplayUnitInputItemsConfigTableInfoPanel_Id",
                         html:'<div class="importDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
@@ -207,7 +207,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                     	layout: 'fit',
                         collapsible: true,
                         split: true,
-                    	title:'计算项配置',
+                    	title:loginUserLanguageResource.calculateItemConfig,
                     	id:"importDisplayUnitCalItemsConfigTableInfoPanel_Id",
                         html:'<div class="importDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
@@ -284,9 +284,9 @@ function submitImportedDisplayUnitFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	
@@ -298,7 +298,7 @@ function submitImportedDisplayUnitFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -347,9 +347,9 @@ function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -361,7 +361,7 @@ function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -384,9 +384,9 @@ function saveAllImportedDisplayUnit(){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -398,7 +398,7 @@ function saveAllImportedDisplayUnit(){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -422,8 +422,8 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 				var colHeaders = "[" 
                 	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
                 	+"['序号','名称','单位','显示级别'," 
-                	+"'顺序','前景色','背景色','曲线'," 
-                	+"'顺序','前景色','背景色','曲线']"
+                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']"
                 	+"]";
 				var columns="["
 						+"{data:'id'}," 
@@ -777,8 +777,8 @@ function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitN
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'']," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'数据来源']" 
 					+"]";
 				
@@ -972,8 +972,8 @@ function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,uni
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'顺序','前景色','背景色','曲线'," 
-					+"'顺序','前景色','背景色','曲线']" 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
+					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']" 
 					+"]";
 				
 				var columns="["

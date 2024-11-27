@@ -280,15 +280,15 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             	    	                    success: function (response) {
             	    	                        rdata = Ext.JSON.decode(response.responseText);
             	    	                        if (rdata.success) {
-            	    	                        	Ext.MessageBox.alert("信息", "删除成功");
+            	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
             	    	                        	pumpingModelInfoHandsontableHelper.clearContainer();
             	    	                            CreateAndLoadPumpingModelInfoTable();
             	    	                        } else {
-            	    	                            Ext.MessageBox.alert("信息", "数据保存失败");
+            	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             	    	                        }
             	    	                    },
             	    	                    failure: function () {
-            	    	                        Ext.MessageBox.alert("信息", "请求失败");
+            	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
             	    	                        pumpingModelInfoHandsontableHelper.clearContainer();
             	    	                    },
             	    	                    params: {
@@ -298,7 +298,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             			            }
             			        });
             				}else{
-            					Ext.MessageBox.alert("信息","请先选中要删除的行");
+            					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
             				}
             			}
             		}, '-', {
@@ -683,24 +683,24 @@ var PumpingModelInfoHandsontableHelper = {
                     success: function (response) {
                     	rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo='保存成功';
+                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo='保存成功'+rdata.successCount+'条记录,保存失败:<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+rdata.successCount+'条记录,'+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>条记录';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
                         	}
-                        	Ext.MessageBox.alert("信息", saveInfo);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
                             if(rdata.successCount>0){
                             	pumpingModelInfoHandsontableHelper.clearContainer();
                                 CreateAndLoadPumpingModelInfoTable();
                             }
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         pumpingModelInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -710,9 +710,9 @@ var PumpingModelInfoHandsontableHelper = {
                 });
             } else {
                 if (!pumpingModelInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
 
@@ -727,15 +727,15 @@ var PumpingModelInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert("信息", "保存成功");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             pumpingModelInfoHandsontableHelper.clearContainer();
                             CreateAndLoadPumpingModelInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         pumpingModelInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -744,9 +744,9 @@ var PumpingModelInfoHandsontableHelper = {
                 });
             } else {
                 if (!pumpingModelInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
         }
@@ -948,14 +948,14 @@ var PumpingUnitPTFHandsontableHelper = {
                     success: function (response) {
                     	rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo='保存成功';
-                        	Ext.MessageBox.alert("信息", saveInfo);
+                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         pumpingUnitPTFHandsontableHelper.clearContainer();
                     },
                     params: {

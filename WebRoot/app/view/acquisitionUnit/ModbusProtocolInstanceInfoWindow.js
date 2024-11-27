@@ -47,7 +47,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
         var protocolAndAcqUnitTree=Ext.create('AP.view.well.TreePicker',{
         	id:'modbusInstanceProtocolAndAcqUnit_Id',
         	anchor: '100%',
-        	fieldLabel: '采控单元<font color=red>*</font>',
+        	fieldLabel: loginUserLanguageResource.acqUnit+'<font color=red>*</font>',
         	labelWidth: 135,
             emptyText: '请选择采控单元...',
             blankText: '请选择采控单元...',
@@ -104,7 +104,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【采控实例已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.acqInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -296,7 +296,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolInstanceSort_Id",
                 name: 'protocolInstance.sort',
-                fieldLabel: '排序',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 labelWidth: 135,
                 allowBlank: true,
                 minValue: 1,

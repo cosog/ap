@@ -89,10 +89,8 @@ var AlarmQuerySecondTabPanelItems=[{
         layout: 'fit'
 	}]
 },{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">枚举量报警</div>',
 	title: loginUserLanguageResource.enumValueAlarm,
 	id:'EnumValueAlarmInfoTabPanel_Id',
-//	items: [EnumValueAlarmInfoPanel],
 	layout: "border",
 	items: [{
     	region: 'west',
@@ -112,10 +110,8 @@ var AlarmQuerySecondTabPanelItems=[{
         layout: 'fit'
 	}]
 },{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">开关量报警</div>',
 	title: loginUserLanguageResource.switchingValueAlarm,
 	id:'SwitchingValueAlarmInfoTabPanel_Id',
-//	items: [SwitchingValueAlarmInfoPanel],
 	layout: "border",
 	items: [{
     	region: 'west',

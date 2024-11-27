@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
                     },
                     store: store,
                     columns: [{
-                    	text: '区域日报模板列表',
+                    	text: loginUserLanguageResource.areaDailyReportTemplateList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName',

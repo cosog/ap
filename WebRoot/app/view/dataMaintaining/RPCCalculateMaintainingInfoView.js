@@ -548,17 +548,17 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         	            		success:function(response) {
         	            			var rdata=Ext.JSON.decode(response.responseText);
         	            			if (rdata.success) {
-        	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无未计算时，计算完成。");
+        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无未计算时，计算完成。");
         	                            //保存以后重置全局容器
         	                            rpcFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
         	                            Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
         	                        } else {
-        	                        	Ext.MessageBox.alert("信息","操作失败");
+        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailure);
 
         	                        }
         	            		},
         	            		failure:function(){
-        	            			Ext.MessageBox.alert("信息","请求失败");
+        	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
         	                        rpcFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
         	            		},
         	            		params: {
@@ -591,7 +591,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
                     	document.location.href = url;
                 	}else{
-                		Ext.MessageBox.alert("信息","未选择记录");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"未选择记录");
                 	}
                 }
             },{
@@ -629,7 +629,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 		+'&deviceType='+deviceType;
                     	document.location.href = url;
                     }else{
-                    	Ext.MessageBox.alert("信息","未选择记录");
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message,"未选择记录");
                     }
                 }
             }],
@@ -1056,14 +1056,14 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	                        	var successInfo='保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列，无未计算记录时，计算完成。';
 	                            //保存以后重置全局容器
 	                            rpcFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
-	                            Ext.MessageBox.alert("信息",successInfo);
+	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
 	                            Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
 	                        } else {
-	                        	Ext.MessageBox.alert("信息","数据保存失败");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 	                        }
 	            		},
 	            		failure:function(){
-	            			Ext.MessageBox.alert("信息","请求失败");
+	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 	                        rpcFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
@@ -1075,9 +1075,9 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	            	}); 
 	            } else {
 	                if (!rpcFESDiagramCalculateMaintainingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert("信息","数据类型错误");
+	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.dataTypeError);
 	                } else {
-	                	Ext.MessageBox.alert("信息","无数据变化");
+	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
 	                }
 	            }
 	        }
@@ -1156,11 +1156,11 @@ function ReTotalFESDiagramData(){
     		url:context + '/calculateManagerController/reTotalCalculate',
     		success:function(response) {
     			Ext.getCmp("RPCTotalCalculateMaintainingPanel").getEl().unmask();
-    			Ext.MessageBox.alert("信息","重新计算完成。");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,"重新计算完成。");
                 Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {
     			deviceType: 0,

@@ -268,7 +268,7 @@ function websocketOnMessage(evt) {
                     for (var i = 0; i < store.getCount(); i++) {
                         var record = store.getAt(i);
                         if (record.data.id == data.deviceId) {
-                            record.set("commStatusName", "在线");
+                            record.set("commStatusName", loginUserLanguageResource.online);
                             record.set("commStatus", 1);
                             record.set("acqTime", data.acqTime);
                             for (var j = 0; j < data.allItemInfo.length; j++) {
@@ -393,7 +393,7 @@ function websocketOnMessage(evt) {
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
                     if (record.data.id == data.deviceId) {
-                        record.set("commStatusName", "在线");
+                        record.set("commStatusName", loginUserLanguageResource.online);
                         record.set("commStatus", 1);
                         record.commit();
                         var selectedWellId = parseInt(Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue());
@@ -474,7 +474,7 @@ function websocketOnMessage(evt) {
                         var activeId = tabPanel.getActiveTab().id;
                         if (activeId == "RealTimeMonitoringTableTabPanel_Id") {
                             if (isNotVal(deviceRealTimeMonitoringDataHandsontableHelper) && isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.hot)) {
-                                var value = data.deviceName + ":" + data.acqTime + " " + (data.commStatus > 0 ? "上线" : "离线");
+                                var value = data.deviceName + ":" + data.acqTime + " " + (data.commStatus > 0 ? loginUserLanguageResource.goOnline : "离线");
                                 deviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
                             }
                         }
@@ -593,7 +593,7 @@ function websocketOnMessage(evt) {
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
                     if (record.data.signinId == data.signinId) {
-                        record.set("upCommStatusName", (data.commStatus == 1 ? "上线" : "离线"));
+                        record.set("upCommStatusName", (data.commStatus == 1 ? loginUserLanguageResource.goOnline : "离线"));
                         record.set("upCommStatus", data.commStatus);
                         record.commit();
                         var selectedWellId = parseInt(Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue());
@@ -617,7 +617,7 @@ function websocketOnMessage(evt) {
                 for (var i = 0; i < store.getCount(); i++) {
                     var record = store.getAt(i);
                     if (record.data.signinId == data.signinId) {
-                        record.set("downCommStatusName", (data.commStatus == 1 ? "上线" : "离线"));
+                        record.set("downCommStatusName", (data.commStatus == 1 ? loginUserLanguageResource.goOnline : "离线"));
                         record.set("downCommStatus", data.commStatus);
                         record.commit();
                         var selectedWellId = parseInt(Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue());
@@ -888,7 +888,7 @@ function invalidateSession() {
 
         },
         failure: function () {
-            Ext.MessageBox.alert("信息", "请求失败");
+            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
         },
         params: {}
     });

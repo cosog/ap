@@ -37,7 +37,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
                     },
                     store: store,
                     columns: [{
-                    	text: '单井班报表模板列表',
+                    	text: loginUserLanguageResource.deviceHourlyReportTemplateList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'templateName',
@@ -104,7 +104,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
             			}
             			singleWellDailyReportTemplateHandsontableHelper=null;
             		}
-            		Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井班报表模板：');
+            		Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportTemplate);
             	}
         	}
         },

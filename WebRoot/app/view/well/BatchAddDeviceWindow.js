@@ -512,9 +512,9 @@ var BatchAddDeviceHandsontableHelper = {
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                     	if(rdata.overCount>0){
-                    		Ext.MessageBox.alert("信息", "<font color=red>"+rdata.overCount+"</font>设备超限，保存失败");
+                    		Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+rdata.overCount+"</font>设备超限，保存失败");
                     	}else{
-                    		Ext.MessageBox.alert("信息", "保存成功");
+                    		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                     	}
                         //保存以后重置全局容器
                         batchAddDeviceHandsontableHelper.clearContainer();
@@ -554,13 +554,13 @@ var BatchAddDeviceHandsontableHelper = {
                         if(rdata.overCount>0){
                         	info+=overInfo;
                         }
-                        Ext.MessageBox.alert("信息", info);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, info);
                     } else {
-                        Ext.MessageBox.alert("信息", "数据保存失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert("信息", "请求失败");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                     batchAddDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

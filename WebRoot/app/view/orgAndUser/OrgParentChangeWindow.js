@@ -23,7 +23,7 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
         Ext.apply(me, {
         	bbar: ['->', {
                 xtype: 'button',
-                text: '迁移',
+                text: loginUserLanguageResource.changeOwner,
                 iconCls: 'move',
                 style: 'margin-right: 15px;margin-bottom: 5px',
                 pressed: false,
@@ -31,11 +31,11 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 	var selectedCurrentOrg=Ext.getCmp("OrgParentChangeWinCurrentOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	var selectedDestinationOrg=Ext.getCmp("OrgParentChangeWinDestinationOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	if(selectedCurrentOrg.length==0){
-                		Ext.MessageBox.alert("信息","请选择要迁移的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的组织！");
                 		return;
                 	}
                 	if(selectedDestinationOrg.length==0){
-                		Ext.MessageBox.alert("信息","请选择目的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
                 		return;
                 	}
                 	var selectedCurrentOrgId="";
@@ -58,15 +58,15 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 			if (result.success == true && result.resultStatus>0) {
                 				Ext.getCmp('orgParentChangeWindow_Id').close();
                 				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
-                				Ext.Msg.alert('提示', "组织隶属迁移成功");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
                 			}else if (result.success == true && result.resultStatus==-1) {
-                				Ext.Msg.alert('提示', "<font color=red>迁移失败,目标组织不能为自身及所有子节点。</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.orgChangeOwnerFai+"</font>");
                 			}else if (result.success == false) {
-                				Ext.Msg.alert('提示', "<font color=red>组织隶属迁移失败。</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
                 			}
                 		},
                 		failure : function() {
-                			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
                 		}
                 	});
                 }

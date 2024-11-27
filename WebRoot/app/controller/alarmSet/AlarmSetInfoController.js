@@ -128,7 +128,7 @@ function modifyAlarmSet() {
             win_Obj.destroy();
         }
         var wellInfoWindow = Ext.create("AP.view.alarmSet.AlarmSetInfoWindow", {
-            title: '报警项配置'
+            title: loginUserLanguageResource.alarmItemConfig
         });
         wellInfoWindow.show();
         Ext.getCmp("addFormAlarmSet_Id").hide();

@@ -95,7 +95,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqUnitWindow", {
                 		}
                 		info+="！是否执行全部保存？";
                 		
-                		Ext.Msg.confirm('提示', info, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
                             	saveAllImportedAcqUnit();
                             }
@@ -109,7 +109,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqUnitWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传单元列表',
+            	title:loginUserLanguageResource.uploadUnitList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
@@ -191,9 +191,9 @@ function submitImportedAcqUnitFile() {
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {
-            		Ext.Msg.alert("提示", "加载成功 ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
             	}else{
-            		Ext.Msg.alert("提示", "上传数据格式有误！ ");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
             	}
             	
             	
@@ -205,7 +205,7 @@ function submitImportedAcqUnitFile() {
             	}
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
 			}
         });
     }
@@ -231,7 +231,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqUnitContentHandsontableHelper);}},"
 						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 						+"{data:'unit'},"
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'bitIndex'}," 
 						+"{data:'dailyTotalCalculate',type:'checkbox'},"
 						+"{data:'dailyTotalCalculateName'}"
@@ -360,9 +360,9 @@ function saveSingelImportedAcqUnit(unitName,protocolName){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else{
-				Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -374,7 +374,7 @@ function saveSingelImportedAcqUnit(unitName,protocolName){
             }
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }
@@ -398,9 +398,9 @@ function saveAllImportedAcqUnit(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 				}else{
-					Ext.Msg.alert('提示', "<font color=red>保存失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 				var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
@@ -411,11 +411,11 @@ function saveAllImportedAcqUnit(){
 	            }
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=blue>没有可保存的单元。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>"+loginUserLanguageResource.noDataCanBeSaved+"</font>");
 	}
 }
 

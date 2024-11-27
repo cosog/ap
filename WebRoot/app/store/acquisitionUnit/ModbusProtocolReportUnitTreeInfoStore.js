@@ -39,7 +39,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '单元列表',
+                    	text: loginUserLanguageResource.unitList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

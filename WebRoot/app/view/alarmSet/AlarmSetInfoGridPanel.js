@@ -9,7 +9,7 @@ Ext.define('AP.view.alarmSet.AlarmSetInfoGridPanel', {
 		Ext.apply(this, {
 					tbar : [{
                     	xtype:'label',
-                    	text:'报警项配置'
+                    	text:loginUserLanguageResource.alarmItemConfig
                     },'->', {
 								xtype : 'button',
 								hidden:true,

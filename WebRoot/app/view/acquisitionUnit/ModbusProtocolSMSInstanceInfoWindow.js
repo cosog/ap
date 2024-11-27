@@ -105,7 +105,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolSMSInstanceSort_Id",
                 name: 'protocolSMSInstance.sort',
-                fieldLabel: '排序',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',

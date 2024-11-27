@@ -48,7 +48,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '显示单元列表',
+                    	text: loginUserLanguageResource.displayUnitList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',
@@ -95,10 +95,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                 					}
                 					protocolDisplayUnitInputItemsConfigHandsontableHelper=null;
                 				}
-                				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle('采集项配置');
-                				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle('控制项配置');
-                				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle('计算项配置');
-                				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle('录入项配置');
+                				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
+                				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
+                				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
+                				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
                         	}else if(record.data.classes==1){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);

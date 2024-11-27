@@ -185,7 +185,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         title: '添加'+deviceTypeName+'设备'
                     });
                     window.show();
-                    Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
                     
                     if(isNumber(deviceTypes)){
                     	Ext.getCmp("addDeviceType_Id").setValue(deviceTypes);
@@ -231,18 +231,18 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert("信息", "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
     	    	                            //保存以后重置全局容器
     	    	                            deviceInfoHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("DeviceSelectRow_Id").setValue(0);
     	    	                        	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
     	    	                            CreateAndLoadDeviceInfoTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert("信息", "数据保存失败");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert("信息", "请求失败");
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
     	    	                        deviceInfoHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -254,7 +254,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert("信息","请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
     				}
     			}
     		},"-", {
@@ -297,7 +297,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 //                        title: '设备批量添加'
                         title: deviceTypeName+'设备批量添加'
                     });
-                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
+                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm);
                     Ext.getCmp("batchAddDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
@@ -329,7 +329,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     				var window = Ext.create("AP.view.well.ExcelImportDeviceWindow", {
                         title: '设备导入'
                     });
-    				Ext.getCmp("excelImportDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
+    				Ext.getCmp("excelImportDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm);
                     Ext.getCmp("excelImportDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("excelImportDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
@@ -480,7 +480,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		hidden:onlyMonitor,
             		tbar:[{
                         xtype: 'radiogroup',
-                        fieldLabel: '计算类型',
+                        fieldLabel: loginUserLanguageResource.calculateType,
                         labelWidth: 60,
                         id: 'DeviceCalculateDataType_Id',
                         cls: 'x-check-group-alt',
@@ -1811,24 +1811,24 @@ var DeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo='保存成功';
+                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo='保存成功'+rdata.successCount+'条记录,保存失败:<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+rdata.successCount+'条记录,'+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>条记录';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
                         	}
-                        	Ext.MessageBox.alert("信息", saveInfo);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
                             if(rdata.successCount>0){
                             	deviceInfoHandsontableHelper.clearContainer();
                             	CreateAndLoadDeviceInfoTable();
                             }
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -1840,7 +1840,7 @@ var DeviceInfoHandsontableHelper = {
                     }
                 });
         	}else{
-        		Ext.MessageBox.alert("信息", "无记录保存！");
+        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
         	}
         }
 
@@ -1854,15 +1854,15 @@ var DeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert("信息", "保存成功");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             deviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -1872,9 +1872,9 @@ var DeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!deviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
         }

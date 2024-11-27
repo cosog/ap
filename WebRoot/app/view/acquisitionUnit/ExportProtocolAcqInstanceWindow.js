@@ -68,7 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     	        		exportDataMask(key,maskPanelId,cosog.string.loading);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert("信息","请选择要导出的采控实例");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的采控实例");
     				}
     			}
             }],

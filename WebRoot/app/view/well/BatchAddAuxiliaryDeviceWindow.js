@@ -285,7 +285,7 @@ var BatchAddAuxiliaryDeviceHandsontableHelper = {
                     CreateAndLoadAuxiliaryDeviceInfoTable();
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert("信息", "保存成功");
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                         batchAddAuxiliaryDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&rdata.overlayCount>0){
                     	var window = Ext.create("AP.view.well.BatchAddAuxiliaryDeviceCollisionDataWindow", {
@@ -294,11 +294,11 @@ var BatchAddAuxiliaryDeviceHandsontableHelper = {
                         window.show();
                         CreateAndLoadBatchAddAuxiliaryDeviceOverlayDataTable(rdata);
                     } else {
-                        Ext.MessageBox.alert("信息", "数据保存失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert("信息", "请求失败");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                     batchAddAuxiliaryDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

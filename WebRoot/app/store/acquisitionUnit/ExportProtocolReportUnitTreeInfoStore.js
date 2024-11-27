@@ -36,7 +36,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolReportUnitTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '报警单元列表',
+                    	text: loginUserLanguageResource.alarmUnitList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

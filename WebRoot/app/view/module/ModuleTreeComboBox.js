@@ -38,7 +38,7 @@ Ext.define('AP.view.module.ModuleTreeComboBox', {
                 },
                 rootProperty: {
                     expanded: true,
-                    text: '根节点'
+                    text: loginUserLanguageResource.rootNode
                 }
             })
         });

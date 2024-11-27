@@ -23,7 +23,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
         Ext.apply(me, {
         	bbar: ['->', {
                 xtype: 'button',
-                text: '迁移',
+                text: loginUserLanguageResource.changeOwner,
                 iconCls: 'move',
                 style: 'margin-right: 15px;margin-bottom: 5px',
                 pressed: false,
@@ -31,15 +31,15 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 	var selectedProtocol=Ext.getCmp("ProtocolDeviceTypeChangeProtocolListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedDeviceType=Ext.getCmp("ProtocolDeviceTypeChangeDeviceTypeTreeGridView_Id").getSelectionModel().getSelection();
                 	if(selectedProtocol.length==0){
-                		Ext.MessageBox.alert("信息","请选择要迁移的协议！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的协议！");
                 		return;
                 	}
                 	if(selectedDeviceType.length==0){
-                		Ext.MessageBox.alert("信息","请选择设备类型！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择设备类型！");
                 		return;
                 	}else{
                 		if(!selectedDeviceType[0].isLeaf()){
-//                			Ext.MessageBox.alert("信息","选择的设备类型不是叶子节点！");
+//                			Ext.MessageBox.alert(loginUserLanguageResource.message,"选择的设备类型不是叶子节点！");
 //                			return;
                 		}
                 	}
@@ -62,7 +62,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 			var result = Ext.JSON.decode(response.responseText);
                 			Ext.getCmp("IframeView_Id").getStore().load();
                 			if (result.success == true) {
-                				Ext.Msg.alert('提示', loginUserLanguageResource.changeProtocolBelongToSuccess);
+                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeProtocolBelongToSuccess);
                 				Ext.getCmp('protocoDeviceTypeChangeWindow_Id').close();
                 				var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
                                 if (isNotVal(treeGridPanel)) {
@@ -70,11 +70,11 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                                 }
                 			}
                 			if (result.success == false) {
-                				Ext.Msg.alert('提示', "<font color=red>"+loginUserLanguageResource.changeProtocolBelongToFail+"</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeProtocolBelongToFail+"</font>");
                 			}
                 		},
                 		failure : function() {
-                			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
                 		}
                 	});
                 }
@@ -88,7 +88,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
             },{
             	region: 'east',
         		width: '40%',
-        		title:'目标类型',
+        		title:loginUserLanguageResource.targetType,
         		layout: 'fit',
         		id:'ProtocolDeviceTypeChangeWinDeviceTypeListPanel_Id'
             }]

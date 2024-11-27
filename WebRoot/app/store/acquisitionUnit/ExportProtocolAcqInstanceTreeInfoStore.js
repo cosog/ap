@@ -44,7 +44,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolAcqInstanceTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '采控实例列表',
+                    	text: loginUserLanguageResource.acqInstanceList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

@@ -80,7 +80,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportDisplayInstanceWindow");
                         window.show();
-        				Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportDisplayInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -101,7 +101,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
-                    	title:'显示实例列表',
+                    	title:loginUserLanguageResource.displayInstanceList,
                     	layout: 'fit',
                     	id:"ModbusProtocolDisplayInstanceConfigPanel_Id"
                     },{
@@ -254,7 +254,7 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='根节点';
+		item1.title=loginUserLanguageResource.rootNode;
 		item1.value='实例列表';
 		root.push(item1);
 	}else if(data.classes==1){
@@ -455,18 +455,18 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 		success:function(response) {
 			data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
-				Ext.MessageBox.alert("信息","保存成功");
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
 				}
 				Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
             	
             } else {
-            	Ext.MessageBox.alert("信息","显示实例数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
 			data: JSON.stringify(saveData),
@@ -494,8 +494,8 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
                 	+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
                 	+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
                 	+"['序号','名称','单位','显示级别'," 
-                	+"'字段顺序','前景色','背景色','曲线配置'," 
-                	+"'字段顺序','前景色','背景色','曲线配置']"
+                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置']"
                 	+"]";
 				
 				var columns="["
@@ -710,8 +710,8 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'']," 
 					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','']," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'数据来源']" 
 					+"]";
 				
@@ -928,8 +928,8 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
 					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
 					+"['序号','名称','单位','显示级别'," 
-					+"'字段顺序','前景色','背景色','曲线配置'," 
-					+"'字段顺序','前景色','背景色','曲线配置']" 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置']" 
 					+"]";
 				var columns="["
 						+"{data:'id'}," 

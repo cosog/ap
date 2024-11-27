@@ -1368,11 +1368,11 @@ function controlBtnHandler(btn,btnIndex){
                 });
                 var resolutionModeName='';
                 if(resolutionMode==0){
-                	resolutionModeName='开关量';
+                	resolutionModeName=loginUserLanguageResource.switchingValue;
                 }else if(resolutionMode==1){
-                	resolutionModeName='枚举量';
+                	resolutionModeName=loginUserLanguageResource.enumValue;
                 }else if(resolutionMode==2){
-                	resolutionModeName='数据量';
+                	resolutionModeName=loginUserLanguageResource.numericValue;
                 }
                 var showInfo='名称:<font color=red>'+record.data.itemName+'</font>'
                 	+",存储数据类型:<font color=red>"+record.data.storeDataType+'</font>'

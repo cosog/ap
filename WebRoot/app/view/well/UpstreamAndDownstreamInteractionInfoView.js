@@ -336,7 +336,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         		    			p.body.update(response.responseText);
         		    		},
         		    		failure:function(){
-        		    			Ext.MessageBox.alert("信息","帮助文档加载失败");
+        		    			Ext.MessageBox.alert(loginUserLanguageResource.message,"帮助文档加载失败");
         		    		},
         		    		params: {
         		            }
@@ -418,7 +418,7 @@ function syncModelData(){
     			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(response.responseText);
     		},
     		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {
     			wellId:wellId,
@@ -461,15 +461,15 @@ function producerMsg(){
             		success:function(response) {
             			rdata=Ext.JSON.decode(response.responseText);
             			if (rdata.success && rdata.msg==1 ) {
-                        	Ext.MessageBox.alert("信息","下行成功。");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"下行成功。");
                         } else if (rdata.success && rdata.msg==0 ) {
-                        	Ext.MessageBox.alert("信息","<font color=red>下行失败<font color=red>!");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>下行失败<font color=red>!");
                         }else if (!rdata.success){
-                        	Ext.MessageBox.alert("信息","<font color=red>发送失败<font color=red>!");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>发送失败<font color=red>!");
                         }
             		},
             		failure:function(){
-            			Ext.MessageBox.alert("信息","请求失败");
+            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
             		},
             		params: {
             			type: type,
@@ -505,7 +505,7 @@ function requestConfigData(){
     			}
     		},
     		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {
     			type: type,
@@ -854,7 +854,7 @@ function readWaterCutRawData(){
     						data.push(waterCutData);
     					}
     				}else if(result.OutOfMemory){
-    					Ext.MessageBox.alert("信息", "数据过大，加载失败，请将配置下行中StoreAcqWaterCut的值修改位更小值！");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message, "数据过大，加载失败，请将配置下行中StoreAcqWaterCut的值修改位更小值！");
     				}
     			}
     			
@@ -959,7 +959,7 @@ function readWaterCutRawData(){
     			showWaterCutRawDataCurve2(result);
     		},
     		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {
     			wellId:wellId,

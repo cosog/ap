@@ -29,7 +29,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             },{
                 id: 'formModbusProtocolReportUnitName_Id',
                 name: "reportUnit.unitName",
-                fieldLabel: '单元名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.unitName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -47,7 +47,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【报表单元已存在】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.reportUnitExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -68,7 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				name : "reportUnit.calculateType"
 			},{
             	xtype : "combobox",
-				fieldLabel : '计算类型<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
 				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -84,8 +84,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择计算类型',
-				blankText : '请选择计算类型',
+				emptyText : loginUserLanguageResource.selectCalculateType,
+				blankText : loginUserLanguageResource.selectCalculateType,
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);
@@ -101,7 +101,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolReportUnitSort_Id",
                 name: 'reportUnit.sort',
-                fieldLabel: '排序',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',

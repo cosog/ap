@@ -44,7 +44,7 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '显示单元列表',
+                    	text: loginUserLanguageResource.displayUnitList,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

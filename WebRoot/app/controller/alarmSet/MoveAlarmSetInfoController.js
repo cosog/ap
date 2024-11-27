@@ -162,7 +162,7 @@ SelectMoveAlarmSet = function () {
     Ext.getCmp('bjbz_Id').setValue(bjbz);
     Ext.getCmp("bdbjlx_Id").readOnly = true;
     if (bjbz == 0) {
-        Ext.getCmp('bjbz_Id').setRawValue(cosog.string.normal);
+        Ext.getCmp('bjbz_Id').setRawValue(loginUserLanguageResource.normal);
     } else {
         Ext.getCmp('bjbz_Id').setRawValue(cosog.string.alarm);
     }

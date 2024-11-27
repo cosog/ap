@@ -28,7 +28,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
             },
             root: {
                 expanded: true,
-                text: '根节点'
+                text: loginUserLanguageResource.rootNode
             }
         });
         var xltree=Ext.create('AP.view.well.TreePicker',{

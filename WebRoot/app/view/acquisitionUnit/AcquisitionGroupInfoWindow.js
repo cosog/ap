@@ -113,7 +113,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var acqUnitComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '单元名称<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.unitName+'<font color=red>*</font>',
 					id : 'formAcquisitionGroupAcqUnitComb_Id',
 					anchor : '100%',
 					store: acqUnitStore,
@@ -157,7 +157,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 			},acqUnitComb, {
                 id: 'formAcquisitionGroupName_Id',
                 name: "acquisitionGroup.groupName",
-                fieldLabel: '组名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.groupName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -179,7 +179,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【采控单元已存在相同采集组】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【"+loginUserLanguageResource.groupCollisionInfo+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -200,7 +200,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 				name : "acquisitionGroup.type"
 			},{
             	xtype : "combobox",
-				fieldLabel : '组类型<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.groupType+'<font color=red>*</font>',
 				id : 'formAcquisitionGroupTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -211,13 +211,13 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, '采集组'],[1, '控制组']]
+							data : [[0, loginUserLanguageResource.acqGroup],[1, loginUserLanguageResource.controlGroup]]
 						}),
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择组类型',
-				blankText : '请选择组类型',
+				emptyText : loginUserLanguageResource.selectGroupType,
+				blankText : loginUserLanguageResource.selectGroupType,
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("formAcquisitionGroupType_Id").setValue(this.value);
@@ -234,7 +234,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
             }, {
                 id: 'formAcquisitionGroupGroupTimingInterval_Id',
                 name: "acquisitionGroup.groupTimingInterval",
-                fieldLabel: '单组定时间隔(s)',
+                fieldLabel: loginUserLanguageResource.groupTimingInterval+'(s)',
                 anchor: '100%',
                 hidden: false,
                 value: ''
@@ -242,14 +242,14 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
             }, {
                 id: 'formAcquisitionGroupGroupSavingInterval_Id',
                 name: "acquisitionGroup.groupSavingInterval",
-                fieldLabel: '单组入库间隔(s)',
+                fieldLabel: loginUserLanguageResource.groupSavingInterval+'(s)',
                 anchor: '100%',
                 value: ''
                 
             }, {
             	id: 'acquisitionGroupRemark_Id',
             	name: "acquisitionGroup.remark",
-                fieldLabel: '组描述',
+                fieldLabel: loginUserLanguageResource.groupDescription,
                 anchor: '100%',
                 value: '',
                 xtype: 'textareafield',

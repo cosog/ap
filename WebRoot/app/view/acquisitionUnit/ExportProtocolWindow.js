@@ -73,7 +73,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
     	        	    openExcelWindow(url);
 //                    	document.location.href = url;
     				}else{
-    					Ext.MessageBox.alert("信息","请选择要导出的协议");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的协议");
     				}
     			}
             }],

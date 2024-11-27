@@ -114,7 +114,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
             		id:'DeviceOrgChangeWinOrgListPanel_Id',
             		tbar: ['->', {
                         xtype: 'button',
-                        text: '迁移',
+                        text: loginUserLanguageResource.changeOwner,
                         iconCls: 'move',
 //                        style: 'margin-right: 15px;margin-bottom: 5px',
                         pressed: false,
@@ -123,11 +123,11 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         	var selectedOrg=Ext.getCmp("DeviceOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();
                         	var deviceType=Ext.getCmp("DeviceOrgChangeWinDeviceType_Id").getValue();
                         	if(selectedDevice.length==0){
-                        		Ext.MessageBox.alert("信息","请选择要迁移的设备！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的设备！");
                         		return;
                         	}
                         	if(selectedOrg.length==0){
-                        		Ext.MessageBox.alert("信息","请选择目的组织！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
                         		return;
                         	}
                         	var selectedDeviceId="";
@@ -151,14 +151,14 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         		success : function(response) {
                         			var result = Ext.JSON.decode(response.responseText);
                         			if (result.success == true) {
-                        				Ext.Msg.alert('提示', "设备隶属组织迁移成功");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
                         			}
                         			if (result.success == false) {
-                        				Ext.Msg.alert('提示', "<font color=red>设备隶属组织迁移失败。</font>");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
                         			}
                         		},
                         		failure : function() {
-                        			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
                         		}
                         	});
                         }
@@ -170,7 +170,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
             		id:'DeviceTypeChangeWinTypeListPanel_Id',
             		tbar: ['->', {
                         xtype: 'button',
-                        text: '迁移',
+                        text: loginUserLanguageResource.changeOwner,
                         iconCls: 'move',
                         pressed: false,
                         handler: function () {
@@ -178,15 +178,15 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         	var selectedDeviceType=Ext.getCmp("DeviceTypeChangeDeviceTypeTreeGridView_Id").getSelectionModel().getSelection();
                         	var deviceType=Ext.getCmp("DeviceOrgChangeWinDeviceType_Id").getValue();
                         	if(selectedDevice.length==0){
-                        		Ext.MessageBox.alert("信息","请选择要迁移的设备！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的设备！");
                         		return;
                         	}
                         	if(selectedDeviceType.length==0){
-                        		Ext.MessageBox.alert("信息","请选择目的设备类型！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的设备类型！");
                         		return;
                         	}else{
                         		if(!selectedDeviceType[0].isLeaf()){
-                        			Ext.MessageBox.alert("信息","目的设备类型不是叶子节点！");
+                        			Ext.MessageBox.alert(loginUserLanguageResource.message,"目的设备类型不是叶子节点！");
                         			return;
                         		}
                         	}
@@ -212,14 +212,14 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         		success : function(response) {
                         			var result = Ext.JSON.decode(response.responseText);
                         			if (result.success == true) {
-                        				Ext.Msg.alert('提示', "设备隶属类型迁移成功");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
                         			}
                         			if (result.success == false) {
-                        				Ext.Msg.alert('提示', "<font color=red>设备隶属类型迁移失败。</font>");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
                         			}
                         		},
                         		failure : function() {
-                        			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
                         		}
                         	});
                         }

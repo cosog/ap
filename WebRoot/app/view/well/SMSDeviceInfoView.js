@@ -167,7 +167,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         title: '添加设备'
                     });
                     window.show();
-                    Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>" + selectedOrgName + "</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>" + selectedOrgName + "</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
                     Ext.getCmp("smsDeviceOrg_Id").setValue(selectedOrgId);
                     Ext.getCmp("addFormSMSDevice_Id").show();
                     Ext.getCmp("updateFormSMSDevice_Id").hide();
@@ -208,16 +208,16 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                                     success: function (response) {
                                         rdata = Ext.JSON.decode(response.responseText);
                                         if (rdata.success) {
-                                            Ext.MessageBox.alert("信息", "删除成功");
+                                            Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
                                             //保存以后重置全局容器
                                             smsDeviceInfoHandsontableHelper.clearContainer();
                                             CreateAndLoadSMSDeviceInfoTable();
                                         } else {
-                                            Ext.MessageBox.alert("信息", "数据保存失败");
+                                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                                         }
                                     },
                                     failure: function () {
-                                        Ext.MessageBox.alert("信息", "请求失败");
+                                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                                         smsDeviceInfoHandsontableHelper.clearContainer();
                                     },
                                     params: {
@@ -229,7 +229,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                             }
                         });
                     } else {
-                        Ext.MessageBox.alert("信息", "请先选中要删除的行");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "请先选中要删除的行");
                     }
                 }
             }, '-', {
@@ -543,16 +543,16 @@ var SMSDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert("信息", "保存成功");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             //保存以后重置全局容器
                             smsDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadSMSDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         smsDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -563,9 +563,9 @@ var SMSDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!smsDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
         }
@@ -582,16 +582,16 @@ var SMSDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert("信息", "保存成功");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                             smsDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadSMSDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert("信息", "数据保存失败");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert("信息", "请求失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                         smsDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -601,9 +601,9 @@ var SMSDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!smsDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert("信息", "数据类型错误");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
                 } else {
-                    Ext.MessageBox.alert("信息", "无数据变化");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
             }
         }

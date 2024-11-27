@@ -425,15 +425,15 @@ function delRoleInfoByGridBtn(record) {
           			success : function(response) {
           				var result = Ext.JSON.decode(response.responseText);
           				if (result.flag == true) {
-          					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deleteRoleId.length + "条数据信息。");
+          					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deleteRoleId.length + "条数据信息。");
           				}
           				if (result.flag == false) {
-          					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+          					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
           				}
           				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
           			},
           			failure : function() {
-          				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+          				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
           			}
           		});
             }
@@ -470,16 +470,16 @@ function updateRoleInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert('提示', "<font color=red>角色已存在,保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}else {
-				Ext.Msg.alert('提示', "<font color=red>SORRY！保存失败。</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 			}
 			Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
 		},
 		failure : function() {
-			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 		}
 	});
 }

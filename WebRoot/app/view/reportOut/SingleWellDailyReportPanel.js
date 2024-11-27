@@ -802,17 +802,17 @@ var SingleWellRangeReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息", '保存成功');
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
 	                        	singleWellRangeReportHelper.clearContainer();
 	                        	CreateSingleWellReportTable();
 	                        	CreateSingleWellReportCurve();
 	                        } else {
 	                        	singleWellRangeReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert("信息", "数据保存失败");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert("信息", "请求失败");
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
 	                    },
 	                    params: {
 	                    	deviceId:deviceId,
@@ -822,7 +822,7 @@ var SingleWellRangeReportHelper = {
 	                    }
 	                });
 	        	}else{
-	        		Ext.MessageBox.alert("信息", "无数据变化！");
+	        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	        	}
 	        }
 	        singleWellRangeReportHelper.clearContainer = function () {
@@ -1211,17 +1211,17 @@ var SingleWellDailyReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息", '保存成功');
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
 	                        	singleWellDailyReportHelper.clearContainer();
 	                        	CreateSingleWellReportTable();
 	                        	CreateSingleWellReportCurve();
 	                        } else {
 	                        	singleWellDailyReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert("信息", "数据保存失败");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert("信息", "请求失败");
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
 	                    },
 	                    params: {
 	                    	deviceId:deviceId,
@@ -1231,7 +1231,7 @@ var SingleWellDailyReportHelper = {
 	                    }
 	                });
 	        	}else{
-	        		Ext.MessageBox.alert("信息", "无数据变化！");
+	        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	        	}
 	        }
 	        singleWellDailyReportHelper.clearContainer = function () {

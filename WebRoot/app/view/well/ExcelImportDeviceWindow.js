@@ -204,7 +204,7 @@ function submitImportedDeviceFile() {
                 }
             },
             failure : function() {
-            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】文件内容过大，请减少内容后重新上传！");
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】"+loginUserLanguageResource.uploadFileTooLarge);
 			}
         });
     }
@@ -334,7 +334,7 @@ var ImportDeviceHandsontableHelper = {
                 	}
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert("信息", "保存成功");
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                         //保存以后重置全局容器
                         importDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
@@ -358,11 +358,11 @@ var ImportDeviceHandsontableHelper = {
                         	CreateAndLoadBatchAddDeviceOverlayDataTable(rdata);
                         }
                     } else {
-                        Ext.MessageBox.alert("信息", "数据保存失败");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert("信息", "请求失败");
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
                     importDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

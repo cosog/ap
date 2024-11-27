@@ -38,7 +38,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     }
         		}, '->', {
                     xtype: 'button',
-                    text: '添加报表单元',
+                    text: loginUserLanguageResource.addReportUnit,
                     disabled: loginUserProtocolConfigModuleRight.editFlag != 1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -85,7 +85,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportReportUnitWindow");
                         window.show();
-        				Ext.getCmp("ImportReportUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportReportUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportReportUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -105,7 +105,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     hideMode: 'offsets',
                     items: [{
                         region: 'center',
-                        title: '报表单元配置',
+                        title: loginUserLanguageResource.reportUnitConfig,
                         border: false,
                         layout: 'fit',
                         id: "ModbusProtocolReportUnitConfigPanel_Id"
@@ -145,7 +145,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                     border: false,
                     tabPosition: 'top',
                     items: [{
-                        title: '单井报表',
+                        title: loginUserLanguageResource.singleDeviceReport,
                         iconCls: 'check3',
                         id: 'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
                         xtype: 'tabpanel',
@@ -153,7 +153,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         border: false,
                         tabPosition: 'top',
                         items: [{
-                            title: '班报表',
+                            title: loginUserLanguageResource.hourlyReport,
                             iconCls: 'check3',
                             id: 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id',
                             layout: "border",
@@ -174,7 +174,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 border: false,
                                 items: [{
                                     region: 'center',
-                                    title: '单井班报表模板',
+                                    title: loginUserLanguageResource.deviceHourlyReportTemplate,
                                     id: "ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id",
                                     layout: 'fit',
                                     border: false,
@@ -198,7 +198,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}, {
                                     region: 'south',
                                     height: '50%',
-                                    title: '单井班报表内容配置',
+                                    title: loginUserLanguageResource.deviceHourlyReportContentConfig,
                                     collapsible: true,
                                     split: true,
                                     layout: 'fit',
@@ -225,7 +225,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}]
                         	}]
                         }, {
-                            title: '日报表',
+                            title: loginUserLanguageResource.dailyReport,
                             id: 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id',
                             layout: "border",
                             border: false,
@@ -245,7 +245,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 border: false,
                                 items: [{
                                     region: 'center',
-                                    title: '单井日报表模板',
+                                    title: loginUserLanguageResource.deviceDailyReportTemplate,
                                     id: "ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id",
                                     layout: 'fit',
                                     border: false,
@@ -269,7 +269,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}, {
                                     region: 'south',
                                     height: '60%',
-                                    title: '单井日报表内容配置',
+                                    title: loginUserLanguageResource.deviceDailyReportContentConfig,
                                     collapsible: true,
                                     split: true,
                                     layout: 'fit',
@@ -335,14 +335,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             }
                         }
                     }, {
-                        title: '区域报表',
+                        title: loginUserLanguageResource.areaReport,
                         id: 'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
                         xtype: 'tabpanel',
                         activeTab: 0,
                         border: false,
                         tabPosition: 'top',
                         items: [{
-                            title: '日报表',
+                            title: loginUserLanguageResource.dailyReport,
                             iconCls: 'check3',
                             id: 'ModbusProtocolReportUnitProductionRangeReportTemplatePanel_Id',
                             layout: "border",
@@ -387,7 +387,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                             	}, {
                                     region: 'south',
                                     height: '50%',
-                                    title: '单井日报表内容配置',
+                                    title: loginUserLanguageResource.deviceDailyReportContentConfig,
                                     collapsible: true,
                                     split: true,
                                     layout: 'fit',
@@ -487,7 +487,7 @@ function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code)
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle('单井日报表模板：' + name);
+            Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportTemplate+':' + name);
             var result = Ext.JSON.decode(response.responseText);
 
             if (singleWellRangeReportTemplateHandsontableHelper != null) {
@@ -721,7 +721,7 @@ function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code)
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle('单井班报表模板：' + name);
+            Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportTemplate+':' + name);
             var result = Ext.JSON.decode(response.responseText);
 
             if (singleWellDailyReportTemplateHandsontableHelper != null) {
@@ -951,7 +951,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 };
 
 function renderReportUnitContentConfig(instance, td, row, col, prop, value, cellProperties) {
-    td.innerHTML = "<a href='#' onclick=reportUnitContentConfig(" + row + "," + col + "," + value + ")><span>配置</span></a>";
+    td.innerHTML = "<a href='#' onclick=reportUnitContentConfig(" + row + "," + col + "," + value + ")><span>"+loginUserLanguageResource.config+"</span></a>";
 }
 
 function reportUnitContentConfig(row, col, value) {
@@ -993,7 +993,7 @@ function reportUnitContentConfig(row, col, value) {
     }
 
     var window = Ext.create("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
-        title: '报表内容配置'
+        title: loginUserLanguageResource.reportContentConfig
     });
 
     Ext.getCmp("ReportUnitContentConfig_Classes").setValue(classes);
@@ -1045,13 +1045,13 @@ function CreateSingleWellRangeReportTotalItemsInfoTable() {
             Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 0) {
-                Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle('单井日报表内容配置');
+                Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportContentConfig);
             } else {
-                Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName + '/单井日报表内容配置');
+                Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.deviceDailyReportContentConfig);
             }
             if (singleWellRangeReportTemplateContentHandsontableHelper == null || singleWellRangeReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, '配置'];
+                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [
                     {
                         data: 'id'
@@ -1273,13 +1273,13 @@ function CreateSingleWellDailyReportTotalItemsInfoTable() {
             Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 0) {
-                Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle('单井班报表内容配置');
+                Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContentConfig);
             } else {
-                Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName + '/单井班报表内容配置');
+                Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.deviceHourlyReportContentConfig);
             }
             if (singleWellDailyReportTemplateContentHandsontableHelper == null || singleWellDailyReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, '配置'];
+                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [{
                         data: 'id'
                     },
@@ -1464,19 +1464,19 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
     if (data.classes == 0) {
         var item1 = {};
         item1.id = 1;
-        item1.title = '根节点';
-        item1.value = '单元列表';
+        item1.title = loginUserLanguageResource.rootNode;
+        item1.value = loginUserLanguageResource.unitList;
         root.push(item1);
     } else if (data.classes == 1) {
         var item1 = {};
         item1.id = 1;
-        item1.title = '单元名称';
+        item1.title = loginUserLanguageResource.unitName;
         item1.value = data.text;
         root.push(item1);
 
         var item2 = {};
         item2.id = 2;
-        item2.title = '计算类型';
+        item2.title = loginUserLanguageResource.calculateType;
         item2.value = data.calculateTypeName;
         root.push(item2);
 
@@ -1649,7 +1649,7 @@ function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区域日报模板：' + name);
+            Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportTemplate+':' + name);
             var result = Ext.JSON.decode(response.responseText);
 
             if (productionReportTemplateHandsontableHelper != null) {
@@ -1913,13 +1913,13 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
             Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 0) {
-                Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle('区域日报内容配置');
+                Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportContentConfig);
             } else {
-                Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(unitName + '/区域日报内容配置');
+                Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.areaDailyReportContentConfig);
             }
             if (productionReportTemplateContentHandsontableHelper == null || productionReportTemplateContentHandsontableHelper.hot == undefined) {
                 productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号','表头','字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型', '配置'];
+                var colHeaders = ['序号','表头','字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型', loginUserLanguageResource.config];
                 var columns = [
                     {data:'id'},
                     {data:'headerName'},
@@ -2139,17 +2139,17 @@ function SaveModbusProtocolReportUnitData(saveData) {
         success: function (response) {
             data = Ext.JSON.decode(response.responseText);
             if (data.success) {
-                Ext.MessageBox.alert("信息", "保存成功");
+                Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                 if (saveData.delidslist != undefined && saveData.delidslist.length > 0) {
                     Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(0);
                 }
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
-                Ext.MessageBox.alert("信息", "显示单元数据保存失败");
+                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
         },
         failure: function () {
-            Ext.MessageBox.alert("信息", "请求失败");
+            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
         },
         params: {
             data: JSON.stringify(saveData),
@@ -2327,7 +2327,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
                 if (reportType == 0) {
                     CreateReportUnitContentConfigColInfoTable();
                     CreateReportUnitContentConfigTable();
@@ -2553,7 +2553,7 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");

@@ -48,14 +48,14 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqUnitWindow", {
     	        		exportDataMask(key,maskPanelId,cosog.string.loading);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert("信息","请选择要导出的采控单元");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的采控单元");
     				}
     			}
             }],
             items: [{
             	region: 'center',
 //            	width:'25%',
-            	title:'单元列表',
+            	title:loginUserLanguageResource.unitList,
             	layout: 'fit',
             	split: true,
                 collapsible: false,

@@ -125,15 +125,15 @@ ExtDelspace_ObjectInfo=function(space,grid_id,row,data_id,action_name){
 							    Ext.getCmp(g_spl[g]).getStore().load();
 							 } 
 							} 
-					 	    Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】，" + row.length + "条数据信息。");
+					 	    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】，" + row.length + "条数据信息。");
 						}
 					 	if(result.flag ==false){		 		 
-					 		Ext.Msg.msg('提示', "<font color=red>SORRY！删除失败。</font>");
+					 		Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
 					 	}
 					 	  
 					},
 					failure : function() {
-						    Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");			    
+						    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);			    
 					}
 				});
 	  return false;
@@ -424,7 +424,7 @@ closeWindow = function(o) {
 	if (isNotBank(winobj)) {
 		winobj.close();
 	} else {
-		Ext.Msg.alert("提示", "<font color=red>异常</font>：关闭WINDOW窗体,给出的对象不存在。")
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.exception+"</font> "+loginUserLanguageResource.noExist+"")
 	}
 };
 
@@ -437,8 +437,8 @@ reFreshg = function(grid_id) {
 // 等待信息框
 LoadingWin = function(msg) {
 	Ext.MessageBox.show({
-				msg : '<div style="padding-top:20px">' + msg + ', 请稍后...</div>',
-				progressText : '加载中...',
+				msg : '<div style="padding-top:20px">' + msg + ','+loginUserLanguageResource.loading+'</div>',
+				progressText : loginUserLanguageResource.loading,
 				width : 300,
 				wait : true,
 				waitConfig : {
@@ -473,12 +473,12 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 				var result = Ext.JSON.decode(response.responseText);
 				Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
 						+ context
-						+ "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+						+ "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm+"";
 				if (result.flag == true) {
-					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ row.length + "条数据信息。");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ row.length + "条数据信息。");
 				}
 				if (result.flag == false) {
-					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
 				}
 				if(grid_id=="OrgInfoTreeGridView_Id"){
 					var store=Ext.getCmp(grid_id).getStore()
@@ -488,11 +488,11 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 				Ext.getCmp(grid_id).getStore().load();
 			},
 			failure : function() {
-				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
 			}
 		});
 	}else{
-		Ext.Msg.alert('提示', "<font color=red>所选属性无效，删除失败。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
 	}
 	return false;
 };
@@ -1073,7 +1073,7 @@ function backLoginOut() {
 			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-	Ext.Msg.confirm("提示", "是否确定退出后台管理系统？", function(btn) {
+	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出后台管理系统？", function(btn) {
 		if (btn == "yes") {
 			LoadingWin("正在退出");
 			// 动态返回当前用户拥有哪些角色信息
@@ -1106,7 +1106,7 @@ var userLoginOut = function() {
 			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-	Ext.Msg.confirm("提示", "是否确定退出本系统？", function(btn) {
+	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出本系统？", function(btn) {
 		if (btn == "yes") {
 			LoadingWin("正在退出");
 			// 动态返回当前用户拥有哪些角色信息
@@ -1594,17 +1594,17 @@ color16ToRgba = function(sColor,Opacity){
 			 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.stop.Color;
 			 		opacity=alarmShowStyle.Run.stop.Opacity;
-			 		val='停止';
+			 		val=loginUserLanguageResource.stop;
 				}else if (runStatus == 1) {
 					backgroundColor='#'+alarmShowStyle.Run.run.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.run.Color;
 			 		opacity=alarmShowStyle.Run.run.Opacity;
-			 		val='运行';
+			 		val=loginUserLanguageResource.run;
 				}else if (runStatus == 2) {
 					backgroundColor='#'+alarmShowStyle.Run.noData.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.noData.Color;
 			 		opacity=alarmShowStyle.Run.noData.Opacity;
-			 		val='无数据';
+			 		val=loginUserLanguageResource.emptyMsg;
 				}
 			 	tipval=val;
 			 	var rgba=color16ToRgba(backgroundColor,opacity);

@@ -30,7 +30,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加采控单元',
+                    text: loginUserLanguageResource.addAcqUnit,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -38,7 +38,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         			}
         		},"-",{
         			xtype: 'button',
-                    text: '添加采控组',
+                    text: loginUserLanguageResource.addAcqGroup,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -85,7 +85,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportAcqUnitWindow");
                         window.show();
-        				Ext.getCmp("ImportAcqUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,请确认<br/>&nbsp;");
+        				Ext.getCmp("ImportAcqUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAcqUnitWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportAcqUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -105,7 +105,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
-                    	title:'采控单元配置',
+                    	title:loginUserLanguageResource.acqUnitConfig,
                     	layout: 'fit',
                     	id:"ModbusProtocolAcqGroupConfigPanel_Id"
                     },{
@@ -137,7 +137,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 	border: true,
 //                    flex: 4,
                 	region: 'center',
-                    title:'采控项配置',
+                    title:loginUserLanguageResource.acqItemConfig,
                     id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
                     layout: 'fit',
                     html:'<div class="ModbusProtocolAcqGroupItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id"></div></div>',
@@ -189,7 +189,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}},"
 						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 						+"{data:'unit'},"
-						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'bitIndex'}," 
 						+"{data:'dailyTotalCalculate',type:'checkbox'},"
 						+"{data:'dailyTotalCalculateName'}"
@@ -388,8 +388,8 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
-		item1.title='根节点';
-		item1.value='单元列表';
+		item1.title=loginUserLanguageResource.rootNode;
+		item1.value=loginUserLanguageResource.unitList;
 		root.push(item1);
 	}else if(data.classes==1){
 		var item1={};
@@ -400,50 +400,50 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	}else if(data.classes==2){
 		var item1={};
 		item1.id=1;
-		item1.title='单元名称';
+		item1.title=loginUserLanguageResource.unitName;
 		item1.value=data.text;
 		root.push(item1);
 		
 		var item2={};
 		item2.id=2;
-		item2.title='备注';
+		item2.title=loginUserLanguageResource.remark;
 		item2.value=data.remark;
 		root.push(item2);
 	}else if(data.classes==3){
 		var item1={};
 		item1.id=1;
-		item1.title='组名称';
+		item1.title=loginUserLanguageResource.groupName;
 		item1.value=data.text;
 		root.push(item1);
 		
 		var item2={};
 		item2.id=2;
-		item2.title='组类型';
+		item2.title=loginUserLanguageResource.groupType;
 		item2.value=data.typeName;
 		root.push(item2);
 		
 		if(data.type==0){
 			var item3={};
 			item3.id=3;
-			item3.title='单组定时间隔(s)';
+			item3.title=loginUserLanguageResource.groupTimingInterval+'(s)';
 			item3.value=data.groupTimingInterval;
 			root.push(item3);
 			
 			var item4={};
 			item4.id=4;
-			item4.title='单组入库间隔(s)';
+			item4.title=loginUserLanguageResource.groupSavingInterval+'(s)';
 			item4.value=data.groupSavingInterval;
 			root.push(item4);
 			
 			var item5={};
 			item5.id=5;
-			item5.title='备注';
+			item5.title=loginUserLanguageResource.remark;
 			item5.value=data.remark;
 			root.push(item5);
 		}else if(data.type==1){
 			var item3={};
 			item3.id=3;
-			item3.title='备注';
+			item3.title=loginUserLanguageResource.remark;
 			item3.value=data.remark;
 			root.push(item3);
 		}
@@ -542,7 +542,7 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 			                    	}
 			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['采集组','控制组'];
+			                    	this.source = [loginUserLanguageResource.acqGroup,loginUserLanguageResource.controlGroup];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if(visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) && protocolConfigAcqUnitPropertiesHandsontableHelper.type==0){
@@ -651,7 +651,7 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			saveAcquisitionGroupConfigData(acqGroupSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.id);
 			//给采控组授予采控项
 			var groupType=0;
-			if(protocolProperties.typeName=='控制组'){
+			if(protocolProperties.typeName==loginUserLanguageResource.controlGroup){
 				groupType=1;
 			}
 			grantAcquisitionItemsPermission(groupType);
@@ -667,14 +667,14 @@ function saveModbusProtocolConfigData(configInfo){
 			var data=Ext.JSON.decode(response.responseText);
 			protocolAcqUnitConfigItemsHandsontableHelper.clearContainer();
 			if (data.success) {
-            	Ext.MessageBox.alert("信息","保存成功");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert("信息","数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
 			data:JSON.stringify(configInfo)
@@ -689,17 +689,17 @@ function saveAcquisitionUnitConfigData(acqUnitSaveData,protocol,deviceType){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert("信息","保存成功");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	if(acqUnitSaveData.delidslist!=undefined && acqUnitSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert("信息","采控单元数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
             acquisitionUnitConfigHandsontableHelper.clearContainer();
 		},
 		params: {
@@ -717,17 +717,17 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert("信息","保存成功");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	if(acqGroupSaveData.delidslist!=undefined && acqGroupSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert("信息","采控组数据保存失败");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert("信息","请求失败");
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
         	data: JSON.stringify(acqGroupSaveData),

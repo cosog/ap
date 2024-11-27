@@ -368,7 +368,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            		success:function(response) {
 		            			rdata=Ext.JSON.decode(response.responseText);
 		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 		                            databaseColumnMappingHandsontableHelper.clearContainer();
 		                            CreateDatabaseColumnMappingTable(classes,protocolType,protocolCode);
 		                            
@@ -378,11 +378,11 @@ var DatabaseColumnMappingHandsontableHelper = {
 		                            	gridPanel.getStore().load();
 		                            }
 		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailure);
 		                        }
 		            		},
 		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
+		            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		                        databaseColumnMappingHandsontableHelper.clearContainer();
 		            		},
 		            		params: {
@@ -392,9 +392,9 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            	}); 
 		            } else {
 		                if (!databaseColumnMappingHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
+		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.dataTypeError);
 		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
+		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
 		                }
 		            }
 	        	}
@@ -586,7 +586,7 @@ function saveProtocolRunStatusConfig(){
 			method:'POST',
 			url:context + '/acquisitionUnitManagerController/saveProtocolRunStatusConfig',
 			success:function(response) {
-				Ext.MessageBox.alert("信息","保存成功");
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 				var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
                 if (isNotVal(gridPanel)) {
                 	gridPanel.getSelectionModel().deselectAll(true);

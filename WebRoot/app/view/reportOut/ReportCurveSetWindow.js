@@ -143,7 +143,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 			var result =  Ext.JSON.decode(response.responseText);
                 			if (result.success) {
                 				Ext.getCmp("ReportCurveSetWindow_Id").close();
-                				Ext.MessageBox.alert("信息", "保存成功");
+                				Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                 			}
                 		},
                 		failure:function(){

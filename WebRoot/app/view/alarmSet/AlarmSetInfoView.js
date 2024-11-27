@@ -111,7 +111,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         items: [{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >背景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.backgroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'overviewFirstLevelBackgroundColor_id',
@@ -163,7 +163,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewNormalBackgroundColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -181,7 +181,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         },{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >前景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.foregroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'overviewFirstLevelColor_id',
@@ -233,7 +233,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'overviewNormalColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -274,7 +274,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         items: [{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >背景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.backgroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'detailsFirstLevelBackgroundColor_id',
@@ -326,7 +326,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsNormalBackgroundColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -344,7 +344,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         },{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >前景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.foregroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'detailsFirstLevelColor_id',
@@ -396,7 +396,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'detailsNormalColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',
@@ -440,7 +440,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         items: [{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >背景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.backgroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'statisticsFirstLevelBackgroundColor_id',
@@ -492,7 +492,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsNormalBackgroundColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 listeners : {
@@ -510,7 +510,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                         },{
                         	items:[{
                         		xtype:'displayfield',
-                            	fieldLabel: '<font color=red >前景色</font>',
+                            	fieldLabel: '<font color=red >'+loginUserLanguageResource.foregroundColor+'</font>',
                             	value:''
                             },{
                                 id: 'statisticsFirstLevelColor_id',
@@ -562,7 +562,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 }
                         	},{
                                 id: 'statisticsNormalColor_id',
-                                fieldLabel: '正常',
+                                fieldLabel: loginUserLanguageResource.normal,
                                 labelWidth: 60,
                                 anchor:'90%',
                                 value:'#FFFFFF',

@@ -108,7 +108,7 @@ SelectmoduleDataAttrInfoGridPanel = function () {
     var parent_module_Id1 = Ext.getCmp('mdName_Parent_Id1');
     var parent_module_Id = Ext.getCmp('mdName_Parent_Id');
     if (mdParentid == 0) {
-        moduleParentName = cosog.string.root;
+        moduleParentName = loginUserLanguageResource.rootNode;
     }
     parent_module_Id1.setValue(mdParentid);
     parent_module_Id1.setRawValue(moduleParentName);

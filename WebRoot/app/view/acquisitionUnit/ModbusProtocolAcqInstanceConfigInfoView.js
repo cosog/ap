@@ -30,7 +30,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加实例',
+                    text: loginUserLanguageResource.addAcqInstance,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -132,7 +132,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                 },{
                 	border: true,
                 	region: 'center',
-                	title:'采控项',
+                	title:loginUserLanguageResource.acqAndCtrlItemConfig,
                 	id:"ModbusProtocolInstanceItemsTableTabPanel_Id",
                 	layout: 'fit',
                     html:'<div class="ModbusProtocolInstanceItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolInstanceItemsConfigTableInfoDiv_id"></div></div>',
@@ -176,12 +176,12 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				var item1={};
 				item1.id=1;
 				item1.title=loginUserLanguageResource.rootNode;
-				item1.value='实例列表';
+				item1.value=loginUserLanguageResource.instanceList;
 				root.push(item1);
 			}else if(data.classes==1){
 				var item1={};
 				item1.id=1;
-				item1.title='实例名称';
+				item1.title=loginUserLanguageResource.instanceName;
 				item1.value=data.text;
 				root.push(item1);
 				
@@ -193,20 +193,20 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item3={};
 				item3.id=3;
-				item3.title='采集协议类型';
+				item3.title=loginUserLanguageResource.acqProtocolType;
 				item3.value=data.acqProtocolType;
 				root.push(item3);
 				
 				var item4={};
 				item4.id=4;
-				item4.title='控制协议类型';
+				item4.title=loginUserLanguageResource.ctrlProtocolType;
 				item4.value=data.ctrlProtocolType;
 				root.push(item4);
 				
 				
 				var item5={};
 				item5.id=5;
-				item5.title='注册包前后缀十六进制';
+				item5.title=loginUserLanguageResource.signInPrefixSuffixHex;
 				if(parseInt(data.signInPrefixSuffixHex)==1){
 					item5.value=true;
 				}else{
@@ -216,19 +216,19 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item6={};
 				item6.id=6;
-				item6.title='注册包前缀(HEX/ASC)';
+				item6.title=loginUserLanguageResource.signInPrefix+'(HEX/ASC)';
 				item6.value=data.signInPrefix;
 				root.push(item6);
 				
 				var item7={};
 				item7.id=7;
-				item7.title='注册包后缀(HEX/ASC)';
+				item7.title=loginUserLanguageResource.signInSuffix+'(HEX/ASC)';
 				item7.value=data.signInSuffix;
 				root.push(item7);
 				
 				var item8={};
 				item8.id=8;
-				item8.title='注册包ID十六进制';
+				item8.title=loginUserLanguageResource.signInIDHex;
 				if(parseInt(data.signInIDHex)==1){
 					item8.value=true;
 				}else{
@@ -238,7 +238,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item9={};
 				item9.id=9;
-				item9.title='心跳包前后缀十六进制';
+				item9.title=loginUserLanguageResource.heartbeatPrefixSuffixHex;
 				if(parseInt(data.heartbeatPrefixSuffixHex)==1){
 					item9.value=true;
 				}else{
@@ -248,20 +248,20 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item10={};
 				item10.id=10;
-				item10.title='心跳包前缀(HEX/ASC)';
+				item10.title=loginUserLanguageResource.heartbeatPrefix+'(HEX/ASC)';
 				item10.value=data.heartbeatPrefix;
 				root.push(item10);
 				
 				var item11={};
 				item11.id=11;
-				item11.title='心跳包后缀(HEX/ASC)';
+				item11.title=loginUserLanguageResource.heartbeatSuffix+'(HEX/ASC)';
 				item11.value=data.heartbeatSuffix;
 				root.push(item11);
 				
 				
 				var item12={};
 				item12.id=12;
-				item12.title='单包发送间隔(ms)';
+				item12.title=loginUserLanguageResource.packetSendInterval+'(ms)';
 				item12.value=data.packetSendInterval;
 				root.push(item12);
 				
@@ -488,7 +488,7 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 		url:context + '/acquisitionUnitManagerController/getProtocolInstanceItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").getEl().unmask();
-			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").setTitle(instanceName+"/采控项");
+			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.acqAndCtrlItemConfig);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolInstanceConfigItemsHandsontableHelper==null || protocolInstanceConfigItemsHandsontableHelper.hot==undefined){
 				protocolInstanceConfigItemsHandsontableHelper = ProtocolInstanceConfigItemsHandsontableHelper.createNew("ModbusProtocolInstanceItemsConfigTableInfoDiv_id");

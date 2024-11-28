@@ -7,7 +7,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
     id: 'ImportDisplayUnitWindow_Id',
     alias: 'widget.ImportDisplayUnitWindow',
     layout: 'fit',
-    title: '显示单元导入',
+    title: loginUserLanguageResource.importData,
     border: false,
     hidden: false,
     collapsible: true,
@@ -330,7 +330,7 @@ iconImportSingleDisplayUnitAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedDisplayUnit(\""+unitName+"\",\""+acqUnit+"\",\""+protocolName+"\")>保存...</a>";
+		"onclick=saveSingelImportedDisplayUnit(\""+unitName+"\",\""+acqUnit+"\",\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
@@ -411,9 +411,9 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 		success:function(response) {
 			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+"/采集项");
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.acquisitionItem);
 			}else{
-				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle("采集项");
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItem);
 			}
 			
 			var result =  Ext.JSON.decode(response.responseText);
@@ -617,9 +617,9 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unit
 		success:function(response) {
 			Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+"/控制项");
+				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.controlItem);
 			}else{
-				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle("控制项");
+				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitCtrlItemsHandsontableHelper==null || importDisplayUnitCtrlItemsHandsontableHelper.hot==undefined){
@@ -766,9 +766,9 @@ function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitN
 		success:function(response) {
 			Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+"/计算项");
+				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.calculateItem);
 			}else{
-				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle("计算项");
+				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitCalItemsHandsontableHelper==null || importDisplayUnitCalItemsHandsontableHelper.hot==undefined){
@@ -962,9 +962,9 @@ function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,uni
 		success:function(response) {
 			Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+"/录入项");
+				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.inputItem);
 			}else{
-				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
+				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitInputItemsHandsontableHelper==null || importDisplayUnitInputItemsHandsontableHelper.hot==undefined){

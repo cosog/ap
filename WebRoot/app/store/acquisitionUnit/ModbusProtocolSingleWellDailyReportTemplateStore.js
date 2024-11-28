@@ -26,7 +26,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
                     columnLines: true,
                     forceFit: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     selModel:{

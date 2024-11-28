@@ -38,7 +38,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加实例',
+                    text: loginUserLanguageResource.addAcqInstance,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -187,7 +187,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             	},{
                             		region: 'south',
                                 	height:'50%',
-                                	title:'单井班报表内容',
+                                	title:loginUserLanguageResource.deviceHourlyReportContent,
                                 	border: false,
                                 	collapsible: true,
                                     split: true,
@@ -248,7 +248,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                             	},{
                             		region: 'south',
                                 	height:'50%',
-                                	title:'单井日报表内容',
+                                	title:loginUserLanguageResource.deviceDailyReportContent,
                                 	border: false,
                                 	collapsible: true,
                                     split: true,
@@ -371,7 +371,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'区域日报内容',
+                            	title:loginUserLanguageResource.areaDailyReportContent,
                             	border: false,
                             	collapsible: true,
                                 split: true,
@@ -730,9 +730,9 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,se
 			Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(selectedInstanceName)){
-				Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/单井日报表内容');
+				Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/'+loginUserLanguageResource.deviceDailyReportContent);
 			}else{
-				Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle('单井日报表内容');
+				Ext.getCmp("ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportContent);
 			}
 			if(reportInstanceSingleWellRangeReportContentHandsontableHelper==null || reportInstanceSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellRangeReportContentHandsontableHelper = ReportInstanceSingleWellRangeReportContentHandsontableHelper.createNew("ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id");
@@ -1136,9 +1136,9 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,se
 			Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(selectedInstanceName)){
-				Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/单井班报表内容');
+				Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/'+loginUserLanguageResource.deviceHourlyReportContent);
 			}else{
-				Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle('单井班报表内容');
+				Ext.getCmp("ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContent);
 			}
 			if(reportInstanceSingleWellDailyReportContentHandsontableHelper==null || reportInstanceSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellDailyReportContentHandsontableHelper = ReportInstanceSingleWellDailyReportContentHandsontableHelper.createNew("ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id");
@@ -1309,9 +1309,9 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 			Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(selectedInstanceName)){
-				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/区域日报内容');
+				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle(selectedInstanceName+'/'+loginUserLanguageResource.areaDailyReportContent);
 			}else{
-				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle('区域日报内容');
+				Ext.getCmp("ProductionReportInstanceContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportContent);
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
@@ -1542,12 +1542,12 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				var item1={};
 				item1.id=1;
 				item1.title=loginUserLanguageResource.rootNode;
-				item1.value='实例列表';
+				item1.value=loginUserLanguageResource.instanceList;
 				root.push(item1);
 			}else if(data.classes==1){
 				var item1={};
 				item1.id=1;
-				item1.title='实例名称';
+				item1.title=loginUserLanguageResource.instanceName;
 				item1.value=data.text;
 				root.push(item1);
 				

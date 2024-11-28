@@ -75,7 +75,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
             items: [{
             	region: 'center',
 //            	width:'25%',
-            	title:'实例列表',
+            	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: false,

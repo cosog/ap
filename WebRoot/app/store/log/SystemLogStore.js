@@ -39,7 +39,7 @@ Ext.define('AP.store.log.SystemLogStore', {
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
                     store: store,
                     columns: newColumns,
@@ -73,9 +73,9 @@ Ext.define('AP.store.log.SystemLogStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var orgSelection= Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
         	var iframeViewStore=Ext.getCmp("IframeView_Id").getStore();
-        	if(orgSelection.length==0 && iframeViewStore.getCount()>0&&iframeViewStore.getAt(0).data.text=='组织根节点'){
+        	if(orgSelection.length==0 && iframeViewStore.getCount()>0&&iframeViewStore.getAt(0).data.text==loginUserLanguageResource.orgRootNode){
         		orgId='';
-        	}else if(orgSelection.length>0 && orgSelection[0].data.text=='组织根节点'){
+        	}else if(orgSelection.length>0 && orgSelection[0].data.text==loginUserLanguageResource.orgRootNode){
         		orgId='';
         	}
         	var startDate=Ext.getCmp('SystemLogQueryStartDate_Id').rawValue;

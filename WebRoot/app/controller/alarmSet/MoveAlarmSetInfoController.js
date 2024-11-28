@@ -25,7 +25,7 @@ Ext.define('AP.controller.alarmSet.MoveAlarmSetInfoController', {
 // 窗体创建按钮事件
 var SaveMoveAlarmSetSubmitBtnForm = function () {
     var SaveMoveAlarmSetWindow = Ext.getCmp("MoveAlarmSetWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (SaveMoveAlarmSetWindow.getForm().isValid()) {
         SaveMoveAlarmSetWindow.getForm().submit({
             url: context + '/MoveAlarmSetController/addMoveAlarmSet',
@@ -37,19 +37,19 @@ var SaveMoveAlarmSetSubmitBtnForm = function () {
                 Ext.getCmp('MoveAlarmSetWindow_Id').close();
                 Ext.getCmp("MoveAlarmSet_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>成功创建</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>成功创建</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>创建失败。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>创建失败。");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！请先检查数据有效性,再次提交.</font>。");
+        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！请先检查数据有效性,再次提交.</font>。");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -70,16 +70,16 @@ function UpdateMoveAlarmSetSubmitBtnForm() {
                 Ext.getCmp('MoveAlarmSetInfoWindowwin_Id').close();
                 Ext.getCmp("MoveAlarmSetInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
+                    Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 Ext.getCmp("MoveAlarmSetInfoWindowwin_Id").getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -109,8 +109,8 @@ function delectMoveAlarmSet() {
     var delUrl = context + '/MoveAlarmSetController/delectMoveAlarmSet'
     if (_record) {
         // 提示是否删除数据
-        Ext.MessageBox.msgButtons['yes'].text = "确定";
-        Ext.MessageBox.msgButtons['no'].text = "取消";
+        Ext.MessageBox.msgButtons['yes'].text = loginUserLanguageResource.confirm;
+        Ext.MessageBox.msgButtons['no'].text = loginUserLanguageResource.cancel;
         Ext.Msg.confirm("是否要删除？", "是否要删除这些被选择的数据？", function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("MoveAlarmSet_Id", _record, "jlbh", delUrl); // 第一个参数为面板的Id，选择的记录对象，当前删除对象的Id名称，url

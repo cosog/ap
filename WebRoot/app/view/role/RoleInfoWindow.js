@@ -83,12 +83,12 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                                 var obj = Ext.decode(response.responseText);
                                 var msg_ = obj.msg;
                                 if (msg_ == "1") {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color='red'>【角色:" + t.value + "】</font>" + cosog.string.exist + "！");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + cosog.string.exist);
                                     t.setValue("");
                                 }
                             },
                             failure: function (response, opts) {
-                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                             }
                         });
                     }

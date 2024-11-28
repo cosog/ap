@@ -25,7 +25,7 @@ Ext.define('AP.controller.alarmSet.AlarmSetInfoController', {
 // 窗体创建按钮事件
 var SaveAlarmSetSubmitBtnForm = function () {
     var SaveAlarmSetWindow = Ext.getCmp("AlarmSetWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (SaveAlarmSetWindow.getForm().isValid()) {
         SaveAlarmSetWindow.getForm().submit({
             url: context + '/AlarmSetController/addAlarmSet',
@@ -37,19 +37,19 @@ var SaveAlarmSetSubmitBtnForm = function () {
                 Ext.getCmp('AlarmSetWindow_Id').close();
                 Ext.getCmp("AlarmSet_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -70,16 +70,16 @@ function UpdateAlarmSetSubmitBtnForm() {
                 Ext.getCmp('AlarmSetInfoWindowwin_Id').close();
                 Ext.getCmp("AlarmSetInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
+                    Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 Ext.getCmp("AlarmSetInfoWindowwin_Id").getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -109,8 +109,8 @@ function delectAlarmSet() {
     var delUrl = context + '/AlarmSetController/delectAlarmSet'
     if (_record) {
         // 提示是否删除数据
-        Ext.MessageBox.msgButtons['yes'].text = "确定";
-        Ext.MessageBox.msgButtons['no'].text = "取消";
+        Ext.MessageBox.msgButtons['yes'].text = loginUserLanguageResource.confirm;
+        Ext.MessageBox.msgButtons['no'].text = loginUserLanguageResource.cancel;
         Ext.Msg.confirm("是否要删除？", "是否要删除这些被选择的数据？", function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AlarmSet_Id", _record, "jlbh", delUrl); // 第一个参数为面板的Id，选择的记录对象，当前删除对象的Id名称，url
@@ -292,15 +292,15 @@ SelectAlarmSet = function () {
 	        },
 	        success: function (response, action) {
 	        	if (Ext.decode(response.responseText).msg) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
 	        	else {
-                    Ext.Msg.alert(cosog.string.ts,
+                    Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
 	        },
 	        failure: function () {
-	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+	            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
 	        }
 	    });
  }
@@ -528,7 +528,7 @@ SelectAlarmSet = function () {
 	            Ext.getCmp('statisticsThirdLevelOpacity_id').setValue(AlarmShowStyle.Statistics.ThirdLevel.Opacity);
 	        },
 	        failure: function () {
-	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+	            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
 	        }
 	    });
  }

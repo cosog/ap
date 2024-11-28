@@ -65,16 +65,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                         	userCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-//                            try {
-//                            	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
-//                    			if (isNotVal(gridPanel)) {
-//                    				gridPanel.getStore().load();
-//                    			}else{
-//                    				Ext.create('AP.store.log.SystemLogStore');
-//                    			}
-//                            } catch (ex) {
-//                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
-//                            }
+                        	
                         }
                     }
                 });
@@ -134,16 +125,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                         	actionCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-//                            try {
-//                            	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
-//                    			if (isNotVal(gridPanel)) {
-//                    				gridPanel.getStore().load();
-//                    			}else{
-//                    				Ext.create('AP.store.log.SystemLogStore');
-//                    			}
-//                            } catch (ex) {
-//                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
-//                            }
+                        	
                         }
                     }
                 });

@@ -117,7 +117,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqUnitWindow", {
             },{
             	region: 'center',
             	id:"importedAcqUnitItemInfoTablePanel_Id",
-            	title:'采控项',
+            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
             	layout: "fit",
             	html:'<div class="importedAcqUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqUnitItemInfoTableDiv_Id"></div></div>',
                 listeners: {
@@ -426,7 +426,7 @@ iconImportSingleAcqUnitAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\")>保存...</a>";
+		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

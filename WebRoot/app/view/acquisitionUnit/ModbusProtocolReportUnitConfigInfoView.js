@@ -2163,7 +2163,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
     // 添加条件
     var saveData = {};
     saveData.itemList = [];
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (!isNotVal(unitId)) {
         return false
     }
@@ -2327,7 +2327,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
                 if (reportType == 0) {
                     CreateReportUnitContentConfigColInfoTable();
                     CreateReportUnitContentConfigTable();
@@ -2341,11 +2341,11 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
 
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
     return false;
@@ -2387,7 +2387,7 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
     // 添加条件
     var saveData = {};
     saveData.itemList = [];
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 
     var unitId = selectedItem.data.id;
     if (!isNotVal(unitId)) {
@@ -2553,14 +2553,14 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
     return false;

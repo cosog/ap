@@ -41,7 +41,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     autoScroll: true,
                     forceFit: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -85,7 +85,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     					}
                     					protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
                     				}
-                    				Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("数据量报警项");
+                    				Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.numericValue);
                         		}else{
                             		CreateProtocolAlarmInstanceNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             		CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes,record.data.deviceType);
@@ -98,7 +98,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     					}
                     					protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
                     				}
-                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("开关量报警项");
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.switchingValue);
                         		}else{
                             		CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
@@ -110,7 +110,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     					}
                     					protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
                     				}
-                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("枚举量报警项");
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.enumValue);
                         		}else{
                             		CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
@@ -122,13 +122,13 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     					}
                     					protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
                     				}
-                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("工况诊断报警项");
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.workType);
                         		}else{
                             		CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("运行状态报警项");
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.runStatus);
                         			if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null){
                     					if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
                     						protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
@@ -140,7 +140,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
-                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle("通信状态报警项");
+                        			Ext.getCmp("ModbusProtocolAlarmInstanceItemsConfigTabPanel_Id").setTitle(loginUserLanguageResource.commStatus);
                         			if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null){
                     					if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
                     						protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
@@ -163,7 +163,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,
                                 items: [{
-                                    text: '删除'+info,
+                                    text: loginUserLanguageResource.deleteData,
                                     glyph: 0xf056,
                                     handler: function () {
 //                                        Ext.MessageBox.confirm("确认","您确定要进行删除操作吗?",

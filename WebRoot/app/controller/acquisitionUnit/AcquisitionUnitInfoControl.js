@@ -32,11 +32,11 @@ function addModbusProtocolAddrMappingConfigData() {
 	
 	if(selectedDeviceTypeId!=""){
 		var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
-	        title: '创建协议'
+	        title: loginUserLanguageResource.addProtoco
 	    });
 	    window.show();
 	    
-	    Ext.getCmp("protocolWinTabLabel_Id").setHtml("协议将添加到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+	    Ext.getCmp("protocolWinTabLabel_Id").setHtml(loginUserLanguageResource.owningDeviceType+":<font color=red>"+selectedDeviceTypeName+"</font>,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
 	    Ext.getCmp("protocolWinTabLabel_Id").show();
 	    
 	    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -44,7 +44,7 @@ function addModbusProtocolAddrMappingConfigData() {
 	    Ext.getCmp("addFormModbusProtocol_Id").show();
 	    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选择标签。");
+		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.selectDeviceType);
 	}
 	
 	
@@ -56,7 +56,7 @@ function addModbusProtocolAddrMappingConfigData() {
 //协议配置窗体创建按钮事件
 var saveModbusProtocolSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocol_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAdd',
@@ -68,19 +68,19 @@ var saveModbusProtocolSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocol_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -91,7 +91,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
 
 function addAcquisitionUnitInfo() {
     var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
-        title: '创建采控单元'
+        title: loginUserLanguageResource.addAcqUnit
     });
     AcquisitionUnitInfoWindow.show();
     Ext.getCmp("addFormAcquisitionUnit_Id").show();
@@ -101,7 +101,7 @@ function addAcquisitionUnitInfo() {
 
 function addAcquisitionGroupInfo() {
     var AcquisitionGroupInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
-        title: '创建采控组'
+        title: loginUserLanguageResource.addAcqGroup
     });
     AcquisitionGroupInfoWindow.show();
     Ext.getCmp("addFormAcquisitionGroup_Id").show();
@@ -112,7 +112,7 @@ function addAcquisitionGroupInfo() {
 //采控组窗体创建按钮事件
 var SaveAcquisitionGroupSubmitBtnForm = function () {
     var saveAcquisitionGroupWinForm = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (saveAcquisitionGroupWinForm.getForm().isValid()) {
         saveAcquisitionGroupWinForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doAcquisitionGroupAdd',
@@ -124,19 +124,19 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -145,7 +145,7 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
 //窗体上的修改按钮事件
 function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
     var getGroupUpdateDataInfoSubmitBtnFormId = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (getGroupUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
         Ext.getCmp("acquisitionGroup_editWin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getGroupUpdateDataInfoSubmitBtnFormId.getForm().submit({
@@ -158,16 +158,16 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
+                    Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 Ext.getCmp("acquisitionGroup_editWin_Id").getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -215,8 +215,8 @@ function delAcquisitionGroupInfo() {
     var _record = selectionModel.getSelection();
     var delUrl = context + '/acquisitionUnitManagerController/doAcquisitionGroupBulkDelete'
     if (_record.length > 0) {
-        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
         Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record, "id", delUrl);
@@ -231,7 +231,7 @@ function delAcquisitionGroupInfo() {
 //窗体创建按钮事件
 var SaveAcquisitionUnitSubmitBtnForm = function () {
     var saveAcquisitionUnitWinForm = Ext.getCmp("acquisitionUnit_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (saveAcquisitionUnitWinForm.getForm().isValid()) {
         saveAcquisitionUnitWinForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doAcquisitionUnitAdd',
@@ -243,19 +243,19 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
                 Ext.getCmp('acquisitionUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -264,7 +264,7 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
 //窗体上的修改按钮事件
 function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
     var getUpdateDataInfoSubmitBtnFormId = Ext.getCmp("acquisitionUnit_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
         Ext.getCmp("acquisitionUnit_editWin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataInfoSubmitBtnFormId.getForm().submit({
@@ -277,16 +277,16 @@ function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
                 Ext.getCmp("AcquisitionUnitInfoGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts,
+                    Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 Ext.getCmp("acquisitionUnit_editWin_Id").getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -330,8 +330,8 @@ function delAcquisitionUnitInfo() {
     var _record = selectionModel.getSelection();
     var delUrl = context + '/acquisitionUnitManagerController/doAcquisitionUnitBulkDelete'
     if (_record.length > 0) {
-        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
         Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionUnitInfoGridPanel_Id", _record, "id", delUrl);
@@ -477,7 +477,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
    
     var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue();
     var selectedItem=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -485,7 +485,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
     var groupCode = selectedItem.data.code;
     var protocol=selectedItem.data.protocol;
     if (!isNotVal(groupCode)) {
-//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采控组!');
+//        Ext.Msg.alert(loginUserLanguageResource.tip, '请先选择一个采控组!');
         return false
     }
     if (driverConfigItemsData.length > 0) {
@@ -540,19 +540,19 @@ var grantAcquisitionItemsPermission = function (groupType) {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控项' + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控项安排失败' + "。</font>");
+                    Ext.Msg.alert('info', loginUserLanguageResource.saveFailure);
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控项!' + '！</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -568,10 +568,10 @@ var grantAcquisitionGroupsPermission = function () {
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     var unitId = Ext.getCmp("selectedAcquisitionUnitId_Id").getValue();
     if (!isNotVal(unitId)) {
-//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采控单元!');
+//        Ext.Msg.alert(loginUserLanguageResource.tip, '请先选择一个采控单元!');
         return false
     }
     if (acquisitionData.length > 0) {
@@ -601,24 +601,24 @@ var grantAcquisitionGroupsPermission = function () {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控组' + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控组' + "。");
                 }
                 if (result.msg == false) {
                     Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控组安排失败' + "。</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控单元!' + '！</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + '无选中的采控单元!' + '！</font>');
     }
     return false;
 };
 function addModbusProtocolInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
-        title: '创建实例'
+        title: loginUserLanguageResource.addAcqInstance
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolInstance_Id").show();
@@ -629,7 +629,7 @@ function addModbusProtocolInstanceConfigData() {
 //协议实例配置窗体创建按钮事件
 var saveModbusProtocolInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolInstanceAdd',
@@ -641,19 +641,19 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -661,7 +661,7 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
 
 function addAlarmUnitInfo() {
     var window = Ext.create("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
-        title: '创建报警单元'
+        title: loginUserLanguageResource.addAlarmUnit
     });
     window.show();
     Ext.getCmp("addFormAlarmUnit_Id").show();
@@ -672,7 +672,7 @@ function addAlarmUnitInfo() {
 //窗体创建按钮事件
 var SaveAlarmUnitSubmitBtnForm = function () {
     var winForm = Ext.getCmp("alarmUnit_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doAlarmUnitAdd',
@@ -684,19 +684,19 @@ var SaveAlarmUnitSubmitBtnForm = function () {
                 Ext.getCmp('alarmUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -704,7 +704,7 @@ var SaveAlarmUnitSubmitBtnForm = function () {
 
 function addDisplayUnitInfo() {
     var DisplayUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
-        title: '创建显示单元'
+        title: loginUserLanguageResource.addDisplayUnit
     });
     DisplayUnitInfoWindow.show();
     Ext.getCmp("addFormDisplayUnit_Id").show();
@@ -715,7 +715,7 @@ function addDisplayUnitInfo() {
 //窗体创建按钮事件
 var SaveDisplayUnitSubmitBtnForm = function () {
     var winForm = Ext.getCmp("displayUnit_editWin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
     	winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doDisplayUnitAdd',
@@ -727,19 +727,19 @@ var SaveDisplayUnitSubmitBtnForm = function () {
                 Ext.getCmp('displayUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -747,7 +747,7 @@ var SaveDisplayUnitSubmitBtnForm = function () {
 
 function addModbusProtocolDisplayInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
-        title: '创建显示实例'
+        title: loginUserLanguageResource.addAcqInstance
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolDisplayInstance_Id").show();
@@ -757,7 +757,7 @@ function addModbusProtocolDisplayInstanceConfigData() {
 
 function addReportUnitInfo() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
-        title: '创建报表单元'
+        title: loginUserLanguageResource.addReportUnit
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolReportUnit_Id").show();
@@ -767,7 +767,7 @@ function addReportUnitInfo() {
 
 function addModbusProtocolReportInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
-        title: '创建报表实例'
+        title: loginUserLanguageResource.addReportInstance
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolReportInstance_Id").show();
@@ -777,7 +777,7 @@ function addModbusProtocolReportInstanceConfigData() {
 
 var saveModbusProtocolReportUnitSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolReportUnitInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportUnitAdd',
@@ -789,19 +789,19 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolReportUnitInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -810,7 +810,7 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
 //协议实例配置窗体创建按钮事件
 var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolDisplayInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolDisplayInstanceAdd',
@@ -822,19 +822,19 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolDisplayInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -842,7 +842,7 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
 
 var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolReportInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportInstanceAdd',
@@ -854,19 +854,19 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -874,7 +874,7 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
 
 function addModbusProtocolAlarmInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
-        title: '创建报警实例'
+        title: loginUserLanguageResource.addAcqInstance
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolAlarmInstance_Id").show();
@@ -885,7 +885,7 @@ function addModbusProtocolAlarmInstanceConfigData() {
 //协议实例配置窗体创建按钮事件
 var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolAlarmInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAlarmInstanceAdd',
@@ -897,19 +897,19 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolAlarmInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -917,7 +917,7 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
 
 function addModbusProtocolSMSInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
-        title: '创建实例'
+        title: loginUserLanguageResource.addAcqInstance
     });
     window.show();
     Ext.getCmp("addFormModbusprotocolSMSInstance_Id").show();
@@ -968,7 +968,7 @@ SelectModbusProtocolSMSInstanceGridPanel = function () {
 //短信实例配置窗体创建按钮事件
 var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
     var winForm = Ext.getCmp("modbusProtocolSMSInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceAdd',
@@ -980,18 +980,18 @@ var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -999,7 +999,7 @@ var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
 
 function UpdateModbusProtocolSMSInstanceSubmitBtnForm() {
     var winForm = Ext.getCmp("modbusProtocolSMSInstanceInfoWindow_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (winForm.getForm().isValid()) {
         winForm.getForm().submit({
             url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceEdit',
@@ -1009,14 +1009,14 @@ function UpdateModbusProtocolSMSInstanceSubmitBtnForm() {
             	Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -1030,8 +1030,8 @@ function delModbusProtocolSMSInstanceInfo() {
     var delUrl = context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceDelete'
     if (_record.length>0) {
         // 提示是否删除数据
-        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
         Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("ModbusProtocolSMSInstanceGridPanel_Id", _record,"id", delUrl);

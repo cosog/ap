@@ -110,7 +110,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         	CreateSingleWellReportTable();
                         	CreateSingleWellReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                         }
                     }
                 }
@@ -134,7 +134,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         	CreateSingleWellReportTable();
                         	CreateSingleWellReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                         }
                     }
                 }

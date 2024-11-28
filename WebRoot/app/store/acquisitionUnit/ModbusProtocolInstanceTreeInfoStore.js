@@ -42,7 +42,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                     autoScroll: true,
                     forceFit: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -92,7 +92,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,
                                 items: [{
-                                    text: '删除'+info,
+                                    text: loginUserLanguageResource.deleteData,
                                     glyph: 0xf056,
                                     handler: function () {
 //                                        Ext.MessageBox.confirm("确认","您确定要进行删除操作吗?",

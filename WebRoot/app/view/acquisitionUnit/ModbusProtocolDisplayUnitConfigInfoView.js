@@ -1790,7 +1790,7 @@ var grantDisplayAcqItemsPermission = function () {
     var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
@@ -1866,14 +1866,14 @@ var grantDisplayAcqItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
     return false;
@@ -1892,7 +1892,7 @@ var grantDisplayCalItemsPermission = function () {
     var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
@@ -1966,14 +1966,14 @@ var grantDisplayCalItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
     return false;
@@ -1992,7 +1992,7 @@ var grantDisplayCtrlItemsPermission = function () {
     var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
@@ -2047,14 +2047,14 @@ var grantDisplayCtrlItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '控制项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
 
@@ -2074,7 +2074,7 @@ var grantDisplayInputItemsPermission = function () {
     var addItemRealtimeSort=[];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
@@ -2148,14 +2148,14 @@ var grantDisplayInputItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
             }
         },
         failure: function () {
-            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
         }
     });
     return false;

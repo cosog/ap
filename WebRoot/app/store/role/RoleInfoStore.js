@@ -60,7 +60,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	allowDeselect:false
                     },
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
                     store: store,
                     columns: [{
@@ -164,7 +164,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             }
                         }
                     },{
-                    	header: '保存',
+                    	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
                     	width: 40,
                         align: 'center',
@@ -172,7 +172,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         menuDisabled: true,
                         items: [{
                             iconCls: 'submit',
-                            tooltip: '保存',
+                            tooltip: loginUserLanguageResource.save,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
         	                    if(RoleManagerModuleEditFlag==1){
@@ -181,7 +181,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             }
                         }]
                     },{
-                    	header: '删除',
+                    	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
                     	width: 40,
                         align: 'center',
@@ -209,10 +209,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		roleName = selected[0].data.roleName;
                         		Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                         		
-                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】模块授权");
+                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】模块授权");
                         		clkLoadAjaxFn();
                         		
-                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】设备类型授权");
+                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】设备类型授权");
                         		clkLoadTabAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();

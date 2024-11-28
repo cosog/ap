@@ -15,7 +15,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
     forceFit: true,
     id: "RightModuleTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
     viewConfig: {
-        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
         forceFit: true
     },
     initComponent: function () {

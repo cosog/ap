@@ -113,7 +113,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "smsDeviceSortNum_Id",
             	name: "smsDeviceInformation.sortNum",
-                fieldLabel: '排序编号',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',
@@ -126,7 +126,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("SMSDeviceInfoWindow_Id").down('form');
-                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                     if (winForm.getForm().isValid()) {
                         winForm.getForm().submit({
                             url: context + '/wellInformationManagerController/doSMSDeviceAdd',
@@ -138,18 +138,18 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                                 Ext.getCmp('SMSDeviceInfoWindow_Id').close();
                                 CreateAndLoadSMSDeviceInfoTable();
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                                 }
                                 if (action.result.msg == false) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
                                 }
                             },
                             failure: function () {
-                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
                             }
                         });
                     } else {
-                    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
                     }
                     return false;
                 }

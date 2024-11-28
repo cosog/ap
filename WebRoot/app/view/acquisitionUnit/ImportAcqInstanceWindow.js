@@ -109,7 +109,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传实例列表',
+            	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
@@ -117,7 +117,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
             },{
             	region: 'center',
             	id:"importedAcqInstanceItemInfoTablePanel_Id",
-            	title:'采控项',
+            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
             	layout: "fit",
             	html:'<div class="importedAcqInstanceItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqInstanceItemInfoTableDiv_Id"></div></div>',
                 listeners: {
@@ -276,7 +276,7 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+unitName+"\,\""+protocolName+"\")>保存...</a>";
+		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+unitName+"\,\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
@@ -288,7 +288,7 @@ function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceNam
 		url:context + '/acquisitionUnitManagerController/getImportAcqInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").getEl().unmask();
-			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").setTitle(instanceName+"/采控项");
+			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.acqAndCtrlItemConfig);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAcqInstanceConfigItemsHandsontableHelper==null || importAcqInstanceConfigItemsHandsontableHelper.hot==undefined){
 				importAcqInstanceConfigItemsHandsontableHelper = ImportAcqInstanceConfigItemsHandsontableHelper.createNew("importedAcqInstanceItemInfoTableDiv_Id");

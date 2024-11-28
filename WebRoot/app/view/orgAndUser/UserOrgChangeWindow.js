@@ -2,7 +2,7 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.userOrgChangeWindow',
     layout: 'fit',
-    title:'用户隶属迁移',
+    title:loginUserLanguageResource.userOrgChange,
     border: false,
     hidden: false,
     collapsible: true,
@@ -71,13 +71,13 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
         	layout: 'border',
             items: [{
             	region: 'center',
-        		title:'用户列表',
+        		title:loginUserLanguageResource.userList,
         		layout: 'fit',
         		id:'UserOrgChangeWinUserListPanel_Id'
             },{
             	region: 'east',
         		width: '25%',
-        		title:'目标组织',
+        		title:loginUserLanguageResource.targetOrg,
         		layout: 'fit',
         		id:'UserOrgChangeWinOrgListPanel_Id'
             }]

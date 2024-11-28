@@ -117,7 +117,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
             },{
             	region: 'center',
             	id:"importedProtocolItemInfoTablePanel_Id",
-            	title:'采控项',
+            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
             	layout: "fit",
             	html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolItemInfoTableDiv_Id"></div></div>',
                 listeners: {
@@ -416,7 +416,7 @@ iconImportSingleProtocolAction = function(value, e, record) {
 	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\")>保存...</a>";
+		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	
 	

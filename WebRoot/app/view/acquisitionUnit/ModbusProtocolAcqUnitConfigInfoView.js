@@ -137,7 +137,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 	border: true,
 //                    flex: 4,
                 	region: 'center',
-                    title:loginUserLanguageResource.acqItemConfig,
+                    title:loginUserLanguageResource.acqAndCtrlItemConfig,
                     id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
                     layout: 'fit',
                     html:'<div class="ModbusProtocolAcqGroupItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id"></div></div>',

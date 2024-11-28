@@ -2,7 +2,7 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.orgParentChangeWindow',
     layout: 'fit',
-    title:'组织隶属迁移-<font color=red>所选组织及所有子节点迁移到目标组织下</font>',
+    title:loginUserLanguageResource.orgParentChange,
     id: 'orgParentChangeWindow_Id',
     border: false,
     hidden: false,
@@ -74,13 +74,13 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
         	layout: 'border',
             items: [{
             	region: 'center',
-        		title:'当前组织列表',
+        		title:loginUserLanguageResource.orgList,
         		layout: 'fit',
         		id:'OrgParentChangeWinCurrentOrgListPanel_Id'
             },{
             	region: 'east',
         		width: '40%',
-        		title:'目标组织',
+        		title:loginUserLanguageResource.targetOrg,
         		layout: 'fit',
         		id:'OrgParentChangeWinDestinationOrgListPanel_Id'
             }]

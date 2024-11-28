@@ -44,7 +44,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     selType: 'checkboxmodel',
                     multiSelect: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -56,7 +56,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         width: 50,
                         xtype: 'rownumberer'
                     }, {
-                        header: '用户名称',
+                        header: loginUserLanguageResource.userName,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -71,7 +71,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             return adviceCurrentUserName(value, o, p, e);
                         }
                     }, {
-                        header: '用户账号',
+                        header: loginUserLanguageResource.userAccount,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -87,7 +87,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	}
                         }
                     }, {
-                        header: '角色',
+                        header: loginUserLanguageResource.role,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -106,7 +106,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
-                        header: '电话',
+                        header: loginUserLanguageResource.phone,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -123,7 +123,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             }
                         }
                     }, {
-                        header: '邮箱',
+                        header: loginUserLanguageResource.email,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -141,7 +141,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	}
                         }
                     }, {
-                        header: '快捷登录',
+                        header: loginUserLanguageResource.userQuickLogin,
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
@@ -207,7 +207,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '语言',
+                        header: loginUserLanguageResource.language,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -226,7 +226,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
-                        header: '使能',
+                        header: loginUserLanguageResource.enable,
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
@@ -277,7 +277,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	return adviceTimeFormat(value,o,p,e);
                         }
                     },{
-                    	header: '保存',
+                    	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
                     	width: 40,
                         align: 'center',
@@ -285,7 +285,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         menuDisabled: true,
                         items: [{
                             iconCls: 'submit',
-                            tooltip: '保存',
+                            tooltip: loginUserLanguageResource.save,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
         	                    if(OrgAndUserModuleEditFlag==1){
@@ -297,7 +297,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
 //                            }
                         }]
                     },{
-                    	header: '删除',
+                    	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
                     	width: 40,
                         align: 'center',

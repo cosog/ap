@@ -29,7 +29,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
             }, {
                 id: 'formModbusprotocolSMSInstanceName_Id',
                 name: "protocolSMSInstance.name",
-                fieldLabel: '实例名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: ''
@@ -48,7 +48,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
 				name : "protocolSMSInstance.acqProtocolType"
 			},{
             	xtype : "combobox",
-				fieldLabel : '采集协议类型<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.acqProtocolType+'<font color=red>*</font>',
 				id : 'modbusInstanceAcqProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -64,8 +64,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择协议类型',
-				blankText : '请选择协议类型',
+				emptyText : loginUserLanguageResource.selectProtocolType+'...',
+				blankText : loginUserLanguageResource.selectProtocolType+'...',
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusSMSInstanceAcqProtocolType_Id").setValue(this.value);
@@ -78,7 +78,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
 				name : "protocolSMSInstance.ctrlProtocolType"
 			},{
             	xtype : "combobox",
-				fieldLabel : '控制协议类型<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.ctrlProtocolType+'<font color=red>*</font>',
 				id : 'modbusInstanceCtrlProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -94,8 +94,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择协议类型',
-				blankText : '请选择协议类型',
+				emptyText : loginUserLanguageResource.selectProtocolType+'...',
+				blankText : loginUserLanguageResource.selectProtocolType+'...',
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusSMSInstanceCtrlProtocolType_Id").setValue(this.value);

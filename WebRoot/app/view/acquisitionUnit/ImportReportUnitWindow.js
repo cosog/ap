@@ -12,7 +12,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
     id: 'ImportReportUnitWindow_Id',
     alias: 'widget.ImportReportUnitWindow',
     layout: 'fit',
-    title: '报表单元导入',
+    title: loginUserLanguageResource.importData,
     border: false,
     hidden: false,
     collapsible: true,
@@ -517,7 +517,7 @@ iconImportSingleReportUnitAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedReportUnit(\""+unitName+"\")>保存...</a>";
+		"onclick=saveSingelImportedReportUnit(\""+unitName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
@@ -829,9 +829,9 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 			Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
-				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井班报表内容');
+				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceHourlyReportContent);
 			}else{
-				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle('单井班报表内容');
+				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContent);
 			}
 			if(importReportUnitSingleWellDailyReportContentHandsontableHelper==null || importReportUnitSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellDailyReportContentHandsontableHelper = ImportReportUnitSingleWellDailyReportContentHandsontableHelper.createNew("importReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
@@ -1234,9 +1234,9 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 			Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
-				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/单井日报表内容');
+				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceDailyReportContent);
 			}else{
-				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle('单井日报表内容');
+				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportContent);
 			}
 			if(importReportUnitSingleWellRangeReportContentHandsontableHelper==null || importReportUnitSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellRangeReportContentHandsontableHelper = ImportReportUnitSingleWellRangeReportContentHandsontableHelper.createNew("importReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
@@ -1635,9 +1635,9 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 			Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
-				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/区域日报内容');
+				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.areaDailyReportContent);
 			}else{
-				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").setTitle('区域日报内容');
+				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportContent);
 			}
 			if(importReportUnitProductionReportContentHandsontableHelper==null || importReportUnitProductionReportContentHandsontableHelper.hot==undefined){
 				importReportUnitProductionReportContentHandsontableHelper = ImportReportUnitProductionReportContentHandsontableHelper.createNew("importReportUnitProductionReportContentConfigTableInfoDiv_id");

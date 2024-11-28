@@ -117,7 +117,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传实例列表',
+            	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
@@ -139,7 +139,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
             		layout: "border",
             		items: [{
                 		region: 'center',
-                		title:'采集项',
+                		title:loginUserLanguageResource.acquisitionItem,
                 		layout: 'fit',
                 		id:'importAlarmInstanceNumItemsConfigTableInfoPanel_id',
                         html:'<div class="importAlarmInstanceNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceNumItemsConfigTableInfoDiv_id"></div></div>',
@@ -162,7 +162,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                 	},{
                 		region: 'south',
                     	height:'50%',
-                    	title:'计算项',
+                    	title:loginUserLanguageResource.calculateItem,
                     	collapsible: true,
                         split: true,
                         layout: 'fit',
@@ -561,7 +561,7 @@ iconImportSingleAlarmInstanceAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAlarmInstance(\""+instanceName+"\",\""+unitName+"\,\""+protocolName+"\")>保存...</a>";
+		"onclick=saveSingelImportedAlarmInstance(\""+instanceName+"\",\""+unitName+"\,\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
@@ -573,7 +573,7 @@ function CreateImportAlarmInstanceNumItemsConfigInfoTable(protocolName,unitName,
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/数据量报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.numericValue);
 			
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigNumItemsHandsontableHelper==null || importAlarmInstanceConfigNumItemsHandsontableHelper.hot==undefined){
@@ -586,7 +586,7 @@ function CreateImportAlarmInstanceNumItemsConfigInfoTable(protocolName,unitName,
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -725,7 +725,7 @@ function CreateImportAlarmInstanceCalNumItemsConfigInfoTable(protocolName,unitNa
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/数据量报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.numericValue);
 			
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigCalNumItemsHandsontableHelper==null || importAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
@@ -738,7 +738,7 @@ function CreateImportAlarmInstanceCalNumItemsConfigInfoTable(protocolName,unitNa
 						+"{data:'hystersis'}," 
 						+"{data:'delay'}," 
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']},"
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']},"
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -877,7 +877,7 @@ function CreateImportAlarmInstanceSwitchItemsConfigInfoTable(protocolName,unitNa
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceSwitchItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/开关量报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.switchingValue);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigSwitchItemsHandsontableHelper==null || importAlarmInstanceConfigSwitchItemsHandsontableHelper.hot==undefined){
 				importAlarmInstanceConfigSwitchItemsHandsontableHelper = ImportAlarmInstanceConfigSwitchItemsHandsontableHelper.createNew("importAlarmInstanceSwitchItemsConfigTableInfoDiv_id");
@@ -889,7 +889,7 @@ function CreateImportAlarmInstanceSwitchItemsConfigInfoTable(protocolName,unitNa
 						+"{data:'value'}," 
 						+"{data:'delay'}," 
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -1028,7 +1028,7 @@ function CreateImportAlarmInstanceEnumItemsConfigInfoTable(protocolName,unitName
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceEnumItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/枚举量报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.enumValue);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigEnumItemsHandsontableHelper==null || importAlarmInstanceConfigEnumItemsHandsontableHelper.hot==undefined){
 				importAlarmInstanceConfigEnumItemsHandsontableHelper = ImportAlarmInstanceConfigEnumItemsHandsontableHelper.createNew("importAlarmInstanceEnumItemsConfigTableInfoDiv_id");
@@ -1039,7 +1039,7 @@ function CreateImportAlarmInstanceEnumItemsConfigInfoTable(protocolName,unitName
 						+"{data:'meaning'},"
 						+"{data:'delay'}," 
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -1178,7 +1178,7 @@ function CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(protocolN
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/工况诊断报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.workType);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper==null || importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
 				importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = ImportAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.createNew("importAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id");
@@ -1186,7 +1186,7 @@ function CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(protocolN
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -1325,7 +1325,7 @@ function CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(protocolName,uni
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceRunStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/运行状态报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.runStatus);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigRunStatusItemsHandsontableHelper==null || importAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				importAlarmInstanceConfigRunStatusItemsHandsontableHelper = ImportAlarmInstanceConfigRunStatusItemsHandsontableHelper.createNew("importAlarmInstanceRunStatusItemsConfigTableInfoDiv_id");
@@ -1333,7 +1333,7 @@ function CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(protocolName,uni
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";
@@ -1472,7 +1472,7 @@ function CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(protocolName,un
 		url:context + '/acquisitionUnitManagerController/getImportAlarmInstanceItemsData',
 		success:function(response) {
 			Ext.getCmp("importAlarmInstanceCommStatusItemsTableInfoPanel_Id").getEl().unmask();
-			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/通信状态报警项");
+			Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.commStatus);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmInstanceConfigCommStatusItemsHandsontableHelper==null || importAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				importAlarmInstanceConfigCommStatusItemsHandsontableHelper = ImportAlarmInstanceConfigCommStatusItemsHandsontableHelper.createNew("importAlarmInstanceCommStatusItemsConfigTableInfoDiv_id");
@@ -1480,7 +1480,7 @@ function CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(protocolName,un
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['使能','失效']}," 
+						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
 						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
 						+"]";

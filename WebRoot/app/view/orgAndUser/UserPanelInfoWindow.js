@@ -50,16 +50,16 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
 
         var roleCombox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: '角色<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.role+'<font color=red>*</font>',
                 id: 'userType_Id1',
                 anchor: '100%',
                 value: '',
                 store: roleComboxStore,
-                emptyText: '--请选择角色--',
-                blankText: '--请选择角色--',
+                emptyText: '--'+loginUserLanguageResource.selectRole+'--',
+                blankText: '--'+loginUserLanguageResource.selectRole+'--',
                 typeAhead: true,
                 allowBlank: false,
-                blankText: cosog.string.required,
+                blankText: loginUserLanguageResource.required,
                 triggerAction: 'all',
                 displayField: "boxval",
                 valueField: "boxkey",
@@ -94,16 +94,16 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
 
         var languageCombox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: '语言<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.language+'<font color=red>*</font>',
                 id: 'userLanguage_Id1',
                 anchor: '100%',
                 value: '',
                 store: languageComboxStore,
-                emptyText: '--请选择语言--',
-                blankText: '--请选择语言--',
+                emptyText: '--'+loginUserLanguageResource.selectLanguage+'--',
+                blankText: '--'+loginUserLanguageResource.selectLanguage+'--',
                 typeAhead: true,
                 allowBlank: false,
-                blankText: cosog.string.required,
+                blankText: loginUserLanguageResource.required,
                 triggerAction: 'all',
                 displayField: "boxval",
                 valueField: "boxkey",
@@ -146,19 +146,19 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 value: '',
                 name: 'user.language'
             },{
-                    fieldLabel: cosog.string.userName + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.userName + '<font color=red>*</font>',
                     id: 'userName_Id',
                     anchor: '100%',
                     allowBlank: false,
                     name: "user.userName",
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             },{
-                    fieldLabel: cosog.string.userId + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.userAccount + '<font color=red>*</font>',
                     allowBlank: false,
                     anchor: '100%',
                     id: 'userId_Id',
                     name: "user.userId",
-                    blankText: cosog.string.required,
+                    blankText: loginUserLanguageResource.required,
                     value: '',
                     listeners: {
                         blur: function (t, e) {
@@ -175,12 +175,12 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                        Ext.Msg.alert(cosog.string.ts, "<font color='red'>【" + cosog.string.userId + ":" + value_ + "】</font>" + cosog.string.exist + "！");
+                                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【" + loginUserLanguageResource.userAccount + ":" + value_ + "】</font>" + cosog.string.exist);
                                         t.setValue("");
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -190,43 +190,43 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                     name: "user.userPwd",
                     inputType: 'password',
                     anchor: '100%',
-                    fieldLabel: cosog.string.userPwd + '<font color=red>*</font>',
-                    emptyText: cosog.string.enterpwd,
+                    fieldLabel: loginUserLanguageResource.userPassword + '<font color=red>*</font>',
+                    emptyText: loginUserLanguageResource.enterPassword,
                     labelWidth: 100,
                     allowBlank: false,
                     msgTarget: 'side',
                     tpl:'aaaa',
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             },{
                     id: "userPwdAgain_Id",
                     inputType: 'password',
-                    emptyText: cosog.string.enterNewPwdAgain,
+                    emptyText: loginUserLanguageResource.enterPasswordAgain,
                     vtype: "password", // 自定义的验证类型  
-                    vtypeText: cosog.string.enterpwdNotEqual,
+                    vtypeText: loginUserLanguageResource.enterpwdNotEqual,
                     confirmTo: "userPwd_Id",
                     anchor: '100%',
-                    fieldLabel: cosog.string.enterNewPwdAgain1 + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.enterPasswordAgain + '<font color=red>*</font>',
                     allowBlank: false,
                     labelWidth: 100,
                     msgTarget: 'side',
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             },roleCombox,{
-                    fieldLabel: '电话',
+                    fieldLabel: loginUserLanguageResource.phone,
                     id: 'userPhone_Id',
                     anchor: '100%',
                     name: "user.userPhone",
                     regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
-                    regexText: '您输入的手机号码格式不正确'
+                    regexText: loginUserLanguageResource.phoneNumberFormatError
             }, {
-                    fieldLabel: '邮箱',
+                    fieldLabel: loginUserLanguageResource.email,
                     id: 'userInEmail_Id',
                     anchor: '100%',
                     regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
-                    regexText: '您输入的邮箱格式不正确',
+                    regexText: loginUserLanguageResource.emailFormatError,
                     name: "user.userInEmail"
             },{
             	xtype: 'fieldcontainer',
-                fieldLabel : '快捷登录<font color=red>*</font>',
+                fieldLabel : loginUserLanguageResource.userQuickLogin+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -249,7 +249,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 ]
             },{
             	xtype: 'fieldcontainer',
-                fieldLabel : '接收报警短信<font color=red>*</font>',
+                fieldLabel : loginUserLanguageResource.receiveAlarmSMS+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -272,7 +272,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 ]
             },{
             	xtype: 'fieldcontainer',
-                fieldLabel : '接收报警邮件<font color=red>*</font>',
+                fieldLabel : loginUserLanguageResource.receiveAlarmMail+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -295,7 +295,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 ]
             },languageCombox,{
             	xtype: 'fieldcontainer',
-                fieldLabel : '状态<font color=red>*</font>',
+                fieldLabel : loginUserLanguageResource.status+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 id: 'userEnableRadioGroup_Id',
                 anchor: '100%',
@@ -305,13 +305,13 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 layout: 'hbox',
                 items: [
                     {
-                        boxLabel:'使能',
+                        boxLabel:loginUserLanguageResource.enable,
                         name:'user.userEnable',
                         checked:true,
                         inputValue: '1',
                         id: 'userEnableRadio1_Id'
                     }, {
-                        boxLabel:'失效',
+                        boxLabel:loginUserLanguageResource.disable,
                         name:'user.userEnable',
                         inputValue:'0',
                         id:'userEnableRadio0_Id'
@@ -321,19 +321,19 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             buttons: [{
                 id: 'addFormUser_Id',
                 xtype: 'button',
-                text: '保存',
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: SaveUserDataInfoSubmitBtnForm
             }, {
                 xtype: 'button',
                 id: 'updateFormUser_Id',
-                text: '修改',
+                text: loginUserLanguageResource.update,
                 width: 40,
                 iconCls: 'edit',
                 hidden: true,
                 handler: UpdateUserDataInfoSubmitBtnForm
             }, {
-                text: '取消',
+                text: loginUserLanguageResource.cancel,
                 width: 40,
                 iconCls: 'cancel',
                 handler: function () {

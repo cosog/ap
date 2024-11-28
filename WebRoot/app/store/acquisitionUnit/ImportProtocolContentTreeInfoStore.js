@@ -43,7 +43,7 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         clicksToEdit: 2
                     }],
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -75,36 +75,8 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'
-                    },
-//                    {
-//                    	header: '保存',
-//                    	xtype: 'actioncolumn',
-//                    	width: 40,
-//                        align: 'center',
-//                        sortable: false,
-//                        menuDisabled: true,
-//                        renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
-//                            var rn=false
-//                            if( !(record.data.classes==1 && record.data.saveSign!=2) ){
-//                            	rn= true;
-//                            }
-//                            return rn ? this.defaultRenderer(value, metaData):'';
-//                        },
-//                        items: [{
-//                            iconCls: 'save',
-//                            text: '保存',
-//                            tooltip: '保存',
-//                            handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	if( record.data.classes==1 && record.data.saveSign!=2 ){
-//                            		var protocolName=record.data.text;
-//                            		var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
-//                            		saveSingelImportedProtocol(protocolName,deviceType);
-//                            	}
-//                            }
-//                        }]
-//                    },
-                    {
-                		text: '保存', 
+                    },{
+                		text: loginUserLanguageResource.save, 
                 		dataIndex: 'action',
 //                		locked:true,
                 		align:'center',
@@ -128,7 +100,7 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateUploadedProtocolContentInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
                         		}else{
-                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
+                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(loginUserLanguageResource.acqAndCtrlItem);
                         			if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
                         				importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
                         			}

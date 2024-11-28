@@ -1070,9 +1070,9 @@ CurveVFnChartFn = function(store, divId) {
 // 后台退出函数
 function backLoginOut() {
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
-			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
-			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出后台管理系统？", function(btn) {
 		if (btn == "yes") {
 			LoadingWin("正在退出");
@@ -1103,9 +1103,9 @@ function backLoginOut() {
 
 var userLoginOut = function() {
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
-			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+			+ context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"
-			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出本系统？", function(btn) {
 		if (btn == "yes") {
 			LoadingWin("正在退出");

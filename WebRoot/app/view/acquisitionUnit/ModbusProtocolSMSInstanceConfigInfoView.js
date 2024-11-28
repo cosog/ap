@@ -28,7 +28,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '创建',
+                    text: loginUserLanguageResource.add,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -36,7 +36,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
         			}
         		},"-",{
         			xtype: 'button',
-                    text: '修改',
+                    text: loginUserLanguageResource.update,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function (v, o) {

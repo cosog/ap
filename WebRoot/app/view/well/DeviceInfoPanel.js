@@ -79,7 +79,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         try {
                             CreateAndLoadDeviceInfoTable();
                         } catch (ex) {
-                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                         }
                     }
                 }
@@ -848,7 +848,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                         source += "]";
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 

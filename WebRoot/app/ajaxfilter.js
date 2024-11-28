@@ -4,7 +4,7 @@ Ext.Ajax.on("requestexception", function(conn, response, options, eOpts) {
 	// 系统状态
 	var httpStatus = response.status;
 	var httpError = response.requestId;
-	Ext.MessageBox.msgButtons['ok'].text ="<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"+context+"/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+	Ext.MessageBox.msgButtons['ok'].text ="<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"+context+"/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	switch (httpStatus) {
 		case 400 :
 			xxErrorMsg("400", loginUserLanguageResource.ajaxError400);
@@ -49,7 +49,7 @@ Ext.Ajax.on("requestexception", function(conn, response, options, eOpts) {
 	options.failure = Ext.emptyFn;
 });
 xxErrorMsg = function(code, msg) {
-	Ext.MessageBox.msgButtons['ok'].text ="<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"+context+"/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+	Ext.MessageBox.msgButtons['ok'].text ="<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'"+context+"/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	Ext.MessageBox.show({
 				title : loginUserLanguageResource.tip,
 				msg : "<font style='color:red'>["+loginUserLanguageResource.exceptionCode+" " + code + "]</font> ，"

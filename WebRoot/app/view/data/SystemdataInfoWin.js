@@ -83,7 +83,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
-		                                        blankText: cosog.string.required
+		                                        blankText: loginUserLanguageResource.required
 		                                    }, {
 		                                    	xtype:'textfield',
 		                                    	id: "sysename_Id",
@@ -94,7 +94,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        width: 300,
 		                                        allowBlank: false,
 		                                        msgTarget: 'side',
-		                                        blankText: cosog.string.required
+		                                        blankText: loginUserLanguageResource.required
 		                                    },moduleTree,{
 		                                        xtype: "hidden",
 		                                        fieldLabel: '模块',
@@ -112,7 +112,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
-		                                        blankText: cosog.string.required
+		                                        blankText: loginUserLanguageResource.required
 		                                    },
 		                                {
 		                                    xtype: 'textfield',

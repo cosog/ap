@@ -203,7 +203,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                         source += "]";
                         columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     }else if (dataIndex.toUpperCase() === "statusName".toUpperCase()) {
-                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
+                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
                     } else if (dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
                     } else if (dataIndex.toUpperCase() === "pumpType".toUpperCase()) {

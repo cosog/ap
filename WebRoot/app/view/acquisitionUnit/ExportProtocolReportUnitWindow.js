@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportUnitWindow", {
     alias: 'widget.ExportProtocolReportUnitWindow',
     id: 'ExportProtocolReportUnitWindow_Id',
     layout: 'fit',
-    title:'报表单元导出',
+    title:loginUserLanguageResource.exportData,
     border: false,
     hidden: false,
     collapsible: true,
@@ -48,7 +48,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportUnitWindow", {
     	        		exportDataMask(key,maskPanelId,cosog.string.loading);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的报表单元");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

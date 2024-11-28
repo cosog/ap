@@ -4,7 +4,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
     id: "DataitemsInfoAddGridPanelId",
     forceFit: true,
     viewConfig: {
-        emptyText: "<div class='con_div_' id='div_ditmaddsId'><" + cosog.string.nodata + "></div>",
+        emptyText: "<div class='con_div_' id='div_ditmaddsId'><" + loginUserLanguageResource.emptyMsg + "></div>",
         forceFit: true
     },
 //    height: 260,

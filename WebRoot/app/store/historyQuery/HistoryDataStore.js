@@ -55,7 +55,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
                     store: store,
                     columns: newColumns,

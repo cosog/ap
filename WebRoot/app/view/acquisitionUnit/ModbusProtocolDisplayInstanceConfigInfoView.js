@@ -33,7 +33,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     }
         		},'->',{
         			xtype: 'button',
-                    text: '添加实例',
+                    text: loginUserLanguageResource.addAcqInstance,
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {
@@ -139,7 +139,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                 		layout: "border",
                 		items: [{
                     		region: 'center',
-                    		title:'采集项',
+                    		title:loginUserLanguageResource.acquisitionItem,
                     		id:"ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
                             layout: 'fit',
                             html:'<div class="ProtocolDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
@@ -162,7 +162,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     	},{
                     		region: 'south',
                         	height:'50%',
-                        	title:'控制项',
+                        	title:loginUserLanguageResource.controlItem,
                     		id:"ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
                             layout: 'fit',
                             collapsible: true,
@@ -196,7 +196,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                 		items: [{
                 			region: 'center',
                 			layout: 'fit',
-                			title:'录入项',
+                			title:loginUserLanguageResource.inputItem,
                     		id:"ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id",
                             html:'<div class="ProtocolDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -221,7 +221,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                         	layout: 'fit',
                             collapsible: true,
                             split: true,
-                			title:'计算项',
+                			title:loginUserLanguageResource.calculateItem,
                         	id:"ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id",
                             html:'<div class="ProtocolDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -255,12 +255,12 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 		var item1={};
 		item1.id=1;
 		item1.title=loginUserLanguageResource.rootNode;
-		item1.value='实例列表';
+		item1.value=loginUserLanguageResource.instanceList;
 		root.push(item1);
 	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
-		item1.title='实例名称';
+		item1.title=loginUserLanguageResource.instanceName;
 		item1.value=data.text;
 		root.push(item1);
 		
@@ -482,9 +482,9 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 		success:function(response) {
 			Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/采集项");
+				Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.acquisitionItem);
 			}else{
-				Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle("采集项");
+				Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItem);
 			}
 			
 			var result =  Ext.JSON.decode(response.responseText);
@@ -698,9 +698,9 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 		success:function(response) {
 			Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
+				Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.calculateItem);
 			}else{
-				Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle("计算项");
+				Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCalItemsHandsontableHelper==null || protocolDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
@@ -917,9 +917,9 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 		success:function(response) {
 			Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/录入项");
+				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.inputItem);
 			}else{
-				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
+				Ext.getCmp("ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceInputItemsHandsontableHelper==null || protocolDisplayInstanceInputItemsHandsontableHelper.hot==undefined){
@@ -1132,9 +1132,9 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 		success:function(response) {
 			Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/控制项");
+				Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.controlItem);
 			}else{
-				Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle("控制项");
+				Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCtrlItemsHandsontableHelper==null || protocolDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){

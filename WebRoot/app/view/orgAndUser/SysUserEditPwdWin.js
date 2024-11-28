@@ -9,7 +9,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
     constrain: true,
     resizable: false,
     modal: true,
-    title: cosog.string.editPwd,
+    title: loginUserLanguageResource.passwordReset,
     initComponent: function () {
         Ext.apply(Ext.form.VTypes, {
             password: function (val, field) { // val指这里的文本框值，field指这个文本框组件，大家要明白这个意思  
@@ -32,7 +32,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
             emptyText: cosog.string.enterOldPwd,
             labelWidth: 100,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
         //新密码
         var newPassword = Ext.create("Ext.form.field.Text", {
@@ -44,22 +44,22 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
             labelWidth: 100,
             allowBlank: false,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
         //再次密码
         var againPassword = Ext.create("Ext.form.field.Text", {
             id: "sysreSetPasswordWinId_again_password",
             inputType: 'password',
-            emptyText: cosog.string.enterNewPwdAgain,
+            emptyText: loginUserLanguageResource.enterPasswordAgain,
             // vtype:"loginnum_",
             vtype: "password", // 自定义的验证类型  
-            vtypeText: cosog.string.enterpwdNotEqual,
+            vtypeText: loginUserLanguageResource.enterpwdNotEqual,
             confirmTo: "sysreSetPasswordWinId_new_password",
-            fieldLabel: '<font color="red">*</font>' + cosog.string.enterNewPwdAgain1,
+            fieldLabel: '<font color="red">*</font>' + loginUserLanguageResource.enterPasswordAgain,
             allowBlank: false,
             labelWidth: 100,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
 
         //表单组件		
@@ -75,7 +75,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                     xtype: 'container',
                     height: 51,
                     width: 501,
-                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">温馨提示：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> ' + cosog.string.requiredItem + '. </td></tr></table><div  class="divider_s"></div>'
+                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">温馨提示：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> ' + loginUserLanguageResource.requiredItem + '. </td></tr></table><div  class="divider_s"></div>'
                 },
                 {
                     xtype: 'container',
@@ -107,7 +107,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
         {
             id: "saveReSetPasswordSubmitFormBtnId",
             iconCls: 'save',
-            text: cosog.string.sure,
+            text: loginUserLanguageResource.confirm,
             handler: function () {
                 var resertForm = Ext.getCmp("sysreSetPasswordWinId_form_id");
                 //var resertForm=Ext.getCmp("sysreSetPasswordWinId_new_password");
@@ -126,7 +126,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                         success: function (response, action) {
                             if (action.result.flag == false) {
                                 Ext.MessageBox.show({
-                                    title: cosog.string.ts,
+                                    title: loginUserLanguageResource.tip,
                                     msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                     icon: Ext.MessageBox.INFO,
                                     buttons: Ext.Msg.OK,
@@ -138,10 +138,10 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
 
                             } else if (action.result.flag == true && action.result.error == false) {
 
-                                Ext.Msg.alert(cosog.string.ts, "<font color=red>" + action.result.msg + "</font>");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + action.result.msg + "</font>");
                             } else if (action.result.flag == true && action.result.error == true) {
                                 Ext.MessageBox.show({
-                                    title: cosog.string.ts,
+                                    title: loginUserLanguageResource.tip,
                                     msg: "<font color=red>" + action.result.msg + "</font>",
                                     icon: Ext.MessageBox.INFO,
                                     buttons: Ext.Msg.OK,
@@ -151,11 +151,11 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                                     }
                                 });
                             } else {
-                                Ext.Msg.alert(cosog.string.ts, "<font color=red>" + action.result.msg + "。</font>");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + action.result.msg + "。</font>");
                             }
                         },
                         failure: function () {
-                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                         }
                     });
                 }

@@ -173,7 +173,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.acqUnitExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.acqUnitExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -181,7 +181,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }

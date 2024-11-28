@@ -719,7 +719,7 @@ function getAlarmLevelSetColor(){
 	            Ext.getCmp('thirdLevelOpacity_id').setValue(AlarmShowStyle.Data.ThirdLevel.Opacity);
 	        },
 	        failure: function () {
-	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+	            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
 	        }
 	    });
 }
@@ -826,14 +826,14 @@ function saveAlarmColor(){
 	        success: function (response, action) {
 	        	if (Ext.decode(response.responseText).msg) {
 	        		Ext.getCmp("AlarmColorSelectWindow_Id").close();
-	        		Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+	        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
 	        	}else {
-                   Ext.Msg.alert(cosog.string.ts,
+                   Ext.Msg.alert(loginUserLanguageResource.tip,
                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updatefail + "。");
                }
 	        },
 	        failure: function () {
-	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+	            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
 	        }
 	    });
 }

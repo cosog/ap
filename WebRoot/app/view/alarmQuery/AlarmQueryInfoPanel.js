@@ -67,7 +67,6 @@ var AlarmQuerySecondTabPanelItems=[{
         layout: 'fit'
 	}]
 },{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">数据量报警</div>',
 	title: loginUserLanguageResource.numericValueAlarm,
 	id:'NumericValueAlarmInfoTabPanel_Id',
 	layout: "border",

@@ -1059,7 +1059,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
     // 添加条件
     var saveData={};
     saveData.itemList=[];
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (!isNotVal(unitId)) {
         return false
     }
@@ -1218,7 +1218,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.saveSuccessfully);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
                 	CreateReportUnitContentConfigColInfoTable();
                 	CreateReportUnitContentConfigTable();
                 	if(reportType==0){
@@ -1230,15 +1230,15 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
                 	}
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
+                    Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }else{
-    	Ext.Msg.alert(cosog.string.ts, loginUserLanguageResource.noDataChange);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
     }
     
     return false;

@@ -37,56 +37,56 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
                     anchor: '100%',
                     name: "user.userNo"
             },{
-                    fieldLabel: cosog.string.userName,
+                    fieldLabel: loginUserLanguageResource.userName,
                     id: 'userEditPassword_UserName_Id',
                     anchor: '100%',
                     allowBlank: false,
                     editable: false,
                     name: "user.userName",
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             },{
-                    fieldLabel: cosog.string.userId,
+                    fieldLabel: loginUserLanguageResource.userAccount,
                     allowBlank: false,
                     editable: false,
                     anchor: '100%',
                     id: 'userEditPassword_UserId_Id',
                     name: "user.userId",
-                    blankText: cosog.string.required,
+                    blankText: loginUserLanguageResource.required,
                     value: ''
             }, {
                     id: "userEditPassword_UserPwd_Id",
                     name: "user.userPwd",
                     inputType: 'password',
                     anchor: '100%',
-                    fieldLabel: cosog.string.userPwd + '<font color=red>*</font>',
-                    emptyText: cosog.string.enterpwd,
+                    fieldLabel: loginUserLanguageResource.userPassword + '<font color=red>*</font>',
+                    emptyText: loginUserLanguageResource.enterPassword,
                     labelWidth: 100,
                     allowBlank: false,
                     msgTarget: 'side',
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             },{
                     id: "userEditPassword_UserPwdAgain_Id",
                     inputType: 'password',
-                    emptyText: cosog.string.enterNewPwdAgain,
+                    emptyText: loginUserLanguageResource.enterPasswordAgain,
                     vtype: "password", // 自定义的验证类型  
-                    vtypeText: cosog.string.enterpwdNotEqual,
+                    vtypeText: loginUserLanguageResource.enterpwdNotEqual,
                     confirmTo: "userEditPassword_UserPwd_Id",
                     anchor: '100%',
-                    fieldLabel: cosog.string.enterNewPwdAgain1 + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.enterPasswordAgain + '<font color=red>*</font>',
                     allowBlank: false,
                     labelWidth: 100,
                     msgTarget: 'side',
-                    blankText: cosog.string.required
+                    blankText: loginUserLanguageResource.required
             }],
             buttons: [{
                 xtype: 'button',
                 id: 'editUserPasswordBtn_Id',
-                text: '修改',
+                text: loginUserLanguageResource.update,
                 width: 40,
                 iconCls: 'edit',
                 handler: EditUserPasswordSubmitBtnForm
             }, {
-                text: '取消',
+                text: loginUserLanguageResource.cancel,
                 width: 40,
                 iconCls: 'cancel',
                 handler: function () {

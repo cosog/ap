@@ -261,7 +261,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders="['序号','类型','设备名称','厂家','规格型号','"+loginUserLanguageResource.remark+"','排序编号']";
+                var colHeaders="['序号','类型','设备名称','厂家','规格型号','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
                 var columns="[{data:'id'}," 
                 		+"{data:'specificType'}," 
                 		+"{data:'name'}," 

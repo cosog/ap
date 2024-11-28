@@ -43,7 +43,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                         clicksToEdit: 2
                     }],
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -70,7 +70,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                         hidden: true,
                         dataIndex: 'id'
                     },{
-                		text: '保存', 
+                		text: loginUserLanguageResource.save, 
                 		dataIndex: 'action',
 //                		locked:true,
                 		align:'center',

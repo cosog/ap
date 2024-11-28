@@ -39,7 +39,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 id: 'orgName_Parent_Id'
 
             },{
-                fieldLabel: cosog.string.orgName+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
                 id: 'orgName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -56,7 +56,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             	xtype: 'numberfield',
             	id: "orgSeq_Id",
             	name: "org.orgSeq",
-                fieldLabel: '排序编号',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: '',
                 anchor: '95%',

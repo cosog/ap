@@ -32,7 +32,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                     store: store,
                     scrollOffset: 0,
                     columns: [{
-                            header: '控制项',
+                            header: loginUserLanguageResource.controlItem,
                             dataIndex: 'item',
                             align: 'left',
                             flex: 6,

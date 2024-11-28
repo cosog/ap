@@ -3,7 +3,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
     alias: 'widget.dataitemsInfoEditGridPanel',
     id: "DataitemsInfoEditGridPanelId",
     viewConfig: {
-        emptyText: "<div class='con_div_' id='div_ditmaeditsId'><" + cosog.string.nodata + "></div>",
+        emptyText: "<div class='con_div_' id='div_ditmaeditsId'><" + loginUserLanguageResource.emptyMsg + "></div>",
         forceFit: true
     },
     columnLines: true,

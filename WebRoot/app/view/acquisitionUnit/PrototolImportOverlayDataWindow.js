@@ -31,7 +31,7 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                 html: '<font color=red>以下导入内容已存在，继续保存将覆盖已有记录</font>'
             },'->',{
                 xtype: 'button',
-                text: '保存',
+                text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var treeGridPanel = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id");
@@ -310,7 +310,7 @@ function CreateProtocolImportOverlayTreeTable(result){
         autoScroll: true,
         forceFit: true,
         viewConfig: {
-            emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+            emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
             forceFit: true
         },
         store: store,

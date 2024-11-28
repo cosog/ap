@@ -66,7 +66,7 @@ Ext.define('AP.store.alarmSet.MoveAlarmSetGridInfoStore', {
                     selType: 'checkboxmodel',
                     multiSelect: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     bbar: bbar,

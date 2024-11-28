@@ -422,7 +422,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【该组织下已存在设备:"+t.value+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【该组织下已存在设备:"+t.value+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -430,7 +430,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -540,7 +540,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -548,7 +548,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -583,7 +583,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【下位机IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【下位机IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -591,7 +591,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -623,7 +623,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -631,7 +631,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -649,7 +649,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 msgTarget: 'side'
             },{
             	xtype: 'fieldcontainer',
-                fieldLabel : '状态<font color=red>*</font>',
+                fieldLabel : loginUserLanguageResource.status+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 id: 'deviceStatus_Id',
                 anchor: '100%',
@@ -659,13 +659,13 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 layout: 'hbox',
                 items: [
                     {
-                        boxLabel:'使能',
+                        boxLabel:loginUserLanguageResource.enable,
                         name:'deviceInformation.status',
                         checked:true,
                         inputValue: '1',
                         id: 'deviceStatusRadio1_Id'
                     }, {
-                        boxLabel:'失效',
+                        boxLabel:loginUserLanguageResource.disable,
                         name:'deviceInformation.status',
                         inputValue:'0',
                         id:'deviceStatusRadio0_Id'
@@ -675,7 +675,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "deviceSortNum_Id",
             	name: "deviceInformation.sortNum",
-                fieldLabel: '排序编号',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',
@@ -688,7 +688,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("deviceInfoWindow_Id").down('form');
-                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                     if (winForm.getForm().isValid()) {
                         winForm.getForm().submit({
                             url: context + '/wellInformationManagerController/doDeviceAdd',
@@ -701,19 +701,19 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                 CreateAndLoadDeviceInfoTable();
                                 
                                 if (action.result.msg == true && action.result.resultCode==1) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                                 }else if (action.result.msg == true && action.result.resultCode==-66) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>设备数许可超限</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>设备数许可超限</font>");
                                 }else if (action.result.msg == false) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
                                 }
                             },
                             failure: function () {
-                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
                             }
                         });
                     } else {
-                        Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
                     }
                     return false;
                 }
@@ -725,7 +725,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 iconCls: 'edit',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("deviceInfoWindow_Id").down('form');
-                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                     if (winForm.getForm().isValid()) {
                         winForm.getForm().submit({
                             url: context + '/wellInformationManagerController/doDeviceEdit',
@@ -738,18 +738,18 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                 CreateAndLoadDeviceInfoTable();
                                 
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                                 }
                                 if (action.result.msg == false) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
                                 }
                             },
                             failure: function () {
-                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
                             }
                         });
                     } else {
-                        Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.validdata + "</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + cosog.string.validdata + "</font>");
                     }
                     return false;
                 }

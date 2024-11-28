@@ -71,7 +71,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 hidden: true
             },'->',{
                 xtype: 'button',
-                text: '确定',
+                text: loginUserLanguageResource.confirm,
                 iconCls: 'edit',
                 handler: function (v, o) {
             		var all_loading = new Ext.LoadMask({
@@ -145,7 +145,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                             	if (result.flag == false) {
                             		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                                     Ext.MessageBox.show({
-                                        title: cosog.string.ts,
+                                        title: loginUserLanguageResource.tip,
                                         msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                         icon: Ext.MessageBox.INFO,
                                         buttons: Ext.Msg.OK,
@@ -154,21 +154,21 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                                         }
                                     });
                                 } else if (result.flag == true && result.error == false) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + result.msg + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
                                 }  else if (result.flag == true && result.error == true) {
                                 	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + result.msg + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
                                 } 
                             },
                             failure: function () {
                             	all_loading.hide();
                             	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                             }
                         });
                 	}else{
                 		all_loading.hide();
-                		Ext.Msg.alert(cosog.string.ts, "<font color=red>数据格式有误，请检查！</font>");
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>数据格式有误，请检查！</font>");
                 	}
                 	
             	}

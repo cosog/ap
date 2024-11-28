@@ -112,7 +112,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
             items: [{
                 region: 'west',
                 width: '25%',
-                title: '上传实例列表',
+                title: loginUserLanguageResource.instanceList,
                 layout: 'fit',
                 split: true,
                 collapsible: true,
@@ -295,7 +295,7 @@ iconImportSingleDisplayInstanceAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+displayUnitName+"\,\""+acqUnitName+"\,\""+protocolName+"\")>保存...</a>";
+		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+displayUnitName+"\,\""+acqUnitName+"\,\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
@@ -377,9 +377,9 @@ function CreateImportDisplayInstanceAcqItemsInfoTable(protocolName,acqUnitName,d
 		success:function(response) {
 			Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/采集项");
+				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.acquisitionItem);
 			}else{
-				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle("采集项");
+				Ext.getCmp("importDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItem);
 			}
 			
 			var result =  Ext.JSON.decode(response.responseText);
@@ -568,9 +568,9 @@ function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,d
 		success:function(response) {
 			Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
+				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.calculateItem);
 			}else{
-				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle("计算项");
+				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayInstanceCalItemsHandsontableHelper==null || importDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
@@ -762,9 +762,9 @@ function CreateImportDisplayInstanceCtrlItemsInfoTable(protocolName,acqUnitName,
 		success:function(response) {
 			Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/控制项");
+				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.controlItem);
 			}else{
-				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle("控制项");
+				Ext.getCmp("importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayInstanceCtrlItemsHandsontableHelper==null || importDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){
@@ -911,9 +911,9 @@ function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName
 		success:function(response) {
 			Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
-				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/录入项");
+				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.inputItem);
 			}else{
-				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle("录入项");
+				Ext.getCmp("importDisplayInstanceInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItem);
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayInstanceInputItemsHandsontableHelper==null || importDisplayInstanceInputItemsHandsontableHelper.hot==undefined){

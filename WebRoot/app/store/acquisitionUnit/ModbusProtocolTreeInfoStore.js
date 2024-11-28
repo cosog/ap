@@ -42,7 +42,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                     autoScroll: true,
                     forceFit: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
@@ -83,19 +83,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                 					}
                 					protocolItemsMeaningConfigHandsontableHelper=null;
                 				}
-                        		Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-                        		
-//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                        			CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-//                        		}else{
-//                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-//                        			if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=undefined){
-//                        				protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-//                        			}
-//                        			if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
-//                        				protocolItemsMeaningConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-//                        			}
-//                        		}
+                        		Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(loginUserLanguageResource.acqAndCtrlItem);
                         	}else if(record.data.classes==1){
                         		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         	}
@@ -111,7 +99,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,
                                 items: [{
-                                    text: '删除'+info,
+                                    text: loginUserLanguageResource.deleteData,
                                     glyph: 0xf056,
                                     handler: function () {
 //                                        Ext.MessageBox.confirm("确认","您确定要进行删除操作吗?",

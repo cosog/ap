@@ -140,14 +140,14 @@ function savesystemdataInfoSubmit() {
                 if (action.result.msg == true) {
                     adddtbwin.close();
                     reFreshg("SystemdataInfoGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 } else {
                     Ext.Msg.msg('info', "<font color=red>" + action.result.error + "。</font> ");
                 }
 
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.adddatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.adddatException + "！");
             }
         });
 
@@ -162,7 +162,7 @@ function delSystemdataInfo() {
     	//获得被选中的对象
         var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
         if (sys_row.length>0) {
-        	Ext.Msg.confirm(cosog.string.ts, loginUserLanguageResource.confirmDeleteData,
+        	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
                     function (btn) {
                         if (btn == "yes") {
                             ExtDelspace_ObjectInfo("systemdataInfoController", "SystemdataInfoGridPanelId", sys_row, "sysdataid", "deleteSystemdataInfoById");
@@ -282,15 +282,15 @@ function savetoSysDataItems() {
                 if (action.result.msg == true) {
                     tosavedatawin.close();
                     reFreshg("DataitemsInfoEditGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert('info', "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
                 }
 
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.adddatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.adddatException + "！");
             }
         });
     }
@@ -311,15 +311,15 @@ function edittoSysDatasItems() {
                 if (action.result.msg == true) {
                     edittosavedatawin.close();
                     reFreshg("DataitemsInfoEditGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font> " + loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font> " + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 editsysdataForm.getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.editdatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.editdatException + "！");
             }
         });
     }
@@ -341,14 +341,14 @@ function editsystemdataInfoUpdata() {
                 if (action.result.msg == true) {
                     edittosysobjwin.close();
                     reFreshg("SystemdataInfoGridPanelId");
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 } else {
                     Ext.Msg.alert('info', "<font color=red>" + action.result.error + "。</font> ");
                 }
             },
             failure: function () {
                 editsysobjForm.getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.editdatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.editdatException + "！");
             }
         });
     }
@@ -358,7 +358,7 @@ function editsystemdataInfoUpdata() {
 function delfindtattxtInfo() {
     var obj_row = Ext.getCmp("DataitemsInfoEditGridPanelId").getSelectionModel().getSelection();
     if (obj_row.length > 0) {
-    	Ext.Msg.confirm(cosog.string.ts, loginUserLanguageResource.confirmDeleteData,
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
                 function (btn) {
                     if (btn == "yes") {
                         //调用Grid公共方法 

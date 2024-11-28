@@ -20,7 +20,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             allowBlank: false,
             width: 350,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
         //英文名称
         var sysdata_ename = Ext.create("Ext.form.TextField", {
@@ -30,7 +30,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             allowBlank: false,
             width: 350,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
         //顺序
         var sysdata_sorts = Ext.create("Ext.form.NumberField", {
@@ -41,7 +41,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             minValue: 0,
             width: 350,
             msgTarget: 'side',
-            blankText: cosog.string.required
+            blankText: loginUserLanguageResource.required
         });
         //数据项的值
         var sysdata_datavalue = Ext.create("Ext.form.TextArea", {
@@ -74,12 +74,12 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     items: [
                         {
                             checked: true,
-                            boxLabel: cosog.string.yes,
+                            boxLabel: loginUserLanguageResource.yes,
                             inputValue: 1,
                             name: 'dataitemsInfo.status'
                           },
                         {
-                            boxLabel: cosog.string.no,
+                            boxLabel: loginUserLanguageResource.no,
                             inputValue: 0,
                             name: 'dataitemsInfo.status'
                           }
@@ -110,7 +110,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     buttons: [
         {
             id: "oktosysfordataFormBtnId",
-            text: cosog.string.sure,
+            text: loginUserLanguageResource.confirm,
             iconCls: 'save',
             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             action: 'oktosysfordataAction'

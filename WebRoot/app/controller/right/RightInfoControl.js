@@ -35,7 +35,7 @@ var addRoleInfo = function () {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + cosog.string.jgRole + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + cosog.string.jgRole + "。");
                 }
                 if (result.msg == false) {
                     Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grantFail + "。</font>");
@@ -46,12 +46,12 @@ var addRoleInfo = function () {
             failure: function () {
                 Ext.Msg
                     .alert("warn",
-                        "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                        "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
 
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + cosog.string.pleaseChooseRole + '</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + cosog.string.pleaseChooseRole + '</font>');
     }
     return false;
 }
@@ -64,11 +64,11 @@ var addModuleInfo = function () {
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     var roleCode = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
     var RightOldModuleIds_Id = Ext.getCmp("RightOldModuleIds_Id").getValue();
     if (!isNotVal(roleCode)) {
-        Ext.Msg.alert(cosog.string.ts, cosog.string.pleaseChooseRole);
+        Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.pleaseChooseRole);
         return false
     }
     if (_record.length > 0) {
@@ -112,7 +112,7 @@ var addModuleInfo = function () {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
                 }
                 if (result.msg == false) {
                     Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
@@ -121,15 +121,15 @@ var addModuleInfo = function () {
                 Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
 
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
     }
     return false;
 }
 var addActionInfo = function () {
-    Ext.Msg.alert(cosog.string.ts, '<font color=blue>请您选择需要分配的动作！</font>');
+    Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>请您选择需要分配的动作！</font>');
 }

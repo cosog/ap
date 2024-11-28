@@ -47,9 +47,9 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
         var protocolAndAlarmUnitTree=Ext.create('AP.view.well.TreePicker',{
         	id:'modbusInstanceProtocolAndAlarmUnit_Id',
         	anchor: '100%',
-        	fieldLabel: '报警单元<font color=red>*</font>',
-            emptyText: '请选择报警单元...',
-            blankText: '请选择报警单元...',
+        	fieldLabel: loginUserLanguageResource.alarmUnit+'<font color=red>*</font>',
+            emptyText: loginUserLanguageResource.selectAlarmUnit+'...',
+            blankText: loginUserLanguageResource.selectAlarmUnit+'...',
             displayField: 'text',
             autoScroll:true,
             forceSelection : true,// 只能选择下拉框里面的内容
@@ -62,7 +62,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                 },
             	select: function (picker,record,eOpts) {
                 	if(record.data.classes==1){
-                		Ext.Msg.alert('info', "<font color=red>当前选中为协议，请选择报警单元！</font>");
+                		Ext.Msg.alert('info', "<font color=red>"+loginUserLanguageResource.selectAlarmUnit+"</font>");
                 	}else{
                 		Ext.getCmp("modbusInstanceAlarmUnit_Id").setValue(record.data.id);
                 	}
@@ -85,7 +85,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             },{
                 id: 'formModbusProtocolAlarmInstanceName_Id',
                 name: "protocolAlarmInstance.name",
-                fieldLabel: '实例名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -103,7 +103,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.alarmInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.alarmInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -111,7 +111,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }

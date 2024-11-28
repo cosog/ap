@@ -79,7 +79,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     }
                 },"-", {
         			xtype: 'button',
-        			text:'组织隶属迁移',
+        			text:loginUserLanguageResource.orgParentChange,
         			iconCls: 'move',
         			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
         			handler: function (v, o) {
@@ -93,13 +93,13 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		
         		region:'center',
         		id:'OrgAndUserUserInfoPanel_Id',
-        		title:'用户列表',
+        		title:loginUserLanguageResource.userList,
         		header:false,
         		layout: "fit",
         		tbar: [{
                     id: 'UserName_Id',
-                    fieldLabel: cosog.string.userName,
-                    emptyText: cosog.string.queryUserName,
+                    fieldLabel: loginUserLanguageResource.userName,
+                    emptyText: '',
                     labelWidth: 60,
                     width: 165,
                     labelAlign: 'right',
@@ -126,7 +126,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		}, "-", {
                     xtype: 'button',
                     id: 'editUserLableClassBtn_Id',
-                    text: '修改密码',
+                    text: loginUserLanguageResource.passwordReset,
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     handler: function () {
@@ -134,12 +134,12 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     }
         		},"-", {
         			xtype: 'button',
-        			text:'用户隶属迁移',
+        			text:loginUserLanguageResource.userOrgChange,
         			iconCls: 'move',
         			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.orgAndUser.UserOrgChangeWindow", {
-                            title: '用户隶属迁移'
+                            title: loginUserLanguageResource.userOrgChange
                         });
                         window.show();
                         Ext.create("AP.store.orgAndUser.UserOrgChangeUserListStore");

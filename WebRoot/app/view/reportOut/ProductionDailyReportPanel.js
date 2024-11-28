@@ -106,7 +106,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         	CreateProductionDailyReportTable();
                         	CreateProductionDailyReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                         }
                     }
                 }
@@ -128,7 +128,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         	CreateProductionDailyReportTable();
                         	CreateProductionDailyReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                         }
                     }
                 }

@@ -108,7 +108,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传实例列表',
+            	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
@@ -153,7 +153,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'单井班报表内容',
+                            	title:loginUserLanguageResource.deviceHourlyReportContent,
                             	border: false,
                             	collapsible: true,
                                 split: true,
@@ -192,7 +192,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                         	},{
                         		region: 'south',
                             	height:'50%',
-                            	title:'单井日报表内容',
+                            	title:loginUserLanguageResource.deviceDailyReportContent,
                             	border: false,
                             	collapsible: true,
                                 split: true,
@@ -245,7 +245,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                     	},{
                     		region: 'south',
                         	height:'50%',
-                        	title:'区域日报内容',
+                        	title:loginUserLanguageResource.areaDailyReportContent,
                         	border: false,
                         	collapsible: true,
                             split: true,
@@ -423,7 +423,7 @@ iconImportSingleReportInstanceAction = function(value, e, record) {
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedReportInstance(\""+instanceName+"\",\""+unitName+"\")>保存...</a>";
+		"onclick=saveSingelImportedReportInstance(\""+instanceName+"\",\""+unitName+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

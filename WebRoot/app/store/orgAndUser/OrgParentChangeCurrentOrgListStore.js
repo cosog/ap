@@ -41,12 +41,12 @@ Ext.define('AP.store.orgAndUser.OrgParentChangeCurrentOrgListStore', {
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,
                     columns: [{
-                        header: '单位名称',
+                        header: loginUserLanguageResource.orgName,
                         xtype: 'treecolumn',
                         dataIndex: 'text'
                     }]

@@ -43,7 +43,7 @@ Ext.define('AP.store.alarmSet.AlarmSetSingleWellListStore', {
                     forceFit: true,
                     multiSelect: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
                     },
                     store: store,

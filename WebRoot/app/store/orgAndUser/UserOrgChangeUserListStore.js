@@ -31,7 +31,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                     forceFit: false,
                     selType: 'checkboxmodel',
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
                     store: store,
                     columns: [{
@@ -43,7 +43,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                         sortable: false,
                         locked: false
                     }, {
-                        text: '用户名称',
+                        text: loginUserLanguageResource.userName,
                         lockable: true,
                         align: 'center',
                         flex: 5,
@@ -60,7 +60,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                          	}
                         }
                     }, {
-                        text: '用户账号',
+                        text: loginUserLanguageResource.userAccount,
                         lockable: true,
                         align: 'center',
                         flex: 5,

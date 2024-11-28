@@ -49,7 +49,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
         
         var reportUnitComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '报表单元<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.reportUnit+'<font color=red>*</font>',
 					id : 'modbusProtocolReportInstanceTemplateComb_Id',
 					anchor : '100%',
 					store: reportUnitStore,
@@ -61,6 +61,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
 					editable : false,
 					displayField : "boxval",
 					valueField : "boxkey",
+					emptyText: loginUserLanguageResource.selectReportUnit+'...',
+		            blankText: loginUserLanguageResource.selectReportUnit+'...',
 					listeners : {
 						expand: function (sm, selections) {
 							reportUnitComb.getStore().load();
@@ -84,7 +86,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
             },{
                 id: 'formModbusProtocolReportInstanceName_Id',
                 name: "protocolReportInstance.name",
-                fieldLabel: '实例名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -102,7 +104,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.reportInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.reportInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -110,7 +112,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }

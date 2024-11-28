@@ -36,7 +36,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     forceFit: false,
                     selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
                     multiSelect: true,
-                    emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
+                    emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                     store: store,
                     columns: newColumns,
                     listeners: {

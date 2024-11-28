@@ -1182,7 +1182,7 @@ function controlBtnHandler(btn,btnIndex){
                         var data = Ext.decode(response.responseText);
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
-                                title: cosog.string.ts,
+                                title: loginUserLanguageResource.tip,
                                 msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
@@ -1191,14 +1191,14 @@ function controlBtnHandler(btn,btnIndex){
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         }
                     },
                     failure: function () {
                         all_loading.hide();
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                     }
                 });
             }else if(btnIndex==1){
@@ -1221,7 +1221,7 @@ function controlBtnHandler(btn,btnIndex){
                         var data = Ext.decode(response.responseText);
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
-                                title: cosog.string.ts,
+                                title: loginUserLanguageResource.tip,
                                 msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
@@ -1230,14 +1230,14 @@ function controlBtnHandler(btn,btnIndex){
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         }
                     },
                     failure: function () {
                         all_loading.hide();
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                     }
                 });
             }else if(btnIndex==1){
@@ -1256,7 +1256,7 @@ function controlBtnHandler(btn,btnIndex){
                         var data = Ext.decode(response.responseText);
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
-                                title: cosog.string.ts,
+                                title: loginUserLanguageResource.tip,
                                 msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
@@ -1265,14 +1265,14 @@ function controlBtnHandler(btn,btnIndex){
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         }
                     },
                     failure: function () {
                         all_loading.hide();
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                     }
                 });
             }
@@ -1293,7 +1293,7 @@ function controlBtnHandler(btn,btnIndex){
                         var data = Ext.decode(response.responseText);
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
-                                title: cosog.string.ts,
+                                title: loginUserLanguageResource.tip,
                                 msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
@@ -1302,14 +1302,14 @@ function controlBtnHandler(btn,btnIndex){
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         }
                     },
                     failure: function () {
                         all_loading.hide();
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                     }
                 });
             }else if(btnIndex==1){
@@ -1328,7 +1328,7 @@ function controlBtnHandler(btn,btnIndex){
                         var data = Ext.decode(response.responseText);
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
-                                title: cosog.string.ts,
+                                title: loginUserLanguageResource.tip,
                                 msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
@@ -1337,14 +1337,14 @@ function controlBtnHandler(btn,btnIndex){
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(cosog.string.ts, "<font color=red>" + data.msg + "</font>");
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                         }
                     },
                     failure: function () {
                         all_loading.hide();
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
                     }
                 });
             }
@@ -1356,8 +1356,8 @@ function controlBtnHandler(btn,btnIndex){
                 } else {
                     operaName = "是否执行" + text + item.split("(")[0] + "操作";
                 }
-                Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-                Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+                Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
+                Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 
                 var win_Obj = Ext.getCmp("DeviceControlCheckPassWindow_Id")
                 if (win_Obj != undefined) {

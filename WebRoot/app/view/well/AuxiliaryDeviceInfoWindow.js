@@ -48,7 +48,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -56,7 +56,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -96,7 +96,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -104,7 +104,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -138,7 +138,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.deviceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -146,7 +146,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
                                 }
                             });
                         }
@@ -163,7 +163,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "auxiliaryDeviceSort_Id",
             	name: "auxiliaryDeviceInformation.sort",
-                fieldLabel: '排序编号',
+                fieldLabel: loginUserLanguageResource.sortNum,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',
@@ -176,7 +176,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                 iconCls: 'save',
                 handler: function (v, o) {
                     var winForm = Ext.getCmp("AuxiliaryDeviceInfoWindow_Id").down('form');
-                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+                    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                     if (winForm.getForm().isValid()) {
                         winForm.getForm().submit({
                             url: context + '/wellInformationManagerController/doAuxiliaryDeviceAdd',
@@ -188,19 +188,19 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                 Ext.getCmp('AuxiliaryDeviceInfoWindow_Id').close();
                                 CreateAndLoadAuxiliaryDeviceInfoTable();
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                                 }
                                 if (action.result.msg == false) {
-                                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
 
                                 }
                             },
                             failure: function () {
-                                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
                             }
                         });
                     } else {
-                    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.required+"</font>");
                     }
                     return false;
                 }

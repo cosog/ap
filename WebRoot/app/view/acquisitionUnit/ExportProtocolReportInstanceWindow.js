@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportInstanceWindow", {
     alias: 'widget.ExportProtocolReportInstanceWindow',
     id: 'ExportProtocolReportInstanceWindow_Id',
     layout: 'fit',
-    title:'报警单元导出',
+    title:loginUserLanguageResource.exportData,
     border: false,
     hidden: false,
     collapsible: true,
@@ -48,7 +48,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportInstanceWindow", {
     	        		exportDataMask(key,maskPanelId,cosog.string.loading);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的报警单元");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

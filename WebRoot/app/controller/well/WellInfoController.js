@@ -28,7 +28,7 @@ Ext.define('AP.controller.well.WellInfoController', {
 // 窗体创建按钮事件
 var SavewellInfoSubmitBtnForm = function () {
     var SavewellInfoWindow = Ext.getCmp("wellInfo_addwin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (SavewellInfoWindow.getForm().isValid()) {
         SavewellInfoWindow.getForm().submit({
             url: context + '/wellInformationManagerController/doWellInformationAdd',
@@ -40,23 +40,23 @@ var SavewellInfoSubmitBtnForm = function () {
                 Ext.getCmp('wellInfo_addwin_Id').close();
                 Ext.getCmp("wellPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.success, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                     if(mapHelperWell!=null){
     					mapHelperWell.clearOverlays();
     					SaveBackMapData(mapHelperWell,"well",m_BackDefaultZoomLevel);
     				}
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.success, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
             failure: function () {
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.success, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+        Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -65,7 +65,7 @@ var SavewellInfoSubmitBtnForm = function () {
 // 窗体上的修改按钮事件
 function UpdatewellInfoSubmitBtnForm() {
     var getUpdateDataSubmitBtnFormId = Ext.getCmp("wellInfo_addwin_Id").down('form');
-    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
     if (getUpdateDataSubmitBtnFormId.getForm().isValid()) {
         Ext.getCmp("wellInfo_addwin_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
         getUpdateDataSubmitBtnFormId.getForm().submit({
@@ -78,20 +78,20 @@ function UpdatewellInfoSubmitBtnForm() {
                 Ext.getCmp("wellPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.success, "【<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>】，" + cosog.string.dataInfo + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                     if(mapHelperWell!=null){
     					mapHelperWell.clearOverlays();
     					SaveBackMapData(mapHelperWell,"well",m_BackDefaultZoomLevel);
     				}
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(cosog.string.success,
+                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
             },
             failure: function () {
                 Ext.getCmp("wellInfo_addwin_Id").getEl().unmask();
-                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }
@@ -117,21 +117,6 @@ function addwellInfo() {
     // del to action
 function delectwellInfo() {
     var wellPanel_panel = Ext.getCmp("wellPanel_Id");
-//    var wellPanel_model = wellPanel_panel.getSelectionModel();
-//    var _record = wellPanel_model.getSelection();
-//    var delUrl = context + '/wellInformationManagerController/doWellInformationBulkDelete'
-//    if (_record.length>0) {
-//        // 提示是否删除数据
-//        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-//        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-//        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
-//            if (btn == "yes") {
-//                ExtDel_ObjectInfo("wellPanel_Id", _record, "jlbh",delUrl); // 第一个参数为面板的Id，选择的记录对象，当前删除对象的Id名称，url
-//            }
-//        });
-//    } else {
-//        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
-//    }
 }
 
 function modifywellInfo() {

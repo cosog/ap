@@ -49,7 +49,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },
                     store: store,
                     columns: [{
-                        header: '序号',
+                        header: loginUserLanguageResource.idx,
                         lockable: true,
                         align: 'center',
                         sortable: true,

@@ -34,9 +34,9 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         var xltree=Ext.create('AP.view.well.TreePicker',{
         	id:'mdName_Parent_Id1',
         	anchor: '95%',
-        	fieldLabel: cosog.string.superModule+'<font color=red>*</font>',
-            emptyText: cosog.string.checkModule,
-            blankText: cosog.string.checkModule,
+        	fieldLabel: loginUserLanguageResource.superModule+'<font color=red>*</font>',
+            emptyText: '--'+loginUserLanguageResource.checkModule+'--',
+            blankText: '--'+loginUserLanguageResource.checkModule+'--',
             displayField: 'text',
             allowBlank: false,
             autoScroll:true,
@@ -82,7 +82,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         // Simple ComboBox using the data store
         var moduleTypeCombox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.moduleType+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.moduleType+'<font color=red>*</font>',
                 id: 'mdType_Id',
                 name: 'module.mdType',
                 anchor: '95%',
@@ -109,7 +109,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '模块序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'md_Id',
                 name: "module.mdId"
      }, {
@@ -119,27 +119,27 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 anchor: '95%',
                 name: 'module.mdParentid'
      }, xltree, {
-                fieldLabel: cosog.string.moduleName+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
                 id: 'mdName_Id',
                 allowBlank: false,
                 anchor: '95%',
                 name: "module.mdName"
      }, {
-                fieldLabel: cosog.string.moduleMemo,
+                fieldLabel: loginUserLanguageResource.moduleMemo,
                 id: 'mdShowname_Id',
                 value: '',
                 anchor: '95%',
                 name: "module.mdShowname"
      }, {
                 id: 'mdCode_Id',
-                fieldLabel: cosog.string.moduleCode+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.moduleCode+'<font color=red>*</font>',
                 allowBlank: false,
                 value: '',
                 anchor: '95%',
                 name: "module.mdCode"
      }, {
                 xtype: "textfield",
-                fieldLabel: cosog.string.moduleView+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.moduleView+'<font color=red>*</font>',
                 allowBlank: false,
                 id: 'mdUrl_Id',
                 anchor: '95%',
@@ -147,7 +147,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
 
      }, {
                 xtype: "textfield",
-                fieldLabel: cosog.string.moduleControlller+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.moduleControlller+'<font color=red>*</font>',
                 allowBlank: false,
                 anchor: '95%',
                 id: 'mdControl_Id',
@@ -155,13 +155,13 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
 
      }, {
                 xtype: "textfield",
-                fieldLabel: cosog.string.moduleIcon,
+                fieldLabel: loginUserLanguageResource.moduleIcon,
                 anchor: '95%',
                 id: 'mdIcon_Id',
                 name: "module.mdIcon"
 
      }, moduleTypeCombox, {
-                fieldLabel: cosog.string.moduleOrder,
+                fieldLabel: loginUserLanguageResource.moduleSort,
                 id: 'mdSeq_Id',
                 anchor: '95%',
                 xtype: 'numberfield',

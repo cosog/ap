@@ -37,10 +37,9 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                     moduleStore.load();
                 }
             }, {
-                fieldLabel: cosog.string.moduleName,
+                fieldLabel: loginUserLanguageResource.moduleName,
                 id: 'module_name_Id',
                 name: 'module_name',
-                emptyText: cosog.string.queryModule,
                 labelWidth: 60,
                 labelAlign: 'right',
                 width: 165,

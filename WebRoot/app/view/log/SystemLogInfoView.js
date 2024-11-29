@@ -501,7 +501,7 @@ function exportSystemLogExcel(orgId,startDate,endDate,selectUserId,operationType
     var columns_ = Ext.JSON.decode(columnStr);
     
     fields = "id";
-    heads = "序号";
+    heads = loginUserLanguageResource.idx;
     Ext.Array.each(columns_, function (name, index, countriesItSelf) {
         var column = columns_[index];
         if (index > 0 && !column.hidden) {

@@ -29,7 +29,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             },
             columns: [{
             	xtype: 'treecolumn',
-            	text: '模块列表',
+            	text: loginUserLanguageResource.moduleList,
             	flex: 8,
             	align: 'left',
             	dataIndex: 'text'
@@ -38,7 +38,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	hidden: true,
             	dataIndex: 'mdId'
             }, {
-                header: '浏览',
+                header: loginUserLanguageResource.viewFlag,
                 xtype: 'checkcolumn',
                 lockable: true,
                 align: 'center',
@@ -74,7 +74,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             		}
             	}
             }, {
-                header: '编辑',
+                header: loginUserLanguageResource.editFlag,
                 xtype: 'checkcolumn',
                 lockable: true,
                 align: 'center',
@@ -115,7 +115,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             	    }
             	}
             }, {
-                header: '控制',
+                header: loginUserLanguageResource.controlFlag,
                 xtype: 'checkcolumn',
                 lockable: true,
                 align: 'center',

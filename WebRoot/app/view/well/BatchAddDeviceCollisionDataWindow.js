@@ -5,7 +5,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
     id:'BatchAddDeviceCollisionDataWindow_Id',
     alias: 'widget.batchAddDeviceCollisionDataWindow',
     layout: 'fit',
-    title:'设备批量添加-冲突数据',
+    title:loginUserLanguageResource.dataCollision,
     border: false,
     hidden: false,
     collapsible: true,
@@ -166,7 +166,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
             	region: 'north',
             	height: '50%',
             	id:'BatchAddDeviceCollisionDataPanel_Id',
-            	title: '冲突数据(<font color=red>冲突数据无法保存，请排查冲突内容</font>)',
+            	title: loginUserLanguageResource.dataCollision,
             	html: '<div id="BatchAddDeviceCollisionDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {

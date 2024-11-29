@@ -444,7 +444,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 	
 	if(protocolAlarmInstancePropertiesHandsontableHelper==null || protocolAlarmInstancePropertiesHandsontableHelper.hot==undefined){
 		protocolAlarmInstancePropertiesHandsontableHelper = ProtocolAlarmInstancePropertiesHandsontableHelper.createNew("ProtocolAlarmInstancePropertiesTableInfoDiv_id");
-		var colHeaders="['序号','名称','变量']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolAlarmInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolAlarmInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -600,7 +600,7 @@ function CreateProtocolAlarmInstanceNumItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigNumItemsHandsontableHelper==null || protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigNumItemsHandsontableHelper = ProtocolAlarmInstanceConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 						+"{data:'upperLimit'},"
@@ -779,7 +779,7 @@ function CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(id,name,classes,d
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper==null || protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigCalNumItemsHandsontableHelper = ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceCalNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'unit'},"
 						+"{data:'upperLimit'},"
@@ -958,7 +958,7 @@ function CreateProtocolAlarmInstanceSwitchItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper==null || protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigSwitchItemsHandsontableHelper = ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceSwitchItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','地址','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 						+"{data:'bitIndex'},"
@@ -1137,7 +1137,7 @@ function CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(id,name,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper==null || protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigEnumItemsHandsontableHelper = ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','值','含义','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','地址','值','含义','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr'},"
 					 	+"{data:'value'}," 
@@ -1315,7 +1315,7 @@ function CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(id,name
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper==null || protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 
@@ -1489,7 +1489,7 @@ function CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(id,name,classe
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceRunStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 
@@ -1664,7 +1664,7 @@ function CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(id,name,class
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper==null || protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmInstanceCommStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime'}," 

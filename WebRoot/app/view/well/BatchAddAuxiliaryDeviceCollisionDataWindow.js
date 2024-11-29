@@ -4,7 +4,7 @@ Ext.define("AP.view.well.BatchAddAuxiliaryDeviceCollisionDataWindow", {
     id:'BatchAddAuxiliaryDeviceCollisionDataWindow_Id',
     alias: 'widget.batchAddAuxiliaryDeviceCollisionDataWindow',
     layout: 'fit',
-    title:'辅件设备批量添加-冲突数据',
+    title:loginUserLanguageResource.dataCollision,
     border: false,
     hidden: false,
     collapsible: true,

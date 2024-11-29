@@ -2,7 +2,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.deviceOrgChangeWindow',
     layout: 'fit',
-    title:'设备隶属迁移',
+    title:loginUserLanguageResource.deviceOrgChange,
     border: false,
     hidden: false,
     collapsible: true,

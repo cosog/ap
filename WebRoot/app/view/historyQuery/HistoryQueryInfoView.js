@@ -326,7 +326,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
     }
     fields="id"+(isNotVal(lockedfields)?(","+lockedfields):"")+(isNotVal(unlockedfields)?(","+unlockedfields):"");
-    heads="序号"+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
+    heads=loginUserLanguageResource.idx+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
     
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
@@ -379,7 +379,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
     }
     fields="id"+(isNotVal(lockedfields)?(","+lockedfields):"")+(isNotVal(unlockedfields)?(","+unlockedfields):"");
-    heads="序号"+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
+    heads=loginUserLanguageResource.idx+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
     fields="";
     heads="";
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
@@ -434,7 +434,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
     }
     fields="id"+(isNotVal(lockedfields)?(","+lockedfields):"")+(isNotVal(unlockedfields)?(","+unlockedfields):"");
-    heads="序号"+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
+    heads=loginUserLanguageResource.idx+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
     fields="";
     heads="";
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 

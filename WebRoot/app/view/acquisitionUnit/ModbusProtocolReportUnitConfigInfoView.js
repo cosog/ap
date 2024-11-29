@@ -1051,7 +1051,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable() {
             }
             if (singleWellRangeReportTemplateContentHandsontableHelper == null || singleWellRangeReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx, '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [
                     {
                         data: 'id'
@@ -1279,7 +1279,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable() {
             }
             if (singleWellDailyReportTemplateContentHandsontableHelper == null || singleWellDailyReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号', '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx, '表头', '字段', '单位', '数据来源', '统计方式', '显示级别', '小数位数', loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [{
                         data: 'id'
                     },
@@ -1489,7 +1489,7 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
 
     if (reportUnitPropertiesHandsontableHelper == null || reportUnitPropertiesHandsontableHelper.hot == undefined) {
         reportUnitPropertiesHandsontableHelper = ReportUnitPropertiesHandsontableHelper.createNew("ModbusProtocolReportUnitPropertiesTableInfoDiv_id");
-        var colHeaders = "['序号','名称','变量']";
+        var colHeaders = "['"+loginUserLanguageResource.idx+"','名称','变量']";
         var columns = "[{data:'id'},{data:'title'},{data:'value'}]";
         reportUnitPropertiesHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
         reportUnitPropertiesHandsontableHelper.columns = Ext.JSON.decode(columns);
@@ -1919,7 +1919,7 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
             }
             if (productionReportTemplateContentHandsontableHelper == null || productionReportTemplateContentHandsontableHelper.hot == undefined) {
                 productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-                var colHeaders = ['序号','表头','字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型', loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx,'表头','字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型', loginUserLanguageResource.config];
                 var columns = [
                     {data:'id'},
                     {data:'headerName'},

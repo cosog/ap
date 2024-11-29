@@ -4,7 +4,7 @@ Ext.define("AP.view.well.BatchAddPumpingModelCollisionDataWindow", {
     id:'BatchAddPumpingModelCollisionDataWindow_Id',
     alias: 'widget.batchAddPumpingModelCollisionDataWindow',
     layout: 'fit',
-    title:'辅件设备批量添加-冲突数据',
+    title:loginUserLanguageResource.dataCollision,
     border: false,
     hidden: false,
     collapsible: true,

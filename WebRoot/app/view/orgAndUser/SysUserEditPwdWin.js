@@ -75,7 +75,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                     xtype: 'container',
                     height: 51,
                     width: 501,
-                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">温馨提示：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> ' + loginUserLanguageResource.requiredItem + '. </td></tr></table><div  class="divider_s"></div>'
+                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">'+loginUserLanguageResource.tip+'：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> ' + loginUserLanguageResource.requiredItem + '. </td></tr></table><div  class="divider_s"></div>'
                 },
                 {
                     xtype: 'container',

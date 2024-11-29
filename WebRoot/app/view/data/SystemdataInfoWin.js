@@ -35,9 +35,9 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
         	id:'systemdataModule_Id1',
         	labelWidth: 70,
             width: 300,
-        	fieldLabel: '隶属模块<font color=red>*</font>',
-            emptyText: cosog.string.checkModule,
-            blankText: cosog.string.checkModule,
+        	fieldLabel: loginUserLanguageResource.dictionaryBelongTo+'<font color=red>*</font>',
+            emptyText: '--'+loginUserLanguageResource.checkModule+'--',
+            blankText: '--'+loginUserLanguageResource.checkModule+'--',
             displayField: 'text',
             allowBlank: false,
             autoScroll:true,
@@ -47,7 +47,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
             listeners: {
                 select: function (picker,record,eOpts) {
                 	if(!record.isLeaf()){
-                		Ext.Msg.alert('info', "<font color=red>请选择叶子节点模块！</font>");
+                		Ext.Msg.alert('info', "<font color=red>"+loginUserLanguageResource.selectLeafNode+"</font>");
                 		Ext.getCmp("systemdataModule_Id1").setValue(null);
                 		Ext.getCmp("sysmodule_Id").setValue(null);
                 	}else{
@@ -71,14 +71,14 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                    bodyStyle: "padding:10px;",
 		                    items: [{
 		                            xtype: 'fieldset',
-		                            title: cosog.string.msg,
+		                            title: loginUserLanguageResource.message,
 		                            style: "padding:10px;",
 		                            collapsed: false,
 		                            items: [{
 		                                    	xtype:'textfield',
 		                                    	id: "syscname_Id",
 		                                        name: 'systemdataInfo.cname',
-		                                        fieldLabel: '字典名称<font color=red>*</font>',
+		                                        fieldLabel: loginUserLanguageResource.dataModuleName+'<font color=red>*</font>',
 		                                        allowBlank: false,
 		                                        labelWidth: 70,
 		                                        width: 300,
@@ -88,7 +88,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                    	xtype:'textfield',
 		                                    	id: "sysename_Id",
 		                                        name: 'systemdataInfo.ename',
-		                                        fieldLabel: '字典代码<font color=red>*</font>',
+		                                        fieldLabel: loginUserLanguageResource.dataModuleCode+'<font color=red>*</font>',
 		                                        vtype: "alpha",
 		                                        labelWidth: 70,
 		                                        width: 300,
@@ -106,7 +106,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                    	xtype:'numberfield',
 		                                    	id: "syssorts_Id",
 		                                        name: 'systemdataInfo.sorts',
-		                                        fieldLabel: cosog.string.dataSorts+'<font color=red>*</font>',
+		                                        fieldLabel: loginUserLanguageResource.displayOrder+'<font color=red>*</font>',
 		                                        allowBlank: false,
 		                                        minValue: 0,
 		                                        labelWidth: 70,
@@ -148,12 +148,12 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 			],
 		    buttons: [{
             	id: "systaddtodataitemsBtnId",
-            	text: cosog.string.dataShowParams,
+            	text: loginUserLanguageResource.addParameter,
             	action: 'zpsystemdataitemsSubmitForm',
             	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             	handler: function () {
             		var datiswin = Ext.create("AP.view.data.DataitemsInfoWin", {
-            			title: cosog.string.dataValue
+            			title: loginUserLanguageResource.addDataItem
             		});
             		datiswin.show();
             		return false;

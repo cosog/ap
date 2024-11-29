@@ -34,7 +34,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                     },
                     store: store,
                     columns: [{
-                        text: '序号',
+                        text: loginUserLanguageResource.idx,
                         lockable: true,
                         align: 'center',
                         width: 50,

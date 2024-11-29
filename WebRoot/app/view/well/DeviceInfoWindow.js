@@ -52,9 +52,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceTypeComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  loginUserLanguageResource.deviceType,
-					emptyText : '请选择设备类型',
-					blankText : '请选择设备类型',
+					fieldLabel :  loginUserLanguageResource.deviceType+'<font color=red>*</font>',
+					emptyText : loginUserLanguageResource.selectDeviceType,
+					blankText : loginUserLanguageResource.selectDeviceType,
 					id : 'deviceTypeComb_Id',
 					anchor : '95%',
 					store: deviceTypeStore,
@@ -114,9 +114,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var applicationScenariosComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '应用场景',
-					emptyText : '请选择应用场景',
-					blankText : '请选择应用场景',
+					fieldLabel :  loginUserLanguageResource.applicationScenarios,
+					emptyText : loginUserLanguageResource.selectApplicationScenarios,
+					blankText : loginUserLanguageResource.selectApplicationScenarios,
 					id : 'deviceApplicationScenariosComb_Id',
 					anchor : '95%',
 					store: applicationScenariosStore,
@@ -174,8 +174,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceAcqInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.acqInstance,
-					emptyText : '请选择采控实例',
-					blankText : '请选择采控实例',
+					emptyText : loginUserLanguageResource.selectAcqInstance,
+					blankText : loginUserLanguageResource.selectAcqInstance,
 					id : 'deviceAcqInstanceComb_Id',
 					anchor : '95%',
 					store: acqInstanceStore,
@@ -234,8 +234,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceDisplayInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.displayInstance,
-					emptyText : '请选择显示实例',
-					blankText : '请选择显示实例',
+					emptyText : loginUserLanguageResource.selectdisplayInstance,
+					blankText : loginUserLanguageResource.selectdisplayInstance,
 					id : 'deviceDisplayInstanceComb_Id',
 					anchor : '95%',
 					store: displayInstanceStore,
@@ -294,8 +294,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceReportInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.reportInstance,
-					emptyText : '请选择报表实例',
-					blankText : '请选择报表实例',
+					emptyText : loginUserLanguageResource.selectReportInstance,
+					blankText : loginUserLanguageResource.selectReportInstance,
 					id : 'deviceReportInstanceComb_Id',
 					anchor : '95%',
 					store: reportInstanceStore,
@@ -354,8 +354,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceAlarmInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.alarmInstance,
-					emptyText : '请选择报警实例',
-					blankText : '请选择报警实例',
+					emptyText : loginUserLanguageResource.selectAlarmInstance,
+					blankText : loginUserLanguageResource.selectAlarmInstance,
 					id : 'deviceAlarmInstanceComb_Id',
 					anchor : '95%',
 					store: alarmInstanceStore,
@@ -400,7 +400,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 value: '',
                 name: "deviceInformation.orgId"
             },{
-                fieldLabel: '设备名<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.deviceName+'<font color=red>*</font>',
                 id: 'deviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -446,7 +446,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
          		value: getDeviceTypeFromTabId("DeviceManagerTabPanel")
             },applicationScenariosComb,{
             	xtype: "hidden",
-                fieldLabel: '应用场景',
+                fieldLabel: loginUserLanguageResource.applicationScenarios,
                 id: 'deviceApplicationScenarios_Id',
                 value: '',
                 name: "deviceInformation.applicationScenarios"
@@ -476,7 +476,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 name: "deviceInformation.alarmInstanceCode"
             }, {
             	xtype : "combobox",
-				fieldLabel : '下位机TCP类型',
+				fieldLabel : loginUserLanguageResource.deviceTcpType,
 				id : 'deviceTcpTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
@@ -493,8 +493,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择下位机TCP类型',
-				blankText : '请选择下位机TCP类型',
+				emptyText : loginUserLanguageResource.selectDeviceTcpType,
+				blankText : loginUserLanguageResource.selectDeviceTcpType,
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("deviceTcpType_Id").setValue(this.value);
@@ -509,13 +509,13 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 				}
             },{
                 xtype: "hidden",
-                fieldLabel: '下位机TCP类型值',
+                fieldLabel: loginUserLanguageResource.deviceTcpType,
                 id: 'deviceTcpType_Id',
                 value: '',
                 name: "deviceInformation.tcpType"
             },{
                 xtype: "textfield",
-                fieldLabel: '注册包ID',
+                fieldLabel: loginUserLanguageResource.signInId,
                 allowBlank: true,
                 id: 'deviceSignInId_Id',
                 anchor: '95%',
@@ -540,7 +540,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo1+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -556,7 +556,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 }
             },{
                 xtype: "textfield",
-                fieldLabel: '下位机IP端口',
+                fieldLabel: loginUserLanguageResource.ipPort,
                 allowBlank: true,
                 hidden: !IoTConfig,
                 id: 'deviceIpPort_Id',
@@ -583,7 +583,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【下位机IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo2+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -599,7 +599,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 }
             }, {
          		xtype: "textfield",
-         		fieldLabel: '设备从地址',
+         		fieldLabel: loginUserLanguageResource.slave,
          		id: 'deviceSlave_Id',
          		anchor: '95%',
          		name: "deviceInformation.slave",
@@ -623,7 +623,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo1+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -641,7 +641,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "devicePeakDelay_Id",
             	name: "deviceInformation.peakDelay",
-                fieldLabel: '错峰延时(s)',
+                fieldLabel: loginUserLanguageResource.peakDelay+'(s)',
                 allowBlank: true,
                 hidden: !IoTConfig,
                 minValue: 0,

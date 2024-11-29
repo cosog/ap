@@ -122,7 +122,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     				store: deviceAuxiliaryInfoStore,
     			    columns: [
     			    	{ 
-    			        	header: '序号',  
+    			        	header: loginUserLanguageResource.idx,  
     			        	xtype: 'rownumberer',
     			        	align: 'center',
     			        	width: 50

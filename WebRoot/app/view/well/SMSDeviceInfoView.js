@@ -45,7 +45,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
 
         var SMSDeviceCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: '设备名称',
+                fieldLabel: loginUserLanguageResource.deviceName,
                 id: "SMSDeviceListComb_Id",
                 labelWidth: 55,
                 width: 165,
@@ -146,7 +146,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 style: 'margin-right:15px'
     		}, '->', {
                 xtype: 'button',
-                text: '添加设备',
+                text: loginUserLanguageResource.adddDevie,
                 iconCls: 'add',
                 handler: function (v, o) {
                     var selectedOrgName = "";
@@ -164,10 +164,10 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         }
                     }
                     var window = Ext.create("AP.view.well.SMSDeviceInfoWindow", {
-                        title: '添加设备'
+                        title: loginUserLanguageResource.adddDevie
                     });
                     window.show();
-                    Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>" + selectedOrgName + "</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+                    Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>" + selectedOrgName + "</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
                     Ext.getCmp("smsDeviceOrg_Id").setValue(selectedOrgId);
                     Ext.getCmp("addFormSMSDevice_Id").show();
                     Ext.getCmp("updateFormSMSDevice_Id").hide();
@@ -176,7 +176,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
             }, '-', {
                 xtype: 'button',
                 id: 'deleteSMSDeviceNameBtn_Id',
-                text: '删除设备',
+                text: loginUserLanguageResource.deleteDevice,
                 iconCls: 'delete',
                 handler: function (v, o) {
                     var startRow = Ext.getCmp("SMSDeviceSelectRow_Id").getValue();

@@ -27,7 +27,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
 //            	var newColumns = Ext.JSON.decode(column);
             	var resolutionMode=get_rawData.resolutionMode;
             	var newColumns=[{
-        		    text: '序号',
+        		    text: loginUserLanguageResource.idx,
         		    lockable: true,
         		    align: 'center',
         		    width: 50,
@@ -72,7 +72,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
             	
             	if(resolutionMode==1){
             		newColumns=[{
-                	    text: '序号',
+                	    text: loginUserLanguageResource.idx,
                 	    lockable: true,
                 	    align: 'center',
                 	    width: 50,

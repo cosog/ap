@@ -2472,8 +2472,9 @@ public class DriverAPIController extends BaseController{
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
-//								System.out.println(webSocketSendDataStr);
+								System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-采集组数据开始推送:"+deviceInfo.getDeviceName()+","+acqTime);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
+								System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-采集组数据推送完成:"+deviceInfo.getDeviceName()+","+acqTime);
 							}
 						}
 					}

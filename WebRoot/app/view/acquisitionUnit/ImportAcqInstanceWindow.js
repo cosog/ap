@@ -294,7 +294,7 @@ function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceNam
 				importAcqInstanceConfigItemsHandsontableHelper = ImportAcqInstanceConfigItemsHandsontableHelper.createNew("importedAcqInstanceItemInfoTableDiv_Id");
 				var colHeaders="[" 
 					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
-					+"['序号','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"['"+loginUserLanguageResource.idx+"','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
 					+"]";
 				
 				var columns="[{data:'id'},{data:'title'},"

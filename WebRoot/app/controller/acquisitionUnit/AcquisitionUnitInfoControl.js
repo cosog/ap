@@ -420,7 +420,7 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.Infotip, "后台获取数据失败！");
         }
     });
     return false;
@@ -460,7 +460,7 @@ showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.Infotip, "后台获取数据失败！");
         }
     });
     return false;

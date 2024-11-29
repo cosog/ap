@@ -70,11 +70,11 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 style: 'margin-right:15px'
             }, '->',{
     			xtype: 'button',
-                text: '添加设备',
+                text: loginUserLanguageResource.adddDevie,
                 iconCls: 'add',
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.AuxiliaryDeviceInfoWindow", {
-                        title: '添加设备'
+                        title: loginUserLanguageResource.adddDevie
                     });
                     window.show();
                     var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
@@ -85,7 +85,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			}
     		}, '-',{
     			xtype: 'button',
-    			text: '删除设备',
+    			text: loginUserLanguageResource.deleteDevice,
     			iconCls: 'delete',
     			handler: function (v, o) {
     				var startRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
@@ -150,12 +150,12 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 }
             },"-",{
     			xtype: 'button',
-                text: '批量添加',
+                text: loginUserLanguageResource.batchAdd,
                 iconCls: 'batchAdd',
                 hidden: false,
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.BatchAddAuxiliaryDeviceWindow", {
-                        title: '辅件设备批量添加'
+                        title: loginUserLanguageResource.batchAdd
                     });
                     window.show();
                     return false;
@@ -190,7 +190,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
             	width: '50%',
             	split: true,
             	collapsible: true,
-            	title:'详细信息',
+            	title:loginUserLanguageResource.detailedInformation,
         		id:'AuxiliaryDeviceDetailsPanel_Id',
         		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
         		tbar:onlyMonitor?null:[{
@@ -201,8 +201,8 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',
                     items: [
-                        {boxLabel: '抽油机',name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 1},
-                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: 70, inputValue: 0}
+                        {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*8, inputValue: 1},
+                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*8, inputValue: 0}
                     ],
                     listeners: {
                     	change: function (radiogroup, newValue, oldValue, eOpts) {
@@ -261,7 +261,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders="['序号','类型','设备名称','厂家','规格型号','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
+                var colHeaders="['"+loginUserLanguageResource.idx+"','类型','"+loginUserLanguageResource.deviceName+"','厂家','规格型号','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
                 var columns="[{data:'id'}," 
                 		+"{data:'specificType'}," 
                 		+"{data:'name'}," 
@@ -711,7 +711,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 		}
 		auxiliaryDeviceDetailsHandsontableHelper=null;
 	}
-	var showInfo="详细信息";
+	var showInfo=loginUserLanguageResource.detailedInformation;
 	if(isNotVal(name)){
 		showInfo="【<font color=red>"+name+"</font>】"+showInfo;
 	}
@@ -728,7 +728,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(auxiliaryDeviceDetailsHandsontableHelper==null || auxiliaryDeviceDetailsHandsontableHelper.hot==undefined){
 				auxiliaryDeviceDetailsHandsontableHelper = AuxiliaryDeviceDetailsHandsontableHelper.createNew("AuxiliaryDeviceDetailsTableDiv_id");
-				var colHeaders="['序号','名称','变量','单位']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','单位']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
 				
 				auxiliaryDeviceDetailsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);

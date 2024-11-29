@@ -26,7 +26,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         var RoleVideoKeyEditCombox = new Ext.form.ComboBox({
             id: 'roleVideoKeyEditComboxfield_Id',
             value: 0,
-            fieldLabel: '视频密钥编辑权限<font color=red>*</font>',
+            fieldLabel: loginUserLanguageResource.roleVideoKeyEdit+'<font color=red>*</font>',
             labelWidth: 110,
             typeAhead : true,
             allowBlank: false,
@@ -55,7 +55,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '角色序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'role_Id',
                 anchor: '100%',
                 name: "role.roleId"
@@ -65,7 +65,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'roleVideoKeyEdit_Id',
                 value: 0
             }, {
-                fieldLabel: cosog.string.roleName+'<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
                 labelWidth: 110,
                 allowBlank: false,
                 anchor: '100%',
@@ -97,7 +97,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	xtype: 'numberfield',
             	id: "roleLevel_Id",
                 name: 'role.roleLevel',
-                fieldLabel: '角色等级<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.roleLevel+'<font color=red>*</font>',
                 labelWidth: 110,
                 allowBlank: false,
                 minValue: 1,
@@ -108,14 +108,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	xtype: 'numberfield',
             	id: "roleShowLevel_Id",
                 name: 'role.showLevel',
-                fieldLabel: '数据显示级别<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.dataShowLevel+'<font color=red>*</font>',
                 labelWidth: 110,
                 allowBlank: false,
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
             },RoleVideoKeyEditCombox, {
-                fieldLabel: '角色描述',
+                fieldLabel: loginUserLanguageResource.roleRemark,
                 labelWidth: 110,
                 id: 'roleRemark_Id',
                 anchor: '100',
@@ -141,7 +141,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         	layout: 'border',
             items: [{
             	region: 'center',
-        		title:'角色基础信息',
+        		title:loginUserLanguageResource.roleInfo,
         		layout: 'fit',
         		layout: 'fit',
         	    iframe: true,
@@ -164,7 +164,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         		items:[{
         			region:'center',
         			layout: "fit",
-        			title:'模块授权',
+        			title:loginUserLanguageResource.moduleLicense,
             		split: true,
                     collapsible: false,
                     border: false,
@@ -183,7 +183,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     },
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '模块列表',
+                    	text: loginUserLanguageResource.moduleList,
                     	flex: 8,
                     	align: 'left',
                     	dataIndex: 'text'
@@ -192,7 +192,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                     	hidden: true,
                     	dataIndex: 'mdId'
                     }, {
-                        header: '浏览',
+                        header: loginUserLanguageResource.viewFlag,
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
@@ -223,7 +223,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                             return rn ? this.defaultRenderer(value, metaData):'';
                         }
                     }, {
-                        header: '编辑',
+                        header: loginUserLanguageResource.editFlag,
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
@@ -259,7 +259,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                             return rn ? this.defaultRenderer(value, metaData):'';
                         }
                     }, {
-                        header: '控制',
+                        header: loginUserLanguageResource.controlFlag,
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
@@ -303,7 +303,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         		},{
         			region:'south',
         			height:'30%',
-        			title:'设备类型授权',
+        			title:loginUserLanguageResource.deviceTypeLicense,
         			split: true,
                     collapsible: true,
                     border: false,

@@ -184,7 +184,7 @@ function CreateReportUnitContentConfigTable() {
 			var result =  Ext.JSON.decode(response.responseText);
 			if(reportUnitContentConfigHandsontableHelper==null || reportUnitContentConfigHandsontableHelper.hot==undefined){
 				reportUnitContentConfigHandsontableHelper = ReportUnitContentConfigHandsontableHelper.createNew("ReportUnitContentConfigDiv_Id");
-				var colHeaders=['','序号','字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
+				var colHeaders=['',loginUserLanguageResource.idx,'字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
 				var columns=[
 						{data:'checked',type:'checkbox'},
 						{data:'id'},
@@ -201,7 +201,7 @@ function CreateReportUnitContentConfigTable() {
 						{data:'remark'}
 						];
 				if(reportType==0){
-					colHeaders=['','序号','字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
+					colHeaders=['',loginUserLanguageResource.idx,'字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
@@ -218,7 +218,7 @@ function CreateReportUnitContentConfigTable() {
 							{data:'remark'}
 							];
 				}else if(reportType==1){
-					colHeaders=['','序号','字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型','','','',''];
+					colHeaders=['',loginUserLanguageResource.idx,'字段','单位','数据来源','统计方式','显示级别','小数位数','求和','求平均',loginUserLanguageResource.reportCurve,'曲线统计类型','','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
@@ -238,7 +238,7 @@ function CreateReportUnitContentConfigTable() {
 							{data:'remark'}
 							];
 				}else if(reportType==2){
-					colHeaders=['','序号','字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
+					colHeaders=['',loginUserLanguageResource.idx,'字段','单位','数据来源','统计方式','显示级别','小数位数',loginUserLanguageResource.reportCurve,'','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
@@ -785,7 +785,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(reportUnitContentConfigColInfoHandsontableHelper==null || reportUnitContentConfigColInfoHandsontableHelper.hot==undefined){
 				reportUnitContentConfigColInfoHandsontableHelper = ReportUnitContentConfigColInfoHandsontableHelper.createNew("ReportUnitContentConfigColInfoDiv_Id");
-				var colHeaders=['序号','表头','字段','单位','数据来源','统计方式','显示级别','顺序','小数位数',
+				var colHeaders=[loginUserLanguageResource.idx,'表头','字段','单位','数据来源','统计方式','显示级别','顺序','小数位数',
 					'求和','求平均',loginUserLanguageResource.reportCurve,'曲线配置','曲线统计类型','数据类型','字段代码',loginUserLanguageResource.remark,'数据是否改变'];
 				var columns=[
 						{data:'id'},

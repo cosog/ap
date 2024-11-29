@@ -72,7 +72,7 @@ function addSystemdataInfo() {
             win_Obj.destroy();
         }
         var SystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
-            title: cosog.string.addDataInfo
+            title: loginUserLanguageResource.addDictionary
         });
         SystemdataInfoWin.show();
         SystemdataInfoWin.down('form').getForm().reset();
@@ -192,7 +192,7 @@ function editSystemdataInfo() {
 	        
 	        Ext.getCmp("sys_txt_find_ids").setValue(sysdataid_id);
 	        var editSystemdataInfoWin = Ext.create("AP.view.data.SystemdataInfoWin", {
-	            title: cosog.string.editDataInfo
+	            title: loginUserLanguageResource.editDictionary
 	        });
 	        editSystemdataInfoWin.show();
 	        var sysedititems = Ext.create("AP.view.data.DataitemsInfoEditGridPanel");
@@ -222,7 +222,7 @@ function editSystemdataInfo() {
 
 function addfindtattxtInfo() {
     var adddataitemwin = Ext.create("AP.view.data.DataitemsInfoWin", {
-        title: cosog.string.addDataColumnInfo
+        title: loginUserLanguageResource.addDataItem
     });
     adddataitemwin.show();
     adddataitemwin.down('form').getForm().reset();
@@ -245,7 +245,7 @@ function editfindtattxtInfo() {
         var datavalue = sdata_row[0].data.datavalue;
 
         var editdataitemwin = Ext.create("AP.view.data.DataitemsInfoWin", {
-            title: cosog.string.editDataColumnInfo
+            title: loginUserLanguageResource.editDataItem
         });
         editdataitemwin.show();
         editdataitemwin.down('form').getForm().reset();

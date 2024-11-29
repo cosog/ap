@@ -14,14 +14,13 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
         var appEditDataItesmStore = Ext.create("AP.store.data.DataitemsInfoStore");
         var findtatimsstore = new Ext.data.SimpleStore({
             fields: ['findtatId', 'findtatName'],
-            data: [[0, cosog.string.dataColumnCode], [1, cosog.string.dataColumnName]]
+            data: [[0, loginUserLanguageResource.dataColumnCode], [1, loginUserLanguageResource.dataColumnName]]
         });
         var findtatsimp = new Ext.form.ComboBox({
             id: 'findtattxtcobmoxfield_Id',
             value: 0,
             fieldLabel: cosog.string.type,
             allowBlank: false,
-            emptyText: cosog.string.dataCheckType,
             triggerAction: 'all',
             store: findtatimsstore,
             labelWidth: 35,
@@ -32,8 +31,8 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
         
         var bbar = new Ext.PagingToolbar({
         	store: appEditDataItesmStore,
-        	displayInfo: true,
-        	displayMsg: '当前 {0}~{1}条  共 {2} 条'
+//        	displayMsg: '当前 {0}~{1}条  共 {2} 条',
+        	displayInfo: true
         });
         
         var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
@@ -47,7 +46,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                 {
                     xtype: 'textfield',
                     id: 'findtattxtnames_Id',
-                    fieldLabel: '&nbsp' + cosog.string.name,
+                    fieldLabel: '&nbsp' + loginUserLanguageResource.name,
                     labelWidth: 35,
                     width: 155,
                     listeners: {
@@ -75,7 +74,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     action: 'addfindtattxtInfoAction',
                     text: loginUserLanguageResource.add,
                     iconCls: 'add',
-                    tooltip: cosog.string.addDataValue
+                    tooltip: loginUserLanguageResource.addDataItem
                 }, '-',
                 {
                     xtype: 'button',
@@ -85,7 +84,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     action: 'editfindtattxtInfoBtnAction',
                     disabled: false,
                     iconCls: 'edit',
-                    tooltip: cosog.string.editDataValue
+                    tooltip: loginUserLanguageResource.editDataItem
                 }, '-',
                 {
                     xtype: 'button',
@@ -99,49 +98,38 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
             bbar: bbar,
             columns: [
                 {
-                    header: cosog.string.dataColumnName,
+                    header: loginUserLanguageResource.dataColumnName,
                     flex: 1,
                     dataIndex: 'cname'
                 },
                 {
-                    header: cosog.string.dataColumnCode,
+                    header: loginUserLanguageResource.dataColumnCode,
                     flex: 1,
                     dataIndex: 'ename'
                 },
                 {
-                    header: cosog.string.dataColumnParams,
+                    header: loginUserLanguageResource.dataColumnParams,
                     flex: 1,
                     dataIndex: 'datavalue'
                 },
                 {
-                    header: cosog.string.sorts,
+                    header: loginUserLanguageResource.sortNum,
                     width: 40,
                     dataIndex: 'sorts'
                 },
                 {
                     xtype: 'checkcolumn',
-                    header: cosog.string.dataColumnEnabled,
+                    header: loginUserLanguageResource.enable,
                     dataIndex: 'status',
                     width: 65,
                     editor: {
                         xtype: 'checkbox',
                         cls: 'x-grid-checkheader-editor'
                     },
-//                    disabled:true,
-//                    renderer:function(val, m, rec) {
-//                    	
-//                    	if (rec.data.ename.toUpperCase()=="ID"){
-//                    		this.disabled(true);
-//                    	}
-//                    },
                     listeners: {
                         checkchange: function (sm, e, ival, o, n) {
                             var items_ = appEditDataItesmStore.data.items;
                             if (items_.length > 0) {
-//                                if(items_[e].data.ename.toUpperCase()=="ID"&&(!ival)){
-//                                	alert("该项为必选");
-//                                }
-                            	
                             	if (ival) {
                                     ival = 1;
                                 } else {
@@ -164,7 +152,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                             }
                         }
                     }
-           }
+                }
         ]
         });
 

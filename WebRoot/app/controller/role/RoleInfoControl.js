@@ -183,7 +183,7 @@ SelectRoleDataAttrInfoGridPanel = function () {
 
 function addroleInfo() {
     var roleInfoWindow = Ext.create("AP.view.role.RoleInfoWindow", {
-        title: cosog.string.addRole
+        title: loginUserLanguageResource.addRole
     });
     roleInfoWindow.show();
     

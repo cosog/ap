@@ -4,7 +4,7 @@ Ext.define("AP.view.well.BatchAddPumpingModelWindow", {
     id:'BatchAddPumpingModelWindow_Id',
     alias: 'widget.batchAddPumpingModelWindow',
     layout: 'fit',
-    title:'辅件设备批量添加',
+    title:loginUserLanguageResource.batchAdd,
     border: false,
     hidden: false,
     collapsible: true,

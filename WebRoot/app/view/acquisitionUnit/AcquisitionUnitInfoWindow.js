@@ -79,7 +79,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formAcquisitionUnit_Id',
                 anchor: '100%',
                 name: "acquisitionUnit.id"

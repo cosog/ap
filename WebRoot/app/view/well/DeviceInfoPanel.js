@@ -159,7 +159,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 style: 'margin-right:15px'
             },'->', {
     			xtype: 'button',
-                text: '添加设备',
+                text: loginUserLanguageResource.adddDevie,
                 iconCls: 'add',
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
@@ -185,7 +185,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         title: '添加'+deviceTypeName+'设备'
                     });
                     window.show();
-                    Ext.getCmp("deviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+                    Ext.getCmp("deviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
                     
                     if(isNumber(deviceTypes)){
                     	Ext.getCmp("addDeviceType_Id").setValue(deviceTypes);
@@ -198,7 +198,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     		}, '-',{
     			xtype: 'button',
     			id: 'deleteDeviceNameBtn_Id',
-    			text: '删除设备',
+    			text: loginUserLanguageResource.deleteDevice,
     			iconCls: 'delete',
     			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
     			handler: function (v, o) {
@@ -269,7 +269,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 }
             },"-",{
     			xtype: 'button',
-                text: '批量添加',
+                text: loginUserLanguageResource.batchAdd,
                 iconCls: 'batchAdd',
                 hidden: false,
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
@@ -294,10 +294,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.BatchAddDeviceWindow", {
-//                        title: '设备批量添加'
-                        title: deviceTypeName+'设备批量添加'
+                        title: loginUserLanguageResource.batchAdd
                     });
-                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm);
+                    Ext.getCmp("batchAddDeviceWinOrgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm);
                     Ext.getCmp("batchAddDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
@@ -329,20 +328,20 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     				var window = Ext.create("AP.view.well.ExcelImportDeviceWindow", {
                         title: '设备导入'
                     });
-    				Ext.getCmp("excelImportDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm);
+    				Ext.getCmp("excelImportDeviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm);
                     Ext.getCmp("excelImportDeviceType_Id").setValue(deviceType);
                     Ext.getCmp("excelImportDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
     			}
     		},'-', {
     			xtype: 'button',
-    			text:'设备隶属迁移',
+    			text:loginUserLanguageResource.deviceOrgChange,
     			iconCls: 'move',
     			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
     			handler: function (v, o) {
     				var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
     				var window = Ext.create("AP.view.well.DeviceOrgChangeWindow", {
-                        title: '设备隶属迁移'
+                        title: loginUserLanguageResource.deviceOrgChange
                     });
                     window.show();
                     Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(deviceType);
@@ -440,12 +439,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         }
                     }
             	},{
-            		title:'视频配置',
+            		title:loginUserLanguageResource.videoConfig,
             		id:'DeviceVideoInfoPanel_Id',
                 	hidden: !showVideoConfig,
                 	tbar:['->',{
                         xtype: 'button',
-                        text: '编辑视频密钥',
+                        text: loginUserLanguageResource.editVideoKey,
                         iconCls: 'save',
                         disabled: loginUserRoleVideoKeyEdit!=1,
                         handler: function (v, o) {
@@ -471,7 +470,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         }
                     }
             	},{
-            		title:'计算数据配置',
+            		title:loginUserLanguageResource.calculateDataConfig,
             		id:'DeviceCalculateDataInfoPanel_Id',
             		layout: 'border',
             		split: true,
@@ -485,9 +484,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         id: 'DeviceCalculateDataType_Id',
                         cls: 'x-check-group-alt',
                         items: [
-                            {boxLabel: loginUserLanguageResource.RPCCalculate,name: 'deviceCalculateDataType',width: 70, inputValue: 1},
-                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: 70, inputValue: 2},
-                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: 70, inputValue: 0}
+                            {boxLabel: loginUserLanguageResource.RPCCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.RPCCalculate)*8, inputValue: 1},
+                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*8, inputValue: 2},
+                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*8, inputValue: 0}
                         ],
                         listeners: {
                         	change: function (radiogroup, newValue, oldValue, eOpts) {
@@ -524,43 +523,10 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
                           	}
                         }
-                    }
-//            		,'->',{
-//                        xtype: 'radiogroup',
-//                        fieldLabel: '应用场景',
-//                        labelWidth: 60,
-//                        id: 'DeviceApplicationScenariosType_Id',
-//                        cls: 'x-check-group-alt',
-//                        items: [
-//                            {boxLabel: '油井',name: 'deviceApplicationScenariosType',width: 50, inputValue: 1},
-//                            {boxLabel: '煤层气井',name: 'deviceApplicationScenariosType',width: 70, inputValue: 0}
-//                        ],
-//                        listeners: {
-//                        	change: function (radiogroup, newValue, oldValue, eOpts) {
-//                        		if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
-//                        			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
-//                                	var hiddenRows=[0,3,9,10];
-//                                	if(newValue.deviceApplicationScenariosType==0){
-//                                		plugin.hideRows(hiddenRows);
-//                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
-//                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
-//                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
-//                                	}else{
-//                                		plugin.showRows(hiddenRows);
-//                                		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
-//                                		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
-//                                		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
-//                                	}
-//                                	productionHandsontableHelper.hot.render();
-//                        		}
-//                        	}
-//                        }
-//                    }
-            		
-            		],
+                    }],
             		items: [{
                       	region: 'center',
-                		title:'生产数据',
+                		title:loginUserLanguageResource.productionData,
                     	id:'ProductionDataInfoPanel_Id',
                     	split: true,
                     	collapsible: false,
@@ -593,7 +559,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         	region: 'center',
                         	split: true,
                             collapsible: true,
-                        	title:'抽油机详情',
+                        	title:loginUserLanguageResource.pumpingInfo,
                         	id:'PumpingInfoPanel_Id',
                             split: true,
                             collapsible: true,
@@ -673,17 +639,17 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】附加信息&nbsp;"
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.additionalInformation+"&nbsp;"
 		}
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
 		CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】辅件设备&nbsp;"
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.auxiliaryDevice+"&nbsp;"
 		}
 	}else if(activeId=='DeviceVideoInfoPanel_Id'){
 		CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】视频配置&nbsp;"
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig+"&nbsp;"
 		}
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
@@ -695,7 +661,7 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
 		}
 		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】计算数据配置&nbsp;"
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.calculateDataConfig+"&nbsp;"
 		}
 	}
 	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
@@ -1957,22 +1923,15 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
 				
-				
-				
-				
-//				var applicationScenarios=result.applicationScenarios;
-				
-//				Ext.getCmp("DeviceApplicationScenariosType_Id").setValue({deviceApplicationScenariosType:applicationScenarios});
-				
-				var panelTitle='生产数据';
+				var panelTitle=loginUserLanguageResource.productionData;
 				if(isNotVal(deviceName)){
-					panelTitle="【<font color='red'>"+deviceName+"</font>】生产数据";
+					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
 				}
 				Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
 				if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
-					var colHeaders="['序号','名称','变量']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}" 
@@ -2023,9 +1982,9 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 	        }
 		});
 	}else{
-		var panelTitle='生产数据';
+		var panelTitle=loginUserLanguageResource.productionData;
 		if(isNotVal(deviceName)){
-			panelTitle="【<font color='red'>"+deviceName+"</font>】生产数据";
+			panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
 		}
 		Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
 	}
@@ -2094,7 +2053,7 @@ var ProductionHandsontableHelper = {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = productionHandsontableHelper.addCellStyle;
 			                }else if(visualRowIndex==39 && visualColIndex==2){
-		                    	cellProperties.readOnly = true;
+//		                    	cellProperties.readOnly = true;
 		                    	cellProperties.renderer = productionHandsontableHelper.addCellStyle;
 		                    }
 		                    
@@ -2219,9 +2178,9 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 			success:function(response) {
 				Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
-				var panelTitle='抽油机详情';
+				var panelTitle=loginUserLanguageResource.pumpingInfo;
 				if(isNotVal(deviceName)){
-					panelTitle="【<font color='red'>"+deviceName+"</font>】抽油机详情";
+					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.pumpingInfo;
 				}
 				Ext.getCmp("PumpingInfoPanel_Id").setTitle(panelTitle);
 				if(pumpingInfoHandsontableHelper==null || pumpingInfoHandsontableHelper.hot==undefined){
@@ -2230,7 +2189,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
 	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
 					
-					var colHeaders="['序号','名称','变量','']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
 						+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}" 
@@ -2317,7 +2276,7 @@ var PumpingInfoHandsontableHelper = {
 	                renderAllRows: true,
 	                search: true,
 	                nestedHeaders:[[{
-	                	label:'序号'
+	                	label:loginUserLanguageResource.idx
 	                },{
 	                	label:'名称'
 	                },{
@@ -2421,9 +2380,9 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			var panelTitle='视频配置';
+			var panelTitle=loginUserLanguageResource.videoConfig;
 			if(isNotVal(deviceName)){
-				panelTitle="【<font color='red'>"+deviceName+"</font>】视频配置";
+				panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig;
 			}
 //			Ext.getCmp("DeviceVideoInfoPanel_Id").setTitle(panelTitle);
 			if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
@@ -2635,10 +2594,9 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 				deviceName='';
 			}
 			
-//			Ext.getCmp("DeviceAdditionalInfoPanel_Id").setTitle(deviceName+"附加信息");
 			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
 				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");
-				var colHeaders="['序号','名称','变量','单位']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','单位']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
 				
 				deviceAdditionalInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -2819,10 +2777,9 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 			if(!isNotVal(deviceName)){
 				deviceName='';
 			}
-//			Ext.getCmp("DeviceAuxiliaryDevicePanel_Id").setTitle(deviceName+"辅件设备列表");
 			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
 				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
-				var colHeaders="['','序号','设备名称','厂家','规格型号','指定类型','指定类型值','ID']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.deviceName+"','厂家','规格型号','指定类型','指定类型值','ID']";
 				var columns="[{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'name'}," 

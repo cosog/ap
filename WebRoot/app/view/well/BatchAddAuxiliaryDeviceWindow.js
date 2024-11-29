@@ -4,7 +4,7 @@ Ext.define("AP.view.well.BatchAddAuxiliaryDeviceWindow", {
     id:'BatchAddAuxiliaryDeviceWindow_Id',
     alias: 'widget.batchAddAuxiliaryDeviceWindow',
     layout: 'fit',
-    title:'辅件设备批量添加',
+    title:loginUserLanguageResource.batchAdd,
     border: false,
     hidden: false,
     collapsible: true,

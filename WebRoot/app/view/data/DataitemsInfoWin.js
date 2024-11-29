@@ -16,7 +16,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_cname = Ext.create("Ext.form.TextField", {
             id: "sysdatacname_Ids",
             name: 'dataitemsInfo.cname',
-            fieldLabel: cosog.string.dataColumnName,
+            fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
             allowBlank: false,
             width: 350,
             msgTarget: 'side',
@@ -26,7 +26,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_ename = Ext.create("Ext.form.TextField", {
             id: "sysdataename_Ids",
             name: 'dataitemsInfo.ename',
-            fieldLabel: cosog.string.dataColumnCode,
+            fieldLabel: loginUserLanguageResource.dataColumnCode+'<font color=red>*</font>',
             allowBlank: false,
             width: 350,
             msgTarget: 'side',
@@ -36,7 +36,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_sorts = Ext.create("Ext.form.NumberField", {
             id: "sysdatasorts_Ids",
             name: 'dataitemsInfo.sorts',
-            fieldLabel: cosog.string.dataSorts,
+            fieldLabel: loginUserLanguageResource.sortNum+'<font color=red>*</font>',
             allowBlank: false,
             minValue: 0,
             width: 350,
@@ -47,7 +47,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_datavalue = Ext.create("Ext.form.TextArea", {
             id: "sysdatadatavalue_Ids",
             name: 'dataitemsInfo.datavalue',
-            fieldLabel: cosog.string.dataColumnParams,
+            fieldLabel: loginUserLanguageResource.dataColumnParams,
             width: 450,
             height: 100
         });
@@ -63,14 +63,14 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     xtype: 'container',
                     height: 51,
                     width: 501,
-                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">温馨提示：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> 编辑数据项值，以 * 号的文本框是必填项！ </td></tr></table><div  class="divider_s"></div>'
+                    html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">'+loginUserLanguageResource.tip+'：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> '+loginUserLanguageResource.requiredInfo+' </td></tr></table><div  class="divider_s"></div>'
                 },
         sysdata_cname, sysdata_ename,
                 {
                     xtype: 'radiogroup',
                     width: 200,
                     id: "dataitemsInfo_status_id",
-                    fieldLabel: cosog.string.dataColumnEnabled,
+                    fieldLabel: loginUserLanguageResource.enable,
                     items: [
                         {
                             checked: true,

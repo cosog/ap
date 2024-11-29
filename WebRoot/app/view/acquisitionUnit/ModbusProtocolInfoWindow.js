@@ -27,7 +27,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             	html: ''
             },{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocol_Id',
                 anchor: '100%',
                 name: "protocolModel.id"

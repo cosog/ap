@@ -81,7 +81,7 @@ Ext.define("AP.view.well.ExportDeviceInfoWindow", {
             }],
             layout: 'border',
             items: [{
-            	title:'应用场景',
+            	title:loginUserLanguageResource.applicationScenarios,
             	region: 'west',
             	width:'15%',
             	layout: 'fit',

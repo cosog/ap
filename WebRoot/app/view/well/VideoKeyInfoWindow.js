@@ -179,7 +179,7 @@ function CreateDeviceKeyDataTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(videoKeyDataHandsontableHelper==null || videoKeyDataHandsontableHelper.hot==undefined){
 				videoKeyDataHandsontableHelper = VideoKeyDataHandsontableHelper.createNew("VideoKeyDiv_Id");
-				var colHeaders="['序号','名称','appKey','secret']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','appKey','secret']";
 				var columns="[" 
 					+"{data:'id'}," 	
 					+"{data:'account'}," 

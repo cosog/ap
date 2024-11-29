@@ -41,14 +41,14 @@ Ext.define("AP.view.role.RoleInfoView", {
         		items:[{
         			region:'center',
         			layout: "fit",
-        			title:'模块授权',
+        			title:loginUserLanguageResource.moduleLicense,
             		split: true,
                     collapsible: true,
             		layout: "fit",
             		items:RightModuleInfoGridPanel,
             		tbar: [{
                         xtype: 'label',
-                        html: '模块授权',
+                        html: loginUserLanguageResource.moduleLicense,
                         id:'RightModuleTreeInfoLabel_Id',
                         style: 'margin-left: 4px'
                     },'->', {
@@ -66,14 +66,14 @@ Ext.define("AP.view.role.RoleInfoView", {
         		},{
         			region:'south',
         			height:'30%',
-        			title:'设备类型授权',
+        			title:loginUserLanguageResource.deviceTypeLicense,
         			split: true,
                     collapsible: true,
             		layout: "fit",
             		items:RightTabInfoTreeGridView,
             		tbar: [{
                         xtype: 'label',
-                        html: '设备类型授权',
+                        html: loginUserLanguageResource.deviceTypeLicense,
                         id:'RightTabTreeInfoLabel_Id',
                         style: 'margin-left: 4px'
                     },'->', {

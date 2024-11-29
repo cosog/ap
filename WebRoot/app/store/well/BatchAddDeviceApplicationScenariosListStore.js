@@ -35,7 +35,7 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
                     },
                     store: store,
                     columns: [{
-                        text: '序号',
+                        text: loginUserLanguageResource.idx,
                         lockable: true,
                         align: 'center',
                         width: 50,
@@ -43,7 +43,7 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
                         sortable: false,
                         locked: false
                     }, {
-                        text: '应用场景',
+                        text: loginUserLanguageResource.applicationScenarios,
                         lockable: true,
                         align: 'center',
                         flex: 10,

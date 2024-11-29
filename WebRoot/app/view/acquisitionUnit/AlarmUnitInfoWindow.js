@@ -79,7 +79,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formAlarmUnit_Id',
                 anchor: '100%',
                 name: "alarmUnit.id"

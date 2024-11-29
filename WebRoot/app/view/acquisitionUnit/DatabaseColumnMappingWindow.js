@@ -141,7 +141,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
-				var colHeaders="['序号','名称','字段','关联计算字段']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','字段','关联计算字段']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 

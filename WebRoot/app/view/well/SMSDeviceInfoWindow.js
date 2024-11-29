@@ -90,7 +90,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                 value: '',
                 name: "smsDeviceInformation.orgId"
             },{
-                fieldLabel: '设备名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.deviceName+'<font color=red>*</font>',
                 id: 'smsDeviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -103,7 +103,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                 name: "smsDeviceInformation.instanceCode"
             },{
                 xtype: "textfield",
-                fieldLabel: '注册包ID',
+                fieldLabel: loginUserLanguageResource.signInId,
                 allowBlank: true,
                 id: 'smsDeviceSignInId_Id',
                 anchor: '95%',

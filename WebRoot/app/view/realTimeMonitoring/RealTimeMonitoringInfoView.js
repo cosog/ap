@@ -633,7 +633,7 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagra
     	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
     }
     fields = "id," + lockedfields+","+unlockedfields;
-    heads = "序号," + lockedheads+","+unlockedheads;
+    heads = loginUserLanguageResource.idx+"," + lockedheads+","+unlockedheads;
     fields="";
     heads="";
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 

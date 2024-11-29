@@ -619,7 +619,7 @@ function exportGridPanelExcelData(gridId,url,fileName,title){
         heads = heads.substring(0, heads.length - 1);
     }
     fields = "id," + fields;
-    heads = "序号," + heads;
+    heads = loginUserLanguageResource.idx+"," + heads;
     var param = "&heads=" + heads +"&fields=" + fields+"&data=" + data+"&fileName=" + fileName+"&title=" + title;
     param=param.replace(/#/g,"%23").replace(/%/g,"%25");
     openExcelWindow(url+'?flag=true&' + param);
@@ -2230,7 +2230,7 @@ function exportGridExcelData(gridId,url,fileName,title){
         heads = heads.substring(0, heads.length - 1);
     }
     fields = "id," + fields;
-    heads = "序号," + heads;
+    heads = loginUserLanguageResource.idx+"," + heads;
     var param = "&heads=" + heads +"&fields=" + fields+"&data=" + data+"&fileName=" + fileName+"&title=" + title;
     openExcelWindow(url+'?flag=true&' + param);
 };

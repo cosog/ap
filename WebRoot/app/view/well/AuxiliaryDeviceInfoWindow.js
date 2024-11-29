@@ -23,7 +23,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
             id: 'addAuxiliaryDeviceForm_Id',
             defaultType: 'textfield',
             items: [{
-                fieldLabel: '设备名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.deviceName+'<font color=red>*</font>',
                 id: 'auxiliaryDeviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -70,7 +70,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                 name: "auxiliaryDeviceInformation.type"
             },{
                 xtype: "textfield",
-                fieldLabel: '厂家',
+                fieldLabel: loginUserLanguageResource.manufacturer,
                 allowBlank: true,
                 id: 'auxiliaryDeviceManufacturer_Id',
                 anchor: '95%',
@@ -112,7 +112,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                 }
             },{
                 xtype: "textfield",
-                fieldLabel: '规格型号',
+                fieldLabel: loginUserLanguageResource.model,
                 allowBlank: true,
                 id: 'auxiliaryDeviceModel_Id',
                 anchor: '95%',

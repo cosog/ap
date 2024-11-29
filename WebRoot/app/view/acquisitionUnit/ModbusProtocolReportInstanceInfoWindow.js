@@ -79,7 +79,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolReportInstance_Id',
                 anchor: '100%',
                 name: "protocolReportInstance.id"

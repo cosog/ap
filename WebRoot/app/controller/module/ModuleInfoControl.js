@@ -133,7 +133,7 @@ function addmoduleInfo() {
             win_Obj.destroy();
         }
         var moduleInfoWindow = Ext.create("AP.view.module.ModuleInfoWindow", {
-            title: cosog.string.addmodule
+            title: loginUserLanguageResource.addModule
         });
         moduleInfoWindow.show();
         Ext.getCmp("addFormmodule_Id").show();
@@ -176,7 +176,7 @@ function modifymoduleInfo() {
             }
             var moduleUpdateInfoWindow = Ext.create(
                 "AP.view.module.ModuleInfoWindow", {
-                    title: cosog.string.editmodule
+                    title: loginUserLanguageResource.editModule
                 });
             moduleUpdateInfoWindow.show();
             Ext.getCmp("addFormmodule_Id").hide();

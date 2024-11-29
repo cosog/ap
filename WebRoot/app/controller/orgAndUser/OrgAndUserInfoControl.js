@@ -289,7 +289,7 @@ function addUserInfo() {
 	    Ext.getCmp("userPwd_Id").setValue("123456");
 	    Ext.getCmp("userPwdAgain_Id").setValue("123456");
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,"请先添加组织");
+		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.addOrgFirst);
 	}
 	
     return false;

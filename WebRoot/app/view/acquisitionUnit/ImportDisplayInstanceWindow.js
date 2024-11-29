@@ -385,10 +385,10 @@ function CreateImportDisplayInstanceAcqItemsInfoTable(protocolName,acqUnitName,d
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayInstanceAcqItemsHandsontableHelper==null || importDisplayInstanceAcqItemsHandsontableHelper.hot==undefined){
 				importDisplayInstanceAcqItemsHandsontableHelper = ImportDisplayInstanceAcqItemsHandsontableHelper.createNew("importDisplayInstanceAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','显示级别','实时字段顺序','历史字段顺序','实时曲线','历史曲线']";
 				var colHeaders = "[" 
                 	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
-                	+"['序号','名称','单位','显示级别'," 
+                	+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
                 	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
                 	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']"
                 	+"]";
@@ -577,7 +577,7 @@ function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,d
 				importDisplayInstanceCalItemsHandsontableHelper = ImportDisplayInstanceCalItemsHandsontableHelper.createNew("importDisplayInstanceCalItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'']," 
-					+"['序号','名称','单位','显示级别'," 
+					+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'数据来源']" 
@@ -769,7 +769,7 @@ function CreateImportDisplayInstanceCtrlItemsInfoTable(protocolName,acqUnitName,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayInstanceCtrlItemsHandsontableHelper==null || importDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){
 				importDisplayInstanceCtrlItemsHandsontableHelper = ImportDisplayInstanceCtrlItemsHandsontableHelper.createNew("importDisplayInstanceCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','显示级别','字段顺序']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','显示级别','字段顺序']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -920,7 +920,7 @@ function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName
 				importDisplayInstanceInputItemsHandsontableHelper = ImportDisplayInstanceInputItemsHandsontableHelper.createNew("importDisplayInstanceInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
 					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
-					+"['序号','名称','单位','显示级别'," 
+					+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']" 
 					+"]";

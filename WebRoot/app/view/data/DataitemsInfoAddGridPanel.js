@@ -29,7 +29,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
             }),
             columns: [
                 {
-                    header: cosog.string.dataColumnName,
+                    header: loginUserLanguageResource.dataColumnName,
                     align: 'center',
                     dataIndex: 'cname',
                     field: {
@@ -37,7 +37,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: cosog.string.dataColumnCode,
+                    header: loginUserLanguageResource.dataColumnCode,
                     align: 'center',
                     dataIndex: 'ename',
                     field: {
@@ -45,7 +45,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: cosog.string.dataColumnParams,
+                    header: loginUserLanguageResource.dataColumnParams,
                     align: 'center',
                     dataIndex: 'datavalue',
                     field: {
@@ -53,7 +53,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: cosog.string.sorts,
+                    header: loginUserLanguageResource.sortNum,
                     align: 'center',
                     dataIndex: 'sorts',
                     field: {
@@ -63,7 +63,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
 
                 {
                     xtype: 'checkcolumn',
-                    header: cosog.string.dataColumnEnabled,
+                    header: loginUserLanguageResource.enable,
                     dataIndex: 'status',
                     editor: {
                         xtype: 'checkbox',
@@ -71,7 +71,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
           },
                 {
-                    header: cosog.string.command,
+                    header: loginUserLanguageResource.operation,
                     align: 'center',
                     renderer: function () {
                         var str = "<font color=red style='cursor:pointer'>" + loginUserLanguageResource.deleteData + "</font>";

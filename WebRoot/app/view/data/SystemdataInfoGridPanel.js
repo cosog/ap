@@ -9,14 +9,13 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
         
         var sysdatastore = new Ext.data.SimpleStore({
             fields: ['sysdataId', 'sysdataName'],
-            data: [[0, '字典名称'], [1, '字典代码']]
+            data: [[0, loginUserLanguageResource.dataModuleName], [1, loginUserLanguageResource.dataModuleCode]]
         });
         var sysdatacomboxsimp = new Ext.form.ComboBox({
             id: 'sysdatacomboxfield_Id',
             value: 0,
-            fieldLabel: cosog.string.dataType,
+            fieldLabel: loginUserLanguageResource.type,
             allowBlank: false,
-            emptyText: cosog.string.dataCheckType,
             triggerAction: 'all',
             store: sysdatastore,
             labelWidth: 35,
@@ -33,13 +32,13 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 hidden:false,
                 handler: function (v, o) {
                 	Ext.getCmp('sysdatacomboxfield_Id').setValue(0);
-                	Ext.getCmp('sysdatacomboxfield_Id').setRawValue(cosog.string.dataModuleName);
+                	Ext.getCmp('sysdatacomboxfield_Id').setRawValue(loginUserLanguageResource.dataModuleName);
                 	Ext.getCmp('sysname_Id').setRawValue('');
                 	reFreshg("SystemdataInfoGridPanelId");
                 }
     		},'-',sysdatacomboxsimp,'-', {
                 xtype: 'textfield',
-                fieldLabel: '&nbsp;' + cosog.string.name,
+                fieldLabel: '&nbsp;' + loginUserLanguageResource.name,
                 labelWidth: 35,
                 width: 155,
                 id: 'sysname_Id',

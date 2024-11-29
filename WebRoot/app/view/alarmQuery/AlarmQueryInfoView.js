@@ -239,7 +239,7 @@ function exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alar
     var columns_ = Ext.JSON.decode(columnStr);
     
     fields = "id";
-    heads = "序号";
+    heads = loginUserLanguageResource.idx;
     Ext.Array.each(columns_, function (name, index, countriesItSelf) {
         var column = columns_[index];
         if (index > 0 && !column.hidden) {
@@ -288,7 +288,7 @@ function exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,startDate,end
     var columns_ = Ext.JSON.decode(columnStr);
     
     fields = "id";
-    heads = "序号";
+    heads = loginUserLanguageResource.idx;
     Ext.Array.each(columns_, function (name, index, countriesItSelf) {
         var column = columns_[index];
         if (index > 0 && !column.hidden) {

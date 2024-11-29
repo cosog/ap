@@ -78,7 +78,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolAlarmInstance_Id',
                 anchor: '100%',
                 name: "protocolAlarmInstance.id"

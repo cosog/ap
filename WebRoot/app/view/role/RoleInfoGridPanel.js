@@ -42,9 +42,8 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 }
     		},{
                 id: 'RoleName_Id',
-                fieldLabel: cosog.string.roleName,
+                fieldLabel: loginUserLanguageResource.roleName,
                 name: 'RoleName',
-                emptyText: cosog.string.queryRole,
                 labelWidth: 60,
                 width: 165,
                 labelAlign: 'right',

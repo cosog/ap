@@ -234,12 +234,12 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         style: 'margin-right:15px'
                     }, '->',{
             			xtype: 'button',
-                        text: '添加设备',
+                        text: loginUserLanguageResource.adddDevie,
                         iconCls: 'add',
                         disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                         	var window = Ext.create("AP.view.well.PumpingModelInfoWindow", {
-                                title: '添加设备'
+                                title: loginUserLanguageResource.adddDevie
                             });
                             window.show();
                             Ext.getCmp("addFormPumpingModel_Id").show();
@@ -248,7 +248,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
             			}
             		}, '-',{
             			xtype: 'button',
-            			text: '删除设备',
+            			text: loginUserLanguageResource.deleteDevice,
             			iconCls: 'delete',
             			disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
             			handler: function (v, o) {
@@ -315,13 +315,13 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         }
                     },"-",{
             			xtype: 'button',
-                        text: '批量添加',
+                        text: loginUserLanguageResource.batchAdd,
                         iconCls: 'batchAdd',
                         hidden: false,
                         disabled:loginUserPumpingModelManagerModuleRight.editFlag!=1,
                         handler: function (v, o) {
                         	var window = Ext.create("AP.view.well.BatchAddPumpingModelWindow", {
-                                title: '辅件设备批量添加'
+                                title: loginUserLanguageResource.batchAdd
                             });
                             window.show();
                             return false;
@@ -457,7 +457,7 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
         	var result = Ext.JSON.decode(response.responseText);
             if (pumpingModelInfoHandsontableHelper == null || pumpingModelInfoHandsontableHelper.hot == null || pumpingModelInfoHandsontableHelper.hot == undefined) {
                 pumpingModelInfoHandsontableHelper = PumpingModelInfoHandsontableHelper.createNew("PumpingModelTableDiv_id");
-                var colHeaders="['序号','厂家','型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','单块曲柄销重量(kN)','结构不平衡重(kN)','平衡块重量(kN)']";
+                var colHeaders="['"+loginUserLanguageResource.idx+"','厂家','型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','单块曲柄销重量(kN)','结构不平衡重(kN)','平衡块重量(kN)']";
                 var columns="[{data:'id'},{data:'manufacturer'},{data:'model'}," 
                 	+"{data:'stroke'}," 
                 	+"{data:'crankRotationDirection',type:'dropdown',strict:true,allowInvalid:false,source:['顺时针', '逆时针']}," 

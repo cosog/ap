@@ -4,7 +4,7 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
     id:'BatchAddDeviceWindow_Id',
     alias: 'widget.batchAddDeviceWindow',
     layout: 'fit',
-    title:'设备批量添加',
+    title:loginUserLanguageResource.batchAdd,
     border: false,
     hidden: false,
     collapsible: true,
@@ -47,19 +47,7 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
                 }
             }],
             layout: 'border',
-            items: [
-//            	{
-//            	title:'应用场景',
-//            	region: 'west',
-//            	width:'15%',
-//            	hidden: sceneConfig!='all',
-//            	layout: 'fit',
-//            	header:false,
-//        		split: true,
-//                collapsible: true,
-//        		id:'BatchAddDeviceApplicationScenariosInfoPanel_Id'
-//            },
-            {
+            items: [{
             	region: 'center',
             	html: '<div id="BatchAddDeviceTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {

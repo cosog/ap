@@ -35,7 +35,7 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 		return;
                 	}
                 	if(selectedDeviceType.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择设备类型！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.selectDeviceType);
                 		return;
                 	}else{
                 		if(!selectedDeviceType[0].isLeaf()){

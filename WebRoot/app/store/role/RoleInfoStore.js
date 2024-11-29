@@ -64,14 +64,14 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     },
                     store: store,
                     columns: [{
-                        header: '序号',
+                        header: loginUserLanguageResource.idx,
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         width: 50,
                         xtype: 'rownumberer'
                     }, {
-                        header: '角色名称',
+                        header: loginUserLanguageResource.roleName,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -90,7 +90,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         	}
                         }
                     }, {
-                        header: '角色等级',
+                        header: loginUserLanguageResource.roleLevel,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -104,7 +104,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             minValue: currentLevel+1
                         }
                     }, {
-                        header: '数据显示级别',
+                        header: loginUserLanguageResource.dataShowLevel,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -118,7 +118,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             minValue: currentShowLevel+1
                         }
                     }, {
-                        header: '视频密钥编辑权限',
+                        header: loginUserLanguageResource.roleVideoKeyEdit,
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
@@ -148,7 +148,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	    }
                     	}
                     },{
-                        header: '角色描述',
+                        header: loginUserLanguageResource.roleRemark,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -209,10 +209,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		roleName = selected[0].data.roleName;
                         		Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                         		
-                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】模块授权");
+                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】"+loginUserLanguageResource.moduleLicense);
                         		clkLoadAjaxFn();
                         		
-                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】设备类型授权");
+                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】"+loginUserLanguageResource.deviceTypeLicense);
                         		clkLoadTabAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();

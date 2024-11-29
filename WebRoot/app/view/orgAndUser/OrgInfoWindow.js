@@ -27,7 +27,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '单位序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'orgOrg_Id',
                 value: '1',
                 name: "org.orgId"

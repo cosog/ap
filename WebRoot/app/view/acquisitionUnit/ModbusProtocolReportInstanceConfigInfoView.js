@@ -736,7 +736,7 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellRangeReportContentHandsontableHelper==null || reportInstanceSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellRangeReportContentHandsontableHelper = ReportInstanceSingleWellRangeReportContentHandsontableHelper.createNew("ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1142,7 +1142,7 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellDailyReportContentHandsontableHelper==null || reportInstanceSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellDailyReportContentHandsontableHelper = ReportInstanceSingleWellDailyReportContentHandsontableHelper.createNew("ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1315,7 +1315,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1572,7 +1572,7 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 			
 			if(protocolReportInstancePropertiesHandsontableHelper==null || protocolReportInstancePropertiesHandsontableHelper.hot==undefined){
 				protocolReportInstancePropertiesHandsontableHelper = ProtocolReportInstancePropertiesHandsontableHelper.createNew("ModbusProtocolReportInstancePropertiesTableInfoDiv_id");
-				var colHeaders="['序号','名称','变量']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
 				var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 				protocolReportInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolReportInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

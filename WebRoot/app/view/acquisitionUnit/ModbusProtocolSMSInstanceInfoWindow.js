@@ -22,7 +22,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: '序号',
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusprotocolSMSInstance_Id',
                 anchor: '100%',
                 name: "protocolSMSInstance.id"

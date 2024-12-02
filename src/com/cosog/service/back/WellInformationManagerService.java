@@ -280,10 +280,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String deviceName,String deviceTypeStr) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
+	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String deviceName,String deviceTypeStr,String language) throws Exception {
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
-//		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		String tableName="VIW_DEVICE";
 		if(StringManagerUtils.isNum(deviceTypeStr) &&StringManagerUtils.stringToInteger(deviceTypeStr)>=300){
 			tableName="tbl_smsdevice";
@@ -297,8 +296,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}	
 		sql+= " order by t.sortNum, t.deviceName";
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"deviceName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"deviceName\",width:120 ,children:[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
@@ -317,12 +316,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getApplicationScenariosList() throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
+	public String getApplicationScenariosList(String language) throws Exception {
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
 		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='APPLICATIONSCENARIOS' order by t.itemvalue desc";
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",width:120 ,children:[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
@@ -1994,11 +1993,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String getPumpingModelList(String deviceId,String deviceType) {
+	public String getPumpingModelList(String deviceId,String deviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t3.id,t3.manufacturer,t3.model "
@@ -2044,13 +2044,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDevicePumpingInfo(String deviceId,String deviceType) {
+	public String getDevicePumpingInfo(String deviceId,String deviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
 				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t.stroke,t.balanceinfo from tbl_device t where t.id="+deviceId;
@@ -2140,7 +2141,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		result_json.append("{\"id\":1,\"itemValue1\":\"名称\",\"itemValue2\":\""+auxiliaryDeviceName+"\"},");
+		result_json.append("{\"id\":1,\"itemValue1\":\""+languageResourceMap.get("name")+"\",\"itemValue2\":\""+auxiliaryDeviceName+"\"},");
 		result_json.append("{\"id\":2,\"itemValue1\":\"厂家\",\"itemValue2\":\""+manufacturer+"\"},");
 		result_json.append("{\"id\":3,\"itemValue1\":\"规格型号\",\"itemValue2\":\""+model+"\"},");
 		
@@ -2163,15 +2164,16 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDeviceProductionDataInfo(String deviceId,String deviceType,String deviceCalculateDataType) {
+	public String getDeviceProductionDataInfo(String deviceId,String deviceType,String deviceCalculateDataType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
 					+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
@@ -2596,12 +2598,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceVideoInfo(String deviceId,String deviceType,String orgId) {
+	public String getDeviceVideoInfo(String deviceId,String deviceType,String orgId,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer videoKeyDropdownData = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
 				+ "{ \"header\":\"监控路径\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
 				+ "{ \"header\":\"视频密钥\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
 				+ "]";
@@ -2644,11 +2647,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getVideoKeyData(String orgId){
+	public String getVideoKeyData(String orgId,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"account\",flex:1 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"account\",flex:1 ,children:[] },"
 				+ "{ \"header\":\"appKey\",\"dataIndex\":\"appKey\",flex:5 ,children:[] },"
 				+ "{ \"header\":\"secret\",\"dataIndex\":\"secret\",flex:5 ,children:[] }"
 				+ "]";
@@ -2922,12 +2926,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public String getUpstreamAndDownstreamInteractionDeviceList(String orgId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+	public String getUpstreamAndDownstreamInteractionDeviceList(String orgId,String deviceName,String deviceType,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String deviceTableName="tbl_device";
 		String tableName="tbl_acqdata_latest";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
 				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
 				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
@@ -3059,13 +3064,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json;
 	}
 	
-	public String getWaterCutRawData(String signinId,String slave) throws IOException, SQLException{
+	public String getWaterCutRawData(String signinId,String slave,String language) throws IOException, SQLException{
 		String result_json = "";
 		List<StringBuffer> groupList=new ArrayList<StringBuffer>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		int totals=0;
 		String acqTime="";
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"采样时间\",\"dataIndex\":\"pointAcqTime\",flex:2,children:[] },"
 				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",flex:1,children:[] },"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\",flex:1,children:[] },"
@@ -3830,11 +3836,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getAuxiliaryDeviceDetailsInfo(String deviceId,String auxiliaryDeviceSpecificType) {
+	public String getAuxiliaryDeviceDetailsInfo(String deviceId,String auxiliaryDeviceSpecificType,String language) {
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
 				+ "]";
@@ -3968,12 +3975,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getAuxiliaryDevice(String deviceId,String deviceType) {
+	public String getAuxiliaryDevice(String deviceId,String deviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
@@ -4019,12 +4027,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDeviceAdditionalInfo(String deviceId,String deviceType) {
+	public String getDeviceAdditionalInfo(String deviceId,String deviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
 				+ "]";

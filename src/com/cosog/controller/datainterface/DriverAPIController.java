@@ -1675,6 +1675,8 @@ public class DriverAPIController extends BaseController{
 		StringBuffer wellBoreChartsData = new StringBuffer();
 		StringBuffer surfaceChartsData = new StringBuffer();
 		
+		Map<String,String>  LanguageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+		
 		WorkType workType=null;
 		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
@@ -1801,8 +1803,8 @@ public class DriverAPIController extends BaseController{
 		
 		String columns = "[";
 		for(int i=1;i<=items;i++){
-			columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",children:[] }";
+			columns+= "{ \"header\":\""+LanguageResourceMap.get("name")+"\",\"dataIndex\":\"name"+i+"\",children:[] },"
+					+ "{ \"header\":\""+LanguageResourceMap.get("variable")+"\",\"dataIndex\":\"value"+i+"\",children:[] }";
 			if(i<items){
 				columns+=",";
 			}
@@ -1821,7 +1823,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append("\"totalRoot\":[");
 		displayItemInfo_json.append("[");
 		allItemInfo_json.append("[");
-		webSocketSendData.append("{\"name1\":\""+deviceInfo.getDeviceName()+":"+acqTime+" 在线\"},");
+		webSocketSendData.append("{\"name1\":\""+deviceInfo.getDeviceName()+":"+acqTime+" "+LanguageResourceMap.get("online")+"\"},");
 		
 		//筛选
 		List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();

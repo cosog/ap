@@ -521,6 +521,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -528,7 +534,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put("protocolName", protocolName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager);
+		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1234,7 +1240,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolEnumOrSwitchItemsConfigData(protocolCode,resolutionMode);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getProtocolEnumOrSwitchItemsConfigData(protocolCode,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1249,7 +1261,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		
+		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1265,7 +1285,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolItemsConfigData(protocolName,classes,code);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getProtocolItemsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1282,7 +1308,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String type = ParamUtils.getParameter(request, "type");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAcqUnitItemsConfigData(protocolName,classes,code,type);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getProtocolAcqUnitItemsConfigData(protocolName,classes,code,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1314,7 +1346,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolNumAlarmItemsConfigData(protocolName,classes,code);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getModbusProtocolNumAlarmItemsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1331,7 +1369,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolCalNumAlarmItemsConfigData(deviceType,classes,code,calculateType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getModbusProtocolCalNumAlarmItemsConfigData(deviceType,classes,code,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1348,12 +1392,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitCode = ParamUtils.getParameter(request, "unitCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
 		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
-		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
 		if("1".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode);
+			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode,language);
 		}else if("0".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode);
+			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode,language);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -1370,8 +1419,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(protocolName,classes,code);
+		json = acquisitionUnitItemManagerService.getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1386,8 +1441,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolCommStatusAlarmItemsConfigData(protocolName,classes,code);
+		json = acquisitionUnitItemManagerService.getModbusProtocolCommStatusAlarmItemsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1402,8 +1463,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getModbusProtocolRunStatusAlarmItemsConfigData(protocolName,classes,code);
+		json = acquisitionUnitItemManagerService.getModbusProtocolRunStatusAlarmItemsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1420,8 +1487,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String acqUnitId = ParamUtils.getParameter(request, "acqUnitId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolName,classes,code,unitId,acqUnitId);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolName,classes,code,unitId,acqUnitId,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1438,8 +1511,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String acqUnitId = ParamUtils.getParameter(request, "acqUnitId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCtrlItemsConfigData(protocolName,classes,code,unitId,acqUnitId);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCtrlItemsConfigData(protocolName,classes,code,unitId,acqUnitId,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1455,8 +1534,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(classes,unitId,calculateType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(classes,unitId,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1472,8 +1557,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId,calculateType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1526,9 +1617,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String row = ParamUtils.getParameter(request, "row");
 		String col = ParamUtils.getParameter(request, "col");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
 		int sort=(StringManagerUtils.isNum(row) && StringManagerUtils.isNumber(row) && StringManagerUtils.stringToInteger(row)>=0)?(StringManagerUtils.stringToInteger(row)+1):0;
-		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort);
+		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1538,31 +1635,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-//	@RequestMapping("/getReportUnitTimingTotalCalItemsConfigData")
-//	public String getReportUnitTimingTotalCalItemsConfigData() throws Exception {
-//		String calculateType = ParamUtils.getParameter(request, "calculateType");
-//		String reportType = ParamUtils.getParameter(request, "reportType");
-//		String templateCode = ParamUtils.getParameter(request, "templateCode");
-//		String unitId = ParamUtils.getParameter(request, "unitId");
-//		String classes = ParamUtils.getParameter(request, "classes");
-//		String json = "";
-//		json = acquisitionUnitItemManagerService.getReportUnitTimingTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes);
-//		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-//		response.setHeader("Cache-Control", "no-cache");
-//		PrintWriter pw = response.getWriter();
-//		pw.print(json);
-//		pw.flush();
-//		pw.close();
-//		return null;
-//	}
-	
 	@RequestMapping("/getReportInstanceTotalCalItemsConfigData")
 	public String getReportInstanceTotalCalItemsConfigData() throws Exception {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String reportType = ParamUtils.getParameter(request, "reportType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(calculateType,unitId,reportType);
+		json = acquisitionUnitItemManagerService.getReportInstanceTotalCalItemsConfigData(calculateType,unitId,reportType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1577,8 +1662,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String reportType = ParamUtils.getParameter(request, "reportType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportInstanceTimingTotalCalItemsConfigData(calculateType,unitId,reportType);
+		json = acquisitionUnitItemManagerService.getReportInstanceTimingTotalCalItemsConfigData(calculateType,unitId,reportType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1592,8 +1683,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolInstanceItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolInstanceItemsConfigData(id,classes);
+		json = acquisitionUnitItemManagerService.getProtocolInstanceItemsConfigData(id,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1607,8 +1704,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceAcqItemsConfigData(id,classes);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceAcqItemsConfigData(id,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1622,8 +1725,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceAcqItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceAcqItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1637,8 +1746,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolDisplayInstanceCtrlItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCtrlItemsConfigData(id,classes);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCtrlItemsConfigData(id,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1652,8 +1767,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolDisplayInstanceCtrlItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCtrlItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCtrlItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1668,8 +1789,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,calculateType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1684,8 +1811,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,calculateType);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1699,8 +1832,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolDisplayInstanceCalItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCalItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCalItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1716,8 +1855,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceNumItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceNumItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1731,8 +1876,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentNumItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentNumItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentNumItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1749,8 +1900,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceCalNumItemsConfigData(id,classes,resolutionMode,deviceType);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceCalNumItemsConfigData(id,classes,resolutionMode,deviceType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1764,8 +1921,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentCalNumItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCalNumItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCalNumItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1781,8 +1944,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceSwitchItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceSwitchItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1796,8 +1965,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentSwitchItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentSwitchItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentSwitchItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1813,8 +1988,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceEnumItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceEnumItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1828,8 +2009,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentEnumItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentEnumItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentEnumItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1845,8 +2032,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceFESDiagramResultItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceFESDiagramResultItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1860,8 +2053,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentFESDiagramResultItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentFESDiagramResultItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentFESDiagramResultItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1877,8 +2076,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceRunStatusItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceRunStatusItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1892,8 +2097,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentRunStatusItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentRunStatusItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentRunStatusItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1909,8 +2120,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceCommStatusItemsConfigData(id,classes,resolutionMode);
+		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceCommStatusItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1924,8 +2141,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getImportProtocolAlarmContentCommStatusItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCommStatusItemsConfigData(id,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentCommStatusItemsConfigData(id,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2247,7 +2470,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json = "";
 		String name = ParamUtils.getParameter(request, "name");
 		this.pager = new Page("pagerForm", request);
-		json = acquisitionUnitItemManagerService.getSMSInstanceList(name,pager);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getSMSInstanceList(name,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -3616,7 +3845,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
-		String json = this.acquisitionUnitManagerService.getDatabaseColumnMappingTable(classes,deviceType,protocolCode);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.acquisitionUnitManagerService.getDatabaseColumnMappingTable(classes,deviceType,protocolCode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3632,7 +3867,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
-		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItems(classes,deviceType,protocolCode);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItems(classes,deviceType,protocolCode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3651,7 +3892,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
-		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn,resolutionMode);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4367,8 +4614,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getImportProtocolContentData(id,classes,type);
+		json = acquisitionUnitItemManagerService.getImportProtocolContentData(id,classes,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4383,15 +4636,20 @@ public class AcquisitionUnitManagerController extends BaseController {
 		this.pager=new Page("pageForm",request);
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
 		deviceTypeIds="";
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if (!StringManagerUtils.isNotNull(deviceTypeIds)) {
-			User user = null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				deviceTypeIds = "" + user.getDeviceTypeIds();
 			}
 		}
-		String json = this.acquisitionUnitItemManagerService.getProtocolDeviceTypeChangeProtocolList(deviceTypeIds);
+		String json = this.acquisitionUnitItemManagerService.getProtocolDeviceTypeChangeProtocolList(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4924,7 +5182,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getUploadedProtocolItemsConfigData")
 	public String getUploadedProtocolItemsConfigData() throws Exception {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String code = ParamUtils.getParameter(request, "code");
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		try{
 			if(session.getAttribute("uploadProtocolFile")!=null){
@@ -4935,11 +5202,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String code = ParamUtils.getParameter(request, "code");
 		String json = "";
-		json = acquisitionUnitItemManagerService.getUploadedProtocolItemsConfigData(protocolName,classes,code,protocolList);
+		json = acquisitionUnitItemManagerService.getUploadedProtocolItemsConfigData(protocolName,classes,code,protocolList,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -5098,9 +5362,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitName = ParamUtils.getParameter(request, "unitName");
 		String groupName = ParamUtils.getParameter(request, "groupName");
 		String groupType = ParamUtils.getParameter(request, "groupType");
-		String json = "";
-		
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
 		List<ExportAcqUnitData> uploadAcqUnitList=null;
 		try{
 			if(session.getAttribute("uploadAcqUnitFile")!=null){
@@ -5111,7 +5379,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 		}
 		
-		json = acquisitionUnitItemManagerService.getUploadedAcqUnitItemsConfigData(protocolName,classes,unitName,groupName,groupType,uploadAcqUnitList);
+		json = acquisitionUnitItemManagerService.getUploadedAcqUnitItemsConfigData(protocolName,classes,unitName,groupName,groupType,uploadAcqUnitList,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -5942,7 +6210,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getImportDisplayInstanceItemsConfigData")
 	public String getImportDisplayInstanceItemsConfigData() throws IOException {
-		HttpSession session=request.getSession();
 		List<ExportDisplayInstanceData> uploadInstanceList=null;
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
@@ -5950,7 +6217,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		String type=ParamUtils.getParameter(request, "type");
 		
+		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		try{
 			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
 				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
@@ -5959,7 +6231,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		String json = acquisitionUnitItemManagerService.getImportDisplayInstanceItemsConfigData(uploadInstanceList,protocolName,acqUnitName,displayUnitName,instanceName,type);
+		String json = acquisitionUnitItemManagerService.getImportDisplayInstanceItemsConfigData(uploadInstanceList,protocolName,acqUnitName,displayUnitName,instanceName,type,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

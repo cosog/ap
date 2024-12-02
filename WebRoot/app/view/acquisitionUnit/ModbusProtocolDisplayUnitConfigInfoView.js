@@ -258,7 +258,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 2) {
-                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+acquisitionItemConfig);
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
             } else {
                 Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
             }
@@ -267,7 +267,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
                 var colHeaders = "[" 
                 	+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','','']," 
                 	+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','','']," 
-                	+"['','"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
                 	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
                 	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
                 	+"'','','','','']"
@@ -612,7 +612,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 				var colHeaders="[" 
 					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','']," 
 					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','']," 
-					+"['','"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'','','','数据来源']" 
@@ -960,7 +960,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','单位','显示级别','字段顺序']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别','字段顺序']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1170,7 +1170,7 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 				var colHeaders="[" 
 					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','']," 
 					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','']," 
-					+"['','"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'','','']" 
@@ -1540,7 +1540,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){
 		protocolDisplayUnitPropertiesHandsontableHelper = ProtocolDisplayUnitPropertiesHandsontableHelper.createNew("ModbusProtocolDisplayUnitPropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolDisplayUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolDisplayUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

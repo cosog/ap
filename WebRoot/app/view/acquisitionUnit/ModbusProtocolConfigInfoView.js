@@ -193,7 +193,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     },{
                     	region: 'east',
                     	width:'15%',
-                    	title:'含义',
+                    	title:loginUserLanguageResource.meaning,
                     	id:'ModbusProtocolAddrMappingItemsMeaningConfigPanel_Id',
                     	header:false,
                     	collapsible: true,
@@ -239,8 +239,8 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			if(protocolItemsConfigHandsontableHelper==null || protocolItemsConfigHandsontableHelper.hot==undefined){
 				protocolItemsConfigHandsontableHelper = ProtocolItemsConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
-					+"['"+loginUserLanguageResource.idx+"','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"['','',{label: '"+loginUserLanguageResource.lowerComputer+"', colspan: 5},{label: '"+loginUserLanguageResource.upperComputer+"', colspan: 5}]," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.startAddress+"','"+loginUserLanguageResource.storeDataType+"','"+loginUserLanguageResource.quantity+"','"+loginUserLanguageResource.RWType+"','"+loginUserLanguageResource.acqMode+"','"+loginUserLanguageResource.IFDataType+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.ratio+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.resolutionMode+"']" 
 					+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
@@ -561,7 +561,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	
 	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
 		protocolPropertiesHandsontableHelper = ProtocolPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 		var columns="[{data:'id'}," 
 			+"{data:'title'}," 
 			+"{data:'value'}]";
@@ -828,9 +828,9 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			}
 			if(protocolItemsMeaningConfigHandsontableHelper==null || protocolItemsMeaningConfigHandsontableHelper.hot==undefined){
 				protocolItemsMeaningConfigHandsontableHelper = ProtocolItemsMeaningConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id");
-				var colHeaders="['数值','含义']";
+				var colHeaders="['"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"']";
 				if(result.itemResolutionMode==0){
-					colHeaders="['位','含义']";
+					colHeaders="['"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"']";
 				}
 				var columns="[{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsMeaningConfigHandsontableHelper);}},"
 						+"{data:'meaning'}" 

@@ -224,7 +224,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAcqUnitContentHandsontableHelper==null || importAcqUnitContentHandsontableHelper.hot==undefined){
 				importAcqUnitContentHandsontableHelper = ImportAcqUnitContentHandsontableHelper.createNew("importedAcqUnitItemInfoTableDiv_Id");
-				var colHeaders=[loginUserLanguageResource.idx,'名称','起始地址','读写类型','单位','解析模式','','日累计计算','日累计字段名称'];
+				var colHeaders=[loginUserLanguageResource.idx,loginUserLanguageResource.name,loginUserLanguageResource.startAddress,loginUserLanguageResource.RWType,loginUserLanguageResource.unit,loginUserLanguageResource.resolutionMode,'','日累计计算','日累计字段名称'];
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'title'},"

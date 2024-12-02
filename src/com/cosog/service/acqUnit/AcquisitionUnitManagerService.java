@@ -119,11 +119,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String doAcquisitionGroupShow(Map map,Page pager) {
+	public String doAcquisitionGroupShow(Map map,Page pager,String language) {
 		String groupName = (String) map.get("groupName");
 		String protocolName = (String) map.get("protocolName");
 		StringBuffer sqlBuffer = new StringBuffer();
 		StringBuffer jsonBuffer = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		sqlBuffer.append("select t.id as id,t.group_name as groupName,t.group_code as groupCode,"
 				+ " t.grouptiminginterval as groupTimingInterval,t.groupsavinginterval as groupSavingInterval,t.remark "
 				+ " from tbl_acq_group_conf t"
@@ -137,11 +138,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 //		String columns=service.showTableHeadersColumns("acquisitionUnit");
 		String columns="["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:50 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
-				+ "{ \"header\":\"单组定时间隔(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
-				+ "{ \"header\":\"单组入库间隔(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("groupTimingInterval")+"(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("groupSavingInterval")+"(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sqlBuffer.toString());
@@ -163,24 +164,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return jsonBuffer.toString();
 	}
 	
-	public String getProtocolItemsConfigData(String protocolName,String classes,String code){
+	public String getProtocolItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-//				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -252,24 +253,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAcqUnitItemsConfigData(String protocolName,String classes,String code,String type){
+	public String getProtocolAcqUnitItemsConfigData(String protocolName,String classes,String code,String type,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线颜色\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线顺序\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
@@ -409,18 +411,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolEnumOrSwitchItemsConfigData(String protocolCode,String resolutionMode){
+	public String getProtocolEnumOrSwitchItemsConfigData(String protocolCode,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"protocolCode\":\""+protocolCode+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		List<String> itemsList=new ArrayList<String>();
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			for(int j=0;j<protocolConfig.getItems().size();j++){
@@ -440,7 +441,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr){
+	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
 		Gson gson = new Gson();
@@ -449,6 +450,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		totalRoot.append("[");
 		int totolCount=0;
 
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			for(int j=0;j<protocolConfig.getItems().size();j++){
@@ -479,15 +481,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		totalRoot.append("]");
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"数值\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 				+ "]";
 		if(resolutionMode==0){
 			columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\"位\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-					+ "{ \"header\":\"含义\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 					+ "]";
 		}
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
@@ -496,22 +498,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code){
+	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(S)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -585,9 +588,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolCalNumAlarmItemsConfigData(String deviceType,String classes,String code,String calculateType){
+	public String getModbusProtocolCalNumAlarmItemsConfigData(String deviceType,String classes,String code,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<CalItem> calItemList=null;
 		try{
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -598,17 +601,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
 			}
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-					+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:120 ,children:[] },"
 					+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 					+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 					+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 					+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-					+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 					+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-					+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-					+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalRoot\":[");
@@ -684,19 +687,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode){
+	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:120 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(S)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -766,20 +770,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode){
+	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"位\",\"dataIndex\":\"bitIndex\",width:120 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"触发状态\",\"dataIndex\":\"value\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(S)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -855,17 +860,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolCommStatusAlarmItemsConfigData(String protocolName,String classes,String code){
+	public String getModbusProtocolCommStatusAlarmItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -936,17 +942,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolRunStatusAlarmItemsConfigData(String protocolName,String classes,String code){
+	public String getModbusProtocolRunStatusAlarmItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1018,17 +1025,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(String protocolName,String classes,String code){
+	public String getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1094,17 +1102,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId){
+	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		java.lang.reflect.Type type=null;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
@@ -1379,16 +1388,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitCtrlItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId){
+	public String getProtocolDisplayUnitCtrlItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -1525,8 +1535,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitCalItemsConfigData(String classes,String unitId,String calculateType){
+	public String getProtocolDisplayUnitCalItemsConfigData(String classes,String unitId,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		List<CalItem> calItemList=new ArrayList<>();
@@ -1543,11 +1554,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
@@ -1719,8 +1730,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId,String calculateType){
+	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -1735,11 +1747,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
@@ -2327,12 +2339,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort){
+	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		
 		List<CalItem> totalItemList=null;
@@ -2362,12 +2374,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -2622,11 +2634,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportInstanceTotalCalItemsConfigData(String calculateType,String unitId,String reportType){
+	public String getReportInstanceTotalCalItemsConfigData(String calculateType,String unitId,String reportType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		List<CalItem> calItemList=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 
 			if("1".equalsIgnoreCase(calculateType)){
@@ -2642,12 +2655,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}finally{
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -2755,11 +2768,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportInstanceTimingTotalCalItemsConfigData(String calculateType,String unitId,String reportType){
+	public String getReportInstanceTimingTotalCalItemsConfigData(String calculateType,String unitId,String reportType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		List<CalItem> calItemList=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
@@ -2774,12 +2788,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求和\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"求平均\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
@@ -2887,22 +2901,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolInstanceItemsConfigData(String id,String classes){
+	public String getProtocolInstanceItemsConfigData(String id,String classes,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		int index=1;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -2979,16 +2994,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getProtocolDisplayInstanceAcqItemsConfigData(String id,String classes){
+	public String getProtocolDisplayInstanceAcqItemsConfigData(String id,String classes,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
@@ -3172,15 +3188,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayInstanceCtrlItemsConfigData(String id,String classes){
+	public String getProtocolDisplayInstanceCtrlItemsConfigData(String id,String classes,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -3274,11 +3291,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String calculateType){
+	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		List<CalItem> calItemList=new ArrayList<>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
@@ -3292,11 +3310,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
@@ -3457,11 +3475,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String calculateType){
+	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		List<CalItem> inputItemList=new ArrayList<>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
 				inputItemList=MemoryDataManagerTask.getRPCInputItem();
@@ -3472,11 +3491,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
@@ -3601,21 +3620,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceNumItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceNumItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -3669,8 +3689,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceCalNumItemsConfigData(String id,String classes,String resolutionMode,String calculateType){
+	public String getProtocolAlarmInstanceCalNumItemsConfigData(String id,String classes,String resolutionMode,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		List<CalItem> calItemList=null;
 		try{
@@ -3687,17 +3708,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -3761,21 +3782,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceSwitchItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceSwitchItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"位\",\"dataIndex\":\"bitIndex\",width:80 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"触发状态\",\"dataIndex\":\"value\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -3850,19 +3872,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceEnumItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceEnumItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -3936,16 +3959,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceFESDiagramResultItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceFESDiagramResultItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -3992,16 +4016,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceRunStatusItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceRunStatusItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4048,16 +4073,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceCommStatusItemsConfigData(String id,String classes,String resolutionMode){
+	public String getProtocolAlarmInstanceCommStatusItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -5586,10 +5612,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getSMSInstanceList(String name,Page pager) throws IOException, SQLException{
+	public String getSMSInstanceList(String name,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-		+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+		+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 		+ "{ \"header\":\"实例名称\",\"dataIndex\":\"name\" ,children:[] },"
 		+ "{ \"header\":\"采集协议类型\",\"dataIndex\":\"acqProtocolType\" ,children:[] },"
 		+ "{ \"header\":\"控制协议类型\",\"dataIndex\":\"ctrlProtocolType\" ,children:[] },"
@@ -5658,9 +5685,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDatabaseColumnMappingTable(String classes,String deviceType,String protocolCode) {
+	public String getDatabaseColumnMappingTable(String classes,String deviceType,String protocolCode,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer calColumnNameBuff = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1";
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
@@ -5686,8 +5714,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 		sql+=" order by t.id";
 		String columns="["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\" ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
 				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] },"
 				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",children:[] }"
 				+ "]";
@@ -5725,10 +5753,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode) {
+	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode,String language) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
@@ -5762,8 +5791,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String configedRunStatusol="";
 		
 		String columns="["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
 		List<?> configedRunStatusList=this.findCallSql(configedRunStatusSql);
@@ -5848,11 +5877,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn,String resolutionMode) {
+	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn,String resolutionMode,String language) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
 		List<Integer> runConfigValueList=new ArrayList<Integer>();
@@ -5907,14 +5937,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		String columns="["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",\"flex\":2,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",\"flex\":2,\"children\":[] }"
 				+ "]";
 		
 		if(StringManagerUtils.stringToInteger(resolutionMode)==2){//数据量
 			columns="["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
 					+ "{ \"header\":\"运算关系\",\"dataIndex\":\"condition\",\"flex\":1,\"children\":[] },"
 					+ "{ \"header\":\"值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] }"
 					+ "]";
@@ -6654,21 +6684,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return gson.toJson(initProtocolList);
 	}
 	
-	public String getImportProtocolContentData(String id,String classes,String type){
+	public String getImportProtocolContentData(String id,String classes,String type,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		int index=1;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -6799,18 +6830,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getImportProtocolDisplayInstanceAcqItemsConfigData(String id,String typeStr){
+	public String getImportProtocolDisplayInstanceAcqItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
@@ -6959,20 +6991,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolDisplayInstanceCalItemsConfigData(String id,String typeStr){
+	public String getImportProtocolDisplayInstanceCalItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<CalItem> rpcCalItemList=null;
 		
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
@@ -7090,16 +7123,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolDisplayInstanceCtrlItemsConfigData(String id,String typeStr){
+	public String getImportProtocolDisplayInstanceCtrlItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -7204,22 +7238,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentNumItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentNumItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7274,24 +7309,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentCalNumItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentCalNumItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<CalItem> calItemList=null;
 		
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"上限\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"下限\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\"回差\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7360,22 +7396,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentSwitchItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentSwitchItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"位\",\"dataIndex\":\"bitIndex\",width:80 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"触发状态\",\"dataIndex\":\"value\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7446,21 +7483,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentEnumItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentEnumItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数值\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\"含义\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警开关\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7530,18 +7568,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentFESDiagramResultItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentFESDiagramResultItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7593,18 +7632,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentRunStatusItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentRunStatusItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7656,18 +7696,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getImportProtocolAlarmContentCommStatusItemsConfigData(String id,String typeStr){
+	public String getImportProtocolAlarmContentCommStatusItemsConfigData(String id,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"延时(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报警级别\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\"报警使能\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送短信\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\"是否发送邮件\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -9337,12 +9378,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
-	public String getProtocolDeviceTypeChangeProtocolList(String deviceTypeIds) throws Exception {
+	public String getProtocolDeviceTypeChangeProtocolList(String deviceTypeIds,String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",width:120 ,children:[] }"
 				+ "]";
 		
@@ -10027,24 +10069,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getUploadedProtocolItemsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList){
+	public String getUploadedProtocolItemsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-//				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"解析模式\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -10224,23 +10266,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String getUploadedAcqUnitItemsConfigData(String protocolName,String classes,String unitName,String groupName,String groupType,List<ExportAcqUnitData> uploadAcqUnitList){
-
+	public String getUploadedAcqUnitItemsConfigData(String protocolName,String classes,String unitName,String groupName,String groupType,List<ExportAcqUnitData> uploadAcqUnitList,String language){
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		int index=1;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"小数位数\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"响应模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -11620,16 +11662,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getImportDisplayInstanceItemsConfigData(List<ExportDisplayInstanceData> uploadInstanceList,
-			String protocolName,String acqUnitName,String displayUnitName,String instanceName,String itemType){
+			String protocolName,String acqUnitName,String displayUnitName,String instanceName,String itemType,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"显示级别\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据顺序\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
 				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";

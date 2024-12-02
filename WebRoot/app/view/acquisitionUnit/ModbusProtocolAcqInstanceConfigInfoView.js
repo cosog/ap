@@ -280,7 +280,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
 				protocolConfigInstancePropertiesHandsontableHelper = ProtocolConfigInstancePropertiesHandsontableHelper.createNew("ProtocolConfigInstancePropertiesTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 				var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 				protocolConfigInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -492,12 +492,10 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolInstanceConfigItemsHandsontableHelper==null || protocolInstanceConfigItemsHandsontableHelper.hot==undefined){
 				protocolInstanceConfigItemsHandsontableHelper = ProtocolInstanceConfigItemsHandsontableHelper.createNew("ModbusProtocolInstanceItemsConfigTableInfoDiv_id");
-//				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']";
-				
-				
+
 				var colHeaders="[" 
-					+"['','',{label: '下位机', colspan: 5},{label: '上位机', colspan: 5}]," 
-					+"['"+loginUserLanguageResource.idx+"','名称','起始地址(十进制)','存储数据类型','存储数据数量','读写类型','响应模式','接口数据类型','小数位数','换算比例','单位','解析模式']" 
+					+"['','',{label: '"+loginUserLanguageResource.lowerComputer+"', colspan: 5},{label: '"+loginUserLanguageResource.upperComputer+"', colspan: 5}]," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.startAddress+"','"+loginUserLanguageResource.storeDataType+"','"+loginUserLanguageResource.quantity+"','"+loginUserLanguageResource.RWType+"','"+loginUserLanguageResource.acqMode+"','"+loginUserLanguageResource.IFDataType+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.ratio+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.resolutionMode+"']" 
 					+"]";
 				
 				var columns="[{data:'id'},{data:'title'},"

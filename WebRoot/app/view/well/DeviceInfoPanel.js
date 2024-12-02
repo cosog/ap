@@ -1931,7 +1931,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}" 
@@ -2189,7 +2189,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
 	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
 					
-					var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
 						+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}" 
@@ -2278,9 +2278,9 @@ var PumpingInfoHandsontableHelper = {
 	                nestedHeaders:[[{
 	                	label:loginUserLanguageResource.idx
 	                },{
-	                	label:'名称'
+	                	label:loginUserLanguageResource.name
 	                },{
-	                	label:'变量',
+	                	label:loginUserLanguageResource.variable,
 	                	colspan:2
 	                }]],
 	                mergeCells: [{
@@ -2596,7 +2596,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			
 			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
 				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','单位']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.unit+"']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
 				
 				deviceAdditionalInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);

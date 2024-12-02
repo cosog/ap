@@ -236,7 +236,7 @@ function CreateDeviceControlValueTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceControlValueHandsontableHelper==null || deviceControlValueHandsontableHelper.hot==undefined){
 				deviceControlValueHandsontableHelper = DeviceControlValueHandsontableHelper.createNew("DeviceControlValueTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','数值']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.value+"']";
 				var columns="[" 
 						+"{data:'index'}," ;
 				

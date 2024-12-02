@@ -728,7 +728,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(auxiliaryDeviceDetailsHandsontableHelper==null || auxiliaryDeviceDetailsHandsontableHelper.hot==undefined){
 				auxiliaryDeviceDetailsHandsontableHelper = AuxiliaryDeviceDetailsHandsontableHelper.createNew("AuxiliaryDeviceDetailsTableDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量','单位']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.unit+"']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
 				
 				auxiliaryDeviceDetailsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);

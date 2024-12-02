@@ -33,7 +33,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                 value: '',
                 name: "videoKey.orgId"
             },{
-                fieldLabel: '名称<font color=red>*</font>',
+                fieldLabel: loginUserLanguageResource.name+'<font color=red>*</font>',
                 labelWidth: 60,
                 id: 'videoKeyAccount_Id',
                 allowBlank: false,

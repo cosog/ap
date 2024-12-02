@@ -470,7 +470,7 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigNumItemsHandsontableHelper==null || protocolAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigNumItemsHandsontableHelper = ProtocolAlarmUnitConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','地址','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
 						+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
@@ -678,7 +678,7 @@ function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,co
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper==null || protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCalNumItemsHandsontableHelper = ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','单位','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','代码']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','上限','下限','回差','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','代码']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},{data:'unit'},"
 					 	+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}},"
 						+"{data:'lowerLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}}," 
@@ -916,7 +916,7 @@ function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 	
 	if(protocolConfigAlarmUnitPropertiesHandsontableHelper==null || protocolConfigAlarmUnitPropertiesHandsontableHelper.hot==undefined){
 		protocolConfigAlarmUnitPropertiesHandsontableHelper = ProtocolConfigAlarmUnitPropertiesHandsontableHelper.createNew("ModbusProtocolAlarmUnitPropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolConfigAlarmUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolConfigAlarmUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1071,7 +1071,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','数值','含义','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
 					+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
@@ -1266,7 +1266,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper==null || protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper = ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','位','含义','触发状态','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','触发状态','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
 					+"{data:'bitIndex',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
@@ -1471,7 +1471,7 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCommStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码','值']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码','值']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}}," 
@@ -1676,7 +1676,7 @@ function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper==null || protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}}," 
@@ -1881,7 +1881,7 @@ function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,class
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigRunStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','名称','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码','值']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','延时持续检测(s)','再次触发间隔(s)','"+loginUserLanguageResource.alarmLevel+"','报警使能','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码','值']";
 				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}}," 

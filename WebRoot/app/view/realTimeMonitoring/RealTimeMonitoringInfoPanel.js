@@ -775,7 +775,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceRealTimeMonitoringDataHandsontableHelper==null || deviceRealTimeMonitoringDataHandsontableHelper.hot==undefined){
 				deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew("RealTimeMonitoringInfoDataTableInfoDiv_id");
-				var colHeaders="['名称','变量','名称','变量','名称','变量']";
+				var colHeaders="['"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 				var columns="[" 
 						+"{data:'name1'}," 
 						+"{data:'value1'}," 
@@ -1374,13 +1374,13 @@ function controlBtnHandler(btn,btnIndex){
                 }else if(resolutionMode==2){
                 	resolutionModeName=loginUserLanguageResource.numericValue;
                 }
-                var showInfo='名称:<font color=red>'+record.data.itemName+'</font>'
-                	+",存储数据类型:<font color=red>"+record.data.storeDataType+'</font>'
-                	+",存储数据数量:<font color=red>"+record.data.quantity+'</font>';
+                var showInfo=loginUserLanguageResource.name+':<font color=red>'+record.data.itemName+'</font>'
+                	+','+loginUserLanguageResource.storeDataType+':<font color=red>'+record.data.storeDataType+'</font>'
+                	+','+loginUserLanguageResource.quantity+':<font color=red>'+record.data.quantity+'</font>';
                 if(isNotVal(resolutionModeName)){
-                	showInfo+=",解析模式:<font color=red>"+resolutionModeName+'</font>'
+                	showInfo+=','+loginUserLanguageResource.resolutionMode+':<font color=red>'+resolutionModeName+'</font>'
                 }
-                showInfo+=",单位:<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:"无")+'</font>'
+                showInfo+=","+loginUserLanguageResource.unit+":<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:"无")+'</font>'
                 
                 Ext.getCmp("DeviceControlItemName_Id").setHtml(showInfo);
                 

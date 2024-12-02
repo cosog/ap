@@ -835,7 +835,7 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitSingleWellDailyReportContentHandsontableHelper==null || importReportUnitSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellDailyReportContentHandsontableHelper = ImportReportUnitSingleWellDailyReportContentHandsontableHelper.createNew("importReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1240,7 +1240,7 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitSingleWellRangeReportContentHandsontableHelper==null || importReportUnitSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				importReportUnitSingleWellRangeReportContentHandsontableHelper = ImportReportUnitSingleWellRangeReportContentHandsontableHelper.createNew("importReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1641,7 +1641,7 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 			}
 			if(importReportUnitProductionReportContentHandsontableHelper==null || importReportUnitProductionReportContentHandsontableHelper.hot==undefined){
 				importReportUnitProductionReportContentHandsontableHelper = ImportReportUnitProductionReportContentHandsontableHelper.createNew("importReportUnitProductionReportContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','数据来源','统计方式','显示级别','数据顺序','小数位数','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"

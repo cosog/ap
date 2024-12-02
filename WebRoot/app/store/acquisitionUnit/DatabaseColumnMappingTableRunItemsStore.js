@@ -35,7 +35,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
         		    sortable: false,
         		    locked: false
         		}, {
-        		    text: '逻辑',
+        		    text: loginUserLanguageResource.alarmLogic,
         		    lockable: true,
         		    align: 'center',
         		    flex: 1,
@@ -47,7 +47,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
         		        }
         		    }
         		}, {
-        		    text: '数值',
+        		    text: loginUserLanguageResource.value,
         		    lockable: true,
         		    align: 'center',
         		    flex: 1,
@@ -80,7 +80,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
                 	    sortable: false,
                 	    locked: false
                 	}, {
-                	    text: '数值',
+                	    text: loginUserLanguageResource.value,
                 	    lockable: true,
                 	    align: 'center',
                 	    flex: 1,
@@ -92,7 +92,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
                 	        }
                 	    }
                 	}, {
-                	    text: '含义',
+                	    text: loginUserLanguageResource.meaning,
                 	    lockable: true,
                 	    align: 'center',
                 	    flex: 2,

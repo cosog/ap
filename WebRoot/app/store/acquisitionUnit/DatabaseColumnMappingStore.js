@@ -42,7 +42,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         sortable: false,
                         locked: false
                     }, {
-                        text: '名称',
+                        text: loginUserLanguageResource.name,
                         lockable: true,
                         align: 'center',
                         flex: 10,

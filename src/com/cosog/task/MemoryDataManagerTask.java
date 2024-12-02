@@ -4384,7 +4384,9 @@ public class MemoryDataManagerTask {
 		if(!dataModelMap.containsKey(key)){
 			loadLanguageResource(key);
 		}
-		languageMap=(Map<String, String>) dataModelMap.get(key);
+		if(dataModelMap.containsKey(key)){
+			languageMap=(Map<String, String>) dataModelMap.get(key);
+		}
 		return languageMap;
 	}
 	

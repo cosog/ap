@@ -94,7 +94,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryQueryDataHandsontableHelper==null || deviceHistoryQueryDataHandsontableHelper.hot==undefined){
 				deviceHistoryQueryDataHandsontableHelper = DeviceHistoryQueryDataHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
-				var colHeaders="['名称','变量','名称','变量','名称','变量']";
+				var colHeaders="['"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 				var columns="[" 
 						+"{data:'name1'}," 
 						+"{data:'value1'}," 

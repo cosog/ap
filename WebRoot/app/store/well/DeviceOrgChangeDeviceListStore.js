@@ -43,7 +43,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         sortable: false,
                         locked: false
                     }, {
-                        text: '名称',
+                        text: loginUserLanguageResource.name,
                         lockable: true,
                         align: 'center',
                         flex: 5,

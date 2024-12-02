@@ -285,7 +285,7 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 	
 	if(protocolDisplayInstancePropertiesHandsontableHelper==null || protocolDisplayInstancePropertiesHandsontableHelper.hot==undefined){
 		protocolDisplayInstancePropertiesHandsontableHelper = ProtocolDisplayInstancePropertiesHandsontableHelper.createNew("ProtocolDisplayInstancePropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','名称','变量']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolDisplayInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolDisplayInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -493,7 +493,7 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 				var colHeaders = "[" 
                 	+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
                 	+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
-                	+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
                 	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
                 	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置']"
                 	+"]";
@@ -709,7 +709,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 				var colHeaders="[" 
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'']," 
 					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','']," 
-					+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'数据来源']" 
@@ -927,7 +927,7 @@ function CreateProtocolDisplayInstanceInputItemsInfoTable(id,instanceName,classe
 				var colHeaders="[" 
 					+"['','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4}]," 
 					+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
-					+"['"+loginUserLanguageResource.idx+"','名称','单位','显示级别'," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
 					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置']" 
 					+"]";
@@ -1139,7 +1139,7 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolDisplayInstanceCtrlItemsHandsontableHelper==null || protocolDisplayInstanceCtrlItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceCtrlItemsHandsontableHelper = ProtocolDisplayInstanceCtrlItemsHandsontableHelper.createNew("ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','名称','单位','显示级别','字段顺序']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别','字段顺序']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"

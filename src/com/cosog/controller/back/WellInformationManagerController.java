@@ -288,15 +288,19 @@ public class WellInformationManagerController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
-		User user = null;
 		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = this.wellInformationManagerService.getDeviceOrgChangeDeviceList(pager,orgId, deviceName,deviceType);
+		String json = this.wellInformationManagerService.getDeviceOrgChangeDeviceList(pager,orgId, deviceName,deviceType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -309,7 +313,13 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getApplicationScenariosList")
 	public String getApplicationScenariosList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String json = this.wellInformationManagerService.getApplicationScenariosList();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getApplicationScenariosList(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -627,7 +637,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		String auxiliaryDeviceSpecificType= ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getAuxiliaryDeviceDetailsInfo(deviceId,auxiliaryDeviceSpecificType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getAuxiliaryDeviceDetailsInfo(deviceId,auxiliaryDeviceSpecificType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -687,7 +703,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getAuxiliaryDevice(deviceId,deviceType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getAuxiliaryDevice(deviceId,deviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -805,7 +827,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDeviceAdditionalInfo(deviceId,deviceType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDeviceAdditionalInfo(deviceId,deviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -912,7 +940,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getPumpingModelList(deviceId,deviceType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getPumpingModelList(deviceId,deviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -929,7 +963,13 @@ public class WellInformationManagerController extends BaseController {
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String deviceCalculateDataType=ParamUtils.getParameter(request, "deviceCalculateDataType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDeviceProductionDataInfo(deviceId,deviceType,deviceCalculateDataType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDeviceProductionDataInfo(deviceId,deviceType,deviceCalculateDataType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -946,7 +986,13 @@ public class WellInformationManagerController extends BaseController {
 		String orgId= ParamUtils.getParameter(request, "orgId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDeviceVideoInfo(deviceId,deviceType,orgId);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDeviceVideoInfo(deviceId,deviceType,orgId,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -960,7 +1006,13 @@ public class WellInformationManagerController extends BaseController {
 	public String getVideoKeyData() throws IOException {
 		String orgId= ParamUtils.getParameter(request, "orgId");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getVideoKeyData(orgId);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getVideoKeyData(orgId,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -998,7 +1050,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getDevicePumpingInfo(deviceId,deviceType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDevicePumpingInfo(deviceId,deviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1985,15 +2043,18 @@ public class WellInformationManagerController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = wellInformationManagerService.getUpstreamAndDownstreamInteractionDeviceList(orgId,deviceName,deviceType,pager);
+		json = wellInformationManagerService.getUpstreamAndDownstreamInteractionDeviceList(orgId,deviceName,deviceType,pager,language);
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -2162,8 +2223,13 @@ public class WellInformationManagerController extends BaseController {
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
 		this.pager = new Page("pagerForm", request);
-		
-		json = wellInformationManagerService.getWaterCutRawData(signinId,slave);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = wellInformationManagerService.getWaterCutRawData(signinId,slave,language);
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

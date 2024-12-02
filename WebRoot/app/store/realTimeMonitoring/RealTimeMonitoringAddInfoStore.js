@@ -57,7 +57,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     				store: deviceInfoStore,
     			    columns: [
     			    	{ 
-    			        	header: '名称',  
+    			        	header: loginUserLanguageResource.name,  
     			        	dataIndex: 'item',
     			        	align:'left',
     			        	flex:9,
@@ -66,7 +66,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			        	}
     			        },
     			        { 
-    			        	header: '变量', 
+    			        	header: loginUserLanguageResource.variable, 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:10,
@@ -128,7 +128,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			        	width: 50
     			        },
     			        { 
-    			        	header: '名称', 
+    			        	header: loginUserLanguageResource.name, 
     			        	dataIndex: 'name',
     			        	align:'center',
     			        	flex:10,

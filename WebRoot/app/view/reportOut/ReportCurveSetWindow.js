@@ -27,7 +27,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 0',
-                html: '<font color=red>Y轴坐标在设置的最大最小值基础上再次自适应</font>'
+                html: '<font color=red>'+loginUserLanguageResource.diagramSetTooltip+'</font>'
             },'->',{
                 xtype: 'button',
                 text: loginUserLanguageResource.save,
@@ -244,7 +244,7 @@ function CreateDeviceReportCurveSetTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceReportCurveSetHandsontableHelper==null || deviceReportCurveSetHandsontableHelper.hot==undefined){
 				deviceReportCurveSetHandsontableHelper = DeviceReportCurveSetHandsontableHelper.createNew("ReportCurveSetTableDiv_Id");
-				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','项编码','项类型']";
+				var colHeaders="['"+loginUserLanguageResource.curve+"','"+loginUserLanguageResource.yAxisMaxSetValue+"','"+loginUserLanguageResource.yAxisMinSetValue+"','"+loginUserLanguageResource.itemCode+"','"+loginUserLanguageResource.itemType+"']";
 				var columns="[" 
 						+"{data:'curveName'}," 
 						+"{data:'yAxisMaxValue'}," 

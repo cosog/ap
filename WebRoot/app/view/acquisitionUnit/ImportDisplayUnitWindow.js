@@ -420,8 +420,8 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 			if(importDisplayUnitAcqItemsHandsontableHelper==null || importDisplayUnitAcqItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitAcqItemsHandsontableHelper = ImportDisplayUnitAcqItemsHandsontableHelper.createNew("importDisplayUnitAcqItemsConfigTableInfoDiv_id");
 				var colHeaders = "[" 
-                	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
-                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
+                	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4}]," 
+                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
                 	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
                 	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']"
                 	+"]";
@@ -624,7 +624,7 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unit
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitCtrlItemsHandsontableHelper==null || importDisplayUnitCtrlItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitCtrlItemsHandsontableHelper = ImportDisplayUnitCtrlItemsHandsontableHelper.createNew("importDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别','字段顺序']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -775,11 +775,11 @@ function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitN
 				importDisplayUnitCalItemsHandsontableHelper = ImportDisplayUnitCalItemsHandsontableHelper.createNew("importDisplayUnitCalItemsConfigTableInfoDiv_id");
 				
 				var colHeaders="[" 
-					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4},'']," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
+					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'']," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'数据来源']" 
+					+"'"+loginUserLanguageResource.dataSource+"']" 
 					+"]";
 				
 				var columns="["
@@ -970,8 +970,8 @@ function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,uni
 			if(importDisplayUnitInputItemsHandsontableHelper==null || importDisplayUnitInputItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitInputItemsHandsontableHelper = ImportDisplayUnitInputItemsHandsontableHelper.createNew("importDisplayUnitInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '历史数据', colspan: 4}]," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
+					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4}]," 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
 					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']" 
 					+"]";

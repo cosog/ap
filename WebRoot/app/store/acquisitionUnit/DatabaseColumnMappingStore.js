@@ -55,7 +55,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         	}
                         }
                     }, {
-                        text: '字段',
+                        text: loginUserLanguageResource.dataColumn,
                         lockable: true,
                         align: 'center',
                         flex: 10,

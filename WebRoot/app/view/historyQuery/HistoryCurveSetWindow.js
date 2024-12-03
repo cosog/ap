@@ -27,7 +27,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 0',
-                html: '<font color=red>Y轴坐标在设置的最大最小值基础上再次自适应</font>'
+                html: '<font color=red>'+loginUserLanguageResource.diagramSetTooltip+'</font>'
             },'->',{
                 xtype: 'button',
                 text: loginUserLanguageResource.save,
@@ -177,7 +177,7 @@ function CreateDeviceHistoryCurveSetTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
 				deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
-				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','项编码','项类型']";
+				var colHeaders="['"+loginUserLanguageResource.curve+"','"+loginUserLanguageResource.yAxisMaxSetValue+"','"+loginUserLanguageResource.yAxisMinSetValue+"','"+loginUserLanguageResource.itemCode+"','"+loginUserLanguageResource.itemType+"']";
 				var columns="[" 
 						+"{data:'curveName'}," 
 						+"{data:'yAxisMaxValue'}," 

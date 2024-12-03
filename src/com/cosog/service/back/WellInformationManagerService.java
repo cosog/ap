@@ -2142,10 +2142,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		result_json.append("{\"id\":1,\"itemValue1\":\""+languageResourceMap.get("name")+"\",\"itemValue2\":\""+auxiliaryDeviceName+"\"},");
-		result_json.append("{\"id\":2,\"itemValue1\":\"厂家\",\"itemValue2\":\""+manufacturer+"\"},");
-		result_json.append("{\"id\":3,\"itemValue1\":\"规格型号\",\"itemValue2\":\""+model+"\"},");
+		result_json.append("{\"id\":2,\"itemValue1\":\""+languageResourceMap.get("manufacturer")+"\",\"itemValue2\":\""+manufacturer+"\"},");
+		result_json.append("{\"id\":3,\"itemValue1\":\""+languageResourceMap.get("model")+"\",\"itemValue2\":\""+model+"\"},");
 		
-		result_json.append("{\"id\":4,\"itemValue1\":\"冲程(m)\",\"itemValue2\":\""+stroke+"\"},");
+		result_json.append("{\"id\":4,\"itemValue1\":\""+languageResourceMap.get("stroke")+"(m)\",\"itemValue2\":\""+stroke+"\"},");
 		result_json.append("{\"id\":5,\"itemValue1\":\"平衡块信息\",\"itemValue2\":\"\"},");
 		result_json.append("{\"id\":6,\"itemValue1\":\"位置(m)\",\"itemValue2\":\"重量(kN)\"},");
 		
@@ -2933,10 +2933,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
-				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
-				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
-				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("commStatus")+"\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("slave")+"\",\"dataIndex\":\"slave\",flex:1,children:[] }"
 				+ "]";
 		
 		String sql="select t.id,t.devicename,"

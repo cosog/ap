@@ -4210,14 +4210,14 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var color=new Array("#000000","#00ff00"); // 线条颜色
 	var subtitle=get_rawData.deviceName+"["+get_rawData.start_date+"~"+get_rawData.end_date+"]";
 	if(diagramType===0){//如果是功图
-		title='光杆功图叠加';
-		ytext='载荷(kN)';
+		title=loginUserLanguageResource.FSDiagramOverlay;
+		ytext=loginUserLanguageResource.load+'(kN)';
 	}else if(diagramType===1){//电功图
-		title= "电功图叠加";
-		ytext="有功功率(kW)"
+		title= loginUserLanguageResource.WSDiagramOverlay;
+		ytext=loginUserLanguageResource.activePower+"(kW)"
 	}else if(diagramType===2){//电流图
-		title= "电流图叠加";
-		ytext="电流(A)"
+		title= loginUserLanguageResource.ISDiagramOverlay;
+		ytext=loginUserLanguageResource.electricity+"(A)"
 	}
 	
 	var minValue=null;

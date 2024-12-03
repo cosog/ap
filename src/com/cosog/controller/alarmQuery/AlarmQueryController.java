@@ -153,15 +153,20 @@ public class AlarmQueryController extends BaseController{
 		alarmLevel = ParamUtils.getParameter(request, "alarmLevel");
 		isSendMessage = ParamUtils.getParameter(request, "isSendMessage");
 		this.pager = new Page("pagerForm", request);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId=user.getUserorgids();
 			}
 		}
-		json = alarmQueryService.getAlarmOverviewData(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		json = alarmQueryService.getAlarmOverviewData(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);

@@ -514,8 +514,8 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getUserOrgChangeUserList(Page pager,String orgIds,String userName,User user) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
+	public String getUserOrgChangeUserList(Page pager,String orgIds,String userName,User user,String language) throws Exception {
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
 		
 		String sql = "select t.user_no,t.user_name,t.user_id,o.allpath "
@@ -531,10 +531,10 @@ public class UserManagerService<T> extends BaseService<T> {
 		}	
 		sql+= " order by r.role_level,t.user_no";
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"用户名称\",\"dataIndex\":\"userName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"用户账号\",\"dataIndex\":\"userID\",width:120 ,children:[] },"
-				+ "{ \"header\":\"隶属组织\",\"dataIndex\":\"orgName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("userName")+"\",\"dataIndex\":\"userName\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("userAccount")+"\",\"dataIndex\":\"userID\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("owningOrg")+"\",\"dataIndex\":\"orgName\",width:120 ,children:[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");

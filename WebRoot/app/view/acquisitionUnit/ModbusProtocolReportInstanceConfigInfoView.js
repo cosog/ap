@@ -736,7 +736,7 @@ function CreateSingleWellRangeReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellRangeReportContentHandsontableHelper==null || reportInstanceSingleWellRangeReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellRangeReportContentHandsontableHelper = ReportInstanceSingleWellRangeReportContentHandsontableHelper.createNew("ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.totalType+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.dataSort+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1142,7 +1142,7 @@ function CreateSingleWellDailyReportInstanceTotalItemsInfoTable(calculateType,se
 			}
 			if(reportInstanceSingleWellDailyReportContentHandsontableHelper==null || reportInstanceSingleWellDailyReportContentHandsontableHelper.hot==undefined){
 				reportInstanceSingleWellDailyReportContentHandsontableHelper = ReportInstanceSingleWellDailyReportContentHandsontableHelper.createNew("ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.totalType+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.dataSort+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.reportCurve+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
@@ -1315,7 +1315,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 			}
 			if(reportInstanceProductionTemplateContentHandsontableHelper==null || reportInstanceProductionTemplateContentHandsontableHelper.hot==undefined){
 				reportInstanceProductionTemplateContentHandsontableHelper = ReportInstanceProductionTemplateContentHandsontableHelper.createNew("ProductionReportInstanceContentConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','数据来源','统计方式','显示级别','数据顺序','"+loginUserLanguageResource.prec+"','求和','求平均','"+loginUserLanguageResource.reportCurve+"','曲线统计类型','','','']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.totalType+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.dataSort+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.sumSign+"','"+loginUserLanguageResource.averageSign+"','"+loginUserLanguageResource.reportCurve+"','"+loginUserLanguageResource.curveStatType+"','','','']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"

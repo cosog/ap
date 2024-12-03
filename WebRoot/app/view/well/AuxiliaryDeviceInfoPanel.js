@@ -195,7 +195,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
         		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
         		tbar:onlyMonitor?null:[{
                     xtype: 'radiogroup',
-                    fieldLabel: '指定类型',
+                    fieldLabel: loginUserLanguageResource.specificType,
                     hidden: onlyMonitor,
                     labelWidth: 60,
                     id: 'AuxiliaryDeviceSpecificType_Id',
@@ -261,7 +261,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders="['"+loginUserLanguageResource.idx+"','类型','"+loginUserLanguageResource.deviceName+"','厂家','规格型号','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
+                var colHeaders="['"+loginUserLanguageResource.idx+"','类型','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
                 var columns="[{data:'id'}," 
                 		+"{data:'specificType'}," 
                 		+"{data:'name'}," 

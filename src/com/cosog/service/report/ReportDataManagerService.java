@@ -4111,304 +4111,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String exportPCPDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
+	public String getDeviceList(String orgId,String deviceName,String deviceType,String language){
 		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
-				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
-		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
-		}else{
-			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
-		}
-		sql+= " t.rpm,"
-				+ " t.systemEfficiency,t.energyPer100mLift,"
-				+ " t.todayKWattH,"
-				+ " remark"
-				+ " from viw_pcpdailycalculationdata t "
-				+ " where t.org_id in ("+orgId+") "
-				+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName='"+deviceName+"'";
-		}
-		sql+=" order by t.sortNum, t.deviceName,t.calDate";
-		List<?> list = this.findCallSql(sql);
-		
-		result_json.append("[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"deviceName\":\""+obj[1]+"\",");
-			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
-			result_json.append("\"commTime\":\""+obj[3]+"\",");
-			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
-			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
-			result_json.append("\"runTime\":\""+obj[6]+"\",");
-			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
-			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
-		
-			result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
-			result_json.append("\"oilProduction\":\""+obj[10]+"\",");
-			result_json.append("\"waterProduction\":\""+obj[11]+"\",");
-			result_json.append("\"waterCut\":\""+obj[12]+"\",");
-			result_json.append("\"rpm\":\""+obj[13]+"\",");
-			
-			result_json.append("\"systemEfficiency\":\""+obj[14]+"\",");
-			result_json.append("\"energyPer100mLift\":\""+obj[15]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[16]+"\",");
-			result_json.append("\"remark\":\""+obj[17]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public boolean exportPCPDailyReportData(User user,HttpServletResponse response,String fileName,String title,
-			Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
-		try{
-			StringBuffer result_json = new StringBuffer();
-			ConfigFile configFile=Config.getInstance().configFile;
-			int maxvalue=configFile.getAp().getOthers().getExportLimit();
-			String productionUnit="t/d"; 
-	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-	        	productionUnit="t/d"; 
-			}else{
-				productionUnit="m^3/d"; 
-			}
-	        String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
-					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-					+ " t.runTime,t.runRange, t.runTimeEfficiency,";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
-			}else{
-				sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
-			}
-			sql+= " t.rpm,"
-					+ " t.systemEfficiency,t.energyPer100mLift,"
-					+ " t.todayKWattH,"
-					+ " remark"
-					+ " from viw_pcpdailycalculationdata t "
-					+ " where t.org_id in ("+orgId+") "
-					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and  t.deviceName='"+deviceName+"'";
-			}
-			sql+=" order by t.sortNum, t.deviceName,t.calDate";
-			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-			
-			List<List<Object>> sheetDataList = new ArrayList<>();
-			List<Object> titleRow = new ArrayList<>();
-			List<Object> headerRow1 = new ArrayList<>();
-			List<Object> headerRow2 = new ArrayList<>();
-			for(int i=0;i<18;i++){
-				if(i==0){
-					titleRow.add(title);
-				}else{
-					titleRow.add(ExcelUtils.COLUMN_MERGE);
-				}
-			}
-			headerRow1.add("序号");
-			headerRow1.add("设备名");
-			headerRow1.add("日期");
-			headerRow1.add("通信");
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add("时率");
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add("产量");
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add("效率");
-			headerRow1.add(ExcelUtils.COLUMN_MERGE);
-			headerRow1.add("日用电量(kW·h)");
-			headerRow1.add("备注");
-			
-			headerRow2.add(ExcelUtils.ROW_MERGE);
-			headerRow2.add(ExcelUtils.ROW_MERGE);
-			headerRow2.add(ExcelUtils.ROW_MERGE);
-			headerRow2.add("在线时间(h)");
-			headerRow2.add("在线区间");
-			headerRow2.add("在线时率(小数)");
-			headerRow2.add("运行时间(h)");
-			headerRow2.add("运行区间");
-			headerRow2.add("运行时率(小数)");
-			headerRow2.add("日累计产液量("+productionUnit+")");
-			headerRow2.add("日累计产油量("+productionUnit+")");
-			headerRow2.add("日累计产水量("+productionUnit+")");
-			headerRow2.add("含水率(%)");
-			headerRow2.add("转速(r/min)");
-			headerRow2.add("系统效率(%)");
-			headerRow2.add("吨液百米耗电量(kW·h/100·t)");
-			headerRow2.add(ExcelUtils.ROW_MERGE);
-			headerRow2.add(ExcelUtils.ROW_MERGE);
-			
-			sheetDataList.add(titleRow);
-			sheetDataList.add(headerRow1);
-			sheetDataList.add(headerRow2);
-			
-			List<?> list = this.findCallSql(finalSql);
-			Object[] obj=null;
-			List<Object> record=null;
-			JSONObject jsonObject=null;
-			float sumCommTime=0,sumRunTime=0,sumLiquidProduction=0,sumOilProduction=0,sumWaterProduction=0;
-	        int commTimeRecords=0,runTimeRecords=0,liquidProductionRecords=0,oilProductionRecords=0,waterProductionRecords=0;
-	        float averageCommTime=0,averageRunTime=0,averageLiquidProduction=0,averageOilProduction=0,averageWaterProduction=0;
-			for(int i=0;i<list.size();i++){
-				obj=(Object[]) list.get(i);
-				record = new ArrayList<>();
-				result_json = new StringBuffer();
-				result_json.append("{\"id\":"+(i+1)+",");
-				result_json.append("\"deviceName\":\""+obj[1]+"\",");
-				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
-				result_json.append("\"commTime\":\""+obj[3]+"\",");
-				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
-				result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
-				result_json.append("\"runTime\":\""+obj[6]+"\",");
-				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
-				result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
-			
-				result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
-				result_json.append("\"oilProduction\":\""+obj[10]+"\",");
-				result_json.append("\"waterProduction\":\""+obj[11]+"\",");
-				result_json.append("\"waterCut\":\""+obj[12]+"\",");
-				result_json.append("\"rpm\":\""+obj[13]+"\",");
-				
-				result_json.append("\"systemEfficiency\":\""+obj[14]+"\",");
-				result_json.append("\"energyPer100mLift\":\""+obj[15]+"\",");
-				result_json.append("\"todayKWattH\":\""+obj[16]+"\",");
-				result_json.append("\"remark\":\""+obj[17]+"\"}");
-				
-				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				record.add(jsonObject.getString("id"));
-				record.add(jsonObject.getString("deviceName"));
-				record.add(jsonObject.getString("calculateDate"));
-				record.add(jsonObject.getString("commTime"));
-				record.add(jsonObject.getString("commRange"));
-				record.add(jsonObject.getString("commTimeEfficiency"));
-				record.add(jsonObject.getString("runTime"));
-				record.add(jsonObject.getString("runRange"));
-				record.add(jsonObject.getString("runTimeEfficiency"));
-				record.add(jsonObject.getString("liquidProduction"));
-				record.add(jsonObject.getString("oilProduction"));
-				record.add(jsonObject.getString("waterProduction"));
-				record.add(jsonObject.getString("waterCut"));
-				record.add(jsonObject.getString("rpm"));
-				record.add(jsonObject.getString("systemEfficiency"));
-				record.add(jsonObject.getString("energyPer100mLift"));
-				record.add(jsonObject.getString("todayKWattH"));
-				record.add(jsonObject.getString("remark"));
-				
-				sheetDataList.add(record);
-				
-				sumCommTime+=StringManagerUtils.stringToFloat(jsonObject.getString("commTime"));
-     		   	sumRunTime+=StringManagerUtils.stringToFloat(jsonObject.getString("runTime"));
-     		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"));
-     		   	sumOilProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"));
-     		   	sumWaterProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"));
-         	   
-     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("commTime"))>0){
-         		   commTimeRecords+=1;
-     		   	}
-     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("runTime"))>0){
-         		   runTimeRecords+=1;
-     		   	}
-     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"))>0){
-         		   liquidProductionRecords+=1;
-     		   	}
-     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"))>0){
-         		   oilProductionRecords+=1;
-     		   	}
-     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"))>0){
-         		   waterProductionRecords+=1;
-     		   	}
-			}
-			
-			sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
- 		   	sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
- 		   	sumLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction+"",2);
- 		   	sumOilProduction=StringManagerUtils.stringToFloat(sumOilProduction+"",2);
- 		   	sumWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction+"",2);
- 		   	if(commTimeRecords>0){
-			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
- 		   	}
- 		   	if(runTimeRecords>0){
-			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
- 		   	}
- 		   	if(liquidProductionRecords>0){
-			   averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
- 		   	}
- 		   	if(oilProductionRecords>0){
-			   averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
- 		   	}
- 		   	if(waterProductionRecords>0){
-			   averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
- 		   	}
- 		   	
- 		   	record = new ArrayList<>();
- 		   	record.add("合计");
-			record.add("");
-			record.add("");
-			record.add(sumCommTime);
-			record.add("");
-			record.add("");
-			record.add(sumRunTime);
-			record.add("");
-			record.add("");
-			record.add(sumLiquidProduction);
-			record.add(sumOilProduction);
-			record.add(sumWaterProduction);
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			sheetDataList.add(record);
-			
-			record = new ArrayList<>();
- 		   	record.add("平均");
-			record.add("");
-			record.add("");
-			record.add(averageCommTime);
-			record.add("");
-			record.add("");
-			record.add(averageRunTime);
-			record.add("");
-			record.add("");
-			record.add(averageLiquidProduction);
-			record.add(averageOilProduction);
-			record.add(averageWaterProduction);
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			record.add("");
-			sheetDataList.add(record);
-			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,3,null);
-			if(user!=null){
-		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	public String getDeviceList(String orgId,String deviceName,String deviceType){
-		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String tableName="tbl_device";
 		String sql="select t.id,t.deviceName,t.calculateType"
 				+ " from "+tableName+" t "
@@ -4425,8 +4130,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
@@ -4444,9 +4149,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportTemplateList(String orgId,String deviceName,String deviceType,String reportType){
+	public String getReportTemplateList(String orgId,String deviceName,String deviceType,String reportType,String language){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String tableName="tbl_device";
 		String sql="select t3.singleWellRangeReportTemplate,t3.productionreporttemplate "
 				+ " from tbl_device t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
@@ -4458,8 +4164,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		sql+=" group by t3.singleWellRangeReportTemplate,t3.productionreporttemplate";
 		
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"模板\",\"dataIndex\":\"templateName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("template")+"\",\"dataIndex\":\"templateName\" ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4494,8 +4200,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportInstanceList(String orgId,String deviceName,String deviceType){
+	public String getReportInstanceList(String orgId,String deviceName,String deviceType,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String tableName="tbl_device";
 		String sql="select  t2.id,t2.name,t2.code,t2.unitid,t2.sort "
 				+ " from "+tableName+" t,tbl_protocolreportinstance t2 "
@@ -4512,8 +4219,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		sql+=" group by t2.id,t2.name,t2.code,t2.unitid,t2.sort order by t2.sort";
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"报表实例\",\"dataIndex\":\"instanceName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("reportInstance")+"\",\"dataIndex\":\"instanceName\" ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"totalCount\":"+list.size()+",");
 		result_json.append("\"totalRoot\":[");

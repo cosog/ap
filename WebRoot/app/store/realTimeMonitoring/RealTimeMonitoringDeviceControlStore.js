@@ -43,7 +43,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                 }
                             }
 			        },{
-			        	text: '动作',
+			        	text: loginUserLanguageResource.action,
 			            align: 'center',
 			            stopSelection: true,
 			            xtype: 'widgetcolumn',
@@ -56,7 +56,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 			            	minWidth: 85,
 			            	items:[{
 				            	  xtype: 'button',
-				                   text:'设置',
+				                   text:loginUserLanguageResource.set,
 				                   height: 20,
 				                   width: 38,
 				                   defaultBindProperty: null, //important
@@ -70,7 +70,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 				                    }
 			            	},{
 				            	  xtype: 'button',
-				                   text:'设置2',
+				                   text:loginUserLanguageResource.set+'2',
 				                   height: 20,
 				                   width: 38,
 				                   defaultBindProperty: null, //important

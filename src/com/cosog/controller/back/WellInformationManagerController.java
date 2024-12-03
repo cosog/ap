@@ -1498,57 +1498,66 @@ public class WellInformationManagerController extends BaseController {
 			map.remove("importedDeviceFileMap",importedDeviceFileMap);
 		}
 		importedDeviceFileMap=new HashMap<String,String>();
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
 		String json = "";
 		String tablecolumns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},"
-				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\"},"
-				+ "{ \"header\":\"采控实例\",\"dataIndex\":\"instanceName\"},"
-				+ "{ \"header\":\"显示实例\",\"dataIndex\":\"displayInstanceName\"},"
-				+ "{ \"header\":\"报警实例\",\"dataIndex\":\"alarmInstanceName\"},"
-				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signInId\"},"
-				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\"},"
-				+ "{ \"header\":\"状态\",\"dataIndex\":\"statusName\"},"
-				+ "{ \"header\":\"排序编号\",\"dataIndex\":\"sortNum\"},"
-				+ "{ \"header\":\"原油密度(g/cm^3)\",\"dataIndex\":\"crudeOilDensity\"},"
-				+ "{ \"header\":\"水密度(g/cm^3)\",\"dataIndex\":\"waterDensity\"},"
-				+ "{ \"header\":\"天然气相对密度\",\"dataIndex\":\"naturalGasRelativeDensity\"},"
-				+ "{ \"header\":\"饱和压力(MPa)\",\"dataIndex\":\"saturationPressure\"},"
-				+ "{ \"header\":\"油层中部深度(m)\",\"dataIndex\":\"reservoirDepth\"},"
-				+ "{ \"header\":\"油层中部温度(℃)\",\"dataIndex\":\"reservoirTemperature\"},"
-				+ "{ \"header\":\"油压(MPa)\",\"dataIndex\":\"tubingPressure\"},"
-				+ "{ \"header\":\"套压(MPa)\",\"dataIndex\":\"casingPressure\"},"
-				+ "{ \"header\":\"井口温度(℃)\",\"dataIndex\":\"wellHeadTemperature\"},"
-				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
-				+ "{ \"header\":\"生产气油比(m^3/t)\",\"dataIndex\":\"productionGasOilRatio\"},"
-				+ "{ \"header\":\"动液面(m)\",\"dataIndex\":\"producingfluidLevel\"},"
-				+ "{ \"header\":\"泵挂(m)\",\"dataIndex\":\"pumpSettingDepth\"},"
-				+ "{ \"header\":\"泵类型\",\"dataIndex\":\"pumpType\"},"
-				+ "{ \"header\":\"泵筒类型\",\"dataIndex\":\"barrelType\"},"
-				+ "{ \"header\":\"泵级别\",\"dataIndex\":\"pumpGrade\"},"
-				+ "{ \"header\":\"泵径(mm)\",\"dataIndex\":\"pumpBoreDiameter\"},"
-				+ "{ \"header\":\"柱塞长(m)\",\"dataIndex\":\"plungerLength\"},"
-				+ "{ \"header\":\"油管内径(mm)\",\"dataIndex\":\"tubingStringInsideDiameter\"},"
-				+ "{ \"header\":\"套管内径(mm)\",\"dataIndex\":\"casingStringInsideDiameter\"},"
-				+ "{ \"header\":\"一级杆级别\",\"dataIndex\":\"rodGrade1\"},"
-				+ "{ \"header\":\"一级杆外径(mm)\",\"dataIndex\":\"rodOutsideDiameter1\"},"
-				+ "{ \"header\":\"一级杆内径(mm)\",\"dataIndex\":\"rodInsideDiameter1\"},"
-				+ "{ \"header\":\"一级杆长度(m)\",\"dataIndex\":\"rodLength1\"},"
-				+ "{ \"header\":\"二级杆级别\",\"dataIndex\":\"rodGrade2\"},"
-				+ "{ \"header\":\"二级杆外径(mm)\",\"dataIndex\":\"rodOutsideDiameter2\"},"
-				+ "{ \"header\":\"二级杆内径(mm)\",\"dataIndex\":\"rodInsideDiameter2\"},"
-				+ "{ \"header\":\"二级杆长度(m)\",\"dataIndex\":\"rodLength2\"},"
-				+ "{ \"header\":\"三级杆级别\",\"dataIndex\":\"rodGrade3\"},"
-				+ "{ \"header\":\"三级杆外径(mm)\",\"dataIndex\":\"rodOutsideDiameter3\"},"
-				+ "{ \"header\":\"三级杆内径(mm)\",\"dataIndex\":\"rodInsideDiameter3\"},"
-				+ "{ \"header\":\"三级杆长度(m)\",\"dataIndex\":\"rodLength3\"},"
-				+ "{ \"header\":\"四级杆级别\",\"dataIndex\":\"rodGrade4\"},"
-				+ "{ \"header\":\"四级杆外径(mm)\",\"dataIndex\":\"rodOutsideDiameter4\"},"
-				+ "{ \"header\":\"四级杆内径(mm)\",\"dataIndex\":\"rodInsideDiameter4\"},"
-				+ "{ \"header\":\"四级杆长度(m)\",\"dataIndex\":\"rodLength4\"},"
-				+ "{ \"header\":\"净毛比(小数)\",\"dataIndex\":\"netGrossRatio\"},"
-				+ "{ \"header\":\"抽油机厂家\",\"dataIndex\":\"manufacturer\"},"
-				+ "{ \"header\":\"抽油机型号\",\"dataIndex\":\"model\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50},"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"wellName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("acqInstance")+"\",\"dataIndex\":\"instanceName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("displayInstance")+"\",\"dataIndex\":\"displayInstanceName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmInstance")+"\",\"dataIndex\":\"alarmInstanceName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signInId\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("slave")+"\",\"dataIndex\":\"slave\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("status")+"\",\"dataIndex\":\"statusName\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("sortNum")+"\",\"dataIndex\":\"sortNum\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"dataIndex\":\"crudeOilDensity\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"dataIndex\":\"waterDensity\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"dataIndex\":\"naturalGasRelativeDensity\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"dataIndex\":\"saturationPressure\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("reservoirDepth")+"(m)\",\"dataIndex\":\"reservoirDepth\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("reservoirTemperature")+"(℃)\",\"dataIndex\":\"reservoirTemperature\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("tubingPressure")+"(MPa)\",\"dataIndex\":\"tubingPressure\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"dataIndex\":\"casingPressure\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"dataIndex\":\"wellHeadTemperature\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("waterCut")+"(%)\",\"dataIndex\":\"waterCut\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"dataIndex\":\"productionGasOilRatio\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"dataIndex\":\"producingfluidLevel\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"dataIndex\":\"pumpSettingDepth\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("pumpType")+"\",\"dataIndex\":\"pumpType\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("barrelType")+"\",\"dataIndex\":\"barrelType\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("pumpGrade")+"\",\"dataIndex\":\"pumpGrade\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"dataIndex\":\"pumpBoreDiameter\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"dataIndex\":\"plungerLength\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"dataIndex\":\"tubingStringInsideDiameter\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("casingStringInsideDiameter")+"(mm)\",\"dataIndex\":\"casingStringInsideDiameter\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodGrade1")+"\",\"dataIndex\":\"rodGrade1\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodOutsideDiameter1")+"(mm)\",\"dataIndex\":\"rodOutsideDiameter1\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodInsideDiameter1")+"(mm)\",\"dataIndex\":\"rodInsideDiameter1\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodLength1")+"(m)\",\"dataIndex\":\"rodLength1\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodGrade2")+"\",\"dataIndex\":\"rodGrade2\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodOutsideDiameter2")+"(mm)\",\"dataIndex\":\"rodOutsideDiameter2\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodInsideDiameter2")+"(mm)\",\"dataIndex\":\"rodInsideDiameter2\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodLength2")+"(m)\",\"dataIndex\":\"rodLength2\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodGrade3")+"\",\"dataIndex\":\"rodGrade3\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodOutsideDiameter3")+"(mm)\",\"dataIndex\":\"rodOutsideDiameter3\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodInsideDiameter3")+"(mm)\",\"dataIndex\":\"rodInsideDiameter3\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodLength3")+"(m)\",\"dataIndex\":\"rodLength3\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodGrade4")+"\",\"dataIndex\":\"rodGrade4\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodOutsideDiameter4")+"(mm)\",\"dataIndex\":\"rodOutsideDiameter4\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodInsideDiameter4")+"(mm)\",\"dataIndex\":\"rodInsideDiameter4\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("rodLength4")+"(m)\",\"dataIndex\":\"rodLength4\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("netGrossRatio")+"(小数)\",\"dataIndex\":\"netGrossRatio\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("manufacturer")+"\",\"dataIndex\":\"manufacturer\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("model")+"\",\"dataIndex\":\"model\"},"
 				+ "{ \"header\":\"铭牌冲程\",\"dataIndex\":\"stroke\"},"
 				+ "{ \"header\":\"曲柄旋转方向\",\"dataIndex\":\"crankRotationDirection\"},"
 				+ "{ \"header\":\"曲柄偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrank\"},"
@@ -2265,17 +2274,22 @@ public class WellInformationManagerController extends BaseController {
 		String slave = ParamUtils.getParameter(request, "slave");
 		String key = ParamUtils.getParameter(request, "key");
 		User user = null;
+		String language="";
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
 			user = (User) session.getAttribute("userLogin");
+			if(user!=null){
+				language=user.getLanguageName();
+			}
 		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		WaterCutRawData waterCutRawData=null;
 		String acqTime="";
 		String title="含水仪数据";
 		String sheetName="含水仪数据";
 		// 表头数据
-	    List<Object> head = Arrays.asList("序号","采样时间","采样间隔(ms)","含水率(%)","压力(MPa)","位置");
+	    List<Object> head = Arrays.asList(languageResourceMap.get("idx"),"采样时间","采样间隔(ms)",languageResourceMap.get("waterCut")+"(%)","压力(MPa)","位置");
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){

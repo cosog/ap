@@ -79,11 +79,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getRealTimeMonitoringFESDiagramResultStatData(String orgId,String deviceType,String commStatusStatValue,String deviceTypeStatValue) throws IOException, SQLException{
+	public String getRealTimeMonitoringFESDiagramResultStatData(String orgId,String deviceType,String commStatusStatValue,String deviceTypeStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		List<DeviceInfo> deviceList=null;
 		boolean jedisStatus=false;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			try{
 				jedisStatus=MemoryDataManagerTask.getJedisStatus();
@@ -93,9 +94,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			
@@ -181,20 +182,21 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getRealTimeMonitoringCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue) throws IOException, SQLException{
+	public String getRealTimeMonitoringCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		List<DeviceInfo> deviceList=null;
 		boolean jedisStatus=false;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			jedisStatus=MemoryDataManagerTask.getJedisStatus();
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			deviceList =MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":3,");
@@ -273,19 +275,20 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getRealTimeMonitoringRunStatusStatData(String orgId,String deviceType,String deviceTypeStatValue) throws IOException, SQLException{
+	public String getRealTimeMonitoringRunStatusStatData(String orgId,String deviceType,String deviceTypeStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		List<DeviceInfo> deviceList=null;
 		boolean jedisStatus=false;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			jedisStatus=MemoryDataManagerTask.getJedisStatus();
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			deviceList =MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":4,");
@@ -390,9 +393,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getRealTimeMonitoringDeviceTypeStatData(String orgId,String deviceType,String commStatusStatValue) throws IOException, SQLException{
+	public String getRealTimeMonitoringDeviceTypeStatData(String orgId,String deviceType,String commStatusStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
@@ -410,9 +414,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			List<?> list = this.findCallSql(sql);
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":"+list.size()+",");
@@ -598,11 +602,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public boolean exportDeviceRealTimeOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String deviceName,String deviceType,
-			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager){
+			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager,
+			String language){
 		ConfigFile configFile=Config.getInstance().configFile;
 		int dataSaveMode=1;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			
@@ -770,7 +776,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int overviewColSize=headList.size();
 			int rowIndexCol=0;
 			int addInfoColSize=addInfoKeyMap.size();
-			if(headList.size()>0 && "序号".equalsIgnoreCase(headList.get(0))){
+			if(headList.size()>0 && ("序号".equalsIgnoreCase(headList.get(0))||headList.get(0).equalsIgnoreCase(languageResourceMap.get("idx")))     ){
 				rowIndexCol=1;
 				overviewColSize-=1;
 			}
@@ -787,15 +793,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			if(maxAuxiliaryDeviceCount>0){
 				for(int i=0;i<maxAuxiliaryDeviceCount;i++){
-					headList.add("设备名称");
-					headList.add("厂家");
-					headList.add("规格型号");
-					headList.add("备注");
+					headList.add(languageResourceMap.get("deviceName"));
+					headList.add(languageResourceMap.get("manufacturer"));
+					headList.add(languageResourceMap.get("model"));
+					headList.add(languageResourceMap.get("remark"));
 					
-					firstFeadList.add("设备名称");
-					firstFeadList.add("厂家");
-					firstFeadList.add("规格型号");
-					firstFeadList.add("备注");
+					firstFeadList.add(languageResourceMap.get("deviceName"));
+					firstFeadList.add(languageResourceMap.get("manufacturer"));
+					firstFeadList.add(languageResourceMap.get("model"));
+					firstFeadList.add(languageResourceMap.get("remark"));
 					
 				    columnList.add("auxiliaryDevice"+(i+1)+"Name");
 				    columnList.add("auxiliaryDevice"+(i+1)+"Manufacturer");
@@ -808,7 +814,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			//创建第一行表头
 			List<Object> firstHeadRow = new ArrayList<>();
 			if(overviewColSize>0){
-				firstFeadList.set(rowIndexCol, "设备概览");
+				firstFeadList.set(rowIndexCol, languageResourceMap.get("deviceOverview"));
 				for(int i=1;i<overviewColSize;i++){
 					firstFeadList.set(rowIndexCol+i, ExcelUtils.COLUMN_MERGE);
 				}
@@ -1970,12 +1976,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceAddInfoData(String deviceId,String deviceName,String deviceType,int userId)throws Exception {
+	public String getDeviceAddInfoData(String deviceId,String deviceName,String deviceType,int userId,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceTableName="tbl_device";
 		String infoTableName="tbl_deviceaddinfo";
 		
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		String auxiliaryDeviceSql="select t3.id,t3.name,t3.manufacturer,t3.model,t3.remark "
 				+ " from "+deviceTableName+" t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
@@ -2008,7 +2014,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		//辅件设备
 		for(int i=0;i<auxiliaryDeviceQueryList.size();i++){
 			Object[] obj=(Object[]) auxiliaryDeviceQueryList.get(i);
-			String details="<h style='line-height:1.5;'>厂家: "+obj[2]+"</h><br/><h style='line-height:1.5;'>规格型号: "+obj[3]+"</h><br/><h style='line-height:1.5;'>备注: "+obj[4]+"</h>";
+			String details="<h style='line-height:1.5;'>"+languageResourceMap.get("manufacturer")+": "+obj[2]+"</h><br/><h style='line-height:1.5;'>"+languageResourceMap.get("model")+": "+obj[3]+"</h><br/><h style='line-height:1.5;'>"+languageResourceMap.get("remark")+": "+obj[4]+"</h>";
 			for(int j=0;j<auxiliaryDeviceDetailsList.size();j++){
 				Object[] detailsObj=(Object[]) auxiliaryDeviceDetailsList.get(j);
 				String itemName=detailsObj[1]+"";

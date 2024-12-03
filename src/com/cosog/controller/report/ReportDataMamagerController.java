@@ -946,61 +946,6 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/exportPCPDailyReportData")
-	public String exportPCPDailyReportData() throws Exception {
-		log.debug("reportOutputWell enter==");
-		Vector<String> v = new Vector<String>();
-		orgId = ParamUtils.getParameter(request, "orgId");
-		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
-		String startDate = ParamUtils.getParameter(request, "startDate");
-		String endDate= ParamUtils.getParameter(request, "endDate");
-		String tableName="tbl_pcpdailycalculationdata";
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		if (!StringUtils.isNotBlank(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		
-		if (!StringManagerUtils.isNotNull(endDate)) {
-			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
-			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+= " and t.deviceName='"+deviceName+"' ";
-			}	
-			sql+= "order by calDate desc) where rownum=1 ";
-			List<?> list = this.commonDataService.findCallSql(sql);
-			if (list.size() > 0 && list.get(0)!=null ) {
-				endDate = list.get(0).toString();
-			} else {
-				endDate = StringManagerUtils.getCurrentTime();
-			}
-			if(!StringManagerUtils.isNotNull(startDate)){
-				startDate=endDate;
-			}
-		}
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=endDate;
-		}
-		
-		String json = "";
-		this.pager = new Page("pagerForm", request);
-		pager.setJssj(calculateDate);
-		
-		String fileName = "螺杆泵井";
-		String title = "螺杆泵井生产报表";
-        if(StringManagerUtils.isNotNull(deviceName)){
-        	fileName+=deviceName;
-        }
-        fileName+="生产报表-"+startDate;
-        if(!startDate.equalsIgnoreCase(endDate)){
-        	fileName+="~"+endDate;
-        }
-		
-		boolean bool = reportDataManagerService.exportPCPDailyReportData(user,response,fileName,title,pager, orgId, deviceName, startDate,endDate);
-		return null;
-	}
-	
 	@RequestMapping("/showTouchtest")
 	public String showTouchtest() throws Exception {
 		String json = "{success:true,totals:4,items:[{\"name\":\"Jean Luc2\",\"email\":\"jeanluc.picard@enterprise.com\",\"phone\": \"555-111-1111\"},{\"name\":\"Worf2\",\"email\":\"worf.moghsson@enterprise.com\",\"phone\":\"555-222-2222\"},{\"name\":\"Deanna2\",\"email\":\"deanna.troi@enterprise.com\",\"phone\":\"555-333-3333\" },{\"name\":\"Data2\",\"email\":\"mr.data@enterprise.com\",\"phone\":\"555-444-4444\"}]}";
@@ -1068,15 +1013,18 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = reportDataManagerService.getDeviceList(orgId,deviceName,deviceType);
+		json = reportDataManagerService.getDeviceList(orgId,deviceName,deviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1094,15 +1042,18 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = reportDataManagerService.getReportTemplateList(orgId,deviceName,deviceType,reportType);
+		json = reportDataManagerService.getReportTemplateList(orgId,deviceName,deviceType,reportType,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -1122,15 +1073,18 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = reportDataManagerService.getReportInstanceList(orgId,deviceName,deviceType);
+		json = reportDataManagerService.getReportInstanceList(orgId,deviceName,deviceType,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);

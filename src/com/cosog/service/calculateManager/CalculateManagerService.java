@@ -76,7 +76,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType,String language)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
@@ -84,19 +84,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}else if("2".equals(calculateType)){
 			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getElecInverCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}
 		
 		return json;
 	}
 	
-	public String getWellList(String orgId, String deviceName, Page pager,String deviceType,String calculateSign,String calculateType)
+	public String getWellList(String orgId, String deviceName, Page pager,String deviceType,String calculateSign,String calculateType,String language)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)||"2".equals(calculateType)||"3".equals(calculateType)||"4".equals(calculateType)){
-			json=this.getDiagnoseAndProdCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType);
+			json=this.getDiagnoseAndProdCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType);
+			json=this.getElecInverCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType,language);
 		}
 		
 		return json;
@@ -439,7 +439,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDiagnoseAndProdCalculateWellListData(String orgId, String deviceName, Page pager,String deviceType,String calculateSign,String calculateType)
+	public String getDiagnoseAndProdCalculateWellListData(String orgId, String deviceName, Page pager,String deviceType,String calculateSign,String calculateType,String language)
 			throws Exception {
 		String columns= "";
 		String sql="";
@@ -453,11 +453,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}else if("2".equals(calculateType) || "4".equals(calculateType)){
 			tableName="tbl_pcpacqdata_latest";
 		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
-				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
-				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqTime")+"\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
 		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
 				+ " from "+tableName+" t,"+deviceTableName+" well,tbl_code c1 "
@@ -511,7 +512,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateResultData(String orgId, String deviceName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getElecInverCalculateResultData(String orgId, String deviceName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType,
+			String language)
 			throws Exception {
 		
 		String sql="";
@@ -520,6 +522,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
@@ -548,8 +552,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
-		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
+		String columns = "[{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				
@@ -618,7 +622,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateWellListData(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType)
+	public String getElecInverCalculateWellListData(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType,String language)
 			throws Exception {
 		
 		String sql="";
@@ -627,6 +631,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
@@ -652,8 +658,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
-		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
+		String columns = "[{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
 				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
 				

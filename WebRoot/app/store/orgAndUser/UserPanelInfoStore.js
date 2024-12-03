@@ -163,7 +163,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '接收短信',
+                        header: loginUserLanguageResource.receiveSMS,
                         xtype: 'checkcolumn',
                         lockable: true,
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
@@ -185,7 +185,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '接收邮件',
+                        header: loginUserLanguageResource.receiveMail,
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
@@ -255,7 +255,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: '隶属组织',
+                        header: loginUserLanguageResource.owningOrg,
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -267,7 +267,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	}
                         }
                     }, {
-                        header: '创建时间',
+                        header: loginUserLanguageResource.createTime,
                         lockable: true,
                         align: 'center',
                         sortable: true,

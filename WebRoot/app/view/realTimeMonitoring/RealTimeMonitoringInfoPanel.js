@@ -581,15 +581,15 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
                             	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-                            	 var fileName='实时监控数据';
-                            	 var title='实时监控数据';
+                            	 var fileName=loginUserLanguageResource.realtimeMonitoringExpFileName;
+                            	 var title=loginUserLanguageResource.realtimeMonitoringExpFileName;
                             	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
                             	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }
                          }, '->', {
                          	xtype: 'button',
                             text:loginUserLanguageResource.showHistory,
-                            tooltip:'点击按钮或者双击表格，查看历史数据',
+                            tooltip:loginUserLanguageResource.showHistoryBtnTooltip,
                             handler: function (v, o) {
                             	var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
                         		var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
@@ -1106,7 +1106,7 @@ function renderControlBtn(btn,btnIndex){
     } else {
         hand = true;
     }
-    text = "设置";
+    text = loginUserLanguageResource.set;
 	
     if(resolutionMode == 1 && itemMeaning.length == 1) {
     	if(btnIndex==0){

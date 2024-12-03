@@ -18,6 +18,7 @@ import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
@@ -217,16 +218,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getAlarmOverviewData(String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
+	public String getAlarmOverviewData(String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		
 		String tableName="viw_alarminfo_latest";
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns="["
-				+ "{\"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[]},"
-				+ "{\"header\":\""+Config.getInstance().configFile.getAp().getOthers().getDeviceShowName()+"\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
-				+ "{\"header\":\"报警时间\",\"dataIndex\":\"alarmTime\",flex:10,children:[]},"
-				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
+				+ "{\"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[]},"
+				+ "{\"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",flex:10,children:[]},"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
 				+ "]";
 		String sql="select v.deviceid,v.devicename,v.devicetypename,v.alarmtime from ("
 				+ " select t.orgid,t.deviceid,t.devicename,t.devicetypename,max(t.alarmtime) as alarmtime  "

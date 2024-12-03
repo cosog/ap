@@ -2779,7 +2779,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew){
 			}
 			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
 				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.deviceName+"','厂家','规格型号','指定类型','指定类型值','ID']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.specificType+"','"+loginUserLanguageResource.specificType+"','ID']";
 				var columns="[{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'name'}," 

@@ -73,11 +73,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getHistoryQueryCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue) throws IOException, SQLException{
+	public String getHistoryQueryCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		List<DeviceInfo> deviceInfoList=null;
 		boolean jedisStatus=false;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			try{
 				jedisStatus= MemoryDataManagerTask.getJedisStatus();
@@ -87,9 +88,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				e.printStackTrace();
 			}
 			String columns = "["
-					+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":3,");
@@ -173,10 +174,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getHistoryQueryDeviceTypeStatData(String orgId,String deviceType,String commStatusStatValue) throws IOException, SQLException{
+	public String getHistoryQueryDeviceTypeStatData(String orgId,String deviceType,String commStatusStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 		AlarmShowStyle alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(alarmShowStyle==null){
 			MemoryDataManagerTask.initAlarmStyle();
 			alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
@@ -202,9 +204,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-				+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+list.size()+",");
@@ -745,10 +747,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,
 			String deviceType,String calculateType,
 			Page pager,
-			int userNo) throws IOException, SQLException{
+			int userNo,
+			String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer columns = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -819,13 +823,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<CalItem> displayInputItemList=new ArrayList<CalItem>();
 			Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new LinkedHashMap<>();
 			
-			
-			
 			columns.append("[");
-			columns.append("{ \"header\":\"序号\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },");
-			columns.append("{ \"header\":\"设备名称\",\"dataIndex\":\"deviceName\"},");
-			columns.append("{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",\"width\": 130},");
-			columns.append("{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\"},");
+			columns.append("{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },");
+			columns.append("{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\"},");
+			columns.append("{ \"header\":\""+languageResourceMap.get("acqTime")+"\",\"dataIndex\":\"acqTime\",\"width\": 130},");
+			columns.append("{ \"header\":\""+languageResourceMap.get("commStatus")+"\",\"dataIndex\":\"commStatusName\"},");
 			
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
@@ -1546,7 +1548,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportDeviceHistoryData(User user,HttpServletResponse response,String fileName,String title,
-			String orgId,String deviceId,String deviceName,String deviceType,String calculateType,Page pager,int userNo){
+			String orgId,String deviceId,String deviceName,String deviceType,String calculateType,Page pager,int userNo,String language){
 		ConfigFile configFile=Config.getInstance().configFile;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1571,6 +1573,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			if(deviceInfo!=null){
@@ -1604,7 +1607,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
-			String head="序号,设备名称,采集时间,通信状态";
+			String head=languageResourceMap.get("idx")+","+languageResourceMap.get("deviceName")+","+languageResourceMap.get("acqTime")+","+languageResourceMap.get("commStatus")+"";
+			
 			String field="id,deviceName,acqTime,commStatusName";
 			
 		    String hisTableName="tbl_acqdata_hist";

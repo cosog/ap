@@ -265,11 +265,11 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
                 var colHeaders = "[" 
-                	+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','','']," 
-                	+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','','']," 
-                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
-                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
-                	+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+                	+"['','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 4},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 4},'','','','','']," 
+                	+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.historyData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','','']," 
+                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
                 	+"'','','','','']"
                 	+"]";
                 var columns = "[" 
@@ -610,12 +610,12 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','','']," 
-					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','']," 
-					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
-					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
-					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
-					+"'','','','数据来源']" 
+					+"['','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 4},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 4},'','','','']," 
+					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.historyData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','']," 
+					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+					+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+					+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+					+"'','','','"+loginUserLanguageResource.dataSource+"']" 
 					+"]";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
@@ -960,7 +960,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别','字段顺序']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -1168,11 +1168,11 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
-					+"['','','','','',{label: '实时监控', colspan: 4},{label: '历史查询', colspan: 4},'','','']," 
-					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '历史数据', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','']," 
-					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','显示级别'," 
-					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
-					+"'字段顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线配置'," 
+					+"['','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 4},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 4},'','','']," 
+					+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.historyData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','']," 
+					+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+					+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+					+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
 					+"'','','']" 
 					+"]";
 				var columns="[" 

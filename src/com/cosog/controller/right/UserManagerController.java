@@ -584,15 +584,18 @@ public class UserManagerController extends BaseController {
 		this.pager=new Page("pageForm",request);
 		String userName = ParamUtils.getParameter(request, "userName");
 		orgId=ParamUtils.getParameter(request, "orgId");
-		User user = null;
 		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = this.userService.getUserOrgChangeUserList(pager,orgId, userName,user);
+		String json = this.userService.getUserOrgChangeUserList(pager,orgId, userName,user,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

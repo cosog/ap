@@ -213,19 +213,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				String resolutionMode="数据量";
+				String resolutionMode=languageResourceMap.get("numericValue");
 				if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-					resolutionMode="开关量";
+					resolutionMode=languageResourceMap.get("switchingValue");
 				}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-					resolutionMode="枚举量";
+					resolutionMode=languageResourceMap.get("enumValue");
 				}
-				String RWType="只读";
+				String RWType=languageResourceMap.get("readOnly");
 				if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="只读";
+					RWType=languageResourceMap.get("readOnly");
 				}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="只写";
+					RWType=languageResourceMap.get("writeOnly");
 				}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="读写";
+					RWType=languageResourceMap.get("readWrite");
 				}
 				result_json.append("{\"checked\":"+checked+","
 						+ "\"id\":"+(j+1)+","
@@ -239,7 +239,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"RWType\":\""+RWType+"\","
 						+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 						+ "\"resolutionMode\":\""+resolutionMode+"\","
-						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\","
 						+ "\"sort\":\""+sort+"\"},");
 				
 			}
@@ -316,19 +316,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					boolean checked=false;
 					boolean dailyTotalCalculate=false;
 					String dailyTotalCalculateName="";
-					String resolutionMode="数据量";
+					String resolutionMode=languageResourceMap.get("numericValue");
 					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-						resolutionMode="开关量";
+						resolutionMode=languageResourceMap.get("switchingValue");
 					}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-						resolutionMode="枚举量";
+						resolutionMode=languageResourceMap.get("enumValue");
 					}
-					String RWType="只读";
+					String RWType=languageResourceMap.get("readOnly");
 					if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWType="只读";
+						RWType=languageResourceMap.get("readOnly");
 					}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWType="只写";
+						RWType=languageResourceMap.get("writeOnly");
 					}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWType="读写";
+						RWType=languageResourceMap.get("readWrite");
 					}
 					if(protocolConfig.getItems().get(j).getResolutionMode()==0
 							&&protocolConfig.getItems().get(j).getMeaning()!=null
@@ -362,7 +362,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"resolutionMode\":\""+resolutionMode+"\","
-									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+									+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\","
 											+ "\"dailyTotalCalculate\":"+dailyTotalCalculate+","
 											+ "\"dailyTotalCalculateName\":\""+dailyTotalCalculateName+"\""
 									+ "},");
@@ -394,7 +394,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"RWType\":\""+RWType+"\","
 								+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 								+ "\"resolutionMode\":\""+resolutionMode+"\","
-								+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+								+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\","
 								+ "\"dailyTotalCalculate\":"+dailyTotalCalculate+","
 								+ "\"dailyTotalCalculateName\":\""+dailyTotalCalculateName+"\""
 								+ "},");
@@ -524,8 +524,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type=2 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
 					+ " order by t.id";
@@ -621,8 +621,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if("3".equalsIgnoreCase(classes)){
 					String sql="select t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
 							+ " t.delay,t.retriggerTime,"
-							+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-							+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+							+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+							+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 							+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 							+ " where t.type=5 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
 							+ " order by t.id";
@@ -710,8 +710,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.value,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
@@ -794,8 +794,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.bitindex,t.value,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
@@ -884,8 +884,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type=3 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
 					+ " order by t.id";
@@ -966,8 +966,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type=6 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
 					+ " order by t.id";
@@ -1049,8 +1049,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
 					+ " where t.type=4 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
 					+ " order by t.id";
@@ -1205,7 +1205,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String realtimeCurveConfShowValue="";
 						String historyCurveConf="\"\"";
 						String historyCurveConfShowValue="";
-						String resolutionMode="数据量";
+						String resolutionMode=languageResourceMap.get("numericValue");
 						String realtimeColor=""; 
 						String realtimeBgColor="";
 						String historyColor="";
@@ -1214,17 +1214,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						
 						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-							resolutionMode="开关量";
+							resolutionMode=languageResourceMap.get("switchingValue");
 						}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-							resolutionMode="枚举量";
+							resolutionMode=languageResourceMap.get("enumValue");
 						}
-						String RWType="只读";
+						String RWType=languageResourceMap.get("readOnly");
 						if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="只读";
+							RWType=languageResourceMap.get("readOnly");
 						}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="只写";
+							RWType=languageResourceMap.get("writeOnly");
 						}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="读写";
+							RWType=languageResourceMap.get("readWrite");
 						}
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
@@ -1453,19 +1453,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						boolean checked=false;
 						String realtimeSort="";
 						String showLevel="";
-						String resolutionMode="数据量";
+						String resolutionMode=languageResourceMap.get("numericValue");
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-							resolutionMode="开关量";
+							resolutionMode=languageResourceMap.get("switchingValue");
 						}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-							resolutionMode="枚举量";
+							resolutionMode=languageResourceMap.get("enumValue");
 						}
-						String RWType="只读";
+						String RWType=languageResourceMap.get("readOnly");
 						if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="只读";
+							RWType=languageResourceMap.get("readOnly");
 						}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="只写";
+							RWType=languageResourceMap.get("writeOnly");
 						}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWType="读写";
+							RWType=languageResourceMap.get("readWrite");
 						}
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
@@ -1885,13 +1885,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes){
+	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rawData = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		ReportTemplate.Template template=null;
 		if(reportTemplate!=null){
@@ -1944,7 +1944,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if("1".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
-						+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计',''),"
+						+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
 						+ " t.dataSource,t.dataType "
 						+ " from tbl_report_items2unit_conf t "
 						+ " where t.sort>0 "
@@ -2051,13 +2051,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
 						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-								curveStatType="合计";
+								curveStatType=languageResourceMap.get("curveStatType_sum");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-								curveStatType="平均";
+								curveStatType=languageResourceMap.get("curveStatType_avg");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-								curveStatType="最大值";
+								curveStatType=languageResourceMap.get("curveStatType_max");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-								curveStatType="最小值";
+								curveStatType=languageResourceMap.get("curveStatType_min");
 							}
 						}
 						
@@ -2127,12 +2127,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitTotalItemsConfigColInfoData(String calculateType,String reportType,String templateCode,String unitId,String classes){
+	public String getReportUnitTotalItemsConfigColInfoData(String calculateType,String reportType,String templateCode,String unitId,String classes,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		ReportTemplate.Template template=null;
 		if(reportTemplate!=null){
@@ -2185,7 +2185,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if("1".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
-						+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计',''),"
+						+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
 						+ " t.dataSource,t.dataType "
 						+ " from tbl_report_items2unit_conf t "
 						+ " where t.sort>0 "
@@ -2292,13 +2292,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
 						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-								curveStatType="合计";
+								curveStatType=languageResourceMap.get("curveStatType_sum");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-								curveStatType="平均";
+								curveStatType=languageResourceMap.get("curveStatType_avg");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-								curveStatType="最大值";
+								curveStatType=languageResourceMap.get("curveStatType_max");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-								curveStatType="最小值";
+								curveStatType=languageResourceMap.get("curveStatType_min");
 							}
 						}
 						
@@ -2406,7 +2406,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsTotalTypeList=new ArrayList<String>();
 		if(sort>0 && StringManagerUtils.stringToInteger(unitId)>0){
 			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
-					+ " decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') "
+					+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"','') "
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" "
 					+ " and t.reportType="+reportType
@@ -2492,13 +2492,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
 							if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 								if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-									curveStatType="合计";
+									curveStatType=languageResourceMap.get("curveStatType_sum");
 								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-									curveStatType="平均";
+									curveStatType=languageResourceMap.get("curveStatType_avg");
 								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-									curveStatType="最大值";
+									curveStatType=languageResourceMap.get("curveStatType_max");
 								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-									curveStatType="最小值";
+									curveStatType=languageResourceMap.get("curveStatType_min");
 								}
 							}
 							break;
@@ -2588,13 +2588,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
 						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-								curveStatType="合计";
+								curveStatType=languageResourceMap.get("curveStatType_sum");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-								curveStatType="平均";
+								curveStatType=languageResourceMap.get("curveStatType_avg");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-								curveStatType="最大值";
+								curveStatType=languageResourceMap.get("curveStatType_max");
 							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-								curveStatType="最小值";
+								curveStatType=languageResourceMap.get("curveStatType_min");
 							}
 						}
 						break;
@@ -2671,7 +2671,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec,"
-				+ "t.dataSource, decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') as totalType"
+				+ "t.dataSource, decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"','') as totalType"
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+unitId+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2732,13 +2732,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 				if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-					curveStatType="合计";
+					curveStatType=languageResourceMap.get("curveStatType_sum");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-					curveStatType="平均";
+					curveStatType=languageResourceMap.get("curveStatType_avg");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-					curveStatType="最大值";
+					curveStatType=languageResourceMap.get("curveStatType_max");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-					curveStatType="最小值";
+					curveStatType=languageResourceMap.get("curveStatType_min");
 				}
 			}
 			
@@ -2804,7 +2804,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveConf,t.curvestattype,t.prec,"
-				+ "t.dataSource, decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') as totalType"
+				+ "t.dataSource, decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"','') as totalType"
 				+ " from tbl_report_items2unit_conf t "
 				+ " where t.unitid="+StringManagerUtils.stringToInteger(unitId)+" and t.reportType="+reportType
 				+ " order by t.sort";
@@ -2865,13 +2865,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
 				if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-					curveStatType="合计";
+					curveStatType=languageResourceMap.get("curveStatType_sum");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-					curveStatType="平均";
+					curveStatType=languageResourceMap.get("curveStatType_avg");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-					curveStatType="最大值";
+					curveStatType=languageResourceMap.get("curveStatType_max");
 				}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-					curveStatType="最小值";
+					curveStatType=languageResourceMap.get("curveStatType_min");
 				}
 			}
 			
@@ -2952,20 +2952,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int j=0;j<protocolConfig.getItems().size();j++){
 					if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
 //						if(RWType.equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){}
-						String RWTypeName="只读";
+						String RWTypeName=languageResourceMap.get("readOnly");
 						if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName="只读";
+							RWTypeName=languageResourceMap.get("readOnly");
 						}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName="只写";
+							RWTypeName=languageResourceMap.get("writeOnly");
 						}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName="读写";
+							RWTypeName=languageResourceMap.get("readWrite");
 						}
 						
-						String resolutionMode="数据量";
+						String resolutionMode=languageResourceMap.get("numericValue");
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-							resolutionMode="开关量";
+							resolutionMode=languageResourceMap.get("switchingValue");
 						}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-							resolutionMode="枚举量";
+							resolutionMode=languageResourceMap.get("enumValue");
 						}
 						
 						result_json.append("{\"id\":"+index+","
@@ -2979,7 +2979,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"RWType\":\""+RWTypeName+"\","
 								+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 								+ "\"resolutionMode\":\""+resolutionMode+"\","
-								+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+								+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\"},");
 						index++;
 					}
 				}
@@ -3300,7 +3300,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-			}if("2".equalsIgnoreCase(calculateType)){
+			}else if("2".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
 			}else{
 				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
@@ -3643,8 +3643,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
 				+ "t.delay,t.retriggerTime,"
-				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
 				+ " and t3.id="+id+" "
@@ -3654,8 +3654,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
 					+ "t.delay,t.retriggerTime,"
-					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 					+ " and t2.id="+id+" "
@@ -3726,8 +3726,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
 				+ "t.delay,t.retriggerTime,"
-				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
 				+ " and t3.id="+id+" "
@@ -3737,8 +3737,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
 					+ "t.delay,t.retriggerTime,"
-					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 					+ " and t2.id="+id+" "
@@ -3805,8 +3805,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
+				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t2.protocol "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
@@ -3816,8 +3816,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t2.protocol "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
@@ -3893,8 +3893,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'),"
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
+				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t2.protocol "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
@@ -3904,8 +3904,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'),"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail,"
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t2.protocol "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
@@ -3976,8 +3976,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
 				+ " and t3.id="+id+" "
@@ -3986,8 +3986,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 					+ " and t2.id="+id+" "
@@ -4033,8 +4033,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
 				+ " and t3.id="+id+" "
@@ -4043,8 +4043,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 					+ " and t2.id="+id+" "
@@ -4090,8 +4090,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign, "
-				+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
 				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
 				+ " and t3.id="+id+" "
@@ -4100,8 +4100,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效') as alarmsign,"
-					+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
 					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 					+ " and t2.id="+id+" "
@@ -4130,10 +4130,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAcquisitionUnitTreeData(String deviceTypeIds){
+	public String getAcquisitionUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
@@ -4189,7 +4190,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"remark\":\""+groupObj[5]+"\",");
 									tree_json.append("\"protocol\":\""+groupObj[6]+"\",");
 									tree_json.append("\"type\":"+groupObj[7]+",");
-									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
+									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 									tree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
@@ -4218,15 +4219,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportAcqUnitTreeData(String deviceTypeIds){
+	public String exportAcqUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
@@ -4283,7 +4285,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"remark\":\""+groupObj[5]+"\",");
 									tree_json.append("\"protocol\":\""+groupObj[6]+"\",");
 									tree_json.append("\"type\":"+groupObj[7]+",");
-									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?"采集组":"控制组")+"\",");
+									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 									tree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
@@ -4312,22 +4314,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDisplayUnitTreeData(String deviceTypeIds){
+	public String getDisplayUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
 					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
+					+ " decode(t.calculateType,1,'"+languageResourceMap.get("RPCCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -4381,22 +4384,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportDisplayUnitTreeData(String deviceTypeIds){
+	public String exportDisplayUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
 					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
+					+ " decode(t.calculateType,1,'"+languageResourceMap.get("RPCCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -4451,7 +4455,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4739,15 +4743,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String repoerUnitTreeData(){
+	public String repoerUnitTreeData(String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-//		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		tree_json.append("[");
 		String unitSql="select t.id,t.unit_code,t.unit_name,"
 				+ "t.calculateType,"
-				+ "decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName,"
+				+ " decode(t.calculateType,1,'"+languageResourceMap.get("RPCCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
 				+ "t.sort "
 				+ " from tbl_report_unit_conf t "
@@ -4780,19 +4784,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportReportUnitTreeData(){
+	public String exportReportUnitTreeData(String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String unitSql="select t.id,t.unit_code,t.unit_name,"
 				+ "t.calculateType,"
-				+ "decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName,"
+				+ " decode(t.calculateType,1,'"+languageResourceMap.get("RPCCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
 				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
 				+ "t.sort "
 				+ " from tbl_report_unit_conf t "
@@ -4826,7 +4830,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4895,17 +4899,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String modbusProtocolAlarmUnitTreeData(String deviceTypeIds){
+	public String modbusProtocolAlarmUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,"
 					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'功图计算',2,'转速计产','无') as calculateTypeName"
+					+ " decode(t.calculateType,1,'"+languageResourceMap.get("RPCCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name ";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -4960,15 +4965,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportAlarmUnitTreeData(String deviceTypeIds){
+	public String exportAlarmUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
@@ -5026,7 +5032,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\"单元列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -5116,9 +5122,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolInstanceConfigTreeData(String deviceTypeIds){
+	public String getModbusProtocolInstanceConfigTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
@@ -5208,14 +5215,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolAcqInstanceTreeData(String deviceTypeIds){
+	public String exportProtocolAcqInstanceTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
@@ -5270,14 +5278,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusDisplayProtocolInstanceConfigTreeData(String deviceTypeIds){
+	public String getModbusDisplayProtocolInstanceConfigTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype  "
@@ -5322,14 +5331,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolDisplayInstanceTreeData(String deviceTypeIds){
+	public String exportProtocolDisplayInstanceTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
@@ -5365,14 +5375,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String modbusReportInstanceConfigTreeData(){
+	public String modbusReportInstanceConfigTreeData(String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
 				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
@@ -5419,14 +5430,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getExportProtocolReportInstanceTreeData(){
+	public String getExportProtocolReportInstanceTreeData(String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
 				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
@@ -5462,14 +5474,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolAlarmInstanceConfigTreeData(String deviceTypeIds){
+	public String getModbusProtocolAlarmInstanceConfigTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
@@ -5512,14 +5525,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
+		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportProtocolAlarmInstanceTreeData(String deviceTypeIds){
+	public String exportProtocolAlarmInstanceTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
@@ -5550,7 +5564,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		tree_json.append("]");
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\"实例列表\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
+		result_json.append("{\"classes\":0,\"deviceType\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"},");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -6790,20 +6804,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(protocolConfig.getItems());
 			for(int j=0;j<protocolConfig.getItems().size();j++){
 				if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
-					String RWTypeName="只读";
+					String RWTypeName=languageResourceMap.get("readOnly");
 					if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="只读";
+						RWTypeName=languageResourceMap.get("readOnly");
 					}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="只写";
+						RWTypeName=languageResourceMap.get("writeOnly");
 					}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="读写";
+						RWTypeName=languageResourceMap.get("readWrite");
 					}
 					
-					String resolutionMode="数据量";
+					String resolutionMode=languageResourceMap.get("numericValue");
 					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-						resolutionMode="开关量";
+						resolutionMode=languageResourceMap.get("switchingValue");
 					}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-						resolutionMode="枚举量";
+						resolutionMode=languageResourceMap.get("enumValue");
 					}
 					
 					result_json.append("{\"id\":"+index+","
@@ -6817,7 +6831,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"RWType\":\""+RWTypeName+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 							+ "\"resolutionMode\":\""+resolutionMode+"\","
-							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\"},");
 					index++;
 				}
 			}
@@ -7288,9 +7302,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"hystersis\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getHystersis()+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7374,9 +7388,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"hystersis\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getHystersis()+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7462,9 +7476,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"value\":\""+("1".equalsIgnoreCase(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+"")?"开":"关")+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7547,9 +7561,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"meaning\":\""+meaning+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7611,9 +7625,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7675,9 +7689,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -7739,9 +7753,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"code\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemCode()+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
-											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?"使能":"失效" )+"\","
-											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?"是":"否" )+"\","
-											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?"是":"否" )+"\"},");
+											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
+											+ "\"isSendMessage\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\","
+											+ "\"isSendMail\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getIsSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no") )+"\"},");
 									index++;
 								}
 							}
@@ -9658,8 +9672,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getProtocolReportUnitExportData(String unitListStr){
+	public String getProtocolReportUnitExportData(String unitListStr,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		result_json.append("[");
 		String reportUnitSql="select t.id,t.unit_code,t.unit_name,t.calculatetype,"
 				+ "t.singlewelldailyreporttemplate,t.singlewellrangereporttemplate,t.productionreporttemplate,"
@@ -9670,11 +9685,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String reportItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.showlevel,"
 				+ "t.sumsign,t.averagesign,"
 				+ "t.reportcurveconf,"
-				+ "decode(t.curvestattype,1,'合计',2,'平均',3,'最大值',4,'最小值','') as curvestattype,"
+				+ "decode(t.curvestattype,1,'"+languageResourceMap.get("curveStatType_sum")+"',2,'"+languageResourceMap.get("curveStatType_avg")+"',3,'"+languageResourceMap.get("curveStatType_max")+"',4,'"+languageResourceMap.get("curveStatType_min")+"','') as curvestattype,"
 				+ "t.datatype,"
-				+ "decode(t.reporttype,0,'单井日报表',1,'区域报表',2,'单井班报表','') as reporttype,"
+				+ "decode(t.reporttype,0,'"+languageResourceMap.get("deviceDailyReport")+"',1,'"+languageResourceMap.get("areaDailyReport")+"',2,'"+languageResourceMap.get("deviceHourlyReport")+"','') as reporttype,"
 				+ "t.prec,"
-				+ "decode(t.totalType,1,'最大值',2,'最小值',3,'平均值',4,'最新值',5,'最旧值',6,'日累计','') as totalType,"
+				+ "decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"','') as totalType,"
 				+ "t.datasource,"
 				+ "t.sort,t.matrix,"
 				+ "t.unitid "
@@ -10102,19 +10117,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
 			for(int j=0;j<protocolConfig.getItems().size();j++){
-				String resolutionMode="数据量";
+				String resolutionMode=languageResourceMap.get("numericValue");
 				if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-					resolutionMode="开关量";
+					resolutionMode=languageResourceMap.get("switchingValue");
 				}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-					resolutionMode="枚举量";
+					resolutionMode=languageResourceMap.get("enumValue");
 				}
-				String RWType="只读";
+				String RWType=languageResourceMap.get("readOnly");
 				if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="只读";
+					RWType=languageResourceMap.get("readOnly");
 				}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="只写";
+					RWType=languageResourceMap.get("writeOnly");
 				}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-					RWType="读写";
+					RWType=languageResourceMap.get("readWrite");
 				}
 				result_json.append("{"
 						+ "\"id\":"+(j+1)+","
@@ -10128,7 +10143,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"RWType\":\""+RWType+"\","
 						+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 						+ "\"resolutionMode\":\""+resolutionMode+"\","
-						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\""
+						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\""
 						+ "},");
 				
 			}
@@ -10178,6 +10193,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -10233,7 +10249,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						tree_json.append("\"remark\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getRemark()+"\",");
 						tree_json.append("\"protocol\":\""+uploadAcqUnitList.get(i).getGroupList().get(k).getProtocol()+"\",");
 						tree_json.append("\"type\":"+uploadAcqUnitList.get(i).getGroupList().get(k).getType()+",");
-						tree_json.append("\"typeName\":\""+(uploadAcqUnitList.get(i).getGroupList().get(k).getType()==0?"采集组":"控制组")+"\",");
+						tree_json.append("\"typeName\":\""+(uploadAcqUnitList.get(i).getGroupList().get(k).getType()==0?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 						tree_json.append("\"iconCls\": \"acqGroup\",");
 						tree_json.append("\"leaf\": true");
 						tree_json.append("},");
@@ -10259,7 +10275,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -10329,20 +10345,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			for(int j=0;j<protocolConfig.getItems().size();j++){
 				if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
-					String RWTypeName="只读";
+					String RWTypeName=languageResourceMap.get("readOnly");
 					if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="只读";
+						RWTypeName=languageResourceMap.get("readOnly");
 					}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="只写";
+						RWTypeName=languageResourceMap.get("writeOnly");
 					}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-						RWTypeName="读写";
+						RWTypeName=languageResourceMap.get("readWrite");
 					}
 					
-					String resolutionMode="数据量";
+					String resolutionMode=languageResourceMap.get("numericValue");
 					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-						resolutionMode="开关量";
+						resolutionMode=languageResourceMap.get("switchingValue");
 					}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-						resolutionMode="枚举量";
+						resolutionMode=languageResourceMap.get("enumValue");
 					}
 					
 					ExportAcqUnitData.AcqItem acqItem=itemsMap.get(protocolConfig.getItems().get(j).getTitle());
@@ -10367,7 +10383,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"RWType\":\""+RWTypeName+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 							+ "\"resolutionMode\":\""+resolutionMode+"\","
-							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\","
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\","
 							+ "\"dailyTotalCalculate\":"+dailyTotalCalculate+","
 							+ "\"dailyTotalCalculateName\":\""+dailyTotalCalculateName+"\""
 							+ "},");
@@ -10503,6 +10519,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -10555,7 +10572,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -10563,6 +10580,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getImportAlarmUnitItemsData(List<ExportAlarmUnitData> uploadUnitList,String protocolName,String unitName,String alarmType,User user){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		result_json.append("{ \"success\":true,\"columns\":[],");
 		result_json.append("\"totalRoot\":[");
 		
@@ -10589,13 +10607,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String alarmLevel="";
 			String value=alarmItemList.get(i).getValue();
 			if(alarmItemList.get(i).getAlarmLevel()==100){
-				alarmLevel="一级报警";
+				alarmLevel=languageResourceMap.get("alarmLevel1");
 			}else if(alarmItemList.get(i).getAlarmLevel()==200){
-				alarmLevel="二级报警";
+				alarmLevel=languageResourceMap.get("alarmLevel2");
 			}else if(alarmItemList.get(i).getAlarmLevel()==300){
-				alarmLevel="三级报警";
+				alarmLevel=languageResourceMap.get("alarmLevel3");
 			}else if(alarmItemList.get(i).getAlarmLevel()==400){
-				alarmLevel="四级报警";
+				alarmLevel=languageResourceMap.get("alarmLevel4");
 			}
 			
 			if(alarmItemList.get(i).getType()==0 && protocol!=null && protocol.getItems()!=null){
@@ -10645,10 +10663,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"hystersis\":\""+alarmItemList.get(i).getHystersis()+"\","
 					+ "\"delay\":\""+alarmItemList.get(i).getDelay()+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
-					+ "\"alarmSign\":\""+(alarmItemList.get(i).getAlarmSign()==1?"使能":"失效")+"\","
+					+ "\"alarmSign\":\""+(alarmItemList.get(i).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable"))+"\","
 					+ "\"meaning\":\""+meaning+"\","
-					+ "\"isSendMessage\":\""+(alarmItemList.get(i).getSendMessage()==1?"是":"否")+"\","
-					+ "\"isSendMail\":\""+(alarmItemList.get(i).getSendMail()==1?"是":"否")+"\"},");
+					+ "\"isSendMessage\":\""+(alarmItemList.get(i).getSendMessage()==1?languageResourceMap.get("yes"):languageResourceMap.get("no"))+"\","
+					+ "\"isSendMail\":\""+(alarmItemList.get(i).getSendMail()==1?languageResourceMap.get("yes"):languageResourceMap.get("no"))+"\"},");
 		}
 		
 		if(result_json.toString().endsWith(",")){
@@ -10749,6 +10767,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -10814,7 +10833,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -11015,7 +11034,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getUploadedReportUnitTreeData(List<ExportReportUnitData> uploadUnitList,String deviceType,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		String unitSql="select t.unit_name,t.unit_code from TBL_REPORT_UNIT_CONF t";
 		List<?> unitQueryList = this.findCallSql(unitSql);
@@ -11055,7 +11074,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"单元列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -11322,6 +11341,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -11386,14 +11406,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
 	}
 	
-	public String getImportAcqInstanceItemsData(List<ExportAcqInstanceData> uploadInstanceList,String protocolName,String unitName,String instanceName){
+	public String getImportAcqInstanceItemsData(List<ExportAcqInstanceData> uploadInstanceList,String protocolName,String unitName,String instanceName,String language){
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		int index=1;
 		result_json.append("{ \"success\":true,\"columns\":[],");
@@ -11422,20 +11443,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						Collections.sort(protocolConfig.getItems());
 						for(int j=0;j<protocolConfig.getItems().size();j++){
 							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
-								String RWTypeName="只读";
+								String RWTypeName=languageResourceMap.get("readOnly");
 								if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="只读";
+									RWTypeName=languageResourceMap.get("readOnly");
 								}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="只写";
+									RWTypeName=languageResourceMap.get("writeOnly");
 								}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-									RWTypeName="读写";
+									RWTypeName=languageResourceMap.get("readWrite");
 								}
 								
-								String resolutionMode="数据量";
+								String resolutionMode=languageResourceMap.get("numericValue");
 								if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-									resolutionMode="开关量";
+									resolutionMode=languageResourceMap.get("switchingValue");
 								}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-									resolutionMode="枚举量";
+									resolutionMode=languageResourceMap.get("enumValue");
 								}
 								
 								result_json.append("{\"id\":"+index+","
@@ -11449,7 +11470,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"RWType\":\""+RWTypeName+"\","
 										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
-										+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+										+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\"},");
 								index++;
 							}
 						}
@@ -11587,6 +11608,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -11655,7 +11677,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -12124,6 +12146,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.name from tbl_protocol t where t.deviceType in("+allDeviceIds+")";
@@ -12188,7 +12211,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -12197,6 +12220,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getImportAlarmInstanceItemsData(List<ExportAlarmInstanceData> uploadInstanceList,String protocolName,String unitName,String instanceName,String alarmType,User user){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		result_json.append("{ \"success\":true,\"columns\":[],");
 		result_json.append("\"totalRoot\":[");
 		Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
@@ -12214,8 +12238,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "t.value,"
 								+ "t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
 								+ "t.bitIndex,"
-								+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'使能','失效'), "
-								+ " decode(t.issendmessage,1,'是','否') as issendmessage,decode(t.issendmail,1,'是','否') as issendmail "
+								+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+								+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 								+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
 								+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
 								+ " and t2.id="+unitId+" "
@@ -12377,6 +12401,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String instanceSql="select t.name,t2.unit_name "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id ";
@@ -12425,7 +12450,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"实例列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("instanceList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();

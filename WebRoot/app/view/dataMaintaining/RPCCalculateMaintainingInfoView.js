@@ -770,7 +770,7 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
     		}else if(dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
         	}else if(dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']";
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']";
         	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
         	}else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
@@ -905,9 +905,9 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 		                        }
 			                	if(barrelTypeColIndex>0){
 		                        	var barrelType=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
-		                        	if(barrelType=='整筒泵'){
+		                        	if(barrelType==loginUserLanguageResource.barrelType_H){
 		                        		this.source = ['1','2','3','4','5'];
-		                        	}else if(barrelType=='组合泵'){
+		                        	}else if(barrelType==loginUserLanguageResource.barrelType_L){
 		                        		this.source = ['1','2','3'];
 		                        	}else if(barrelType==''){
 		                        		this.source = ['1','2','3','4','5'];

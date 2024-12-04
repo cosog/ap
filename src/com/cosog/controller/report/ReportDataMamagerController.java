@@ -487,6 +487,10 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String tableName="tbl_dailycalculationdata";
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
@@ -525,7 +529,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getProductionDailyReportData(pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, deviceName, startDate,endDate,reportDate,user.getUserNo());
+			json = reportDataManagerService.getProductionDailyReportData(pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, deviceName, startDate,endDate,reportDate,user.getUserNo(),language);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -560,6 +564,10 @@ public class ReportDataMamagerController extends BaseController {
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		String tableName="tbl_dailycalculationdata";
@@ -601,7 +609,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		
-		boolean bool = reportDataManagerService.exportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, deviceName, startDate,endDate,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType, instanceCode,unitId, deviceName, startDate,endDate,reportDate,user.getUserNo(),language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -620,6 +628,10 @@ public class ReportDataMamagerController extends BaseController {
 		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		String tableName="tbl_dailycalculationdata";
@@ -661,7 +673,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		
-		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportProductionDailyReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType,reportDate,user.getUserNo(),language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -824,9 +836,15 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		
+		String tableName="tbl_dailycalculationdata";
+		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String tableName="tbl_dailycalculationdata";
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
@@ -846,7 +864,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getProductionDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, unitId,instanceCode, deviceName, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getProductionDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, unitId,instanceCode, deviceName, startDate,endDate,user.getUserNo(),language);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

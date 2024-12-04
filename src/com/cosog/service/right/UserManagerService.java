@@ -120,6 +120,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer role_json = new StringBuffer();
 		StringBuffer language_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage");
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name from tbl_role t"
@@ -131,10 +132,10 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_type as userType,r.role_name as userTypeName,"
 				+ " u.user_phone as userPhone,u.user_in_email as userInEmail,"
 				+ " to_char(u.user_regtime,'YYYY-MM-DD hh24:mi:ss') as userRegtime,"
-				+ " u.user_quicklogin as userQuickLogin,decode(u.user_quicklogin,0,'否','是') as userQuickLoginName,"
-				+ " u.user_receivesms as receiveSMS,decode(u.user_receivesms,1,'是','否') as receiveSMSName,"
-				+ " u.user_receivemail as receiveMail,decode(u.user_receivemail,1,'是','否') as receiveMailName,"
-				+ " u.user_enable as userEnable,decode(u.user_enable,1,'使能','失效') as userEnableName,"
+				+ " u.user_quicklogin as userQuickLogin,decode(u.user_quicklogin,0,'"+languageResourceMap.get("no")+"','"+languageResourceMap.get("yes")+"') as userQuickLoginName,"
+				+ " u.user_receivesms as receiveSMS,decode(u.user_receivesms,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as receiveSMSName,"
+				+ " u.user_receivemail as receiveMail,decode(u.user_receivemail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as receiveMailName,"
+				+ " u.user_enable as userEnable,decode(u.user_enable,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as userEnableName,"
 				+ " u.user_language as userLanguage,c.itemname as userLanguageName,"
 				+ " o.allpath"
 				+ " from tbl_user u"

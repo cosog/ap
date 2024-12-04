@@ -1658,7 +1658,7 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 						
 						+"{data:'reportCurveConfShowValue'},"
 						
-						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
+						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.curveStatType_sum+"', '"+loginUserLanguageResource.curveStatType_avg+"']},"
 						
 						+"{data:'reportCurveConf'},"
 						

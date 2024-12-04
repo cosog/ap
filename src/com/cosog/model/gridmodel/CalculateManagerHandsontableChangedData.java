@@ -85,7 +85,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String casingStringInsideDiameter="139.7";
 	    
-	    private String rodTypeName1="钢杆";
+	    private String rodTypeName1="";
 
 	    private String rodGrade1="D";
 
@@ -95,7 +95,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String rodLength1="0";
 	    
-	    private String rodTypeName2="钢杆";
+	    private String rodTypeName2="";
 
 	    private String rodGrade2="D";
 
@@ -105,7 +105,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String rodLength2="0";
 	    
-	    private String rodTypeName3="钢杆";
+	    private String rodTypeName3="";
 
 	    private String rodGrade3="D";
 
@@ -115,7 +115,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String rodLength3="0";
 	    
-	    private String rodTypeName4="钢杆";
+	    private String rodTypeName4="";
 
 	    private String rodGrade4="D";
 

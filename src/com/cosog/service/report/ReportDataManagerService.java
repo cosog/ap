@@ -1953,7 +1953,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getProductionDailyReportData(Page pager, String orgId,String selectedOrgName,String deviceType,String reportType,
-			String instanceCode,String unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String instanceCode,String unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		java.lang.reflect.Type type=null;
@@ -1963,6 +1963,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String deviceTableName="tbl_device";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		ReportTemplate.Template template=null;
 		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
@@ -2015,11 +2017,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				sumShowDataList.add("");
 				avgShowDataList.add("");
 			}
-			sumDataList.set(0, "合计");
-			avgDataList.set(0, "平均值");
+			sumDataList.set(0, languageResourceMap.get("sumValue"));
+			avgDataList.set(0, languageResourceMap.get("avgValue"));
 			
-			sumShowDataList.set(0, "合计");
-			avgShowDataList.set(0, "平均值");
+			sumShowDataList.set(0, languageResourceMap.get("sumValue"));
+			avgShowDataList.set(0, languageResourceMap.get("avgValue"));
 			
 			statDataList.add(sumDataList);
 			statDataList.add(avgDataList);
@@ -2272,7 +2274,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public boolean exportProductionDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String selectedOrgName,
 			String deviceType,String reportType,
-			String instanceCode,String  unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo)throws Exception {
+			String instanceCode,String  unitId,String deviceName,String startDate,String endDate,String reportDate,int userNo,String language)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
@@ -2289,6 +2291,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			ReportTemplate.Template template=null;
 			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
@@ -2348,11 +2351,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sumShowDataList.add("");
 					avgShowDataList.add("");
 				}
-				sumDataList.set(0, "合计");
-				avgDataList.set(0, "平均值");
+				sumDataList.set(0, languageResourceMap.get("sumValue"));
+				avgDataList.set(0, languageResourceMap.get("avgValue"));
 				
-				sumShowDataList.set(0, "合计");
-				avgShowDataList.set(0, "平均值");
+				sumShowDataList.set(0, languageResourceMap.get("sumValue"));
+				avgShowDataList.set(0, languageResourceMap.get("avgValue"));
 				
 				statDataList.add(sumDataList);
 				statDataList.add(avgDataList);
@@ -2629,7 +2632,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public boolean batchExportProductionDailyReportData(User user,HttpServletResponse response,
 			Page pager,String orgId,String selectedOrgName,
 			String deviceType,String reportType,
-			String reportDate,int userNo)throws Exception {
+			String reportDate,int userNo,String language)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
 			List<String> sheetNameList =new ArrayList<>();
@@ -2643,6 +2646,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String deviceTableName="tbl_device";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
+			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code,t2.calculateType "
 					+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
@@ -2713,11 +2718,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						sumShowDataList.add("");
 						avgShowDataList.add("");
 					}
-					sumDataList.set(0, "合计");
-					avgDataList.set(0, "平均值");
+					sumDataList.set(0, languageResourceMap.get("sumValue"));
+					avgDataList.set(0, languageResourceMap.get("avgValue"));
 					
-					sumShowDataList.set(0, "合计");
-					avgShowDataList.set(0, "平均值");
+					sumShowDataList.set(0, languageResourceMap.get("sumValue"));
+					avgShowDataList.set(0, languageResourceMap.get("avgValue"));
 					
 					statDataList.add(sumDataList);
 					statDataList.add(avgDataList);
@@ -3448,11 +3453,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String unitId,String instanceCode,
 			String deviceName,
 			String startDate,String endDate,
-			int userNo)throws Exception {
+			int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		Gson gson =new Gson();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -3550,15 +3557,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<reportCurveItemList.size();i++){
 			String statTypeName="";
 			if(reportCurveItemList.get(i).getCurveStatType()==1){
-				statTypeName="合计";
+				statTypeName=languageResourceMap.get("curveStatType_sum");
 			}else if(reportCurveItemList.get(i).getCurveStatType()==2){
-				statTypeName="平均值";
+				statTypeName=languageResourceMap.get("curveStatType_avg");
 			}else if(reportCurveItemList.get(i).getCurveStatType()==3){
-				statTypeName="最大值";
+				statTypeName=languageResourceMap.get("curveStatType_max");
 			}else if(reportCurveItemList.get(i).getCurveStatType()==4){
-				statTypeName="最小值";
+				statTypeName=languageResourceMap.get("curveStatType_min");
 			}else{
-				statTypeName="合计";
+				statTypeName=languageResourceMap.get("curveStatType_sum");
 			}
 			
 			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+statTypeName+"\",");

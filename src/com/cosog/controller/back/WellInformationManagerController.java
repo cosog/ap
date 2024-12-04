@@ -543,10 +543,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
@@ -568,7 +571,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
 		}else{
-			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount);
+			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,language);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

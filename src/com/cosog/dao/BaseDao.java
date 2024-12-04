@@ -986,6 +986,7 @@ public class BaseDao extends HibernateDaoSupport {
 			WellHandsontableChangedData wellHandsontableChangedData,
 			String orgId,String deviceType,User user) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -1016,7 +1017,7 @@ public class BaseDao extends HibernateDaoSupport {
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())){
 							int status=1;
-							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
+							if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
 								status=0;
 								disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
 							}
@@ -1077,7 +1078,7 @@ public class BaseDao extends HibernateDaoSupport {
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
 							int status=1;
-							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+							if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
 								status=0;
 								disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
 							}
@@ -1211,14 +1212,13 @@ public class BaseDao extends HibernateDaoSupport {
 	@SuppressWarnings("resource")
 	public List<WellHandsontableChangedData.Updatelist> batchAddDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,
 			String orgId,String deviceType,String isCheckout,User user) throws SQLException {
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		
 		String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		List<String> initWellList=new ArrayList<String>();
-//		List<String> updateWellList=new ArrayList<String>();
-//		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
@@ -1244,7 +1244,7 @@ public class BaseDao extends HibernateDaoSupport {
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())){
 							int status=1;
-							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
+							if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
 								status=0;
 							}
 							
@@ -1308,7 +1308,7 @@ public class BaseDao extends HibernateDaoSupport {
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
 							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
 								int status=1;
-								if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+								if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
 									status=0;
 								}
 								

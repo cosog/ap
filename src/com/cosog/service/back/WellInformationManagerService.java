@@ -1332,9 +1332,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	
 	@SuppressWarnings("rawtypes")
-	public String getDeviceInfoList(Map map,Page pager,int recordCount) {
+	public String getDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
 		StringBuffer instanceDropdownData = new StringBuffer();
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
@@ -1352,7 +1352,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " applicationScenarios,applicationScenariosName,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
-				+ " status,statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1497,6 +1497,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			String tableName="viw_device";
 			String deviceName = (String) map.get("deviceName");
 			String deviceType=(String) map.get("deviceType");
@@ -1517,7 +1518,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ " applicationScenarios,applicationScenariosName,"
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
-					+ " status,statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 					+ " sortNum"
 					+ " from "+tableName+" t "
 					+ " where 1=1";
@@ -2235,9 +2236,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						String barrelType="";
 						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
 							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-								barrelType="组合泵";
+								barrelType=languageResourceMap.get("barrelType_L");
 							}else if("H".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-								barrelType="整筒泵";
+								barrelType=languageResourceMap.get("barrelType_H");
 							}
 						}
 //						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
@@ -2256,13 +2257,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						if(rpcProductionData.getRodString()!=null&&rpcProductionData.getRodString().getEveryRod()!=null&&rpcProductionData.getRodString().getEveryRod().size()>0){
 							if(rpcProductionData.getRodString().getEveryRod().size()>0){
 								if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==1){
-									rodType1="钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==2){
-									rodType1="玻璃钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue2");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==3){
-									rodType1="空心抽油杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType1="钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=rpcProductionData.getRodString().getEveryRod().get(0).getGrade();
 								rodOutsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
@@ -2271,13 +2272,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(rpcProductionData.getRodString().getEveryRod().size()>1){
 								if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==1){
-									rodType2="钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==2){
-									rodType2="玻璃钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue2");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==3){
-									rodType2="空心抽油杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType2="钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=rpcProductionData.getRodString().getEveryRod().get(1).getGrade();
 								rodOutsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
@@ -2286,13 +2287,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(rpcProductionData.getRodString().getEveryRod().size()>2){
 								if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==1){
-									rodType3="钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==2){
-									rodType3="玻璃钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue2");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==3){
-									rodType3="空心抽油杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType3="钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=rpcProductionData.getRodString().getEveryRod().get(2).getGrade();
 								rodOutsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
@@ -2301,13 +2302,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(rpcProductionData.getRodString().getEveryRod().size()>3){
 								if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==1){
-									rodType4="钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue1");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==2){
-									rodType4="玻璃钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue2");
 								}else if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==3){
-									rodType4="空心抽油杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType4="钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue4");
 								}
 								rodGrade4=rpcProductionData.getRodString().getEveryRod().get(3).getGrade();
 								rodOutsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
@@ -2446,13 +2447,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						if(pcpProductionData.getRodString()!=null&&pcpProductionData.getRodString().getEveryRod()!=null&&pcpProductionData.getRodString().getEveryRod().size()>0){
 							if(pcpProductionData.getRodString().getEveryRod().size()>0){
 								if(pcpProductionData.getRodString().getEveryRod().get(0).getType()==1){
-									rodType1="钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(0).getType()==2){
-									rodType1="玻璃钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue2");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(0).getType()==3){
-									rodType1="空心抽油杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType1="钢杆";
+									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=pcpProductionData.getRodString().getEveryRod().get(0).getGrade();
 								rodOutsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
@@ -2461,13 +2462,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>1){
 								if(pcpProductionData.getRodString().getEveryRod().get(1).getType()==1){
-									rodType2="钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(1).getType()==2){
-									rodType2="玻璃钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue2");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(1).getType()==3){
-									rodType2="空心抽油杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType2="钢杆";
+									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=pcpProductionData.getRodString().getEveryRod().get(1).getGrade();
 								rodOutsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
@@ -2476,13 +2477,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>2){
 								if(pcpProductionData.getRodString().getEveryRod().get(2).getType()==1){
-									rodType3="钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(2).getType()==2){
-									rodType3="玻璃钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue2");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(2).getType()==3){
-									rodType3="空心抽油杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType3="钢杆";
+									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=pcpProductionData.getRodString().getEveryRod().get(2).getGrade();
 								rodOutsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
@@ -2491,13 +2492,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>3){
 								if(pcpProductionData.getRodString().getEveryRod().get(3).getType()==1){
-									rodType4="钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue1");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(3).getType()==2){
-									rodType4="玻璃钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue2");
 								}else if(pcpProductionData.getRodString().getEveryRod().get(3).getType()==3){
-									rodType4="空心抽油杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue3");
 								}else{
-									rodType4="钢杆";
+									rodType4=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade4=pcpProductionData.getRodString().getEveryRod().get(3).getGrade();
 								rodOutsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
@@ -2605,8 +2606,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
-				+ "{ \"header\":\"监控路径\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
-				+ "{ \"header\":\"视频密钥\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("videoUrl")+"\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("videoKey")+"\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
 		String sql = "select t.videourl1,t2.account as videokey1,t.videourl2,t3.account as videokey2"
@@ -3201,6 +3202,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			String tableName="viw_device";
 			DataDictionary ddic = null;
 			String ddicName="deviceInfo_DeviceBatchAdd";
@@ -3245,7 +3247,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"//7
 					+ " tcptype,signInId,slave,t.peakdelay,"//11
 					+ " videoUrl1,videoKeyName1,videoUrl2,videoKeyName2,"//15
-					+ " sortNum,statusName,"//17
+					+ " sortNum,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"//17
 					+ " t.productiondata,"//18
 					+ " t.manufacturer,t.model,t.stroke,"//21
 					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"//22
@@ -3312,9 +3314,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						}
 						if(productionData.getPump()!=null){
 							if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
-								barrelType="组合泵";
+								barrelType=languageResourceMap.get("barrelType_L");
 							}else{
-								barrelType="整筒泵";
+								barrelType=languageResourceMap.get("barrelType_H");
 							}
 							pumpGrade=productionData.getPump().getPumpGrade()+"";
 							pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";
@@ -3448,239 +3450,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"balanceWeight\":\""+balanceWeight+"\",");
 				result_json.append("\"balancePosition\":\""+balancePosition+"\"}");
 				
-				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < realColumns.size(); j++) {
-					if(jsonObject.has(realColumns.get(j))){
-						record.add(jsonObject.getString(realColumns.get(j)));
-					}else{
-						record.add("");
-					}
-				}
-				sheetDataList.add(record);
-			}
-			ExcelUtils.export(response,fileName,title, sheetDataList,1);
-			if(user!=null){
-		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean exportPCPDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String wellInformationName) {
-		try{
-			StringBuffer result_json = new StringBuffer();
-			Gson gson = new Gson();
-			java.lang.reflect.Type type=null;
-			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			String tableName="viw_pcpdevice";
-			DataDictionary ddic = null;
-			String ddicName="deviceInfo_PCPDeviceBatchAdd";
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			String head=StringUtils.join(ddic.getHeaders(), ",");
-			String field=StringUtils.join(ddic.getFields(), ",");
-			
-			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-			String heads[]=head.split(",");
-			String columns[]=field.split(",");
-			
-			List<Object> headRow = new ArrayList<>();
-			List<String> realColumns=new ArrayList<>();
-			for(int i=0;i<heads.length;i++){
-				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
-					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) 
-							|| "saturationPressure".equalsIgnoreCase(columns[i]) 
-							|| "waterCut".equalsIgnoreCase(columns[i]) 
-							|| "weightWaterCut".equalsIgnoreCase(columns[i]) 
-							|| "productionGasOilRatio".equalsIgnoreCase(columns[i]) 
-							) ){
-						String thishead=heads[i];
-						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
-							thishead=thishead.replace("油层", "煤层");
-						}else if("tubingPressure".equalsIgnoreCase(columns[i])){
-							thishead=thishead.replace("油压", "管压");
-						}
-						headRow.add(thishead);
-						realColumns.add(columns[i]);
-					}
-				}else{
-					headRow.add(heads[i]);
-					realColumns.add(columns[i]);
-				}
-			}
-		    List<List<Object>> sheetDataList = new ArrayList<>();
-		    sheetDataList.add(headRow);
-			
-			String sql = "select id,orgName,wellName,applicationScenariosName,"//3
-					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"//7
-					+ " tcptype,signInId,slave,t.peakdelay,"//11
-					+ " videoUrl1,videoKeyName1,videoUrl2,videoKeyName2,"//15
-					+ " sortNum,statusName,"//17
-					+ " t.productiondata"//18
-					+ " from "+tableName+" t "
-					+ " where t.applicationScenarios="+applicationScenarios
-					+ " and t.orgid in ("+orgId+" )";
-			if (StringManagerUtils.isNotNull(wellInformationName)) {
-				sql+= " and t.wellname like '%" + wellInformationName+ "%'";
-			}
-			
-			sql+= " order by t.sortnum,t.wellname ";
-			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-			
-			List<?> list=this.findCallSql(finalSql);
-			List<Object> record=null;
-			JSONObject jsonObject=null;
-			Object[] obj=null;
-			for(int i=0;i<list.size();i++){
-				obj=(Object[]) list.get(i);
-				result_json = new StringBuffer();
-				record = new ArrayList<>();
-				
-				String productionDataStr=obj[18]+"";
-				String videoUrl1="",videoUrl2="";
-				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
-						reservoirDepth="",reservoirTemperature="",
-						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
-						barrelLength="",barrelSeries="",rotorDiameter="",QPR="",
-						tubingStringInsideDiameter="",casingStringInsideDiameter="",
-						rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="",
-						rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
-						rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="",
-						rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="",
-						netGrossRatio="",netGrossValue="";
-				
-				if(StringManagerUtils.isNotNull(productionDataStr)){
-					type = new TypeToken<PCPProductionData>() {}.getType();
-					PCPProductionData productionData=gson.fromJson(productionDataStr, type);
-					if(productionData!=null){
-						if(productionData.getFluidPVT()!=null){
-							crudeOilDensity=productionData.getFluidPVT().getCrudeOilDensity()+"";
-							waterDensity=productionData.getFluidPVT().getWaterDensity()+"";
-							naturalGasRelativeDensity=productionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-							saturationPressure=productionData.getFluidPVT().getSaturationPressure()+"";
-						}
-						if(productionData.getReservoir()!=null){
-							reservoirDepth=productionData.getReservoir().getDepth()+"";
-							reservoirTemperature=productionData.getReservoir().getTemperature()+"";
-						}
-						if(productionData.getProduction()!=null){
-							tubingPressure=productionData.getProduction().getTubingPressure()+"";
-							casingPressure=productionData.getProduction().getCasingPressure()+"";
-							wellHeadTemperature=productionData.getProduction().getWellHeadTemperature()+"";
-							waterCut=productionData.getProduction().getWaterCut()+"";
-							productionGasOilRatio=productionData.getProduction().getProductionGasOilRatio()+"";
-							producingfluidLevel=productionData.getProduction().getProducingfluidLevel()+"";
-							pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
-						}
-						if(productionData.getPump()!=null){
-							barrelLength=productionData.getPump().getBarrelLength()+"";
-							barrelSeries=productionData.getPump().getBarrelSeries()+"";
-							rotorDiameter=productionData.getPump().getRotorDiameter()*1000+"";
-							QPR=productionData.getPump().getQPR()*1000*1000+"";
-						}
-						if(productionData.getTubingString()!=null && productionData.getTubingString().getEveryTubing()!=null && productionData.getTubingString().getEveryTubing().size()>0){
-							tubingStringInsideDiameter=productionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"";
-						}
-						if(productionData.getCasingString()!=null && productionData.getCasingString().getEveryCasing()!=null && productionData.getCasingString().getEveryCasing().size()>0){
-							casingStringInsideDiameter=productionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"";
-						}
-						if(productionData.getRodString()!=null && productionData.getRodString().getEveryRod()!=null && productionData.getRodString().getEveryRod().size()>0){
-							rodGrade1=productionData.getRodString().getEveryRod().get(0).getGrade()+"";
-							rodOutsideDiameter1=productionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-							rodInsideDiameter1=productionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
-							rodLength1=productionData.getRodString().getEveryRod().get(0).getLength()+"";
-							if(productionData.getRodString().getEveryRod().size()>1){
-								rodGrade2=productionData.getRodString().getEveryRod().get(1).getGrade()+"";
-								rodOutsideDiameter2=productionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=productionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
-								rodLength2=productionData.getRodString().getEveryRod().get(1).getLength()+"";
-								if(productionData.getRodString().getEveryRod().size()>2){
-									rodGrade3=productionData.getRodString().getEveryRod().get(2).getGrade()+"";
-									rodOutsideDiameter3=productionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-									rodInsideDiameter3=productionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
-									rodLength3=productionData.getRodString().getEveryRod().get(2).getLength()+"";
-									if(productionData.getRodString().getEveryRod().size()>3){
-										rodGrade4=productionData.getRodString().getEveryRod().get(3).getGrade()+"";
-										rodOutsideDiameter4=productionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-										rodInsideDiameter4=productionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
-										rodLength4=productionData.getRodString().getEveryRod().get(3).getLength()+"";
-									}
-								}
-							}
-						}
-						if(productionData.getManualIntervention()!=null){
-							netGrossRatio=productionData.getManualIntervention().getNetGrossRatio()+"";
-							netGrossValue=productionData.getManualIntervention().getNetGrossValue()+"";
-						}
-					}
-				}
-				
-				result_json.append("{\"id\":\""+(i+1)+"\",");
-				result_json.append("\"orgName\":\""+obj[1]+"\",");
-				result_json.append("\"wellName\":\""+obj[2]+"\",");
-				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
-				result_json.append("\"instanceName\":\""+obj[4]+"\",");
-				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
-				result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-				result_json.append("\"reportInstanceName\":\""+obj[7]+"\",");
-				
-				result_json.append("\"tcpType\":\""+(obj[8]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"signInId\":\""+obj[9]+"\",");
-				result_json.append("\"slave\":\""+obj[10]+"\",");
-				result_json.append("\"peakDelay\":\""+obj[11]+"\",");
-				
-				result_json.append("\"videoUrl1\":\""+obj[12]+"\",");
-				result_json.append("\"videoKeyName1\":\""+obj[13]+"\",");
-				result_json.append("\"videoUrl2\":\""+obj[14]+"\",");
-				result_json.append("\"videoKeyName2\":\""+obj[15]+"\",");
-				
-				result_json.append("\"sortNum\":\""+obj[16]+"\",");
-				result_json.append("\"statusName\":\""+obj[17]+"\",");
-				
-				result_json.append("\"crudeOilDensity\":\""+crudeOilDensity+"\",");
-				result_json.append("\"waterDensity\":\""+waterDensity+"\",");
-				result_json.append("\"naturalGasRelativeDensity\":\""+naturalGasRelativeDensity+"\",");
-				result_json.append("\"saturationPressure\":\""+saturationPressure+"\",");
-				result_json.append("\"reservoirDepth\":\""+reservoirDepth+"\",");
-				result_json.append("\"reservoirTemperature\":\""+reservoirTemperature+"\",");
-				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
-				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
-				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
-				result_json.append("\"waterCut\":\""+waterCut+"\",");
-				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
-				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
-				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"barrelLength\":\""+barrelLength+"\",");
-				result_json.append("\"barrelSeries\":\""+barrelSeries+"\",");
-				result_json.append("\"rotorDiameter\":\""+rotorDiameter+"\",");
-				result_json.append("\"QPR\":\""+QPR+"\",");
-				result_json.append("\"tubingStringInsideDiameter\":\""+tubingStringInsideDiameter+"\",");
-				result_json.append("\"casingStringInsideDiameter\":\""+casingStringInsideDiameter+"\",");
-				result_json.append("\"rodGrade1\":\""+rodGrade1+"\",");
-				result_json.append("\"rodOutsideDiameter1\":\""+rodOutsideDiameter1+"\",");
-				result_json.append("\"rodInsideDiameter1\":\""+rodInsideDiameter1+"\",");
-				result_json.append("\"rodLength1\":\""+rodLength1+"\",");
-				result_json.append("\"rodGrade2\":\""+rodGrade2+"\",");
-				result_json.append("\"rodOutsideDiameter2\":\""+rodOutsideDiameter2+"\",");
-				result_json.append("\"rodInsideDiameter2\":\""+rodInsideDiameter2+"\",");
-				result_json.append("\"rodLength2\":\""+rodLength2+"\",");
-				result_json.append("\"rodGrade3\":\""+rodGrade3+"\",");
-				result_json.append("\"rodOutsideDiameter3\":\""+rodOutsideDiameter3+"\",");
-				result_json.append("\"rodInsideDiameter3\":\""+rodInsideDiameter3+"\",");
-				result_json.append("\"rodLength3\":\""+rodLength3+"\",");
-				result_json.append("\"rodGrade4\":\""+rodGrade4+"\",");
-				result_json.append("\"rodOutsideDiameter4\":\""+rodOutsideDiameter4+"\",");
-				result_json.append("\"rodInsideDiameter4\":\""+rodInsideDiameter4+"\",");
-				result_json.append("\"rodLength4\":\""+rodLength4+"\",");
-				
-				result_json.append("\"netGrossRatio\":\""+netGrossRatio+"\",");
-				result_json.append("\"netGrossValue\":\""+netGrossValue+"\"}");
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < realColumns.size(); j++) {
 					if(jsonObject.has(realColumns.get(j))){

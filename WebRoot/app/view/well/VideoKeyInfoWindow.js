@@ -3,7 +3,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.videoKeyInfoWindow',
     layout: 'fit',
-    title:'视频密钥',
+    title:loginUserLanguageResource.videoKey,
     border: false,
     hidden: false,
     collapsible: true,
@@ -38,7 +38,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
                 hidden: true
             },'->', {
     			xtype: 'button',
-                text: '添加密钥',
+                text: loginUserLanguageResource.addVideoKey,
                 iconCls: 'add',
                 handler: function (v, o) {
                 	var selectedOrgName="";
@@ -58,7 +58,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.VideoKeyAddWindow", {
-                        title: '添加视频密钥'
+                        title: loginUserLanguageResource.addVideoKey
                     });
                     window.show();
                     Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml("密钥将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -67,7 +67,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     			}
     		}, '-',{
     			xtype: 'button',
-    			text: '删除密钥',
+    			text: loginUserLanguageResource.deleteVideoKey,
     			iconCls: 'delete',
     			handler: function (v, o) {
     				var startRow= Ext.getCmp("VideoKeySelectRow_Id").getValue();

@@ -197,7 +197,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     } else if (dataIndex.toUpperCase() === "pumpType".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
                     } else if (dataIndex.toUpperCase() === "barrelType".toUpperCase()) {
-                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']}";
+                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']}";
                     } else if (dataIndex.toUpperCase() === "pumpGrade".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2', '3', '4', '5']}";
                     } else if (dataIndex.toUpperCase() === "rodGrade1".toUpperCase() || dataIndex.toUpperCase() === "rodGrade2".toUpperCase()
@@ -378,9 +378,9 @@ var BatchAddDeviceHandsontableHelper = {
                         }
                         if(visualColIndex==pumpGradeColIndex && barrelTypeColIndex>0){
                         	var barrelType=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
-                        	if(barrelType=='整筒泵'){
+                        	if(barrelType==loginUserLanguageResource.barrelType_H){
                         		this.source = ['1','2','3','4','5'];
-                        	}else if(barrelType=='组合泵'){
+                        	}else if(barrelType==loginUserLanguageResource.barrelType_L){
                         		this.source = ['1','2','3'];
                         	}else if(barrelType==''){
                         		this.source = ['1','2','3','4','5'];

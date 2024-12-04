@@ -191,7 +191,7 @@ function CreateReportUnitContentConfigTable() {
 						{data:'title'},
 					 	{data:'unit'},
 					 	{data:'dataSource'},
-					 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
+					 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
 						{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 						{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 						{data:'reportCurveConfShowValue'},
@@ -208,7 +208,7 @@ function CreateReportUnitContentConfigTable() {
 							{data:'title'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
-						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
+						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
 							{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'reportCurveConfShowValue'},
@@ -225,13 +225,13 @@ function CreateReportUnitContentConfigTable() {
 							{data:'title'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
-						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
+						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
 							{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'sumSign',type:'checkbox'},
 		                    {data:'averageSign',type:'checkbox'},
 							{data:'reportCurveConfShowValue'},
-							{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},
+							{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.curveStatType_sum, loginUserLanguageResource.curveStatType_avg]},
 							{data:'reportCurveConf'},
 							{data:'code'},
 							{data:'dataType'},
@@ -245,7 +245,7 @@ function CreateReportUnitContentConfigTable() {
 							{data:'title'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
-						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:['最大值', '最小值','平均值','最新值','最旧值','日累计']},
+						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
 							{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,reportUnitContentConfigHandsontableHelper);}},
 							{data:'reportCurveConfShowValue'},
@@ -1091,17 +1091,17 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         			item.itemPrec=itemsConfigData[index][8];
         			
         			if(item.dataSource=='采集'){
-        				if(itemsConfigData[index][5]=='最大值'){
+        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
-                		}else if(itemsConfigData[index][5]=='最小值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
                 			item.totalType=2;
-                		}else if(itemsConfigData[index][5]=='平均值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
                 			item.totalType=3;
-                		}else if(itemsConfigData[index][5]=='最新值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
                 			item.totalType=4;
-                		}else if(itemsConfigData[index][5]=='最旧值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
                 			item.totalType=5;
-                		}else if(itemsConfigData[index][5]=='日累计'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
                 			item.totalType=6;
                 		}
         			}
@@ -1130,17 +1130,17 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         			item.itemPrec=itemsConfigData[index][8];
         			
         			if(item.dataSource=='采集'){
-        				if(itemsConfigData[index][5]=='最大值'){
+        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
-                		}else if(itemsConfigData[index][5]=='最小值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
                 			item.totalType=2;
-                		}else if(itemsConfigData[index][5]=='平均值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
                 			item.totalType=3;
-                		}else if(itemsConfigData[index][5]=='最新值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
                 			item.totalType=4;
-                		}else if(itemsConfigData[index][5]=='最旧值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
                 			item.totalType=5;
-                		}else if(itemsConfigData[index][5]=='日累计'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
                 			item.totalType=6;
                 		}
         			}
@@ -1169,13 +1169,13 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		item.reportCurveConf=reportCurveConfigStr;
         		
         		item.curveStatType = itemsConfigData[index][13];
-        		if(item.curveStatType=='合计'){
+        		if(item.curveStatType==loginUserLanguageResource.curveStatType_sum){
         			item.curveStatType='1';
-        		}else if(item.curveStatType=='平均'){
+        		}else if(item.curveStatType==loginUserLanguageResource.curveStatType_avg){
         			item.curveStatType='2';
-        		}else if(item.curveStatType=='最大值'){
+        		}else if(item.curveStatType==loginUserLanguageResource.curveStatType_max){
         			item.curveStatType='3';
-        		}else if(item.curveStatType=='最小值'){
+        		}else if(item.curveStatType==loginUserLanguageResource.curveStatType_min){
         			item.curveStatType='4';
         		}
             	
@@ -1185,17 +1185,17 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
         			if(item.dataSource=='采集'){
-        				if(itemsConfigData[index][5]=='最大值'){
+        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
-                		}else if(itemsConfigData[index][5]=='最小值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
                 			item.totalType=2;
-                		}else if(itemsConfigData[index][5]=='平均值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
                 			item.totalType=3;
-                		}else if(itemsConfigData[index][5]=='最新值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
                 			item.totalType=4;
-                		}else if(itemsConfigData[index][5]=='最旧值'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
                 			item.totalType=5;
-                		}else if(itemsConfigData[index][5]=='日累计'){
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
                 			item.totalType=6;
                 		}
         			}

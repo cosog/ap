@@ -1610,6 +1610,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<String> heads=ddic.getHeaders();
 		List<String> fields=ddic.getFields();
 		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		
 		DeviceInfo deviceInfo=null;
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
@@ -1656,9 +1658,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String barrelType="";
 							if(deviceInfo!=null&&deviceInfo.getRpcCalculateRequestData().getPump()!=null&&deviceInfo.getRpcCalculateRequestData().getPump().getBarrelType()!=null){
 								if("L".equalsIgnoreCase(deviceInfo.getRpcCalculateRequestData().getPump().getBarrelType())){
-									barrelType="组合泵";
+									barrelType=languageResourceMap.get("barrelType_L");
 								}else if("H".equalsIgnoreCase(deviceInfo.getRpcCalculateRequestData().getPump().getBarrelType())){
-									barrelType="整筒泵";
+									barrelType=languageResourceMap.get("barrelType_H");
 								}
 							}
 							deviceInfoDataList.append("{\"item\":\"泵筒类型\","+ "\"value\":\""+barrelType+"\"},");

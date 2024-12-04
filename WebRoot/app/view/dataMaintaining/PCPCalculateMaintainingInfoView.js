@@ -767,7 +767,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
     		}else if(dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
         	}else if(dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']";
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']";
         	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
         	}else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){

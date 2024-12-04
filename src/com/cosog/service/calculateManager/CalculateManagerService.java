@@ -80,9 +80,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}else if("2".equals(calculateType)){
-			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType);
+			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
 			json=this.getElecInverCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}
@@ -102,7 +102,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -115,7 +115,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			columns = ddic.getTableHeader();
@@ -211,9 +211,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						String barrelType="";
 						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
 							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-								barrelType="组合泵";
+								barrelType=languageResourceMap.get("barrelType_L");
 							}else if("H".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-								barrelType="整筒泵";
+								barrelType=languageResourceMap.get("barrelType_H");
 							}
 						}
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
@@ -230,13 +230,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					if(rpcProductionData.getRodString()!=null && rpcProductionData.getRodString().getEveryRod()!=null){
 						for(int j=0;j<rpcProductionData.getRodString().getEveryRod().size();j++){
-							String rodType="钢杆";
+							String rodType=languageResourceMap.get("rodStringTypeValue1");
 							if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==1){
-								rodType="钢杆";
+								rodType=languageResourceMap.get("rodStringTypeValue1");
 							}else if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==2){
-								rodType="玻璃钢杆";
+								rodType=languageResourceMap.get("rodStringTypeValue2");
 							}else if(rpcProductionData.getRodString().getEveryRod().get(j).getType()==3){
-								rodType="空心抽油杆";
+								rodType=languageResourceMap.get("rodStringTypeValue3");
 							}
 							result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 							result_json.append("\"rodGrade"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getGrade()+"\",");
@@ -290,7 +290,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getRPMCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getRPMCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -302,6 +302,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String ddicName="calculateManager_PCPSingleRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
@@ -398,13 +400,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(calculateRequestData.getRodString()!=null && calculateRequestData.getRodString().getEveryRod()!=null){
 					for(int j=0;j<calculateRequestData.getRodString().getEveryRod().size();j++){
-						String rodType="钢杆";
+						String rodType=languageResourceMap.get("rodStringTypeValue1");
 						if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==1){
-							rodType="钢杆";
+							rodType=languageResourceMap.get("rodStringTypeValue1");
 						}else if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==2){
-							rodType="玻璃钢杆";
+							rodType=languageResourceMap.get("rodStringTypeValue2");
 						}else if(calculateRequestData.getRodString().getEveryRod().get(j).getType()==3){
-							rodType="空心抽油杆";
+							rodType=languageResourceMap.get("rodStringTypeValue3");
 						}
 						result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 						result_json.append("\"rodGrade"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getGrade()+"\",");
@@ -725,9 +727,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public void saveReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios) throws Exception {
+	public void saveReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios,String language) throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
 			try{
 				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
@@ -789,9 +792,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					
 					String barrelType="";
-					if("组合泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+					if(languageResourceMap.get("barrelType_L").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
 						barrelType="L";
-					}else if("整筒泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+					}else if(languageResourceMap.get("barrelType_H").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
 						barrelType="H";
 					}
 					
@@ -804,11 +807,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
 						int rodType=0;
-						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 							rodType=1;
-						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 							rodType=2;
-						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+						}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 							rodType=3;
 						}
 						everyRod.setType(rodType);
@@ -822,11 +825,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
 						int rodType=0;
-						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 							rodType=1;
-						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 							rodType=2;
-						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+						}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 							rodType=3;
 						}
 						everyRod.setType(rodType);
@@ -840,11 +843,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
 						int rodType=0;
-						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 							rodType=1;
-						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 							rodType=2;
-						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+						}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 							rodType=3;
 						}
 						everyRod.setType(rodType);
@@ -858,11 +861,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
 						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
 						int rodType=0;
-						if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 							rodType=1;
-						}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 							rodType=2;
-						}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+						}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 							rodType=3;
 						}
 						everyRod.setType(rodType);
@@ -917,9 +920,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public void saveRPMReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios) throws Exception {
+	public void saveRPMReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios,String language) throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
 			for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 				StringBuffer productionDataBuff = new StringBuffer();
@@ -986,11 +990,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
 					int rodType=0;
-					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+					if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 						rodType=1;
-					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+					}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 						rodType=2;
-					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
+					}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName1())){
 						rodType=3;
 					}
 					everyRod.setType(rodType);
@@ -1004,11 +1008,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
 					int rodType=0;
-					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+					if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 						rodType=1;
-					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+					}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 						rodType=2;
-					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
+					}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName2())){
 						rodType=3;
 					}
 					everyRod.setType(rodType);
@@ -1022,11 +1026,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
 					int rodType=0;
-					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+					if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 						rodType=1;
-					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+					}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 						rodType=2;
-					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
+					}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName3())){
 						rodType=3;
 					}
 					everyRod.setType(rodType);
@@ -1040,11 +1044,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
 					int rodType=0;
-					if("钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+					if(languageResourceMap.get("rodStringTypeValue1").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 						rodType=1;
-					}else if("玻璃钢杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+					}else if(languageResourceMap.get("rodStringTypeValue2").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 						rodType=2;
-					}else if("空心抽油杆".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
+					}else if(languageResourceMap.get("rodStringTypeValue3").equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodTypeName4())){
 						rodType=3;
 					}
 					everyRod.setType(rodType);

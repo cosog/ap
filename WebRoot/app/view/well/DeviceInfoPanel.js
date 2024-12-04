@@ -1345,9 +1345,9 @@ var DeviceInfoHandsontableHelper = {
                     		deviceProductionData.Pump.PumpType='T';
                     		
                     		var BarrelType=productionHandsontableData[13][2];
-                    		if(productionHandsontableData[13][2]=='组合泵'){
+                    		if(productionHandsontableData[13][2]==loginUserLanguageResource.barrelType_L){
                     			BarrelType='L';
-                    		}else if(productionHandsontableData[13][2]=='整筒泵'){
+                    		}else if(productionHandsontableData[13][2]==loginUserLanguageResource.barrelType_H){
                     			BarrelType='H';
                     		}
                     		if(isNotVal(BarrelType)){
@@ -2059,7 +2059,7 @@ var ProductionHandsontableHelper = {
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['组合泵','整筒泵'];
+		                    	this.source = [loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -2072,7 +2072,7 @@ var ProductionHandsontableHelper = {
 		                    		barrelType=productionHandsontableHelper.pumpGrade;
 		                    	}
 		                    	var pumpGradeList=['1','2','3','4','5'];
-		                    	if(barrelType==='组合泵'){
+		                    	if(barrelType===loginUserLanguageResource.barrelType_L){
 		                    		pumpGradeList=['1','2','3'];
 		                    	}
 		                    	this.type = 'dropdown';

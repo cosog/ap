@@ -164,6 +164,10 @@ public class CalculateManagerController extends BaseController {
 	public String saveRecalculateData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -175,9 +179,9 @@ public class CalculateManagerController extends BaseController {
 			java.lang.reflect.Type type = new TypeToken<CalculateManagerHandsontableChangedData>() {}.getType();
 			CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData=gson.fromJson(data, type);
 			if("1".equals(calculateType)){
-				this.calculateManagerService.saveReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios));
+				this.calculateManagerService.saveReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios),language);
 			}else if("2".equals(calculateType)){
-				this.calculateManagerService.saveRPMReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios));
+				this.calculateManagerService.saveRPMReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios),language);
 			}
 			json ="{success:true}";
 		}else if("5".equals(calculateType)){

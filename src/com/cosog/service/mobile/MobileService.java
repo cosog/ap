@@ -2462,6 +2462,7 @@ public class MobileService<T> extends BaseService<T> {
 	public String getRPCInformation(String user,String password,String wells) {
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource("en");
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
 		result_json.append("\"DataList\":[");
 		if(userCheckSign==1){
@@ -2535,9 +2536,9 @@ public class MobileService<T> extends BaseService<T> {
 						}
 						if(productionData.getPump()!=null){
 							if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
-								barrelType="组合泵";
+								barrelType=languageResourceMap.get("barrelType_L");
 							}else{
-								barrelType="整筒泵";
+								barrelType=languageResourceMap.get("barrelType_H");
 							}
 							pumpGrade=productionData.getPump().getPumpGrade()+"";
 							pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";

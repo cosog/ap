@@ -10,6 +10,7 @@ import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 
@@ -92,6 +93,7 @@ private CommonDataService service;
 
 	
 	public String getRoleList(Map map,Page pager,User user) {
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String roleName = (String) map.get("roleName");
 		StringBuffer result_json = new StringBuffer();
 		String currentTabs=user.getDeviceTypeIds();
@@ -102,7 +104,7 @@ private CommonDataService service;
 		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit "
 				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
 		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
-				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'是','否') as roleVideoKeyEditName,"
+				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as roleVideoKeyEditName,"
 				+ " showLevel,remark"
 				+ " from  viw_role t"
 				+ " where 1=1 "

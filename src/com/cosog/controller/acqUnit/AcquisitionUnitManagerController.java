@@ -361,8 +361,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加采集组:"+acquisitionGroup.getGroupName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addAcqGroup")+":"+acquisitionGroup.getGroupName());
 			}
 			String sql="select t.id from TBL_ACQ_GROUP_CONF t "
 					+ " where t.group_name='"+acquisitionGroup.getGroupName()+"' and t.protocol='"+acquisitionGroup.getProtocol()+"'"
@@ -401,8 +406,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"编辑采集组:"+acquisitionGroup.getGroupName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("+editAcqGroup+")+":"+acquisitionGroup.getGroupName());
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
@@ -425,8 +435,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(ids);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"删除采集组");
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqGroup"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
@@ -1581,8 +1596,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String templateCode = ParamUtils.getParameter(request, "templateCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes);
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1599,8 +1620,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String templateCode = ParamUtils.getParameter(request, "templateCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalItemsConfigColInfoData(calculateType,reportType,templateCode,unitId,classes);
+		json = acquisitionUnitItemManagerService.getReportUnitTotalItemsConfigColInfoData(calculateType,reportType,templateCode,unitId,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2161,7 +2188,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/acquisitionUnitTreeData")
 	public String acquisitionUnitTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2174,7 +2207,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportAcqUnitTreeData")
 	public String exportAcqUnitTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportAcqUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportAcqUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2187,7 +2226,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportAlarmUnitTreeData")
 	public String exportAlarmUnitTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportAlarmUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportAlarmUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2200,7 +2245,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/displayUnitTreeData")
 	public String displayUnitTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2213,7 +2264,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportDisplayUnitTreeData")
 	public String exportDisplayUnitTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportDisplayUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportDisplayUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2277,7 +2334,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/repoerUnitTreeData")
 	public String repoerUnitTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.repoerUnitTreeData();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.repoerUnitTreeData(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2289,7 +2352,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/exportReportUnitTreeData")
 	public String exportReportUnitTreeData() throws IOException {
-		String json = acquisitionUnitItemManagerService.exportReportUnitTreeData();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportReportUnitTreeData(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2328,7 +2397,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAlarmUnitTreeData")
 	public String modbusProtocolAlarmUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2341,7 +2416,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusInstanceConfigTreeData")
 	public String modbusInstanceConfigTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2354,7 +2435,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportProtocolAcqInstanceTreeData")
 	public String exportProtocolAcqInstanceTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2391,7 +2478,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2404,7 +2497,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportProtocolDisplayInstanceTreeData")
 	public String exportProtocolDisplayInstanceTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2416,7 +2515,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusReportInstanceConfigTreeData")
 	public String modbusReportInstanceConfigTreeData() throws IOException {
-		String json = protocolReportInstanceManagerService.modbusReportInstanceConfigTreeData();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = protocolReportInstanceManagerService.modbusReportInstanceConfigTreeData(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2428,7 +2533,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/exportProtocolReportInstanceTreeData")
 	public String exportProtocolReportInstanceTreeData() throws IOException {
-		String json = protocolReportInstanceManagerService.getExportProtocolReportInstanceTreeData();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = protocolReportInstanceManagerService.getExportProtocolReportInstanceTreeData(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2441,7 +2552,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.getModbusProtocolAlarmInstanceConfigTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.getModbusProtocolAlarmInstanceConfigTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2454,7 +2571,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportProtocolAlarmInstanceTreeData")
 	public String exportProtocolAlarmInstanceTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2554,6 +2677,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(modbusDriverSaveData!=null){
 			modbusDriverSaveData.dataFiltering();
 			
@@ -2579,7 +2707,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
 						
 						if(user!=null){
-							this.service.saveSystemLog(user,2,"删除协议:"+modbusDriverSaveData.getDelidslist().get(i));
+							this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
 						}
 						break;
 					}
@@ -2598,23 +2726,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 						for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
 							boolean isAddItem=true;
 							String acqMode="passive";
-							if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
+							if(languageResourceMap.get("activeAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
 								acqMode="active";
-							}else if("被动响应".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
+							}else if(languageResourceMap.get("passiveAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
 								acqMode="passive";
 							}
 							String RWType="r";
-							if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+							if(languageResourceMap.get("readWrite").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
 								RWType="rw";
-							}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+							}else if(languageResourceMap.get("readOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
 								RWType="r";
-							}else if("只写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+							}else if(languageResourceMap.get("writeOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
 								RWType="w";
 							}
 							int resolutionMode=2;
-							if("开关量".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
+							if(languageResourceMap.get("switchingValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
 								resolutionMode=0;
-							}else if("枚举量".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
+							}else if(languageResourceMap.get("enumValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
 								resolutionMode=1;
 							}
 							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
@@ -2839,14 +2967,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@SuppressWarnings("static-access")
 	@RequestMapping("/saveAcquisitionGroupHandsontableData")
 	public String saveAcquisitionGroupHandsontableData() throws Exception {
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AcquisitionGroupHandsontableChangeData>() {}.getType();
 		AcquisitionGroupHandsontableChangeData acquisitionGroupHandsontableChangeData=gson.fromJson(data, type);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(acquisitionGroupHandsontableChangeData!=null){
 			if(acquisitionGroupHandsontableChangeData.getDelidslist()!=null){
 				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
@@ -2862,7 +2995,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除采控组");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqGroup"));
 					}
 				}
 			}
@@ -2872,7 +3005,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setId(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getId()));
 					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupCode());
 					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
-					acquisitionGroup.setType("采集组".equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getTypeName())?0:1);
+					acquisitionGroup.setType(languageResourceMap.get("acqGroup").equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getTypeName())?0:1);
 					acquisitionGroup.setGroupTimingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupTimingInterval()));
 					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getRemark());
@@ -2881,7 +3014,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //					EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(acquisitionGroup.getId()+"", "update");
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑采控组:"+acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqGroup")+":"+acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
 					}
 				}
 			}
@@ -2892,14 +3025,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setId(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getId()));
 					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupCode());
 					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
-					acquisitionGroup.setType("采集组".equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getTypeName())?0:1);
+					acquisitionGroup.setType(languageResourceMap.get("acqGroup").equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getTypeName())?0:1);
 					acquisitionGroup.setGroupTimingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupTimingInterval()));
 					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionGroupAdd(acquisitionGroup);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑采控组:"+acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqGroup")+":"+acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
 					}
 				}
 			}
@@ -3090,13 +3223,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveModbusProtocolAlarmUnitData")
 	public String saveModbusProtocolAlarmUnitData() throws Exception {
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolAlarmUnitSaveData>() {}.getType();
 		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		if(modbusProtocolAlarmUnitSaveData!=null){
 			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
@@ -3170,19 +3309,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 								
 								int alarmLevel=0;
 								int alarmSign=0;
-								if("正常".equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
+								if(languageResourceMap.get("normal").equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
 									alarmLevel=0;
-								}else if("一级报警".equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
+								}else if(languageResourceMap.get("alarmLevel1").equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
 									alarmLevel=100;
-								}else if("二级报警".equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
+								}else if(languageResourceMap.get("alarmLevel2").equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
 									alarmLevel=200;
-								}else if("三级报警".equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
+								}else if(languageResourceMap.get("alarmLevel3").equals(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmLevel())){
 									alarmLevel=300;
 								}
 								
-								if("使能".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
+								if(languageResourceMap.get("enable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
 									alarmSign=1;
-								}else if("失效".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
+								}else if(languageResourceMap.get("disable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
 									alarmSign=0;
 								}
 								
@@ -3191,14 +3330,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 								
 								int isSendMessage=0;
 								int isSendMail=0;
-								if("是".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMessage())){
+								if(languageResourceMap.get("yes").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMessage())){
 									isSendMessage=1;
-								}else if("否".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMessage())){
+								}else if(languageResourceMap.get("no").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMessage())){
 									isSendMessage=0;
 								}
-								if("是".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMail())){
+								if(languageResourceMap.get("yes").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMail())){
 									isSendMail=1;
-								}else if("否".equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMail())){
+								}else if(languageResourceMap.get("no").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getIsSendMail())){
 									isSendMail=0;
 								}
 								alarmUnitItem.setIsSendMessage(isSendMessage);
@@ -4396,6 +4535,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringBuffer displayInstance_json = new StringBuffer();
 		StringBuffer alarmInstance_json = new StringBuffer();
 		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		result_json.append("[");
 		acqUnit_json.append("[");
@@ -4431,7 +4577,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							acqUnit_json.append("\"remark\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getRemark()+"\",");
 							acqUnit_json.append("\"protocol\":\""+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getProtocol()+"\",");
 							acqUnit_json.append("\"type\":"+exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getType()+",");
-							acqUnit_json.append("\"typeName\":\""+(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getType()==0?"采集组":"控制组")+"\",");
+							acqUnit_json.append("\"typeName\":\""+(exportProtocolConfig.getAcqUnitList().get(i).getAcqGroupList().get(j).getType()==0?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 							acqUnit_json.append("\"iconCls\": \"acqGroup\",");
 							acqUnit_json.append("\"checked\": false,");
 							acqUnit_json.append("\"leaf\": true");
@@ -4778,19 +4924,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String unitList=ParamUtils.getParameter(request, "unitList");
 		String key = ParamUtils.getParameter(request, "key");
-		String json=acquisitionUnitManagerService.getProtocolReportUnitExportData(unitList);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json=acquisitionUnitManagerService.getProtocolReportUnitExportData(unitList,language);
 		String fileName="报表单元导出数据"+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
-				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
 				this.service.saveSystemLog(user,2,"导出报表单元数据");
@@ -6043,12 +6192,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getImportAcqInstanceItemsData")
 	public String getImportAcqInstanceItemsData() throws IOException {
-		HttpSession session=request.getSession();
 		List<ExportAcqInstanceData> uploadInstanceList=null;
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
+		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		try{
 			if(session.getAttribute("uploadAcqInstanceFile")!=null){
 				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
@@ -6057,7 +6210,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		String json = acquisitionUnitItemManagerService.getImportAcqInstanceItemsData(uploadInstanceList,protocolName,unitName,instanceName);
+		String json = acquisitionUnitItemManagerService.getImportAcqInstanceItemsData(uploadInstanceList,protocolName,unitName,instanceName,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

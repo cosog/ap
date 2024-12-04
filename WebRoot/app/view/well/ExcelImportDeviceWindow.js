@@ -178,7 +178,7 @@ function submitImportedDeviceFile() {
                         } else if (result.columns[i].dataIndex.toUpperCase() === "pumpType".toUpperCase()) {
                         	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "barrelType".toUpperCase()) {
-                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']}";
+                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "pumpGrade".toUpperCase()) {
                         	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2', '3', '4', '5']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "rodGrade2".toUpperCase()

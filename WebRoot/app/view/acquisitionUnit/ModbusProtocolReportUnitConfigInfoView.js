@@ -1120,8 +1120,8 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行
@@ -1346,8 +1346,8 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行
@@ -1932,7 +1932,7 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
                     {data:'sumSign',type:'checkbox'},
                     {data:'averageSign',type:'checkbox'},
                     {data:'reportCurveConfShowValue'},
-                    {data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},
+                    {data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.curveStatType_sum, loginUserLanguageResource.curveStatType_avg]},
                     {data: 'config',renderer: renderReportUnitContentConfig}
                     ];
                 productionReportTemplateContentHandsontableHelper.colHeaders = colHeaders;
@@ -1970,8 +1970,8 @@ var ProductionReportTemplateContentHandsontableHelper = {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value != null) {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行
@@ -2195,17 +2195,17 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                     item.itemPrec = itemsConfigData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (itemsConfigData[index][5] == '最大值') {
+                        if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (itemsConfigData[index][5] == '最小值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (itemsConfigData[index][5] == '平均值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (itemsConfigData[index][5] == '最新值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (itemsConfigData[index][5] == '最旧值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (itemsConfigData[index][5] == '日累计') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }
@@ -2234,17 +2234,17 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                     item.itemPrec = itemsConfigData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (itemsConfigData[index][5] == '最大值') {
+                        if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (itemsConfigData[index][5] == '最小值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (itemsConfigData[index][5] == '平均值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (itemsConfigData[index][5] == '最新值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (itemsConfigData[index][5] == '最旧值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (itemsConfigData[index][5] == '日累计') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }
@@ -2278,13 +2278,13 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                 item.reportCurveConf = reportCurveConfigStr;
 
                 item.curveStatType = itemsConfigData[index][12];
-                if (itemsConfigData[index][12] == '合计') {
+                if (itemsConfigData[index][12] == loginUserLanguageResource.curveStatType_sum) {
                     item.curveStatType = '1';
-                } else if (itemsConfigData[index][12] == '平均') {
+                } else if (itemsConfigData[index][12] == loginUserLanguageResource.curveStatType_avg) {
                     item.curveStatType = '2';
-                } else if (itemsConfigData[index][12] == '最大值') {
+                } else if (itemsConfigData[index][12] == loginUserLanguageResource.curveStatType_max) {
                     item.curveStatType = '3';
-                } else if (itemsConfigData[index][12] == '最小值') {
+                } else if (itemsConfigData[index][12] == loginUserLanguageResource.curveStatType_min) {
                     item.curveStatType = '4';
                 }
 
@@ -2295,17 +2295,17 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                     item.itemPrec = itemsConfigData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (itemsConfigData[index][5] == '最大值') {
+                        if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (itemsConfigData[index][5] == '最小值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (itemsConfigData[index][5] == '平均值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (itemsConfigData[index][5] == '最新值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (itemsConfigData[index][5] == '最旧值') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (itemsConfigData[index][5] == '日累计') {
+                        } else if (itemsConfigData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }
@@ -2422,17 +2422,17 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                     item.itemPrec = calItemsData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (calItemsData[index][5] == '最大值') {
+                        if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (calItemsData[index][5] == '最小值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (calItemsData[index][5] == '平均值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (calItemsData[index][5] == '最新值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (calItemsData[index][5] == '最旧值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (calItemsData[index][5] == '日累计') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }
@@ -2461,17 +2461,17 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                     item.itemPrec = calItemsData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (calItemsData[index][5] == '最大值') {
+                        if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (calItemsData[index][5] == '最小值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (calItemsData[index][5] == '平均值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (calItemsData[index][5] == '最新值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (calItemsData[index][5] == '最旧值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (calItemsData[index][5] == '日累计') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }
@@ -2505,13 +2505,13 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 item.reportCurveConf = reportCurveConfigStr;
 
                 item.curveStatType = calItemsData[index][12];
-                if (calItemsData[index][12] == '合计') {
+                if (calItemsData[index][12] == loginUserLanguageResource.curveStatType_sum) {
                     item.curveStatType = '1';
-                } else if (calItemsData[index][12] == '平均') {
+                } else if (calItemsData[index][12] == loginUserLanguageResource.curveStatType_avg) {
                     item.curveStatType = '2';
-                } else if (calItemsData[index][12] == '最大值') {
+                } else if (calItemsData[index][12] == loginUserLanguageResource.curveStatType_max) {
                     item.curveStatType = '3';
-                } else if (calItemsData[index][12] == '最小值') {
+                } else if (calItemsData[index][12] == loginUserLanguageResource.curveStatType_min) {
                     item.curveStatType = '4';
                 }
 
@@ -2522,17 +2522,17 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                     item.itemPrec = calItemsData[index][8];
 
                     if (item.dataSource == '采集') {
-                        if (calItemsData[index][5] == '最大值') {
+                        if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
-                        } else if (calItemsData[index][5] == '最小值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {
                             item.totalType = 2;
-                        } else if (calItemsData[index][5] == '平均值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.avgValue) {
                             item.totalType = 3;
-                        } else if (calItemsData[index][5] == '最新值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.newestValue) {
                             item.totalType = 4;
-                        } else if (calItemsData[index][5] == '最旧值') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.oldestValue) {
                             item.totalType = 5;
-                        } else if (calItemsData[index][5] == '日累计') {
+                        } else if (calItemsData[index][5] == loginUserLanguageResource.dailyTotalValue) {
                             item.totalType = 6;
                         }
                     }

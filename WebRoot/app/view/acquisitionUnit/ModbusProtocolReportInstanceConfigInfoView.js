@@ -782,19 +782,45 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 	        
 	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==3){
 	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(reportInstanceSingleWellRangeReportContentHandsontableHelper.columns[col].type=='checkbox'){
+	        		reportInstanceSingleWellRangeReportContentHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(reportInstanceSingleWellRangeReportContentHandsontableHelper.columns[col].type=='dropdown'){
+	        		reportInstanceSingleWellRangeReportContentHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		reportInstanceSingleWellRangeReportContentHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        reportInstanceSingleWellRangeReportContentHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -832,7 +858,7 @@ var ReportInstanceSingleWellRangeReportContentHandsontableHelper = {
 	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportInstanceSingleWellRangeReportContentHandsontableHelper.addCurveBg;
 		                }else{
-		                	cellProperties.renderer = reportInstanceSingleWellRangeReportContentHandsontableHelper.addCellStyle;
+		                	cellProperties.renderer = reportInstanceSingleWellRangeReportContentHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },
@@ -1188,19 +1214,45 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 	        
 	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==3){
 	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(reportInstanceSingleWellDailyReportContentHandsontableHelper.columns[col].type=='checkbox'){
+	        		reportInstanceSingleWellDailyReportContentHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(reportInstanceSingleWellDailyReportContentHandsontableHelper.columns[col].type=='dropdown'){
+	        		reportInstanceSingleWellDailyReportContentHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		reportInstanceSingleWellDailyReportContentHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        reportInstanceSingleWellDailyReportContentHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1238,10 +1290,7 @@ var ReportInstanceSingleWellDailyReportContentHandsontableHelper = {
 	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportInstanceSingleWellDailyReportContentHandsontableHelper.addCurveBg;
 		                }else{
-		                	if(reportInstanceSingleWellDailyReportContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& reportInstanceSingleWellDailyReportContentHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = reportInstanceSingleWellDailyReportContentHandsontableHelper.addCellStyle;
-		    	            }
+		                	cellProperties.renderer = reportInstanceSingleWellDailyReportContentHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },
@@ -1332,7 +1381,7 @@ function CreateProductionReportInstanceTotalItemsInfoTable(calculateType,selecte
 						
 						+"{data:'reportCurveConfShowValue'},"
 						
-						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['合计', '平均']},"
+						+"{data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.curveStatType_sum+"', '"+loginUserLanguageResource.curveStatType_avg+"']},"
 						
 						+"{data:'reportCurveConf'},"
 						
@@ -1370,19 +1419,45 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	        
 	        reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
+	            if(value!=null && value!=""){
 	            	var arr=value.split(';');
 	            	if(arr.length==3){
 	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        reportInstanceProductionTemplateContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        reportInstanceProductionTemplateContentHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(reportInstanceProductionTemplateContentHandsontableHelper.columns[col].type=='checkbox'){
+	        		reportInstanceProductionTemplateContentHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(reportInstanceProductionTemplateContentHandsontableHelper.columns[col].type=='dropdown'){
+	        		reportInstanceProductionTemplateContentHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		reportInstanceProductionTemplateContentHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        reportInstanceProductionTemplateContentHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        reportInstanceProductionTemplateContentHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        reportInstanceProductionTemplateContentHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -1420,10 +1495,7 @@ var ReportInstanceProductionTemplateContentHandsontableHelper = {
 	                    if(visualColIndex==10){
 		                	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addCurveBg;
 		                }else{
-		                	if(reportInstanceProductionTemplateContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& reportInstanceProductionTemplateContentHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addCellStyle;
-		    	            }
+		                	cellProperties.renderer = reportInstanceProductionTemplateContentHandsontableHelper.addReadOnlyBg;
 		                }
 	                    return cellProperties;
 	                },

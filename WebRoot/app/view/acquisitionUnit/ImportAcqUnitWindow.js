@@ -229,7 +229,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 						+"{data:'id'}," 
 						+"{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqUnitContentHandsontableHelper);}},"
-						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
+						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
 						+"{data:'unit'},"
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'bitIndex'}," 

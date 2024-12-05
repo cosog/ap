@@ -314,7 +314,13 @@ public class CalculateManagerController extends BaseController {
 		String recordId=ParamUtils.getParameter(request, "recordId");
 		String acqTime=ParamUtils.getParameter(request, "acqTime");
 		String calculateType=ParamUtils.getParameter(request, "calculateType");
-		String json=calculateManagerService.getCalculateRequestData(recordId,deviceName, acqTime,calculateType);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json=calculateManagerService.getCalculateRequestData(recordId,deviceName, acqTime,calculateType,language);
 		
 		Date date = df.parse(acqTime);
 		acqTime=df2.format(date);

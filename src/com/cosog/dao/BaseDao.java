@@ -1545,11 +1545,12 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@SuppressWarnings("resource")
-	public List<PumpingModelHandsontableChangedData.Updatelist> savePumpingModelHandsontableData(PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData,String selectedRecordId) throws SQLException {
+	public List<PumpingModelHandsontableChangedData.Updatelist> savePumpingModelHandsontableData(PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData,String selectedRecordId,String language) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		List<PumpingModelHandsontableChangedData.Updatelist> collisionList=new ArrayList<PumpingModelHandsontableChangedData.Updatelist>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			cs = conn.prepareCall("{call prd_update_pumpingmodel(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(pumpingModelHandsontableChangedData.getUpdatelist()!=null){
@@ -1560,7 +1561,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
 							cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
 							cs.setString(4, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
-							cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(5, languageResourceMap.get("clockwise").equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
 							cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
 							cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
 							cs.setString(8, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
@@ -1593,7 +1594,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
 							cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
 							cs.setString(4, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
-							cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(5, languageResourceMap.get("clockwise").equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
 							cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
 							cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
 							cs.setString(8, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());
@@ -1636,11 +1637,12 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@SuppressWarnings("resource")
-	public List<PumpingModelHandsontableChangedData.Updatelist> batchAddPumpingModel(PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData,int isCheckout) throws SQLException {
+	public List<PumpingModelHandsontableChangedData.Updatelist> batchAddPumpingModel(PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData,int isCheckout,String language) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		List<PumpingModelHandsontableChangedData.Updatelist> collisionList=new ArrayList<PumpingModelHandsontableChangedData.Updatelist>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			cs = conn.prepareCall("{call prd_save_pumpingmodel(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(pumpingModelHandsontableChangedData.getUpdatelist()!=null){
@@ -1650,7 +1652,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(1, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
 							cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
 							cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
-							cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(4, languageResourceMap.get("clockwise").equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
 							cs.setString(5, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
 							cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
 							cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
@@ -1682,7 +1684,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(1, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
 							cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
 							cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
-							cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(4, languageResourceMap.get("clockwise").equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
 							cs.setString(5, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
 							cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
 							cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());

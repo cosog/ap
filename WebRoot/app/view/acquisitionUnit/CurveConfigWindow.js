@@ -2,7 +2,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.curveConfigWindow',
     layout: 'fit',
-    title: '曲线属性',
+    title: loginUserLanguageResource.curveProperty,
     iframe: true,
     id: 'curveConfigWindow_Id',
     closeAction: 'destroy',
@@ -37,7 +37,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 			},{
             	xtype: 'numberfield',
             	id: "curveConfigSort_Id",
-                fieldLabel: '曲线顺序',
+                fieldLabel: loginUserLanguageResource.curveSort,
                 value:1,
                 allowBlank: false,
                 editable : false,
@@ -46,7 +46,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 msgTarget: 'side'
             },{
                 id: 'curveConfigColor_id',
-                fieldLabel: '曲线颜色',
+                fieldLabel: loginUserLanguageResource.curveColor,
                 xtype: 'colorfield',
                 anchor:'100%',
                 allowBlank: false,
@@ -69,7 +69,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
         	}, {
             	xtype: 'numberfield',
             	id: "curveConfigLineWidth_Id",
-                fieldLabel: '线宽',
+                fieldLabel: loginUserLanguageResource.lineWidth,
                 value:3,
                 allowBlank: false,
                 editable : false,
@@ -78,7 +78,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 msgTarget: 'side'
             }, {
             	xtype : "combobox",
-				fieldLabel : '线型',
+				fieldLabel : loginUserLanguageResource.lineDash,
 				id : 'curveConfigDashStyleComb_Id',
 				anchor : '100%',
 				value:'Solid',
@@ -106,8 +106,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择线型',
-				blankText : '请选择线型',
+				emptyText : loginUserLanguageResource.selectLineDash,
+				blankText : loginUserLanguageResource.selectLineDash,
 				listeners : {
 					select:function(v,o){
 						
@@ -115,7 +115,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 				}
             },{
             	xtype : "combobox",
-				fieldLabel : 'Y轴位置',
+				fieldLabel : loginUserLanguageResource.yAxisPosition,
 				id : 'curveConfigYAxisOppositeComb_Id',
 				value:false,
 				anchor : '100%',
@@ -127,15 +127,15 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
 							data : [
-								[false, '左'],
-								[true, '右']
+								[false, loginUserLanguageResource.left],
+								[true, loginUserLanguageResource.right]
 								]
 						}),
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择Y轴位置',
-				blankText : '请选择Y轴位置',
+				emptyText : loginUserLanguageResource.selectYAxisPosition,
+				blankText : loginUserLanguageResource.selectYAxisPosition,
 				listeners : {
 					select:function(v,o){
 						

@@ -1993,6 +1993,7 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String language="en";
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
             String[] clientInfo=item.userId.split("_");
@@ -2283,7 +2284,7 @@ public class DriverAPIController extends BaseController{
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}
-					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap);
+					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap,language);
 					
 					//如果跨天,删除非当天采集的数据
 //					isSameDay=false;
@@ -4252,7 +4253,8 @@ public class DriverAPIController extends BaseController{
 //			data="{}";
 //			data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
 			this.pager = new Page("pagerForm", request);
-			String json = mobileService.getPumpingModelInformation(data,pager);
+			String language="en";
+			String json = mobileService.getPumpingModelInformation(data,pager,language);
 			response.setContentType("application/json;charset=utf-8");
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw;

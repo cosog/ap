@@ -796,13 +796,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 				inputItemList=new ArrayList<>();
 			}
 			
@@ -1594,13 +1594,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 				inputItemList=new ArrayList<>();
 			}
 			
@@ -2251,7 +2251,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String calculateType,int userNo){
+	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String calculateType,int userNo,String language){
 		StringBuffer result_json = new StringBuffer();
 		try{
 			int items=3;
@@ -2291,13 +2291,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 				inputItemList=new ArrayList<>();
 			}
 			String columns = "[";
@@ -2977,7 +2977,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,int userNo)throws Exception {
+	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -3007,13 +3007,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 				}else{
-					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){

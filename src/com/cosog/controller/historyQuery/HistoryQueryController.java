@@ -329,7 +329,6 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/getDeviceHistoryDetailsData")
 	public String getDeviceHistoryDetailsData() throws Exception {
 		String json = "";
-		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String recordId = ParamUtils.getParameter(request, "recordId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -337,9 +336,10 @@ public class HistoryQueryController extends BaseController  {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo());
+			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo(),user.getLanguageName());
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -383,7 +383,7 @@ public class HistoryQueryController extends BaseController  {
 			
 			
 			this.pager = new Page("pagerForm", request);
-			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,calculateType,startDate,endDate,user.getUserNo());
+			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,calculateType,startDate,endDate,user.getUserNo(),user.getLanguageName());
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

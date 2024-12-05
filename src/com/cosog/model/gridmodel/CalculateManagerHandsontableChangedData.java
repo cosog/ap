@@ -127,7 +127,7 @@ public class CalculateManagerHandsontableChangedData {
 	    
 	    private String anchoringStateName="未锚定";
 	    
-	    private String manualInterventionResult="不干预";
+	    private String manualInterventionResult="";
 
 	    private String netGrossRatio="1";
 	    

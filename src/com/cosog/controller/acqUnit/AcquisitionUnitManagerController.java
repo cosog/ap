@@ -1041,6 +1041,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/grantTotalCalItemsToReportUnitPermission")
 	public String grantTotalCalItemsToReportUnitPermission() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String result = "";
 		PrintWriter out = response.getWriter();
 		ReportUnitItem reportUnitItem = null;
@@ -1075,11 +1081,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			List<CalItem> calItemList=null;
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
 			}
 			
 			for(CalItem calItem:calItemList){
@@ -1145,6 +1151,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/grantReportUnitContentItemsPermission")
 	public String grantReportUnitContentItemsPermission() throws IOException {
 		String result = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		PrintWriter out = response.getWriter();
 		ReportUnitItem reportUnitItem = null;
 		java.lang.reflect.Type type=null;
@@ -1179,11 +1191,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			List<CalItem> calItemList=null;
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
 			}
 			
 			for(CalItem calItem:calItemList){
@@ -4051,15 +4063,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveDatabaseColumnMappingTable() throws Exception {
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String protocolType = ParamUtils.getParameter(request, "protocolType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<DatabaseMappingProHandsontableChangedData>() {}.getType();
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
 		if(databaseMappingProHandsontableChangedData!=null){
-			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType);
+			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType,language);
 			EquipmentDriverServerTask.syncDataMappingTable();
-			
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
 			if(user!=null){
 				this.service.saveSystemLog(user,2,"修改协议字段映射");
 			}
@@ -5841,14 +5856,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getImportDisplayUnitItemsConfigData")
 	public String getImportDisplayUnitItemsConfigData() throws IOException {
-		HttpSession session=request.getSession();
-		
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String calculateType=ParamUtils.getParameter(request, "calculateType");
 		String type=ParamUtils.getParameter(request, "type");
-		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		
 		List<ExportDisplayUnitData> uploadUnitList=null;
 		try{
@@ -5859,7 +5877,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		String json = acquisitionUnitItemManagerService.getImportDisplayUnitItemsConfigData(uploadUnitList,protocolName,acqUnitName,unitName,calculateType,type);
+		String json = acquisitionUnitItemManagerService.getImportDisplayUnitItemsConfigData(uploadUnitList,protocolName,acqUnitName,unitName,calculateType,type,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6035,6 +6053,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getImportReportUnitItemsConfigData")
 	public String getImportReportUnitItemsConfigData() throws IOException {
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		List<ExportReportUnitData> uploadUnitList=null;
 		String reportType=ParamUtils.getParameter(request, "reportType");
 		String unitName=ParamUtils.getParameter(request, "unitName");
@@ -6046,7 +6069,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		String json = acquisitionUnitItemManagerService.getImportReportUnitItemsConfigData(uploadUnitList,reportType,unitName);
+		String json = acquisitionUnitItemManagerService.getImportReportUnitItemsConfigData(uploadUnitList,reportType,unitName,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -2481,7 +2481,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ " t.sortNum,t.statusName,"//18~19
 					+ " t.productiondata,"//20
 					+ " t.manufacturer,t.model,t.stroke,"//21~23
-					+ " decode( lower(t.crankrotationdirection),'clockwise','顺时针','anticlockwise','逆时针','' ) as crankrotationdirection,"//24
+					+ " decode( lower(t.crankrotationdirection),'clockwise','"+languageResourceMap.get("clockwise")+"','anticlockwise','"+languageResourceMap.get("anticlockwise")+"','' ) as crankrotationdirection,"//24
 					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"//25~29
 					+ " t.balanceinfo"//30
 					+ " from "+tableName+" t "
@@ -2869,12 +2869,13 @@ public class MobileService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getPumpingModelInformation(String data,Page pager)throws Exception {
+	public String getPumpingModelInformation(String data,Page pager,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String user="";
 		String password="";
 		String manufacturer="";
 		String model="";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(StringManagerUtils.isNotNull(data)){
 			try{
 				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -2909,7 +2910,7 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
 		result_json.append("\"DataList\":[");
 		if(userCheckSign==1){
-			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
+			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','"+languageResourceMap.get("anticlockwise")+"','Clockwise','"+languageResourceMap.get("clockwise")+"','') as crankrotationdirection,"
 					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
 					+ " t.structuralunbalance,t.balanceweight,"
 					+ " t.prtf"

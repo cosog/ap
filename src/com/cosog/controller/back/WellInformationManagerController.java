@@ -591,7 +591,12 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
-//		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -600,7 +605,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount);
+		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -856,13 +861,19 @@ public class WellInformationManagerController extends BaseController {
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String manufacturer= ParamUtils.getParameter(request, "manufacturer");
 		String model= ParamUtils.getParameter(request, "model");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.doPumpingModelShow(manufacturer,model);
+		String json = this.wellInformationManagerService.doPumpingModelShow(manufacturer,model,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1233,9 +1244,7 @@ public class WellInformationManagerController extends BaseController {
 	@SuppressWarnings("static-access")
 	@RequestMapping("/saveWellHandsontableData")
 	public String saveWellHandsontableData() throws Exception {
-		HttpSession session=request.getSession();
 		String json ="{success:true}";
-		User user = (User) session.getAttribute("userLogin");
 		int deviceId = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "deviceId"));
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String deviceAdditionalInformationData = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "deviceAdditionalInformationData"));
@@ -1243,6 +1252,15 @@ public class WellInformationManagerController extends BaseController {
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
 		Gson gson = new Gson();
 		String deviceTableName="tbl_device";
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
@@ -1359,11 +1377,11 @@ public class WellInformationManagerController extends BaseController {
 							if(rpcProductionData.getManualIntervention()!=null){
 								int manualInterventionResultCode=0;
 								
-								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
 									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(manualInterventionResultName);
 								}
 								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
-								if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
 									String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
 									List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
 									if(resultList.size()>0){
@@ -1561,15 +1579,15 @@ public class WellInformationManagerController extends BaseController {
 				+ "{ \"header\":\""+languageResourceMap.get("netGrossRatio")+"(小数)\",\"dataIndex\":\"netGrossRatio\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("manufacturer")+"\",\"dataIndex\":\"manufacturer\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("model")+"\",\"dataIndex\":\"model\"},"
-				+ "{ \"header\":\"铭牌冲程\",\"dataIndex\":\"stroke\"},"
-				+ "{ \"header\":\"曲柄旋转方向\",\"dataIndex\":\"crankRotationDirection\"},"
-				+ "{ \"header\":\"曲柄偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrank\"},"
-				+ "{ \"header\":\"曲柄重心半径(m)\",\"dataIndex\":\"crankGravityRadius\"},"
-				+ "{ \"header\":\"单块曲柄重量(kN)\",\"dataIndex\":\"singleCrankWeight\"},"
-				+ "{ \"header\":\"单块曲柄销重量(kN)\",\"dataIndex\":\"singleCrankPinWeight\"},"
-				+ "{ \"header\":\"结构不平衡重(kN)\",\"dataIndex\":\"structuralUnbalance\"},"
-				+ "{ \"header\":\"平衡块重量(kN)\",\"dataIndex\":\"balanceWeight\"},"
-				+ "{ \"header\":\"平衡块位置(m)\",\"dataIndex\":\"balancePosition\"}]";
+				+ "{ \"header\":\""+languageResourceMap.get("nameplateStroke")+"\",\"dataIndex\":\"stroke\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("crankRotationDirection")+"\",\"dataIndex\":\"crankRotationDirection\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("offsetAngleOfCrank")+"(°)\",\"dataIndex\":\"offsetAngleOfCrank\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("crankGravityRadius")+"(m)\",\"dataIndex\":\"crankGravityRadius\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("singleCrankWeight")+"(kN)\",\"dataIndex\":\"singleCrankWeight\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("singleCrankPinWeight")+"(kN)\",\"dataIndex\":\"singleCrankPinWeight\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("structuralUnbalance")+"(kN)\",\"dataIndex\":\"structuralUnbalance\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("balanceWeight")+"(kN)\",\"dataIndex\":\"balanceWeight\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("balancePosition")+"(m)\",\"dataIndex\":\"balancePosition\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+tablecolumns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -1735,13 +1753,18 @@ public class WellInformationManagerController extends BaseController {
 	 */
 	@RequestMapping("/savePumpingModelHandsontableData")
 	public String savePumpingModelHandsontableData() throws Exception {
-		HttpSession session=request.getSession();
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String selectedRecordId = ParamUtils.getParameter(request, "selectedRecordId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<PumpingModelHandsontableChangedData>() {}.getType();
 		PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.savePumpingModelHandsontableData(pumpingModelHandsontableChangedData,selectedRecordId);
+		String json=this.wellInformationManagerService.savePumpingModelHandsontableData(pumpingModelHandsontableChangedData,selectedRecordId,language);
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -1771,13 +1794,18 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/batchAddPumpingModel")
 	public String batchAddPumpingModel() throws Exception {
-		HttpSession session=request.getSession();
 		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<PumpingModelHandsontableChangedData>() {}.getType();
 		PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.batchAddPumpingModel(pumpingModelHandsontableChangedData,isCheckout);
+		String json=this.wellInformationManagerService.batchAddPumpingModel(pumpingModelHandsontableChangedData,isCheckout,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2292,7 +2320,7 @@ public class WellInformationManagerController extends BaseController {
 		String title="含水仪数据";
 		String sheetName="含水仪数据";
 		// 表头数据
-	    List<Object> head = Arrays.asList(languageResourceMap.get("idx"),"采样时间","采样间隔(ms)",languageResourceMap.get("waterCut")+"(%)","压力(MPa)","位置");
+	    List<Object> head = Arrays.asList(languageResourceMap.get("idx"),"采样时间","采样间隔(ms)",languageResourceMap.get("waterCut")+"(%)","压力(MPa)",languageResourceMap.get("position"));
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){

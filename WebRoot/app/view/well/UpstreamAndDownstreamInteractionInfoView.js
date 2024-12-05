@@ -932,7 +932,7 @@ function readWaterCutRawData(){
                                 }
                             }
                         }, {
-                            text: '位置',
+                            text: loginUserLanguageResource.position,
                             lockable: true,
                             align: 'center',
                             flex: 1,

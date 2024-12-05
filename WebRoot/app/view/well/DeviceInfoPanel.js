@@ -1109,14 +1109,14 @@ var DeviceInfoHandsontableHelper = {
                                     	var hiddenRows=[0,3,9,10];
                                     	if(params[3] == "煤层气井"){
                                     		plugin.hideRows(hiddenRows);
-                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
-                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
-                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
                                     	}else{
                                     		plugin.showRows(hiddenRows);
-                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
-                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
-                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth+'(m)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature+'(℃)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure+'(MPa)');
                                     	}
                                     	productionHandsontableHelper.hot.render();
                             		}
@@ -1289,7 +1289,7 @@ var DeviceInfoHandsontableHelper = {
             		if(deviceCalculateDataType==1){//指定为功图计算
             			//生产数据
                         var deviceProductionData={};
-                        var manualInterventionResultName='不干预';
+                        var manualInterventionResultName=loginUserLanguageResource.noIntervention;
                         if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
                     		var productionHandsontableData=productionHandsontableHelper.hot.getData();
                     		deviceProductionData.FluidPVT={};
@@ -1389,11 +1389,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[23][2]))){
                     			var Rod1={};
                     			if(isNotVal(productionHandsontableData[19][2])){
-                        			if(productionHandsontableData[19][2]=='钢杆'){
+                        			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod1.Type=1;
-                        			}else if(productionHandsontableData[19][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod1.Type=2;
-                        			}else if(productionHandsontableData[19][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod1.Type=3;
                         			}
                         		}
@@ -1419,11 +1419,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[28][2]))){
                     			var Rod2={};
                     			if(isNotVal(productionHandsontableData[24][2])){
-                    				if(productionHandsontableData[24][2]=='钢杆'){
+                    				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
                     					Rod2.Type=1;
-                        			}else if(productionHandsontableData[24][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod2.Type=2;
-                        			}else if(productionHandsontableData[24][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod2.Type=3;
                         			}
                         		}
@@ -1449,11 +1449,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[33][2]))){
                     			var Rod3={};
                         		if(isNotVal(productionHandsontableData[29][2])){
-                        			if(productionHandsontableData[29][2]=='钢杆'){
+                        			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod3.Type=1;
-                        			}else if(productionHandsontableData[29][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod3.Type=2;
-                        			}else if(productionHandsontableData[29][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod3.Type=3;
                         			}
                         		}
@@ -1479,11 +1479,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[38][2]))){
                     			var Rod4={};
                         		if(isNotVal(productionHandsontableData[34][2])){
-                        			if(productionHandsontableData[34][2]=='钢杆'){
+                        			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod4.Type=1;
-                        			}else if(productionHandsontableData[34][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod4.Type=2;
-                        			}else if(productionHandsontableData[34][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod4.Type=3;
                         			}
                         		}
@@ -1638,11 +1638,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[23][2]))){
                     			var Rod1={};
                     			if(isNotVal(productionHandsontableData[19][2])){
-                        			if(productionHandsontableData[19][2]=='钢杆'){
+                        			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod1.Type=1;
-                        			}else if(productionHandsontableData[19][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod1.Type=2;
-                        			}else if(productionHandsontableData[19][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod1.Type=3;
                         			}
                         		}
@@ -1668,11 +1668,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[28][2]))){
                     			var Rod2={};
                     			if(isNotVal(productionHandsontableData[24][2])){
-                    				if(productionHandsontableData[24][2]=='钢杆'){
+                    				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
                     					Rod2.Type=1;
-                        			}else if(productionHandsontableData[24][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod2.Type=2;
-                        			}else if(productionHandsontableData[24][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod2.Type=3;
                         			}
                         		}
@@ -1698,11 +1698,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[33][2]))){
                     			var Rod3={};
                         		if(isNotVal(productionHandsontableData[29][2])){
-                        			if(productionHandsontableData[29][2]=='钢杆'){
+                        			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod3.Type=1;
-                        			}else if(productionHandsontableData[29][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod3.Type=2;
-                        			}else if(productionHandsontableData[29][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod3.Type=3;
                         			}
                         		}
@@ -1728,11 +1728,11 @@ var DeviceInfoHandsontableHelper = {
                     				&& isNumber(parseInt(productionHandsontableData[38][2]))){
                     			var Rod4={};
                         		if(isNotVal(productionHandsontableData[34][2])){
-                        			if(productionHandsontableData[34][2]=='钢杆'){
+                        			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
                         				Rod4.Type=1;
-                        			}else if(productionHandsontableData[34][2]=='玻璃钢杆'){
+                        			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue2){
                         				Rod4.Type=2;
-                        			}else if(productionHandsontableData[34][2]=='空心抽油杆'){
+                        			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue3){
                         				Rod4.Type=3;
                         			}
                         		}
@@ -1960,14 +1960,14 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				}
 				if(applicationScenarios==0){
             		plugin.hideRows(hiddenRows);
-            		productionHandsontableHelper.hot.setDataAtCell(4,1,'煤层中部深度(m)');
-            		productionHandsontableHelper.hot.setDataAtCell(5,1,'煤层中部温度(℃)');
-            		productionHandsontableHelper.hot.setDataAtCell(6,1,'管压(MPa)');
+            		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
+            		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
+            		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
             	}else if(applicationScenarios==1){
             		plugin.showRows(hiddenRows);
-            		productionHandsontableHelper.hot.setDataAtCell(4,1,'油层中部深度(m)');
-            		productionHandsontableHelper.hot.setDataAtCell(5,1,'油层中部温度(℃)');
-            		productionHandsontableHelper.hot.setDataAtCell(6,1,'油压(MPa)');
+            		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth+'(m)');
+            		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature+'(℃)');
+            		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure+'(MPa)');
             	}
 	        	productionHandsontableHelper.hot.render();
 			},
@@ -2083,7 +2083,7 @@ var ProductionHandsontableHelper = {
 		                    
 		                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===24||visualRowIndex===29||visualRowIndex===32)) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['钢杆','玻璃钢杆','空心抽油杆'];
+		                    	this.source = [loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

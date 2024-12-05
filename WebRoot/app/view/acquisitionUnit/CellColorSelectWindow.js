@@ -2,7 +2,7 @@ Ext.define("AP.view.acquisitionUnit.CellColorSelectWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.CellColorSelectWindow',
     layout: 'fit',
-    title:'颜色选择',
+    title:loginUserLanguageResource.colorSelect,
     iframe: true,
     id: 'CellColorSelectWindow_Id',
     closeAction: 'destroy',

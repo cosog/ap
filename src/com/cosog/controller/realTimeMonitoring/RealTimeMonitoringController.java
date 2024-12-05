@@ -320,7 +320,7 @@ public class RealTimeMonitoringController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
+			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,calculateType,user.getUserNo(),user.getLanguageName());
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -430,7 +430,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = realTimeMonitoringService.getRealTimeMonitoringCurveDataFromMemory(deviceId,deviceName,deviceType,calculateType,user.getUserNo());
+			json = realTimeMonitoringService.getRealTimeMonitoringCurveDataFromMemory(deviceId,deviceName,deviceType,calculateType,user.getUserNo(),user.getLanguageName());
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

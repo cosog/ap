@@ -545,7 +545,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	var itemName=auxiliaryDeviceDetailsData[index][1];
                         	var itemValue=isNotVal(auxiliaryDeviceDetailsData[index][2])?auxiliaryDeviceDetailsData[index][2]:"";
                         	var itemUnit=isNotVal(auxiliaryDeviceDetailsData[index][3])?auxiliaryDeviceDetailsData[index][3]:"";
-                        	if(auxiliaryDeviceSpecificType==1 && itemName=='旋转方向'){
+                        	if(auxiliaryDeviceSpecificType==1 && itemName==loginUserLanguageResource.rotationDirection){
                         		if(itemValue=='顺时针'){
                         			itemValue='Clockwise';
                         		}else if(itemValue=='逆时针'){

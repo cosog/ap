@@ -594,11 +594,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> calItemList=null;
 		try{
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 			}
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -1543,11 +1543,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> calItemList=new ArrayList<>();
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1739,9 +1739,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> inputItemList=new ArrayList<>();
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -2352,19 +2352,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 
 			if(StringManagerUtils.stringToInteger(reportType)==2){
 				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem(language);
 				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
 				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
 				}
 			}else{
 				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
 				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
+					totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
 				}
 			}
 		
@@ -2643,11 +2643,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		try{
 
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
 			}
 		
 		}catch(Exception e){
@@ -2776,11 +2776,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3299,11 +3299,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3483,9 +3483,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}if("2".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3696,11 +3696,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> calItemList=null;
 		try{
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			}if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -5735,7 +5735,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "]";
 		
 		calColumnNameBuff.append("[''");
-		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo();
+		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo(language);
 		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
 //		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 //			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
@@ -5753,7 +5753,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
 			String calColumn=obj[3]+"";
-			String calColumnName=MemoryDataManagerTask.getCalculateColumnNameFromCode(calColumn);
+			String calColumnName=MemoryDataManagerTask.getCalculateColumnNameFromCode(calColumn,language);
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
@@ -6079,12 +6079,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public void saveDatabaseColumnMappingTable(DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData,String protocolType) throws Exception {
+	public void saveDatabaseColumnMappingTable(DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData,String protocolType,String language) throws Exception {
 		if(databaseMappingProHandsontableChangedData.getUpdatelist()!=null){
 			String updateSql="";
 			for(int i=0;i<databaseMappingProHandsontableChangedData.getUpdatelist().size();i++){
 				String calColumn=MemoryDataManagerTask.getCalculateColumnFromName(StringManagerUtils.stringToInteger(protocolType), 
-						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName());
+						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName(),language);
 				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
 						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName()+"' "
 						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' ";
@@ -7037,7 +7037,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getDisplayUnitList()!=null && exportProtocolConfig.getDisplayUnitList().size()>0 ){
 			String key="rpcCalItemList";
-			rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			
 			int unitId=0;
 			if(StringManagerUtils.stringToInteger(typeStr)==1){//显示单元
@@ -7348,7 +7348,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null && exportProtocolConfig.getAlarmUnitList()!=null && exportProtocolConfig.getAlarmUnitList().size()>0 ){
 			
-			calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 			
 			int unitId=0;
 			if(StringManagerUtils.stringToInteger(typeStr)==2){//报警单元
@@ -10839,7 +10839,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getImportDisplayUnitItemsConfigData(List<ExportDisplayUnitData> uploadUnitList,String protocolName,String acqUnitName,String unitName,String calculateType,String type){
+	public String getImportDisplayUnitItemsConfigData(List<ExportDisplayUnitData> uploadUnitList,String protocolName,String acqUnitName,String unitName,String calculateType,String type,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson=new Gson();
 		result_json.append("{ \"success\":true,\"columns\":[],");
@@ -10849,16 +10849,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<CalItem> calItemList=new ArrayList<>();
 		if("1".equalsIgnoreCase(calculateType)){
-			calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+			calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 		}else if("2".equalsIgnoreCase(calculateType)){
-			calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+			calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 		}
 		
 		List<CalItem> inputItemList=new ArrayList<>();
 		if("1".equalsIgnoreCase(calculateType)){
-			inputItemList=MemoryDataManagerTask.getRPCInputItem();
+			inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 		}else if("2".equalsIgnoreCase(calculateType)){
-			inputItemList=MemoryDataManagerTask.getPCPInputItem();
+			inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 		}
 		
 		if(protocol!=null && uploadUnitList!=null && uploadUnitList.size()>0){
@@ -11126,7 +11126,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String getImportReportUnitItemsConfigData(List<ExportReportUnitData> uploadUnitList,String reportType,String unitName){
+	public String getImportReportUnitItemsConfigData(List<ExportReportUnitData> uploadUnitList,String reportType,String unitName,String language){
 		StringBuffer result_json = new StringBuffer();
 		List<CalItem> calItemList=new ArrayList<>();
 		result_json.append("{ \"success\":true,\"columns\":[],");
@@ -11137,19 +11137,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(unitName.equalsIgnoreCase(uploadUnitList.get(i).getUnitName()) ){
 					if(uploadUnitList.get(i).getCalculateType()==2){
 						if(uploadUnitList.get(i).getCalculateType()==1){
-							calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getRPCTimingTotalCalculateItem(language);
 						}else if(uploadUnitList.get(i).getCalculateType()==2){
-							calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
 						}else{
-							calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
 						}
 					}else{
 						if(uploadUnitList.get(i).getCalculateType()==1){
-							calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
 						}else if(uploadUnitList.get(i).getCalculateType()==2){
-							calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 						}else{
-							calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem();
+							calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
 						}
 					}
 					
@@ -11894,11 +11894,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							List<CalItem> calItemList=new ArrayList<>();
 							try{
 								if("1".equalsIgnoreCase(displayUnitCalType)){
-									calItemList=MemoryDataManagerTask.getRPCCalculateItem();
+									calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
 								}else if("2".equalsIgnoreCase(displayUnitCalType)){
-									calItemList=MemoryDataManagerTask.getPCPCalculateItem();
+									calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 								}else{
-									calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+									calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 								}
 							}catch(Exception e){
 								e.printStackTrace();
@@ -11980,9 +11980,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							List<CalItem> inputItemList=new ArrayList<>();
 							try{
 								if("1".equalsIgnoreCase(displayUnitCalType)){
-									inputItemList=MemoryDataManagerTask.getRPCInputItem();
+									inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 								}if("2".equalsIgnoreCase(displayUnitCalType)){
-									inputItemList=MemoryDataManagerTask.getPCPInputItem();
+									inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 								}
 							}catch(Exception e){
 								e.printStackTrace();

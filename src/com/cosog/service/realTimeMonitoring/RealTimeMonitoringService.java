@@ -876,7 +876,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return true;
 	}
 
-	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo) throws IOException, SQLException{
+	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,String calculateType,int userNo,String language) throws IOException, SQLException{
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
@@ -923,13 +923,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-				inputItemList=MemoryDataManagerTask.getRPCInputItem();
+				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-				inputItemList=MemoryDataManagerTask.getPCPInputItem();
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 				inputItemList=new ArrayList<>();
 			}
 			
@@ -2022,11 +2022,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String itemName=detailsObj[1]+"";
 				String itemValue=detailsObj[2]+"";
 				String specificType=detailsObj[3]+"";
-				if("1".equalsIgnoreCase(specificType) && "旋转方向".equalsIgnoreCase(itemName)){
+				if("1".equalsIgnoreCase(specificType) && languageResourceMap.get("rotationDirection").equalsIgnoreCase(itemName)){
 					if("Clockwise".equalsIgnoreCase(itemValue)){
-						itemValue="顺时针";
+						itemValue=languageResourceMap.get("clockwise");
 					}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
-						itemValue="逆时针";
+						itemValue=languageResourceMap.get("anticlockwise");
 					}
 				}
 				if((detailsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
@@ -2127,7 +2127,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getRealTimeMonitoringCurveDataFromMemory(String deviceId,String deviceName,String deviceType,String calculateType,int userNo)throws Exception {
+	public String getRealTimeMonitoringCurveDataFromMemory(String deviceId,String deviceName,String deviceType,String calculateType,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
@@ -2156,13 +2156,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 				}else{
-					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){
@@ -2325,7 +2325,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "\"curveConf\":"+curveConfBuff+","
 					+ "\"list\":[");
 			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
-				Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"");
+				Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"",language);
 				//排序
 //				Map<String,Map<String,String>> realtimeDataTimeSortedMap = new TreeMap<>(realtimeDataTimeMap);
 				if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
@@ -2547,7 +2547,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getRealTimeMonitoringCurveDataFromDatabase(String deviceId,String deviceName,String deviceType,String calculateType,int userNo)throws Exception {
+	public String getRealTimeMonitoringCurveDataFromDatabase(String deviceId,String deviceName,String deviceType,String calculateType,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
@@ -2576,13 +2576,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calItemList=MemoryDataManagerTask.getRPCCalculateItem();
-					inputItemList=MemoryDataManagerTask.getRPCInputItem();
+					calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-					calItemList=MemoryDataManagerTask.getPCPCalculateItem();
-					inputItemList=MemoryDataManagerTask.getPCPInputItem();
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 				}else{
-					calItemList=MemoryDataManagerTask.getAcqCalculateItem();
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 					inputItemList=new ArrayList<>();
 				}
 			}catch(Exception e){

@@ -84,7 +84,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}else if("2".equals(calculateType)){
 			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateResultData(orgId, deviceName, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
+			
 		}
 		
 		return json;
@@ -96,7 +96,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if("1".equals(calculateType)||"2".equals(calculateType)||"3".equals(calculateType)||"4".equals(calculateType)){
 			json=this.getDiagnoseAndProdCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateWellListData(orgId, deviceName, pager, deviceType,calculateSign, calculateType,language);
+			
 		}
 		
 		return json;
@@ -148,7 +148,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
 			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
-			resultNameBuff.append("[\"不干预\"");
+			resultNameBuff.append("[\""+languageResourceMap.get("noIntervention")+"\"");
 			List<?> resultList = this.findCallSql(resultSql);
 			for(int i=0;i<resultList.size();i++){
 				resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
@@ -249,7 +249,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					if(rpcProductionData.getManualIntervention()!=null){
 						String manualInterventionResultName="";
 						if(rpcProductionData.getManualIntervention().getCode()==0){
-							manualInterventionResultName="不干预";
+							manualInterventionResultName=languageResourceMap.get("noIntervention");
 						}else{
 							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"");
 							if(workType!=null){
@@ -514,219 +514,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateResultData(String orgId, String deviceName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType,
-			String language)
-			throws Exception {
-		
-		String sql="";
-		String finalSql="";
-		String sqlAll="";
-		
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		
-		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
-			+ "t.manufacturer,t.model,t.stroke,"
-			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
-			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
-			
-			+ "t.offsetAngleOfCrankPS,t.surfaceSystemEfficiency,t.FS_LeftPercent,t.FS_RightPercent,wattAngle,"
-			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
-			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
-			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
-			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-		}
-		if(StringManagerUtils.isNotNull(calculateSign)){
-			if("0".equals(calculateSign)){
-				sql+=" and  t.resultstatus in(0,2) ";
-			}else{
-				sql+=" and  t.resultstatus = " + calculateSign + " ";
-			}
-		}
-		sql+=" order by t.acqTime desc, t.deviceName";
-		int maxvalue=pager.getLimit()+pager.getStart();
-		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		
-		int totals=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(finalSql);
-		
-		String columns = "[{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
-				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
-				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
-				
-				+ "{ \"header\":\"抽油机厂家\",\"dataIndex\":\"manufacturer\" ,children:[] },"
-				+ "{ \"header\":\"抽油机型号\",\"dataIndex\":\"model\" ,children:[] },"
-				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\" ,children:[] },"
-				+ "{ \"header\":\"旋转方向\",\"dataIndex\":\"crankRotationDirection\" ,children:[] },"
-				+ "{ \"header\":\"曲柄偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrank\" ,children:[] },"
-				+ "{ \"header\":\"曲柄重心半径(m)\",\"dataIndex\":\"crankGravityRadius\" ,children:[] },"
-				+ "{ \"header\":\"单块曲柄重量(kN)\",\"dataIndex\":\"singleCrankWeight\" ,children:[] },"
-				+ "{ \"header\":\"结构不平衡重(kN)\",\"dataIndex\":\"structuralUnbalance\" ,children:[] },"
-				+ "{ \"header\":\"平衡块位置(m)\",\"dataIndex\":\"balancePosition\" ,children:[] },"
-				+ "{ \"header\":\"平衡块重量(kN)\",\"dataIndex\":\"balanceWeight\" ,children:[] },"
-				
-				+ "{ \"header\":\"曲柄位置开关偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrankPS\" ,children:[] },"
-				+ "{ \"header\":\"地面效率\",\"dataIndex\":\"surfaceSystemEfficiency\" ,children:[] },"
-				+ "{ \"header\":\"左侧截取百分比\",\"dataIndex\":\"FS_LeftPercent\" ,children:[] },"
-				+ "{ \"header\":\"右侧截取百分比\",\"dataIndex\":\"FS_RightPercent\" ,children:[] },"
-				+ "{ \"header\":\"功率滤波角度(°)\",\"dataIndex\":\"wattAngle\" ,children:[] },"
-				+ "{ \"header\":\"功率滤波次数\",\"dataIndex\":\"filterTime_Watt\" ,children:[] },"
-				+ "{ \"header\":\"电流滤波次数\",\"dataIndex\":\"filterTime_I\" ,children:[] },"
-				+ "{ \"header\":\"转速滤波次数\",\"dataIndex\":\"filterTime_RPM\" ,children:[] },"
-				+ "{ \"header\":\"功图滤波次数\",\"dataIndex\":\"filterTime_FSDiagram\" ,children:[] },"
-				+ "{ \"header\":\"功图左侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_L\" ,children:[] },"
-				+ "{ \"header\":\"功图右侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_R\" ,children:[] }"
-				+ "]";
-		
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[]) list.get(i);
-			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"deviceName\":\""+obj[1]+"\",");
-			result_json.append("\"acqTime\":\""+obj[2]+"\",");
-			result_json.append("\"resultStatus\":\""+obj[3]+"\",");
-			
-			result_json.append("\"manufacturer\":\""+obj[4]+"\",");
-			result_json.append("\"model\":\""+obj[5]+"\",");
-			result_json.append("\"stroke\":\""+obj[6]+"\",");
-			result_json.append("\"crankRotationDirection\":\""+obj[7]+"\",");
-			result_json.append("\"offsetAngleOfCrank\":\""+obj[8]+"\",");
-			result_json.append("\"crankGravityRadius\":\""+obj[9]+"\",");
-			result_json.append("\"singleCrankWeight\":\""+obj[10]+"\",");
-			result_json.append("\"structuralUnbalance\":\""+obj[11]+"\",");
-			result_json.append("\"balancePosition\":\""+obj[12]+"\",");
-			result_json.append("\"balanceWeight\":\""+obj[13]+"\",");
-			
-			result_json.append("\"offsetAngleOfCrankPS\":\""+obj[14]+"\",");
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[15]+"\",");
-			result_json.append("\"FS_LeftPercent\":\""+obj[16]+"\",");
-			result_json.append("\"FS_RightPercent\":\""+obj[17]+"\",");
-			result_json.append("\"wattAngle\":\""+obj[18]+"\",");
-			result_json.append("\"filterTime_Watt\":\""+obj[19]+"\",");
-			result_json.append("\"filterTime_I\":\""+obj[20]+"\",");
-			result_json.append("\"filterTime_RPM\":\""+obj[21]+"\",");
-			result_json.append("\"filterTime_FSDiagram\":\""+obj[22]+"\",");
-			result_json.append("\"filterTime_FSDiagram_L\":\""+obj[23]+"\",");
-			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[24]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json = result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		
-//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		String json=result_json.toString().replaceAll("null", "");
-		return json;
-	}
-	
-	public String getElecInverCalculateWellListData(String orgId, String deviceName, Page pager,String wellType,String calculateSign,String calculateType,String language)
-			throws Exception {
-		
-		String sql="";
-		String finalSql="";
-		String sqlAll="";
-		
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		
-		sql="select t.id,t.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
-			+ "t.manufacturer,t.model,t.stroke,"
-			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
-			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
-			+ "t.offsetAngleOfCrankPS,t.surfaceSystemEfficiency,t.FS_LeftPercent,t.FS_RightPercent,wattAngle,"
-			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
-			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
-			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") ";
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-		}
-		if(StringManagerUtils.isNotNull(calculateSign)){
-			if("0".equals(calculateSign)){
-				sql+=" and  t.resultstatus in(0,2) ";
-			}else{
-				sql+=" and  t.resultstatus = " + calculateSign + " ";
-			}
-		}
-		sql+=" order by t.acqTime desc, t.deviceName";
-		int maxvalue=pager.getLimit()+pager.getStart();
-		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		
-		int totals=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(finalSql);
-		String columns = "[{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] },"
-				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
-				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
-				
-				+ "{ \"header\":\"抽油机厂家\",\"dataIndex\":\"manufacturer\" ,children:[] },"
-				+ "{ \"header\":\"抽油机型号\",\"dataIndex\":\"model\" ,children:[] },"
-				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\" ,children:[] },"
-				+ "{ \"header\":\"旋转方向\",\"dataIndex\":\"crankRotationDirection\" ,children:[] },"
-				+ "{ \"header\":\"曲柄偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrank\" ,children:[] },"
-				+ "{ \"header\":\"曲柄重心半径(m)\",\"dataIndex\":\"crankGravityRadius\" ,children:[] },"
-				+ "{ \"header\":\"单块曲柄重量(kN)\",\"dataIndex\":\"singleCrankWeight\" ,children:[] },"
-				+ "{ \"header\":\"结构不平衡重(kN)\",\"dataIndex\":\"structuralUnbalance\" ,children:[] },"
-				+ "{ \"header\":\"平衡块位置(m)\",\"dataIndex\":\"balancePosition\" ,children:[] },"
-				+ "{ \"header\":\"平衡块重量(kN)\",\"dataIndex\":\"balanceWeight\" ,children:[] },"
-				
-				+ "{ \"header\":\"曲柄位置开关偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrankPS\" ,children:[] },"
-				+ "{ \"header\":\"地面效率\",\"dataIndex\":\"surfaceSystemEfficiency\" ,children:[] },"
-				+ "{ \"header\":\"左侧截取百分比\",\"dataIndex\":\"FS_LeftPercent\" ,children:[] },"
-				+ "{ \"header\":\"右侧截取百分比\",\"dataIndex\":\"FS_RightPercent\" ,children:[] },"
-				+ "{ \"header\":\"功率滤波角度(°)\",\"dataIndex\":\"wattAngle\" ,children:[] },"
-				+ "{ \"header\":\"功率滤波次数\",\"dataIndex\":\"filterTime_Watt\" ,children:[] },"
-				+ "{ \"header\":\"电流滤波次数\",\"dataIndex\":\"filterTime_I\" ,children:[] },"
-				+ "{ \"header\":\"转速滤波次数\",\"dataIndex\":\"filterTime_RPM\" ,children:[] },"
-				+ "{ \"header\":\"功图滤波次数\",\"dataIndex\":\"filterTime_FSDiagram\" ,children:[] },"
-				+ "{ \"header\":\"功图左侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_L\" ,children:[] },"
-				+ "{ \"header\":\"功图右侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_R\" ,children:[] }"
-				+ "]";
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[]) list.get(i);
-			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"deviceName\":\""+obj[1]+"\",");
-			result_json.append("\"acqTime\":\""+obj[2]+"\",");
-			result_json.append("\"resultStatus\":\""+obj[3]+"\",");
-			
-			result_json.append("\"manufacturer\":\""+obj[4]+"\",");
-			result_json.append("\"model\":\""+obj[5]+"\",");
-			result_json.append("\"stroke\":\""+obj[6]+"\",");
-			result_json.append("\"crankRotationDirection\":\""+obj[7]+"\",");
-			result_json.append("\"offsetAngleOfCrank\":\""+obj[8]+"\",");
-			result_json.append("\"crankGravityRadius\":\""+obj[9]+"\",");
-			result_json.append("\"singleCrankWeight\":\""+obj[10]+"\",");
-			result_json.append("\"structuralUnbalance\":\""+obj[11]+"\",");
-			result_json.append("\"balancePosition\":\""+obj[12]+"\",");
-			result_json.append("\"balanceWeight\":\""+obj[13]+"\",");
-			
-			result_json.append("\"offsetAngleOfCrankPS\":\""+obj[14]+"\",");
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[15]+"\",");
-			result_json.append("\"FS_LeftPercent\":\""+obj[16]+"\",");
-			result_json.append("\"FS_RightPercent\":\""+obj[17]+"\",");
-			result_json.append("\"wattAngle\":\""+obj[18]+"\",");
-			result_json.append("\"filterTime_Watt\":\""+obj[19]+"\",");
-			result_json.append("\"filterTime_I\":\""+obj[20]+"\",");
-			result_json.append("\"filterTime_RPM\":\""+obj[21]+"\",");
-			result_json.append("\"filterTime_FSDiagram\":\""+obj[22]+"\",");
-			result_json.append("\"filterTime_FSDiagram_L\":\""+obj[23]+"\",");
-			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[24]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json = result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		String json=result_json.toString().replaceAll("null", "");
-		return json;
-	}
-	
 	public void saveReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData,int applicationScenarios,String language) throws Exception {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -878,7 +665,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
 					int manualInterventionResultCode=0;
-					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+					if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
 						WorkType workType=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName);
 						if(workType!=null){
 							manualInterventionResultCode=workType.getResultCode();
@@ -1145,14 +932,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return getBaseDao().executeSqlUpdate(updateSql);
 	}
 	
-	public String getCalculateRequestData(String recordId,String deviceName,String acqTime,String calculateType) throws SQLException, IOException, ParseException{
+	public String getCalculateRequestData(String recordId,String deviceName,String acqTime,String calculateType,String language) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		if("1".equals(calculateType)){
 			requestData=this.getFSDiagramCalculateRequestData(recordId,deviceName,acqTime);
 		}if("2".equals(calculateType)){
 			requestData=this.getRPMCalculateRequestData(recordId,deviceName,acqTime);
 		}else if("5".equals(calculateType)){
-			requestData=this.getElecInverCalculateRequestData(deviceName,acqTime);
+			requestData=this.getElecInverCalculateRequestData(deviceName,acqTime,language);
 		}
 		return requestData;
 	}
@@ -1197,12 +984,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getElecInverCalculateRequestData(String deviceName,String acqTime) throws SQLException, IOException, ParseException{
+	public String getElecInverCalculateRequestData(String deviceName,String acqTime,String language) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql="select t.deviceName,t2.id as diagramid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
-				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
+				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'"+languageResourceMap.get("clockwise")+"','Clockwise','Anticlockwise'),"
 				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
 				+ " t4.gearreducerratio,t4.gearreducerbeltpulleydiameter, t4.balanceposition,t4.balanceweight,"
 				+ " t5.surfacesystemefficiency,t5.fs_leftpercent,t5.fs_rightpercent,"

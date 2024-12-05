@@ -775,7 +775,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
         	}else if(dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','A','B','C','D','K','KD','HL','HY'], validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
         	}else if(dataIndex.toUpperCase()==="rodTypeName1".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName2".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName3".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName4".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','钢杆','玻璃钢杆','空心抽油杆'], validator: function(val, callback){return handsontableDataCheck_RodType(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','"+loginUserLanguageResource.rodStringTypeValue1+"','"+loginUserLanguageResource.rodStringTypeValue2+"','"+loginUserLanguageResource.rodStringTypeValue3+"'], validator: function(val, callback){return handsontableDataCheck_RodType(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
         	}else{
     			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pcpRPMCalculateMaintainingHandsontableHelper);}";
     		}

@@ -273,6 +273,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_rpcacqdata_latest";
@@ -280,12 +288,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			DataDictionary ddic = null;
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			String columns = ddic.getTableHeader();
+			
+			if(timeEfficiencyUnitType==2){
+				columns=columns.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				columns=columns.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			String sql="select t.id,t.devicename,c1.name as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ " t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
 					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
-					+ " t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ " t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -393,6 +408,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			if(timeEfficiencyUnitType==2){
+				head=head.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				head=head.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_rpcacqdata_latest";
@@ -411,9 +441,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    String sql="select t.id,t.devicename,c1.name as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
-					+ " t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
 					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
-					+ " t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ " t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -508,7 +538,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				e.printStackTrace();
 			}
 			
-//			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
 			
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
@@ -548,9 +584,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
+					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//5~7
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停止','无数据'),'') as runStatusName,"//8~9
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//10~12
+					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//10~12
 					+ "t.calculateType";//13
 			
 			String[] ddicColumns=ddic.getSql().split(",");
@@ -772,6 +808,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			if(deviceInfo!=null){
@@ -995,8 +1039,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.stringToInteger(calculateType)>0){
 				for(int i=0;i<displayCalItemList.size();i++){
 					String column=displayCalItemList.get(i).getCode();
-					if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
+					if("resultName".equalsIgnoreCase(column)){
 						column="resultCode";
+					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom+" as "+column;
 					}
 					sql+=",t3."+column;
 				}
@@ -1006,6 +1052,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}else{
 				for(int i=0;i<displayCalItemList.size();i++){
 					String column=displayCalItemList.get(i).getCode();
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}
 					sql+=",t2."+column;
 				}
 			}
@@ -1584,6 +1633,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			
 			if(acqInstanceOwnItem!=null){
@@ -1762,6 +1819,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					String column=displayCalItemList.get(i).getCode();
 					if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 						column="resultCode";
+					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom+" as "+column;
 					}
 					sql+=",t3."+column;
 				}
@@ -1771,6 +1830,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}else{
 				for(int i=0;i<displayCalItemList.size();i++){
 					String column=displayCalItemList.get(i).getCode();
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}
 					sql+=",t2."+column;
 				}
 			}
@@ -2261,6 +2323,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			List<CalItem> calItemList=null;
 			List<CalItem> inputItemList=null;
 			UserInfo userInfo=null;
@@ -2399,9 +2469,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(StringManagerUtils.stringToInteger(calculateType)>0){
 							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
+							}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom+" as "+column;
 							}
 							sql+=",t3."+column;
 						}else{
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}
 							sql+=",t2."+column;
 						}
 					}
@@ -3887,11 +3962,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
-					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
+					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
-					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
+					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17
 					+ " t.fmax,t.fmin,"//18~19
@@ -3933,6 +4015,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<?> list=this.findCallSql(finalSql);
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay");
 			String columns = ddic.getTableHeader();
+			
+			if(timeEfficiencyUnitType==2){
+				columns=columns.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				columns=columns.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			String[] ddicColumns=ddic.getSql().split(",");
 			dynSbf.append("{\"success\":true,"
 					+ "\"totalCount\":" + list.size() + ","
@@ -4115,6 +4204,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			if(timeEfficiencyUnitType==2){
+				head=head.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				head=head.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
 			
@@ -4130,11 +4234,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,liquidWeightProduction_L";
 			}
 			
+			
+			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
-					+ "t.commtime,t.commtimeefficiency,t.commrange,"//5~7
+					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
-					+ "t.runtime,t.runtimeefficiency,t.runrange,"//10~12
+					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17
 					+ " t.fmax,t.fmin,"//18~19

@@ -128,8 +128,7 @@ public class WebSocketByJavax {
                 			}
                 		}catch(Exception e){
                 			e.printStackTrace();
-//                			StringManagerUtils.printLog("webSocket信息推送失败:"+message);
-                			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message+e);
+                			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败");
                 		}
                     }
                 }

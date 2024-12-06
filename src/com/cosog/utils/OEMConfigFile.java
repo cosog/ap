@@ -234,6 +234,8 @@ public class OEMConfigFile {
 	public static class Others
 	{
 	    private String deviceShowName;
+	    
+	    private int timeEfficiencyUnit;
 		
 		private boolean cache;
 
@@ -432,6 +434,12 @@ public class OEMConfigFile {
 		}
 		public void setResourceMonitoringVacuateThreshold(int resourceMonitoringVacuateThreshold) {
 			this.resourceMonitoringVacuateThreshold = resourceMonitoringVacuateThreshold;
+		}
+		public int getTimeEfficiencyUnit() {
+			return timeEfficiencyUnit;
+		}
+		public void setTimeEfficiencyUnit(int timeEfficiencyUnit) {
+			this.timeEfficiencyUnit = timeEfficiencyUnit;
 		}
 	}
 	

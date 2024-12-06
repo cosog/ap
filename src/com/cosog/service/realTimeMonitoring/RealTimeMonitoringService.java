@@ -492,14 +492,28 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			String columns = ddic.getTableHeader();
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			if(timeEfficiencyUnitType==2){
+				columns=columns.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				columns=columns.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
+					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
+					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType,t.deviceType";//18~19
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -607,6 +621,21 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			if(timeEfficiencyUnitType==2){
+				head=head.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				head=head.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
 			List<String> firstFeadList = new ArrayList<>(Arrays.asList(head.split(",")));
 			List<String> headList = new ArrayList<>(Arrays.asList(head.split(",")));
 			List<String> columnList=new ArrayList<>(Arrays.asList(field.split(",")));
@@ -625,9 +654,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
-					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//10~12
+					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//10~12
 					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
-					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"//15~17
+					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType";//18
 			
 			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from tbl_device t,tbl_deviceaddinfo t2 "
@@ -896,6 +925,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			calAndInputTableName="tbl_pcpacqdata_latest";
 		}
 		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
+		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
@@ -1020,11 +1057,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					for(int i=0;i<displayCalItemList.size();i++){
 						String column=displayCalItemList.get(i).getCode();
 						if(StringManagerUtils.stringToInteger(calculateType)>0){
-							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
+							if("resultName".equalsIgnoreCase(column)){
 								column="resultCode";
+							}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom+" as "+column;
 							}
 							sql+=",t3."+column;
 						}else{
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}
 							sql+=",t2."+column;
 						}
 					}

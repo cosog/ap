@@ -77,6 +77,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
 		ReportTemplate.Template template=null;
+		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
+		
 		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
@@ -155,8 +164,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			
-			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
+			String templateStr=gson.toJson(template).replace("label", "");
+			if(timeEfficiencyUnitType==2){
+				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
 			List<List<String>> dataList=new ArrayList<>();
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
@@ -200,9 +214,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
+				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
 					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
 							tableAlias="t2";
@@ -210,13 +225,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				if(reportOtherItemList.get(i).getDataType()==3){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==4){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 				}else{
-					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
 			}
 			sqlBuff.append(" from "+viewName+" t ");
@@ -233,9 +254,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.calDate");
-			
-			
-			
 			
 			List<String> allColList=new ArrayList<String>();;
 			
@@ -349,6 +367,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String title=deviceName+"区间生产报表";
 			String fileName=deviceName+"区间生产报表";
 			ReportTemplate.Template template=null;
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
@@ -384,7 +411,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String header=template.getHeader().get(0).getTitle().get(i);
 						if(StringManagerUtils.isNotNull(header)){
 							title=header.replaceAll("deviceNameLabel", deviceName);
-//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
 						}
 					}
 				}
@@ -429,6 +455,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
 								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
 									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+								}
+								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
 								}
 							}
 						}
@@ -483,9 +516,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
+					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
 						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
 								tableAlias="t2";
@@ -493,13 +527,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					if(reportOtherItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
 				}
 				sqlBuff.append(" from "+viewName+" t ");
@@ -646,6 +686,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
 			String fileName=deviceTypeName+"日报表-"+startDate+"~"+endDate;
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			String deviceTableName="tbl_device";
 			String calTotalTableName="";
 			
@@ -752,6 +800,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
 										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
 									}
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
 								}
 							}
 						}
@@ -800,9 +855,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
+						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
 							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
+								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
 									tableAlias="t2";
@@ -810,13 +866,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 						if(reportUnitItem.getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 						}else if(reportUnitItem.getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
-							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(",round("+tableAlias+"."+column+","+reportUnitItem.getPrec()+")");
 						}else{
-							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(","+tableAlias+"."+column+"");
 						}
 					}
 					sqlBuff.append(" from "+viewName+" t ");
@@ -972,6 +1034,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String maxTimeStr="";
 		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
 		
 		ReportTemplate.Template template=null;
 		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
@@ -1041,8 +1110,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
+			String templateStr=gson.toJson(template).replace("label", "");
+			if(timeEfficiencyUnitType==2){
+				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
 			
-			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
+			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
 			
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
@@ -1086,9 +1161,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
+				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
 					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
 							tableAlias="t2";
@@ -1096,20 +1172,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				if(reportOtherItemList.get(i).getDataType()==3){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==4){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 				}else{
-					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
 				
-				if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+				if(timeColIndex<0 && "calTime".equalsIgnoreCase(column)){
 					timeColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 				
-				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(column)){
 					deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 			}
@@ -1267,6 +1349,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String title=deviceName+"单日生产报表";
 			String fileName=deviceName+"单日生产报表";
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
 			
@@ -1357,6 +1447,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
 									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
 								}
+								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
+								}
 							}
 						}
 					}
@@ -1407,9 +1504,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
+					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
 						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
 								tableAlias="t2";
@@ -1417,20 +1515,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					if(reportOtherItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
 					
-					if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+					if(timeColIndex<0 && "calTime".equalsIgnoreCase(column)){
 						timeColIndex=reportOtherItemList.get(i).getSort()-1;
 					}
 					
-					if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportOtherItemList.get(i).getItemCode())){
+					if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(column)){
 						deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
 					}
 				}
@@ -1600,6 +1704,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<String> titleList =new ArrayList<>();
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
 			
@@ -1719,6 +1831,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
 										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
 									}
+									if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
 								}
 							}
 						}
@@ -1737,7 +1856,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 					for(int j=0;j<reportItemQuertList.size();j++){
-						Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
 						ReportUnitItem reportUnitItem=new ReportUnitItem();
 						reportUnitItem.setItemName(reportItemObj[0]+"");
 						reportUnitItem.setItemCode(reportItemObj[1]+"");
@@ -1767,9 +1886,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
+						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
 							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
+								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
 									tableAlias="t2";
@@ -1777,20 +1897,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 						if(reportUnitItem.getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 						}else if(reportUnitItem.getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
-							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(",round("+tableAlias+"."+column+","+reportUnitItem.getPrec()+")");
 						}else{
-							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(","+tableAlias+"."+column+"");
 						}
 						
-						if(timeColIndex<0 && "calTime".equalsIgnoreCase(reportUnitItem.getItemCode())){
+						if(timeColIndex<0 && "calTime".equalsIgnoreCase(column)){
 							timeColIndex=reportUnitItem.getSort()-1;
 						}
 						
-						if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(reportUnitItem.getItemCode())){
+						if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(column)){
 							deviceNameColIndex=reportUnitItem.getSort()-1;
 						}
 					}
@@ -1965,6 +2091,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String calTotalTableName="";
 		
 		ReportTemplate.Template template=null;
+		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
+		
 		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
@@ -1998,7 +2133,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			result_json.append("{\"success\":true,\"template\":"+gson.toJson(template).replace("label", "")+",");
+			String templateStr=gson.toJson(template).replace("label", "");
+			if(timeEfficiencyUnitType==2){
+				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
 			List<List<String>> dataList=new ArrayList<>();
 			List<List<String>> statDataList=new ArrayList<>();
 			List<List<String>> statDataShowValueList=new ArrayList<>();
@@ -2075,9 +2216,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			for(int i=0;i<reportOtherItemList.size();i++){
 				String tableAlias="t";
+				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
 					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-						if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
 							tableAlias="t2";
@@ -2085,13 +2227,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				if(reportOtherItemList.get(i).getDataType()==3){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==4){
-					sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-					sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 				}else{
-					sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
 			}
 			sqlBuff.append(" from "+viewName+" t");
@@ -2289,6 +2437,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			ReportTemplate.Template template=null;
 			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
 					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
@@ -2328,6 +2484,22 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
+
+
+				for(int j=0;j<template.getHeader().size();j++){
+					if(template.getHeader().get(j).getTitle()!=null){
+						for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+							if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+								if(timeEfficiencyUnitType==2){
+									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+								}else{
+									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+								}
+							}
+						}
+					}
+				}
+				
 				
 				fileName="";
 				fileName+=title+"-"+reportDate;
@@ -2407,9 +2579,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				for(int i=0;i<reportOtherItemList.size();i++){
 					String tableAlias="t";
+					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
 						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
-							if(StringManagerUtils.generalCalColumnFiter(reportOtherItemList.get(i).getItemCode())){
+							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
 								tableAlias="t2";
@@ -2417,13 +2590,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					if(reportOtherItemList.get(i).getDataType()==3){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'yyyy-mm-dd') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==4){
-						sqlBuff.append(",to_char("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"@'hh24:mi') as "+reportOtherItemList.get(i).getItemCode()+"");
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
-						sqlBuff.append(",round("+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+","+reportOtherItemList.get(i).getPrec()+")");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
 					}else{
-						sqlBuff.append(","+tableAlias+"."+reportOtherItemList.get(i).getItemCode()+"");
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
 				}
 				sqlBuff.append(" from "+viewName+" t");
@@ -2450,8 +2629,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						everyDaya.add("");
 					}
 					everyDaya.set(0, (i+1)+"");
-					everyDaya.add(recordId);
-					
 					
 					int startIndex=1;
 					if(reportAcqItemList.size()>0){
@@ -2520,8 +2697,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 						}
 					}
-					
-					
 					
 					for(int j=0;j<reportOtherItemList.size();j++){
 						if(reportOtherItemList.get(j).getSort()>=1){
@@ -2644,6 +2819,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
 			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code,t2.calculateType "
 					+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 					+ " where t.unitid=t2.id "
@@ -2690,9 +2873,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							String header=template.getHeader().get(0).getTitle().get(j);
 							if(StringManagerUtils.isNotNull(header)){
 								title=header.replaceAll("orgNameLabel", selectedOrgName);
+								template.getHeader().get(0).getTitle().set(j, title);
 							}
 						}
 					}
+
+
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
+								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
+								}
+							}
+						}
+					}
+					
 					titleList.add(title);
 					
 					
@@ -2737,7 +2937,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
 					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
 					for(int j=0;j<reportItemQuertList.size();j++){
-						Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(j);
 						ReportUnitItem reportUnitItem=new ReportUnitItem();
 						reportUnitItem.setItemName(reportItemObj[0]+"");
 						reportUnitItem.setItemCode(reportItemObj[1]+"");
@@ -2775,9 +2975,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportOtherItemList){
 						String tableAlias="t";
+						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
 							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
-								if(StringManagerUtils.generalCalColumnFiter(reportUnitItem.getItemCode())){
+								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
 									tableAlias="t2";
@@ -2785,13 +2986,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 						if(reportUnitItem.getDataType()==3){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'yyyy-mm-dd') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') as "+column+"");
 						}else if(reportUnitItem.getDataType()==4){
-							sqlBuff.append(",to_char("+tableAlias+"."+reportUnitItem.getItemCode()+"@'hh24:mi') as "+reportUnitItem.getItemCode()+"");
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') as "+column+"");
 						}else if(reportUnitItem.getDataType()==2 && reportUnitItem.getPrec()>=0){
-							sqlBuff.append(",round("+tableAlias+"."+reportUnitItem.getItemCode()+","+reportUnitItem.getPrec()+")");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(",round("+tableAlias+"."+column+","+reportUnitItem.getPrec()+")");
 						}else{
-							sqlBuff.append(","+tableAlias+"."+reportUnitItem.getItemCode()+"");
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(","+tableAlias+"."+column+"");
 						}
 					}
 					sqlBuff.append(" from "+viewName+" t");
@@ -4114,9 +4321,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public String exportPCPDailyReportData(Page pager, String orgId,String deviceName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit="小数";
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
 		String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
-				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
+				+ " t.commTime,t.commRange, t.commTimeEfficiency*"+timeEfficiencyZoom+","
+				+ " t.runTime,t.runRange, t.runTimeEfficiency*"+timeEfficiencyZoom+",";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		}else{
@@ -4171,6 +4385,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit="小数";
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
 			int maxvalue=configFile.getAp().getOthers().getExportLimit();
 			String productionUnit="t/d"; 
 	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
@@ -4179,8 +4400,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				productionUnit="m^3/d"; 
 			}
 	        String sql="select t.id, t.deviceName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
-					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-					+ " t.runTime,t.runRange, t.runTimeEfficiency,";
+					+ " t.commTime,t.commRange, t.commTimeEfficiency*"+timeEfficiencyZoom+","
+					+ " t.runTime,t.runRange, t.runTimeEfficiency*"+timeEfficiencyZoom+",";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 			}else{
@@ -4234,10 +4455,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			headerRow2.add(ExcelUtils.ROW_MERGE);
 			headerRow2.add("在线时间(h)");
 			headerRow2.add("在线区间");
-			headerRow2.add("在线时率(小数)");
+			headerRow2.add("在线时率("+timeEfficiencyUnit+")");
 			headerRow2.add("运行时间(h)");
 			headerRow2.add("运行区间");
-			headerRow2.add("运行时率(小数)");
+			headerRow2.add("运行时率("+timeEfficiencyUnit+")");
 			headerRow2.add("日累计产液量("+productionUnit+")");
 			headerRow2.add("日累计产油量("+productionUnit+")");
 			headerRow2.add("日累计产水量("+productionUnit+")");

@@ -305,7 +305,7 @@ public class CalculateManagerController extends BaseController {
 		String fileName="请求数据-"+wellName+"-"+acqTime+".json";
 		if("1".equals(calculateType)){
 			fileName="请求数据-"+wellName+"-"+acqTime+".json";
-		}if("2".equals(calculateType)){
+		}else if("2".equals(calculateType)){
 			fileName="转速计产请求数据-"+wellName+"-"+acqTime+".json";
 		}else if("5".equals(calculateType)){
 			fileName="反演请求数据-"+wellName+"-"+acqTime+".json";

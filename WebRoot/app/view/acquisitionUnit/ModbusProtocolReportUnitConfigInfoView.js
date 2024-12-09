@@ -1118,10 +1118,10 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 
         singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
-            if (value != null) {
+            if (value!=null && value!="") {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行
@@ -1344,10 +1344,10 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 
         singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
-            if (value != null) {
+            if (value!=null && value!="") {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行
@@ -1968,10 +1968,10 @@ var ProductionReportTemplateContentHandsontableHelper = {
 
         productionReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
-            if (value != null) {
+            if (value!=null && value!="") {
                 var arr = value.split(';');
-                if (arr.length == 2) {
-                    td.style.backgroundColor = '#' + arr[1];
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
                 }
             }
             td.style.whiteSpace='nowrap'; //文本不换行

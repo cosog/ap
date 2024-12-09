@@ -1178,7 +1178,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String requestData="{}";
 		if("1".equals(calculateType)){
 			requestData=this.getFSDiagramCalculateRequestData(recordId,deviceName,acqTime);
-		}if("2".equals(calculateType)){
+		}else if("2".equals(calculateType)){
 			requestData=this.getRPMCalculateRequestData(recordId,deviceName,acqTime);
 		}else if("5".equals(calculateType)){
 			requestData=this.getElecInverCalculateRequestData(deviceName,acqTime);

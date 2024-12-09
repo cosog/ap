@@ -1733,9 +1733,9 @@ public class DriverAPIController extends BaseController{
 	        		rodStressRatio1=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}else if(i==1){
 	        		rodStressRatio2=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-	        	}if(i==2){
+	        	}else if(i==2){
 	        		rodStressRatio3=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-	        	}if(i==3){
+	        	}else if(i==3){
 	        		rodStressRatio4=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}
 			}
@@ -2054,7 +2054,7 @@ public class DriverAPIController extends BaseController{
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
-					System.out.println(key+":step 1");
+//					System.out.println(key+":step 1");
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
@@ -2082,7 +2082,7 @@ public class DriverAPIController extends BaseController{
 					PCPCalculateResponseData pcpCalculateResponseData=null;
 					
 					RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
-					System.out.println(key+":step 2");
+//					System.out.println(key+":step 2");
 					if(realtimeTotalInfo==null){
 						realtimeTotalInfo=new RealtimeTotalInfo();
 						realtimeTotalInfo.setDeviceId(deviceInfo.getId());
@@ -2118,7 +2118,7 @@ public class DriverAPIController extends BaseController{
 					
 					//进行通信计算
 					commResponseData=commEffCalaulate(deviceInfo,acqTime,1);
-					System.out.println(key+":step 3");
+//					System.out.println(key+":step 3");
 					
 					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1";
 					String insertHistColumns="deviceid,acqTime,checkSign,CommStatus";
@@ -2132,7 +2132,7 @@ public class DriverAPIController extends BaseController{
 					
 					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
-					System.out.println(key+":step 4");
+//					System.out.println(key+":step 4");
 					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						Map<String,DailyTotalItem> dailyTotalItemMap=deviceInfo.getDailyTotalItemMap();
@@ -2201,11 +2201,11 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					System.out.println(key+":step 5");
+//					System.out.println(key+":step 5");
 					if(isAcqRunStatus){
 						timeEffResponseData=tiemEffCalaulate(deviceInfo,acqTime,runStatus);
 					}
-					System.out.println(key+":step 6");
+//					System.out.println(key+":step 6");
 					//通信
 					deviceInfo.setAcqTime(acqTime);
 					deviceInfo.setCommStatus(1);
@@ -2277,7 +2277,7 @@ public class DriverAPIController extends BaseController{
 								acqTime,calItemResolutionDataList,runStatus,save,checkSign);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
-					System.out.println(key+":step 7");
+//					System.out.println(key+":step 7");
 					
 					
 					updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
@@ -2301,11 +2301,11 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
-					System.out.println(key+":step 8");
+//					System.out.println(key+":step 8");
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData,deviceInfo,acqTime);
-					System.out.println(key+":step 9");
+//					System.out.println(key+":step 9");
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
-					System.out.println(key+":step 10");
+//					System.out.println(key+":step 10");
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getAlarmDelay()==0){
 							alarm=true;
@@ -2319,21 +2319,21 @@ public class DriverAPIController extends BaseController{
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}
 					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap);
-					System.out.println(key+":step 11");
+//					System.out.println(key+":step 11");
 					
 					//如果跨天,删除非当天采集的数据
 //					isSameDay=false;
 					if(!isSameDay){
 						MemoryDataManagerTask.delDeviceRealtimeAcqData(deviceInfo.getId()+"", StringManagerUtils.getCurrentTime());
 					}
-					System.out.println(key+":step 12");
+//					System.out.println(key+":step 12");
 					//更新实时数据
 					int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					if(result==0){
 						updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
 						result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 					}
-					System.out.println(key+":step 13");
+//					System.out.println(key+":step 13");
 					
 					//更新数据库实时clob数据
 					List<String> clobCont=new ArrayList<String>();
@@ -2350,7 +2350,7 @@ public class DriverAPIController extends BaseController{
 					}		
 					updateRealClobSql+=" where t.deviceid="+deviceInfo.getId();
 					commonDataService.getBaseDao().executeSqlUpdateClob(updateRealClobSql,clobCont);
-					System.out.println(key+":step 14");
+//					System.out.println(key+":step 14");
 					
 					
 					//如果满足单组入库间隔或者有报警，保存历史数据
@@ -2377,7 +2377,7 @@ public class DriverAPIController extends BaseController{
 						}		
 						updateHistoryClobSql+="where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 						commonDataService.getBaseDao().executeSqlUpdateClob(updateHistoryClobSql,clobCont);	
-						System.out.println(key+":step 15");
+//						System.out.println(key+":step 15");
 						
 						
 						//更新汇总clob数据
@@ -2416,7 +2416,7 @@ public class DriverAPIController extends BaseController{
 							
 							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,totalClobCont);
 						}
-						System.out.println(key+":step 16");
+//						System.out.println(key+":step 16");
 						
 						//保存日汇总数据
 						saveDailyTotalData(deviceInfo);
@@ -2434,12 +2434,12 @@ public class DriverAPIController extends BaseController{
 						if(pcpCalculateResponseData!=null){
 							
 						}
-						System.out.println(key+":step 17");
+//						System.out.println(key+":step 17");
 					}
 					
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
-					System.out.println(key+":step 18");
+//					System.out.println(key+":step 18");
 					
 					//实时汇总放入内存数据库中
 					realtimeTotalInfo.setDeviceId(deviceInfo.getId());
@@ -2459,7 +2459,7 @@ public class DriverAPIController extends BaseController{
 					realtimeTotalInfo.setRunEff(deviceInfo.getRunEff());
 					realtimeTotalInfo.setRunRange(deviceInfo.getRunRange());
 					MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
-					System.out.println(key+":step 19");
+//					System.out.println(key+":step 19");
 					//实时汇总放入数据库中
 					String updateSql="update tbl_realtimetotalcalculationdata t set "
 							+ " t.calTime=to_date('"+realtimeTotalInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"
@@ -2505,22 +2505,26 @@ public class DriverAPIController extends BaseController{
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					System.out.println(key+":step 20");
+					
 					
 					//处理websocket推送
-					if(displayInstanceOwnItem!=null){
+					if(displayInstanceOwnItem!=null && websocketClientUserList.size()>0){
+						System.out.println(key+":step 20");
+						int userCount=0;
 						for (String websocketClientUser : websocketClientUserList) {
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
-							if(userInfo!=null){
+							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
+								userCount++;
 							}
 						}
+						System.out.println(key+":step 21,sendUserCount:"+userCount);
 					}
-					System.out.println(key+":step 21");
+					
 				}
 			}
 		}catch(Exception e){

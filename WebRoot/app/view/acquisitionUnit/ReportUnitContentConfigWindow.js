@@ -268,7 +268,7 @@ function CreateReportUnitContentConfigTable() {
 		        }else if(reportType==1){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15];
 		        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,25,25,85,85];
-		        }if(reportType==2){
+		        }else if(reportType==2){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
 			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,85,85];
 		        }
@@ -559,7 +559,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
-	                            			}if(reportType==1){
+	                            			}else if(reportType==1){
 	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);//名称
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);

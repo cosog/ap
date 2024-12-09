@@ -100,7 +100,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                         		}else{
                         			CreateUploadedAcqUnitContentInfoTable('',1,'');
                         		}
-                        	}if(record.data.classes==1){
+                        	}else if(record.data.classes==1){
                         		CreateUploadedAcqUnitContentInfoTable(record.data.protocol,record.data.classes,record.data.text);
                         	}else if(record.data.classes==2){
                         		CreateUploadedAcqUnitContentInfoTable(

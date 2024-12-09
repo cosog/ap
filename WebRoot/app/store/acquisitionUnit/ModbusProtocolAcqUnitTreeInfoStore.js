@@ -98,7 +98,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	var info='节点';
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
-                        	}if(record.data.classes==2){
+                        	}else if(record.data.classes==2){
                         		info='采控单元';
                         	}else if(record.data.classes==3){
                         		info='采控组';

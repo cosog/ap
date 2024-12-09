@@ -154,7 +154,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                         	var info='节点';
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
-                        	}if(record.data.classes==2){
+                        	}else if(record.data.classes==2){
                         		info='报警单元';
                         	}else if(record.data.classes==3){
                         		info='报警单元';

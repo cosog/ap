@@ -2685,7 +2685,8 @@ function getDateAndTime(dateStr,h,m,s){
 	}
 	if(mStr.length==1){
 		mStr='0'+mStr;
-	}if(sStr.length==1){
+	}
+	if(sStr.length==1){
 		sStr='0'+sStr;
 	}
 	return dateStr+' '+hStr+":"+mStr+':'+sStr;

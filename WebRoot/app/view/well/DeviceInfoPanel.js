@@ -1956,10 +1956,6 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 			success:function(response) {
 				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
-				
-				
-				
-				
 //				var applicationScenarios=result.applicationScenarios;
 				
 //				Ext.getCmp("DeviceApplicationScenariosType_Id").setValue({deviceApplicationScenariosType:applicationScenarios});
@@ -2093,10 +2089,12 @@ var ProductionHandsontableHelper = {
 	                    	if (visualColIndex !=2) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = productionHandsontableHelper.addCellStyle;
-			                }else if(visualRowIndex==39 && visualColIndex==2){
-		                    	cellProperties.readOnly = true;
-		                    	cellProperties.renderer = productionHandsontableHelper.addCellStyle;
-		                    }
+			                }
+	                    	
+//	                    	else if(visualRowIndex==39 && visualColIndex==2){
+//		                    	cellProperties.readOnly = true;
+//		                    	cellProperties.renderer = productionHandsontableHelper.addCellStyle;
+//		                    }
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';

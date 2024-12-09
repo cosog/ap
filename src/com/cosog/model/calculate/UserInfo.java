@@ -1,6 +1,7 @@
 package com.cosog.model.calculate;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +26,9 @@ public class UserInfo implements Serializable {
 	private String roleName;
 	private Integer roleLevel;
 	private Integer roleShowLevel;
+	
+	private List<Integer> orgChildrenNode;
+	private List<Integer> deviceTypeChildrenNode;
 	public UserInfo() {
 		super();
 	}
@@ -138,6 +142,18 @@ public class UserInfo implements Serializable {
 	}
 	public void setRoleShowLevel(Integer roleShowLevel) {
 		this.roleShowLevel = roleShowLevel;
+	}
+	public List<Integer> getOrgChildrenNode() {
+		return orgChildrenNode;
+	}
+	public void setOrgChildrenNode(List<Integer> orgChildrenNode) {
+		this.orgChildrenNode = orgChildrenNode;
+	}
+	public List<Integer> getDeviceTypeChildrenNode() {
+		return deviceTypeChildrenNode;
+	}
+	public void setDeviceTypeChildrenNode(List<Integer> deviceTypeChildrenNode) {
+		this.deviceTypeChildrenNode = deviceTypeChildrenNode;
 	}
 	
 }

@@ -3056,9 +3056,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			        		rodStressRatio1=rodDataArr[i].split(",")[5];
 			        	}else if(i==2&&rodDataArr[i].split(",").length==6){
 			        		rodStressRatio2=rodDataArr[i].split(",")[5];
-			        	}if(i==3&&rodDataArr[i].split(",").length==6){
+			        	}else if(i==3&&rodDataArr[i].split(",").length==6){
 			        		rodStressRatio3=rodDataArr[i].split(",")[5];
-			        	}if(i==4&&rodDataArr[i].split(",").length==6){
+			        	}else if(i==4&&rodDataArr[i].split(",").length==6){
 			        		rodStressRatio4=rodDataArr[i].split(",")[5];
 			        	}
 			        }

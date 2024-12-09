@@ -424,7 +424,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                             pumpingModelInfoHandsontableHelper.hot.destroy();
                         }
                         pumpingModelInfoHandsontableHelper = null;
-                    }if (pumpingUnitPTFHandsontableHelper != null) {
+                    }
+                    if (pumpingUnitPTFHandsontableHelper != null) {
                         if (pumpingUnitPTFHandsontableHelper.hot != undefined) {
                         	pumpingUnitPTFHandsontableHelper.hot.destroy();
                         }

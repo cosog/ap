@@ -888,7 +888,7 @@ function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 		item1.title=loginUserLanguageResource.rootNode;
 		item1.value=loginUserLanguageResource.unitList;
 		root.push(item1);
-	}if(data.classes==1){
+	}else if(data.classes==1){
 		var item1={};
 		item1.id=1;
 		item1.title=loginUserLanguageResource.protocolName;
@@ -2156,7 +2156,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 							item.itemAddr=selectedItem.data.addr;
 							if(alarmItemsData[index][4]=='开'){
 								item.value=1;
-							}if(alarmItemsData[index][4]=='关'){
+							}else if(alarmItemsData[index][4]=='关'){
 								item.value=0;
 							}
 							item.delay=alarmItemsData[index][5];

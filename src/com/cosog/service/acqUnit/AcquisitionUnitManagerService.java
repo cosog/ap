@@ -3484,7 +3484,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		try{
 			if("1".equalsIgnoreCase(calculateType)){
 				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
-			}if("2".equalsIgnoreCase(calculateType)){
+			}else if("2".equalsIgnoreCase(calculateType)){
 				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 			}
 		}catch(Exception e){
@@ -3697,7 +3697,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		try{
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
-			}if(StringManagerUtils.stringToInteger(calculateType)==2){
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			}else{
 				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
@@ -11981,7 +11981,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							try{
 								if("1".equalsIgnoreCase(displayUnitCalType)){
 									inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
-								}if("2".equalsIgnoreCase(displayUnitCalType)){
+								}else if("2".equalsIgnoreCase(displayUnitCalType)){
 									inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
 								}
 							}catch(Exception e){

@@ -2,6 +2,8 @@ package com.cosog.controller.datainterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -493,6 +495,10 @@ public class DriverAPIController extends BaseController{
 								MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
+							
+							
+							String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commTimeEfficiency,2);
+							
 							webSocketSendData = new StringBuffer();
 							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 							webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
@@ -503,7 +509,7 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
 							webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
 							webSocketSendData.append("\"commTime\":\""+commTime+"\",");
-							webSocketSendData.append("\"commTimeEfficiency\":\""+(commTimeEfficiency)+"\",");
+							webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
 							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
 							webSocketSendData.append("}");
@@ -743,6 +749,8 @@ public class DriverAPIController extends BaseController{
 								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
 							
+							String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commTimeEfficiency,2);
+							
 							webSocketSendData = new StringBuffer();
 							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 							webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
@@ -753,7 +761,7 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
 							webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
 							webSocketSendData.append("\"commTime\":\""+commTime+"\",");
-							webSocketSendData.append("\"commTimeEfficiency\":\""+commTimeEfficiency+"\",");
+							webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
 							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
 							webSocketSendData.append("}");
@@ -2232,8 +2240,20 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 						deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						
+						
+						String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commResponseData.getCurrent().getCommEfficiency().getEfficiency()*timeEfficiencyZoom+"",2);
+//						if(StringManagerUtils.isInteger(commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"")){
+//							efficiencyStr=((int)commResponseData.getCurrent().getCommEfficiency().getEfficiency())*timeEfficiencyZoom+"";
+//						}else{
+//							BigDecimal efficiency=new BigDecimal(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+//							BigDecimal zoom=new BigDecimal(timeEfficiencyZoom);
+//							efficiency=efficiency.multiply(zoom);
+//							efficiency=efficiency.setScale(2, RoundingMode.HALF_UP);
+//							efficiencyStr=efficiency+"";
+//						}
+						
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("在线时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","h",1,1));
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("在线时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()*timeEfficiencyZoom+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()*timeEfficiencyZoom+"","","commtimeEfficiency","","","",timeEfficiencyUnit,1,1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("在线时率","通信时率",efficiencyStr,efficiencyStr,"","commtimeEfficiency","","","",timeEfficiencyUnit,1,1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("在线区间","通信区间",commResponseData.getCurrent().getCommEfficiency().getRangeString(),commResponseData.getCurrent().getCommEfficiency().getRangeString(),"","commRange","","","","",1,1));
 					}
 					updateRealtimeData+=",t.runStatus= "+runStatus;
@@ -2256,8 +2276,19 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setRunEff(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
 						deviceInfo.setRunRange(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 						
+						String efficiencyStr=StringManagerUtils.dataAccuracyConversion(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()*timeEfficiencyZoom+"",2);
+//						if(StringManagerUtils.isInteger(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+"")){
+//							efficiencyStr=((int)timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency())*timeEfficiencyZoom+"";
+//						}else{
+//							BigDecimal efficiency=new BigDecimal(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
+//							BigDecimal zoom=new BigDecimal(timeEfficiencyZoom);
+//							efficiency=efficiency.multiply(zoom);
+//							efficiency=efficiency.setScale(2, RoundingMode.HALF_UP);
+//							efficiencyStr=efficiency+"";
+//						}
+						
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时间","运行时间",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"",timeEffResponseData.getCurrent().getRunEfficiency().getTime()+"","","runTime","","","","h",1,1));
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时率","运行时率",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()*timeEfficiencyZoom+"",timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()*timeEfficiencyZoom+"","","runtimeEfficiency","","","",timeEfficiencyUnit,1,1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行时率","运行时率",efficiencyStr,efficiencyStr,"","runtimeEfficiency","","","",timeEfficiencyUnit,1,1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("运行区间","运行区间",timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),timeEffResponseData.getCurrent().getRunEfficiency().getRangeString(),"","runRange","","","","",1,1));
 					}
 					
@@ -2508,9 +2539,9 @@ public class DriverAPIController extends BaseController{
 					
 					
 					//处理websocket推送
+					System.out.println(key+":step 20");
+					int userCount=0;
 					if(displayInstanceOwnItem!=null && websocketClientUserList.size()>0){
-						System.out.println(key+":step 20");
-						int userCount=0;
 						for (String websocketClientUser : websocketClientUserList) {
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
@@ -2522,9 +2553,8 @@ public class DriverAPIController extends BaseController{
 								userCount++;
 							}
 						}
-						System.out.println(key+":step 21,sendUserCount:"+userCount);
 					}
-					
+					System.out.println(key+":step 21,sendUserCount:"+userCount);
 				}
 			}
 		}catch(Exception e){

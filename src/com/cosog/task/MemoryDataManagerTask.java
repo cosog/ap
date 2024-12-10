@@ -311,16 +311,47 @@ public class MemoryDataManagerTask {
 		cleanData("AcqInstanceOwnItem");
 		cleanData("DisplayInstanceOwnItem");
 		cleanData("AlarmInstanceOwnItem");
-		cleanData("rpcCalItemList");
-		cleanData("pcpCalItemList");
-		cleanData("acqTotalCalItemList");
-		cleanData("rpcTotalCalItemList");
-		cleanData("pcpTotalCalItemList");
-		cleanData("acqTimingTotalCalItemList");
-		cleanData("rpcTimingTotalCalItemList");
-		cleanData("pcpTimingTotalCalItemList");
-		cleanData("rpcInputItemList");
-		cleanData("pcpInputItemList");
+		
+		cleanData("rpcCalItemList_en");
+		cleanData("rpcCalItemList_ru");
+		cleanData("rpcCalItemList_zh_CN");
+		
+		cleanData("pcpCalItemList_en");
+		cleanData("pcpCalItemList_ru");
+		cleanData("pcpCalItemList_zh_CN");
+		
+		cleanData("acqTotalCalItemList_en");
+		cleanData("acqTotalCalItemList_ru");
+		cleanData("acqTotalCalItemList_zh_CN");
+		
+		cleanData("rpcTotalCalItemList_en");
+		cleanData("rpcTotalCalItemList_ru");
+		cleanData("rpcTotalCalItemList_zh_CN");
+		
+		cleanData("pcpTotalCalItemList_en");
+		cleanData("pcpTotalCalItemList_ru");
+		cleanData("pcpTotalCalItemList_zh_CN");
+		
+		cleanData("acqTimingTotalCalItemList_en");
+		cleanData("acqTimingTotalCalItemList_ru");
+		cleanData("acqTimingTotalCalItemList_zh_CN");
+		
+		cleanData("rpcTimingTotalCalItemList_en");
+		cleanData("rpcTimingTotalCalItemList_ru");
+		cleanData("rpcTimingTotalCalItemList_zh_CN");
+		
+		cleanData("pcpTimingTotalCalItemList_en");
+		cleanData("pcpTimingTotalCalItemList_ru");
+		cleanData("pcpTimingTotalCalItemList_zh_CN");
+		
+		cleanData("rpcInputItemList_en");
+		cleanData("rpcInputItemList_ru");
+		cleanData("rpcInputItemList_zh_CN");
+		
+		cleanData("pcpInputItemList_en");
+		cleanData("pcpInputItemList_ru");
+		cleanData("pcpInputItemList_zh_CN");
+		
 		cleanData("UserInfo");
 		cleanData("RPCWorkType");
 		cleanData("RPCWorkTypeByName");
@@ -2266,13 +2297,18 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("commRange"))));
 			
 			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("runRange"))));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -2313,13 +2349,18 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",languageResourceMap.get("decimals"),2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("commRange"))));
 			
 			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",languageResourceMap.get("decimals"),2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("runRange"))));
 			
 			
@@ -2449,13 +2490,18 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("commRange"))));
 			
 			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("runRange"))));
 			
 			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction","m^3/d",2,languageResourceMap.get("custom"),languageResourceMap.get("theoreticalProduction"))));
@@ -2534,16 +2580,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,languageResourceMap.get("calculate"),"日期")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("remark"),"Remark","",1,languageResourceMap.get("input"),languageResourceMap.get("remark"))));
@@ -2592,16 +2643,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,languageResourceMap.get("calculate"),"日期")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,languageResourceMap.get("calculate"),"功图工况")));
@@ -2701,16 +2757,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("日期","CalDate","",3,languageResourceMap.get("calculate"),"日期")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("RPM"),"RPM","r/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("RPM"))));
@@ -2789,16 +2850,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,languageResourceMap.get("calculate"),"时间")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			
@@ -2849,16 +2915,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));//1-字符串 2-数值 3-日期 4-日期时间
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,languageResourceMap.get("calculate"),"时间")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,languageResourceMap.get("calculate"),languageResourceMap.get("resultName"))));
@@ -2973,16 +3044,21 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
 			//有序集合
 			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(Config.getInstance().configFile.getAp().getOthers().getDeviceShowName(),"DeviceName","",1,languageResourceMap.get("input"),Config.getInstance().configFile.getAp().getOthers().getDeviceShowName())));
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem("时间","CalTime","",4,languageResourceMap.get("calculate"),"时间")));
 			
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,languageResourceMap.get("calculate"),"在线时间,通信计算所得")));
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"在线时率,通信计算所得")));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("calculate"),"在线区间,通信计算所得")));
 			
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("calculate"),"运行时间,时率计算所得")));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency","小数",2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("calculate"),"运行时率,时率计算所得")));
 			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("calculate"),"运行区间,时率计算所得")));
 			
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("RPM"),"RPM","r/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("RPM"))));

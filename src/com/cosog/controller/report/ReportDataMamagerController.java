@@ -102,7 +102,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellRangeReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo(),user.getLanguageName());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -172,7 +172,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellRangeReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo(),user.getLanguageName());
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
@@ -216,7 +216,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,user.getUserNo());
+		boolean bool = reportDataManagerService.batchExportSingleWellRangeReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,user.getUserNo(),user.getLanguageName());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -295,7 +295,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo(),user.getLanguageName());
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -397,7 +397,7 @@ public class ReportDataMamagerController extends BaseController {
         if(!startDate.equalsIgnoreCase(endDate)){
         	fileName+="~"+endDate;
         }
-		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+		boolean bool = reportDataManagerService.exportSingleWellDailyReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo(),user.getLanguageName());
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -466,7 +466,7 @@ public class ReportDataMamagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+		reportDataManagerService.batchExportSingleWellDailyReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,reportDate,reportInterval,user.getUserNo(),user.getLanguageName());
 		session.setAttribute(key, 1);
 		return null;
 	}

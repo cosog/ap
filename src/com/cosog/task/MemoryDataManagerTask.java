@@ -3260,6 +3260,23 @@ public class MemoryDataManagerTask {
 				userInfo.setLanguage(StringManagerUtils.stringToInteger(obj[15]+""));
 				userInfo.setLanguageName(obj[16]+"");
 				
+				userInfo.setOrgChildrenNode(new ArrayList<>());
+				userInfo.setDeviceTypeChildrenNode(new ArrayList<>());
+				
+				String orgChildrenNodeSql="select org_id from tbl_org t start with t.org_id="+userInfo.getUserOrgid()+" connect by t.org_parent= prior t.org_id";
+				String deviceTypeChildrenNodeSql="select t.id "
+						+ "from tbl_devicetypeinfo t,tbl_role r,tbl_devicetype2role rd "
+						+ "where t.id=rd.rd_devicetypeid and rd.rd_roleid=r.role_id "
+						+ "and r.role_id="+userInfo.getUserType();
+				List<Object[]> orgChildrenNodeList=OracleJdbcUtis.query(orgChildrenNodeSql);
+				List<Object[]> deviceTypeChildrenNodeList=OracleJdbcUtis.query(deviceTypeChildrenNodeSql);
+				for(Object[] orgChildrenNodeObj:orgChildrenNodeList){
+					userInfo.getOrgChildrenNode().add(StringManagerUtils.stringToInteger(orgChildrenNodeObj[0]+""));
+				}
+				for(Object[] deviceTypeChildrenNodeObj:deviceTypeChildrenNodeList){
+					userInfo.getDeviceTypeChildrenNode().add(StringManagerUtils.stringToInteger(deviceTypeChildrenNodeObj[0]+""));
+				}
+				
 				String key=userInfo.getUserNo()+"";
 				jedis.hset("UserInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)
 			}

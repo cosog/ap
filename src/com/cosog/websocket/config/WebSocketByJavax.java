@@ -77,81 +77,141 @@ public class WebSocketByJavax {
     }
     
     public void sendMessageTo(String To,String message) {
-    	synchronized(clients){
-    		for (WebSocketByJavax item : clients.values()) { 
-                if(item.session!=null&&item.session.isOpen()){
-                	if (item.userId.equals(To) ) {
-                		try{
-//                			new SendMessageThread(item.session,message).start();
-                			if(item.session.isOpen()){
-                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-                			}
-                		}catch(Exception e){
-                			e.printStackTrace();
-                		}
-                	}
-                }
-            }
-    	}
-    	
-    }
-    
-    public void sendMessageToBy(String To,String message){
-    	synchronized(clients){
-    		for (WebSocketByJavax item : clients.values()) { 
-                if(item.session!=null&&item.session.isOpen()){
-                	if (item.userId.contains(To) ) {
-                		try{
-//                			new SendMessageThread(item.session,message).start();
-                			if(item.session.isOpen()){
-                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-                			}
-                		}catch(Exception e){
-                			e.printStackTrace();
-                		}
-                	}
-                }
-            }
-    	}
-    }
-    
-    public void sendMessageToUser(String userAccount,String message){
-    	synchronized(clients){
-    		for (WebSocketByJavax item : clients.values()) { 
-                String[] clientInfo=item.userId.split("_");
-                if(item.session!=null&&item.session.isOpen()){
-                	if(clientInfo!=null && clientInfo.length==3&&userAccount.equals(clientInfo[1])){
-                		try{
-//                			new SendMessageThread(item.session,message).start();
-                			if(item.session.isOpen()){
-                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-                			}
-                		}catch(Exception e){
-                			e.printStackTrace();
-//                			StringManagerUtils.printLog("webSocket信息推送失败:"+message);
-                			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message+e);
-                		}
-                    }
-                }
-            }
-    	}
-    }
-    
-    public void sendMessageAll(String message) throws IOException {
-    	synchronized(clients){
-    		for (WebSocketByJavax item : clients.values()) {
-           	 if(item.session!=null&&item.session.isOpen()){
-           		try{
-//       				 new SendMessageThread(item.session,message).start();
-           			if(item.session.isOpen()){
-           				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-        			}
+//    	synchronized(clients){
+//    		for (WebSocketByJavax item : clients.values()) { 
+//                if(item.session!=null&&item.session.isOpen()){
+//                	if (item.userId.equals(To) ) {
+//                		try{
+////                			new SendMessageThread(item.session,message).start();
+//                			if(item.session.isOpen()){
+//                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+//                			}
+//                		}catch(Exception e){
+//                			e.printStackTrace();
+//                		}
+//                	}
+//                }
+//            }
+//    	}
+
+		for (WebSocketByJavax item : clients.values()) { 
+			String[] clientInfo=item.userId.split("_");
+        	if (clientInfo!=null && clientInfo.length==3&&To.equals(clientInfo[1])) {
+        		synchronized(item.session){
+        			try{
+            			if(item.session!=null && item.session.isOpen()){
+            				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+            			}
             		}catch(Exception e){
             			e.printStackTrace();
             		}
-           	 	}
-           }
-    	}
+        		}
+        	}
+        }
+    }
+    
+    public void sendMessageToBy(String To,String message){
+//    	synchronized(clients){
+//    		for (WebSocketByJavax item : clients.values()) { 
+//                if(item.session!=null&&item.session.isOpen()){
+//                	if (item.userId.contains(To) ) {
+//                		try{
+////                			new SendMessageThread(item.session,message).start();
+//                			if(item.session.isOpen()){
+//                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+//                			}
+//                		}catch(Exception e){
+//                			e.printStackTrace();
+//                		}
+//                	}
+//                }
+//            }
+//    	}
+    	
+
+		for (WebSocketByJavax item : clients.values()) {
+        	if (item.userId.contains(To) ) {
+        		synchronized(item.session){
+        			try{
+            			if(item.session!=null && item.session.isOpen()){
+            				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+            		}
+        		}
+        	}
+        }
+    }
+    
+    public void sendMessageToUser(String userAccount,String message){
+//    	synchronized(clients){
+//    		for (WebSocketByJavax item : clients.values()) { 
+//                String[] clientInfo=item.userId.split("_");
+//                if(item.session!=null&&item.session.isOpen()){
+//                	if(clientInfo!=null && clientInfo.length==3&&userAccount.equals(clientInfo[1])){
+//                		try{
+////                			new SendMessageThread(item.session,message).start();
+//                			if(item.session.isOpen()){
+//                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+//                			}
+//                		}catch(Exception e){
+//                			e.printStackTrace();
+////                			StringManagerUtils.printLog("webSocket信息推送失败:"+message);
+//                			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+//                		}
+//                    }
+//                }
+//            }
+//    	}
+    	
+		for (WebSocketByJavax item : clients.values()) { 
+            String[] clientInfo=item.userId.split("_");
+        	if(clientInfo!=null && clientInfo.length==3 && userAccount.equals(clientInfo[1])){
+        		synchronized(item.session){
+        			try{
+            			if(item.session!=null && item.session.isOpen()){
+            				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+            		}
+        		}
+            }
+        }
+    }
+    
+    public void sendMessageAll(String message) throws IOException {
+//    	synchronized(clients){
+//    		for (WebSocketByJavax item : clients.values()) {
+//           	 if(item.session!=null&&item.session.isOpen()){
+//           		try{
+////       				 new SendMessageThread(item.session,message).start();
+//           			if(item.session.isOpen()){
+//           				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+//        			}
+//            		}catch(Exception e){
+//            			e.printStackTrace();
+//            			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+//            		}
+//           	 	}
+//           }
+//    	}
+
+		for (WebSocketByJavax item : clients.values()) {
+			synchronized(item.session){
+				try{
+	       			if(item.session!=null && item.session.isOpen()){
+	       				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+	    			}
+	        	}catch(Exception e){
+	        		e.printStackTrace();
+	        		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+	        	}
+			}
+		}
     }
     
     public static synchronized int getOnlineCount() { 

@@ -281,6 +281,15 @@ public class DriverAPIController extends BaseController{
 		PrintWriter pw=null;
 		try {
 			if(EquipmentDriverServerTask.initFinished){
+				
+				List<String> websocketClientUserList=new ArrayList<>();
+				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
+		            String[] clientInfo=item.userId.split("_");
+		            if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
+		            	websocketClientUserList.add(clientInfo[1]);
+		            }
+		        }
+				
 				ss = request.getInputStream();
 				StringBuffer webSocketSendData = new StringBuffer();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
@@ -492,8 +501,13 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
 							webSocketSendData.append("}");
-							if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
-								infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+							
+							
+							for (String websocketClientUser : websocketClientUserList) {
+								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
+								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
+									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
+								}
 							}
 						}
 					}
@@ -532,6 +546,13 @@ public class DriverAPIController extends BaseController{
 		String json = "{success:true,flag:true}";
 		try {
 			if(EquipmentDriverServerTask.initFinished){
+				List<String> websocketClientUserList=new ArrayList<>();
+				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
+		            String[] clientInfo=item.userId.split("_");
+		            if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
+		            	websocketClientUserList.add(clientInfo[1]);
+		            }
+		        }
 				ss = request.getInputStream();
 				StringBuffer webSocketSendData = new StringBuffer();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
@@ -735,8 +756,11 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
 							webSocketSendData.append("}");
-							if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
-								infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+							for (String websocketClientUser : websocketClientUserList) {
+								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
+								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
+									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
+								}
 							}
 						}
 					}
@@ -1713,9 +1737,9 @@ public class DriverAPIController extends BaseController{
 	        		rodStressRatio1=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}else if(i==1){
 	        		rodStressRatio2=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-	        	}if(i==2){
+	        	}else if(i==2){
 	        		rodStressRatio3=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
-	        	}if(i==3){
+	        	}else if(i==3){
 	        		rodStressRatio4=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}
 			}
@@ -2467,17 +2491,15 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//处理websocket推送
-					if(displayInstanceOwnItem!=null){
+					if(displayInstanceOwnItem!=null && websocketClientUserList.size()>0){
 						for (String websocketClientUser : websocketClientUserList) {
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
-							if(userInfo!=null){
+							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
-								System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-采集组数据开始推送:"+deviceInfo.getDeviceName()+","+acqTime);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
-								System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-采集组数据推送完成:"+deviceInfo.getDeviceName()+","+acqTime);
 							}
 						}
 					}

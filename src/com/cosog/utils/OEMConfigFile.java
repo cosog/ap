@@ -203,6 +203,8 @@ public class OEMConfigFile {
 	public static class Others
 	{
 	    private String deviceShowName;
+	    
+	    private int timeEfficiencyUnit;
 		
 		private boolean cache;
 
@@ -402,6 +404,12 @@ public class OEMConfigFile {
 		}
 		public void setLoginLanguage(String loginLanguage) {
 			this.loginLanguage = loginLanguage;
+		}
+		public int getTimeEfficiencyUnit() {
+			return timeEfficiencyUnit;
+		}
+		public void setTimeEfficiencyUnit(int timeEfficiencyUnit) {
+			this.timeEfficiencyUnit = timeEfficiencyUnit;
 		}
 	}
 	

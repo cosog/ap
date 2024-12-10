@@ -153,15 +153,18 @@ public class HistoryQueryController extends BaseController  {
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
 		this.pager = new Page("pagerForm", request);
-		User user=null;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -175,7 +178,6 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/exportHistoryQueryDeviceListExcel")
 	public String exportHistoryQueryDeviceListExcel() throws Exception {
-		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -190,18 +192,24 @@ public class HistoryQueryController extends BaseController  {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
 		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		
 		this.pager = new Page("pagerForm", request);
-		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
 		
-		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
+		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -530,6 +538,14 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -553,7 +569,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,pager);
+			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -566,7 +582,6 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/exportHistoryQueryFESDiagramOverlayDataExcel")
 	public String exportHistoryQueryFESDiagramOverlayDataExcel() throws Exception {
-		HttpSession session=request.getSession();
 		boolean bool=false;
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
@@ -580,6 +595,15 @@ public class HistoryQueryController extends BaseController  {
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
@@ -591,7 +615,6 @@ public class HistoryQueryController extends BaseController  {
 		fields=StringUtils.join(ddic.getFields(), ",");
 		
 		this.pager = new Page("pagerForm", request);
-		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -615,7 +638,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager,language);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

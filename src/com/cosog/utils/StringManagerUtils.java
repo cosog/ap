@@ -25,6 +25,7 @@ import java.io.Writer;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -1562,6 +1563,17 @@ public class StringManagerUtils {
         }
         return newStr;
     }
+    
+    public static String dataAccuracyConversion(String value,int bit){
+    	String r=value+"";
+    	if(StringManagerUtils.isInteger(value+"")){
+			r=StringManagerUtils.stringToInteger(value)+"";
+		}else{
+			BigDecimal bd=new BigDecimal(value);
+			r=bd.setScale(bit, RoundingMode.HALF_UP)+"";
+		}
+    	return r;
+    }
 
     //将字符串转为指定小数点位数的浮点型
     public static float stringToFloat(String value, int bit) {
@@ -1807,12 +1819,23 @@ public class StringManagerUtils {
      * 判断字符串是否是整数
      */
     public static boolean isInteger(String value) {
-        try {
-            Integer.parseInt(value);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
+    	if(StringManagerUtils.isNotNull(value)){
+        	Pattern pattern=Pattern.compile("[+-]?[0-9]+?");
+        	Pattern pattern2=Pattern.compile("[+-]?[0-9]+\\.([0-0]+)?");
+        	if(pattern.matcher(value).matches() || pattern2.matcher(value).matches()){
+        		return true;
+        	}else{
+        		return false;
+        	}
+        }else{
+        	return false;
         }
+//    	try {
+//            Integer.parseInt(value);
+//            return true;
+//        } catch (NumberFormatException e) {
+//            return false;
+//        }
     }
 
     /**

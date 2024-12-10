@@ -30,6 +30,7 @@ email:                #邮件发送账号配置
       smtpPort: 465                    #邮箱SMTP端口，以实际为准
 others:
    deviceShowName: 设备名称
+   timeEfficiencyUnit: 1               #时率单位 1-小数 2-百分数
    cache: false
    loginLanguage: zh_CN
    pageSize: 100

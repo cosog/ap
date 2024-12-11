@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
+import com.cosog.model.Code;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
@@ -312,45 +313,45 @@ public class MemoryDataManagerTask {
 		cleanData("DisplayInstanceOwnItem");
 		cleanData("AlarmInstanceOwnItem");
 		
-		cleanData("rpcCalItemList_en");
-		cleanData("rpcCalItemList_ru");
-		cleanData("rpcCalItemList_zh_CN");
+		cleanData("rpcCalItemList-en");
+		cleanData("rpcCalItemList-ru");
+		cleanData("rpcCalItemList-zh_CN");
 		
-		cleanData("pcpCalItemList_en");
-		cleanData("pcpCalItemList_ru");
-		cleanData("pcpCalItemList_zh_CN");
+		cleanData("pcpCalItemList-en");
+		cleanData("pcpCalItemList-ru");
+		cleanData("pcpCalItemList-zh_CN");
 		
-		cleanData("acqTotalCalItemList_en");
-		cleanData("acqTotalCalItemList_ru");
-		cleanData("acqTotalCalItemList_zh_CN");
+		cleanData("acqTotalCalItemList-en");
+		cleanData("acqTotalCalItemList-ru");
+		cleanData("acqTotalCalItemList-zh_CN");
 		
-		cleanData("rpcTotalCalItemList_en");
-		cleanData("rpcTotalCalItemList_ru");
-		cleanData("rpcTotalCalItemList_zh_CN");
+		cleanData("rpcTotalCalItemList-en");
+		cleanData("rpcTotalCalItemList-ru");
+		cleanData("rpcTotalCalItemList-zh_CN");
 		
-		cleanData("pcpTotalCalItemList_en");
-		cleanData("pcpTotalCalItemList_ru");
-		cleanData("pcpTotalCalItemList_zh_CN");
+		cleanData("pcpTotalCalItemList-en");
+		cleanData("pcpTotalCalItemList-ru");
+		cleanData("pcpTotalCalItemList-zh_CN");
 		
-		cleanData("acqTimingTotalCalItemList_en");
-		cleanData("acqTimingTotalCalItemList_ru");
-		cleanData("acqTimingTotalCalItemList_zh_CN");
+		cleanData("acqTimingTotalCalItemList-en");
+		cleanData("acqTimingTotalCalItemList-ru");
+		cleanData("acqTimingTotalCalItemList-zh_CN");
 		
-		cleanData("rpcTimingTotalCalItemList_en");
-		cleanData("rpcTimingTotalCalItemList_ru");
-		cleanData("rpcTimingTotalCalItemList_zh_CN");
+		cleanData("rpcTimingTotalCalItemList-en");
+		cleanData("rpcTimingTotalCalItemList-ru");
+		cleanData("rpcTimingTotalCalItemList-zh_CN");
 		
-		cleanData("pcpTimingTotalCalItemList_en");
-		cleanData("pcpTimingTotalCalItemList_ru");
-		cleanData("pcpTimingTotalCalItemList_zh_CN");
+		cleanData("pcpTimingTotalCalItemList-en");
+		cleanData("pcpTimingTotalCalItemList-ru");
+		cleanData("pcpTimingTotalCalItemList-zh_CN");
 		
-		cleanData("rpcInputItemList_en");
-		cleanData("rpcInputItemList_ru");
-		cleanData("rpcInputItemList_zh_CN");
+		cleanData("rpcInputItemList-en");
+		cleanData("rpcInputItemList-ru");
+		cleanData("rpcInputItemList-zh_CN");
 		
-		cleanData("pcpInputItemList_en");
-		cleanData("pcpInputItemList_ru");
-		cleanData("pcpInputItemList_zh_CN");
+		cleanData("pcpInputItemList-en");
+		cleanData("pcpInputItemList-ru");
+		cleanData("pcpInputItemList-zh_CN");
 		
 		cleanData("UserInfo");
 		cleanData("RPCWorkType");
@@ -2321,7 +2322,7 @@ public class MemoryDataManagerTask {
 	
 	public static List<CalItem> getRPCCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcCalItemList_"+language;
+		String key="rpcCalItemList-"+language;
 		List<CalItem> calItemList=new ArrayList<>();
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadRPCCalculateItem(language);
@@ -2345,7 +2346,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadRPCCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcCalItemList_"+language;
+		String key="rpcCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2463,7 +2464,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getPCPCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="pcpCalItemList_"+language;
+		String key="pcpCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadPCPCalculateItem(language);
 		}
@@ -2486,7 +2487,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadPCPCalculateItem(String language){
 		Jedis jedis=null;
-		String key="pcpCalItemList_"+language;
+		String key="pcpCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2553,7 +2554,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getAcqTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="acqTotalCalItemList_"+language;
+		String key="acqTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadAcqTotalCalculateItem(language);
 		}
@@ -2576,7 +2577,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadAcqTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="acqTotalCalItemList_"+language;
+		String key="acqTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2616,7 +2617,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getRPCTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="rpcTotalCalItemList_"+language;
+		String key="rpcTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadRPCTotalCalculateItem(language);
 		}
@@ -2639,7 +2640,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadRPCTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcTotalCalItemList_"+language;
+		String key="rpcTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2730,7 +2731,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getPCPTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="pcpTotalCalItemList_"+language;
+		String key="pcpTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadPCPTotalCalculateItem(language);
 		}
@@ -2753,7 +2754,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadPCPTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="pcpTotalCalItemList_"+language;
+		String key="pcpTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2823,7 +2824,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getAcqTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="acqTimingTotalCalItemList_"+language;
+		String key="acqTimingTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadAcqTimingTotalCalculateItem(language);
 		}
@@ -2846,7 +2847,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadAcqTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="acqTimingTotalCalItemList_"+language;
+		String key="acqTimingTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2888,7 +2889,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getRPCTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="rpcTimingTotalCalItemList_"+language;
+		String key="rpcTimingTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadRPCTimingTotalCalculateItem(language);
 		}
@@ -2911,7 +2912,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadRPCTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcTimingTotalCalItemList_"+language;
+		String key="rpcTimingTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3017,7 +3018,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getPCPTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="pcpTimingTotalCalItemList_"+language;
+		String key="pcpTimingTotalCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadPCPTimingTotalCalculateItem(language);
 		}
@@ -3040,7 +3041,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadPCPTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="pcpTimingTotalCalItemList_"+language;
+		String key="pcpTimingTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3124,7 +3125,7 @@ public class MemoryDataManagerTask {
 	
 	public static List<CalItem> getRPCInputItem(String language){
 		Jedis jedis=null;
-		String key="rpcInputItemList_"+language;
+		String key="rpcInputItemList-"+language;
 		List<CalItem> calItemList=new ArrayList<>();
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadRPCInputItem(language);
@@ -3148,7 +3149,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadRPCInputItem(String language){
 		Jedis jedis=null;
-		String key="rpcInputItemList_"+language;
+		String key="rpcInputItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3184,7 +3185,7 @@ public class MemoryDataManagerTask {
 	
 	public static List<CalItem> getPCPInputItem(String language){
 		Jedis jedis=null;
-		String key="pcpInputItemList"+language;
+		String key="pcpInputItemList-"+language;
 		List<CalItem> calItemList=new ArrayList<>();
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadPCPInputItem(language);
@@ -3208,7 +3209,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadPCPInputItem(String language){
 		Jedis jedis=null;
-		String key="pcpInputItemList"+language;
+		String key="pcpInputItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3248,6 +3249,36 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis.hexists("UserInfo".getBytes(), userNo.getBytes())){
 				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userNo.getBytes()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return userInfo;
+	}
+	
+	public static UserInfo getUserInfoByAccount(String userAccount){
+		UserInfo userInfo=null;
+		Jedis jedis=null;
+		if(!existsKey("UserInfo")){
+			MemoryDataManagerTask.loadUserInfo(null,0,"update");
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			List<byte[]> byteList =jedis.hvals("UserInfo".getBytes());
+			for(int i=0;i<byteList.size();i++){
+				Object obj = SerializeObjectUnils.unserizlize(byteList.get(i));
+				if (obj instanceof UserInfo) {
+					UserInfo user=(UserInfo)obj;
+					if(userAccount.equals(user.getUserId())){
+						userInfo=user;
+						break;
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -4523,6 +4554,11 @@ public class MemoryDataManagerTask {
 	public static void loadLanguageResource(String language){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();
+		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
+		
+		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
+		
+		
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String languageResourcePath=Config.getInstance().configFile.getAp().getOem().getLanguageResourcePath();
 		String path=stringManagerUtils.getFilePath(languageResourcePath+"/locale-"+language+".xlsx");
@@ -4534,22 +4570,132 @@ public class MemoryDataManagerTask {
 			while (iterator.hasNext()) {
 				Map.Entry<String, JSONArray> entry = iterator.next();
 			    String key = entry.getKey();
-			    JSONArray arr = entry.getValue();
-			    for(int i=0;i<arr.size();i++){
-					JSONObject obj=arr.getJSONObject(i);
-					String item=obj.getString("ITEM");
-					String value=obj.getString("VALUE");
-					if(StringManagerUtils.isNotNull(item)){
-						languageMap.put(item, value);
+			    if(key.equalsIgnoreCase("language") || key.equalsIgnoreCase("oem") || key.equalsIgnoreCase("calculate") || key.equalsIgnoreCase("module")){
+			    	JSONArray arr = entry.getValue();
+				    for(int i=0;i<arr.size();i++){
+						JSONObject obj=arr.getJSONObject(i);
+						String item=obj.getString("ITEM");
+						String value=obj.getString("VALUE");
+						if(StringManagerUtils.isNotNull(item)){
+							languageMap.put(item, value);
+						}
 					}
-				}
+			    }else if(key.equalsIgnoreCase("tbl_code")){
+			    	JSONArray arr = entry.getValue();
+				    for(int i=0;i<arr.size();i++){
+						JSONObject obj=arr.getJSONObject(i);
+						String itemCode=obj.getString("ITEMCODE");
+						String itemName=obj.getString("ITEMNAME");
+						int itemValue=obj.getIntValue("ITEMVALUE");
+						String tableCode=obj.getString("TABLECODE");
+						String remark=obj.getString("REMARK");
+						Code code=new Code();
+						code.setItemcode(itemCode);
+						code.setItemname(itemName);
+						code.setItemvalue(itemValue);
+						code.setTablecode(tableCode);
+						code.setRemark(remark);
+						if(codeMap.containsKey(itemCode)){
+							Map<String,Code> itemMap=codeMap.get(itemCode);
+							itemMap.put(itemValue+"", code);
+						}else{
+							Map<String,Code> itemMap=new LinkedHashMap<>();
+							itemMap.put(itemValue+"", code);
+							codeMap.put(itemCode, itemMap);
+						}
+						
+					}
+			    }else if(key.equalsIgnoreCase("worktype")){
+			    	JSONArray arr = entry.getValue();
+			    	for(int i=0;i<arr.size();i++){
+			    		JSONObject obj=arr.getJSONObject(i);
+			    		WorkType workType=new WorkType();
+			    		int resultCode=obj.getIntValue("RESULTCODE"); 
+			    		String resultName=obj.getString("RESULTNAME"); 
+			    		String resultDescription=obj.getString("RESULTDESCRIPTION");
+			    		String optimizationSuggestion=obj.getString("OPTIMIZATIONSUGGESTION");
+			    		String remark=obj.getString("REMARK");
+			    		workType.setResultCode(resultCode);
+						workType.setResultName(resultName);
+						workType.setResultDescription(resultDescription);
+						workType.setOptimizationSuggestion(optimizationSuggestion);
+						workType.setRemark(remark);
+						workTypeMap.put(resultCode+"", workType);
+			    	}
+			    }
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		dataModelMap.put("languageResource-"+language, languageMap);
+		dataModelMap.put("codeLanguageResource-"+language, codeMap);
+		dataModelMap.put("workTypeLanguageResource-"+language, workTypeMap);
+	}
+	
+	public static WorkType getWorkTypeByCode(String resultCode,String language){
+		WorkType workType=null;
+		String key="workTypeLanguageResource-"+language;
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(key);
+		}
+		if(dataModelMap.containsKey(key)){
+			workTypeMap=(Map<String, WorkType>) dataModelMap.get(key);
+		}
+		workType=workTypeMap.get(resultCode);
 		
+		return workType;
+	}
+	
+	public static WorkType getWorkTypeByName(String resultName,String language){
+		WorkType workType=null;
+		String key="workTypeLanguageResource-"+language;
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(key);
+		}
+		if(dataModelMap.containsKey(key)){
+			workTypeMap=(Map<String, WorkType>) dataModelMap.get(key);
+		}
+		
+		Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, WorkType> entry = it.next();
+			String resultCode=new String(entry.getKey());
+			WorkType w=entry.getValue();
+			if(resultName.equalsIgnoreCase(w.getResultName())){
+				workType=w;
+				break;
+			}
+		}
+		
+		return workType;
+	}
+	
+	
+	public static int getResultCodeByName(String resultName,String language){
+		int resultCode=0;
+		Jedis jedis=null;
+		if(!existsKey("RPCWorkTypeByName")){
+			MemoryDataManagerTask.loadRPCWorkType();
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+				resultCode=workType.getResultCode();
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return resultCode;
 	}
 	
 	

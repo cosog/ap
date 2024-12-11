@@ -494,25 +494,29 @@ public class DriverAPIController extends BaseController{
 								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
 							String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commTimeEfficiency,2);
-							webSocketSendData = new StringBuffer();
-							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-							webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
-							webSocketSendData.append("\"deviceId\":"+deviceId+",");
-							webSocketSendData.append("\"orgId\":"+orgId+",");
-							webSocketSendData.append("\"deviceType\":"+deviceType+",");
-							webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
-							webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
-							webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
-							webSocketSendData.append("\"commTime\":\""+commTime+"\",");
-							webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
-							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
-							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
-							webSocketSendData.append("}");
+							
 							
 							
 							for (String websocketClientUser : websocketClientUserList) {
 								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
+									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+									
+									webSocketSendData = new StringBuffer();
+									webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+									webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
+									webSocketSendData.append("\"deviceId\":"+deviceId+",");
+									webSocketSendData.append("\"orgId\":"+orgId+",");
+									webSocketSendData.append("\"deviceType\":"+deviceType+",");
+									webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
+									webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
+									webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?languageResourceMap.get("goOnline"):languageResourceMap.get("offline"))+"\",");
+									webSocketSendData.append("\"commTime\":\""+commTime+"\",");
+									webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
+									webSocketSendData.append("\"commRange\":\""+commRange+"\",");
+									webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
+									webSocketSendData.append("}");
+									
 									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
 								}
 							}
@@ -754,23 +758,24 @@ public class DriverAPIController extends BaseController{
 								MemoryDataManagerTask.updateDeviceRealtimeTotalData(realtimeTotalInfo);
 							}
 							String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commTimeEfficiency,2);
-							webSocketSendData = new StringBuffer();
-							webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-							webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
-							webSocketSendData.append("\"deviceId\":"+deviceId+",");
-							webSocketSendData.append("\"orgId\":"+orgId+",");
-							webSocketSendData.append("\"deviceType\":"+deviceType+",");
-							webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
-							webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
-							webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
-							webSocketSendData.append("\"commTime\":\""+commTime+"\",");
-							webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
-							webSocketSendData.append("\"commRange\":\""+commRange+"\",");
-							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
-							webSocketSendData.append("}");
 							for (String websocketClientUser : websocketClientUserList) {
 								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
+									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+									webSocketSendData = new StringBuffer();
+									webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+									webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
+									webSocketSendData.append("\"deviceId\":"+deviceId+",");
+									webSocketSendData.append("\"orgId\":"+orgId+",");
+									webSocketSendData.append("\"deviceType\":"+deviceType+",");
+									webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
+									webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
+									webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?languageResourceMap.get("goOnline"):languageResourceMap.get("offline"))+"\",");
+									webSocketSendData.append("\"commTime\":\""+commTime+"\",");
+									webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
+									webSocketSendData.append("\"commRange\":\""+commRange+"\",");
+									webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
+									webSocketSendData.append("}");
 									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
 								}
 							}

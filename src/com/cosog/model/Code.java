@@ -20,10 +20,10 @@ import javax.persistence.Table;
 @Table(name = "tbl_code")
 public class Code implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	private BigDecimal id;
+	private Integer id;
 	private String tablecode;
 	private String itemcode;
-	private BigDecimal itemvalue;
+	private Integer itemvalue;
 	private String itemname;
 	private String remark;
 
@@ -31,11 +31,11 @@ public class Code implements java.io.Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, precision = 22, scale = 0)
-	public BigDecimal getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(BigDecimal id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -58,11 +58,11 @@ public class Code implements java.io.Serializable {
 	}
 
 	@Column(name = "itemvalue", precision = 22, scale = 0)
-	public BigDecimal getItemvalue() {
+	public Integer getItemvalue() {
 		return this.itemvalue;
 	}
 
-	public void setItemvalue(BigDecimal itemvalue) {
+	public void setItemvalue(Integer itemvalue) {
 		this.itemvalue = itemvalue;
 	}
 

@@ -145,22 +145,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			total=online+goOnline+offline;
 			result_json.append("\"totalRoot\":[");
 			result_json.append("{\"id\":1,");
-			result_json.append("\"item\":\"全部\",");
+			result_json.append("\"item\":\""+languageResourceMap.get("all")+"\",");
 			result_json.append("\"itemCode\":\"all\",");
 			result_json.append("\"count\":"+total+"},");
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"item\":\"在线\",");
+			result_json.append("\"item\":\""+languageResourceMap.get("online")+"\",");
 			result_json.append("\"itemCode\":\"online\",");
 			result_json.append("\"count\":"+online+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":\"上线\",");
+			result_json.append("\"item\":\""+languageResourceMap.get("goOnline")+"\",");
 			result_json.append("\"itemCode\":\"goOnline\",");
 			result_json.append("\"count\":"+goOnline+"},");
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"item\":\"离线\",");
+			result_json.append("\"item\":\""+languageResourceMap.get("offline")+"\",");
 			result_json.append("\"itemCode\":\"offline\",");
 			result_json.append("\"count\":"+offline+"}");
 			result_json.append("]");
@@ -197,7 +197,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 		}
 		sql+=" group by t.devicetypename,t.devicetype";
 		sql+=" order by t.devicetype";
@@ -228,8 +228,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit){
+	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit,String language){
 		int dataPage=1;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
@@ -250,13 +251,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行','停止'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -301,9 +302,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t.id,t.devicename,c1.name as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','"+languageResourceMap.get("offline")+"') as commStatusName,"
+					+ " t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
-					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
+					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"
 					+ " t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
@@ -322,13 +323,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -446,9 +447,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 		    String sql="select t.id,t.devicename,c1.name as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ " t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ " t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
-					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"
+					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"
 					+ " t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"
 					+ " t.calculateType "
 					+ " from "+deviceTableName+" t "
@@ -467,13 +468,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -593,9 +594,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//5~7
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'运行',0,'停止','无数据'),'') as runStatusName,"//8~9
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,1,decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'),'') as runStatusName,"//8~9
 					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//10~12
 					+ "t.calculateType";//13
 			
@@ -883,7 +884,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,t.calculateType,"
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
@@ -1126,11 +1127,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				if(commStatus==1){
 					if(runStatus==1){
-						runStatusName="运行";
+						runStatusName=languageResourceMap.get("run");
 					}else if(runStatus==0){
-						runStatusName="停止";
+						runStatusName=languageResourceMap.get("stop");
 					}else{
-						runStatusName="无数据";
+						runStatusName=languageResourceMap.get("emptyMsg");
 					}
 				}
 				
@@ -1693,7 +1694,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,t.calculateType,"
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
@@ -1908,11 +1909,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String acqData=StringManagerUtils.CLOBObjectToString(obj[7]);
 				if(commStatus==1){
 					if(runStatus==1){
-						runStatusName="运行";
+						runStatusName=languageResourceMap.get("run");
 					}else if(runStatus==0){
-						runStatusName="停止";
+						runStatusName=languageResourceMap.get("stop");
 					}else{
-						runStatusName="无数据";
+						runStatusName=languageResourceMap.get("emptyMsg");
 					}
 				}
 				
@@ -2475,7 +2476,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 					}
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "//0~2
-							+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"//3~5
+							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"//3~5
 							+ "t2.acqdata ";//6
 					
 					for(int i=0;i<displayCalItemList.size();i++){
@@ -3988,9 +3989,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
-					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
-					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
+					+ "t.runstatus,decode(t.commstatus,0,'"+languageResourceMap.get("offline")+"',decode(t.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17
@@ -4253,9 +4254,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
-					+ "t.commstatus,decode(t.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//3~4
+					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
-					+ "t.runstatus,decode(t.commstatus,0,'离线',decode(t.runstatus,1,'运行','停止')) as runStatusName,"//8~9
+					+ "t.runstatus,decode(t.commstatus,0,'"+languageResourceMap.get("offline")+"',decode(t.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
 					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
 					+ " t.stroke,t.spm,"//16~17

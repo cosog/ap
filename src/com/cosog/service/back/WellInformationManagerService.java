@@ -2948,7 +2948,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "]";
 		
 		String sql="select t.id,t.devicename,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
 				+ " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";

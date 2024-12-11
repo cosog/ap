@@ -28,6 +28,7 @@ import com.cosog.model.calculate.PumpingPRTFData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.BaseService;
@@ -201,8 +202,11 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int online=0,goOnline=0,offline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
-		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
+		result_json.append("{ \"ResultStatus\":"+userCheckSign);
 		if(userCheckSign==1){
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByAccount(user);
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
+			
 			String [] wellList=null;
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
@@ -231,15 +235,16 @@ public class MobileService<T> extends BaseService<T> {
 					offline=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
+			result_json.append(",\"DataList\":[");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("online")+"',");
+			result_json.append("\"Count\":"+online+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("goOnline")+"',");
+			result_json.append("\"Count\":"+goOnline+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("offline")+"',");
+			result_json.append("\"Count\":"+offline+"}]");
 		}
-		result_json.append("\"DataList\":[");
-		result_json.append("{\"Item\":\"在线\",");
-		result_json.append("\"Count\":"+online+"},");
-		result_json.append("{\"Item\":\"上线\",");
-		result_json.append("\"Count\":"+goOnline+"},");
-		result_json.append("{\"Item\":\"离线\",");
-		result_json.append("\"Count\":"+offline+"}");
-		result_json.append("]}");
+		
+		result_json.append("}");
 	
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -248,8 +253,10 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int run=0,stop=0,noData=0,offline=0,goOnline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
-		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
+		result_json.append("{ \"ResultStatus\":"+userCheckSign);
 		if(userCheckSign==1){
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByAccount(user);
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
 			String [] wellList=null;
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
@@ -282,14 +289,15 @@ public class MobileService<T> extends BaseService<T> {
 					noData=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
+			result_json.append(",\"DataList\":[");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("run")+"',\"Count\":"+run+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("stop")+"',\"Count\":"+stop+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("emptyMsg")+"',\"Count\":"+noData+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("goOnline")+"',\"Count\":"+goOnline+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("offline")+"',\"Count\":"+offline+"}]");
 		}
-		result_json.append("\"DataList\":[");
-		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
-		result_json.append("{\"Item\":\"停止\",\"Count\":"+stop+"},");
-		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
-		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
-		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
-		result_json.append("]}");
+		
+		result_json.append("}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1622,7 +1630,11 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int online=0,goOnline=0,offline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
+		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
+		
 		if(userCheckSign==1){
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByAccount(user);
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
 			String [] wellList=null;
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
@@ -1655,17 +1667,17 @@ public class MobileService<T> extends BaseService<T> {
 					offline=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
+			
+			result_json.append("{\"Item\":'"+languageResourceMap.get("online")+"',");
+			result_json.append("\"Count\":"+online+"},");
+			
+			result_json.append("{\"Item\":'"+languageResourceMap.get("goOnline")+"',");
+			result_json.append("\"Count\":"+goOnline+"},");
+			
+			result_json.append("{\"Item\":'"+languageResourceMap.get("offline")+"',");
+			result_json.append("\"Count\":"+offline+"}");
 		}
-		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
 		
-		result_json.append("{\"Item\":\"在线\",");
-		result_json.append("\"Count\":"+online+"},");
-		
-		result_json.append("{\"Item\":\"上线\",");
-		result_json.append("\"Count\":"+goOnline+"},");
-		
-		result_json.append("{\"Item\":\"离线\",");
-		result_json.append("\"Count\":"+offline+"}");
 		result_json.append("]}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
@@ -1674,8 +1686,10 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		int run=0,stop=0,noData=0,offline=0,goOnline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
-		
+		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
 		if(userCheckSign==1){
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByAccount(user);
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
 			String [] wellList=null;
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
@@ -1712,14 +1726,12 @@ public class MobileService<T> extends BaseService<T> {
 					noData=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
 			}
+			result_json.append("{\"Item\":'"+languageResourceMap.get("run")+"',\"Count\":"+run+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("stop")+"',\"Count\":"+stop+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("emptyMsg")+"',\"Count\":"+noData+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("goOnline")+"',\"Count\":"+goOnline+"},");
+			result_json.append("{\"Item\":'"+languageResourceMap.get("offline")+"',\"Count\":"+offline+"}");
 		}
-		result_json.append("{ \"ResultStatus\":"+userCheckSign+",\"Date\":\""+date+"\",\"DataList\":[");
-		
-		result_json.append("{\"Item\":\"运行\",\"Count\":"+run+"},");
-		result_json.append("{\"Item\":\"停止\",\"Count\":"+stop+"},");
-		result_json.append("{\"Item\":\"无数据\",\"Count\":"+noData+"},");
-		result_json.append("{\"Item\":\"上线\",\"Count\":"+goOnline+"},");
-		result_json.append("{\"Item\":\"离线\",\"Count\":"+offline+"}");
 		result_json.append("]}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}

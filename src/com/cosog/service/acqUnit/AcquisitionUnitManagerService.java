@@ -878,8 +878,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> commStatusItemsList=new ArrayList<String>();
-		commStatusItemsList.add("上线");
-		commStatusItemsList.add("离线");
+		commStatusItemsList.add(languageResourceMap.get("goOnline"));
+		commStatusItemsList.add(languageResourceMap.get("offline"));
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
@@ -960,8 +960,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> runStatusItemsList=new ArrayList<String>();
-		runStatusItemsList.add("运行");
-		runStatusItemsList.add("停止");
+		runStatusItemsList.add(languageResourceMap.get("run"));
+		runStatusItemsList.add(languageResourceMap.get("stop"));
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"

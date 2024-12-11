@@ -105,7 +105,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String tableName="tbl_rpcacqdata_latest";
 				String deviceTableName="viw_device";
 				
-				String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
+				String sql="select decode(t2.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
 						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id"
 						+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
 						+ " where t.orgid in("+orgId+") ";
@@ -113,7 +113,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
 				}
 				if(StringManagerUtils.isNotNull(commStatusStatValue)){
-					sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+					sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 				}
 				sql+=" group by t3.resultname,t2.resultcode "
 						+ " order by t2.resultcode";
@@ -248,22 +248,22 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			total=online+goOnline+offline;
 			result_json.append("\"totalRoot\":[");
 			result_json.append("{\"id\":1,");
-			result_json.append("\"item\":\"全部\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("all")+"',");
 			result_json.append("\"itemCode\":\"all\",");
 			result_json.append("\"count\":"+total+"},");
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"item\":\"在线\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("online")+"',");
 			result_json.append("\"itemCode\":\"online\",");
 			result_json.append("\"count\":"+online+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":\"上线\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("goOnline")+"',");
 			result_json.append("\"itemCode\":\"goOnline\",");
 			result_json.append("\"count\":"+goOnline+"},");
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"item\":\"离线\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("offline")+"',");
 			result_json.append("\"itemCode\":\"offline\",");
 			result_json.append("\"count\":"+offline+"}");
 			result_json.append("]");
@@ -354,32 +354,32 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			total=run+stop+noData+offline;
 			result_json.append("\"totalRoot\":[");
 			result_json.append("{\"id\":1,");
-			result_json.append("\"item\":\"全部\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("all")+"',");
 			result_json.append("\"itemCode\":\"all\",");
 			result_json.append("\"count\":"+total+"},");
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"item\":\"运行\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("run")+"',");
 			result_json.append("\"itemCode\":\"run\",");
 			result_json.append("\"count\":"+run+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":\"停止\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("stop")+"',");
 			result_json.append("\"itemCode\":\"stop\",");
 			result_json.append("\"count\":"+stop+"},");
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"item\":\"无数据\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("emptyMsg")+"',");
 			result_json.append("\"itemCode\":\"noData\",");
 			result_json.append("\"count\":"+noData+"},");
 			
 			result_json.append("{\"id\":5,");
-			result_json.append("\"item\":\"上线\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("goOnline")+"',");
 			result_json.append("\"itemCode\":\"goOnline\",");
 			result_json.append("\"count\":"+goOnline+"},");
 			
 			result_json.append("{\"id\":6,");
-			result_json.append("\"item\":\"离线\",");
+			result_json.append("\"item\":'"+languageResourceMap.get("offline")+"',");
 			result_json.append("\"itemCode\":\"offline\",");
 			result_json.append("\"count\":"+offline+"}");
 			result_json.append("]");
@@ -407,7 +407,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " left outer join "+tableName+" t2 on t.id=t2.deviceid "
 					+ " where t.orgid in("+orgId+") ";
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			sql+=" group by t.devicetypename,t.devicetype";
 			sql+=" order by t.devicetype";
@@ -444,12 +444,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public int getDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit){
+	public int getDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit,String language){
 		int dataPage=1;
 		try{
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="tbl_device";
 			String calTableName="tbl_rpcacqdata_latest";
+			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			String sql="select t.id from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -462,13 +464,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+= " and t.devicetype in ("+deviceType+")";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -516,9 +518,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
-					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
+					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus),decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType,t.deviceType";//18~19
 			sql+= " from "+deviceTableName+" t "
@@ -538,13 +540,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -661,9 +663,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name as devicetypename,"//6
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
-					+ "decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"//8~9
+					+ "decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType";//18
 			
@@ -695,13 +697,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				auxiliaryDeviceSql+= " and t.devicename='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'无数据',null,'无数据',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'离线',2,'上线',decode(t2.runstatus,1,'运行',0,'停止','无数据'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -1061,7 +1063,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 					
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "
-							+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
+							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
 							+ "t2.acqdata ";
 
 					for(int i=0;i<displayCalItemList.size();i++){

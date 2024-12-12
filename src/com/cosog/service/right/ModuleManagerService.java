@@ -1,15 +1,18 @@
 package com.cosog.service.right;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.Code;
 import com.cosog.model.Module;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.LicenseMap;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.StringManagerUtils;
@@ -243,8 +246,8 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 			roleLevel = list.get(0).toString();
 		}
-		sqlBuffer.append("select md_id,md_name,md_parentid,md_showname,md_url,md_code,md_seq ,md_icon,md_type,md_control,c.itemname as mdTypeName   ");
-		sqlBuffer.append("from  tbl_module t,tbl_code c where c.itemcode='MD_TYPE' and c.itemvalue=t.md_type ");
+		sqlBuffer.append("select md_id,md_name,md_parentid,md_showname,md_url,md_code,md_seq ,md_icon,md_type,md_control   ");
+		sqlBuffer.append("from  tbl_module t where 1=1 ");
 		if (!"1".equals(roleLevel)){
 			sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
 		}
@@ -307,31 +310,23 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		count = this.getBaseDao().getMaxCountValue(queryString);
 		return count;
 	}
-	public String loadModuleType(String type) throws Exception {
+	public String loadModuleType(String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='MD_TYPE'";
-		try {
-			List<?> list = this.getSQLObjects(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-		} catch (Exception e) {
-			e.printStackTrace();
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("MD_TYPE",language);
+		result_json.append("[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			String get_key = c.getItemvalue()+"";
+			String get_val = c.getItemname();
+			result_json.append("{boxkey:\"" + get_key + "\",");
+			result_json.append("boxval:\"" + get_val + "\"},");
 		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
 		return result_json.toString();
 	}
 }

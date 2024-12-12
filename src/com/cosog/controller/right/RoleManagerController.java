@@ -373,27 +373,6 @@ public class RoleManagerController extends BaseController {
 		return null;
 	}
 	
-	
-	/**<p>描述：获取角色类型的下拉菜单数据信息</p>
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/loadRoleType")
-	public String loadRoleType() throws Exception {
-
-		String type = ParamUtils.getParameter(request, "type");
-		String json = this.roleService.loadRoleType(type);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/constructRightTabTreeGridTree")
 	public String constructRightTabTreeGridTree() throws Exception {
 		String json = "";

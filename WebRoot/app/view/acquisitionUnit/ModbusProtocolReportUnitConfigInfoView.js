@@ -2119,9 +2119,9 @@ function SaveReportUnitData() {
                 }
             }
             reportUnitProperties.calculateType = 0;
-            if (propertiesData[1][2] == "功图计算") {
+            if (propertiesData[1][2] == loginUserLanguageResource.RPCCalculate) {
                 reportUnitProperties.calculateType = 1;
-            } else if (propertiesData[1][2] == "转速计产") {
+            } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
                 reportUnitProperties.calculateType = 2;
             }
             reportUnitProperties.sort = propertiesData[2][2];

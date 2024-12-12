@@ -486,21 +486,6 @@ public class UserManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
-
-	@RequestMapping("/loadUserTitleType")
-	public String loadUserTitleType() throws Exception {
-		String type = ParamUtils.getParameter(request, "type");
-		String json = this.userService.loadUserTitleType(type);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
 	
 	/**<p>描述：获取用户类型的下拉菜单数据信息</p>
 	 * @return

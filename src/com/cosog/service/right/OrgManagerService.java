@@ -35,43 +35,6 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return count;
 	}
 
-	/**
-	 * <p>
-	 * 描述：加载组织类型的下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public String loadOrgType(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='ORG_TYPE'";
-		try {
-			List<?> list = this.getSQLObjects(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-
 	public List<Org> findByPrimary(Integer parentId) {
 		String queryString = "SELECT u.orgLevel FROM Org u where u.orgParent=" + parentId + " order by u.orgId ";
 		return this.getBaseDao().find(queryString);
@@ -282,31 +245,6 @@ public class OrgManagerService<T> extends BaseService<T> {
 			sqlBuffer.append(" and t.org_Name like '%" + orgName + "%' ");
 		}
 		sqlBuffer.append(" order by t.org_seq,t.org_id");
-		return this.findCallSql(sqlBuffer.toString());
-	}
-	
-	public List<?> queryOrgsSyn(Class<T> clazz, String orgName,String tid,int orgid,String parentNodeIds,String childNodeIds,String orgIds,String treeSelectedOrgId) {
-		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("SELECT org_id,org_code,org_name,org_memo,org_parent,org_level,org_type,c.itemname as orgTypeName ,org_coordx,org_coordy,show_level as showLevel "
-				+ "FROM tbl_org u,tbl_code c "
-				+ "WHERE c.itemcode='ORG_TYPE' and c.itemvalue=u.org_type  and u.org_id in("+orgIds+")");
-		
-		if(!"0".equals(tid)){
-			sqlBuffer.append(" and u.org_parent = "+ tid);
-		}else{
-			sqlBuffer.append(" and u.org_parent = ( select t.org_parent from tbl_org t where t.org_id="+treeSelectedOrgId+" ) ");
-		}
-//		if (StringManagerUtils.isNotNull(parentNodeIds)) {
-//			sqlBuffer.append(","+parentNodeIds);
-//		}
-//		if (StringManagerUtils.isNotNull(childNodeIds)) {
-//			sqlBuffer.append(","+childNodeIds);
-//		}
-//		sqlBuffer.append(") ");
-		if (!orgName.isEmpty() && orgName != null &&! "".equals(orgName)) {
-			sqlBuffer.append(" and u.org_Name like '%" + orgName + "%' ");
-		}
-		sqlBuffer.append(" order by u.org_Id  asc");
 		return this.findCallSql(sqlBuffer.toString());
 	}
 	

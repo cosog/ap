@@ -22,6 +22,7 @@ import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
+import com.cosog.model.Code;
 import com.cosog.model.CurveConf;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DisplayUnit;
@@ -524,10 +525,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type=2 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type=2 and t.unitid=t2.id "
+					+ " and t2.unit_code='"+code+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -554,7 +558,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							delay=obj[6]+"";
 							retriggerTime=obj[7]+"";
 							
-							alarmLevel=obj[8]+"";
+							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
+							
 							alarmSign=obj[9]+"";
 							isSendMessage=obj[10]+"";
 							isSendMail=obj[11]+"";
@@ -621,10 +626,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if("3".equalsIgnoreCase(classes)){
 					String sql="select t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
 							+ " t.delay,t.retriggerTime,"
-							+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-							+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-							+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-							+ " where t.type=5 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
+							+ " t.alarmlevel,"
+							+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+							+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+							+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+							+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+							+ " where t.type=5 and t.unitid=t2.id "
+							+ " and t2.unit_code='"+code+"' "
 							+ " order by t.id";
 					list=this.findCallSql(sql);
 					for(int i=0;i<list.size();i++){
@@ -647,7 +655,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								hystersis=obj[4]+"";
 								delay=obj[5]+"";
 								retriggerTime=obj[6]+"";
-								alarmLevel=obj[7]+"";
+								
+								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
+								
 								alarmSign=obj[8]+"";
 								isSendMessage=obj[9]+"";
 								isSendMail=obj[10]+"";
@@ -710,10 +720,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.value,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+unitCode+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id "
+					+ " and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -738,7 +751,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								checked=true;
 								delay=obj[4]+"";
 								retriggerTime=obj[5]+"";
-								alarmLevel=obj[6]+"";
+								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
 								alarmSign=obj[7]+"";
 								isSendMessage=obj[8]+"";
 								isSendMail=obj[9]+"";
@@ -794,10 +807,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.bitindex,t.value,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+unitCode+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id "
+					+ " and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -821,13 +837,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
 								checked=true;
 								if("0".equals(obj[4]+"")){
-									value="关";
+									value=languageResourceMap.get("switchingCloseValue");
 								}else if("1".equals(obj[4]+"")){
-									value="开";
+									value=languageResourceMap.get("switchingOpenValue");
 								}
 								delay=obj[5]+"";
 								retriggerTime=obj[6]+"";
-								alarmLevel=obj[7]+"";
+								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
 								alarmSign=obj[8]+"";
 								isSendMessage=obj[9]+"";
 								isSendMail=obj[10]+"";
@@ -884,10 +900,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type=3 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type=3 and t.unitid=t2.id "
+					+ " and t2.unit_code='"+code+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -913,7 +932,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
-						alarmLevel=obj[4]+"";
+						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
 						alarmSign=obj[5]+"";
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
@@ -966,10 +985,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type=6 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type=6 and t.unitid=t2.id "
+					+ " and t2.unit_code='"+code+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -996,7 +1018,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
-						alarmLevel=obj[4]+"";
+						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
 						alarmSign=obj[5]+"";
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
@@ -1049,10 +1071,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3  "
-					+ " where t.type=4 and t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue and t2.unit_code='"+code+"' "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
+					+ " where t.type=4 and t.unitid=t2.id "
+					+ " and t2.unit_code='"+code+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -1074,7 +1099,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
-						alarmLevel=obj[4]+"";
+						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
 						alarmSign=obj[5]+"";
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
@@ -3642,22 +3667,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
-				+ "t.delay,t.retriggerTime,"
-				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " t.delay,t.retriggerTime,"
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.itemaddr";
 		
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
-					+ "t.delay,t.retriggerTime,"
-					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " t.delay,t.retriggerTime,"
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.itemaddr";
@@ -3675,7 +3704,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"hystersis\":\""+obj[6]+"\","
 					+ "\"delay\":\""+obj[7]+"\","
 					+ "\"retriggerTime\":\""+obj[8]+"\","
-					+ "\"alarmLevel\":\""+obj[9]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[9]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[10]+"\","
 					+ "\"isSendMessage\":\""+obj[11]+"\","
 					+ "\"isSendMail\":\""+obj[12]+"\"},");
@@ -3725,22 +3754,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
-				+ "t.delay,t.retriggerTime,"
-				+ "t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " t.delay,t.retriggerTime,"
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
-					+ "t.delay,t.retriggerTime,"
-					+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " t.delay,t.retriggerTime,"
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.id";
@@ -3767,7 +3800,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"hystersis\":\""+obj[5]+"\","
 					+ "\"delay\":\""+obj[6]+"\","
 					+ "\"retriggerTime\":\""+obj[7]+"\","
-					+ "\"alarmLevel\":\""+obj[8]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[9]+"\","
 					+ "\"isSendMessage\":\""+obj[10]+"\","
 					+ "\"isSendMail\":\""+obj[11]+"\"},");
@@ -3805,22 +3838,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t2.protocol "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.itemaddr,t.bitindex";
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
-					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
+					+ " t.delay,t.retriggerTime,"
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t2.protocol "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.itemaddr,t.bitindex";
@@ -3855,10 +3892,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"addr\":\""+obj[3]+"\","
 					+ "\"bitIndex\":\""+obj[4]+"\","
 					+ "\"meaning\":\""+meaning+"\","
-					+ "\"value\":\""+("1".equalsIgnoreCase(obj[5]+"")?"开":"关")+"\","
+					+ "\"value\":\""+("1".equalsIgnoreCase(obj[5]+"")?languageResourceMap.get("switchingOpenValue"):languageResourceMap.get("switchingCloseValue"))+"\","
 					+ "\"delay\":\""+obj[6]+"\","
 					+ "\"retriggerTime\":\""+obj[7]+"\","
-					+ "\"alarmLevel\":\""+obj[8]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[9]+"\","
 					+ "\"isSendMessage\":\""+obj[10]+"\","
 					+ "\"isSendMail\":\""+obj[11]+"\"},");
@@ -3892,23 +3929,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
-				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
+				+ " t.delay,t.retriggerTime,"
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t2.protocol "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.itemaddr,t.bitindex";
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t2.protocol "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.itemaddr,t.bitindex";
@@ -3945,7 +3986,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"meaning\":\""+meaning+"\","
 					+ "\"delay\":\""+obj[5]+"\","
 					+ "\"retriggerTime\":\""+obj[6]+"\","
-					+ "\"alarmLevel\":\""+obj[7]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[8]+"\","
 					+ "\"isSendMessage\":\""+obj[9]+"\","
 					+ "\"isSendMail\":\""+obj[10]+"\"},");
@@ -3976,20 +4017,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " t4.itemname as alarmLevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.id";
@@ -4033,20 +4078,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
-					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " t.delay,t.retriggerTime,"
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.id";
@@ -4059,7 +4108,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+obj[2]+"\","
 					+ "\"delay\":\""+obj[3]+"\","
 					+ "\"retriggerTime\":\""+obj[4]+"\","
-					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[5]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[6]+"\","
 					+ "\"isSendMessage\":\""+obj[7]+"\","
 					+ "\"isSendMail\":\""+obj[8]+"\"},");
@@ -4089,21 +4138,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
-				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3, tbl_code t4 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid and upper(t4.itemcode)=upper('BJJB') and t.alarmlevel=t4.itemvalue "
+				+ " t.delay,t.retriggerTime,"
+				+ " t.alarmlevel,"
+				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
+				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
 				+ " and t3.id="+id+" "
 				+ " and t.type="+resolutionMode
 				+ " order by t.id";
 		if("2".equals(classes)){
 			itemsSql="select t.id, t.itemname,t.itemcode,"
 					+ "t.delay,t.retriggerTime,"
-					+ " t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
-					+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+					+ " t.alarmlevel,"
+					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode
 					+ " order by t.id";
@@ -4116,7 +4169,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+obj[2]+"\","
 					+ "\"delay\":\""+obj[3]+"\","
 					+ "\"retriggerTime\":\""+obj[4]+"\","
-					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[5]+"", language)+"\","
 					+ "\"alarmSign\":\""+obj[6]+"\","
 					+ "\"isSendMessage\":\""+obj[7]+"\","
 					+ "\"isSendMail\":\""+obj[8]+"\"},");
@@ -7473,7 +7526,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"addr\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getItemAddr()+"\","
 											+ "\"bitIndex\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getBitIndex()==-99?"":exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getBitIndex())+""+"\","
 											+ "\"meaning\":\""+meaning+"\","
-											+ "\"value\":\""+("1".equalsIgnoreCase(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+"")?"开":"关")+"\","
+											+ "\"value\":\""+("1".equalsIgnoreCase(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getValue()+"")?languageResourceMap.get("switchingOpenValue"):languageResourceMap.get("switchingCloseValue"))+"\","
 											+ "\"delay\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getDelay()+"\","
 											+ "\"alarmLevel\":\""+exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmLevel()+"\","
 											+ "\"alarmSign\":\""+(exportProtocolConfig.getAlarmUnitList().get(i).getAlarmItemList().get(j).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable") )+"\","
@@ -10649,7 +10702,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(alarmItemList.get(i).getType()==0){
-				value="1".equalsIgnoreCase(value)?"开":"关";
+				value="1".equalsIgnoreCase(value)?languageResourceMap.get("switchingOpenValue"):languageResourceMap.get("switchingCloseValue");
 			}
 
 			result_json.append("{\"id\":"+(i+1)+","
@@ -12238,10 +12291,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "t.value,"
 								+ "t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
 								+ "t.bitIndex,"
-								+ "t3.itemname as alarmLevel,decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-								+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-								+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_code t3 "
-								+ " where t.unitid=t2.id and upper(t3.itemcode)=upper('BJJB') and t.alarmlevel=t3.itemvalue "
+								+ "t.alarmlevel,"
+								+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+								+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+								+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
+								+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
+								+ " where t.unitid=t2.id "
 								+ " and t2.id="+unitId+" "
 								+ " and t.type="+alarmType
 								+ " order by t.itemaddr";
@@ -12290,7 +12345,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"hystersis\":\""+obj[7]+"\","
 									+ "\"delay\":\""+obj[8]+"\","
 									+ "\"bitIndex\":\""+bitIndex+"\","
-									+ "\"alarmLevel\":\""+obj[10]+"\","
+									+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[10]+"", user.getLanguageName())+"\","
 									+ "\"alarmSign\":\""+obj[11]+"\","
 									+ "\"isSendMessage\":\""+obj[12]+"\","
 									+ "\"isSendMail\":\""+obj[13]+"\"},");

@@ -115,7 +115,13 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+                	var deviceName='';
+                	
+                	var selectRow= Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").getValue();
+                	if(selectRow>=0){
+                		deviceName = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+                	}
+                	
                     var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
                     var new_params = {
@@ -135,6 +141,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                     labelWidth: getStringLength(loginUserLanguageResource.resultStatus)*8,
                     width: (getStringLength(loginUserLanguageResource.resultStatus)*8+100),
                     id: 'RPCCalculateMaintainingCalculateSignComBox_Id',
+                    store: calculateSignStore,
                     queryMode: 'remote',
                     emptyText: '--'+loginUserLanguageResource.all+'--',
                     blankText: '--'+loginUserLanguageResource.all+'--',
@@ -152,12 +159,12 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                     		calculateSignComb.getStore().load(); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
-            				if (isNotVal(gridPanel)) {
-            					gridPanel.getStore().load();
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
-            				}
+//                        	var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
+//            				if (isNotVal(gridPanel)) {
+//            					gridPanel.getStore().load();
+//            				}else{
+//            					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
+//            				}
             				
             				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
             				if (isNotVal(bbar)) {

@@ -387,10 +387,6 @@ public class MobileService<T> extends BaseService<T> {
 					MemoryDataManagerTask.initAlarmStyle();
 				}
 				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 				}
@@ -1818,10 +1814,6 @@ public class MobileService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 				}
@@ -2159,10 +2151,6 @@ public class MobileService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
 				}
 				
-				if(!jedis.exists("RPCWorkType".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
-				}
-				
 				if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 				}
@@ -2474,7 +2462,7 @@ public class MobileService<T> extends BaseService<T> {
 	public String getRPCInformation(String user,String password,String wells) {
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource("en");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
 		result_json.append("\"DataList\":[");
 		if(userCheckSign==1){

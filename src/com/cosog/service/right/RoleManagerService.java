@@ -26,42 +26,6 @@ import com.cosog.utils.StringManagerUtils;
 public class RoleManagerService<T> extends BaseService<T> {
 	@Autowired
 private CommonDataService service;
-	/**
-	 * <p>
-	 * 描述：加载组织类型的下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public String loadRoleType(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='ROLE_FLAG'";
-		try {
-			List<?> list = this.getSQLObjects(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
 
 	public List<T> loadRoles(Class<T> clazz) {
 		String queryString = "SELECT u FROM Role u order by u.roleId ";

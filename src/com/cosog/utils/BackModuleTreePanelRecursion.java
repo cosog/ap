@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cosog.model.RoleModule;
+import com.cosog.task.MemoryDataManagerTask;
 
 /**
  * <p>
@@ -21,26 +22,7 @@ public class BackModuleTreePanelRecursion {
 	public BackModuleTreePanelRecursion() {// 构造方法里初始化模拟List
 	}
 
-	public static String judgeModuleType(int key) {
-		// int temp = StringManagerUtils.stringToInteger(key);
-		String result = "前台模块";
-		switch (key) {
-		case 0:
-			result = "前台模块";
-			break;
-		case 1:
-			result = "后台模块";
-			break;
-
-		default:
-			result = "后台模块";
-			break;
-		}
-		return result;
-
-	}
-
-	public String recursionModuleTreeFn(List list, Object[] module) {
+	public String recursionModuleTreeFn(List list, Object[] module,String language) {
 		String data = "";
 		if (hasChild(list, module)) {
 			returnStr.append("{\"text\":\"" + module[1] + "\"");
@@ -52,7 +34,7 @@ public class BackModuleTreePanelRecursion {
 			returnStr.append(",\"iconCls\":\"" + module[7] + "\"");
 			returnStr.append(",\"mdCode\":\"" + module[5] + "\"");
 			returnStr.append(",\"mdType\":\"" + module[8] + "\"");
-			returnStr.append(",\"mdTypeName\":\"" + module[10] + "\"");
+			returnStr.append(",\"mdTypeName\":\"" + MemoryDataManagerTask.getCodeName("MD_TYPE",module[8]+"", language) + "\"");
 			returnStr.append(",\"mdSeq\":\"" + module[6] + "\"");
 			returnStr.append(",\"mdId\":\"" + module[0] + "\"");
 			returnStr.append(",\"expanded\":true");
@@ -61,7 +43,7 @@ public class BackModuleTreePanelRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				Object[] n = (Object[]) it.next();
-				recursionModuleTreeFn(list, n);
+				recursionModuleTreeFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
@@ -86,7 +68,7 @@ public class BackModuleTreePanelRecursion {
 			returnStr.append("\",\"mdType\":\"");
 			returnStr.append(module[8]);
 			returnStr.append("\",\"mdTypeName\":\"");
-			returnStr.append(module[10]);
+			returnStr.append(MemoryDataManagerTask.getCodeName("MD_TYPE",module[8]+"", language));
 			returnStr.append("\",\"mdSeq\":\"");
 			returnStr.append(module[6]);
 			returnStr.append("\",\"leaf\":true},");

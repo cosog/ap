@@ -76,7 +76,7 @@ public class ModuleManagerController extends BaseController {
 			for (Object org : list) {
 				Object[] obj=(Object[])org;
 				if (!r.hasParent(list, obj)) {
-					json = r.recursionModuleTreeFn(list, obj);
+					json = r.recursionModuleTreeFn(list, obj,user.getLanguageName());
 				}
 			}
 		}
@@ -347,9 +347,14 @@ public class ModuleManagerController extends BaseController {
 	
 	@RequestMapping("/loadModuleType")
 	public String loadModuleType() throws Exception {
-
 		String type = ParamUtils.getParameter(request, "type");
-		String json = this.moduleService.loadModuleType(type);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.moduleService.loadModuleType(language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

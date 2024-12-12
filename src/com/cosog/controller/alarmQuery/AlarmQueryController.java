@@ -62,10 +62,15 @@ public class AlarmQueryController extends BaseController{
 		this.pager = new Page("pagerForm", request);
 		
 		String tableName="viw_alarminfo_hist";
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId=user.getUserorgids();
 			}
@@ -85,7 +90,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = alarmQueryService.getAlarmData(orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		json = alarmQueryService.getAlarmData(orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);

@@ -1800,16 +1800,6 @@ color16ToRgba = function(sColor,Opacity){
 		    return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
 	    }
 	}
-
- adviceHistoryWellDataColor = function(val,o,p,e) {
-	 	//alert(val);
-	 	var bjjb=p.data.bjjb;
-		if (bjjb != 0) {
-			return '<font style="color:red;">'+val+'</font>';
-		} else {
-			return '<font style="color:black;">'+val+'</font>';
-		}
-	}
 	
  getBackgroundColor = function(val,o,p,e) {
 	 return '<div style="background:'+p.data.bjys+';">'+val+'</div>';

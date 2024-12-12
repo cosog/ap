@@ -125,30 +125,6 @@ public class OrgManagerController extends BaseController {
 
 	/**
 	 * <p>
-	 * 描述：加载组织类型的下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/loadOrgType")
-	public String loadOrgType() throws Exception {
-
-		String type = ParamUtils.getParameter(request, "type");
-		String json = this.orgService.loadOrgType(type);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-//		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-
-	/**
-	 * <p>
 	 * 描述：前台组织树形菜单数据
 	 * </p>
 	 * 
@@ -348,79 +324,6 @@ public class OrgManagerController extends BaseController {
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/constructOrgTreeGridTreeSyn")
-	public String constructOrgTreeGridTreeSyn() throws IOException {
-		String orgName = ParamUtils.getParameter(request, "orgName");
-		String orgIds = ParamUtils.getParameter(request, "orgId");
-		String treeSelectedOrgId = ParamUtils.getParameter(request, "treeSelectedOrgId");
-		String parentNodeId=ParamUtils.getParameter(request, "tid");
-		//String aa=ParamUtils.getParameter(request, "parentId");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		user.setOrgtreeid(orgService.findOrgById(user.getUserOrgid()));
-		user.setUserParentOrgids(orgService.findParentIds(user.getUserOrgid()));
-		user.setUserorgids(orgService.findChildIds(user.getUserOrgid()));
-		user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
-		user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		List<?> list = this.orgService.queryOrgsSyn(Org.class, orgName,parentNodeId,user.getUserOrgid(),user.getUserParentOrgids(),user.getUserorgids(),orgIds,treeSelectedOrgId);
-		String json = "";
-		StringBuffer strBuf = new StringBuffer();
-		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
-		boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
-		String columns=	service.showTableHeadersColumns("orgAndUser_OrgManage");
-		strBuf.append("{success:true,");
-		strBuf.append("columns:"+columns+",");
-		strBuf.append("list:[");
-		for (Object org : list) {
-			Object[] obj = (Object[]) org;
-			if (StringManagerUtils.isNotNull(user.getAllOrgPatentNodeIds())&& r.isParentNode(user.getAllOrgPatentNodeIds().split(","), Integer.parseInt(obj[0]+""))) {
-				strBuf.append("{\"text\":\"" + obj[2] + "\"");
-				if(expandedAll){//父节点全部展开
-					strBuf.append(",\"expanded\" : true");
-				}else{
-					strBuf.append(",\"leaf\" : false");
-				}
-				strBuf.append(",\"orgId\":\"" + obj[0] + "\"");
-				strBuf.append(",\"orgCode\":\""+obj[1]+"\"");
-				strBuf.append(",\"orgMemo\":\""+obj[3]+"\"");
-				strBuf.append(",\"orgParent\":\""+obj[4] + "\"");
-				strBuf.append(",\"orgLevel\":\""+obj[5] + "\"");
-				strBuf.append(",\"orgType\":\""+obj[6] + "\"");
-				strBuf.append(",\"orgTypeName\":\""+obj[7] + "\"");
-				strBuf.append(",\"orgCoordX\":\""+obj[8]+"\"");
-				strBuf.append(",\"orgCoordY\":\""+obj[9]+"\"");
-				strBuf.append(",\"showLevel\":\""+obj[10]+"\"},");
-			}else{
-				strBuf.append("{\"text\":\"" + obj[2] + "\"");
-				strBuf.append(",\"leaf\" : true");
-				strBuf.append(",\"orgId\":\"" + obj[0] + "\"");
-				strBuf.append(",\"orgCode\":\""+obj[1]+"\"");
-				strBuf.append(",\"orgMemo\":\""+obj[3]+"\"");
-				strBuf.append(",\"orgParent\":\""+obj[4] + "\"");
-				strBuf.append(",\"orgLevel\":\""+obj[5] + "\"");
-				strBuf.append(",\"orgType\":\""+obj[6] + "\"");
-				strBuf.append(",\"orgTypeName\":\""+obj[7] + "\"");
-				strBuf.append(",\"orgCoordX\":\""+obj[8]+"\"");
-				strBuf.append(",\"orgCoordY\":\""+obj[9]+"\"");
-				strBuf.append(",\"showLevel\":\""+obj[10]+"\"},");
-			}
-		}
-		if(list.size()>0){
-			strBuf=strBuf.deleteCharAt(strBuf.length()-1);
-		}
-		strBuf.append("]}");
-		
-		json = strBuf.toString().replaceAll("null", "");
 		pw.print(json);
 		pw.flush();
 		pw.close();

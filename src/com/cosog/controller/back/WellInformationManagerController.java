@@ -116,7 +116,6 @@ public class WellInformationManagerController extends BaseController {
 	private String limit;
 	private String msg = "";
 	private String wellInformationName;
-	private String liftingType;
 	private String deviceType;
 	private String orgCode;
 	private String resCode;
@@ -524,6 +523,27 @@ public class WellInformationManagerController extends BaseController {
 			language = "" + user.getLanguageName();
 		}
 		String json = this.wellInformationManagerService.loadDataDictionaryComboxList(itemCode,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadCodeComboxList")
+	public String loadCodeComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadCodeComboxList(itemCode,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1378,7 +1398,8 @@ public class WellInformationManagerController extends BaseController {
 								int manualInterventionResultCode=0;
 								
 								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
-									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(manualInterventionResultName);
+									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode();
+//									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(manualInterventionResultName);
 								}
 								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
 								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
@@ -2487,14 +2508,6 @@ public class WellInformationManagerController extends BaseController {
 
 	public void setOrgId(String orgId) {
 		this.orgId = orgId;
-	}
-
-	public String getLiftingType() {
-		return liftingType;
-	}
-
-	public void setLiftingType(String liftingType) {
-		this.liftingType = liftingType;
 	}
 
 	public String getDevicetype() {

@@ -1321,7 +1321,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 								//如果是工况
 								if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value);
+									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 									if(workType!=null){
 										value=workType.getResultName();
 										for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
@@ -2090,7 +2090,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 								//如果是工况
 								if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value);
+									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 									if(workType!=null){
 										value=workType.getResultName();
 									}
@@ -2681,7 +2681,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										//如果是工况
 										if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode()) || "resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											workType=MemoryDataManagerTask.getWorkTypeByCode(value);
+											workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 											if(workType!=null){
 												value=workType.getResultName();
 											}

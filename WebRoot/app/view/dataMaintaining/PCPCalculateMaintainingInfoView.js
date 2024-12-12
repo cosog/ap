@@ -152,12 +152,12 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                     		calculateSignComb.getStore().load(); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-            				if (isNotVal(gridPanel)) {
-            					gridPanel.getStore().load();
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-            				}
+//                        	var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
+//            				if (isNotVal(gridPanel)) {
+//            					gridPanel.getStore().load();
+//            				}else{
+//            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
+//            				}
             				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
             				if (isNotVal(bbar)) {
             					if(bbar.getStore().isEmptyStore){

@@ -154,7 +154,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					result_json.append("\"totalRoot\":[");
 					for(Integer key:totalMap.keySet()){
 						String item="无数据";
-						WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(key+"");
+						WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(key+"",language);
 						if(workType!=null){
 							item=workType.getResultName();
 						}
@@ -1264,7 +1264,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
 										//如果是工况
 										if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											workType=MemoryDataManagerTask.getWorkTypeByCode(value);
+											workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 											if(workType!=null){
 												value=workType.getResultName();
 											}

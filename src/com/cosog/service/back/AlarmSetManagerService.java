@@ -47,50 +47,6 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 		return this.getBaseDao().getAllObjects(clazz);
 	}
 
-	/**
-	 * <p>
-	 * 显示报警设置下拉菜单信息方法
-	 * </p>
-	 * 
-	 * @param type
-	 * @return
-	 * @throws Exception
-	 */
-	public String loadAlarmSetType(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		if (type.equalsIgnoreCase("result")) {
-			sql = " select distinct t.resultcode,t.resultname from tbl_rpc_worktype t,tbl_rpc_alarmtype_conf g where g.resultcode=t.resultcode";
-		} else if (type.equalsIgnoreCase("alarmType")) {
-			sql = " select  distinct t.itemvalue,t.itemname from tbl_code t,tbl_rpc_alarmtype_conf g where  t.itemcode='BJLX' and t.itemvalue=g.alarmtype";
-		} else if (type.equalsIgnoreCase("alarmLevel")) {
-			sql = " select t.itemvalue,t.itemname from tbl_code t where  t.itemcode='BJJB' and t.itemvalue<400 order by t.itemvalue";
-		}
-		try {
-			List<?> list = this.getSQLObjects(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-
 	public void addAlarmSet(T AlarmSet) throws Exception {
 		this.getBaseDao().addObject(AlarmSet);
 	}

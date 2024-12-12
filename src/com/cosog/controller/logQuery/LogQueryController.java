@@ -173,7 +173,6 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/getSystemLogData")
 	public String getSystemLogData() throws Exception {
 		String json = "";
-		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
@@ -181,7 +180,12 @@ public class LogQueryController extends BaseController{
 		
 		String selectUserId = ParamUtils.getParameter(request, "selectUserId");
 		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -205,7 +209,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogData(orgId,operationType,pager,user,selectUserId);
+		json = logQueryService.getSystemLogData(orgId,operationType,pager,user,selectUserId,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -294,9 +298,8 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/loadSystemLogActionComboxList")
 	public String loadSystemLogActionComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
-		User user = null;
 		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
+		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if (user != null) {
 			language = "" + user.getLanguageName();

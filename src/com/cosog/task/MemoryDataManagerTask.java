@@ -313,6 +313,10 @@ public class MemoryDataManagerTask {
 		cleanData("DisplayInstanceOwnItem");
 		cleanData("AlarmInstanceOwnItem");
 		
+		cleanData("acqCalItemList-en");
+		cleanData("acqCalItemList-ru");
+		cleanData("acqCalItemList-zh_CN");
+		
 		cleanData("rpcCalItemList-en");
 		cleanData("rpcCalItemList-ru");
 		cleanData("rpcCalItemList-zh_CN");
@@ -2271,7 +2275,7 @@ public class MemoryDataManagerTask {
 	public static List<CalItem> getAcqCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="acqCalItemList"+language;
+		String key="acqCalItemList-"+language;
 		if(!existsKey(key)){
 			MemoryDataManagerTask.loadAcqCalculateItem(language);
 		}
@@ -2294,7 +2298,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadAcqCalculateItem(String language){
 		Jedis jedis=null;
-		String key="acqCalItemList_"+language;
+		String key="acqCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3428,99 +3432,99 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadRPCWorkType(){
-		Jedis jedis=null;
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			String sql="select t.id,t.resultcode,t.resultname,t.resultdescription,t.optimizationsuggestion,t.remark "
-					+ " from TBL_RPC_WORKTYPE t order by t.resultcode";
-			List<Object[]> list=OracleJdbcUtis.query(sql);
-			for(Object[] obj:list){
-				WorkType workType=new WorkType();
-				workType.setId(StringManagerUtils.stringToInteger(obj[0]+""));
-				workType.setResultCode(StringManagerUtils.stringToInteger(obj[1]+""));
-				workType.setResultName(obj[2]+"");
-				workType.setResultDescription(obj[3]+"");
-				workType.setOptimizationSuggestion(obj[4]+"");
-				workType.setRemark(obj[5]+"");
-				String key=workType.getResultCode()+"";
-				String keyByName=workType.getResultName()+"";
-				
-				jedis.hset("RPCWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
-				jedis.hset("RPCWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-	}
+//	public static void loadRPCWorkType(){
+//		Jedis jedis=null;
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			String sql="select t.id,t.resultcode,t.resultname,t.resultdescription,t.optimizationsuggestion,t.remark "
+//					+ " from TBL_RPC_WORKTYPE t order by t.resultcode";
+//			List<Object[]> list=OracleJdbcUtis.query(sql);
+//			for(Object[] obj:list){
+//				WorkType workType=new WorkType();
+//				workType.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+//				workType.setResultCode(StringManagerUtils.stringToInteger(obj[1]+""));
+//				workType.setResultName(obj[2]+"");
+//				workType.setResultDescription(obj[3]+"");
+//				workType.setOptimizationSuggestion(obj[4]+"");
+//				workType.setRemark(obj[5]+"");
+//				String key=workType.getResultCode()+"";
+//				String keyByName=workType.getResultName()+"";
+//				
+//				jedis.hset("RPCWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
+//				jedis.hset("RPCWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
+//			}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
+//	}
 	
-	public static WorkType getWorkTypeByCode(String resultCode){
-		WorkType workType=null;
-		Jedis jedis=null;
-		if(!existsKey("RPCWorkType")){
-			MemoryDataManagerTask.loadRPCWorkType();
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hexists("RPCWorkType".getBytes(), (resultCode).getBytes())){
-				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (resultCode).getBytes()));
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		return workType;
-	}
+//	public static WorkType getWorkTypeByCode(String resultCode){
+//		WorkType workType=null;
+//		Jedis jedis=null;
+//		if(!existsKey("RPCWorkType")){
+//			MemoryDataManagerTask.loadRPCWorkType();
+//		}
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(jedis.hexists("RPCWorkType".getBytes(), (resultCode).getBytes())){
+//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (resultCode).getBytes()));
+//			}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
+//		return workType;
+//	}
 	
-	public static int getResultCodeByName(String resultName){
-		int resultCode=0;
-		Jedis jedis=null;
-		if(!existsKey("RPCWorkTypeByName")){
-			MemoryDataManagerTask.loadRPCWorkType();
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
-				resultCode=workType.getResultCode();
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		return resultCode;
-	}
+//	public static int getResultCodeByName(String resultName){
+//		int resultCode=0;
+//		Jedis jedis=null;
+//		if(!existsKey("RPCWorkTypeByName")){
+//			MemoryDataManagerTask.loadRPCWorkType();
+//		}
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//				resultCode=workType.getResultCode();
+//			}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
+//		return resultCode;
+//	}
 	
-	public static WorkType getWorkTypeByName(String resultName){
-		WorkType workType=null;
-		Jedis jedis=null;
-		if(!existsKey("RPCWorkTypeByName")){
-			MemoryDataManagerTask.loadRPCWorkType();
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		return workType;
-	}
+//	public static WorkType getWorkTypeByName(String resultName){
+//		WorkType workType=null;
+//		Jedis jedis=null;
+//		if(!existsKey("RPCWorkTypeByName")){
+//			MemoryDataManagerTask.loadRPCWorkType();
+//		}
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//			}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
+//		return workType;
+//	}
 	
 	public static AlarmShowStyle getAlarmShowStyle(){
 		AlarmShowStyle alarmShowStyle=null;
@@ -3551,6 +3555,7 @@ public class MemoryDataManagerTask {
 		AlarmShowStyle alarmShowStyle=null;
 		try {
 			alarmShowStyle=new AlarmShowStyle();
+			
 			String sql="select v1.itemvalue as alarmLevel,v1.itemname as backgroundColor,v2.itemname as color,v3.itemname as opacity from "
 					+ " (select * from tbl_code t where t.itemcode='BJYS' ) v1,"
 					+ " (select * from tbl_code t where t.itemcode='BJQJYS' ) v2,"
@@ -4545,6 +4550,67 @@ public class MemoryDataManagerTask {
 		return languageMap;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static Map<String,Code> getCodeMap(String itemCode,String language){
+		String key="codeLanguageResource-"+language;
+		Map<String,Code> code=new LinkedHashMap<>();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(key);
+		}
+		if(dataModelMap.containsKey(key)){
+			codeMap=(Map<String,Map<String,Code>>) dataModelMap.get(key);
+			if(codeMap.containsKey(itemCode)){
+				code=codeMap.get(itemCode);
+			}
+		}
+		return code;
+	}
+	
+	public static Code getCode(String itemCode,String itemValue,String language){
+		Map<String,Code> codeMap=getCodeMap(itemCode,language);
+		Code code=null;
+		if(codeMap.containsKey(itemValue)){
+			code=codeMap.get(itemValue);
+		}
+		return code;
+	}
+	
+	public static Code getCodeByItemName(String itemCode,String itemName,String language){
+		Map<String,Code> codeMap=getCodeMap(itemCode,language);
+		Code code=null;
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			if(itemName.equalsIgnoreCase(c.getItemname())){
+				code=c;
+				break;
+			}
+		}
+		return code;
+	}
+	
+	public static String getCodeName(String itemCode,String itemValue,String language){
+		String codeName="";
+		Code code=getCode(itemCode,itemValue,language);
+		if(code!=null){
+			codeName=code.getItemname();
+		}
+		return codeName;
+	}
+	
+	public static String getCodeValue(String itemCode,String itemName,String language){
+		String itemValue="";
+		Code code=getCodeByItemName(itemCode,itemName,language);
+		if(code!=null){
+			itemValue=code.getItemvalue()+"";
+		}
+		
+		return itemValue;
+	}
+	
 	public static void loadLanguageResource(){
 		loadLanguageResource("zh_CN");
 		loadLanguageResource("en");
@@ -4676,27 +4742,27 @@ public class MemoryDataManagerTask {
 	}
 	
 	
-	public static int getResultCodeByName(String resultName,String language){
-		int resultCode=0;
-		Jedis jedis=null;
-		if(!existsKey("RPCWorkTypeByName")){
-			MemoryDataManagerTask.loadRPCWorkType();
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
-				resultCode=workType.getResultCode();
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
-		}
-		return resultCode;
-	}
+//	public static int getResultCodeByName(String resultName,String language){
+//		int resultCode=0;
+//		Jedis jedis=null;
+//		if(!existsKey("RPCWorkTypeByName")){
+//			MemoryDataManagerTask.loadRPCWorkType();
+//		}
+//		try {
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//				resultCode=workType.getResultCode();
+//			}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		} finally{
+//			if(jedis!=null){
+//				jedis.close();
+//			}
+//		}
+//		return resultCode;
+//	}
 	
 	
 	

@@ -439,7 +439,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							String optimizationSuggestion="";
 							
 							try{
-								WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+								WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 								if(workType!=null){
 									resultName=workType.getResultName();
 									optimizationSuggestion=workType.getOptimizationSuggestion();

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,6 +27,7 @@ import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.AuxiliaryDeviceInformation;
+import com.cosog.model.Code;
 import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
@@ -645,6 +647,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return result_json.toString();
+	}
+	
+	public String loadCodeComboxList(String itemCode,String language) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap(itemCode.toUpperCase(),language);
+		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
+			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
 		return result_json.toString();
 	}
 	
@@ -2349,7 +2370,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						
 						String manualInterventionName=languageResourceMap.get("noIntervention");
 						if(rpcProductionData.getManualIntervention()!=null && rpcProductionData.getManualIntervention().getCode()>0){
-							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"");
+							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"",language);
 							if(workType!=null){
 								manualInterventionName=workType.getResultName();
 							}else{

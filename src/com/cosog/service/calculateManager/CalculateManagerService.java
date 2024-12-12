@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.Code;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
@@ -251,7 +253,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						if(rpcProductionData.getManualIntervention().getCode()==0){
 							manualInterventionResultName=languageResourceMap.get("noIntervention");
 						}else{
-							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"");
+							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"",language);
 							if(workType!=null){
 								manualInterventionResultName=workType.getResultName();
 							}else{
@@ -666,7 +668,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
 					int manualInterventionResultCode=0;
 					if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
-						WorkType workType=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName);
+						WorkType workType=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName,language);
 						if(workType!=null){
 							manualInterventionResultCode=workType.getResultCode();
 						}else{
@@ -868,43 +870,17 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	
 	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql="";
-		String tableName="tbl_rpcacqdata_latest";
-		String deviceTableName="tbl_device";
-		if(StringManagerUtils.stringToInteger(calculateType)==2){
-			tableName="tbl_pcpacqdata_latest";
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("RESULTSTATUS",language);
+		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append(",{boxkey:\"" + c.getItemvalue() + "\",");
+			result_json.append("boxval:\"" + c.getItemname() + "\"}");
 		}
-		sql="select distinct(decode(t.resultstatus,2,0,t.resultstatus)),t2.itemname "
-				+ " from "+tableName+" t,tbl_code t2,"+deviceTableName+" t3 "
-				+ " where t.deviceId=t3.id and decode(t.resultstatus,2,0,t.resultstatus)=t2.itemvalue and t2.itemcode='JSBZ'"
-				+ " and t3.orgid in("+orgId+") "
-				+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+		result_json.append("]}");
 		
-		if(StringManagerUtils.isNotNull(deviceName)){
-			sql+=" and  t3.deviceName = '" + deviceName.trim() + "' ";
-		}
-		
-		sql+=" order by decode(t.resultstatus,2,0,t.resultstatus)";
-		try {
-			int totals=this.getTotalCountRows(sql);
-			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append(",{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"}");
-				}
-			}
-			result_json.append("]}");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return result_json.toString();
 	}
 	

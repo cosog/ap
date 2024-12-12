@@ -1113,7 +1113,8 @@ public class DriverAPIController extends BaseController{
 		
 		WorkType workType=null;
 		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+//			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		}
 		for(int i=0;i<calItemResolutionDataList.size();i++){
 
@@ -1720,7 +1721,8 @@ public class DriverAPIController extends BaseController{
 		
 		WorkType workType=null;
 		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+//			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		}
 		
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
@@ -2034,7 +2036,7 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String language="en";
+		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
             String[] clientInfo=item.userId.split("_");
@@ -2287,7 +2289,7 @@ public class DriverAPIController extends BaseController{
 								acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData,save,checkSign);
 						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 						}
 					}else if(deviceInfo.getCalculateType()==2){
 						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
@@ -3148,7 +3150,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-						workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
+						workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 						RPCCalculateResponseData responseResultData =new RPCCalculateResponseData(); 
 						responseResultData.init();
 						
@@ -4300,7 +4302,7 @@ public class DriverAPIController extends BaseController{
 //			data="{}";
 //			data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
 			this.pager = new Page("pagerForm", request);
-			String language="en";
+			String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 			String json = mobileService.getPumpingModelInformation(data,pager,language);
 			response.setContentType("application/json;charset=utf-8");
 			response.setHeader("Cache-Control", "no-cache");

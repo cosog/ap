@@ -1704,9 +1704,9 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitProperties.acqUnitName=propertiesData[1][2];
 			
 			displayUnitProperties.calculateType = 0;
-            if (propertiesData[2][2] == "功图计算") {
+            if (propertiesData[2][2] == loginUserLanguageResource.RPCCalculate) {
             	displayUnitProperties.calculateType = 1;
-            } else if (propertiesData[2][2] == "转速计产") {
+            } else if (propertiesData[2][2] == loginUserLanguageResource.PCPCalculate) {
             	displayUnitProperties.calculateType = 2;
             }
             

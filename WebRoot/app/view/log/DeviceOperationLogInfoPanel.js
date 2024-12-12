@@ -80,7 +80,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/wellInformationManagerController/loadDataDictionaryComboxList',
+            	url: context + '/wellInformationManagerController/loadCodeComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'

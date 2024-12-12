@@ -560,16 +560,13 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        
-	        
-	        
 	        protocolAlarmUnitConfigNumItemsHandsontableHelper.createTable = function (data) {
 	        	$('#'+protocolAlarmUnitConfigNumItemsHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigNumItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,120,80,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,100,80,90,90],
 	                columns:protocolAlarmUnitConfigNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -738,7 +735,6 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
-	        
 	        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	        	if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns[col].type=='checkbox'){
 	        		protocolAlarmUnitConfigCalNumItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
@@ -781,7 +777,7 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,120,80,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,100,80,90,90],
 	                columns:protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1157,7 +1153,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,100,100,80,80,90,90],
+	        		colWidths: [25,50,50,120,100,100,100,80,90,90],
 	                columns:protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1361,7 +1357,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,80,100,100,80,80,90,90],
+	        		colWidths: [25,50,50,120,80,100,100,100,80,90,90],
 	                columns:protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1567,7 +1563,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,100,80,80,80],
 	                columns:protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1773,7 +1769,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,100,80,80,80],
 	                columns:protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1969,7 +1965,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,80,80,80,80],
+	        		colWidths: [25,50,80,100,100,100,80,80,80],
 	                columns:protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -2084,9 +2080,9 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 			saveData.unitName=propertiesData[0][2];
 			
 			saveData.calculateType = 0;
-            if (propertiesData[1][2] == "功图计算") {
+            if (propertiesData[1][2] == loginUserLanguageResource.RPCCalculate) {
             	saveData.calculateType = 1;
-            } else if (propertiesData[1][2] == "转速计产") {
+            } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
             	saveData.calculateType = 2;
             }
 			

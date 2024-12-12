@@ -36,7 +36,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
+	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
 		String ddicName="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
 			ddicName="alarmQuery_SwitchingValueAlarm";
@@ -53,7 +54,13 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		DataDictionary ddic = null;
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+" from "+tableName+" t where t.orgid in ("+orgId+") "
+		String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName,to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
+				+ " t.itemname,t.alarmtype,"
+				+ " t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
+				+ " t.alarmlevel,"
+				+ " t.issendmessage,t.issendmail,"
+				+ " t.recoverytime,t.orgid "
+				+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 				+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(deviceId)){
 			sql+=" and t.deviceid="+deviceId;
@@ -75,47 +82,39 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
-		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		return getResult.replaceAll("\"null\"", "\"\"");
-	}
-	
-	public String getAlarmExportData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
-		String ddicName="alarmQuery_CommStatusAlarm";
-		if(StringManagerUtils.stringToInteger(alarmType)==0){
-			ddicName="alarmQuery_SwitchingValueAlarm";
-		}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-			ddicName="alarmQuery_EnumValueAlarm";
-		}else if(StringManagerUtils.stringToInteger(alarmType)==2){
-			ddicName="alarmQuery_NumericValueAlarm";
-		}else if(StringManagerUtils.stringToInteger(alarmType)==3){
-			ddicName="alarmQuery_CommStatusAlarm";
-		}
-		String tableName="viw_alarminfo_hist";
-		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		String columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+" from "+tableName+" t where t.orgid in ("+orgId+") "
-				+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
-		if(StringManagerUtils.isNotNull(deviceId)){
-			sql+=" and t.deviceid="+deviceId;
-		}
-		if(StringManagerUtils.isNotNull(alarmType)){
-			if(StringManagerUtils.stringToInteger(alarmType)==2){
-				sql+=" and t.alarmType=2 or t.alarmType=5";
-			}else {
-				sql+=" and t.alarmType="+alarmType;
-			}
-		}
-		if(StringManagerUtils.isNotNull(alarmLevel)){
-			sql+=" and t.alarmLevel="+alarmLevel;
-		}
-		if(StringManagerUtils.isNotNull(isSendMessage)){
-			sql+=" and t.isSendMessage="+isSendMessage;
-		}
-		sql+=" order by t.alarmtime desc";
 		
-		String getResult = this.findExportDataBySqlEntity(sql,sql, columns, 20 + "", pager);
-		return getResult.replaceAll("\"null\"", "\"\"");
+		List<?> list=this.findCallSql(finalSql);
+		int totals=this.getTotalCountRows(sql);
+		
+		result_json.append("{ \"success\":true,\"totalCount\":"+totals+ ",\"start_date\":\"" + pager.getStart_date() + "\",\"end_date\":\"" + pager.getEnd_date() + "\",\"columns\":"+columns+",\"totalRoot\":[");
+		
+		for(int i=0;i<list.size();i++){
+			Object[]obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"deviceId\":\""+obj[1]+"\",");
+			result_json.append("\"deviceName\":\""+obj[2]+"\",");
+			result_json.append("\"deviceType\":\""+obj[3]+"\",");
+			result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
+			result_json.append("\"alarmTime\":\""+obj[5]+"\",");
+			result_json.append("\"itemName\":\""+obj[6]+"\",");
+			result_json.append("\"alarmType\":\""+obj[7]+"\",");
+			result_json.append("\"alarmTypeName\":\""+MemoryDataManagerTask.getCodeName("ALARMTYPE",obj[7]+"", language)+"\",");
+			result_json.append("\"alarmValue\":\""+obj[8]+"\",");
+			result_json.append("\"alarmInfo\":\""+obj[9]+"\",");
+			result_json.append("\"alarmLimit\":\""+obj[10]+"\",");
+			result_json.append("\"hystersis\":\""+obj[11]+"\",");
+			result_json.append("\"alarmLevel\":\""+obj[12]+"\",");
+			result_json.append("\"alarmLevelName\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[12]+"", language)+"\",");
+			result_json.append("\"isSendMessage\":\""+obj[13]+"\",");
+			result_json.append("\"isSendMail\":\""+obj[14]+"\",");
+			result_json.append("\"recoveryTime\":\""+obj[15]+"\",");
+			result_json.append("\"orgId\":\""+obj[16]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
 	public boolean exportAlarmData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
@@ -137,8 +136,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		    sheetDataList.add(headRow);
 			
 			String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName,to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
-					+ " t.itemname,t.alarmtype,t.alarmTypeName,t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
-					+ " t.alarmlevel,t.alarmLevelName,"
+					+ " t.itemname,t.alarmtype,"
+					+ " t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
+					+ " t.alarmlevel,"
 					+ " t.issendmessage,t.issendmail,"
 					+ " t.recoverytime,t.orgid "
 					+ " from "+tableName+" t where t.orgid in ("+orgId+") "
@@ -180,17 +180,17 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("\"alarmTime\":\""+obj[5]+"\",");
 				result_json.append("\"itemName\":\""+obj[6]+"\",");
 				result_json.append("\"alarmType\":\""+obj[7]+"\",");
-				result_json.append("\"alarmTypeName\":\""+obj[8]+"\",");
-				result_json.append("\"alarmValue\":\""+obj[9]+"\",");
-				result_json.append("\"alarmInfo\":\""+obj[10]+"\",");
-				result_json.append("\"alarmLimit\":\""+obj[11]+"\",");
-				result_json.append("\"hystersis\":\""+obj[12]+"\",");
-				result_json.append("\"alarmLevel\":\""+obj[13]+"\",");
-				result_json.append("\"alarmLevelName\":\""+obj[14]+"\",");
-				result_json.append("\"isSendMessage\":\""+obj[15]+"\",");
-				result_json.append("\"isSendMail\":\""+obj[16]+"\",");
-				result_json.append("\"recoveryTime\":\""+obj[17]+"\",");
-				result_json.append("\"orgId\":\""+obj[18]+"\"}");
+				result_json.append("\"alarmTypeName\":\""+MemoryDataManagerTask.getCodeName("ALARMTYPE",obj[7]+"", user.getLanguageName())+"\",");
+				result_json.append("\"alarmValue\":\""+obj[8]+"\",");
+				result_json.append("\"alarmInfo\":\""+obj[9]+"\",");
+				result_json.append("\"alarmLimit\":\""+obj[10]+"\",");
+				result_json.append("\"hystersis\":\""+obj[11]+"\",");
+				result_json.append("\"alarmLevel\":\""+obj[12]+"\",");
+				result_json.append("\"alarmLevelName\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[12]+"", user.getLanguageName())+"\",");
+				result_json.append("\"isSendMessage\":\""+obj[13]+"\",");
+				result_json.append("\"isSendMail\":\""+obj[14]+"\",");
+				result_json.append("\"recoveryTime\":\""+obj[15]+"\",");
+				result_json.append("\"orgId\":\""+obj[16]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

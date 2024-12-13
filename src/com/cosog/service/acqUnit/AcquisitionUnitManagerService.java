@@ -37,6 +37,7 @@ import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.ReportTemplate;
 import com.cosog.model.ReportUnitItem;
 import com.cosog.model.User;
+import com.cosog.model.WorkType;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
@@ -1050,6 +1051,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getModbusProtocolFESDiagramConditionsAlarmItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
+		
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -1064,9 +1067,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		List<String> itemsList=new ArrayList<String>();
-		
-		String conditionsSql="select t.resultname,t.resultcode from tbl_rpc_worktype t order by t.resultcode";
-		List<?> conditionsList=this.findCallSql(conditionsSql);
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
@@ -1086,16 +1086,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		
-		for(int i=0;i<conditionsList.size();i++){
+		int idx=0;
+		Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, WorkType> entry = it.next();
+			String resultCode=new String(entry.getKey());
+			WorkType workType=entry.getValue();
 			boolean checked=false;
-			Object[] conditionsObj = (Object[]) conditionsList.get(i);
-			
+			idx++;
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-			if(StringManagerUtils.existOrNot(itemsList,conditionsObj[0]+"",false)){
+			if(StringManagerUtils.existOrNot(itemsList,workType.getResultName()+"",false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
-					if((conditionsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
+					if((workType.getResultName()).equalsIgnoreCase(obj[0]+"")){
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
@@ -1108,9 +1111,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(i+1)+","
-					+ "\"title\":\""+conditionsObj[0]+"\","
-					+ "\"code\":\""+conditionsObj[1]+"\","
+					+ "\"id\":"+idx+","
+					+ "\"title\":\""+workType.getResultName()+"\","
+					+ "\"code\":\""+workType.getResultCode()+"\","
 					+ "\"delay\":\""+delay+"\","
 					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
@@ -1118,6 +1121,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
 					+ "\"isSendMail\":\""+isSendMail+"\""
 					+ "},");
+		
+			
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -4094,7 +4099,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2, tbl_code t3 "
+					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
 					+ " where t.unitid=t2.id "
 					+ " and t2.id="+id+" "
 					+ " and t.type="+resolutionMode

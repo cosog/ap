@@ -461,6 +461,12 @@ public class HistoryQueryController extends BaseController  {
 		PrintWriter pw = response.getWriter();
 		this.pager = new Page("pagerForm", request);
 		String tableName="tbl_rpcacqdata_hist";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
@@ -478,7 +484,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,pager);
+			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -118,6 +118,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer resultNameBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		try{
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 			columns = ddic.getTableHeader();
@@ -129,7 +130,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			
 			sql="select t.id,t.deviceId,t.deviceName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ "decode(t.resultStatus,-1,'无效功图',1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
-				+ "t.resultName,"
+				+ "t.resultcode,"
 				+ prodCol
 				+ "t.productiondata"
 				+ " from viw_rpc_calculatemain t "
@@ -149,11 +150,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			int maxvalue=pager.getLimit()+pager.getStart();
 			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
-			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 			resultNameBuff.append("[\""+languageResourceMap.get("noIntervention")+"\"");
-			List<?> resultList = this.findCallSql(resultSql);
-			for(int i=0;i<resultList.size();i++){
-				resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
+			Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
+			while(it.hasNext()){
+				Map.Entry<String, WorkType> entry = it.next();
+				String resultCode=new String(entry.getKey());
+				WorkType w=entry.getValue();
+				resultNameBuff.append(",\""+w.getResultName()+"\"");
 			}
 			resultNameBuff.append("]");
 			
@@ -177,7 +180,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"acqTime\":\""+obj[3]+"\",");
 				result_json.append("\"resultStatus\":\""+obj[4]+"\",");
-				result_json.append("\"resultName\":\""+obj[5]+"\",");
+				result_json.append("\"resultName\":\""+(workTypeMap.get(obj[5]+"")!=null?workTypeMap.get(obj[5]+"").getResultName():"")+"\",");
 				
 				if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 					result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
@@ -256,12 +259,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"",language);
 							if(workType!=null){
 								manualInterventionResultName=workType.getResultName();
-							}else{
-								String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
-								List<?> resultNameList = this.findCallSql(resultNameSql);
-								if(resultNameList.size()>0){
-									manualInterventionResultName=resultNameList.get(0).toString();
-								}
 							}
 						}
 						result_json.append("\"manualInterventionResult\":\""+manualInterventionResultName+"\",");
@@ -464,10 +461,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("acqTime")+"\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
-		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,well.applicationscenarios,c1.itemname as applicationScenariosName "
-				+ " from "+tableName+" t,"+deviceTableName+" well,tbl_code c1 "
+		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus,"
+				+ " well.applicationscenarios "
+				+ " from "+tableName+" t,"+deviceTableName+" well "
 				+ " where t.deviceId=well.id "
-				+ " and c1.itemcode='APPLICATIONSCENARIOS' and well.applicationscenarios=c1.itemvalue  "
 				+ " and well.orgid in("+orgId+") ";
 		if(StringManagerUtils.isNum(deviceType)){
 			sql+= " and well.devicetype="+deviceType;
@@ -503,7 +500,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
 			result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
-			result_json.append("\"applicationScenariosName\":\""+obj[5]+"\"},");
+			result_json.append("\"applicationScenariosName\":\""+MemoryDataManagerTask.getCodeName("APPLICATIONSCENARIOS",obj[4]+"", language)+"\"},");
 			
 		}
 		if(result_json.toString().endsWith(",")){
@@ -511,7 +508,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		
-//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
 		String json=result_json.toString().replaceAll("null", "");
 		return json;
 	}
@@ -671,12 +667,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						WorkType workType=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName,language);
 						if(workType!=null){
 							manualInterventionResultCode=workType.getResultCode();
-						}else{
-							String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-							List<?> resultList = this.findCallSql(resultNameSql);
-							if(resultList.size()>0){
-								manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-							}
 						}
 					}
 					manualIntervention.setCode(manualInterventionResultCode);
@@ -1092,11 +1082,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return requestData;
 	}
 	
-	public String getTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType,String language)
 			throws Exception {
 		String json="";
 		if("3".equals(calculateType)){
-			json=this.getFESDiagramTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate,  calculateType);
+			json=this.getFESDiagramTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate,  calculateType,language);
 		}else if("4".equals(calculateType)){
 			json=this.getRPMTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate, calculateType);
 		}
@@ -1104,7 +1094,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getFESDiagramTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1126,16 +1116,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		
 		sql="select t.id,t.deviceId,t.deviceName,to_char(t.caldate,'yyyy-mm-dd'),"
-			+ "t.resultname,t.resultString,"
+			+ "t.resultcode,t.resultString,"
 			+ prodCol
 			+ " t.pumpeff,t.systemefficiency,t.wattDegreeBalance,t.iDegreeBalance,t.todayKWattH"
 			+ " from viw_rpcdailycalculationdata t "
 			+ " where t.org_id in("+orgId+") "
 			+ " and t.deviceid="+deviceId
 			+ " and t.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-//		if(StringManagerUtils.isNotNull(deviceName)){
-//			sql+=" and  t.deviceName = '" + deviceName.trim() + "' ";
-//		}
 		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
@@ -1151,7 +1138,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceId\":\""+obj[1]+"\",");
 			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
-			result_json.append("\"resultName\":\""+obj[4]+"\",");
+			result_json.append("\"resultName\":\""+MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language)+"\",");
 			result_json.append("\"resultString\":\""+obj[5]+"\",");
 			
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){

@@ -511,7 +511,12 @@ public class UserManagerController extends BaseController {
 	@RequestMapping("/loadLanguageList")
 	public String loadLanguageList() throws Exception {
 		HttpSession session=request.getSession();
-		String json = this.userService.loadLanguageList();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.userService.loadLanguageList(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -532,27 +537,6 @@ public class UserManagerController extends BaseController {
 //			json = user.getModuleList();
 		}
 		
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	} 
-	
-	/**<P>构建闭环报警里的专业班组的下拉菜单树数据信息</p>	 
-	 * @author  gao 2014-5-08
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/sendZYBZTitleType")
-	public String sendZYBZTitleType() throws Exception {
-
-		String type = ParamUtils.getParameter(request, "type");
-		String json = this.userService.sendZYBZTitleType(type);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

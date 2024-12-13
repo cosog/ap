@@ -331,7 +331,13 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getApplicationScenariosComb")
 	public String getApplicationScenariosComb() throws Exception {
 		this.pager=new Page("pageForm",request);
-		String json = this.wellInformationManagerService.getApplicationScenariosComb();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getApplicationScenariosComb(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -462,26 +468,6 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getSMSInstanceCombList")
 	public String getSMSInstanceCombList() throws IOException {
 		String json=wellInformationManagerService.getSMSInstanceCombList();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/loadDeviceTypeComboxList")
-	public String loadDeviceTypeComboxList() throws Exception {
-		this.pager=new Page("pageForm",request);
-		User user = null;
-		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
-		String language="";
-		if (user != null) {
-			language = "" + user.getLanguageName();
-		}
-		String json = this.wellInformationManagerService.loadDeviceTypeComboxList(language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1163,53 +1149,6 @@ public class WellInformationManagerController extends BaseController {
 		}
 		return null;
 	}
-	
-	@RequestMapping("/exportWellInformationDetailsData")
-	public String exportWellInformationDetailsData() throws Exception {
-		HttpSession session=request.getSession();
-		boolean bool=false;
-		Map<String, Object> map = new HashMap<String, Object>();
-		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
-		int offset = (intPage - 1) * pageSize + 1;
-		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
-//		String applicationScenarios= ParamUtils.getParameter(request, "applicationScenarios");
-		String applicationScenarios=1+"";
-		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
-		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
-		String key = ParamUtils.getParameter(request, "key");
-		if(session!=null){
-			session.removeAttribute(key);
-			session.setAttribute(key, 0);
-		}
-		orgId=ParamUtils.getParameter(request, "orgId");
-		User user = (User) session.getAttribute("userLogin");
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		
-		orgCode = ParamUtils.getParameter(request, "orgCode");
-		resCode = ParamUtils.getParameter(request, "resCode");
-		map.put(PagingConstants.PAGE_NO, intPage);
-		map.put(PagingConstants.PAGE_SIZE, pageSize);
-		map.put(PagingConstants.OFFSET, offset);
-		map.put("wellInformationName", wellInformationName);
-		map.put("deviceType", deviceType);
-		map.put("orgCode", orgCode);
-		map.put("resCode", resCode);
-		map.put("orgId", orgId);
-		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
-		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
-		bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(user,response,fileName,title, orgId,applicationScenarios,deviceType,wellInformationName);
-		if(session!=null){
-			session.setAttribute(key, 1);
-		}
-		return null;
-	}
 
 	@RequestMapping("/loadWellOrgInfo")
 	public String loadWellOrgInfo() throws Exception {
@@ -1233,20 +1172,6 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-
-	@RequestMapping("/showWellTypeTree")
-	public String showWellTypeTree() throws Exception {
-		String json = this.wellInformationManagerService.showWellTypeTree();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
 		return null;
@@ -1396,22 +1321,10 @@ public class WellInformationManagerController extends BaseController {
 							}
 							if(rpcProductionData.getManualIntervention()!=null){
 								int manualInterventionResultCode=0;
-								
 								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
 									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode();
-//									manualInterventionResultCode=MemoryDataManagerTask.getResultCodeByName(manualInterventionResultName);
 								}
 								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
-								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
-									String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-									List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
-									if(resultList.size()>0){
-										int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-										rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
-									}
-								}else{
-									rpcProductionData.getManualIntervention().setCode(0);
-								}
 							}
 							deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
 						}
@@ -1966,31 +1879,6 @@ public class WellInformationManagerController extends BaseController {
 			result = "{success:false,msg:false}";
 			out.print(result);
 		}
-		return null;
-	}
-	
-	
-	/**
-	 * <p>
-	 * 描述：获取角色类型的下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/loadSszcdyType")
-	public String loadSszcdyType() throws Exception {
-
-		String type = ParamUtils.getParameter(request, "type");
-		String json = this.wellInformationManagerService.loadSszcdyType(type);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
 		return null;
 	}
 

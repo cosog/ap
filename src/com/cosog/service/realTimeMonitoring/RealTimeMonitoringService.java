@@ -99,40 +99,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-			
+			result_json.append("\"totalRoot\":[");
 			int totalCount=0;
-			if(!jedisStatus){
-				String tableName="tbl_rpcacqdata_latest";
-				String deviceTableName="viw_device";
-				
-				String sql="select decode(t2.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t3.resultname) as resultname,t2.resultcode,count(1) from "+deviceTableName+" t "
-						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id"
-						+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
-						+ " where t.orgid in("+orgId+") ";
-				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
-					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
-				}
-				if(StringManagerUtils.isNotNull(commStatusStatValue)){
-					sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
-				}
-				sql+=" group by t3.resultname,t2.resultcode "
-						+ " order by t2.resultcode";
-				
-				List<?> list = this.findCallSql(sql);
-				result_json.append("\"totalCount\":"+totalCount+",");
-				result_json.append("\"totalRoot\":[");
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[]) list.get(i);
-					result_json.append("{\"id\":"+(i+1)+",");
-					result_json.append("\"item\":\""+obj[0]+"\",");
-					result_json.append("\"itemCode\":\""+obj[1]+"\",");
-					result_json.append("\"count\":"+obj[2]+"},");
-				}
-				if(result_json.toString().endsWith(",")){
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-				result_json.append("]");
-			}else{
+			if(jedisStatus){
 				if(deviceList!=null){
 					Map<Integer,Integer> totalMap=new TreeMap<Integer,Integer>();
 					for(int i=0;i<deviceList.size();i++){
@@ -150,10 +119,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 					
 					int index=1;
-					result_json.append("\"totalCount\":"+totalMap.size()+",");
-					result_json.append("\"totalRoot\":[");
+					totalCount=totalMap.size();
 					for(Integer key:totalMap.keySet()){
-						String item="无数据";
+						String item=languageResourceMap.get("emptyMsg");
 						WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(key+"",language);
 						if(workType!=null){
 							item=workType.getResultName();
@@ -172,7 +140,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			
-			result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
+			result_json.append(",\"totalCount\":"+totalCount+",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 			result_json.append("}");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -456,7 +424,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String sql="select t.id from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
@@ -464,7 +431,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+= " and t.devicetype in ("+deviceType+")";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -526,7 +497,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
@@ -540,7 +510,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -679,7 +653,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
@@ -697,7 +670,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				auxiliaryDeviceSql+= " and t.devicename='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -2988,7 +2965,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public String querySingleDetailsWellBoreChartsData(int id,String deviceName) throws SQLException, IOException{
+	public String querySingleDetailsWellBoreChartsData(int id,String deviceName,String language) throws SQLException, IOException{
 		byte[] bytes; 
 		ConfigFile configFile=Config.getInstance().configFile;
 		BufferedInputStream bis = null;
@@ -2999,17 +2976,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol=" liquidweightproduction";
 		}
-        String sql="select t2.deviceName as deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+        String sql="select t2.deviceName as deviceName, "
+        		+ " to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
-        		+ " status.resultname,status.resultcode,status.optimizationSuggestion, "//12
+        		+ " t.resultcode,"//10
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.position_curve,t.load_curve"
         		+ " from "+tableName+" t"
         		+ " left outer join tbl_device t2 on t.deviceid=t2.id"
-        		+ " left outer join tbl_rpc_worktype status on t.resultcode=status.resultcode"
         		+ " where 1=1 ";
         sql+=" and t.deviceid="+id;
 		List<?> list=this.findCallSql(sql);
@@ -3021,14 +2998,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String pumpFSDiagram="";
 			SerializableClobProxy   proxy=null;
 			CLOB realClob=null;
+			String resultCode=obj[10]+"";
+			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(resultCode+"",language);
 			if(obj[2]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[2]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				pumpFSDiagram=StringManagerUtils.CLOBtoString(realClob);
 			}
 			
-			if(obj[18]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
+			if(obj[16]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(positionCurveData)){
@@ -3036,8 +3015,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			
-			if(obj[19]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
+			if(obj[17]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
 			}
@@ -3046,7 +3025,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
 			
-			if("1232".equals(obj[11]+"") || !StringManagerUtils.isNotNull(pumpFSDiagram)){//采集异常
+			if("1232".equals(resultCode) || !StringManagerUtils.isNotNull(pumpFSDiagram)){//采集异常
 				String positionCurveDataArr[]=positionCurveData.split(",");
 				String loadCurveDataArr[]=loadCurveData.split(",");
 				for(int i=0;i<positionCurveDataArr.length&&i<loadCurveDataArr.length;i++){
@@ -3063,8 +3042,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		        	pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 		        	pumpFSDiagramStrBuff.append("#");
 		        }
-		        if(obj[13]!=null){
-		        	String rodDataArr[]=obj[13].toString().split(";");
+		        if(obj[11]!=null){
+		        	String rodDataArr[]=obj[11].toString().split(";");
 			        for(int i=1;i<rodDataArr.length;i++){
 			        	if(i==1&&rodDataArr[i].split(",").length==6){
 			        		rodStressRatio1=rodDataArr[i].split(",")[5];
@@ -3094,19 +3073,20 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
 	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
 	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日累计产液量
-	        dataSbf.append("resultName:\""+obj[10]+"\",");         // 工况类型
-	        dataSbf.append("resultCode:\""+obj[11]+"\",");         // 工况代码
-	        dataSbf.append("optimizationSuggestion:\""+obj[12]+"\",");         // 优化建议
+	        
+	        dataSbf.append("resultCode:\""+resultCode+"\",");         // 工况代码
+	        dataSbf.append("resultName:\""+(workType!=null?workType.getResultName():"")+"\",");         // 工况类型
+	        dataSbf.append("optimizationSuggestion:\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");         // 优化建议
 	        
 	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
 	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
 	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
 	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[14].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[15].toString().toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[16].toString().toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[17].toString().toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[12]==null?"":obj[12].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString().toString(),1)+",");       // 充满系数
+	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");           // 漏失系数
+	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 液体收缩系数
 	        dataSbf.append("pumpFSDiagramData:\""+pumpFSDiagramData+"\",");         // 泵功图数据
 	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");         
 	        dataSbf.append("loadCurveData:\""+loadCurveData+"\""); 
@@ -3142,7 +3122,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return dataSbf.toString().replaceAll("null", "");
 	}
 
-	public String querySingleDetailsSurfaceData(int id,String deviceName) throws SQLException, IOException{
+	public String querySingleDetailsSurfaceData(int id,String deviceName,String language) throws SQLException, IOException{
 		byte[] bytes; 
 		ConfigFile configFile=Config.getInstance().configFile;
 		BufferedInputStream bis = null;

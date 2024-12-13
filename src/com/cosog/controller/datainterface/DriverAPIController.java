@@ -2037,6 +2037,7 @@ public class DriverAPIController extends BaseController{
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
             String[] clientInfo=item.userId.split("_");
@@ -2258,7 +2259,7 @@ public class DriverAPIController extends BaseController{
 					insertHistColumns+=",runStatus";
 					insertHistValue+=","+runStatus;
 					updateTotalDataSql+=",t.runStatus= "+runStatus;
-					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停止":"无数据"),runStatus+"","","runStatusName","","","","",1,1));
+					calItemResolutionDataList.add(new ProtocolItemResolutionData("运行状态","运行状态",runStatus==1?"运行":(runStatus==0?"停止":languageResourceMap.get("emptyMsg")),runStatus+"","","runStatusName","","","","",1,1));
 					
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
 						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
@@ -2313,7 +2314,7 @@ public class DriverAPIController extends BaseController{
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
 								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停止":"无数据"))){
+							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停止":languageResourceMap.get("emptyMsg")))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}

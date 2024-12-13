@@ -1031,8 +1031,8 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(3, saveDeviceType);
 							
-							
-							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
@@ -1092,7 +1092,9 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(3, saveDeviceType);
 							
-							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
+							
 							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName().replaceAll(" ", ""));
@@ -1258,7 +1260,8 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(3, saveDeviceType);
 							
-							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
@@ -1322,7 +1325,8 @@ public class BaseDao extends HibernateDaoSupport {
 								}
 								cs.setString(3, saveDeviceType);
 								
-								cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+								String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+								cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 								
 								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));

@@ -136,7 +136,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     }
                     
                     var timestamp=new Date().getTime();
-                	var key='exportWellInformationDetailsData'+deviceType+'_'+timestamp;
+                	var key='exportWellInformationData'+deviceType+'_'+timestamp;
                 	var maskPanelId='DeviceTablePanel_id';
 
                     var param = "&fields=" + fields 

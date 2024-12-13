@@ -1889,44 +1889,6 @@ public class CommonDataService extends BaseService {
 		}
 		return stringBuffer.toString();
 	}
-
-	/**
-	 * <p>
-	 * 描述：从码表中加载下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @parm type 当前参数类型
-	 * @return
-	 * @throws Exception
-	 */
-	public String loadMenuTypeData(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='" + type + "'";
-		try {
-			List<?> list = this.find(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
 	
 	public boolean exportGridPanelData(HttpServletResponse response,String fileName,String title,String head,String field,String data) {
 		OutputStream os=null;

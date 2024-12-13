@@ -728,11 +728,17 @@ public class RealTimeMonitoringController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String type = ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String json = "";
 		if("1".equals(type)){
-			json = this.realTimeMonitoringService.querySingleDetailsWellBoreChartsData(id,deviceName);
+			json = this.realTimeMonitoringService.querySingleDetailsWellBoreChartsData(id,deviceName,language);
 		}else if("2".equals(type)){
-			json = this.realTimeMonitoringService.querySingleDetailsSurfaceData(id,deviceName);
+			json = this.realTimeMonitoringService.querySingleDetailsSurfaceData(id,deviceName,language);
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();

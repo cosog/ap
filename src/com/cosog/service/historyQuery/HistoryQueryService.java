@@ -239,7 +239,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t.id from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
@@ -250,8 +249,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
-			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+			
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -310,7 +314,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
@@ -323,7 +326,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -455,7 +462,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
 					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_rpc_worktype t4 on t4.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
 					+ " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
@@ -468,7 +474,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" and t.deviceName='"+deviceName+"'";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
-				sql+=" and decode(t3.resultcode,0,'"+languageResourceMap.get("emptyMsg")+"',null,'"+languageResourceMap.get("emptyMsg")+"',t4.resultName)='"+FESdiagramResultStatValue+"'";
+				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
+					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+				}else{
+					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
+				}
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
@@ -3754,7 +3764,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result;
 	}
 	
-	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws SQLException, IOException {
+	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3766,17 +3776,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
-				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion,"
+				+ " t.resultcode,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
 				+ " from tbl_rpcacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
-				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		totalSql="select count(1) from tbl_rpcacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
-				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
@@ -3807,6 +3815,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String DiagramXData="";
 	        String DiagramYData="";
 	        String pointCount="";
+	        String resultCode=obj[9]+"";
+	        
+	        WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(resultCode,language);
+	        
+	        
 	        if(obj[7]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
@@ -3829,12 +3842,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			dynSbf.append("\"fmax\":\""+obj[5]+"\",");
 			dynSbf.append("\"fmin\":\""+obj[6]+"\",");
 			
-			dynSbf.append("\"resultName\":\""+obj[10]+"\",");
-			dynSbf.append("\"optimizationSuggestion\":\""+obj[11]+"\",");
+			dynSbf.append("\"resultName\":\""+workType.getResultName()+"\",");
+			dynSbf.append("\"optimizationSuggestion\":\""+workType.getOptimizationSuggestion()+"\",");
 			
-			dynSbf.append("\"upperLoadLine\":\"" + obj[12] + "\",");
-			dynSbf.append("\"lowerLoadLine\":\"" + obj[13] + "\",");
-			dynSbf.append("\"liquidProduction\":\""+obj[14]+"\",");
+			
+			dynSbf.append("\"upperLoadLine\":\"" + obj[10] + "\",");
+			dynSbf.append("\"lowerLoadLine\":\"" + obj[11] + "\",");
+			dynSbf.append("\"liquidProduction\":\""+obj[12]+"\",");
 			
 			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
 			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");
@@ -3979,6 +3993,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
@@ -3993,27 +4008,26 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'"+languageResourceMap.get("offline")+"',decode(t.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
-					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
-					+ " t.stroke,t.spm,"//16~17
-					+ " t.fmax,t.fmin,"//18~19
-					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//20~22
-					+ " t.upperloadline,t.lowerloadline,"//23~24
-					+ prodCol+", "//25~26
-					+ " t.productiondata,t.submergence,"//27~28
-					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//29~30
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//36~37
-					+ " t.pumpEff*100 as pumpEff,"//38
-					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//39~41
-					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//42~44
-					+ " t.deltaradius*100 as deltaradius,"//45
-					+ " t.todayKWattH,"//46
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//47~50
+					+ " t.resultcode,"//13
+					+ " t.stroke,t.spm,"//14~15
+					+ " t.fmax,t.fmin,"//16~17
+					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//18~20
+					+ " t.upperloadline,t.lowerloadline,"//21~22
+					+ prodCol+", "//23~24
+					+ " t.productiondata,t.submergence,"//25~26
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//27~28
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
+					+ " t.pumpEff*100 as pumpEff,"//36
+					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//37~39
+					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//40~42
+					+ " t.deltaradius*100 as deltaradius,"//43
+					+ " t.todayKWattH,"//44
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//45~48
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
-					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" "
@@ -4021,7 +4035,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String countSql="select count(1) from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
-					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId;
@@ -4057,10 +4070,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
 						String commStatusName=(obj[4]+"").replaceAll("null", "");
 						String runStatusName=(obj[9]+"").replaceAll("null", "");
-						String resultCode=(obj[13]+"").replaceAll("null", "");;
+						String resultCode=(obj[13]+"").replaceAll("null", "");
 						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-						String productionDataStr=(obj[27]+"").replaceAll("null", "");
+						String productionDataStr=(obj[23]+"").replaceAll("null", "");
 						
+						WorkType workType=workTypeMap.get(resultCode);
 						
 						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 						RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
@@ -4077,10 +4091,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[47]);
-						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[48]);
-						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[49]);
-						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[50]);
+						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[45]);
+						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[46]);
+						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[47]);
+						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[48]);
 						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
 						dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
@@ -4099,53 +4113,53 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						dataBuff.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 						
 						dataBuff.append("\"resultCode\":\""+resultCode+"\",");
-						dataBuff.append("\"resultName\":\""+obj[14]+"\",");
-						dataBuff.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+						dataBuff.append("\"resultName\":\""+workType.getResultName()+"\",");
+						dataBuff.append("\"optimizationSuggestion\":\""+workType.getOptimizationSuggestion()+"\",");
 						dataBuff.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 						
-						dataBuff.append("\"stroke\":\""+obj[16]+"\",");
-						dataBuff.append("\"spm\":\""+obj[17]+"\",");
-						dataBuff.append("\"fmax\":\""+obj[18]+"\",");
-						dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+						dataBuff.append("\"stroke\":\""+obj[14]+"\",");
+						dataBuff.append("\"spm\":\""+obj[15]+"\",");
+						dataBuff.append("\"fmax\":\""+obj[16]+"\",");
+						dataBuff.append("\"fmin\":\""+obj[17]+"\",");
 						
-						dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
-						dataBuff.append("\"plungerStroke\":\""+obj[21]+"\",");
-						dataBuff.append("\"availablePlungerStroke\":\""+obj[22]+"\",");
+						dataBuff.append("\"fullnessCoefficient\":\""+obj[18]+"\",");
+						dataBuff.append("\"plungerStroke\":\""+obj[19]+"\",");
+						dataBuff.append("\"availablePlungerStroke\":\""+obj[20]+"\",");
 						
-						dataBuff.append("\"upperLoadLine\":\""+obj[23]+"\",");
-						dataBuff.append("\"lowerLoadLine\":\""+obj[24]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[25]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[26]+"\",");
+						dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
+						dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
 						
 						
 						dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
 						dataBuff.append("\"producingfluidLevel\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getProducingfluidLevel():"")+"\",");
 						dataBuff.append("\"levelCorrectValue\":\""+(productionData!=null&&productionData.getManualIntervention()!=null?productionData.getManualIntervention().getLevelCorrectValue():"")+"\",");
-						dataBuff.append("\"calcProducingfluidLevel\":\""+obj[30]+"\",");
-						dataBuff.append("\"levelDifferenceValue\":\""+obj[29]+"\",");
-						dataBuff.append("\"submergence\":\""+obj[28]+"\",");
+						dataBuff.append("\"calcProducingfluidLevel\":\""+obj[28]+"\",");
+						dataBuff.append("\"levelDifferenceValue\":\""+obj[27]+"\",");
+						dataBuff.append("\"submergence\":\""+obj[26]+"\",");
 						
-						dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
-						dataBuff.append("\"polishrodPower\":\""+obj[32]+"\",");
-						dataBuff.append("\"waterPower\":\""+obj[33]+"\",");
+						dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
+						dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
+						dataBuff.append("\"waterPower\":\""+obj[31]+"\",");
 						
-						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
-						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
-						dataBuff.append("\"systemEfficiency\":\""+obj[36]+"\",");
+						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+						dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
 						
-						dataBuff.append("\"energyper100mlift\":\""+obj[37]+"\",");
-						dataBuff.append("\"pumpEff\":\""+obj[38]+"\",");
+						dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
+						dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
 						
-						dataBuff.append("\"upStrokeIMax\":\""+obj[39]+"\",");
-						dataBuff.append("\"downStrokeIMax\":\""+obj[40]+"\",");
-						dataBuff.append("\"iDegreeBalance\":\""+obj[41]+"\",");
+						dataBuff.append("\"upStrokeIMax\":\""+obj[37]+"\",");
+						dataBuff.append("\"downStrokeIMax\":\""+obj[38]+"\",");
+						dataBuff.append("\"iDegreeBalance\":\""+obj[39]+"\",");
 						
-						dataBuff.append("\"upStrokeWattMax\":\""+obj[42]+"\",");
-						dataBuff.append("\"downStrokeWattMax\":\""+obj[43]+"\",");
-						dataBuff.append("\"wattDegreeBalance\":\""+obj[44]+"\",");
+						dataBuff.append("\"upStrokeWattMax\":\""+obj[40]+"\",");
+						dataBuff.append("\"downStrokeWattMax\":\""+obj[41]+"\",");
+						dataBuff.append("\"wattDegreeBalance\":\""+obj[42]+"\",");
 						
-						dataBuff.append("\"deltaradius\":\""+obj[45]+"\",");
-						dataBuff.append("\"todayKWattH\":\""+obj[46]+"\",");
+						dataBuff.append("\"deltaradius\":\""+obj[43]+"\",");
+						dataBuff.append("\"todayKWattH\":\""+obj[44]+"\",");
 						
 						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
@@ -4223,6 +4237,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
@@ -4258,26 +4273,25 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
 					+ "t.runstatus,decode(t.commstatus,0,'"+languageResourceMap.get("offline")+"',decode(t.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"')) as runStatusName,"//8~9
 					+ "t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+",t.runrange,"//10~12
-					+ " t.resultcode,t2.resultname,t2.optimizationSuggestion as optimizationSuggestion,"//13~15
-					+ " t.stroke,t.spm,"//16~17
-					+ " t.fmax,t.fmin,"//18~19
-					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//20~22
-					+ " t.upperloadline,t.lowerloadline,"//23~24
-					+ prodCol+", "//25~26
-					+ " t.productiondata,t.submergence,"//27~28
-					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//29~30
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//31~33
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//34
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//35
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//36~37
-					+ " t.pumpEff*100 as pumpEff,"//38
-					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//39~41
-					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//42~44
-					+ " t.deltaradius*100 as deltaradius,"//45
-					+ " t.todayKWattH"//46
+					+ " t.resultcode,"//13
+					+ " t.stroke,t.spm,"//14~15
+					+ " t.fmax,t.fmin,"//16~17
+					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//18~20
+					+ " t.upperloadline,t.lowerloadline,"//21~22
+					+ prodCol+", "//23~24
+					+ " t.productiondata,t.submergence,"//25~26
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//27~28
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
+					+ " t.pumpEff*100 as pumpEff,"//36
+					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//37~39
+					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//40~42
+					+ " t.deltaradius*100 as deltaradius,"//43
+					+ " t.todayKWattH"//44
 					+ " from tbl_rpcacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
-					+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" ";
@@ -4298,13 +4312,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			JSONObject jsonObject=null;
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
-				obj=(Object[]) list.get(i);
-				dataBuff = new StringBuffer();
-				record = new ArrayList<>();
+				obj = (Object[]) list.get(i);
+				StringBuffer alarmInfo = new StringBuffer();
+				String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
 				String commStatusName=(obj[4]+"").replaceAll("null", "");
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
-				String productionDataStr=(obj[27]+"").replaceAll("null", "");
+				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+				String productionDataStr=(obj[23]+"").replaceAll("null", "");
+				
+				WorkType workType=workTypeMap.get(resultCode);
 				
 				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
@@ -4317,59 +4334,62 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				dataBuff.append("\"commTime\":\""+obj[5]+"\",");
 				dataBuff.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
 				dataBuff.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				dataBuff.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 				dataBuff.append("\"runStatus\":"+obj[8]+",");
 				dataBuff.append("\"runStatusName\":\""+runStatusName+"\",");
 				dataBuff.append("\"runTime\":\""+obj[10]+"\",");
 				dataBuff.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
 				dataBuff.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+				dataBuff.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 				
 				dataBuff.append("\"resultCode\":\""+resultCode+"\",");
-				dataBuff.append("\"resultName\":\""+obj[14]+"\",");
-				dataBuff.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+				dataBuff.append("\"resultName\":\""+workType.getResultName()+"\",");
+				dataBuff.append("\"optimizationSuggestion\":\""+workType.getOptimizationSuggestion()+"\",");
+				dataBuff.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 				
-				dataBuff.append("\"stroke\":\""+obj[16]+"\",");
-				dataBuff.append("\"spm\":\""+obj[17]+"\",");
-				dataBuff.append("\"fmax\":\""+obj[18]+"\",");
-				dataBuff.append("\"fmin\":\""+obj[19]+"\",");
+				dataBuff.append("\"stroke\":\""+obj[14]+"\",");
+				dataBuff.append("\"spm\":\""+obj[15]+"\",");
+				dataBuff.append("\"fmax\":\""+obj[16]+"\",");
+				dataBuff.append("\"fmin\":\""+obj[17]+"\",");
 				
-				dataBuff.append("\"fullnessCoefficient\":\""+obj[20]+"\",");
-				dataBuff.append("\"plungerStroke\":\""+obj[21]+"\",");
-				dataBuff.append("\"availablePlungerStroke\":\""+obj[22]+"\",");
+				dataBuff.append("\"fullnessCoefficient\":\""+obj[18]+"\",");
+				dataBuff.append("\"plungerStroke\":\""+obj[19]+"\",");
+				dataBuff.append("\"availablePlungerStroke\":\""+obj[20]+"\",");
 				
-				dataBuff.append("\"upperLoadLine\":\""+obj[23]+"\",");
-				dataBuff.append("\"lowerLoadLine\":\""+obj[24]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[25]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[26]+"\",");
+				dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
+				dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
+				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
 				
 				
 				dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
 				dataBuff.append("\"producingfluidLevel\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getProducingfluidLevel():"")+"\",");
 				dataBuff.append("\"levelCorrectValue\":\""+(productionData!=null&&productionData.getManualIntervention()!=null?productionData.getManualIntervention().getLevelCorrectValue():"")+"\",");
-				dataBuff.append("\"calcProducingfluidLevel\":\""+obj[30]+"\",");
-				dataBuff.append("\"levelDifferenceValue\":\""+obj[29]+"\",");
-				dataBuff.append("\"submergence\":\""+obj[28]+"\",");
+				dataBuff.append("\"calcProducingfluidLevel\":\""+obj[28]+"\",");
+				dataBuff.append("\"levelDifferenceValue\":\""+obj[27]+"\",");
+				dataBuff.append("\"submergence\":\""+obj[26]+"\",");
 				
-				dataBuff.append("\"averageWatt\":\""+obj[31]+"\",");
-				dataBuff.append("\"polishrodPower\":\""+obj[32]+"\",");
-				dataBuff.append("\"waterPower\":\""+obj[33]+"\",");
+				dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
+				dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
+				dataBuff.append("\"waterPower\":\""+obj[31]+"\",");
 				
-				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
-				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
-				dataBuff.append("\"systemEfficiency\":\""+obj[36]+"\",");
+				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+				dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
 				
-				dataBuff.append("\"energyper100mlift\":\""+obj[37]+"\",");
-				dataBuff.append("\"pumpEff\":\""+obj[38]+"\",");
+				dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
+				dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
 				
-				dataBuff.append("\"upStrokeIMax\":\""+obj[39]+"\",");
-				dataBuff.append("\"downStrokeIMax\":\""+obj[40]+"\",");
-				dataBuff.append("\"iDegreeBalance\":\""+obj[41]+"\",");
+				dataBuff.append("\"upStrokeIMax\":\""+obj[37]+"\",");
+				dataBuff.append("\"downStrokeIMax\":\""+obj[38]+"\",");
+				dataBuff.append("\"iDegreeBalance\":\""+obj[39]+"\",");
 				
-				dataBuff.append("\"upStrokeWattMax\":\""+obj[42]+"\",");
-				dataBuff.append("\"downStrokeWattMax\":\""+obj[43]+"\",");
-				dataBuff.append("\"wattDegreeBalance\":\""+obj[44]+"\",");
+				dataBuff.append("\"upStrokeWattMax\":\""+obj[40]+"\",");
+				dataBuff.append("\"downStrokeWattMax\":\""+obj[41]+"\",");
+				dataBuff.append("\"wattDegreeBalance\":\""+obj[42]+"\",");
 				
-				dataBuff.append("\"deltaradius\":\""+obj[45]+"\",");
-				dataBuff.append("\"todayKWattH\":\""+obj[46]+"\"}");
+				dataBuff.append("\"deltaradius\":\""+obj[43]+"\",");
+				dataBuff.append("\"todayKWattH\":\""+obj[44]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(dataBuff.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

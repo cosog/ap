@@ -953,7 +953,7 @@ public class MemoryDataManagerTask {
 				String sql="select t.id,t.orgid,t.orgName,"
 						+ "t.devicename,"
 						+ "t.devicetype,t.devicetypename,"
-						+ "t.applicationscenarios,t.applicationScenariosName,"
+						+ "t.applicationscenarios,"//7
 						+ "t.calculateType,"
 						+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
 						+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
@@ -1017,33 +1017,33 @@ public class MemoryDataManagerTask {
 					deviceInfo.setDeviceType(rs.getInt(5));
 					deviceInfo.setDeviceTypeName(rs.getString(6));
 					deviceInfo.setApplicationScenarios(rs.getInt(7));
-					deviceInfo.setApplicationScenariosName(rs.getString(8));
+					deviceInfo.setApplicationScenariosName(getCodeName("APPLICATIONSCENARIOS",deviceInfo.getApplicationScenarios()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage()));
 					
-					deviceInfo.setCalculateType(rs.getInt(9));
+					deviceInfo.setCalculateType(rs.getInt(8));
 					
-					deviceInfo.setTcpType(rs.getString(10)+"");
-					deviceInfo.setSignInId(rs.getString(11)+"");
-					deviceInfo.setIpPort(rs.getString(12)+"");
-					deviceInfo.setSlave(rs.getString(13)+"");
-					deviceInfo.setPeakDelay(rs.getInt(14));
+					deviceInfo.setTcpType(rs.getString(9)+"");
+					deviceInfo.setSignInId(rs.getString(10)+"");
+					deviceInfo.setIpPort(rs.getString(11)+"");
+					deviceInfo.setSlave(rs.getString(12)+"");
+					deviceInfo.setPeakDelay(rs.getInt(13));
 					
-					deviceInfo.setVideoUrl1(rs.getString(15)+"");
-					deviceInfo.setVideoKey1(rs.getInt(16));
-					deviceInfo.setVideoUrl2(rs.getString(17)+"");
-					deviceInfo.setVideoKey2(rs.getInt(18));
+					deviceInfo.setVideoUrl1(rs.getString(14)+"");
+					deviceInfo.setVideoKey1(rs.getInt(15));
+					deviceInfo.setVideoUrl2(rs.getString(16)+"");
+					deviceInfo.setVideoKey2(rs.getInt(17));
 					
-					deviceInfo.setInstanceCode(rs.getString(19)+"");
-					deviceInfo.setInstanceName(rs.getString(20)+"");
-					deviceInfo.setAlarmInstanceCode(rs.getString(21)+"");
-					deviceInfo.setAlarmInstanceName(rs.getString(22)+"");
-					deviceInfo.setDisplayInstanceCode(rs.getString(23)+"");
-					deviceInfo.setDisplayInstanceName(rs.getString(24)+"");
-					deviceInfo.setStatus(rs.getInt(25));
-					deviceInfo.setStatusName(rs.getString(26)+"");
+					deviceInfo.setInstanceCode(rs.getString(18)+"");
+					deviceInfo.setInstanceName(rs.getString(19)+"");
+					deviceInfo.setAlarmInstanceCode(rs.getString(20)+"");
+					deviceInfo.setAlarmInstanceName(rs.getString(21)+"");
+					deviceInfo.setDisplayInstanceCode(rs.getString(22)+"");
+					deviceInfo.setDisplayInstanceName(rs.getString(23)+"");
+					deviceInfo.setStatus(rs.getInt(24));
+					deviceInfo.setStatusName(rs.getString(25)+"");
 					
-					String productionData=rs.getString(27)+"";
-					String balanceInfo=rs.getString(28)+"";
-					float stroke=rs.getFloat(29);
+					String productionData=rs.getString(26)+"";
+					String balanceInfo=rs.getString(27)+"";
+					float stroke=rs.getFloat(28);
 					
 					if(StringManagerUtils.isNotNull(productionData)){
 						if(deviceInfo.getCalculateType()==1){//功图计算
@@ -1123,30 +1123,30 @@ public class MemoryDataManagerTask {
 						deviceInfo.setRpcCalculateRequestData(null);
 						deviceInfo.setPcpCalculateRequestData(null);
 					}
-					deviceInfo.setSortNum(rs.getInt(30));
+					deviceInfo.setSortNum(rs.getInt(29));
 					
-					deviceInfo.setAcqTime(rs.getString(31));
+					deviceInfo.setAcqTime(rs.getString(30));
 					deviceInfo.setSaveTime("");
 					
-					deviceInfo.setCommStatus(rs.getInt(32));
-					deviceInfo.setCommTime(rs.getFloat(33));
-					deviceInfo.setCommEff(rs.getFloat(34));
-					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(35)));
+					deviceInfo.setCommStatus(rs.getInt(31));
+					deviceInfo.setCommTime(rs.getFloat(32));
+					deviceInfo.setCommEff(rs.getFloat(33));
+					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(34)));
 					
-					deviceInfo.setOnLineAcqTime(rs.getString(31));
-					deviceInfo.setOnLineCommStatus(rs.getInt(32));
-					deviceInfo.setOnLineCommTime(rs.getFloat(33));
-					deviceInfo.setOnLineCommEff(rs.getFloat(34));
-					deviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(35)));
+					deviceInfo.setOnLineAcqTime(deviceInfo.getAcqTime());
+					deviceInfo.setOnLineCommStatus(rs.getInt(31));
+					deviceInfo.setOnLineCommTime(rs.getFloat(32));
+					deviceInfo.setOnLineCommEff(rs.getFloat(33));
+					deviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(34)));
 					
-					deviceInfo.setRunStatusAcqTime(rs.getString(31));
-					deviceInfo.setRunStatus(rs.getInt(36));
-					deviceInfo.setRunTime(rs.getFloat(37));
-					deviceInfo.setRunEff(rs.getFloat(38));
-					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(39)));
+					deviceInfo.setRunStatusAcqTime(deviceInfo.getAcqTime());
+					deviceInfo.setRunStatus(rs.getInt(35));
+					deviceInfo.setRunTime(rs.getFloat(36));
+					deviceInfo.setRunEff(rs.getFloat(37));
+					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(38)));
 					
-					deviceInfo.setResultStatus(rs.getInt(40));
-					deviceInfo.setResultCode(rs.getInt(41));
+					deviceInfo.setResultStatus(rs.getInt(39));
+					deviceInfo.setResultCode(rs.getInt(40));
 					
 					//日汇总数据
 					deviceInfo.setDailyTotalItemMap(new HashMap<>());
@@ -1312,7 +1312,11 @@ public class MemoryDataManagerTask {
 			//加载功图计算数据
 			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
 			for(CalItem calItem:rpcCalItemList){
-				sql+=",t."+calItem.getCode();
+				String columnCode=calItem.getCode();
+				if("resultName".equalsIgnoreCase(columnCode)){
+					columnCode="resultCode";
+				}
+				sql+=",t."+columnCode;
 			}	
 			sql+= " from viw_rpcacqdata_hist t"
 					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
@@ -4699,34 +4703,29 @@ public class MemoryDataManagerTask {
 		dataModelMap.put("workTypeLanguageResource-"+language, workTypeMap);
 	}
 	
-	public static WorkType getWorkTypeByCode(String resultCode,String language){
-		WorkType workType=null;
-		String key="workTypeLanguageResource-"+language;
+	public static Map<String,WorkType> getWorkTypeMap(String language){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
+		String key="workTypeLanguageResource-"+language;
 		if(!dataModelMap.containsKey(key)){
 			loadLanguageResource(key);
 		}
 		if(dataModelMap.containsKey(key)){
 			workTypeMap=(Map<String, WorkType>) dataModelMap.get(key);
 		}
+		return workTypeMap;
+	}
+	
+	public static WorkType getWorkTypeByCode(String resultCode,String language){
+		WorkType workType=null;
+		Map<String,WorkType> workTypeMap=getWorkTypeMap(language);
 		workType=workTypeMap.get(resultCode);
-		
 		return workType;
 	}
 	
 	public static WorkType getWorkTypeByName(String resultName,String language){
 		WorkType workType=null;
-		String key="workTypeLanguageResource-"+language;
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
-		if(!dataModelMap.containsKey(key)){
-			loadLanguageResource(key);
-		}
-		if(dataModelMap.containsKey(key)){
-			workTypeMap=(Map<String, WorkType>) dataModelMap.get(key);
-		}
-		
+		Map<String,WorkType> workTypeMap=getWorkTypeMap(language);
 		Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry<String, WorkType> entry = it.next();

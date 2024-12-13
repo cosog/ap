@@ -321,19 +321,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getApplicationScenariosList(String language) throws Exception {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='APPLICATIONSCENARIOS' order by t.itemvalue desc";
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"应用场景\",\"dataIndex\":\"applicationScenariosName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",width:120 ,children:[] }"
 				+ "]";
-		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
-
-		for (Object o : list) {
-			Object[] obj = (Object[]) o;
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"applicationScenarios\":"+obj[0]+",");
-			result_json.append("\"applicationScenariosName\":\""+obj[1]+"\"},");
+		result_json.append("{\"success\":true,\"totalCount\":"+codeMap.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		int idx=1;
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append("{\"id\":"+idx+",");
+			result_json.append("\"applicationScenarios\":"+c.getItemvalue()+",");
+			result_json.append("\"applicationScenariosName\":\""+c.getItemname()+"\"},");
+			idx++;
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -342,15 +344,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getApplicationScenariosComb() throws Exception {
+	public String getApplicationScenariosComb(String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where t.itemcode='APPLICATIONSCENARIOS' order by t.itemvalue desc";
-		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size())+",\"list\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[])list.get(i);
-			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
-			result_json.append("\"boxval\":\"" + obj[1] + "\"},");
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append("{\"boxkey\":\"" + c.getItemvalue() + "\",");
+			result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -551,38 +553,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadDeviceTypeComboxList(String language) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)=upper('deviceType') order by t.itemvalue ";
-		
-		try {
-			int totals=this.getTotalCountRows(sql);
-			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]}");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-	
 	public String loadDeviceTypeComboxListFromTab(String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
@@ -707,6 +677,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		StringBuffer resultNameDropdownData = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",user.getLanguageName());
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(user.getLanguageName());
 		int collisionCount=0;
 		int overlayCount=0;
 		int overCount=0;
@@ -719,8 +691,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
-		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		
 		deviceTypeDropdownData.append("[");
 		instanceDropdownData.append("[");
@@ -735,8 +705,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
-		List<?> applicationScenariosList = this.findCallSql(applicationScenariosSql);
-		List<?> resultList = this.findCallSql(resultSql);
 		
 		if(deviceTypeList.size()>0){
 			for(int i=0;i<deviceTypeList.size();i++){
@@ -787,20 +755,28 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		
-		for(int i=0;i<applicationScenariosList.size();i++){
-			applicationScenariosDropdownData.append("'"+applicationScenariosList.get(i)+"',");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			applicationScenariosDropdownData.append("'"+c.getItemname()+"',");
 		}
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);
 		}
 		
-		if(resultList.size()>0){
+		if(workTypeMap.size()>0){
 			resultNameDropdownData.append("\""+languageResourceMap.get("noIntervention")+"\"");
-			for(int i=0;i<resultList.size();i++){
-				resultNameDropdownData.append(",\""+resultList.get(i).toString()+"\"");
+			
+			Iterator<Map.Entry<String, WorkType>> workTypeMapIt = workTypeMap.entrySet().iterator();
+			while(workTypeMapIt.hasNext()){
+				Map.Entry<String, WorkType> entry = workTypeMapIt.next();
+				String resultCode=new String(entry.getKey());
+				WorkType w=entry.getValue();
+				resultNameDropdownData.append(",\""+w.getResultName()+"\"");
 			}
 		}
+		
 		
 		deviceTypeDropdownData.append("]");
 		instanceDropdownData.append("]");
@@ -1245,118 +1221,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String queryString = "SELECT distinct(o.orgName) as orgName ,o.orgCode FROM WellInformation u ,Org o where u.dwbh=o.org_code  order by o.orgCode";
 		return getBaseDao().find(queryString);
 	}
-
-	public String showWellTypeTree() throws Exception {
-		String sql = "select t.dm as id,t.itemname as text from tbl_code t where t.itemcode='JLX'";
-		List<?> list = this.findCallSql(sql);
-		StringBuffer result_json = new StringBuffer();
-		String get_key = "";
-		String get_val = "";
-		result_json.append("[");
-		if (null != list && list.size() > 0) {
-			for (Object o : list) {
-				Object[] obj = (Object[]) o;
-				get_key = obj[0] + "";
-				get_val = obj[1] + "";
-				if (get_key.equalsIgnoreCase("100") || get_key.equalsIgnoreCase("200")) {
-					 if(get_key.equalsIgnoreCase( "200")){
-						result_json.deleteCharAt(result_json.length() - 1);
-						result_json.append("]}]} ,");
-					}
-					result_json.append("{");
-					result_json.append("id:'" + get_key + "',");
-					result_json.append("text:'" + get_val + "',");
-					result_json.append("expanded:true,");
-					result_json.append("children:[");
-				} else if (get_key.equalsIgnoreCase( "101") || get_key .equalsIgnoreCase("111")) {
-					if(get_key .equalsIgnoreCase( "111")){
-						result_json.deleteCharAt(result_json.length() - 1);
-						result_json.append("]},");
-					}
-					result_json.append("{");
-					if(get_key.equalsIgnoreCase( "101")||get_key.equalsIgnoreCase( "111")){
-						result_json.append("id:'" + get_key + "_p',");
-					}else{
-					    result_json.append("id:'" + get_key + "',");
-					}
-					result_json.append("text:'" + get_val + "',");
-					result_json.append("expanded:true,");
-					result_json.append("children:[");
-					if(get_key .equalsIgnoreCase( "101")){
-						result_json.append("{id:'" + get_key + "',");
-						result_json.append("text:'" + get_val + "',");
-						result_json.append("leaf:true },");
-					}else  if(get_key .equalsIgnoreCase( "111")){
-						result_json.append("{id:'" + get_key + "',");
-						result_json.append("text:'" + get_val + "',");
-						result_json.append("leaf:true },");
-					}
-				} else if (get_key.startsWith("10") || get_key.startsWith("11")
-						|| get_key.startsWith("20")) {
-					result_json.append("{id:'" + get_key + "',");
-					result_json.append("text:'" + get_val + "',");
-					result_json.append("leaf:true },");
-				}
-			}
-			if (result_json.toString().endsWith(",")) {
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-		}
-		result_json.append("]}]");
-		String da="100_p";
-		da.substring(0, 3);
-			
-		return result_json.toString();
-
-	}
-
-	/**
-	 * <p>
-	 * 描述：加载组织类型的下拉菜单数据信息
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public String loadSszcdyType(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='SSZCDY'";
-		try {
-			List<?> list = this.find(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-
-//	public List<T> fingWellByJhList() throws Exception {
-//		String sql = " select  distinct (wellName) from tbl_wellinformation w  order by sortNum ";
-//		return this.getBaseDao().find(sql);
-//	}
 	
 	
 	@SuppressWarnings("rawtypes")
 	public String getDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
 		StringBuffer instanceDropdownData = new StringBuffer();
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
@@ -1371,7 +1242,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,deviceName,deviceTypeName,"
-				+ " applicationScenarios,applicationScenariosName,"
+				+ " applicationScenarios,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
@@ -1390,7 +1261,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
+		
 		
 		deviceTypeDropdownData.append("[");
 		instanceDropdownData.append("[");
@@ -1404,7 +1275,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
-		List<?> applicationScenariosList = this.findCallSql(applicationScenariosSql);
+		
 		
 		if(deviceTypeList.size()>0){
 			for(int i=0;i<deviceTypeList.size();i++){
@@ -1457,8 +1328,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		
-		for(int i=0;i<applicationScenariosList.size();i++){
-			applicationScenariosDropdownData.append("'"+applicationScenariosList.get(i)+"',");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			applicationScenariosDropdownData.append("'"+c.getItemname()+"',");
 		}
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);
@@ -1490,22 +1364,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceTypeName\":\""+obj[3]+"\",");
 			
 			result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
-			result_json.append("\"applicationScenariosName\":\""+obj[5]+"\",");
+			result_json.append("\"applicationScenariosName\":\""+codeMap.get(obj[4]+"").getItemname()+"\",");
 			
-			result_json.append("\"instanceName\":\""+obj[6]+"\",");
-			result_json.append("\"displayInstanceName\":\""+obj[7]+"\",");
-			result_json.append("\"alarmInstanceName\":\""+obj[8]+"\",");
-			result_json.append("\"reportInstanceName\":\""+obj[9]+"\",");
-			result_json.append("\"tcpType\":\""+(obj[10]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-			result_json.append("\"signInId\":\""+obj[11]+"\",");
-			result_json.append("\"ipPort\":\""+obj[12]+"\",");
-			result_json.append("\"slave\":\""+obj[13]+"\",");
-			result_json.append("\"peakDelay\":\""+obj[14]+"\",");
-			result_json.append("\"status\":\""+obj[15]+"\",");
-			result_json.append("\"statusName\":\""+obj[16]+"\",");
-			result_json.append("\"allPath\":\""+obj[17]+"\",");
-			result_json.append("\"productionDataUpdateTime\":\""+obj[18]+"\",");
-			result_json.append("\"sortNum\":\""+obj[19]+"\"},");
+			result_json.append("\"instanceName\":\""+obj[5]+"\",");
+			result_json.append("\"displayInstanceName\":\""+obj[6]+"\",");
+			result_json.append("\"alarmInstanceName\":\""+obj[7]+"\",");
+			result_json.append("\"reportInstanceName\":\""+obj[8]+"\",");
+			result_json.append("\"tcpType\":\""+(obj[9]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+			result_json.append("\"signInId\":\""+obj[10]+"\",");
+			result_json.append("\"ipPort\":\""+obj[11]+"\",");
+			result_json.append("\"slave\":\""+obj[12]+"\",");
+			result_json.append("\"peakDelay\":\""+obj[13]+"\",");
+			result_json.append("\"status\":\""+obj[14]+"\",");
+			result_json.append("\"statusName\":\""+obj[15]+"\",");
+			result_json.append("\"allPath\":\""+obj[16]+"\",");
+			result_json.append("\"productionDataUpdateTime\":\""+obj[17]+"\",");
+			result_json.append("\"sortNum\":\""+obj[18]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -1537,7 +1411,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    sheetDataList.add(headRow);
 			
 		    String sql = "select id,orgName,deviceName,deviceTypeName,"
-					+ " applicationScenarios,applicationScenariosName,"
+					+ " applicationScenarios,"
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
@@ -1567,7 +1441,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"deviceTypeName\":\""+obj[3]+"\",");
 				
 				result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
-				result_json.append("\"applicationScenariosName\":\""+obj[5]+"\",");
+				result_json.append("\"applicationScenariosName\":\""+MemoryDataManagerTask.getCodeName("APPLICATIONSCENARIOS",obj[4]+"", user.getLanguageName())+"\",");
 				
 				result_json.append("\"instanceName\":\""+obj[6]+"\",");
 				result_json.append("\"displayInstanceName\":\""+obj[7]+"\",");
@@ -2194,6 +2068,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		try{
@@ -2203,7 +2078,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
-			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss'),t.applicationscenarios "
 					+ " from "+deviceTableName+" t "
 					+ " where t.id="+deviceId;
@@ -2237,9 +2111,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 					resultNameBuff.append("\""+languageResourceMap.get("noIntervention")+"\"");
-					List<?> resultList = this.findCallSql(resultSql);
-					for(int i=0;i<resultList.size();i++){
-						resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
+//					List<?> resultList = this.findCallSql(resultSql);
+					
+					Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
+					while(it.hasNext()){
+						Map.Entry<String, WorkType> entry = it.next();
+						String resultCode=new String(entry.getKey());
+						WorkType w=entry.getValue();
+						resultNameBuff.append(",\""+w.getResultName()+"\"");
 					}
 					type = new TypeToken<RPCProductionData>() {}.getType();
 					RPCProductionData rpcProductionData=gson.fromJson(productionData, type);
@@ -2373,12 +2252,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"",language);
 							if(workType!=null){
 								manualInterventionName=workType.getResultName();
-							}else{
-								String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
-								List<?> resultNameList = this.findCallSql(resultNameSql);
-								if(resultNameList.size()>0){
-									manualInterventionName=resultNameList.get(0).toString();
-								}
 							}
 						}
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\""+manualInterventionName+"\"},");
@@ -2720,45 +2593,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("]}");
 		return result_json.toString();
 	}
-
-	
-	@SuppressWarnings("rawtypes")
-	public String getRPCDeviceInformationData(String recordId) {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.id,t.wellname,t.orgid,t.orgName,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,t.signinid,t.slave,"
-				+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.sortnum "
-				+ "from viw_rpcdevice  t where t.id="+recordId;
-		String json = "";
-		List<?> list = this.findCallSql(sql);
-		if(list.size()>0){
-			result_json.append("{\"success\":true,");
-			Object[] obj = (Object[]) list.get(0);
-			result_json.append("\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
-			result_json.append("\"orgId\":"+obj[2]+",");
-			result_json.append("\"orgName\":\""+obj[3]+"\",");
-			result_json.append("\"deviceType\":"+obj[4]+",");
-			result_json.append("\"deviceTypeName\":\""+obj[5]+"\",");
-			result_json.append("\"applicationScenarios\":"+obj[6]+",");
-			result_json.append("\"applicationScenariosName\":\""+obj[7]+"\",");
-			result_json.append("\"signInId\":\""+obj[8]+"\",");
-			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"instanceCode\":\""+obj[10]+"\",");
-			result_json.append("\"instanceName\":\""+obj[11]+"\",");
-			result_json.append("\"alarmInstanceCode\":\""+obj[12]+"\",");
-			result_json.append("\"alarminstanceName\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[14]+"\"");
-			result_json.append("}");
-		}
-		
-		json=result_json.toString().replaceAll("null", "");
-		return json;
-	}
 	
 	@SuppressWarnings("rawtypes")
 	public String getBatchAddDeviceTableInfo(String deviceType,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
 		StringBuffer instanceDropdownData = new StringBuffer();
@@ -2774,8 +2615,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
-		String applicationScenariosSql="select c.itemname from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' order by c.itemvalue desc";
-		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		String columns=service.showTableHeadersColumns(ddicName);
 		
 		deviceTypeDropdownData.append("[");
@@ -2791,8 +2630,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
-		List<?> applicationScenariosList = this.findCallSql(applicationScenariosSql);
-		List<?> resultList = this.findCallSql(resultSql);
 		
 		if(deviceTypeList.size()>0){
 			for(int i=0;i<deviceTypeList.size();i++){
@@ -2844,17 +2681,24 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		
-		for(int i=0;i<applicationScenariosList.size();i++){
-			applicationScenariosDropdownData.append("'"+applicationScenariosList.get(i)+"',");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			applicationScenariosDropdownData.append("'"+c.getItemname()+"',");
 		}
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);
 		}
 		
-		if(resultList.size()>0){
+		if(workTypeMap.size()>0){
 			resultNameDropdownData.append("\""+languageResourceMap.get("noIntervention")+"\"");
-			for(int i=0;i<resultList.size();i++){
-				resultNameDropdownData.append(",\""+resultList.get(i).toString()+"\"");
+			Iterator<Map.Entry<String, WorkType>> workTypeMapIt = workTypeMap.entrySet().iterator();
+			while(workTypeMapIt.hasNext()){
+				Map.Entry<String, WorkType> entry = workTypeMapIt.next();
+				String resultCode=new String(entry.getKey());
+				WorkType w=entry.getValue();
+				resultNameDropdownData.append(",\""+w.getResultName()+"\"");
 			}
 		}
 		
@@ -3222,285 +3066,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
-	public boolean exportRPCDeviceInfoDetailsData(User user,HttpServletResponse response,String fileName,String title,String  orgId,String applicationScenarios,String deviceType,String wellInformationName) {
-		try{
-			StringBuffer result_json = new StringBuffer();
-			Gson gson = new Gson();
-			java.lang.reflect.Type type=null;
-			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-			String tableName="viw_device";
-			DataDictionary ddic = null;
-			String ddicName="deviceInfo_DeviceBatchAdd";
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			String head=StringUtils.join(ddic.getHeaders(), ",");
-			String field=StringUtils.join(ddic.getFields(), ",");
-			
-			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-			String heads[]=head.split(",");
-			String columns[]=field.split(",");
-			
-			List<Object> headRow = new ArrayList<>();
-			List<String> realColumns=new ArrayList<>();
-			for(int i=0;i<heads.length;i++){
-				if(StringManagerUtils.stringToInteger(applicationScenarios)==0){
-					if(  !("crudeOilDensity".equalsIgnoreCase(columns[i]) 
-							|| "saturationPressure".equalsIgnoreCase(columns[i]) 
-							|| "waterCut".equalsIgnoreCase(columns[i]) 
-							|| "weightWaterCut".equalsIgnoreCase(columns[i]) 
-							|| "productionGasOilRatio".equalsIgnoreCase(columns[i]) 
-							) ){
-						String thishead=heads[i];
-						if("reservoirDepth".equalsIgnoreCase(columns[i]) || "reservoirTemperature".equalsIgnoreCase(columns[i])){
-							thishead=thishead.replace("油层", "煤层");
-						}else if("tubingPressure".equalsIgnoreCase(columns[i])){
-							thishead=thishead.replace("油压", "管压");
-						}
-						
-						
-						headRow.add(thishead);
-						realColumns.add(columns[i]);
-					}
-				}else{
-					headRow.add(heads[i]);
-					realColumns.add(columns[i]);
-				}
-			}
-		    List<List<Object>> sheetDataList = new ArrayList<>();
-		    sheetDataList.add(headRow);
-			
-			String sql = "select id,orgName,deviceName,applicationScenariosName,"//3
-					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"//7
-					+ " tcptype,signInId,slave,t.peakdelay,"//11
-					+ " videoUrl1,videoKeyName1,videoUrl2,videoKeyName2,"//15
-					+ " sortNum,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"//17
-					+ " t.productiondata,"//18
-					+ " t.manufacturer,t.model,t.stroke,"//21
-					+ " decode( lower(t.crankrotationdirection),'clockwise','"+languageResourceMap.get("clockwise")+"','anticlockwise','"+languageResourceMap.get("anticlockwise")+"','' ) as crankrotationdirection,"//22
-					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,"//27
-					+ " t.balanceinfo"//28
-					+ " from "+tableName+" t "
-					+ " where 1=1"
-//					+ " and t.applicationScenarios="+applicationScenarios
-					+ " and t.deviceType="+deviceType
-					+ " and t.orgid in ("+orgId+" )";
-			if (StringManagerUtils.isNotNull(wellInformationName)) {
-				sql+= " and t.deviceName like '%" + wellInformationName+ "%'";
-			}
-			
-			sql+= " order by t.sortnum,t.deviceName ";
-			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-			
-			List<?> list=this.findCallSql(finalSql);
-			List<Object> record=null;
-			JSONObject jsonObject=null;
-			Object[] obj=null;
-			for(int i=0;i<list.size();i++){
-				obj=(Object[]) list.get(i);
-				result_json = new StringBuffer();
-				record = new ArrayList<>();
-				String productionDataStr=obj[18]+"";
-				String balanceInfo=obj[28]+"";
-				String videoUrl1="",videoUrl2="";
-				String crudeOilDensity="",waterDensity="",naturalGasRelativeDensity="",saturationPressure="",
-						reservoirDepth="",reservoirTemperature="",
-						tubingPressure="",casingPressure="",wellHeadTemperature="",waterCut="",productionGasOilRatio="",producingfluidLevel="",pumpSettingDepth="",
-						barrelType="",pumpGrade="",pumpBoreDiameter="",plungerLength="",
-						tubingStringInsideDiameter="",casingStringInsideDiameter="",
-						rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="",
-						rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="",
-						rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="",
-						rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="",
-						netGrossRatio="",netGrossValue="";
-				String balanceWeight="",balancePosition="";
-				
-				
-				if(StringManagerUtils.isNotNull(productionDataStr)){
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
-					if(productionData!=null){
-						if(productionData.getFluidPVT()!=null){
-							crudeOilDensity=productionData.getFluidPVT().getCrudeOilDensity()+"";
-							waterDensity=productionData.getFluidPVT().getWaterDensity()+"";
-							naturalGasRelativeDensity=productionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-							saturationPressure=productionData.getFluidPVT().getSaturationPressure()+"";
-						}
-						if(productionData.getReservoir()!=null){
-							reservoirDepth=productionData.getReservoir().getDepth()+"";
-							reservoirTemperature=productionData.getReservoir().getTemperature()+"";
-						}
-						if(productionData.getProduction()!=null){
-							tubingPressure=productionData.getProduction().getTubingPressure()+"";
-							casingPressure=productionData.getProduction().getCasingPressure()+"";
-							wellHeadTemperature=productionData.getProduction().getWellHeadTemperature()+"";
-							waterCut=productionData.getProduction().getWaterCut()+"";
-							productionGasOilRatio=productionData.getProduction().getProductionGasOilRatio()+"";
-							producingfluidLevel=productionData.getProduction().getProducingfluidLevel()+"";
-							pumpSettingDepth=productionData.getProduction().getPumpSettingDepth()+"";
-						}
-						if(productionData.getPump()!=null){
-							if("L".equalsIgnoreCase(productionData.getPump().getBarrelType())){
-								barrelType=languageResourceMap.get("barrelType_L");
-							}else{
-								barrelType=languageResourceMap.get("barrelType_H");
-							}
-							pumpGrade=productionData.getPump().getPumpGrade()+"";
-							pumpBoreDiameter=productionData.getPump().getPumpBoreDiameter()*1000+"";
-							plungerLength=productionData.getPump().getPlungerLength()+"";
-						}
-						if(productionData.getTubingString()!=null && productionData.getTubingString().getEveryTubing()!=null && productionData.getTubingString().getEveryTubing().size()>0){
-							tubingStringInsideDiameter=productionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"";
-						}
-						if(productionData.getCasingString()!=null && productionData.getCasingString().getEveryCasing()!=null && productionData.getCasingString().getEveryCasing().size()>0){
-							casingStringInsideDiameter=productionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"";
-						}
-						if(productionData.getRodString()!=null && productionData.getRodString().getEveryRod()!=null && productionData.getRodString().getEveryRod().size()>0){
-							rodGrade1=productionData.getRodString().getEveryRod().get(0).getGrade()+"";
-							rodOutsideDiameter1=productionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-							rodInsideDiameter1=productionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
-							rodLength1=productionData.getRodString().getEveryRod().get(0).getLength()+"";
-							if(productionData.getRodString().getEveryRod().size()>1){
-								rodGrade2=productionData.getRodString().getEveryRod().get(1).getGrade()+"";
-								rodOutsideDiameter2=productionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=productionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
-								rodLength2=productionData.getRodString().getEveryRod().get(1).getLength()+"";
-								if(productionData.getRodString().getEveryRod().size()>2){
-									rodGrade3=productionData.getRodString().getEveryRod().get(2).getGrade()+"";
-									rodOutsideDiameter3=productionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-									rodInsideDiameter3=productionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
-									rodLength3=productionData.getRodString().getEveryRod().get(2).getLength()+"";
-									if(productionData.getRodString().getEveryRod().size()>3){
-										rodGrade4=productionData.getRodString().getEveryRod().get(3).getGrade()+"";
-										rodOutsideDiameter4=productionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-										rodInsideDiameter4=productionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
-										rodLength4=productionData.getRodString().getEveryRod().get(3).getLength()+"";
-									}
-								}
-							}
-						}
-						if(productionData.getManualIntervention()!=null){
-							netGrossRatio=productionData.getManualIntervention().getNetGrossRatio()+"";
-							netGrossValue=productionData.getManualIntervention().getNetGrossValue()+"";
-						}
-					}
-				}
-				
-				if(StringManagerUtils.isNotNull(balanceInfo)){
-					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
-					if(balance!=null && balance.getEveryBalance().size()>0){
-						for(int j=0;j<balance.getEveryBalance().size();j++){
-							balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
-							balancePosition+=balance.getEveryBalance().get(j).getPosition()+"";
-							if(j<balance.getEveryBalance().size()-1){
-								balanceWeight+=",";
-								balancePosition+=",";
-							}
-						}
-					}
-				}
-				
-				
-				result_json.append("{\"id\":\""+(i+1)+"\",");
-				result_json.append("\"orgName\":\""+obj[1]+"\",");
-				result_json.append("\"wellName\":\""+obj[2]+"\",");
-				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
-				result_json.append("\"instanceName\":\""+obj[4]+"\",");
-				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
-				result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-				result_json.append("\"reportInstanceName\":\""+obj[7]+"\",");
-				
-				result_json.append("\"tcpType\":\""+(obj[8]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"signInId\":\""+obj[9]+"\",");
-				result_json.append("\"slave\":\""+obj[10]+"\",");
-				result_json.append("\"peakDelay\":\""+obj[11]+"\",");
-				
-				result_json.append("\"videoUrl1\":\""+obj[12]+"\",");
-				result_json.append("\"videoKeyName1\":\""+obj[13]+"\",");
-				result_json.append("\"videoUrl2\":\""+obj[14]+"\",");
-				result_json.append("\"videoKeyName2\":\""+obj[15]+"\",");
-				
-				result_json.append("\"sortNum\":\""+obj[16]+"\",");
-				result_json.append("\"statusName\":\""+obj[17]+"\",");
-				
-				result_json.append("\"crudeOilDensity\":\""+crudeOilDensity+"\",");
-				result_json.append("\"waterDensity\":\""+waterDensity+"\",");
-				result_json.append("\"naturalGasRelativeDensity\":\""+naturalGasRelativeDensity+"\",");
-				result_json.append("\"saturationPressure\":\""+saturationPressure+"\",");
-				result_json.append("\"reservoirDepth\":\""+reservoirDepth+"\",");
-				result_json.append("\"reservoirTemperature\":\""+reservoirTemperature+"\",");
-				result_json.append("\"tubingPressure\":\""+tubingPressure+"\",");
-				result_json.append("\"casingPressure\":\""+casingPressure+"\",");
-				result_json.append("\"wellHeadTemperature\":\""+wellHeadTemperature+"\",");
-				result_json.append("\"waterCut\":\""+waterCut+"\",");
-				result_json.append("\"productionGasOilRatio\":\""+productionGasOilRatio+"\",");
-				result_json.append("\"producingfluidLevel\":\""+producingfluidLevel+"\",");
-				result_json.append("\"pumpSettingDepth\":\""+pumpSettingDepth+"\",");
-				result_json.append("\"barrelType\":\""+barrelType+"\",");
-				result_json.append("\"pumpGrade\":\""+pumpGrade+"\",");
-				result_json.append("\"pumpBoreDiameter\":\""+pumpBoreDiameter+"\",");
-				result_json.append("\"plungerLength\":\""+plungerLength+"\",");
-				result_json.append("\"tubingStringInsideDiameter\":\""+tubingStringInsideDiameter+"\",");
-				result_json.append("\"casingStringInsideDiameter\":\""+casingStringInsideDiameter+"\",");
-				result_json.append("\"rodGrade1\":\""+rodGrade1+"\",");
-				result_json.append("\"rodOutsideDiameter1\":\""+rodOutsideDiameter1+"\",");
-				result_json.append("\"rodInsideDiameter1\":\""+rodInsideDiameter1+"\",");
-				result_json.append("\"rodLength1\":\""+rodLength1+"\",");
-				result_json.append("\"rodGrade2\":\""+rodGrade2+"\",");
-				result_json.append("\"rodOutsideDiameter2\":\""+rodOutsideDiameter2+"\",");
-				result_json.append("\"rodInsideDiameter2\":\""+rodInsideDiameter2+"\",");
-				result_json.append("\"rodLength2\":\""+rodLength2+"\",");
-				result_json.append("\"rodGrade3\":\""+rodGrade3+"\",");
-				result_json.append("\"rodOutsideDiameter3\":\""+rodOutsideDiameter3+"\",");
-				result_json.append("\"rodInsideDiameter3\":\""+rodInsideDiameter3+"\",");
-				result_json.append("\"rodLength3\":\""+rodLength3+"\",");
-				result_json.append("\"rodGrade4\":\""+rodGrade4+"\",");
-				result_json.append("\"rodOutsideDiameter4\":\""+rodOutsideDiameter4+"\",");
-				result_json.append("\"rodInsideDiameter4\":\""+rodInsideDiameter4+"\",");
-				result_json.append("\"rodLength4\":\""+rodLength4+"\",");
-				
-				result_json.append("\"netGrossRatio\":\""+netGrossRatio+"\",");
-				result_json.append("\"netGrossValue\":\""+netGrossValue+"\",");
-				
-				result_json.append("\"manufacturer\":\""+obj[19]+"\",");
-				result_json.append("\"model\":\""+obj[20]+"\",");
-				result_json.append("\"stroke\":\""+obj[21]+"\",");
-				result_json.append("\"crankRotationDirection\":\""+obj[22]+"\",");
-				result_json.append("\"offsetAngleOfCrank\":\""+obj[23]+"\",");
-				result_json.append("\"crankGravityRadius\":\""+obj[24]+"\",");
-				result_json.append("\"singleCrankWeight\":\""+obj[25]+"\",");
-				result_json.append("\"singleCrankPinWeight\":\""+obj[26]+"\",");
-				result_json.append("\"structuralUnbalance\":\""+obj[27]+"\",");
-				
-				
-				result_json.append("\"balanceWeight\":\""+balanceWeight+"\",");
-				result_json.append("\"balancePosition\":\""+balancePosition+"\"}");
-				
-				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < realColumns.size(); j++) {
-					if(jsonObject.has(realColumns.get(j))){
-						record.add(jsonObject.getString(realColumns.get(j)));
-					}else{
-						record.add("");
-					}
-				}
-				sheetDataList.add(record);
-			}
-			ExcelUtils.export(response,fileName,title, sheetDataList,1);
-			if(user!=null){
-		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 	
 	public String saveVideoKeyHandsontableData(VideoKeyHandsontableChangedData videoKeyHandsontableChangedData,String orgId) throws Exception {

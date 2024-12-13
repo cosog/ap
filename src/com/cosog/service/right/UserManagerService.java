@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.RedisUtil;
@@ -121,12 +123,13 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer role_json = new StringBuffer();
 		StringBuffer language_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",user.getLanguageName());
 		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage");
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " order by t.role_id";
-		String languageSql="select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)='LANGUAGE' order by t.itemvalue";
+		
 		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name as orgName,u.user_id as userId,"
 				+ " u.user_pwd as userPwd,"
 				+ " u.user_type as userType,r.role_name as userTypeName,"
@@ -136,12 +139,11 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_receivesms as receiveSMS,decode(u.user_receivesms,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as receiveSMSName,"
 				+ " u.user_receivemail as receiveMail,decode(u.user_receivemail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as receiveMailName,"
 				+ " u.user_enable as userEnable,decode(u.user_enable,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as userEnableName,"
-				+ " u.user_language as userLanguage,c.itemname as userLanguageName,"
+				+ " u.user_language as userLanguage,"
 				+ " o.allpath"
 				+ " from tbl_user u"
 				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
-				+ " left outer join tbl_code c on upper(c.itemCode)='LANGUAGE' and u.user_language=c.itemValue"
 				+ " where u.user_orgid in (" + orgIds + ")"
 				+ " and ("
 				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
@@ -153,7 +155,6 @@ public class UserManagerService<T> extends BaseService<T> {
 		sql+=" order by r.role_level,user_no,u.user_no";
 		
 		List<?> roleList = this.findCallSql(roleSql);
-		List<?> languageList = this.findCallSql(languageSql);
 		List<?> list = this.findCallSql(sql);
 		role_json.append("[");
 		language_json.append("[");
@@ -167,9 +168,11 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 		role_json.append("]");
 		
-		for (Object o : languageList) {
-			Object[] obj = (Object[]) o;
-			language_json.append("['"+obj[1]+"','"+obj[1]+"'],");
+		Iterator<Map.Entry<String,Code>> it = languageCodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			language_json.append("['"+c.getItemname()+"','"+c.getItemname()+"'],");
 		}
 		if (language_json.toString().endsWith(",")) {
 			language_json.deleteCharAt(language_json.length() - 1);
@@ -201,8 +204,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"userEnable\":\""+obj[17]+"\",");
 			result_json.append("\"userEnableName\":"+(StringManagerUtils.stringToInteger(obj[17]+"")==1)+",");
 			result_json.append("\"userLanguage\":\""+obj[19]+"\",");
-			result_json.append("\"userLanguageName\":\""+obj[20]+"\",");
-			result_json.append("\"allPath\":\""+obj[21]+"\"},");
+			result_json.append("\"userLanguageName\":\""+languageCodeMap.get(obj[19]+"").getItemname()+"\",");
+			result_json.append("\"allPath\":\""+obj[20]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -247,32 +250,21 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadLanguageList() throws Exception {
+	public String loadLanguageList(String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.itemvalue,t.itemname from TBL_CODE t where upper(t.itemcode)='LANGUAGE' order by t.itemvalue";
-		try {
-			List<?> list = this.getSQLObjects(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-		} catch (Exception e) {
-			e.printStackTrace();
-			result_json = new StringBuffer();
-			result_json.append("[]");
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		result_json.append("[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
+			result_json.append("boxval:\"" + c.getItemname() + "\"},");
 		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
 		return result_json.toString();
 	}
 	
@@ -344,35 +336,6 @@ public class UserManagerService<T> extends BaseService<T> {
 			}
 		}
 		return flag;
-	}
-	
-	public String sendZYBZTitleType(String type) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='USER_TITLE' and t.itemvalue not in(0,4)";
-		try {
-			List<?> list = this.find(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
 	}
 
 	public void addUser(T user) throws Exception {
@@ -491,6 +454,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public int updateUserInfo(User user,boolean isLoginedUser) throws Exception {
 		int r=0;
 		boolean flag = this.judgeUserExistsOrNot(user.getUserId(),user.getUserNo()+"");
+		
 		if(flag){
 			r=2;
 		}else{
@@ -501,7 +465,7 @@ public class UserManagerService<T> extends BaseService<T> {
 						+ "t.user_enable="+user.getUserEnable()+", ";
 			}	
 			sql+= "t.user_name='"+user.getUserName()+"', "
-				+ "t.user_language=(select c.itemvalue from TBL_CODE c where upper(c.itemcode)='LANGUAGE' and c.itemname='"+user.getLanguageName()+"'),"
+				+ "t.user_language="+MemoryDataManagerTask.getCodeValue("LANGUAGE", user.getLanguageName(), user.getLanguageName())+","
 				+ "t.user_phone='"+user.getUserPhone()+"', "
 				+ "t.user_in_email='"+user.getUserInEmail()+"', "
 				+ "t.user_quicklogin="+user.getUserQuickLogin()+", "
@@ -551,12 +515,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void setUserLanguage(User user){
-		String languageName="";
-		String sql="select t.itemname from tbl_code t where upper(t.itemcode)='LANGUAGE' and t.itemvalue="+user.getLanguage();
-		List<?> list=getBaseDao().findCallSql(sql);
-		if(list.size()>0){
-			languageName=list.get(0)+"";
-		}
+		String languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		user.setLanguageName(languageName);
 	}
 	

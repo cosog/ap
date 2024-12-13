@@ -399,7 +399,7 @@ public class MobileService<T> extends BaseService<T> {
 			
 			
 			String sql="select t.id,t.deviceName,"
-					+ "c1.itemname as devicetypename,"
+					+ "c1.name as devicetypename,"
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -420,7 +420,7 @@ public class MobileService<T> extends BaseService<T> {
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
 					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
+					+ " left outer join tbl_devicetypeinfo c1 on t.devicetype=c1.id "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
 				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
@@ -572,7 +572,7 @@ public class MobileService<T> extends BaseService<T> {
 			String deviceTableName="tbl_device";
 			
 			String sql="select t.id,t.deviceName,"
-					+ "c1.itemname as devicetypename,"
+					+ "c1.name as devicetypename,"
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
@@ -585,7 +585,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue "
+					+ " left outer join tbl_devicetypeinfo c1 on t.devicetype=c1.id "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
 				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";

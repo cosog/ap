@@ -45,7 +45,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String sql="select t.id,t.devicetype,t.deviceTypeName,"
+		String sql="select t.id,t.devicetype,t.deviceTypeName_"+user.getLanguageName()+","
 				+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
 				+ " t.user_id,t.loginip,"
 				+ " t.action,"
@@ -117,7 +117,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql="select t.id,t.devicetype,t.deviceTypeName,"
+			String sql="select t.id,t.devicetype,t.deviceTypeName_"+user.getLanguageName()+","
 					+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
 					+ " t.user_id,t.loginip,"
 					+ " t.action,"

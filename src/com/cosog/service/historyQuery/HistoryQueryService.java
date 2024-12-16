@@ -107,7 +107,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 						+ " where t.orgid in("+orgId+") ";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
-					sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
+					sql+=" and t.devicetypename_"+language+"='"+deviceTypeStatValue+"'";
 				}
 				sql+=" group by t2.commstatus";
 				
@@ -190,7 +190,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			deviceTableName="viw_pcpdevice";
 		}
 		
-		String sql="select t.devicetypename,t.devicetype,count(1) from "+deviceTableName+" t "
+		String sql="select t.devicetypename_"+language+",t.devicetype,count(1) from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t.id=t2.deviceId "
 				+ " where t.orgid in("+orgId+") ";
 		
@@ -199,7 +199,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
 			sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 		}
-		sql+=" group by t.devicetypename,t.devicetype";
+		sql+=" group by t.devicetypename_"+language+",t.devicetype";
 		sql+=" order by t.devicetype";
 		
 		List<?> list = this.findCallSql(sql);
@@ -304,7 +304,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				columns=columns.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
 			}
 			
-			String sql="select t.id,t.devicename,c1.name as devicetypename,"
+			String sql="select t.id,t.devicename,c1.name_"+language+" as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
@@ -452,7 +452,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-		    String sql="select t.id,t.devicename,c1.name as devicetypename,"
+		    String sql="select t.id,t.devicename,c1.name_"+language+" as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"

@@ -37,7 +37,11 @@ public class WellHandsontableChangedData {
 
 	    private String deviceName="";
 	    
-	    private String deviceTypeName="";
+	    private String deviceTypeName_zh_CN;
+	    
+		private String deviceTypeName_en;
+		
+		private String deviceTypeName_ru;
 	    
 	    private String applicationScenariosName="";
 
@@ -793,12 +797,28 @@ public class WellHandsontableChangedData {
 			this.applicationScenariosName = applicationScenariosName;
 		}
 
-		public String getDeviceTypeName() {
-			return deviceTypeName;
+		public String getDeviceTypeName_zh_CN() {
+			return deviceTypeName_zh_CN;
 		}
 
-		public void setDeviceTypeName(String deviceTypeName) {
-			this.deviceTypeName = deviceTypeName;
+		public void setDeviceTypeName_zh_CN(String deviceTypeName_zh_CN) {
+			this.deviceTypeName_zh_CN = deviceTypeName_zh_CN;
+		}
+
+		public String getDeviceTypeName_en() {
+			return deviceTypeName_en;
+		}
+
+		public void setDeviceTypeName_en(String deviceTypeName_en) {
+			this.deviceTypeName_en = deviceTypeName_en;
+		}
+
+		public String getDeviceTypeName_ru() {
+			return deviceTypeName_ru;
+		}
+
+		public void setDeviceTypeName_ru(String deviceTypeName_ru) {
+			this.deviceTypeName_ru = deviceTypeName_ru;
 		}
 	    
 	}

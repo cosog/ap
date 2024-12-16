@@ -4548,12 +4548,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds){
+	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		tree_json.append("[");
 		
-		String sql="select t.name,t.code,t.sort,t.devicetype,t2.name as deviceTypeName,t2.allpath as deviceTypeAllPath from tbl_protocol t,viw_devicetypeinfo t2 "
+		String sql="select t.name,t.code,t.sort,t.devicetype,t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath "
+				+ " from tbl_protocol t,viw_devicetypeinfo t2 "
 				+ " where t.devicetype=t2.id "
 				+ " and t.devicetype in ("+deviceTypeIds+") "
 				+ " order by t.sort,t.name";
@@ -9460,7 +9461,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",width:120 ,children:[] }"
 				+ "]";
 		
-		String sql="select t.id,t.name,t.devicetype,t2.allpath "
+		String sql="select t.id,t.name,t.devicetype,t2.allpath_"+language+" "
 				+ " from tbl_protocol t, viw_devicetypeinfo t2 "
 				+ " where t.devicetype=t2.id ";
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -10069,7 +10070,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
 		
 		String overlayProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
-				+ " (select t2.id, sys_connect_by_path(t2.name,'/') as path"
+				+ " (select t2.id, sys_connect_by_path(t2.name_"+user.getLanguageName()+",'/') as path"
 				+ " from tbl_devicetypeinfo t2"
 				+ " start with t2.parentid=0"
 				+ " connect by   t2.parentid= prior t2.id) v"
@@ -10078,7 +10079,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 //				+ " and t.devicetype in (select id from tbl_devicetypeinfo start with id="+deviceType+" connect by prior  id=parentid)";
 		
 		String collisionProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
-				+ " (select t2.id, sys_connect_by_path(t2.name,'/') as path"
+				+ " (select t2.id, sys_connect_by_path(t2."+user.getLanguageName()+",'/') as path"
 				+ " from tbl_devicetypeinfo t2"
 				+ " start with t2.parentid=0"
 				+ " connect by   t2.parentid= prior t2.id) v"

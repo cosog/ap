@@ -351,7 +351,13 @@ public class WellInformationManagerController extends BaseController {
 	public String getDeviceTypeComb() throws Exception {
 		this.pager=new Page("pageForm",request);
 		String deviceTypes = ParamUtils.getParameter(request, "deviceTypes");
-		String json = this.wellInformationManagerService.getDeviceTypeComb(deviceTypes);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDeviceTypeComb(deviceTypes,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -394,15 +400,19 @@ public class WellInformationManagerController extends BaseController {
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String selectedDeviceTypeId=ParamUtils.getParameter(request, "selectedDeviceTypeId");
 		String selectedDeviceTypeName=ParamUtils.getParameter(request, "selectedDeviceTypeName");
-		User user = null;
 		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		this.wellInformationManagerService.changeDeviceType(selectedDeviceId,selectedDeviceTypeId,selectedDeviceTypeName,deviceType);
+		
+		this.wellInformationManagerService.changeDeviceType(selectedDeviceId,selectedDeviceTypeId,selectedDeviceTypeName,deviceType,language);
 		String json = "{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

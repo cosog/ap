@@ -21,7 +21,11 @@ public class DeviceAlarmInfo {
 	
 	public int deviceType;
 	
-	public String deviceTypeName;
+	private String deviceTypeName_zh_CN;
+	
+	private String deviceTypeName_en;
+	
+	private String deviceTypeName_ru;
 	
 	public Map<String,AlarmInfo> alarmInfoMap;
 	
@@ -35,7 +39,15 @@ public class DeviceAlarmInfo {
             	String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
             	
-//            	SaveDelayAlarmData(deviceName,deviceType+"",time,alarmInfo);
+            	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+            	String deviceTypeName="";
+            	if("zh_CN".equalsIgnoreCase(loginLanguage)){
+					deviceTypeName=deviceTypeName_zh_CN;
+				}else if("en".equalsIgnoreCase(loginLanguage)){
+					deviceTypeName=deviceTypeName_en;
+				}else if("ru".equalsIgnoreCase(loginLanguage)){
+					deviceTypeName=deviceTypeName_ru;
+				}
             	
             	boolean isSendSMS=alarmInfo.getIsSendMail()==1;
         		boolean isSendMail=alarmInfo.getIsSendMessage()==1;
@@ -393,11 +405,27 @@ public class DeviceAlarmInfo {
 		this.deviceType = deviceType;
 	}
 
-	public String getDeviceTypeName() {
-		return deviceTypeName;
+	public String getDeviceTypeName_zh_CN() {
+		return deviceTypeName_zh_CN;
 	}
 
-	public void setDeviceTypeName(String deviceTypeName) {
-		this.deviceTypeName = deviceTypeName;
+	public void setDeviceTypeName_zh_CN(String deviceTypeName_zh_CN) {
+		this.deviceTypeName_zh_CN = deviceTypeName_zh_CN;
+	}
+
+	public String getDeviceTypeName_en() {
+		return deviceTypeName_en;
+	}
+
+	public void setDeviceTypeName_en(String deviceTypeName_en) {
+		this.deviceTypeName_en = deviceTypeName_en;
+	}
+
+	public String getDeviceTypeName_ru() {
+		return deviceTypeName_ru;
+	}
+
+	public void setDeviceTypeName_ru(String deviceTypeName_ru) {
+		this.deviceTypeName_ru = deviceTypeName_ru;
 	}
 }

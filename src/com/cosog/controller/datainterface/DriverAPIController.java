@@ -281,7 +281,7 @@ public class DriverAPIController extends BaseController{
 		PrintWriter pw=null;
 		try {
 			if(EquipmentDriverServerTask.initFinished){
-				
+				String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 				List<String> websocketClientUserList=new ArrayList<>();
 				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
 		            String[] clientInfo=item.userId.split("_");
@@ -342,7 +342,15 @@ public class DriverAPIController extends BaseController{
 							DeviceInfo deviceInfo=deviceInfoList.get(i);
 							
 							deviceType=deviceInfo.getDeviceType();
-							deviceTypeName=deviceInfo.getDeviceTypeName();
+							
+							if("zh_CN".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_zh_CN();
+							}else if("en".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_en();
+							}else if("ru".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_ru();
+							}
+							
 							deviceId=deviceInfo.getId();
 							deviceName=deviceInfo.getDeviceName();
 							orgId=deviceInfo.getOrgId();
@@ -557,6 +565,7 @@ public class DriverAPIController extends BaseController{
 		String json = "{success:true,flag:true}";
 		try {
 			if(EquipmentDriverServerTask.initFinished){
+				String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 				List<String> websocketClientUserList=new ArrayList<>();
 				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
 		            String[] clientInfo=item.userId.split("_");
@@ -610,7 +619,13 @@ public class DriverAPIController extends BaseController{
 							//抽油机
 							DeviceInfo deviceInfo=deviceInfoList.get(i);
 							deviceType=deviceInfo.getDeviceType();
-							deviceTypeName=deviceInfo.getDeviceTypeName();
+							if("zh_CN".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_zh_CN();
+							}else if("en".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_en();
+							}else if("ru".equalsIgnoreCase(loginLanguage)){
+								deviceTypeName=deviceInfo.getDeviceTypeName_ru();
+							}
 							deviceId=deviceInfo.getId();
 							deviceName=deviceInfo.getDeviceName();
 							orgId=deviceInfo.getOrgId();
@@ -924,7 +939,9 @@ public class DriverAPIController extends BaseController{
 			deviceAlarmInfo.setDeviceId(deviceInfo.getId());
 			deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
 			deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
-			deviceAlarmInfo.setDeviceTypeName(deviceInfo.getDeviceTypeName());
+			deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
+			deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
+			deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
 		}
 		
 		if(deviceAlarmInfo.getAlarmInfoMap()==null){
@@ -1101,7 +1118,9 @@ public class DriverAPIController extends BaseController{
 			deviceAlarmInfo.setDeviceId(deviceInfo.getId());
 			deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
 			deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
-			deviceAlarmInfo.setDeviceTypeName(deviceInfo.getDeviceTypeName());
+			deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
+			deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
+			deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
 		}
 		
 		if(deviceAlarmInfo.getAlarmInfoMap()==null){
@@ -2045,6 +2064,14 @@ public class DriverAPIController extends BaseController{
             	websocketClientUserList.add(clientInfo[1]);
             }
         }
+		String deviceTypeName="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			deviceTypeName=deviceInfo.getDeviceTypeName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			deviceTypeName=deviceInfo.getDeviceTypeName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			deviceTypeName=deviceInfo.getDeviceTypeName_ru();
+		}
 		
 		boolean save=false;
 		boolean alarm=false;
@@ -2439,7 +2466,7 @@ public class DriverAPIController extends BaseController{
 //						CalculateDataManagerTask.acquisitionDataTotalCalculate(deviceInfo.getId()+"", date);
 						//报警项
 						if(alarm){
-							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",deviceInfo.getDeviceTypeName(),acqTime,acquisitionItemInfoList);
+							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",deviceTypeName,acqTime,acquisitionItemInfoList);
 						}
 						
 						//保存计算数据

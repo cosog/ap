@@ -15,7 +15,9 @@ public class RPCDeviceInfo implements Serializable {
 	private String orgName;
 	private String wellName;
 	private Integer deviceType;
-	private String deviceTypeName;
+	private String deviceTypeName_zh_CN;
+	private String deviceTypeName_en;
+	private String deviceTypeName_ru;
 	private Integer applicationScenarios;
 	private String applicationScenariosName;
 	private String instanceCode;
@@ -273,14 +275,6 @@ public class RPCDeviceInfo implements Serializable {
 		this.orgName = orgName;
 	}
 
-	public String getDeviceTypeName() {
-		return deviceTypeName;
-	}
-
-	public void setDeviceTypeName(String deviceTypeName) {
-		this.deviceTypeName = deviceTypeName;
-	}
-
 	public String getApplicationScenariosName() {
 		return applicationScenariosName;
 	}
@@ -535,6 +529,30 @@ public class RPCDeviceInfo implements Serializable {
 
 	public void setVideoKey2(Integer videoKey2) {
 		this.videoKey2 = videoKey2;
+	}
+
+	public String getDeviceTypeName_zh_CN() {
+		return deviceTypeName_zh_CN;
+	}
+
+	public void setDeviceTypeName_zh_CN(String deviceTypeName_zh_CN) {
+		this.deviceTypeName_zh_CN = deviceTypeName_zh_CN;
+	}
+
+	public String getDeviceTypeName_en() {
+		return deviceTypeName_en;
+	}
+
+	public void setDeviceTypeName_en(String deviceTypeName_en) {
+		this.deviceTypeName_en = deviceTypeName_en;
+	}
+
+	public String getDeviceTypeName_ru() {
+		return deviceTypeName_ru;
+	}
+
+	public void setDeviceTypeName_ru(String deviceTypeName_ru) {
+		this.deviceTypeName_ru = deviceTypeName_ru;
 	}
 
 }

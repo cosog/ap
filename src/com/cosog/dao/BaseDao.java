@@ -1002,7 +1002,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		Map<String,Integer> deviceTypeMap=new HashMap<>();
 		if(!StringManagerUtils.isNum(deviceType)){
-			String sql="select t.name,t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
+			String sql="select t.name_"+user.getLanguageName()+",t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
 			List<?> deviceTypeList=this.findCallSql(sql);
 			for(int i=0;i<deviceTypeList.size();i++){
 				Object[] obj=(Object[]) deviceTypeList.get(i);
@@ -1026,7 +1026,14 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							String saveDeviceType=deviceType;
 							if(!StringManagerUtils.isNum(deviceType)){
-								String deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								String deviceTypeName="";
+								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+								}else if("en".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
+								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_ru();
+								}
 								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
 							}
 							cs.setString(3, saveDeviceType);
@@ -1087,7 +1094,14 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							String saveDeviceType=deviceType;
 							if(!StringManagerUtils.isNum(deviceType)){
-								String deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								String deviceTypeName="";
+								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+								}else if("en".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_en();
+								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_ru();
+								}
 								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
 							}
 							cs.setString(3, saveDeviceType);
@@ -1232,7 +1246,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		Map<String,Integer> deviceTypeMap=new HashMap<>();
 		if(!StringManagerUtils.isNum(deviceType)){
-			String sql="select t.name,t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
+			String sql="select t.name_"+user.getLanguageName()+",t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
 			List<?> deviceTypeList=this.findCallSql(sql);
 			for(int i=0;i<deviceTypeList.size();i++){
 				Object[] obj=(Object[]) deviceTypeList.get(i);
@@ -1255,7 +1269,14 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							String saveDeviceType=deviceType;
 							if(!StringManagerUtils.isNum(deviceType)){
-								String deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName().replaceAll(" ", "");
+								String deviceTypeName="";
+								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+								}else if("en".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
+								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_ru();
+								}
 								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
 							}
 							cs.setString(3, saveDeviceType);
@@ -1320,7 +1341,14 @@ public class BaseDao extends HibernateDaoSupport {
 
 								String saveDeviceType=deviceType;
 								if(!StringManagerUtils.isNum(deviceType)){
-									String deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName().replaceAll(" ", "");
+									String deviceTypeName="";
+									if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+									}else if("en".equalsIgnoreCase(user.getLanguageName())){
+										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
+									}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_ru();
+									}
 									saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
 								}
 								cs.setString(3, saveDeviceType);

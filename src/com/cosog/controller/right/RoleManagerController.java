@@ -378,20 +378,24 @@ public class RoleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
 			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
-				json = r.recursionRightTabTreeFn(list, tabInfo);
+				json = r.recursionRightTabTreeFn(list, tabInfo,language);
 //				break;
 			}
 
 		}
 		if (flag == false && list.size() > 0) {
 			for (DeviceTypeInfo tabInfo : list) {
-				json = r.recursionRightTabTreeFn(list, tabInfo);
+				json = r.recursionRightTabTreeFn(list, tabInfo,language);
 			}
 
 		}
@@ -411,19 +415,23 @@ public class RoleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
 			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
-				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo,language);
 //				break;
 			}
 		}
 		if (flag == false && list.size() > 0) {
 			for (DeviceTypeInfo tabInfo : list) {
-				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo,language);
 			}
 
 		}
@@ -443,20 +451,24 @@ public class RoleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabsWithoutRoot(DeviceTypeInfo.class,user);
 		boolean flag = false;
 		for (DeviceTypeInfo tabInfo : list) {
 			if (!r.hasParent(list, tabInfo)) {
 				flag = true;
-				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo,language);
 //				break;
 			}
 
 		}
 		if (flag == false && list.size() > 0) {
 			for (DeviceTypeInfo tabInfo : list) {
-				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo);
+				json = r.recursionProtocolConfigTabTreeFn(list, tabInfo,language);
 			}
 
 		}

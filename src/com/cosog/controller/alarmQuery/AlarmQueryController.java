@@ -123,6 +123,10 @@ public class AlarmQueryController extends BaseController{
 		String tableName="viw_alarminfo_hist";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
@@ -144,7 +148,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
 		return null;
 	}
 	
@@ -201,6 +205,10 @@ public class AlarmQueryController extends BaseController{
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -208,7 +216,7 @@ public class AlarmQueryController extends BaseController{
 				orgId=user.getUserorgids();
 			}
 		}
-		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
+		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
 		return null;
 	}
 	

@@ -952,9 +952,10 @@ public class MemoryDataManagerTask {
 			}else{
 				String sql="select t.id,t.orgid,t.orgName,"
 						+ "t.devicename,"
-						+ "t.devicetype,t.devicetypename,"
-						+ "t.applicationscenarios,"//7
-						+ "t.calculateType,"
+						+ "t.devicetype,"
+						+ "t.devicetypename_zh_cn,t.devicetypename_en,devicetypename_ru,"//6~8
+						+ "t.applicationscenarios,"//9
+						+ "t.calculateType,"//10
 						+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
 						+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
 						+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
@@ -1015,35 +1016,38 @@ public class MemoryDataManagerTask {
 					deviceInfo.setOrgName(rs.getString(3));
 					deviceInfo.setDeviceName(rs.getString(4));
 					deviceInfo.setDeviceType(rs.getInt(5));
-					deviceInfo.setDeviceTypeName(rs.getString(6));
-					deviceInfo.setApplicationScenarios(rs.getInt(7));
+					deviceInfo.setDeviceTypeName_zh_CN(rs.getString(6));
+					deviceInfo.setDeviceTypeName_en(rs.getString(7));
+					deviceInfo.setDeviceTypeName_ru(rs.getString(8));
+					
+					deviceInfo.setApplicationScenarios(rs.getInt(9));
 					deviceInfo.setApplicationScenariosName(getCodeName("APPLICATIONSCENARIOS",deviceInfo.getApplicationScenarios()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage()));
 					
-					deviceInfo.setCalculateType(rs.getInt(8));
+					deviceInfo.setCalculateType(rs.getInt(10));
 					
-					deviceInfo.setTcpType(rs.getString(9)+"");
-					deviceInfo.setSignInId(rs.getString(10)+"");
-					deviceInfo.setIpPort(rs.getString(11)+"");
-					deviceInfo.setSlave(rs.getString(12)+"");
-					deviceInfo.setPeakDelay(rs.getInt(13));
+					deviceInfo.setTcpType(rs.getString(11)+"");
+					deviceInfo.setSignInId(rs.getString(12)+"");
+					deviceInfo.setIpPort(rs.getString(13)+"");
+					deviceInfo.setSlave(rs.getString(14)+"");
+					deviceInfo.setPeakDelay(rs.getInt(15));
 					
-					deviceInfo.setVideoUrl1(rs.getString(14)+"");
-					deviceInfo.setVideoKey1(rs.getInt(15));
-					deviceInfo.setVideoUrl2(rs.getString(16)+"");
-					deviceInfo.setVideoKey2(rs.getInt(17));
+					deviceInfo.setVideoUrl1(rs.getString(16)+"");
+					deviceInfo.setVideoKey1(rs.getInt(17));
+					deviceInfo.setVideoUrl2(rs.getString(18)+"");
+					deviceInfo.setVideoKey2(rs.getInt(19));
 					
-					deviceInfo.setInstanceCode(rs.getString(18)+"");
-					deviceInfo.setInstanceName(rs.getString(19)+"");
-					deviceInfo.setAlarmInstanceCode(rs.getString(20)+"");
-					deviceInfo.setAlarmInstanceName(rs.getString(21)+"");
-					deviceInfo.setDisplayInstanceCode(rs.getString(22)+"");
-					deviceInfo.setDisplayInstanceName(rs.getString(23)+"");
-					deviceInfo.setStatus(rs.getInt(24));
-					deviceInfo.setStatusName(rs.getString(25)+"");
+					deviceInfo.setInstanceCode(rs.getString(20)+"");
+					deviceInfo.setInstanceName(rs.getString(21)+"");
+					deviceInfo.setAlarmInstanceCode(rs.getString(22)+"");
+					deviceInfo.setAlarmInstanceName(rs.getString(23)+"");
+					deviceInfo.setDisplayInstanceCode(rs.getString(24)+"");
+					deviceInfo.setDisplayInstanceName(rs.getString(25)+"");
+					deviceInfo.setStatus(rs.getInt(26));
+					deviceInfo.setStatusName(rs.getString(27)+"");
 					
-					String productionData=rs.getString(26)+"";
-					String balanceInfo=rs.getString(27)+"";
-					float stroke=rs.getFloat(28);
+					String productionData=rs.getString(28)+"";
+					String balanceInfo=rs.getString(29)+"";
+					float stroke=rs.getFloat(30);
 					
 					if(StringManagerUtils.isNotNull(productionData)){
 						if(deviceInfo.getCalculateType()==1){//功图计算
@@ -1123,30 +1127,30 @@ public class MemoryDataManagerTask {
 						deviceInfo.setRpcCalculateRequestData(null);
 						deviceInfo.setPcpCalculateRequestData(null);
 					}
-					deviceInfo.setSortNum(rs.getInt(29));
+					deviceInfo.setSortNum(rs.getInt(31));
 					
-					deviceInfo.setAcqTime(rs.getString(30));
+					deviceInfo.setAcqTime(rs.getString(32));
 					deviceInfo.setSaveTime("");
 					
-					deviceInfo.setCommStatus(rs.getInt(31));
-					deviceInfo.setCommTime(rs.getFloat(32));
-					deviceInfo.setCommEff(rs.getFloat(33));
-					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(34)));
+					deviceInfo.setCommStatus(rs.getInt(33));
+					deviceInfo.setCommTime(rs.getFloat(34));
+					deviceInfo.setCommEff(rs.getFloat(35));
+					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(36)));
 					
 					deviceInfo.setOnLineAcqTime(deviceInfo.getAcqTime());
-					deviceInfo.setOnLineCommStatus(rs.getInt(31));
-					deviceInfo.setOnLineCommTime(rs.getFloat(32));
-					deviceInfo.setOnLineCommEff(rs.getFloat(33));
-					deviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(34)));
+					deviceInfo.setOnLineCommStatus(deviceInfo.getCommStatus());
+					deviceInfo.setOnLineCommTime(deviceInfo.getCommTime());
+					deviceInfo.setOnLineCommEff(deviceInfo.getCommEff());
+					deviceInfo.setOnLineCommRange(deviceInfo.getCommRange());
 					
 					deviceInfo.setRunStatusAcqTime(deviceInfo.getAcqTime());
-					deviceInfo.setRunStatus(rs.getInt(35));
-					deviceInfo.setRunTime(rs.getFloat(36));
-					deviceInfo.setRunEff(rs.getFloat(37));
-					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(38)));
+					deviceInfo.setRunStatus(rs.getInt(37));
+					deviceInfo.setRunTime(rs.getFloat(38));
+					deviceInfo.setRunEff(rs.getFloat(39));
+					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(40)));
 					
-					deviceInfo.setResultStatus(rs.getInt(39));
-					deviceInfo.setResultCode(rs.getInt(40));
+					deviceInfo.setResultStatus(rs.getInt(41));
+					deviceInfo.setResultCode(rs.getInt(42));
 					
 					//日汇总数据
 					deviceInfo.setDailyTotalItemMap(new HashMap<>());
@@ -3327,6 +3331,7 @@ public class MemoryDataManagerTask {
 			}
 			
 			String users="";
+			Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 			if(condition==0){
 				users=StringUtils.join(userList, ",");
 			}else{
@@ -3338,10 +3343,9 @@ public class MemoryDataManagerTask {
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
 					+ " t.user_type,"
 					+ " t2.role_name,t2.role_level,t2.showlevel,"
-					+ " t.user_language,c.itemname as languageName"
-					+ " from tbl_user t,tbl_role t2,tbl_code c "
-					+ " where t.user_type=t2.role_id "
-					+ " and upper(c.itemCode)='LANGUAGE' and t.user_language=c.itemValue     ";
+					+ " t.user_language"
+					+ " from tbl_user t,tbl_role t2 "
+					+ " where t.user_type=t2.role_id ";
 			if(StringManagerUtils.isNotNull(users)){
 				if(condition==0){
 					sql+=" and t.user_no in("+users+")";
@@ -3373,7 +3377,7 @@ public class MemoryDataManagerTask {
 				userInfo.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[14]+""));
 				
 				userInfo.setLanguage(StringManagerUtils.stringToInteger(obj[15]+""));
-				userInfo.setLanguageName(obj[16]+"");
+				userInfo.setLanguageName(languageCodeMap.get(userInfo.getLanguage()+"")!=null?languageCodeMap.get(userInfo.getLanguage()+"").getItemname():"");
 				
 				userInfo.setOrgChildrenNode(new ArrayList<>());
 				userInfo.setDeviceTypeChildrenNode(new ArrayList<>());
@@ -3561,21 +3565,21 @@ public class MemoryDataManagerTask {
 			alarmShowStyle=new AlarmShowStyle();
 			
 			String sql="select v1.itemvalue as alarmLevel,v1.itemname as backgroundColor,v2.itemname as color,v3.itemname as opacity from "
-					+ " (select * from tbl_code t where t.itemcode='BJYS' ) v1,"
-					+ " (select * from tbl_code t where t.itemcode='BJQJYS' ) v2,"
-					+ " (select * from tbl_code t where t.itemcode='BJYSTMD' ) v3 "
+					+ " (select * from tbl_code t where t.itemcode='ALARMBACKCOLOR' ) v1,"
+					+ " (select * from tbl_code t where t.itemcode='ALARMFORECOLOR' ) v2,"
+					+ " (select * from tbl_code t where t.itemcode='ALARMCOLOROPACITY' ) v3 "
 					+ " where v1.itemvalue=v2.itemvalue and v1.itemvalue=v3.itemvalue "
 					+ " order by v1.itemvalue ";
 			String commAlarmSql="select v1.itemvalue as alarmLevel,v1.itemname as backgroundColor,v2.itemname as color,v3.itemname as opacity from "
-					+ " (select * from tbl_code t where t.itemcode='TXBJYS' ) v1,"
-					+ " (select * from tbl_code t where t.itemcode='TXBJQJYS' ) v2,"
-					+ " (select * from tbl_code t where t.itemcode='TXBJYSTMD' ) v3 "
+					+ " (select * from tbl_code t where t.itemcode='COMMALARMBACKCOLOR' ) v1,"
+					+ " (select * from tbl_code t where t.itemcode='COMMALARMFORECOLOR' ) v2,"
+					+ " (select * from tbl_code t where t.itemcode='COMMALARMCOLOROPACITY' ) v3 "
 					+ " where v1.itemvalue=v2.itemvalue and v1.itemvalue=v3.itemvalue "
 					+ " order by v1.itemvalue ";
 			String runAlarmSql="select v1.itemvalue as alarmLevel,v1.itemname as backgroundColor,v2.itemname as color,v3.itemname as opacity from "
-					+ " (select * from tbl_code t where t.itemcode='YXBJYS' ) v1,"
-					+ " (select * from tbl_code t where t.itemcode='YXBJQJYS' ) v2,"
-					+ " (select * from tbl_code t where t.itemcode='YXBJYSTMD' ) v3 "
+					+ " (select * from tbl_code t where t.itemcode='RUNALARMBACKCOLOR' ) v1,"
+					+ " (select * from tbl_code t where t.itemcode='RUNALARMFORECOLOR' ) v2,"
+					+ " (select * from tbl_code t where t.itemcode='RUNALARMCOLOROPACITY' ) v3 "
 					+ " where v1.itemvalue=v2.itemvalue and v1.itemvalue=v3.itemvalue "
 					+ " order by v1.itemvalue ";
 			conn=OracleJdbcUtis.getConnection();

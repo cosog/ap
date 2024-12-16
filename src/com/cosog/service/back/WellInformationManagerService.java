@@ -361,9 +361,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDeviceTypeComb(String deviceTypes) throws Exception {
+	public String getDeviceTypeComb(String deviceTypes,String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.id,t.name from tbl_devicetypeinfo t where t.id in("+deviceTypes+") ";
+		String sql = "select t.id,t.name_"+language+" from tbl_devicetypeinfo t where t.id in("+deviceTypes+") ";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size())+",\"list\":[");
 		for(int i=0;i<list.size();i++){
@@ -410,7 +410,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public void changeDeviceType(String selectedDeviceId,String selectedDeviceTypeId,String selectedDeviceTypeName,String deviceTypeStr) throws Exception {
+	public void changeDeviceType(String selectedDeviceId,String selectedDeviceTypeId,String selectedDeviceTypeName,String deviceTypeStr,String language) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		if(StringManagerUtils.stringToInteger(selectedDeviceTypeId)>0 && StringManagerUtils.isNotNull(selectedDeviceId)){
@@ -422,13 +422,27 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String sql = "update "+tableName+" t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedDeviceId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
 			
+			String typeNameSql="select t.name_zh_cn,t.name_en,t.name_ru from TBL_DEVICETYPEINFO t where t.id="+selectedDeviceTypeId;
+			List<?> list = this.findCallSql(typeNameSql);
+			String deviceTypeName_zh_CN="";
+			String deviceTypeName_en="";
+			String deviceTypeName_ru="";
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				deviceTypeName_zh_CN=obj[0]+"";
+				deviceTypeName_en=obj[1]+"";
+				deviceTypeName_ru=obj[2]+"";
+			}
+			
 			try{
 				List<DeviceInfo> deviceInfoList =MemoryDataManagerTask.getDeviceInfo(selectedDeviceId.split(","));
 				for(int i=0;i<deviceInfoList.size();i++){
 					DeviceInfo deviceInfo=deviceInfoList.get(i);
 					if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
 						deviceInfo.setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
-						deviceInfo.setDeviceTypeName(selectedDeviceTypeName);
+						deviceInfo.setDeviceTypeName_zh_CN(deviceTypeName_zh_CN);
+						deviceInfo.setDeviceTypeName_en(deviceTypeName_en);
+						deviceInfo.setDeviceTypeName_ru(deviceTypeName_ru);
 						MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 					}
 				}
@@ -557,7 +571,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = "SELECT t.id,t.name "
+		String sql = "SELECT t.id,t.name_"+language+" "
 				+ " FROM TBL_DEVICETYPEINFO t "
 				+ " START WITH t.parentid = 0 "
 				+ " CONNECT BY t.parentid = PRIOR t.id "
@@ -686,7 +700,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		
-		String deviceTypeSql="select t.name from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
+		String deviceTypeSql="select t.name_"+user.getLanguageName()+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
@@ -791,9 +805,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			for(int i=0;i<list.size();i++){
 				if(list.get(i).getSaveSign()==-22){//冲突
 					collisionCount+=1;
+					String deviceTypeName="";
+					if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_zh_CN();
+					}else if("en".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_en();
+					}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_ru();
+					}
 					collisionBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
 					collisionBuff.append("\"deviceName\":\""+list.get(i).getDeviceName()+"\",");
-					collisionBuff.append("\"deviceTypeName\":\""+list.get(i).getDeviceTypeName()+"\",");
+					collisionBuff.append("\"deviceTypeName\":\""+deviceTypeName+"\",");
 					collisionBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					collisionBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					collisionBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -870,9 +892,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	collisionBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
 				}else if(list.get(i).getSaveSign()==-33){//覆盖信息
 					overlayCount+=1;
+					String deviceTypeName="";
+					if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_zh_CN();
+					}else if("en".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_en();
+					}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+						deviceTypeName=list.get(i).getDeviceTypeName_ru();
+					}
 					overlayBuff.append("{\"id\":\""+list.get(i).getId()+"\",");
 					overlayBuff.append("\"deviceName\":\""+list.get(i).getDeviceName()+"\",");
-					overlayBuff.append("\"deviceTypeName\":\""+list.get(i).getDeviceTypeName()+"\",");
+					overlayBuff.append("\"deviceTypeName\":\""+deviceTypeName+"\",");
 					overlayBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					overlayBuff.append("\"applicationScenariosName\":\""+list.get(i).getApplicationScenariosName()+"\",");
 					overlayBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
@@ -1256,7 +1286,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		sql+= " and t.devicetype in ("+deviceType+")";
 		sql+= " order by t.sortnum,t.devicename ";
 		
-		String deviceTypeSql="select t.name from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
+		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
@@ -2610,7 +2640,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer resultNameDropdownData = new StringBuffer();
 		String ddicName="deviceInfo_DeviceBatchAdd";
 		
-		String deviceTypeSql="select t.name from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
+		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";

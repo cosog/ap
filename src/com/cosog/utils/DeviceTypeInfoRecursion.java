@@ -7,7 +7,7 @@ import java.util.List;
 import com.cosog.model.DeviceTypeInfo;
 
 
-/**<p>描述：tab树形treePanel递归类</p>
+/**<p>描述：deviceType树形treePanel递归类</p>
  * 
  * @author zhao 2024-01-09
  *@version 1.0
@@ -47,11 +47,18 @@ public class DeviceTypeInfoRecursion {
 		return data;
 	}
 	
-	public String recursionRightTabTreeFn(List list, DeviceTypeInfo tabInfo) {
-
+	public String recursionRightTabTreeFn(List list, DeviceTypeInfo tabInfo,String language) {
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=tabInfo.getName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=tabInfo.getName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=tabInfo.getName_ru();
+		}
 		if (hasChild(list, tabInfo)) {
-			returnStr.append("{\"text\":\"" + tabInfo.getName() + "\"");
+			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"parentId\":\"" + tabInfo.getParentId() + "\"");
 			returnStr.append(",\"sortNum\":\"" + tabInfo.getSortNum() + "\"");
 			returnStr.append(",\"deviceTypeId\":\"" + tabInfo.getId() + "\"");
@@ -62,14 +69,14 @@ public class DeviceTypeInfoRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
-				recursionRightTabTreeFn(list, n);
+				recursionRightTabTreeFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"deviceTypeId\":\"");
 			returnStr.append(tabInfo.getId());
 			returnStr.append("\",\"text\":\"");
-			returnStr.append(tabInfo.getName());
+			returnStr.append(text);
 			returnStr.append("\",\"parentId\":\"");
 			returnStr.append(tabInfo.getParentId());
 			returnStr.append("\",\"sortNum\":\"");
@@ -81,10 +88,18 @@ public class DeviceTypeInfoRecursion {
 		return data;
 	}
 	
-	public String recursionProtocolConfigTabTreeFn(List list, DeviceTypeInfo tabInfo) {
+	public String recursionProtocolConfigTabTreeFn(List list, DeviceTypeInfo tabInfo,String language) {
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=tabInfo.getName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=tabInfo.getName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=tabInfo.getName_ru();
+		}
 		if (hasChild(list, tabInfo)) {
-			returnStr.append("{\"text\":\"" + tabInfo.getName() + "\",");
+			returnStr.append("{\"text\":\"" + text + "\",");
 			returnStr.append("\"parentId\":\"" + tabInfo.getParentId() + "\",");
 			returnStr.append("\"sortNum\":\"" + tabInfo.getSortNum() + "\",");
 			returnStr.append("\"deviceTypeId\":\"" + tabInfo.getId() + "\",");
@@ -94,12 +109,12 @@ public class DeviceTypeInfoRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
-				recursionProtocolConfigTabTreeFn(list, n);
+				recursionProtocolConfigTabTreeFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"deviceTypeId\":\""+tabInfo.getId()+"\",");
-			returnStr.append("\"text\":\""+tabInfo.getName()+"\",");
+			returnStr.append("\"text\":\""+text+"\",");
 			returnStr.append("\"parentId\":\""+tabInfo.getParentId()+"\",");
 			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
 			returnStr.append("\"leaf\":true},");

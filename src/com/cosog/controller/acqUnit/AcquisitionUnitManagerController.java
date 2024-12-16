@@ -2295,7 +2295,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAddrMappingTreeData")
 	public String modbusProtocolAddrMappingTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

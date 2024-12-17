@@ -25,9 +25,9 @@ import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPDeviceInfo;
+import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -172,12 +172,12 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="viw_rpcdevice";
+			String tableName="tbl_srpacqdata_latest";
+			String deviceTableName="viw_srpdevice";
 			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on  t2.resultcode=t3.resultcode"
+					+ " left outer join tbl_srp_worktype t3 on  t2.resultcode=t3.resultcode"
 					+ " where t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent) ";
 			if(wellList!=null){
 				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
@@ -211,8 +211,8 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="viw_rpcdevice";
+			String tableName="tbl_srpacqdata_latest";
+			String deviceTableName="viw_srpdevice";
 			if(deviceType==2){
 				tableName="tbl_pcpacqdata_latest";
 				deviceTableName="viw_pcpdevice";
@@ -261,8 +261,8 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="viw_rpcdevice";
+			String tableName="tbl_srpacqdata_latest";
+			String deviceTableName="viw_srpdevice";
 			if(deviceType==2){
 				tableName="tbl_pcpacqdata_latest";
 				deviceTableName="viw_pcpdevice";
@@ -419,7 +419,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join tbl_srp_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " left outer join tbl_devicetypeinfo c1 on t.devicetype=c1.id "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(wellList!=null){
@@ -447,21 +447,21 @@ public class MobileService<T> extends BaseService<T> {
 				String weightWaterCut="";
 				String volumeWaterCut="";
 				String productionData=obj[obj.length-1].toString();
-				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-					weightWaterCut=rpcProductionData.getProduction().getWeightWaterCut()+"";
-					volumeWaterCut=rpcProductionData.getProduction().getWaterCut()+"";
+				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+				SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+				if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+					weightWaterCut=srpProductionData.getProduction().getWeightWaterCut()+"";
+					volumeWaterCut=srpProductionData.getProduction().getWaterCut()+"";
 				}
 				
-				RPCDeviceInfo rpcDeviceInfo=null;
+				SRPDeviceInfo srpDeviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					srpDeviceInfo=(SRPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+				if(jedis!=null&&srpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes())){
+					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes()));
 				}
 				
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
@@ -783,7 +783,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			String hisTableName="tbl_rpcacqdata_hist";
+			String hisTableName="tbl_srpacqdata_hist";
 			String deviceTableName="tbl_device";
 			String sql="select t2.id,t.id as deviceId,t.deviceName,"
 					+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -805,7 +805,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.productiondata";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+hisTableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join tbl_srp_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.fesdiagramAcqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(statType==1 && StringManagerUtils.isNotNull(statValue)){
@@ -835,21 +835,21 @@ public class MobileService<T> extends BaseService<T> {
 				String weightWaterCut="";
 				String volumeWaterCut="";
 				String productionData=obj[obj.length-1].toString();
-				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-					weightWaterCut=rpcProductionData.getProduction().getWeightWaterCut()+"";
-					volumeWaterCut=rpcProductionData.getProduction().getWaterCut()+"";
+				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+				SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+				if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+					weightWaterCut=srpProductionData.getProduction().getWeightWaterCut()+"";
+					volumeWaterCut=srpProductionData.getProduction().getWaterCut()+"";
 				}
 				
-				RPCDeviceInfo rpcDeviceInfo=null;
+				SRPDeviceInfo srpDeviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					srpDeviceInfo=(SRPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+				if(jedis!=null&&srpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes())){
+					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes()));
 				}
 				
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
@@ -1130,14 +1130,14 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("\"DataList\":[");
 		if(userCheckSign==1){
 			String sql="";
-			String hisTableName="tbl_rpcacqdata_hist";
+			String hisTableName="tbl_srpacqdata_hist";
 			String deviceTableName="tbl_device";
 			
 			sql="select t.id, t2.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
 					+ " t3.resultName,t3.optimizationSuggestion "
-					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
+					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_srp_worktype t3"
 					+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.deviceName='" + deviceName + "' "
@@ -1258,14 +1258,14 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("\"DataList\":[");
 		if(userCheckSign==1){
 			String sql="";
-			String hisTableName="tbl_rpcacqdata_hist";
+			String hisTableName="tbl_srpacqdata_hist";
 			String deviceTableName="tbl_device";
 			
 			sql="select t.id, t2.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 					+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", "
 					+ " t3.resultName,t3.optimizationSuggestion "
-					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
+					+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_srp_worktype t3"
 					+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(StringManagerUtils.isNotNull(deviceName)){
@@ -1384,7 +1384,7 @@ public class MobileService<T> extends BaseService<T> {
 					prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,"
 							+ " t.availablePlungerstrokeProd_V,t.pumpClearanceLeakProd_V,t.tvleakVolumetricProduction,t.svleakVolumetricProduction,t.gasInfluenceProd_V,";;
 				}
-				String hisTableName="tbl_rpcacqdata_hist";
+				String hisTableName="tbl_srpacqdata_hist";
 				String deviceTableName="tbl_device";
 				String sql="select t3.resultName,t3.optimizationSuggestion,"//0~1
 						+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//2~4
@@ -1405,7 +1405,7 @@ public class MobileService<T> extends BaseService<T> {
 						+ " t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,"//48~52
 						+ " t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"//53~57
 						+ " t.productiondata"//58
-						+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
+						+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_srp_worktype t3"
 						+ " where t.deviceId=t2.id and t.resultcode=t3.resultcode"
 						+ " and  t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 						+ " and  t2.deviceName='"+deviceName+"' and t.fesdiagramAcqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')"; 
@@ -1418,19 +1418,19 @@ public class MobileService<T> extends BaseService<T> {
 					String pumpSettingDepth="";
 					String producingFluidLevel="";
 					String productionData=obj[obj.length-1].toString();
-					type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-					RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
-					if(rpcProductionData!=null && rpcProductionData.getProduction()!=null){
+					type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+					SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+					if(srpProductionData!=null && srpProductionData.getProduction()!=null){
 						if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("stere")){
-							waterCut=rpcProductionData.getProduction().getWaterCut()+"";
+							waterCut=srpProductionData.getProduction().getWaterCut()+"";
 						}else{
-							waterCut=rpcProductionData.getProduction().getWeightWaterCut()+"";
+							waterCut=srpProductionData.getProduction().getWeightWaterCut()+"";
 						}
-						pumpSettingDepth=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-						producingFluidLevel=rpcProductionData.getProduction().getProducingfluidLevel()+"";
+						pumpSettingDepth=srpProductionData.getProduction().getPumpSettingDepth()+"";
+						producingFluidLevel=srpProductionData.getProduction().getProducingfluidLevel()+"";
 					}
-					if(rpcProductionData!=null && rpcProductionData.getPump()!=null){
-						pumpBoreDiameter=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
+					if(srpProductionData!=null && srpProductionData.getPump()!=null){
+						pumpBoreDiameter=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
 					}
 					
 					result_json.append("\"ResultName\":\""+obj[0]+"\",");
@@ -1598,8 +1598,8 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			String sql="select decode(t2.resultcode,0,'无数据',null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
 					+ " from tbl_device t "
-					+ " left outer join tbl_rpcdailycalculationdata t2 on t2.deviceId=t.id "
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join tbl_srpdailycalculationdata t2 on t2.deviceId=t.id "
+					+ " left outer join tbl_srp_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ "and t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
@@ -1635,7 +1635,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String tableName="tbl_rpcdailycalculationdata";
+			String tableName="tbl_srpdailycalculationdata";
 			String deviceTableName="tbl_device";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
@@ -1690,7 +1690,7 @@ public class MobileService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(wells)){
 				wellList=wells.split(",");
 			}
-			String tableName="tbl_rpcdailycalculationdata";
+			String tableName="tbl_srpdailycalculationdata";
 			String deviceTableName="tbl_device";
 			if(deviceType!=1){
 				tableName="tbl_pcpdailycalculationdata";
@@ -1821,7 +1821,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			String tableName="tbl_rpcdailycalculationdata";
+			String tableName="tbl_srpdailycalculationdata";
 			String deviceTableName="tbl_device";
 			
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
@@ -1841,7 +1841,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join tbl_srp_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate= to_date('"+date+"','yyyy-mm-dd') ";
 			if(wellList!=null){
@@ -1866,14 +1866,14 @@ public class MobileService<T> extends BaseService<T> {
 				String resultcode=obj[13]+"";
 				
 				
-				RPCDeviceInfo rpcDeviceInfo=null;
+				SRPDeviceInfo srpDeviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					srpDeviceInfo=(SRPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+				if(jedis!=null&&srpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes())){
+					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes()));
 				}
 				
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
@@ -2158,7 +2158,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			String tableName="tbl_rpcdailycalculationdata";
+			String tableName="tbl_srpdailycalculationdata";
 			String deviceTableName="tbl_device";
 			
 			String sql="select t2.id,t.id as deviceId,t.deviceName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
@@ -2178,7 +2178,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ "t2.pumpEff*100 as pumpEff";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceId=t.id"
-					+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+					+ " left outer join tbl_srp_worktype t3 on t2.resultcode=t3.resultcode "
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  "
 					+ " and t2.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 			if(StringManagerUtils.isNotNull(deviceName)){
@@ -2202,14 +2202,14 @@ public class MobileService<T> extends BaseService<T> {
 				String resultcode=obj[13]+"";
 				
 				
-				RPCDeviceInfo rpcDeviceInfo=null;
+				SRPDeviceInfo srpDeviceInfo=null;
 				if(jedis!=null&&jedis.hexists("DeviceInfo".getBytes(), deviceId.getBytes())){
-					rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
+					srpDeviceInfo=(SRPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("DeviceInfo".getBytes(), deviceId.getBytes()));
 				}
 				
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-				if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
-					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+				if(jedis!=null&&srpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes())){
+					alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), srpDeviceInfo.getAlarmInstanceCode().getBytes()));
 				}
 				
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
@@ -2452,14 +2452,14 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		if(liftingType==1){
-			json=this.getRPCInformation(user,password,wells.toString());
+			json=this.getSRPInformation(user,password,wells.toString());
 		}else{
 			json=this.getPCPInformation(user,password,wells.toString());
 		}
 		return json;
 	}
 	
-	public String getRPCInformation(String user,String password,String wells) {
+	public String getSRPInformation(String user,String password,String wells) {
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
@@ -2472,7 +2472,7 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			String tableName="viw_rpcdevice";
+			String tableName="viw_srpdevice";
 			String sql = "select t.id,t.orgName,t.deviceName,t.applicationScenariosName,"//3
 					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
 					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11
@@ -2512,8 +2512,8 @@ public class MobileService<T> extends BaseService<T> {
 						netGrossRatio="",netGrossValue="";
 				String balanceWeight="",balancePosition="";
 				if(StringManagerUtils.isNotNull(productionDataStr)){
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData productionData=gson.fromJson(productionDataStr, type);
+					type = new TypeToken<SRPProductionData>() {}.getType();
+					SRPProductionData productionData=gson.fromJson(productionDataStr, type);
 					if(productionData!=null){
 						if(productionData.getFluidPVT()!=null){
 							crudeOilDensity=productionData.getFluidPVT().getCrudeOilDensity()+"";
@@ -2582,8 +2582,8 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				if(StringManagerUtils.isNotNull(balanceInfo)){
-					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+					type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+					SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null && balance.getEveryBalance().size()>0){
 						for(int j=0;j<balance.getEveryBalance().size();j++){
 							balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
@@ -2695,7 +2695,7 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			String tableName="viw_rpcdevice";
+			String tableName="viw_srpdevice";
 			String sql = "select t.id,t.orgName,t.deviceName,t.applicationScenariosName,"//0~3
 					+ " t.instanceName,t.displayInstanceName,t.alarmInstanceName,t.reportinstancename,"//4~7
 					+ " t.tcptype,t.signInId,t.slave,t.peakdelay,"//8~11

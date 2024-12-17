@@ -161,7 +161,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
 });
 function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 	var root=[];
-	var rpcAcqUnit=[];
+	var srpAcqUnit=[];
 	var pcpAcqUnit=[];
 	
 	Ext.Ajax.request({
@@ -169,7 +169,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 		url:context + '/acquisitionUnitManagerController/getAcqUnitList',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			rpcAcqUnit=result.rpcAcqUnit;
+			srpAcqUnit=result.srpAcqUnit;
 			pcpAcqUnit=result.pcpAcqUnit;
 			
 			if(data.classes==0){
@@ -285,12 +285,12 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				protocolConfigInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
-				protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=rpcAcqUnit;
+				protocolConfigInstancePropertiesHandsontableHelper.srpAcqUnit=srpAcqUnit;
 		        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=pcpAcqUnit;
 				protocolConfigInstancePropertiesHandsontableHelper.createTable(root);
 			}else{
 				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
-				protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=rpcAcqUnit;
+				protocolConfigInstancePropertiesHandsontableHelper.srpAcqUnit=srpAcqUnit;
 		        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=pcpAcqUnit;
 				protocolConfigInstancePropertiesHandsontableHelper.hot.loadData(root);
 			}
@@ -314,7 +314,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	        protocolConfigInstancePropertiesHandsontableHelper.colHeaders=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.columns=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.AllData=[];
-	        protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=[];
+	        protocolConfigInstancePropertiesHandsontableHelper.srpAcqUnit=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=[];
 	        
 	        protocolConfigInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -375,12 +375,12 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    	cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt','private-kd93','private-lq1000'];
+			                    	this.source = ['modbus-tcp','modbus-rtu','private-srp','private-mqtt','private-kd93','private-lq1000'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && visualRowIndex===3) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt'];
+			                    	this.source = ['modbus-tcp','modbus-rtu','private-srp','private-mqtt'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RPCCalculateRequestData_All implements Serializable {
+public class SRPCalculateRequestData_All implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String WellName;

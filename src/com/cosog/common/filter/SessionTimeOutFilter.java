@@ -93,7 +93,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("totalCalculation")
 						||urlString.equals("dailyCalculation")
 						||urlString.indexOf("FESDiagramDailyCalculation")>=0
-						||urlString.indexOf("RPCTimingTotalCalculation")>=0
+						||urlString.indexOf("SRPTimingTotalCalculation")>=0
 						||urlString.indexOf("AcquisitionDataTimingTotalCalculation")>=0
 						||urlString.indexOf("AcquisitionDataDailyCalculation")>=0
 						||urlString.indexOf("initDailyReportData")>=0

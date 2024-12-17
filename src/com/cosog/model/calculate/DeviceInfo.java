@@ -70,7 +70,7 @@ public class DeviceInfo implements Serializable {
 	
 	private String runRange;
 	
-	private RPCCalculateRequestData rpcCalculateRequestData;
+	private SRPCalculateRequestData srpCalculateRequestData;
 	
 	private PCPCalculateRequestData pcpCalculateRequestData;
 	
@@ -335,17 +335,6 @@ public class DeviceInfo implements Serializable {
 		this.saveTime = saveTime;
 	}
 
-//	public List<RPCCalculateResponseData> getRPCCalculateList() {
-//		if(RPCCalculateList==null){
-//			this.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
-//		}
-//		return this.RPCCalculateList;
-//	}
-//
-//	public void setRPCCalculateList(List<RPCCalculateResponseData> rPCCalculateList) {
-//		RPCCalculateList = rPCCalculateList;
-//	}
-
 	public Integer getResultCode() {
 		return resultCode;
 	}
@@ -474,14 +463,6 @@ public class DeviceInfo implements Serializable {
 		this.calculateType = calculateType;
 	}
 
-	public RPCCalculateRequestData getRpcCalculateRequestData() {
-		return rpcCalculateRequestData;
-	}
-
-	public void setRpcCalculateRequestData(RPCCalculateRequestData rpcCalculateRequestData) {
-		this.rpcCalculateRequestData = rpcCalculateRequestData;
-	}
-
 	public PCPCalculateRequestData getPcpCalculateRequestData() {
 		return pcpCalculateRequestData;
 	}
@@ -528,6 +509,14 @@ public class DeviceInfo implements Serializable {
 
 	public void setDeviceTypeName_ru(String deviceTypeName_ru) {
 		this.deviceTypeName_ru = deviceTypeName_ru;
+	}
+
+	public SRPCalculateRequestData getSrpCalculateRequestData() {
+		return srpCalculateRequestData;
+	}
+
+	public void setSrpCalculateRequestData(SRPCalculateRequestData srpCalculateRequestData) {
+		this.srpCalculateRequestData = srpCalculateRequestData;
 	}
 
 }

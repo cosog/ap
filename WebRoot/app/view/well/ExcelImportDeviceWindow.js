@@ -328,7 +328,7 @@ var ImportDeviceHandsontableHelper = {
                 success: function (response) {
                     Ext.getCmp("ExcelImportDeviceWindow_Id").close();
                     if(parseInt(deviceType)==101){
-                		CreateAndLoadRPCDeviceInfoTable();
+                		CreateAndLoadSRPDeviceInfoTable();
                 	}else if(parseInt(deviceType)==201){
                 		CreateAndLoadPCPDeviceInfoTable();
                 	}

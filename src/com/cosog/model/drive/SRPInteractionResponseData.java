@@ -1,6 +1,6 @@
 package com.cosog.model.drive;
 
-public class RPCInteractionResponseData {
+public class SRPInteractionResponseData {
 	private int ResultStatus;
 
 	public int getResultStatus() {

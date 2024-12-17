@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cosog.model.calculate.RPCCalculateResponseData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
-import com.cosog.model.calculate.RPCCalculateRequestData.*;
+import com.cosog.model.calculate.SRPCalculateRequestData.*;
 
-public class RPCDeviceInfo implements Serializable {
+public class SRPDeviceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer orgId;
@@ -96,8 +96,6 @@ public class RPCDeviceInfo implements Serializable {
 	private Integer resultCode;
 	
 	private Integer resultStatus;
-	
-//	private List<RPCCalculateResponseData> RPCCalculateList;
 
 	public Integer getId() {
 		return id;

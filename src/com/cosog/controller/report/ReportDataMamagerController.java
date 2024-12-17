@@ -240,7 +240,7 @@ public class ReportDataMamagerController extends BaseController {
 		String tableName="tbl_dailycalculationdata";
 		String timingcalculationTableName="tbl_timingcalculationdata";
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
-			timingcalculationTableName="tbl_rpctimingcalculationdata";
+			timingcalculationTableName="tbl_srptimingcalculationdata";
 		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
@@ -330,10 +330,10 @@ public class ReportDataMamagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
-		String tableName="tbl_rpcdailycalculationdata";
+		String tableName="tbl_srpdailycalculationdata";
 		String timingcalculationTableName="tbl_timingcalculationdata";
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
-			timingcalculationTableName="tbl_rpctimingcalculationdata";
+			timingcalculationTableName="tbl_srptimingcalculationdata";
 		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}
@@ -751,7 +751,7 @@ public class ReportDataMamagerController extends BaseController {
 		String tableName="tbl_dailycalculationdata";
 		String timingcalculationTableName="tbl_timingcalculationdata";
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
-			timingcalculationTableName="tbl_rpctimingcalculationdata";
+			timingcalculationTableName="tbl_srptimingcalculationdata";
 		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 			timingcalculationTableName="tbl_pcptimingcalculationdata";
 		}

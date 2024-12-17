@@ -5,7 +5,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
     border: false,
     initComponent: function () {
         var me = this;
-        var rpcCombStore = new Ext.data.JsonStore({
+        var srpCombStore = new Ext.data.JsonStore({
         	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
@@ -15,7 +15,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/wellInformationManagerController/loadRPCDeviceComboxList',
+            	url: context + '/wellInformationManagerController/loadSRPDeviceComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -41,7 +41,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             }
         });
         
-        var rpcDeviceCombo = Ext.create(
+        var srpDeviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: deviceShowName,
                     id: "UpstreamAndDownstreamInteractionDeviceListComb_Id",
@@ -50,7 +50,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
-                    store: rpcCombStore,
+                    store: srpCombStore,
                     autoSelect: false,
                     editable: true,
                     triggerAction: 'all',
@@ -62,7 +62,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     blankText: '--'+loginUserLanguageResource.all+'--',
                     listeners: {
                         expand: function (sm, selections) {
-                            rpcDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
+                            srpDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
                         	Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getStore().loadPage(1);
@@ -101,7 +101,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                          handler: function (v, o) {
                         	 Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getStore().loadPage(1);
                          }
-             		},'-',rpcDeviceCombo]
+             		},'-',srpDeviceCombo]
                 }, {
                 	
                     region: 'center',
@@ -457,7 +457,7 @@ function producerMsg(){
             if (btn == "yes") {
             	Ext.Ajax.request({
             		method:'POST',
-            		url:context + '/wellInformationManagerController/downstreamRPCData',
+            		url:context + '/wellInformationManagerController/downstreamSRPData',
             		success:function(response) {
             			rdata=Ext.JSON.decode(response.responseText);
             			if (rdata.success && rdata.msg==1 ) {

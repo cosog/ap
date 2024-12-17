@@ -63,7 +63,7 @@ import com.cosog.model.RunStatusConfig;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPProductionData;
-import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.drive.ExportAcqInstanceData;
 import com.cosog.model.drive.ExportAcqUnitData;
 import com.cosog.model.drive.ExportAlarmInstanceData;
@@ -1066,14 +1066,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(StringManagerUtils.stringToInteger(reportType)==2){
 				key="acqTimingTotalCalItemList";
 				if("1".equalsIgnoreCase(calculateType)){
-					key="rpcTimingTotalCalItemList";
+					key="srpTimingTotalCalItemList";
 				}else if("2".equalsIgnoreCase(calculateType)){
 					key="pcpTimingTotalCalItemList";
 				}
 			}else{
 				key="acqTotalCalItemList";
 				if("1".equalsIgnoreCase(calculateType)){
-					key="rpcTotalCalItemList";
+					key="srpTotalCalItemList";
 				}else if("2".equalsIgnoreCase(calculateType)){
 					key="pcpTotalCalItemList";
 				}
@@ -1081,7 +1081,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			List<CalItem> calItemList=null;
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
+				calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 			}else{
@@ -1176,14 +1176,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(StringManagerUtils.stringToInteger(reportType)==2){
 				key="acqTimingTotalCalItemList";
 				if("1".equalsIgnoreCase(calculateType)){
-					key="rpcTimingTotalCalItemList";
+					key="srpTimingTotalCalItemList";
 				}else if("2".equalsIgnoreCase(calculateType)){
 					key="pcpTimingTotalCalItemList";
 				}
 			}else{
 				key="acqTotalCalItemList";
 				if("1".equalsIgnoreCase(calculateType)){
-					key="rpcTotalCalItemList";
+					key="srpTotalCalItemList";
 				}else if("2".equalsIgnoreCase(calculateType)){
 					key="pcpTotalCalItemList";
 				}
@@ -1191,7 +1191,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			List<CalItem> calItemList=null;
 			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getRPCTotalCalculateItem(language);
+				calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
 			}else if("2".equalsIgnoreCase(calculateType)){
 				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
 			}else{

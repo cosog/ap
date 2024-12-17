@@ -53,10 +53,10 @@ import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.RPCDeviceTodayData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
+import com.cosog.model.calculate.SRPDeviceInfo;
+import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
@@ -94,24 +94,6 @@ public class MemoryDataManagerTask {
 		loadReportTemplateConfig();
 		System.out.println("加载报表模板完成");
 		
-//		loadPCPCalculateItem();
-//		System.out.println("加载PCP计算项完成");
-//		loadPCPInputItem();
-//		System.out.println("加载PCP输入项完成");
-//		loadPCPTotalCalculateItem();
-//		System.out.println("加载PCP汇总项完成");
-//		loadPCPTimingTotalCalculateItem();
-//		System.out.println("加载PCP定时汇总项完成");
-		
-//		loadRPCCalculateItem();
-//		System.out.println("加载RPC计算项完成");
-//		loadRPCInputItem();
-//		System.out.println("加载RPC输入项完成");
-//		loadRPCTotalCalculateItem();
-//		System.out.println("加载RPC汇总项完成");
-//		loadRPCTimingTotalCalculateItem();
-//		System.out.println("加载RPC定时汇总项完成");
-		
 		loadAcqInstanceOwnItemById("","update");
 		System.out.println("加载采控实例信息完成");
 		loadAlarmInstanceOwnItemById("","update");
@@ -122,8 +104,6 @@ public class MemoryDataManagerTask {
 		loadDeviceInfo(null,0,"update");
 		System.out.println("加载设备信息完成");
 		
-//		loadDeviceRealtimeAcqData(null);
-//		System.out.println("加载设备实时数据完成");
 		MemoryDataManagerTask.loadDeviceRealtimeTotalData(null,0);
 		System.out.println("加载实时汇总数据完成");
 		
@@ -317,9 +297,9 @@ public class MemoryDataManagerTask {
 		cleanData("acqCalItemList-ru");
 		cleanData("acqCalItemList-zh_CN");
 		
-		cleanData("rpcCalItemList-en");
-		cleanData("rpcCalItemList-ru");
-		cleanData("rpcCalItemList-zh_CN");
+		cleanData("srpCalItemList-en");
+		cleanData("srpCalItemList-ru");
+		cleanData("srpCalItemList-zh_CN");
 		
 		cleanData("pcpCalItemList-en");
 		cleanData("pcpCalItemList-ru");
@@ -329,9 +309,9 @@ public class MemoryDataManagerTask {
 		cleanData("acqTotalCalItemList-ru");
 		cleanData("acqTotalCalItemList-zh_CN");
 		
-		cleanData("rpcTotalCalItemList-en");
-		cleanData("rpcTotalCalItemList-ru");
-		cleanData("rpcTotalCalItemList-zh_CN");
+		cleanData("srpTotalCalItemList-en");
+		cleanData("srpTotalCalItemList-ru");
+		cleanData("srpTotalCalItemList-zh_CN");
 		
 		cleanData("pcpTotalCalItemList-en");
 		cleanData("pcpTotalCalItemList-ru");
@@ -341,25 +321,25 @@ public class MemoryDataManagerTask {
 		cleanData("acqTimingTotalCalItemList-ru");
 		cleanData("acqTimingTotalCalItemList-zh_CN");
 		
-		cleanData("rpcTimingTotalCalItemList-en");
-		cleanData("rpcTimingTotalCalItemList-ru");
-		cleanData("rpcTimingTotalCalItemList-zh_CN");
+		cleanData("srpTimingTotalCalItemList-en");
+		cleanData("srpTimingTotalCalItemList-ru");
+		cleanData("srpTimingTotalCalItemList-zh_CN");
 		
 		cleanData("pcpTimingTotalCalItemList-en");
 		cleanData("pcpTimingTotalCalItemList-ru");
 		cleanData("pcpTimingTotalCalItemList-zh_CN");
 		
-		cleanData("rpcInputItemList-en");
-		cleanData("rpcInputItemList-ru");
-		cleanData("rpcInputItemList-zh_CN");
+		cleanData("srpInputItemList-en");
+		cleanData("srpInputItemList-ru");
+		cleanData("srpInputItemList-zh_CN");
 		
 		cleanData("pcpInputItemList-en");
 		cleanData("pcpInputItemList-ru");
 		cleanData("pcpInputItemList-zh_CN");
 		
 		cleanData("UserInfo");
-		cleanData("RPCWorkType");
-		cleanData("RPCWorkTypeByName");
+		cleanData("SRPWorkType");
+		cleanData("SRPWorkTypeByName");
 		cleanData("AlarmShowStyle");
 		cleanData("UIKitAccessToken");
 		cleanData("ReportTemplateConfig");
@@ -374,7 +354,7 @@ public class MemoryDataManagerTask {
 		}
 		
 		cleanData("DeviceRealtimeTotalData");
-		cleanData("RPCDeviceTodayData");
+		cleanData("SRPDeviceTodayData");
 		cleanData("PCPDeviceTodayData");
 		cleanData("DeviceInfo");
 	}
@@ -927,7 +907,7 @@ public class MemoryDataManagerTask {
 				if(condition==0){
 					for(int i=0;i<wellList.size();i++){
 						jedis.hdel("DeviceInfo".getBytes(), wellList.get(i).getBytes());
-						jedis.hdel("RPCDeviceTodayData".getBytes(), wellList.get(i).getBytes());
+						jedis.hdel("SRPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						
 						jedis.del(("DeviceRealtimeAcqData_"+wellList.get(i)).getBytes());
@@ -940,7 +920,7 @@ public class MemoryDataManagerTask {
 								DeviceInfo deviceInfo=deviceInfoList.get(i);
 								if(wellList.get(i).equalsIgnoreCase(deviceInfo.getDeviceName())){
 									jedis.hdel("DeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
-									jedis.hdel("RPCDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
+									jedis.hdel("SRPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.del(("DeviceRealtimeAcqData_"+deviceInfo.getId()).getBytes());
 									break;
@@ -968,7 +948,7 @@ public class MemoryDataManagerTask {
 						+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode"
 						+ " from viw_device t"
 						+ " left outer join tbl_acqdata_latest t2 on t2.deviceid=t.id "
-						+ " left outer join tbl_rpcacqdata_latest t3 on t3.deviceid=t.id "
+						+ " left outer join tbl_srpacqdata_latest t3 on t3.deviceid=t.id "
 						+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
 						+ " where 1=1 ";
 				String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemname,t4.itemvalue "
@@ -1051,8 +1031,8 @@ public class MemoryDataManagerTask {
 					
 					if(StringManagerUtils.isNotNull(productionData)){
 						if(deviceInfo.getCalculateType()==1){//功图计算
-							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 							
 							List<AuxiliaryDeviceAddInfo> thisAuxiliaryDeviceAddInfoList=new ArrayList<>();
 							String manufacturer="";
@@ -1063,49 +1043,49 @@ public class MemoryDataManagerTask {
 								}
 							}
 							
-							deviceInfo.setRpcCalculateRequestData(new RPCCalculateRequestData());
-							deviceInfo.getRpcCalculateRequestData().init();
+							deviceInfo.setSrpCalculateRequestData(new SRPCalculateRequestData());
+							deviceInfo.getSrpCalculateRequestData().init();
 							
-							deviceInfo.getRpcCalculateRequestData().setFluidPVT(rpcProductionData.getFluidPVT());
-							deviceInfo.getRpcCalculateRequestData().setReservoir(rpcProductionData.getReservoir());
-							deviceInfo.getRpcCalculateRequestData().setTubingString(rpcProductionData.getTubingString());
-							deviceInfo.getRpcCalculateRequestData().setCasingString(rpcProductionData.getCasingString());
-							deviceInfo.getRpcCalculateRequestData().setRodString(rpcProductionData.getRodString());
-							deviceInfo.getRpcCalculateRequestData().setPump(rpcProductionData.getPump());
-							deviceInfo.getRpcCalculateRequestData().setProduction(rpcProductionData.getProduction());
+							deviceInfo.getSrpCalculateRequestData().setFluidPVT(srpProductionData.getFluidPVT());
+							deviceInfo.getSrpCalculateRequestData().setReservoir(srpProductionData.getReservoir());
+							deviceInfo.getSrpCalculateRequestData().setTubingString(srpProductionData.getTubingString());
+							deviceInfo.getSrpCalculateRequestData().setCasingString(srpProductionData.getCasingString());
+							deviceInfo.getSrpCalculateRequestData().setRodString(srpProductionData.getRodString());
+							deviceInfo.getSrpCalculateRequestData().setPump(srpProductionData.getPump());
+							deviceInfo.getSrpCalculateRequestData().setProduction(srpProductionData.getProduction());
 							
-							deviceInfo.getRpcCalculateRequestData().setManualIntervention(rpcProductionData.getManualIntervention());
+							deviceInfo.getSrpCalculateRequestData().setManualIntervention(srpProductionData.getManualIntervention());
 							
 							if(thisAuxiliaryDeviceAddInfoList.size()>0){
-								deviceInfo.getRpcCalculateRequestData().setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+								deviceInfo.getSrpCalculateRequestData().setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
 								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
 									manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
 									model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
 									if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
 									}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}else if("crankGravityRadius".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}else if("singleCrankWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}else if("singleCrankPinWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
-										deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}
 								}
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setModel(model);
-								deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setStroke(stroke);
+								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);
+								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setModel(model);
+								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStroke(stroke);
 								
-								type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-								RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+								type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+								SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 								if(balance!=null){
-									deviceInfo.getRpcCalculateRequestData().getPumpingUnit().setBalance(balance);
+									deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setBalance(balance);
 								}
 							}else{
-								deviceInfo.getRpcCalculateRequestData().setPumpingUnit(null);
+								deviceInfo.getSrpCalculateRequestData().setPumpingUnit(null);
 							}
 						}else if(deviceInfo.getCalculateType()==2){//转速计产
 							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
@@ -1124,7 +1104,7 @@ public class MemoryDataManagerTask {
 							deviceInfo.getPcpCalculateRequestData().setManualIntervention(pcpProductionData.getManualIntervention());
 						}
 					}else{
-						deviceInfo.setRpcCalculateRequestData(null);
+						deviceInfo.setSrpCalculateRequestData(null);
 						deviceInfo.setPcpCalculateRequestData(null);
 					}
 					deviceInfo.setSortNum(rs.getInt(31));
@@ -1275,7 +1255,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			List<CalItem> rpcCalItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
+			List<CalItem> srpCalItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
 			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			String date=StringManagerUtils.getCurrentTime();
 			
@@ -1315,14 +1295,14 @@ public class MemoryDataManagerTask {
 			
 			//加载功图计算数据
 			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
-			for(CalItem calItem:rpcCalItemList){
+			for(CalItem calItem:srpCalItemList){
 				String columnCode=calItem.getCode();
 				if("resultName".equalsIgnoreCase(columnCode)){
 					columnCode="resultCode";
 				}
 				sql+=",t."+columnCode;
 			}	
-			sql+= " from viw_rpcacqdata_hist t"
+			sql+= " from viw_srpacqdata_hist t"
 					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				if(deviceIdList.size()==1){
@@ -1333,14 +1313,14 @@ public class MemoryDataManagerTask {
 			}
 			sql+=" order by t.deviceId,t.acqTime";
 			
-			List<Object[]> queryRPCCalDataList=OracleJdbcUtis.query(sql);
-			for(Object[] obj:queryRPCCalDataList){
+			List<Object[]> querySRPCalDataList=OracleJdbcUtis.query(sql);
+			for(Object[] obj:querySRPCalDataList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 				String acqTime=obj[1]+"";
 				String key="DeviceRealtimeAcqData_"+deviceId;
 				String productionDataStr=obj[2]+"";
-				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+				SRPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				Map<String,String> productionDataMap=new LinkedHashMap<>();
 				if(productionData!=null){
 					if(productionData.getFluidPVT()!=null){
@@ -1373,8 +1353,8 @@ public class MemoryDataManagerTask {
 				
 				if(!jedis.hexists(key.getBytes(),acqTime.getBytes())){
 					Map<String,String> everyDataMap =new HashMap<>();
-					for(int i=0;i<rpcCalItemList.size();i++){
-						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
+					for(int i=0;i<srpCalItemList.size();i++){
+						everyDataMap.put(srpCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
 					}
 					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
 					while(productionDataMapIterator.hasNext()){
@@ -1393,8 +1373,8 @@ public class MemoryDataManagerTask {
 					if(everyDataMap==null){
 						everyDataMap =new HashMap<>();
 					}
-					for(int i=0;i<rpcCalItemList.size();i++){
-						everyDataMap.put(rpcCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
+					for(int i=0;i<srpCalItemList.size();i++){
+						everyDataMap.put(srpCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
 					}
 					
 					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
@@ -2290,8 +2270,8 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			List<byte[]> calItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			for(byte[] rpcCalItemByteArr:calItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+			for(byte[] srpCalItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(srpCalItemByteArr);
 				calItemList.add(calItem);
 			}
 		}catch (Exception e) {
@@ -2332,18 +2312,18 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static List<CalItem> getRPCCalculateItem(String language){
+	public static List<CalItem> getSRPCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcCalItemList-"+language;
+		String key="srpCalItemList-"+language;
 		List<CalItem> calItemList=new ArrayList<>();
 		if(!existsKey(key)){
-			MemoryDataManagerTask.loadRPCCalculateItem(language);
+			MemoryDataManagerTask.loadSRPCalculateItem(language);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			List<byte[]> calItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			for(byte[] rpcCalItemByteArr:calItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+			for(byte[] srpCalItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(srpCalItemByteArr);
 				calItemList.add(calItem);
 			}
 		}catch (Exception e) {
@@ -2356,9 +2336,9 @@ public class MemoryDataManagerTask {
 		return calItemList;
 	}
 	
-	public static void loadRPCCalculateItem(String language){
+	public static void loadSRPCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcCalItemList-"+language;
+		String key="srpCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2483,8 +2463,8 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			List<byte[]> calItemSet= jedis.zrange(key.getBytes(), 0, -1);
-			for(byte[] rpcCalItemByteArr:calItemSet){
-				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(rpcCalItemByteArr);
+			for(byte[] srpCalItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(srpCalItemByteArr);
 				calItemList.add(calItem);
 			}
 		}catch (Exception e) {
@@ -2626,16 +2606,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static List<CalItem> getRPCTotalCalculateItem(String language){
+	public static List<CalItem> getSRPTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="rpcTotalCalItemList-"+language;
+		String key="srpTotalCalItemList-"+language;
 		if(!existsKey(key)){
-			MemoryDataManagerTask.loadRPCTotalCalculateItem(language);
+			MemoryDataManagerTask.loadSRPTotalCalculateItem(language);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			List<byte[]> calItemSet= jedis.zrange("rpcTotalCalItemList".getBytes(), 0, -1);
+			List<byte[]> calItemSet= jedis.zrange("srpTotalCalItemList".getBytes(), 0, -1);
 			for(byte[] calItemByteArr:calItemSet){
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
 				calItemList.add(calItem);
@@ -2650,9 +2630,9 @@ public class MemoryDataManagerTask {
 		return calItemList;
 	}
 	
-	public static void loadRPCTotalCalculateItem(String language){
+	public static void loadSRPTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcTotalCalItemList-"+language;
+		String key="srpTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2898,12 +2878,12 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static List<CalItem> getRPCTimingTotalCalculateItem(String language){
+	public static List<CalItem> getSRPTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
-		String key="rpcTimingTotalCalItemList-"+language;
+		String key="srpTimingTotalCalItemList-"+language;
 		if(!existsKey(key)){
-			MemoryDataManagerTask.loadRPCTimingTotalCalculateItem(language);
+			MemoryDataManagerTask.loadSRPTimingTotalCalculateItem(language);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2922,9 +2902,9 @@ public class MemoryDataManagerTask {
 		return calItemList;
 	}
 	
-	public static void loadRPCTimingTotalCalculateItem(String language){
+	public static void loadSRPTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
-		String key="rpcTimingTotalCalItemList-"+language;
+		String key="srpTimingTotalCalItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3135,12 +3115,12 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static List<CalItem> getRPCInputItem(String language){
+	public static List<CalItem> getSRPInputItem(String language){
 		Jedis jedis=null;
-		String key="rpcInputItemList-"+language;
+		String key="srpInputItemList-"+language;
 		List<CalItem> calItemList=new ArrayList<>();
 		if(!existsKey(key)){
-			MemoryDataManagerTask.loadRPCInputItem(language);
+			MemoryDataManagerTask.loadSRPInputItem(language);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3159,9 +3139,9 @@ public class MemoryDataManagerTask {
 		return calItemList;
 	}
 	
-	public static void loadRPCInputItem(String language){
+	public static void loadSRPInputItem(String language){
 		Jedis jedis=null;
-		String key="rpcInputItemList-"+language;
+		String key="srpInputItemList-"+language;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -3440,12 +3420,12 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-//	public static void loadRPCWorkType(){
+//	public static void loadSRPWorkType(){
 //		Jedis jedis=null;
 //		try {
 //			jedis = RedisUtil.jedisPool.getResource();
 //			String sql="select t.id,t.resultcode,t.resultname,t.resultdescription,t.optimizationsuggestion,t.remark "
-//					+ " from TBL_RPC_WORKTYPE t order by t.resultcode";
+//					+ " from TBL_SRP_WORKTYPE t order by t.resultcode";
 //			List<Object[]> list=OracleJdbcUtis.query(sql);
 //			for(Object[] obj:list){
 //				WorkType workType=new WorkType();
@@ -3458,8 +3438,8 @@ public class MemoryDataManagerTask {
 //				String key=workType.getResultCode()+"";
 //				String keyByName=workType.getResultName()+"";
 //				
-//				jedis.hset("RPCWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
-//				jedis.hset("RPCWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
+//				jedis.hset("SRPWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
+//				jedis.hset("SRPWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
 //			}
 //		}catch (Exception e) {
 //			e.printStackTrace();
@@ -3473,13 +3453,13 @@ public class MemoryDataManagerTask {
 //	public static WorkType getWorkTypeByCode(String resultCode){
 //		WorkType workType=null;
 //		Jedis jedis=null;
-//		if(!existsKey("RPCWorkType")){
-//			MemoryDataManagerTask.loadRPCWorkType();
+//		if(!existsKey("SRPWorkType")){
+//			MemoryDataManagerTask.loadSRPWorkType();
 //		}
 //		try {
 //			jedis = RedisUtil.jedisPool.getResource();
-//			if(jedis.hexists("RPCWorkType".getBytes(), (resultCode).getBytes())){
-//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (resultCode).getBytes()));
+//			if(jedis.hexists("SRPWorkType".getBytes(), (resultCode).getBytes())){
+//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("SRPWorkType".getBytes(), (resultCode).getBytes()));
 //			}
 //		}catch (Exception e) {
 //			e.printStackTrace();
@@ -3494,13 +3474,13 @@ public class MemoryDataManagerTask {
 //	public static int getResultCodeByName(String resultName){
 //		int resultCode=0;
 //		Jedis jedis=null;
-//		if(!existsKey("RPCWorkTypeByName")){
-//			MemoryDataManagerTask.loadRPCWorkType();
+//		if(!existsKey("SRPWorkTypeByName")){
+//			MemoryDataManagerTask.loadSRPWorkType();
 //		}
 //		try {
 //			jedis = RedisUtil.jedisPool.getResource();
-//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//			if(jedis.hexists("SRPWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("SRPWorkTypeByName".getBytes(), (resultName).getBytes()));
 //				resultCode=workType.getResultCode();
 //			}
 //		}catch (Exception e) {
@@ -3516,13 +3496,13 @@ public class MemoryDataManagerTask {
 //	public static WorkType getWorkTypeByName(String resultName){
 //		WorkType workType=null;
 //		Jedis jedis=null;
-//		if(!existsKey("RPCWorkTypeByName")){
-//			MemoryDataManagerTask.loadRPCWorkType();
+//		if(!existsKey("SRPWorkTypeByName")){
+//			MemoryDataManagerTask.loadSRPWorkType();
 //		}
 //		try {
 //			jedis = RedisUtil.jedisPool.getResource();
-//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//			if(jedis.hexists("SRPWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("SRPWorkTypeByName".getBytes(), (resultName).getBytes()));
 //			}
 //		}catch (Exception e) {
 //			e.printStackTrace();
@@ -3749,17 +3729,17 @@ public class MemoryDataManagerTask {
 		return protocol;
 	}
 	
-	public static RPCDeviceTodayData getRPCDeviceTodayDataById(int deviceId){
-		RPCDeviceTodayData deviceTodayData=null;
+	public static SRPDeviceTodayData getSRPDeviceTodayDataById(int deviceId){
+		SRPDeviceTodayData deviceTodayData=null;
 		Jedis jedis=null;
 		String key=deviceId+"";
-		if(!existsKey("RPCDeviceTodayData")){
+		if(!existsKey("SRPDeviceTodayData")){
 			MemoryDataManagerTask.loadTodayFESDiagram(null,0);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
-				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
+			if(jedis.hexists("SRPDeviceTodayData".getBytes(), key.getBytes())){
+				deviceTodayData=(SRPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("SRPDeviceTodayData".getBytes(), key.getBytes()));
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -3771,14 +3751,14 @@ public class MemoryDataManagerTask {
 		return deviceTodayData;
 	}
 	
-	public static void updateRPCDeviceTodayDataDeviceInfo(RPCDeviceTodayData deviceTodayData){
+	public static void updateSRPDeviceTodayDataDeviceInfo(SRPDeviceTodayData deviceTodayData){
 		Jedis jedis=null;
-		if(!existsKey("RPCDeviceTodayData")){
+		if(!existsKey("SRPDeviceTodayData")){
 			MemoryDataManagerTask.loadTodayFESDiagram(null,0);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
-			jedis.hset("RPCDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+			jedis.hset("SRPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -4020,7 +4000,7 @@ public class MemoryDataManagerTask {
 					+"  t.calcProducingfluidLevel, "//30
 					+"  t.levelDifferenceValue, "//31
 					+ " t.submergence "//32
-					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " from tbl_srpacqdata_hist t,tbl_device t2 "
 					+ " where t.deviceid=t2.id  "
 					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1"
@@ -4038,7 +4018,7 @@ public class MemoryDataManagerTask {
 			while(rs.next()){
 				int deviceId=rs.getInt(1);
 				String key=deviceId+"";
-				RPCCalculateResponseData responseData =new RPCCalculateResponseData(); 
+				SRPCalculateResponseData responseData =new SRPCalculateResponseData(); 
 				responseData.init();
 				
 				responseData.setWellName(rs.getString(2));
@@ -4075,15 +4055,15 @@ public class MemoryDataManagerTask {
 				
 				String productionData=rs.getString(29)+"";
 				if(StringManagerUtils.isNotNull(productionData)){
-					type = new TypeToken<RPCDeviceInfo>() {}.getType();
-					RPCDeviceInfo rpcProductionData=gson.fromJson(productionData, type);
-					if(rpcProductionData!=null){
-						responseData.getProduction().setWaterCut(rpcProductionData.getProduction().getWaterCut());
-						responseData.getProduction().setWeightWaterCut(rpcProductionData.getProduction().getWeightWaterCut());
-						responseData.getProduction().setTubingPressure(rpcProductionData.getProduction().getTubingPressure());
-						responseData.getProduction().setCasingPressure(rpcProductionData.getProduction().getCasingPressure());
-						responseData.getProduction().setPumpSettingDepth(rpcProductionData.getProduction().getPumpSettingDepth());
-						responseData.getProduction().setProducingfluidLevel(rpcProductionData.getProduction().getProducingfluidLevel());
+					type = new TypeToken<SRPDeviceInfo>() {}.getType();
+					SRPDeviceInfo srpProductionData=gson.fromJson(productionData, type);
+					if(srpProductionData!=null){
+						responseData.getProduction().setWaterCut(srpProductionData.getProduction().getWaterCut());
+						responseData.getProduction().setWeightWaterCut(srpProductionData.getProduction().getWeightWaterCut());
+						responseData.getProduction().setTubingPressure(srpProductionData.getProduction().getTubingPressure());
+						responseData.getProduction().setCasingPressure(srpProductionData.getProduction().getCasingPressure());
+						responseData.getProduction().setPumpSettingDepth(srpProductionData.getProduction().getPumpSettingDepth());
+						responseData.getProduction().setProducingfluidLevel(srpProductionData.getProduction().getProducingfluidLevel());
 					}
 				}
 				
@@ -4091,17 +4071,17 @@ public class MemoryDataManagerTask {
 				responseData.getProduction().setLevelDifferenceValue(rs.getFloat(31));
 				responseData.getProduction().setSubmergence(rs.getFloat(32));
 				
-				if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
-					RPCDeviceTodayData deviceTodayData =(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
-					deviceTodayData.getRPCCalculateList().add(responseData);
-					jedis.hset("RPCDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+				if(jedis.hexists("SRPDeviceTodayData".getBytes(), key.getBytes())){
+					SRPDeviceTodayData deviceTodayData =(SRPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("SRPDeviceTodayData".getBytes(), key.getBytes()));
+					deviceTodayData.getSRPCalculateList().add(responseData);
+					jedis.hset("SRPDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 				}else{
-					RPCDeviceTodayData deviceTodayData=new RPCDeviceTodayData();
+					SRPDeviceTodayData deviceTodayData=new SRPDeviceTodayData();
 					deviceTodayData.setId(deviceId);
-					deviceTodayData.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+					deviceTodayData.setSRPCalculateList(new ArrayList<SRPCalculateResponseData>());
 					deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
-					deviceTodayData.getRPCCalculateList().add(responseData);
-					jedis.hset("RPCDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+					deviceTodayData.getSRPCalculateList().add(responseData);
+					jedis.hset("SRPDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 				}
 			}
 		}catch (Exception e) {
@@ -4748,13 +4728,13 @@ public class MemoryDataManagerTask {
 //	public static int getResultCodeByName(String resultName,String language){
 //		int resultCode=0;
 //		Jedis jedis=null;
-//		if(!existsKey("RPCWorkTypeByName")){
-//			MemoryDataManagerTask.loadRPCWorkType();
+//		if(!existsKey("SRPWorkTypeByName")){
+//			MemoryDataManagerTask.loadSRPWorkType();
 //		}
 //		try {
 //			jedis = RedisUtil.jedisPool.getResource();
-//			if(jedis.hexists("RPCWorkTypeByName".getBytes(), (resultName).getBytes())){
-//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (resultName).getBytes()));
+//			if(jedis.hexists("SRPWorkTypeByName".getBytes(), (resultName).getBytes())){
+//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("SRPWorkTypeByName".getBytes(), (resultName).getBytes()));
 //				resultCode=workType.getResultCode();
 //			}
 //		}catch (Exception e) {
@@ -5013,126 +4993,126 @@ public class MemoryDataManagerTask {
 	public static CalculateColumnInfo getCalColumnsInfo(String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		CalculateColumnInfo calculateColumnInfo=null;
-		List<CalculateColumn> rpcCalculateColumnList=new ArrayList<CalculateColumn>();
+		List<CalculateColumn> srpCalculateColumnList=new ArrayList<CalculateColumn>();
 		List<CalculateColumn> pcpCalculateColumnList=new ArrayList<CalculateColumn>();
 		calculateColumnInfo=new CalculateColumnInfo();
-		calculateColumnInfo.setRPCCalculateColumnList(rpcCalculateColumnList);
+		calculateColumnInfo.setSRPCalculateColumnList(srpCalculateColumnList);
 		calculateColumnInfo.setPCPCalculateColumnList(pcpCalculateColumnList);
 		
 		//抽油机井
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("A相电流","IA",2) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("B相电流","IB",3) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("C相电流","IC",4) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("A相电流","IA",2) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("B相电流","IB",3) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("C相电流","IC",4) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("A相电压","VA",5) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("B相电压","VB",6) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("C相电压","VC",7) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("A相电压","VA",5) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("B相电压","VB",6) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("C相电压","VC",7) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("有功功耗","TotalKWattH",8) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("无功功耗","TotalKVarH",9) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("averageWatt"),"Watt3",10) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("无功功率","Var3",11) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功率因数","PF3",12) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("有功功耗","TotalKWattH",8) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("无功功耗","TotalKVarH",9) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("averageWatt"),"Watt3",10) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("无功功率","Var3",11) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功率因数","PF3",12) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("变频设置频率","SetFrequency",13) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("变频运行频率","RunFrequency",14) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("变频设置频率","SetFrequency",13) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("变频运行频率","RunFrequency",14) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("tubingPressure"),"TubingPressure",15) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("casingPressure"),"CasingPressure",16) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wellHeadTemperature"),"WellHeadTemperature",17) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("bottomHolePressure"),"BottomHolePressure",18) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("井底温度","BottomHoleTemperature",19) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("producingfluidLevel"),"ProducingfluidLevel",20) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("waterCut"),"VolumeWaterCut",21) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("tubingPressure"),"TubingPressure",15) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("casingPressure"),"CasingPressure",16) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wellHeadTemperature"),"WellHeadTemperature",17) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("bottomHolePressure"),"BottomHolePressure",18) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("井底温度","BottomHoleTemperature",19) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("producingfluidLevel"),"ProducingfluidLevel",20) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("waterCut"),"VolumeWaterCut",21) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图实测点数","FESDiagramAcqCount",22) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图采集时间","FESDiagramAcqtime",23) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("SPM"),"SPM",24) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("stroke"),"Stroke",25) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-位移","Position_Curve",26) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-载荷","Load_Curve",27) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-电流","Current_Curve",28) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图数据-功率","Power_Curve",29) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图实测点数","FESDiagramAcqCount",22) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图采集时间","FESDiagramAcqtime",23) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("SPM"),"SPM",24) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("stroke"),"Stroke",25) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图数据-位移","Position_Curve",26) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图数据-载荷","Load_Curve",27) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图数据-电流","Current_Curve",28) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图数据-功率","Power_Curve",29) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("螺杆泵转速","RPM",30) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("螺杆泵转速","RPM",30) );
 		
-//		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",31) );
-//		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",32) );
+//		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("累计产气量","TotalGasVolumetricProduction",31) );
+//		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("累计产水量","TotalWaterVolumetricProduction",32) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产液量（方）","RealtimeLiquidVolumetricProduction",33) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产油量（方）","RealtimeOilVolumetricProduction",34) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产水量（方）","RealtimeWaterVolumetricProduction",35) );
-//		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产气量（方）","RealtimeGasVolumetricProduction",36) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产液量（方）","RealtimeLiquidVolumetricProduction",33) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产油量（方）","RealtimeOilVolumetricProduction",34) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产水量（方）","RealtimeWaterVolumetricProduction",35) );
+//		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产气量（方）","RealtimeGasVolumetricProduction",36) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产液量（吨）","RealtimeLiquidWeightProduction",37) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产油量（吨）","RealtimeOilWeightProduction",38) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("瞬时产水量（吨）","RealtimeWaterWeightProduction",39) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产液量（吨）","RealtimeLiquidWeightProduction",37) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产油量（吨）","RealtimeOilWeightProduction",38) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("瞬时产水量（吨）","RealtimeWaterWeightProduction",39) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图工况","ResultCode",40) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图工况","ResultCode",40) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("fMax"),"FMax",41) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("fMin"),"FMin",42) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("fMax"),"FMax",41) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("fMin"),"FMin",42) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("功图充满系数","FullnessCoefficient",43) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("upperLoadLine"),"UpperLoadLine",44) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("lowerLoadLine"),"LowerLoadLine",45) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("功图充满系数","FullnessCoefficient",43) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("upperLoadLine"),"UpperLoadLine",44) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("lowerLoadLine"),"LowerLoadLine",45) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction",46) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction",46) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产液量（方）","LiquidVolumetricProduction",47) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产油量（方）","OilVolumetricProduction",48) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产水量（方）","WaterVolumetricProduction",49) );
-//		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产气量（方）","GasVolumetricProduction",50) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（方）","AvailablePlungerStrokeProd_v",51) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（方）","PumpClearanceLeakProd_v",52) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（方）","TVLeakVolumetricProduction",53) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（方）","SVLeakVolumetricProduction",54) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（方）","GasInfluenceProd_v",55) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产液量（方）","LiquidVolumetricProduction",47) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产油量（方）","OilVolumetricProduction",48) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产水量（方）","WaterVolumetricProduction",49) );
+//		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产气量（方）","GasVolumetricProduction",50) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（方）","AvailablePlungerStrokeProd_v",51) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（方）","PumpClearanceLeakProd_v",52) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（方）","TVLeakVolumetricProduction",53) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（方）","SVLeakVolumetricProduction",54) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("气影响（方）","GasInfluenceProd_v",55) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产液量（吨）","LiquidWeightProduction",56) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产油量（吨）","OilWeightProduction",57) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("日产水量（吨）","WaterWeightProduction",58) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（吨）","AvailablePlungerStrokeProd_w",59) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（吨）","PumpClearanceLeakProd_w",60) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（吨）","TVLeakWeightProduction",61) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（吨）","SVLeakWeightProduction",62) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("气影响（吨）","GasInfluenceProd_w",63) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产液量（吨）","LiquidWeightProduction",56) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产油量（吨）","OilWeightProduction",57) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("日产水量（吨）","WaterWeightProduction",58) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("柱塞有效冲程计算产量（吨）","AvailablePlungerStrokeProd_w",59) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("泵间隙漏失量（吨）","PumpClearanceLeakProd_w",60) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("游动凡尔漏失量（吨）","TVLeakWeightProduction",61) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("固定凡尔漏失量（吨）","SVLeakWeightProduction",62) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("气影响（吨）","GasInfluenceProd_w",63) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("平均总有功功率","AverageWatt",64) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("polishRodPower"),"PolishRodPower",65) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("waterPower"),"WaterPower",66) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("surfaceSystemEfficiency"),"SurfaceSystemEfficiency",67) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wellDownSystemEfficiency"),"WellDownSystemEfficiency",68) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("systemEfficiency"),"SystemEfficiency",69) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("energyPer100mLift"),"EnergyPer100mLift",70) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("area"),"Area",71) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("平均总有功功率","AverageWatt",64) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("polishRodPower"),"PolishRodPower",65) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("waterPower"),"WaterPower",66) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("surfaceSystemEfficiency"),"SurfaceSystemEfficiency",67) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wellDownSystemEfficiency"),"WellDownSystemEfficiency",68) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("systemEfficiency"),"SystemEfficiency",69) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("energyPer100mLift"),"EnergyPer100mLift",70) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("area"),"Area",71) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("rodFlexLength"),"RodFlexLength",72) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("tubingFlexLength"),"TubingFlexLength",73) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("inertiaLength"),"InertiaLength",74) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff1"),"PumpEff1",75) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff2"),"PumpEff2",76) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff3"),"PumpEff3",77) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff4"),"PumpEff4",78) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("rodFlexLength"),"RodFlexLength",72) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("tubingFlexLength"),"TubingFlexLength",73) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("inertiaLength"),"InertiaLength",74) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff1"),"PumpEff1",75) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff2"),"PumpEff2",76) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff3"),"PumpEff3",77) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff4"),"PumpEff4",78) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff1_pcp"),"PumpEff1",79) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff1_pcp"),"PumpEff1",79) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff"),"PumpEff",80) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("pumpEff"),"PumpEff",80) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("calcProducingfluidLevel"),"CalcProducingfluidLevel",81) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("levelDifferenceValue"),"LevelDifferenceValue",82) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("calcProducingfluidLevel"),"CalcProducingfluidLevel",81) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("levelDifferenceValue"),"LevelDifferenceValue",82) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程功率最大值","UpStrokeWattMax",83) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程功率最大值","DownStrokeWattMax",84) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wattDegreeBalance"),"WattDegreeBalance",85) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("上冲程电流最大值","UpStrokeIMax",86) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn("下冲程电流最大值","DownStrokeIMax",87) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("iDegreeBalance"),"IDegreeBalance",88) );
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("deltaRadius"),"DeltaRadius",89) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("上冲程功率最大值","UpStrokeWattMax",83) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("下冲程功率最大值","DownStrokeWattMax",84) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("wattDegreeBalance"),"WattDegreeBalance",85) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("上冲程电流最大值","UpStrokeIMax",86) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn("下冲程电流最大值","DownStrokeIMax",87) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("iDegreeBalance"),"IDegreeBalance",88) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("deltaRadius"),"DeltaRadius",89) );
 		
-		calculateColumnInfo.getRPCCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("submergence"),"Submergence",90) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("submergence"),"Submergence",90) );
 		
 		//螺杆泵井
 		calculateColumnInfo.getPCPCalculateColumnList().add( new CalculateColumn("运行状态","RunStatus",1) );
@@ -5177,7 +5157,7 @@ public class MemoryDataManagerTask {
 			return "";
 		}
 		CalculateColumnInfo calculateColumnInfo=getCalColumnsInfo(language);
-		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
+		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getSRPCalculateColumnList();
 		String code="";
 		if(deviceType!=0){
 			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
@@ -5196,7 +5176,7 @@ public class MemoryDataManagerTask {
 			return "";
 		}
 		CalculateColumnInfo calculateColumnInfo=getCalColumnsInfo(language);
-		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getRPCCalculateColumnList();
+		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getSRPCalculateColumnList();
 		String name="";
 //		if(deviceType!=0){
 //			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();

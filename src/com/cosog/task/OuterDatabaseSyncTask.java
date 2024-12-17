@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.WorkType;
-import com.cosog.model.calculate.RPCCalculateResponseData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.drive.AcqGroup;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
@@ -36,13 +36,13 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 	}
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
-	public static void RPCWellDataSync(){
+	public static void SRPWellDataSync(){
 		DataSourceConfig dataSourceConfig=MemoryDataManagerTask.getDataSourceConfig();
 		if(dataSourceConfig!=null && dataSourceConfig.isEnable()){
 
 			String sql="select t.debicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,to_char(t2.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime "
 					+ " from tbl_device t"
-					+ " left outer join tbl_rpcacqdata_latest t2 on t.id=t2.wellid  "
+					+ " left outer join tbl_srpacqdata_latest t2 on t.id=t2.wellid  "
 					+ " where t.status=1 and t.calculateType=1"
 					+ " ";
 			Connection conn = null;
@@ -54,7 +54,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 					do{
 						pstmt = conn.prepareStatement(sql);
 						rs=pstmt.executeQuery();
-						ThreadPool executor = new ThreadPool("RPCWellDataSyncThreadPool",
+						ThreadPool executor = new ThreadPool("SRPWellDataSyncThreadPool",
 								Config.getInstance().configFile.getAp().getThreadPool().getOuterDatabaseSync().getCorePoolSize(), 
 								Config.getInstance().configFile.getAp().getThreadPool().getOuterDatabaseSync().getMaximumPoolSize(), 
 								Config.getInstance().configFile.getAp().getThreadPool().getOuterDatabaseSync().getKeepAliveTime(), 
@@ -64,7 +64,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							String wellName=rs.getString(1);
 							String acqtime=rs.getString(2);
 							String fesdiagramacqtime=rs.getString(3);
-							executor.execute(new RPCWellDataSyncThread(wellName, acqtime, fesdiagramacqtime));
+							executor.execute(new SRPWellDataSyncThread(wellName, acqtime, fesdiagramacqtime));
 						}
 						while (!executor.isCompletedByTaskCount()) {
 							try {
@@ -93,11 +93,11 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 		}
 	}
 	
-	public static class RPCWellDataSyncThread extends Thread{
+	public static class SRPWellDataSyncThread extends Thread{
 		private String wellName;
 		private String acqtime;
 		private String fesdiagramacqtime;
-		public RPCWellDataSyncThread(String wellName, String acqtime, String fesdiagramacqtime) {
+		public SRPWellDataSyncThread(String wellName, String acqtime, String fesdiagramacqtime) {
 			super();
 			this.wellName = wellName;
 			this.acqtime = acqtime;
@@ -294,15 +294,15 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 	}
 	
 	public static class DiagramDataWriteBackThread extends Thread{
-		private RPCCalculateResponseData rpcCalculateResponseData;
-		public DiagramDataWriteBackThread(RPCCalculateResponseData rpcCalculateResponseData) {
+		private SRPCalculateResponseData srpCalculateResponseData;
+		public DiagramDataWriteBackThread(SRPCalculateResponseData srpCalculateResponseData) {
 			super();
-			this.rpcCalculateResponseData = rpcCalculateResponseData;
+			this.srpCalculateResponseData = srpCalculateResponseData;
 		}
 		
 		public void run(){
 			DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
-			if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && this.rpcCalculateResponseData!=null){
+			if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && this.srpCalculateResponseData!=null){
 				Connection conn = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -323,7 +323,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							insertSql="insert into "+dataWriteBackConfig.getDiagramResult().getTableName()+" (";
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getEnable()){
-								String value=getOperaValue(this.rpcCalculateResponseData.getWellName(),dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getRatio());
+								String value=getOperaValue(this.srpCalculateResponseData.getWellName(),dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getRatio());
 								
 //								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getWellName().getColumn()+",";
@@ -334,8 +334,8 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-									value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getAcqTime(),dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getRatio());
+								if(this.srpCalculateResponseData.getFESDiagram()!=null){
+									value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getAcqTime(),dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getRatio());
 								}	
 //								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getAcqTime().getColumn()+",";
@@ -347,9 +347,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram().getFMax()!=null&&this.rpcCalculateResponseData.getFESDiagram().getFMax().size()>0){
-										value=getOperaValue(rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram().getFMax()!=null&&this.srpCalculateResponseData.getFESDiagram().getFMax().size()>0){
+										value=getOperaValue(srpCalculateResponseData.getFESDiagram().getFMax().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getRatio());
 									}
 								}	
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFMax().getColumn()+ "="+value+",";
@@ -360,9 +360,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram().getFMin()!=null&&this.rpcCalculateResponseData.getFESDiagram().getFMin().size()>0){
-										value=getOperaValue(rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram().getFMin()!=null&&this.srpCalculateResponseData.getFESDiagram().getFMin().size()>0){
+										value=getOperaValue(srpCalculateResponseData.getFESDiagram().getFMin().get(0)+"",dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getRatio());
 									}
 								}	
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFMin().getColumn()+ "="+value+",";
@@ -373,9 +373,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpperLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getUpperLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpperLoadLine().getColumn()+ "="+value+",";
@@ -386,9 +386,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getLowerLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getLowerLoadLine()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLowerLoadLine().getColumn()+ "="+value+",";
@@ -399,9 +399,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getFullnessCoefficient().getColumn()+ "="+value+",";
@@ -412,9 +412,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getNoLiquidFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getNoLiquidFullnessCoefficient()+"",dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getNoLiquidFullnessCoefficient().getColumn()+ "="+value+",";
@@ -425,8 +425,8 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									value=getOperaValue(this.rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									value=getOperaValue(this.srpCalculateResponseData.getCalculationStatus().getResultCode()+"",dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getRatio());
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getColumn()+ "="+value+",";
 								insertColumns+=dataWriteBackConfig.getDiagramResult().getColumns().getResultCode().getColumn()+",";
@@ -439,7 +439,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							String optimizationSuggestion="";
 							
 							try{
-								WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+								WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 								if(workType!=null){
 									resultName=workType.getResultName();
 									optimizationSuggestion=workType.getOptimizationSuggestion();
@@ -469,9 +469,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							//产量
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getLiquidVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLiquidVolumetricProduction().getColumn()+ "="+value+",";
@@ -481,9 +481,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getOilVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getOilVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getOilVolumetricProduction().getColumn()+ "="+value+",";
@@ -493,9 +493,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getWaterVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getWaterVolumetricProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWaterVolumetricProduction().getColumn()+ "="+value+",";
@@ -507,9 +507,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLiquidWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getLiquidWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLiquidWeightProduction().getColumn()+ "="+value+",";
@@ -519,9 +519,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getOilWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getOilWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getOilWeightProduction().getColumn()+ "="+value+",";
@@ -531,9 +531,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							}
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getWaterWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getWaterWeightProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWaterWeightProduction().getColumn()+ "="+value+",";
@@ -544,9 +544,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getTheoreticalProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getTheoreticalProduction()+"",dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getTheoreticalProduction().getColumn()+ "="+value+",";
@@ -557,9 +557,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getPumpEfficiency()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getPumpEfficiency().getPumpEff()+"",dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getPumpEfficiency()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getPumpEfficiency().getPumpEff()+"",dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getPumpEff().getColumn()+ "="+value+",";
@@ -570,9 +570,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getCalcProducingfluidLevel()+"",dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getCalcProducingfluidLevel()+"",dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getCalcProducingfluidLevel().getColumn()+ "="+value+",";
@@ -583,9 +583,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getLevelDifferenceValue()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getLevelDifferenceValue()+"",dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getLevelDifferenceValue().getColumn()+ "="+value+",";
@@ -596,9 +596,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getProduction().getSubmergence()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getProduction()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getSubmergence()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getColumn()+ "="+value+",";
@@ -609,9 +609,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getUpStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeIMax().getColumn()+ "="+value+",";
@@ -622,9 +622,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDownStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getDownStrokeIMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeIMax().getColumn()+ "="+value+",";
@@ -635,9 +635,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getIDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getIDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getIDegreeBalance().getColumn()+ "="+value+",";
@@ -648,9 +648,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getUpStrokeWattMax().getColumn()+ "="+value+",";
@@ -661,9 +661,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDownStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDownStrokeWattMax().getColumn()+ "="+value+",";
@@ -674,9 +674,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getWattDegreeBalance()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWattDegreeBalance().getColumn()+ "="+value+",";
@@ -687,9 +687,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getFESDiagram()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getFESDiagram().getDeltaRadius()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getFESDiagram()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getFESDiagram().getDeltaRadius()+"",dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getDeltaRadius().getColumn()+ "="+value+",";
@@ -700,9 +700,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getWellDownSystemEfficiency().getColumn()+ "="+value+",";
@@ -713,9 +713,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSurfaceSystemEfficiency().getColumn()+ "="+value+",";
@@ -726,9 +726,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getSystemEfficiency().getSystemEfficiency()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSystemEfficiency().getColumn()+ "="+value+",";
@@ -739,9 +739,9 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 							
 							if(dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getEnable()){
 								String value="null";
-								if(this.rpcCalculateResponseData!=null&&(this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-									if(this.rpcCalculateResponseData.getSystemEfficiency()!=null){
-										value=getOperaValue(this.rpcCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift()+"",dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getRatio());
+								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+									if(this.srpCalculateResponseData.getSystemEfficiency()!=null){
+										value=getOperaValue(this.srpCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift()+"",dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getEnergyPer100mLift().getColumn()+ "="+value+",";
@@ -803,12 +803,12 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 			return value;
 		}
 
-		public RPCCalculateResponseData getRpcCalculateResponseData() {
-			return rpcCalculateResponseData;
+		public SRPCalculateResponseData getSrpCalculateResponseData() {
+			return srpCalculateResponseData;
 		}
 
-		public void setRpcCalculateResponseData(RPCCalculateResponseData rpcCalculateResponseData) {
-			this.rpcCalculateResponseData = rpcCalculateResponseData;
+		public void setSrpCalculateResponseData(SRPCalculateResponseData srpCalculateResponseData) {
+			this.srpCalculateResponseData = srpCalculateResponseData;
 		}
 	}
 }

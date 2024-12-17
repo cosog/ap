@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cosog.model.calculate.RPCCalculateResponseData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 
-public class RPCDeviceTodayData implements Serializable {
+public class SRPDeviceTodayData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private List<AcquisitionItemInfo> acquisitionItemInfoList;
-	private List<RPCCalculateResponseData> RPCCalculateList;
+	private List<SRPCalculateResponseData> SRPCalculateList;
 
 	public Integer getId() {
 		return id;
@@ -29,15 +29,15 @@ public class RPCDeviceTodayData implements Serializable {
 		this.acquisitionItemInfoList = acquisitionItemInfoList;
 	}
 
-	public List<RPCCalculateResponseData> getRPCCalculateList() {
-		if(RPCCalculateList==null){
-			this.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+	public List<SRPCalculateResponseData> getSRPCalculateList() {
+		if(SRPCalculateList==null){
+			this.setSRPCalculateList(new ArrayList<SRPCalculateResponseData>());
 		}
-		return this.RPCCalculateList;
+		return this.SRPCalculateList;
 	}
 
-	public void setRPCCalculateList(List<RPCCalculateResponseData> rPCCalculateList) {
-		RPCCalculateList = rPCCalculateList;
+	public void setSRPCalculateList(List<SRPCalculateResponseData> SRPCalculateList) {
+		this.SRPCalculateList = SRPCalculateList;
 	}
 
 }

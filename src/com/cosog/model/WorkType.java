@@ -9,13 +9,13 @@ import javax.persistence.Transient;
 import oracle.sql.BLOB;
 
 /**
- *  <p>描述：工况类型 实体类  tbl_rpc_worktype</p>
+ *  <p>描述：工况类型 实体类  tbl_srp_worktype</p>
  *  
  * @author zhao  2022-4-1
  *
  */
 @Entity
-@Table(name = "tbl_rpc_worktype")
+@Table(name = "tbl_srp_worktype")
 public class WorkType implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;

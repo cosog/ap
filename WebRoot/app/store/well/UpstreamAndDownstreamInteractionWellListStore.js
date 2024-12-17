@@ -1,6 +1,6 @@
 Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.rpcHistoryQueryWellListStore',
+    alias: 'widget.UpstreamAndDownstreamInteractionWellListStore',
     fields: ['id','commStatus','commStatusName','wellName'],
     autoLoad: true,
     pageSize: defaultPageSize,

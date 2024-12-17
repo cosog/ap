@@ -14,6 +14,7 @@ public class AuxiliaryDeviceAddInfo implements java.io.Serializable{
 	private Integer id;
 	private Integer deviceId;
 	private String itemName;
+	private String itemCode;
 	private String itemValue;
 	private String itemUnit;
 	private Integer masterId;
@@ -24,11 +25,12 @@ public class AuxiliaryDeviceAddInfo implements java.io.Serializable{
 		super();
 	}
 
-	public AuxiliaryDeviceAddInfo(Integer id, Integer deviceId, String itemName, String itemValue, String itemUnit) {
+	public AuxiliaryDeviceAddInfo(Integer id, Integer deviceId, String itemName,String itemCode, String itemValue, String itemUnit) {
 		super();
 		this.id = id;
 		this.deviceId = deviceId;
 		this.itemName = itemName;
+		this.itemCode = itemCode;
 		this.itemValue = itemValue;
 		this.itemUnit = itemUnit;
 	}
@@ -59,6 +61,15 @@ public class AuxiliaryDeviceAddInfo implements java.io.Serializable{
 
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
+	}
+
+	@Column(name = "itemCode", nullable = false, precision = 22, scale = 0)
+	public String getItemCode() {
+		return itemCode;
+	}
+
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
 	}
 
 	@Column(name = "itemValue", nullable = true, precision = 22, scale = 0)

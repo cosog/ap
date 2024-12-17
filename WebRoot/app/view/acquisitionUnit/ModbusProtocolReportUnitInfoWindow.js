@@ -79,7 +79,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.RPCCalculate],[2, loginUserLanguageResource.PCPCalculate]]
+							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
 						}),
 				displayField : 'text',
 				valueField : 'value',

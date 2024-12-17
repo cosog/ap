@@ -275,9 +275,9 @@ var VideoKeyDataHandsontableHelper = {
 	                	if(row<0 && row2<0){//只选中表头
 	                		Ext.getCmp("VideoKeySelectRow_Id").setValue('');
 	                    	Ext.getCmp("VideoKeySelectEndRow_Id").setValue('');
-	                    	CreateAndLoadRPCPumoingModelInfoTable(0,'');
-	                    	CreateAndLoadRPCProductionDataTable(0,'');
-	                    	CreateAndLoadRPCVideoInfoTable(0,'');
+	                    	CreateAndLoadSRPPumoingModelInfoTable(0,'');
+	                    	CreateAndLoadSRPProductionDataTable(0,'');
+	                    	CreateAndLoadSRPVideoInfoTable(0,'');
 	                	}else{
 	                		if(row<0){
 	                    		row=0;
@@ -304,9 +304,9 @@ var VideoKeyDataHandsontableHelper = {
 	                        		deviceName=row1[1];
 	                        	}
 	                        	
-	                        	CreateAndLoadRPCPumoingModelInfoTable(recordId,deviceName);
-	                        	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
-	                        	CreateAndLoadRPCVideoInfoTable(recordId,deviceName);
+	                        	CreateAndLoadSRPPumoingModelInfoTable(recordId,deviceName);
+	                        	CreateAndLoadSRPProductionDataTable(recordId,deviceName);
+	                        	CreateAndLoadSRPVideoInfoTable(recordId,deviceName);
 	                        	
 	                        	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
 	                    	}
@@ -385,8 +385,8 @@ var VideoKeyDataHandsontableHelper = {
 	        }
 	        //保存数据
 	        videoKeyDataHandsontableHelper.saveData = function () {
-	        	var rpcDeviceInfoHandsontableData=videoKeyDataHandsontableHelper.hot.getData();
-	        	if(rpcDeviceInfoHandsontableData.length>0){
+	        	var srpDeviceInfoHandsontableData=videoKeyDataHandsontableHelper.hot.getData();
+	        	if(srpDeviceInfoHandsontableData.length>0){
 	            	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	                //插入的数据的获取
 	                videoKeyDataHandsontableHelper.insertExpressCount();

@@ -16,9 +16,9 @@ import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.RPCDeviceTodayData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
+import com.cosog.model.calculate.SRPDeviceInfo;
+import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
@@ -143,12 +143,12 @@ public class CalculateUtils {
 		return responseData;
 	}
 	
-	public static RPCCalculateResponseData fesDiagramCalculate(String requestDataStr){
+	public static SRPCalculateResponseData fesDiagramCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String responseDataStr=StringManagerUtils.sendPostMethod(FESDiagramUrl, requestDataStr,"utf-8",0,0);
-		type = new TypeToken<RPCCalculateResponseData>() {}.getType();
-		RPCCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
+		type = new TypeToken<SRPCalculateResponseData>() {}.getType();
+		SRPCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
 	}
 	
@@ -236,7 +236,7 @@ public class CalculateUtils {
 		return responseData;
 	}
 	
-	public static String getFESDiagramTotalRequestData(String date,DeviceInfo deviceInfo,RPCDeviceTodayData deviceTodayData){
+	public static String getFESDiagramTotalRequestData(String date,DeviceInfo deviceInfo,SRPDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
 		List<String> acqTimeList=new ArrayList<String>();
@@ -290,7 +290,7 @@ public class CalculateUtils {
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
-		for(RPCCalculateResponseData responseData:deviceTodayData.getRPCCalculateList()){
+		for(SRPCalculateResponseData responseData:deviceTodayData.getSRPCalculateList()){
 			if(StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
 				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());

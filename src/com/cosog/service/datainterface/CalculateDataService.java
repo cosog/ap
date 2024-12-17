@@ -34,8 +34,8 @@ import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
@@ -192,17 +192,17 @@ public class CalculateDataService<T> extends BaseService<T> {
 		}
 	}
 	
-	public String getObjectToRPCCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
+	public String getObjectToSRPCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String result="";
 		try{
 			String productionData=object[10].toString();
 			
-			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-			RPCCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
+			type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+			SRPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			if(calculateRequestData==null){
-				calculateRequestData=new RPCCalculateRequestData();
+				calculateRequestData=new SRPCalculateRequestData();
 				calculateRequestData.init();
 			}
 			
@@ -210,7 +210,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			calculateRequestData.setScene(object[1]+"");
 
 			//功图数据
-			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
+			calculateRequestData.setFESDiagram(new SRPCalculateRequestData.FESDiagram());
 	        calculateRequestData.getFESDiagram().setAcqTime(object[2]+"");
 	        calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[3]+""));
 	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[4]+""));
@@ -279,7 +279,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        if(object.length>11){
 	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[11]+"");
 	        	if(pumpingModelId>0){
-	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+	        		calculateRequestData.setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
 	        		calculateRequestData.getPumpingUnit().setManufacturer(object[12]+"");
 	        		calculateRequestData.getPumpingUnit().setModel(object[13]+"");
 	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[14]+"");
@@ -289,8 +289,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[18]+""));
 					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[19]+""));
 					String balanceInfo=object[20]+"";
-					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+					type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+					SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null){
 						calculateRequestData.getPumpingUnit().setBalance(balance);
 					}
@@ -810,25 +810,25 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
 				+ "t.submergence,"
 				+ "t.rpm "
-				+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.devicename,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
-				+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
-				+ " and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
+				+ " and t.acqTime=( select max(t3.acqTime) from tbl_srpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String runStatusSql="select t2.id, t2.devicename,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
-				+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
-				+ " and t.acqTime=( select max(t3.acqTime) from tbl_rpcacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
+				+ " and t.acqTime=( select max(t3.acqTime) from tbl_srpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_rpcdailycalculationdata t,tbl_device t2 "
+				+ " from tbl_srpdailycalculationdata t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
@@ -1019,8 +1019,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(deviceId.toString().equals(resuleObj[0].toString())){
 						String productionData=resuleObj[15].toString();
-						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 						
 						acqTimeList.add(resuleObj[1]+"");
 						commStatusList.add(commStatus?1:0);
@@ -1038,8 +1038,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 						oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
 						waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
 						
-						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-							volumeWaterCutList.add(rpcProductionData.getProduction().getWaterCut());
+						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+							volumeWaterCutList.add(srpProductionData.getProduction().getWaterCut());
 						}else{
 							volumeWaterCutList.add(0.0f);
 						}
@@ -1047,17 +1047,17 @@ public class CalculateDataService<T> extends BaseService<T> {
 						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
 						oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
 						waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
-						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-							weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+							weightWaterCutList.add(srpProductionData.getProduction().getWeightWaterCut());
 						}else{
 							weightWaterCutList.add(0.0f);
 						}
 						
-						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-							tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
-							casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
-							pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
-							producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
+						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+							tubingPressureList.add(srpProductionData.getProduction().getTubingPressure());
+							casingPressureList.add(srpProductionData.getProduction().getCasingPressure());
+							pumpSettingDepthList.add(srpProductionData.getProduction().getPumpSettingDepth());
+							producingfluidLevelList.add(srpProductionData.getProduction().getProducingfluidLevel());
 						}else{
 							tubingPressureList.add(0.0f);
 							casingPressureList.add(0.0f);
@@ -1195,8 +1195,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return null;
 	}
 	
-	public List<String> RPCTimingTotalCalculation(String timeStr){
-		ThreadPool executor = new ThreadPool("RPCTinmingTotalCalculate",
+	public List<String> SRPTimingTotalCalculation(String timeStr){
+		ThreadPool executor = new ThreadPool("SRPTinmingTotalCalculate",
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getCorePoolSize(), 
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getMaximumPoolSize(), 
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getKeepAliveTime(), 

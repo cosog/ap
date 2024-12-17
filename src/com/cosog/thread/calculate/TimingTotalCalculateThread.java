@@ -23,9 +23,9 @@ import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceTodayData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
-import com.cosog.model.calculate.RPCDeviceTodayData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
+import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
@@ -85,7 +85,7 @@ public class TimingTotalCalculateThread extends Thread {
 
         if (calculateType == 1) {
         	DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
-        	RPCDeviceTodayData deviceTodayData=MemoryDataManagerTask.getRPCDeviceTodayDataById(deviceInfo.getId());
+        	SRPDeviceTodayData deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
         	
         	String lastRunTime = deviceInfo.getRunStatusAcqTime();
         	String lastCommTime = deviceInfo.getOnLineAcqTime();
@@ -100,11 +100,11 @@ public class TimingTotalCalculateThread extends Thread {
         	float runTimeEfficiency = deviceInfo.getRunEff();
         	String runRange = deviceInfo.getRunRange();
 
-            String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_rpctimingcalculationdata t " +
+            String labelInfoSql = "select t.deviceId, t.headerlabelinfo from tbl_srptimingcalculationdata t " +
                 " where t.id=(" +
                 " select v2.id from " +
                 " ( select v.id,rownum r from " +
-                " (select t2.id from tbl_rpctimingcalculationdata t2 " +
+                " (select t2.id from tbl_srptimingcalculationdata t2 " +
                 "  where t2.deviceId=" + deviceId + " and t2.headerLabelInfo is not null order by t2.caltime desc) v ) v2" +
                 " where r=1)";
             TimeEffResponseData timeEffResponseData = null;
@@ -122,7 +122,7 @@ public class TimingTotalCalculateThread extends Thread {
                     break;
                 }
             }
-            String updateSql = "update tbl_rpctimingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
+            String updateSql = "update tbl_srptimingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
             try {
                 commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
             } catch (Exception e) {
@@ -169,13 +169,13 @@ public class TimingTotalCalculateThread extends Thread {
                             updateColBuff.deleteCharAt(updateColBuff.length() - 1);
                         }
 
-                        String updateEditDataSql = "update tbl_rpctimingcalculationdata t set (" + updateColBuff + ")=" +
-                            " (select " + updateColBuff + " from tbl_rpctimingcalculationdata t2 " +
+                        String updateEditDataSql = "update tbl_srptimingcalculationdata t set (" + updateColBuff + ")=" +
+                            " (select " + updateColBuff + " from tbl_srptimingcalculationdata t2 " +
                             " where t2.deviceId= " + deviceId +
                             " and t2.id=" +
                             " (select v2.id from" +
                             " (select v.id,rownum r from " +
-                            " (select t3.id from tbl_rpctimingcalculationdata t3 " +
+                            " (select t3.id from tbl_srptimingcalculationdata t3 " +
                             " where t3.deviceId=" + deviceId + " and t3.caltime<to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') " +
                             " order by t3.caltime desc) v " +
                             " ) v2" +
@@ -308,9 +308,9 @@ public class TimingTotalCalculateThread extends Thread {
             List <Float> tubingPressureList = new ArrayList <Float> ();
             List <Float> casingPressureList = new ArrayList <Float> ();
 
-            if(deviceTodayData!=null && deviceTodayData.getRPCCalculateList()!=null && deviceTodayData.getRPCCalculateList().size()>0){
-            	for (int i = 0; i <deviceTodayData.getRPCCalculateList().size(); i++) {
-            		RPCCalculateResponseData responseData =deviceTodayData.getRPCCalculateList().get(i);
+            if(deviceTodayData!=null && deviceTodayData.getSRPCalculateList()!=null && deviceTodayData.getSRPCalculateList().size()>0){
+            	for (int i = 0; i <deviceTodayData.getSRPCalculateList().size(); i++) {
+            		SRPCalculateResponseData responseData =deviceTodayData.getSRPCalculateList().get(i);
             		if(responseData!=null && StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour)){
                         acqTimeList.add(responseData.getFESDiagram().getAcqTime());
                         commStatusList.add(commStatus>= 1 ? 1 : 0);
@@ -426,7 +426,7 @@ public class TimingTotalCalculateThread extends Thread {
 
             if (commResponseData != null && commResponseData.getResultStatus() == 1) {
                 List <String> clobCont = new ArrayList <String> ();
-                String updateHisRangeClobSql = "update tbl_rpctimingcalculationdata t set t.commrange=?";
+                String updateHisRangeClobSql = "update tbl_srptimingcalculationdata t set t.commrange=?";
                 clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
                 if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
                     updateHisRangeClobSql += ", t.runrange=?";

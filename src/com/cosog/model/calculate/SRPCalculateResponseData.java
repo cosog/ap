@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.cosog.utils.StringManagerUtils;
 
-public class RPCCalculateResponseData implements Serializable, Comparable<RPCCalculateResponseData>{
+public class SRPCalculateResponseData implements Serializable, Comparable<SRPCalculateResponseData>{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -1432,7 +1432,7 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 	}
 	
 	@Override
-	public int compareTo(RPCCalculateResponseData responseData) {     //重写Comparable接口的compareTo方法
+	public int compareTo(SRPCalculateResponseData responseData) {     //重写Comparable接口的compareTo方法
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		long from = 0;
 		long to = 0;

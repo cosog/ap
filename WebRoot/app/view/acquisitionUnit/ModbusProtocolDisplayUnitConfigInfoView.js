@@ -1618,7 +1618,7 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 				                    	cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addCellStyle;
 				                    } else if (visualColIndex === 2 && visualRowIndex === 2) {
 		                                this.type = 'dropdown';
-		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.RPCCalculate, loginUserLanguageResource.PCPCalculate];
+		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];
 		                                this.strict = true;
 		                                this.allowInvalid = false;
 		                            }else{
@@ -1704,7 +1704,7 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitProperties.acqUnitName=propertiesData[1][2];
 			
 			displayUnitProperties.calculateType = 0;
-            if (propertiesData[2][2] == loginUserLanguageResource.RPCCalculate) {
+            if (propertiesData[2][2] == loginUserLanguageResource.SRPCalculate) {
             	displayUnitProperties.calculateType = 1;
             } else if (propertiesData[2][2] == loginUserLanguageResource.PCPCalculate) {
             	displayUnitProperties.calculateType = 2;

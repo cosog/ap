@@ -35,11 +35,11 @@ import com.google.gson.reflect.TypeToken;
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
 	public static ScheduledExecutorService AcquisitionDataTotalCalculationExecutor=null;
-	public static ScheduledExecutorService RPCTotalCalculationExecutor=null;
+	public static ScheduledExecutorService SRPTotalCalculationExecutor=null;
 	public static ScheduledExecutorService PCPTotalCalculationExecutor=null;
 	public static ScheduledExecutorService timingInitDailyReportDataExecutor=null;
 	public static ScheduledExecutorService AcquisitionTimingCalculateExecutor=null;
-	public static ScheduledExecutorService RPCTimingCalculateExecutor=null;
+	public static ScheduledExecutorService SRPTimingCalculateExecutor=null;
 	public static ScheduledExecutorService PCPTimingCalculateExecutor=null;
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
@@ -50,11 +50,11 @@ public class CalculateDataManagerTask {
 		
 		//跨天汇总
 		AcquisitionDataTotalCalculation();
-		RPCTotalCalculation();
+		SRPTotalCalculation();
 		PCPTotalCalculation();
 		
 		AcquisitionTimingCalculate();
-		RPCTimingCalculate();
+		SRPTimingCalculate();
 		PCPTimingCalculate();
 	}
 	
@@ -63,7 +63,7 @@ public class CalculateDataManagerTask {
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
-			String sql="select count(1) from tbl_rpcacqdata_hist t "
+			String sql="select count(1) from tbl_srpacqdata_hist t "
 					+ " where 1=1"
 					+ " and t.productiondata is not null "
 					+ " and t.fesdiagramacqtime is not null "
@@ -126,24 +126,24 @@ public class CalculateDataManagerTask {
 	/**
 	 * 抽油机井汇总计算
 	 * */
-	public static void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	public static void SRPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/FESDiagramDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	//抽油机井跨天汇总
-	public static void RPCTotalCalculation(){
-		RPCTotalCalculationExecutor = Executors.newScheduledThreadPool(1);
+	public static void SRPTotalCalculation(){
+		SRPTotalCalculationExecutor = Executors.newScheduledThreadPool(1);
 		long interval=24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00")+ Config.getInstance().configFile.getAp().getReport().getDelay() * 60 * 1000 - System.currentTimeMillis();
 		while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-		RPCTotalCalculationExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+		SRPTotalCalculationExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
             	try {
-            		RPCTotalCalculationTast();
+            		SRPTotalCalculationTast();
 				}catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -160,11 +160,11 @@ public class CalculateDataManagerTask {
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
-	public static void RPCTimingTotalCalculation(String timeStr){
+	public static void SRPTimingTotalCalculation(String timeStr){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:ss");
 		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:00:00");
-		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPCTimingTotalCalculation?time="+time;
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/SRPTimingTotalCalculation?time="+time;
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
@@ -262,8 +262,8 @@ public class CalculateDataManagerTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
     }
 	
-	public static void RPCTimingCalculate() {
-		RPCTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
+	public static void SRPTimingCalculate() {
+		SRPTimingCalculateExecutor = Executors.newScheduledThreadPool(1);
         long interval = Config.getInstance().configFile.getAp().getReport().getInterval() * 60 * 60 * 1000;
 //        interval=5 * 60 * 1000;
         long initDelay = StringManagerUtils.getTimeMillis(Config.getInstance().configFile.getAp().getReport().getOffsetHour()+":00:00") - System.currentTimeMillis();
@@ -271,12 +271,12 @@ public class CalculateDataManagerTask {
         while(initDelay<0){
         	initDelay=interval + initDelay;
         }
-        RPCTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+        SRPTimingCalculateExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
             @Override
             public void run() {
                 String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:00:00");
             	try {
-					RPCTimingTotalCalculation(timeStr);
+					SRPTimingTotalCalculation(timeStr);
 				}catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -666,8 +666,8 @@ public class CalculateDataManagerTask {
     }
 	
 	public static void scheduledDestory(){
-		if(RPCTotalCalculationExecutor!=null && !RPCTotalCalculationExecutor.isShutdown()){
-			RPCTotalCalculationExecutor.shutdownNow();
+		if(SRPTotalCalculationExecutor!=null && !SRPTotalCalculationExecutor.isShutdown()){
+			SRPTotalCalculationExecutor.shutdownNow();
 		}
 		if(PCPTotalCalculationExecutor!=null && !PCPTotalCalculationExecutor.isShutdown()){
 			PCPTotalCalculationExecutor.shutdownNow();
@@ -675,8 +675,8 @@ public class CalculateDataManagerTask {
 		if(timingInitDailyReportDataExecutor!=null && !timingInitDailyReportDataExecutor.isShutdown()){
 			timingInitDailyReportDataExecutor.shutdownNow();
 		}
-		if(RPCTimingCalculateExecutor!=null && !RPCTimingCalculateExecutor.isShutdown()){
-			RPCTimingCalculateExecutor.shutdownNow();
+		if(SRPTimingCalculateExecutor!=null && !SRPTimingCalculateExecutor.isShutdown()){
+			SRPTimingCalculateExecutor.shutdownNow();
 		}
 		if(PCPTimingCalculateExecutor!=null && !PCPTimingCalculateExecutor.isShutdown()){
 			PCPTimingCalculateExecutor.shutdownNow();

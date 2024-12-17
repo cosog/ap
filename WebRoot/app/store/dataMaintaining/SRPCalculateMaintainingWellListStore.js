@@ -1,6 +1,6 @@
-Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
+Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingWellListStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.RPCCalculateMaintainingWellListStore',
+    alias: 'widget.SRPCalculateMaintainingWellListStore',
     fields: ['id','wellName'],
     autoLoad: true,
     pageSize: defaultPageSize,
@@ -22,12 +22,12 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
+            var gridPanel = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var column = createCalculateManagerWellListColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
                 gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "RPCCalculateMaintainingWellListGridPanel_Id",
+                    id: "SRPCalculateMaintainingWellListGridPanel_Id",
                     border: false,
                     autoLoad: false,
                     columnLines: true,
@@ -46,39 +46,39 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
                     		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
                     	},
                     	select: function(grid, record, index, eOpts) {
-                    		Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
+                    		Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").setValue(index);
                     		
-                    		var combDeviceName=Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+                    		var combDeviceName=Ext.getCmp('SRPCalculateMaintainingWellListComBox_Id').getValue();
                     		if(combDeviceName!=''){
                         		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
                     		}
                     		
-                    		resetRPCCalculateMaintainingQueryParams();
-                    		var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;
-    	        			if(activeId=="RPCCalculateMaintainingPanel"){
-    	        				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
+                    		resetSRPCalculateMaintainingQueryParams();
+                    		var activeId = Ext.getCmp("SRPCalculateMaintainingTabPanel").getActiveTab().id;
+    	        			if(activeId=="SRPCalculateMaintainingPanel"){
+    	        				var bbar=Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar");
     	        				if (isNotVal(bbar)) {
     	        					if(bbar.getStore().isEmptyStore){
-    	        						var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-    	        						bbar.setStore(RPCCalculateMaintainingDataStore);
+    	        						var SRPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore');
+    	        						bbar.setStore(SRPCalculateMaintainingDataStore);
     	        					}else{
     	        						bbar.getStore().loadPage(1);
     	        					}
     	        				}else{
-    	        					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+    	        					Ext.create('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore');
     	        				}
-    	        			}else if(activeId=="RPCTotalCalculateMaintainingPanel"){
-    	        				var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
+    	        			}else if(activeId=="SRPTotalCalculateMaintainingPanel"){
+    	        				var gridPanel = Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id");
     	        	            if (isNotVal(gridPanel)) {
     	        	            	gridPanel.getStore().loadPage(1);
     	        	            }else{
-    	        	            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
+    	        	            	Ext.create("AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore");
     	        	            }
     	        			}
                         }
                     }
                 });
-                var wellListPanel = Ext.getCmp("RPCCalculateMaintainingWellListPanel_Id");
+                var wellListPanel = Ext.getCmp("SRPCalculateMaintainingWellListPanel_Id");
                 wellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
@@ -96,26 +96,26 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
-            	Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").setValue(-1);
-            	var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;
-    			if(activeId=="RPCCalculateMaintainingPanel"){
-    				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
+            	Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").setValue(-1);
+            	var activeId = Ext.getCmp("SRPCalculateMaintainingTabPanel").getActiveTab().id;
+    			if(activeId=="SRPCalculateMaintainingPanel"){
+    				var bbar=Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar");
     				if (isNotVal(bbar)) {
     					if(bbar.getStore().isEmptyStore){
-    						var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-    						bbar.setStore(RPCCalculateMaintainingDataStore);
+    						var SRPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore');
+    						bbar.setStore(SRPCalculateMaintainingDataStore);
     					}else{
     						bbar.getStore().loadPage(1);
     					}
     				}else{
-    					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+    					Ext.create('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore');
     				}
-    			}else if(activeId=="RPCTotalCalculateMaintainingPanel"){
-    				var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
+    			}else if(activeId=="SRPTotalCalculateMaintainingPanel"){
+    				var gridPanel = Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id");
     	            if (isNotVal(gridPanel)) {
     	            	gridPanel.getStore().loadPage(1);
     	            }else{
-    	            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
+    	            	Ext.create("AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore");
     	            }
     			}
             }
@@ -123,7 +123,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var wellName = Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
+        	var wellName = Ext.getCmp('SRPCalculateMaintainingWellListComBox_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {

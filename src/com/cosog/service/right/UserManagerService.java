@@ -19,7 +19,7 @@ import com.cosog.model.Org;
 import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.model.calculate.PCPDeviceInfo;
-import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.SRPDeviceInfo;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;

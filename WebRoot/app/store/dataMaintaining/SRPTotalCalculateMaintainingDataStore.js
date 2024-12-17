@@ -1,6 +1,6 @@
-Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
+Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.RPCTotalCalculateMaintainingDataStore',
+    alias: 'widget.SRPTotalCalculateMaintainingDataStore',
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
@@ -22,7 +22,7 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
-            var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
+            var gridPanel = Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var arrColumns = get_rawData.columns;
                 var cloums = createTotalCalculateMaintainingDataColumn(arrColumns);
@@ -35,7 +35,7 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
     	        });
                 
                 gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "RPCTotalCalculateMaintainingDataGridPanel_Id",
+                    id: "SRPTotalCalculateMaintainingDataGridPanel_Id",
                     border: false,
                     stateful: true,
                     autoScroll: true,
@@ -64,16 +64,16 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
                         }
                     }
                 });
-                var panel = Ext.getCmp("RPCTotalCalculateMaintainingPanel");
+                var panel = Ext.getCmp("SRPTotalCalculateMaintainingPanel");
                 panel.add(gridPanel);
             }
             gridPanel.getSelectionModel().deselectAll(true);
             
-            var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id');
+            var startDate=Ext.getCmp('SRPCalculateMaintainingStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(get_rawData.startDate);
             }
-            var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id');
+            var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.endDate);
             }
@@ -82,14 +82,14 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceName='';
         	var deviceId=0;
-        	var selectRow= Ext.getCmp("RPCCalculateMaintainingDeviceListSelectRow_Id").getValue();
+        	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
         	if(selectRow>=0){
-        		deviceName = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
-        		deviceId=Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		deviceName = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+        		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}
         	
-        	var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
-            var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
+        	var startDate=Ext.getCmp('SRPCalculateMaintainingStartDate_Id').rawValue;
+            var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id').rawValue;
         	
             var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=3;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算

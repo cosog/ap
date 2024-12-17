@@ -32,9 +32,9 @@ import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPDeviceInfo;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPDeviceInfo;
+import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.data.DataDictionary;
@@ -96,8 +96,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"totalCount\":3,");
 			int total=0,online=0,goOnline=0,offline=0;
 			if(!jedisStatus){
-				String tableName="tbl_rpcacqdata_latest";
-				String deviceTableName="viw_rpcdevice";
+				String tableName="tbl_srpacqdata_latest";
+				String deviceTableName="viw_srpdevice";
 				if(StringManagerUtils.stringToInteger(deviceType)!=0){
 					tableName="tbl_pcpacqdata_latest";
 					deviceTableName="viw_pcpdevice";
@@ -183,8 +183,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			MemoryDataManagerTask.initAlarmStyle();
 			alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
 		}
-		String tableName="tbl_rpcacqdata_latest";
-		String deviceTableName="viw_rpcdevice";
+		String tableName="tbl_srpacqdata_latest";
+		String deviceTableName="viw_srpdevice";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
 			tableName="tbl_pcpacqdata_latest";
 			deviceTableName="viw_pcpdevice";
@@ -234,7 +234,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
-			String calTableName="tbl_rpcacqdata_latest";
+			String calTableName="tbl_srpacqdata_latest";
 			
 			String sql="select t.id from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
@@ -292,7 +292,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
-			String calTableName="tbl_rpcacqdata_latest";
+			String calTableName="tbl_srpacqdata_latest";
 			String ddicName="historyQuery_Overview";
 			DataDictionary ddic = null;
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -439,7 +439,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
-			String calTableName="tbl_rpcacqdata_latest";
+			String calTableName="tbl_srpacqdata_latest";
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -572,7 +572,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
-			String calTableName="tbl_rpcacqdata_hist";
+			String calTableName="tbl_srpacqdata_hist";
 			String ddicName="historyQuery_HistoryData";
 			DataDictionary ddic = null;
 			List<String> ddicAcqColumnsList=new ArrayList<String>();
@@ -859,8 +859,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
-				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
+				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
@@ -871,11 +871,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
-			String calAndInputTableName="tbl_rpcacqdata_hist";
+			String calAndInputTableName="tbl_srpacqdata_hist";
 			
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calAndInputTableName="tbl_rpcacqdata_hist";
+				calAndInputTableName="tbl_srpacqdata_hist";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
 			}
@@ -1173,8 +1173,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(displayInputItemList.size()>0){
 					String productionData=(obj[obj.length-2]+"").replaceAll("null", "");
 					if(StringManagerUtils.stringToInteger(calculateType)==1){
-						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 						for(int j=0;j<displayInputItemList.size();j++){
 							String columnName=displayInputItemList.get(j).getName();
 							String rawColumnName=columnName;
@@ -1194,46 +1194,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}
 							}
 							
-							if(rpcProductionData!=null){
-								if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-								}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-								}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-								}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-								}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-									value=rpcProductionData.getReservoir().getDepth()+"";
+							if(srpProductionData!=null){
+								if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+								}else if("WaterDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getWaterDensity()+"";
+								}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+								}else if("SaturationPressure".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getSaturationPressure()+"";
+								}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+									value=srpProductionData.getReservoir().getDepth()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油层", "煤层");
 									}
-								}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-									value=rpcProductionData.getReservoir().getTemperature()+"";
+								}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+									value=srpProductionData.getReservoir().getTemperature()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油层", "煤层");
 									}
-								}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getTubingPressure()+"";
+								}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getTubingPressure()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油压", "管压");
 									}
-								}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getCasingPressure()+"";
-								}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-								}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getWaterCut()+"";
-								}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-								}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-								}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-									value=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-								}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-									value=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
+								}else if("CasingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getCasingPressure()+"";
+								}else if("WellHeadTemperature".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getWellHeadTemperature()+"";
+								}else if("WaterCut".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getWaterCut()+"";
+								}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getProductionGasOilRatio()+"";
+								}else if("ProducingfluidLevel".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getProducingfluidLevel()+"";
+								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
+								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
+									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
 							}
 							rawValue=value;
@@ -1670,8 +1670,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
-				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
+				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
@@ -1689,10 +1689,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 		    String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
-			String calAndInputTableName="tbl_rpcacqdata_hist";
+			String calAndInputTableName="tbl_srpacqdata_hist";
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calAndInputTableName="tbl_rpcacqdata_hist";
+				calAndInputTableName="tbl_srpacqdata_hist";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
 			}
@@ -1942,8 +1942,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(displayInputItemList.size()>0){
 					String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 					if(StringManagerUtils.stringToInteger(calculateType)==1){
-						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-						RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 						for(int j=0;j<displayInputItemList.size();j++){
 							String columnName=displayInputItemList.get(j).getName();
 							String rawColumnName=columnName;
@@ -1963,46 +1963,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}
 							}
 							
-							if(rpcProductionData!=null){
-								if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-								}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-								}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-								}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-									value=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-								}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-									value=rpcProductionData.getReservoir().getDepth()+"";
+							if(srpProductionData!=null){
+								if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+								}else if("WaterDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getWaterDensity()+"";
+								}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+								}else if("SaturationPressure".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+									value=srpProductionData.getFluidPVT().getSaturationPressure()+"";
+								}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+									value=srpProductionData.getReservoir().getDepth()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油层", "煤层");
 									}
-								}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-									value=rpcProductionData.getReservoir().getTemperature()+"";
+								}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+									value=srpProductionData.getReservoir().getTemperature()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油层", "煤层");
 									}
-								}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getTubingPressure()+"";
+								}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getTubingPressure()+"";
 									if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 										columnName=columnName.replace("油压", "管压");
 									}
-								}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getCasingPressure()+"";
-								}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-								}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getWaterCut()+"";
-								}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-								}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-								}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-									value=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-									value=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-								}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-									value=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
+								}else if("CasingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getCasingPressure()+"";
+								}else if("WellHeadTemperature".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getWellHeadTemperature()+"";
+								}else if("WaterCut".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getWaterCut()+"";
+								}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getProductionGasOilRatio()+"";
+								}else if("ProducingfluidLevel".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getProducingfluidLevel()+"";
+								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
+								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
+									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
 							}
 							rawValue=value;
@@ -2365,7 +2365,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			DeviceInfo deviceInfo=null;
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calAndInputTableName="tbl_rpcacqdata_hist";
+				calAndInputTableName="tbl_srpacqdata_hist";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
 			}
@@ -2382,8 +2382,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
-				inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
+				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
@@ -2530,8 +2530,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							if(StringManagerUtils.stringToInteger(calculateType)==1){
-								type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-								RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 								for(int i=0;i<displayInputItemList.size();i++){
 									String columnName=displayInputItemList.get(i).getName();
 									String rawColumnName=columnName;
@@ -2551,49 +2551,49 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 									}
 									
-									if(rpcProductionData!=null){
-										if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-											value=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-										}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-											value=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-										}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-											value=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-										}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-											value=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-										}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-											value=rpcProductionData.getReservoir().getDepth()+"";
+									if(srpProductionData!=null){
+										if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+											value=srpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+										}else if("WaterDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+											value=srpProductionData.getFluidPVT().getWaterDensity()+"";
+										}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+											value=srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+										}else if("SaturationPressure".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+											value=srpProductionData.getFluidPVT().getSaturationPressure()+"";
+										}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+											value=srpProductionData.getReservoir().getDepth()+"";
 											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
-										}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-											value=rpcProductionData.getReservoir().getTemperature()+"";
+										}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+											value=srpProductionData.getReservoir().getTemperature()+"";
 											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油层", "煤层");
 											}
-										}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getTubingPressure()+"";
+										}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getTubingPressure()+"";
 											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油压", "管压");
 											}
-										}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getCasingPressure()+"";
+										}else if("CasingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getCasingPressure()+"";
 											if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
 												columnName=columnName.replace("油压", "管压");
 											}
-										}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-										}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getWaterCut()+"";
-										}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-										}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-										}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-											value=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-										}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-											value=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-										}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-											value=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
+										}else if("WellHeadTemperature".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getWellHeadTemperature()+"";
+										}else if("WaterCut".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getWaterCut()+"";
+										}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getProductionGasOilRatio()+"";
+										}else if("ProducingfluidLevel".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getProducingfluidLevel()+"";
+										}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+											value=srpProductionData.getProduction().getPumpSettingDepth()+"";
+										}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+											value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+										}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
+											value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 										}
 									}
 									rawValue=value;
@@ -3103,8 +3103,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calItemList=MemoryDataManagerTask.getRPCCalculateItem(language);
-					inputItemList=MemoryDataManagerTask.getRPCInputItem(language);
+					calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
@@ -3396,7 +3396,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String calAndInputColumn="";
 				String calAndInputDataTable="";
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
-					calAndInputDataTable="tbl_rpcacqdata_hist";
+					calAndInputDataTable="tbl_srpacqdata_hist";
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 				}
@@ -3474,42 +3474,42 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						Gson gson = new Gson();
 						java.lang.reflect.Type type=null;
 						if(StringManagerUtils.stringToInteger(calculateType)==1){
-							type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-							RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 							for(int j=0;j<inputItemColumnList.size();j++){
 								String inputItemValue="";
 								String column=inputItemColumnList.get(j);
-								if(rpcProductionData!=null){
-									if("CrudeOilDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getCrudeOilDensity()+"";
-									}else if("WaterDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getWaterDensity()+"";
-									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
-									}else if("SaturationPressure".equalsIgnoreCase(column) && rpcProductionData.getFluidPVT()!=null ){
-										inputItemValue=rpcProductionData.getFluidPVT().getSaturationPressure()+"";
-									}else if("ReservoirDepth".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getDepth()+"";
-									}else if("ReservoirTemperature".equalsIgnoreCase(column) && rpcProductionData.getReservoir()!=null ){
-										inputItemValue=rpcProductionData.getReservoir().getTemperature()+"";
-									}else if("TubingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getTubingPressure()+"";
-									}else if("CasingPressure".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getCasingPressure()+"";
-									}else if("WellHeadTemperature".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWellHeadTemperature()+"";
-									}else if("WaterCut".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getWaterCut()+"";
-									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProductionGasOilRatio()+"";
-									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getProducingfluidLevel()+"";
-									}else if("PumpSettingDepth".equalsIgnoreCase(column) && rpcProductionData.getProduction()!=null ){
-										inputItemValue=rpcProductionData.getProduction().getPumpSettingDepth()+"";
-									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && rpcProductionData.getPump()!=null ){
-										inputItemValue=rpcProductionData.getPump().getPumpBoreDiameter()*1000+"";
-									}else if("LevelCorrectValue".equalsIgnoreCase(column) && rpcProductionData.getManualIntervention()!=null ){
-										inputItemValue=rpcProductionData.getManualIntervention().getLevelCorrectValue()+"";
+								if(srpProductionData!=null){
+									if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+										inputItemValue=srpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+									}else if("WaterDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+										inputItemValue=srpProductionData.getFluidPVT().getWaterDensity()+"";
+									}else if("NaturalGasRelativeDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+										inputItemValue=srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+									}else if("SaturationPressure".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
+										inputItemValue=srpProductionData.getFluidPVT().getSaturationPressure()+"";
+									}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+										inputItemValue=srpProductionData.getReservoir().getDepth()+"";
+									}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
+										inputItemValue=srpProductionData.getReservoir().getTemperature()+"";
+									}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getTubingPressure()+"";
+									}else if("CasingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getCasingPressure()+"";
+									}else if("WellHeadTemperature".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getWellHeadTemperature()+"";
+									}else if("WaterCut".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getWaterCut()+"";
+									}else if("ProductionGasOilRatio".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getProductionGasOilRatio()+"";
+									}else if("ProducingfluidLevel".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getProducingfluidLevel()+"";
+									}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
+										inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
+									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
+										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}
 								}
 								result_json.append(inputItemValue+",");
@@ -3778,12 +3778,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
 				+ " t.resultcode,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
-				+ " from tbl_rpcacqdata_hist t"
+				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
-		totalSql="select count(1) from tbl_rpcacqdata_hist t"
+		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
@@ -3884,7 +3884,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.stroke,t.spm,"
 					+ " t.fmax,t.fmin,"
 					+ " t.position_curve,t.load_curve"
-					+ " from tbl_rpcacqdata_hist t"
+					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
@@ -4026,14 +4026,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.deltaradius*100 as deltaradius,"//43
 					+ " t.todayKWattH,"//44
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//45~48
-					+ " from tbl_rpcacqdata_hist t"
+					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" "
 					+ " order by t.fesdiagramacqtime desc";
 			
-			String countSql="select count(1) from tbl_rpcacqdata_hist t"
+			String countSql="select count(1) from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
@@ -4072,12 +4072,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String runStatusName=(obj[9]+"").replaceAll("null", "");
 						String resultCode=(obj[13]+"").replaceAll("null", "");
 						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-						String productionDataStr=(obj[23]+"").replaceAll("null", "");
+						String productionDataStr=(obj[25]+"").replaceAll("null", "");
 						
 						WorkType workType=workTypeMap.get(resultCode);
 						
-						type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-						RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+						SRPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 						
 						if(alarmInstanceOwnItem!=null){
 							for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
@@ -4290,7 +4290,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//40~42
 					+ " t.deltaradius*100 as deltaradius,"//43
 					+ " t.todayKWattH"//44
-					+ " from tbl_rpcacqdata_hist t"
+					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
@@ -4319,12 +4319,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-				String productionDataStr=(obj[23]+"").replaceAll("null", "");
+				String productionDataStr=(obj[25]+"").replaceAll("null", "");
 				
 				WorkType workType=workTypeMap.get(resultCode);
 				
-				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-				RPCCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
+				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+				SRPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				
 				dataBuff.append("{ \"id\":\"" + (1+i) + "\",");
 				dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");

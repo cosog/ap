@@ -460,7 +460,7 @@ public class HistoryQueryController extends BaseController  {
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		this.pager = new Page("pagerForm", request);
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -517,7 +517,7 @@ public class HistoryQueryController extends BaseController  {
 			session.setAttribute(key, 0);
 		}
 		this.pager = new Page("pagerForm", request);
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.deviceId= "+deviceId;
 			List list = this.service.reportDateJssj(sql);
@@ -560,7 +560,7 @@ public class HistoryQueryController extends BaseController  {
 		PrintWriter pw = response.getWriter();
 		String calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		this.pager = new Page("pagerForm", request);
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
@@ -630,7 +630,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";

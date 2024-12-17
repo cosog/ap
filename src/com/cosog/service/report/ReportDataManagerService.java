@@ -105,7 +105,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+			calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
@@ -402,7 +402,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportUnitCalculateType==1){
-				calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+				calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 			}else if(reportUnitCalculateType==2){
 				calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 			}
@@ -740,7 +740,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String viewName="VIW_DAILYCALCULATIONDATA";
 				calTotalTableName="";
 				if(reportUnitCalculateType==1){
-					calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+					calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 				}else if(reportUnitCalculateType==2){
 					calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 				}
@@ -1069,7 +1069,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
 		}
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCTIMINGCALCULATIONDATA";
+			calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPTIMINGCALCULATIONDATA";
 		}
@@ -1402,7 +1402,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
 			}
 			if(reportUnitCalculateType==1){
-				calTotalTableName="VIW_RPCTIMINGCALCULATIONDATA";
+				calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
 			}else if(reportUnitCalculateType==2){
 				calTotalTableName="VIW_PCPTIMINGCALCULATIONDATA";
 			}
@@ -1771,7 +1771,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String viewName="VIW_TIMINGCALCULATIONDATA";
 				calTotalTableName="";
 				if(reportUnitCalculateType==1){
-					calTotalTableName="VIW_RPCTIMINGCALCULATIONDATA";
+					calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
 				}else if(reportUnitCalculateType==2){
 					calTotalTableName="VIW_PCPTIMINGCALCULATIONDATA";
 				}
@@ -2133,7 +2133,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+			calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
@@ -2482,7 +2482,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportUnitCalculateType==1){
-				calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+				calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 			}else if(reportUnitCalculateType==2){
 				calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 			}
@@ -2870,7 +2870,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				calTotalTableName="";
 				if(reportUnitCalculateType==1){
-					calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+					calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 				}else if(reportUnitCalculateType==2){
 					calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 				}
@@ -3277,7 +3277,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+			calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
@@ -3495,7 +3495,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCTIMINGCALCULATIONDATA";
+			calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPTIMINGCALCULATIONDATA";
 		}
@@ -3713,7 +3713,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_RPCDAILYCALCULATIONDATA";
+			calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}

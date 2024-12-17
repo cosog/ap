@@ -211,7 +211,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
             				var name='';
             				var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
             				if(isNotVal(DeviceSelectRow)){
-            					recordId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+            					deviceId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
             	            	specificType=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'specificType');
             	            	name=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'name');
             				}
@@ -545,10 +545,11 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	var itemName=auxiliaryDeviceDetailsData[index][1];
                         	var itemValue=isNotVal(auxiliaryDeviceDetailsData[index][2])?auxiliaryDeviceDetailsData[index][2]:"";
                         	var itemUnit=isNotVal(auxiliaryDeviceDetailsData[index][3])?auxiliaryDeviceDetailsData[index][3]:"";
+                        	var itemCode=isNotVal(auxiliaryDeviceDetailsData[index][4])?auxiliaryDeviceDetailsData[index][4]:"";
                         	if(auxiliaryDeviceSpecificType==1 && itemName==loginUserLanguageResource.rotationDirection){
-                        		if(itemValue=='顺时针'){
+                        		if(itemValue==loginUserLanguageResource.clockwise){
                         			itemValue='Clockwise';
-                        		}else if(itemValue=='逆时针'){
+                        		}else if(itemValue==loginUserLanguageResource.anticlockwise){
                         			itemValue='Anticlockwise';
                         		}else{
                         			itemValue='';
@@ -557,6 +558,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	auxiliaryDeviceDetails.itemName=itemName;
                         	auxiliaryDeviceDetails.itemValue=itemValue;
                         	auxiliaryDeviceDetails.itemUnit=itemUnit;
+                        	auxiliaryDeviceDetails.itemCode=itemCode;
                         	auxiliaryDeviceDetailsSaveData.auxiliaryDeviceDetailsList.push(auxiliaryDeviceDetails);
                         }
                     });
@@ -728,8 +730,8 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(auxiliaryDeviceDetailsHandsontableHelper==null || auxiliaryDeviceDetailsHandsontableHelper.hot==undefined){
 				auxiliaryDeviceDetailsHandsontableHelper = AuxiliaryDeviceDetailsHandsontableHelper.createNew("AuxiliaryDeviceDetailsTableDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.unit+"']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.unit+"','itemCode']";
+				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'},{data:'itemCode'}]";
 				
 				auxiliaryDeviceDetailsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				auxiliaryDeviceDetailsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -780,7 +782,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: data,
 	                hiddenColumns: {
-	                    columns: [0],
+	                    columns: [0,4],
 	                    indicators: false
 	                },
 	                columns: auxiliaryDeviceDetailsHandsontableHelper.columns,
@@ -853,7 +855,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    		
 	                    		if (visualColIndex === 2 && visualRowIndex===1) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['顺时针','逆时针'];
+			                    	this.source = [loginUserLanguageResource.clockwise,loginUserLanguageResource.anticlockwise];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }

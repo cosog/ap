@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.PCPDeviceInfo;
-import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.SRPDeviceInfo;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.task.EquipmentDriverServerTask;

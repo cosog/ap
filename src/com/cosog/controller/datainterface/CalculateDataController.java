@@ -89,7 +89,7 @@ public class CalculateDataController extends BaseController{
 				TimeUnit.SECONDS, 
 				Config.getInstance().configFile.getAp().getThreadPool().getCalculateMaintaining().getWattingCount());
 		String wellListSql="select distinct deviceid,to_char(t.fesdiagramacqtime,'yyyy-mm-dd') as acqdate "
-				+ " from tbl_rpcacqdata_hist t "
+				+ " from tbl_srpacqdata_hist t "
 				+ " where t.productiondata is not null "
 				+ " and t.fesdiagramacqtime is not null "
 				+ " and resultstatus =2";
@@ -281,11 +281,11 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/RPCTimingTotalCalculation")
-	public String RPCTimingTotalCalculation() throws ParseException, SQLException, IOException{
+	@RequestMapping("/SRPTimingTotalCalculation")
+	public String SRPTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
-		calculateDataService.RPCTimingTotalCalculation(timeStr);
+		calculateDataService.SRPTimingTotalCalculation(timeStr);
 		
 		System.out.println("功图定时汇总完成");
 		

@@ -991,7 +991,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 				                    	cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addCellStyle;
 				                    } else if (visualColIndex === 2 && visualRowIndex === 1) {
 		                                this.type = 'dropdown';
-		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.RPCCalculate, loginUserLanguageResource.PCPCalculate];
+		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];
 		                                this.strict = true;
 		                                this.allowInvalid = false;
 		                            }else{
@@ -2080,7 +2080,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 			saveData.unitName=propertiesData[0][2];
 			
 			saveData.calculateType = 0;
-            if (propertiesData[1][2] == loginUserLanguageResource.RPCCalculate) {
+            if (propertiesData[1][2] == loginUserLanguageResource.SRPCalculate) {
             	saveData.calculateType = 1;
             } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
             	saveData.calculateType = 2;

@@ -9,7 +9,7 @@ public class CalculateColumnInfo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private List<CalculateColumn> RPCCalculateColumnList;
+	private List<CalculateColumn> SRPCalculateColumnList;
 
 	private List<CalculateColumn> PCPCalculateColumnList;
 	
@@ -58,44 +58,22 @@ public class CalculateColumnInfo implements Serializable{
 			Sort = sort;
 		}
 	}
-
-
-
-
-
-
-
-	public List<CalculateColumn> getRPCCalculateColumnList() {
-		return RPCCalculateColumnList;
-	}
-
-
-
-
-
-
-
-	public void setRPCCalculateColumnList(List<CalculateColumn> rPCCalculateColumnList) {
-		RPCCalculateColumnList = rPCCalculateColumnList;
-	}
-
-
-
-
-
-
-
+	
 	public List<CalculateColumn> getPCPCalculateColumnList() {
 		return PCPCalculateColumnList;
 	}
-
-
-
-
-
-
-
+	
 	public void setPCPCalculateColumnList(List<CalculateColumn> pCPCalculateColumnList) {
 		PCPCalculateColumnList = pCPCalculateColumnList;
 	}
+
+	public List<CalculateColumn> getSRPCalculateColumnList() {
+		return SRPCalculateColumnList;
+	}
+
+	public void setSRPCalculateColumnList(List<CalculateColumn> SRPCalculateColumnList) {
+		SRPCalculateColumnList = SRPCalculateColumnList;
+	}
+	
+	
 }

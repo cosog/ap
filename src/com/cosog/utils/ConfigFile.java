@@ -505,7 +505,7 @@ public class ConfigFile {
 
 	    private AdProbe probe;
 	    
-	    private Ad_rpc rpc;
+	    private Ad_srp srp;
 	    
 	    public void setProbe(AdProbe probe){
 	        this.probe = probe;
@@ -513,12 +513,6 @@ public class ConfigFile {
 	    public AdProbe getProbe(){
 	        return this.probe;
 	    }
-		public Ad_rpc getRpc() {
-			return rpc;
-		}
-		public void setRpc(Ad_rpc rpc) {
-			this.rpc = rpc;
-		}
 		public Ad_rw getRw() {
 			return rw;
 		}
@@ -530,6 +524,12 @@ public class ConfigFile {
 		}
 		public void setInit(Ad_Init init) {
 			this.init = init;
+		}
+		public Ad_srp getSrp() {
+			return srp;
+		}
+		public void setSrp(Ad_srp srp) {
+			this.srp = srp;
 		}
 	}
 	
@@ -733,7 +733,7 @@ public class ConfigFile {
 		}
 	}
 	
-	public static class Ad_rpc
+	public static class Ad_srp
 	{
 	    private String readTopicReq;
 

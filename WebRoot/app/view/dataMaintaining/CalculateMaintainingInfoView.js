@@ -158,8 +158,8 @@ function refreshCalculateMaintainingData(){
 	
 	var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
-		refreshRPCCalculateMaintainingData();
+	if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
+		refreshSRPCalculateMaintainingData();
 	}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
 		refreshPCPCalculateMaintainingData();
 	}

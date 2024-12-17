@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 
-public class RPCCalculateRequestData implements Serializable {
+public class SRPCalculateRequestData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String WellName;

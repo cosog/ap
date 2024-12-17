@@ -84,7 +84,7 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 		}
@@ -229,7 +229,7 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserOrgid();
 			}
 		}
-		String tableName="tbl_rpcacqdata_hist";
+		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 		}
@@ -376,9 +376,9 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String tableName="tbl_rpcdailycalculationdata";
+		String tableName="tbl_srpdailycalculationdata";
 		if("1".equals(calculateType) || "3".equals(calculateType)){
-			tableName="tbl_rpcdailycalculationdata";
+			tableName="tbl_srpdailycalculationdata";
 		}else if("2".equals(calculateType) || "4".equals(calculateType)){
 			tableName="tbl_pcpdailycalculationdata";
 		}

@@ -33,7 +33,7 @@ import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PcpDeviceInformation;
 import com.cosog.model.DeviceAddInfo;
-import com.cosog.model.RpcDeviceInformation;
+import com.cosog.model.SRPDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.VideoKey;
@@ -43,9 +43,9 @@ import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.calculate.RPCProductionData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPDeviceInfo;
+import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.WaterCutRawData;
@@ -1018,8 +1018,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		getBaseDao().addObject(deviceInformation);
 	}
 	
-	public void doRPCDeviceAdd(RpcDeviceInformation rpcDeviceInformation) throws Exception {
-		getBaseDao().addObject(rpcDeviceInformation);
+	public void doSRPDeviceAdd(SRPDeviceInformation srpDeviceInformation) throws Exception {
+		getBaseDao().addObject(srpDeviceInformation);
 	}
 	
 	public void doPCPDeviceAdd(PcpDeviceInformation pcpDeviceInformation) throws Exception {
@@ -1095,7 +1095,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public void saveRPCPumpingModel(int deviceId,String pumpingModelId) throws Exception {
+	public void saveSRPPumpingModel(int deviceId,String pumpingModelId) throws Exception {
 		String sql = "update tbl_device t set t.pumpingmodelid="+pumpingModelId+" where t.id="+deviceId;
 		if(!StringManagerUtils.isNotNull(pumpingModelId)){
 			sql = "update tbl_device t set t.pumpingmodelid=null where t.id="+deviceId;
@@ -1230,8 +1230,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public void editRPCDeviceName(String oldWellName,String newWellName,String orgid) throws Exception {
-		getBaseDao().editRPCDeviceName(oldWellName,newWellName,orgid);
+	public void editSRPDeviceName(String oldWellName,String newWellName,String orgid) throws Exception {
+		getBaseDao().editSRPDeviceName(oldWellName,newWellName,orgid);
 	}
 	
 	public void editPCPDeviceName(String oldWellName,String newWellName,String orgid) throws Exception {
@@ -1271,7 +1271,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String orgId = (String) map.get("orgId");
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,deviceName,deviceTypeName,"
+		String sql = "select id,orgName,deviceName,deviceTypeName_"+language+","
 				+ " applicationScenarios,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
@@ -1440,7 +1440,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-		    String sql = "select id,orgName,deviceName,deviceTypeName,"
+		    String sql = "select id,orgName,deviceName,deviceTypeName_"+user.getLanguageName()+","
 					+ " applicationScenarios,"
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
@@ -2034,8 +2034,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			stroke=obj[0]+"";
 			balanceInfo=obj[1]+"";
 		}
-		type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-		RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+		type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+		SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 		if(balance!=null&&balance.getEveryBalance()!=null&&balance.getEveryBalance().size()>0){
 			if(balance.getEveryBalance().size()>0){
 				weight1=balance.getEveryBalance().get(0).getWeight()+"";
@@ -2150,106 +2150,106 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						WorkType w=entry.getValue();
 						resultNameBuff.append(",\""+w.getResultName()+"\"");
 					}
-					type = new TypeToken<RPCProductionData>() {}.getType();
-					RPCProductionData rpcProductionData=gson.fromJson(productionData, type);
-					if(rpcProductionData!=null){
-						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
-						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
-						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
-						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\""+(rpcProductionData.getFluidPVT()!=null?rpcProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
+					type = new TypeToken<SRPProductionData>() {}.getType();
+					SRPProductionData srpProductionData=gson.fromJson(productionData, type);
+					if(srpProductionData!=null){
+						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
+						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
+						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getDepth():"")+"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\""+(rpcProductionData.getReservoir()!=null?rpcProductionData.getReservoir().getTemperature():"")+"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getDepth():"")+"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getTemperature():"")+"\"},");
 						
-						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getTubingPressure():"")+"\"},");
-						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getCasingPressure():"")+"\"},");
-						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
-						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getWaterCut():"")+"\"},");
-						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
-						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
-						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
+						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getTubingPressure():"")+"\"},");
+						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getCasingPressure():"")+"\"},");
+						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
+						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWaterCut():"")+"\"},");
+						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
+						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
+						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
 						
 						String barrelType="";
-						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
-							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
+						if(srpProductionData.getPump()!=null&&srpProductionData.getPump().getBarrelType()!=null){
+							if("L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
 								barrelType=languageResourceMap.get("barrelType_L");
-							}else if("H".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
+							}else if("H".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
 								barrelType=languageResourceMap.get("barrelType_H");
 							}
 						}
 //						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
 						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemValue\":\""+barrelType+"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPumpGrade():"")+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?(rpcProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPlungerLength():"")+"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\""+(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0?(rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\""+(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0?(rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
 						String rodType3="",rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="";
 						String rodType4="",rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="";
-						if(rpcProductionData.getRodString()!=null&&rpcProductionData.getRodString().getEveryRod()!=null&&rpcProductionData.getRodString().getEveryRod().size()>0){
-							if(rpcProductionData.getRodString().getEveryRod().size()>0){
-								if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==1){
+						if(srpProductionData.getRodString()!=null&&srpProductionData.getRodString().getEveryRod()!=null&&srpProductionData.getRodString().getEveryRod().size()>0){
+							if(srpProductionData.getRodString().getEveryRod().size()>0){
+								if(srpProductionData.getRodString().getEveryRod().get(0).getType()==1){
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==2){
+								}else if(srpProductionData.getRodString().getEveryRod().get(0).getType()==2){
 									rodType1=languageResourceMap.get("rodStringTypeValue2");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(0).getType()==3){
+								}else if(srpProductionData.getRodString().getEveryRod().get(0).getType()==3){
 									rodType1=languageResourceMap.get("rodStringTypeValue3");
 								}else{
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
-								rodGrade1=rpcProductionData.getRodString().getEveryRod().get(0).getGrade();
-								rodOutsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-								rodInsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
-								rodLength1=rpcProductionData.getRodString().getEveryRod().get(0).getLength()+"";
+								rodGrade1=srpProductionData.getRodString().getEveryRod().get(0).getGrade();
+								rodOutsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
+								rodInsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+								rodLength1=srpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 							}
-							if(rpcProductionData.getRodString().getEveryRod().size()>1){
-								if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==1){
+							if(srpProductionData.getRodString().getEveryRod().size()>1){
+								if(srpProductionData.getRodString().getEveryRod().get(1).getType()==1){
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==2){
+								}else if(srpProductionData.getRodString().getEveryRod().get(1).getType()==2){
 									rodType2=languageResourceMap.get("rodStringTypeValue2");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(1).getType()==3){
+								}else if(srpProductionData.getRodString().getEveryRod().get(1).getType()==3){
 									rodType2=languageResourceMap.get("rodStringTypeValue3");
 								}else{
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
-								rodGrade2=rpcProductionData.getRodString().getEveryRod().get(1).getGrade();
-								rodOutsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
-								rodLength2=rpcProductionData.getRodString().getEveryRod().get(1).getLength()+"";
+								rodGrade2=srpProductionData.getRodString().getEveryRod().get(1).getGrade();
+								rodOutsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
+								rodInsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+								rodLength2=srpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 							}
-							if(rpcProductionData.getRodString().getEveryRod().size()>2){
-								if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==1){
+							if(srpProductionData.getRodString().getEveryRod().size()>2){
+								if(srpProductionData.getRodString().getEveryRod().get(2).getType()==1){
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==2){
+								}else if(srpProductionData.getRodString().getEveryRod().get(2).getType()==2){
 									rodType3=languageResourceMap.get("rodStringTypeValue2");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(2).getType()==3){
+								}else if(srpProductionData.getRodString().getEveryRod().get(2).getType()==3){
 									rodType3=languageResourceMap.get("rodStringTypeValue3");
 								}else{
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
-								rodGrade3=rpcProductionData.getRodString().getEveryRod().get(2).getGrade();
-								rodOutsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-								rodInsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
-								rodLength3=rpcProductionData.getRodString().getEveryRod().get(2).getLength()+"";
+								rodGrade3=srpProductionData.getRodString().getEveryRod().get(2).getGrade();
+								rodOutsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
+								rodInsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+								rodLength3=srpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 							}
-							if(rpcProductionData.getRodString().getEveryRod().size()>3){
-								if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==1){
+							if(srpProductionData.getRodString().getEveryRod().size()>3){
+								if(srpProductionData.getRodString().getEveryRod().get(3).getType()==1){
 									rodType4=languageResourceMap.get("rodStringTypeValue1");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==2){
+								}else if(srpProductionData.getRodString().getEveryRod().get(3).getType()==2){
 									rodType4=languageResourceMap.get("rodStringTypeValue2");
-								}else if(rpcProductionData.getRodString().getEveryRod().get(3).getType()==3){
+								}else if(srpProductionData.getRodString().getEveryRod().get(3).getType()==3){
 									rodType4=languageResourceMap.get("rodStringTypeValue3");
 								}else{
 									rodType4=languageResourceMap.get("rodStringTypeValue4");
 								}
-								rodGrade4=rpcProductionData.getRodString().getEveryRod().get(3).getGrade();
-								rodOutsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-								rodInsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
-								rodLength4=rpcProductionData.getRodString().getEveryRod().get(3).getLength()+"";
+								rodGrade4=srpProductionData.getRodString().getEveryRod().get(3).getGrade();
+								rodOutsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
+								rodInsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+								rodLength4=srpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
 						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemValue\":\""+rodType1+"\"},");
@@ -2278,16 +2278,16 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						
 						
 						String manualInterventionName=languageResourceMap.get("noIntervention");
-						if(rpcProductionData.getManualIntervention()!=null && rpcProductionData.getManualIntervention().getCode()>0){
-							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(rpcProductionData.getManualIntervention().getCode()+"",language);
+						if(srpProductionData.getManualIntervention()!=null && srpProductionData.getManualIntervention().getCode()>0){
+							WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(srpProductionData.getManualIntervention().getCode()+"",language);
 							if(workType!=null){
 								manualInterventionName=workType.getResultName();
 							}
 						}
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\""+manualInterventionName+"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
-						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\""+(rpcProductionData.getProduction()!=null?rpcProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"}");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"}");
 					}else{
 						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2783,9 +2783,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String rpcSql = "select t.id from tbl_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
-			List<?> rpcList = this.findCallSql(rpcSql);
-			if (rpcList.size() > 0) {
+			String srpSql = "select t.id from tbl_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+			List<?> srpList = this.findCallSql(srpSql);
+			if (srpList.size() > 0) {
 				flag = true;
 			}
 		}
@@ -2796,9 +2796,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(ipPort)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String rpcSql = "select t.id from tbl_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
-			List<?> rpcList = this.findCallSql(rpcSql);
-			if (rpcList.size() > 0) {
+			String srpSql = "select t.id from tbl_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
+			List<?> srpList = this.findCallSql(srpSql);
+			if (srpList.size() > 0) {
 				flag = true;
 			}
 		}
@@ -2848,7 +2848,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";
 		sql+= " where  t.orgid in ("+orgId+") "
-				+ " and t.instancecode in ( select t3.code from tbl_protocolinstance t3 where t3.acqprotocoltype ='private-rpc' or t3.ctrlprotocoltype ='private-rpc' )";
+				+ " and t.instancecode in ( select t3.code from tbl_protocolinstance t3 where t3.acqprotocoltype ='private-srp' or t3.ctrlprotocoltype ='private-srp' )";
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
 		}
@@ -2881,7 +2881,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getDeviceModelData(String deviceId) {
-		RPCCalculateRequestData calculateRequestData=null;
+		SRPCalculateRequestData calculateRequestData=null;
 		String result_json="";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -2897,15 +2897,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(list.size()>0){
 			Object[] object = (Object[]) list.get(0);
 			String productionData=object[0].toString(); 
-			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+			type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 			calculateRequestData=gson.fromJson(productionData, type);
 			if(calculateRequestData!=null){
 				int pumpingModelId=StringManagerUtils.stringToInteger(object[3]+"");
 	        	if(pumpingModelId>0){
-	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+	        		calculateRequestData.setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
 	        		String balanceInfo=object[1]+"";
-					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
-					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+					type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+					SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 					if(balance!=null){
 						calculateRequestData.getPumpingUnit().setBalance(balance);
 					}
@@ -2940,7 +2940,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(pumpingPRTFData!=null&&pumpingPRTFData.getList()!=null&&pumpingPRTFData.getList().size()>0){
 						for(int i=0;i<pumpingPRTFData.getList().size();i++){
 							if(stroke>0&&stroke==pumpingPRTFData.getList().get(i).getStroke()){
-								calculateRequestData.getPumpingUnit().setPRTF(new RPCCalculateRequestData.PRTF());
+								calculateRequestData.getPumpingUnit().setPRTF(new SRPCalculateRequestData.PRTF());
 								calculateRequestData.getPumpingUnit().getPRTF().setCrankAngle(new ArrayList<Float>());
 								calculateRequestData.getPumpingUnit().getPRTF().setPR(new ArrayList<Float>());
 								calculateRequestData.getPumpingUnit().getPRTF().setTF(new ArrayList<Float>());
@@ -2984,7 +2984,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json+="{ \"success\":true,\"columns\":"+columns+",";
 		result_json+="\"totalRoot\":[";
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getSrp().getReadTopicReq();
 			String topic="rawwatercut";
 			
 			StringBuffer requestBuff = new StringBuffer();
@@ -3045,7 +3045,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
 			try{
-				String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
+				String url=Config.getInstance().configFile.getAd().getSrp().getReadTopicReq();
 				String topic="rawwatercut";
 				
 				StringBuffer requestBuff = new StringBuffer();
@@ -3071,7 +3071,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getSrp().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
@@ -3240,7 +3240,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		 
 		int totalCount=0;
 		StringBuffer totalRootBuffer = new StringBuffer();
-		String sql = "select t.id,t.itemname,t.itemvalue,t.itemunit "
+		String sql = "select t.id,t.itemname,t.itemvalue,t.itemcode,t.itemunit "
 				+ " from tbl_auxiliarydeviceaddinfo t,tbl_auxiliarydevice t2 "
 				+ " where t.deviceid=t2.id "
 				+  "and t.deviceid="+deviceId
@@ -3252,49 +3252,56 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			if(list.size()>0){
 				for(int i=0;i<list.size();i++){
 					Object[] obj = (Object[]) list.get(i);
-					String itemname=obj[1]+"";
-					String itemvalue=obj[2]+"";
-					if(languageResourceMap.get("stroke").equalsIgnoreCase(itemname)){
-						stroke=obj[2]+"";
-					}else if(languageResourceMap.get("rotationDirection").equalsIgnoreCase(itemname)){
-						if("Clockwise".equalsIgnoreCase(itemvalue)){
+					String itemName=obj[1]+"";
+					String itemValue=obj[2]+"";
+					String itemCode=obj[3]+"";
+					String itemUnit=obj[4]+"";
+					if("stroke".equalsIgnoreCase(itemCode)){
+						stroke=itemValue+"";
+					}else if("rotationDirection".equalsIgnoreCase(itemCode)){
+						if("Clockwise".equalsIgnoreCase(itemValue)){
 							crankRotationDirection=languageResourceMap.get("clockwise");
-						}else if("Anticlockwise".equalsIgnoreCase(itemvalue)){
+						}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
 							crankRotationDirection=languageResourceMap.get("anticlockwise");
 						}
-					}else if(languageResourceMap.get("offsetAngleOfCrank").equalsIgnoreCase(itemname)){
-						offsetAngleOfCrank=obj[2]+"";
-					}else if(languageResourceMap.get("crankGravityRadius").equalsIgnoreCase(itemname)){
-						crankGravityRadius=obj[2]+"";
-					}else if(languageResourceMap.get("singleCrankWeight").equalsIgnoreCase(itemname)){
-						singleCrankWeight=obj[2]+"";
-					}else if(languageResourceMap.get("singleCrankPinWeight").equalsIgnoreCase(itemname)){
-						singleCrankPinWeight=obj[2]+"";
-					}else if(languageResourceMap.get("structuralUnbalance").equalsIgnoreCase(itemname)){
-						structuralUnbalance=obj[2]+"";
-					}else if(languageResourceMap.get("balanceWeight").equalsIgnoreCase(itemname)){
-						balanceWeight=obj[2]+"";
+					}else if("offsetAngleOfCrank".equalsIgnoreCase(itemCode)){
+						offsetAngleOfCrank=itemValue;
+					}else if("crankGravityRadius".equalsIgnoreCase(itemCode)){
+						crankGravityRadius=itemValue;
+					}else if("singleCrankWeight".equalsIgnoreCase(itemCode)){
+						singleCrankWeight=itemValue;
+					}else if("singleCrankPinWeight".equalsIgnoreCase(itemCode)){
+						singleCrankPinWeight=itemValue;
+					}else if("structuralUnbalance".equalsIgnoreCase(itemCode)){
+						structuralUnbalance=itemValue;
+					}else if("balanceWeight".equalsIgnoreCase(itemCode)){
+						balanceWeight=itemValue;
 					}
 				}
 			}
-			totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\"},");
-			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("rotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\"},");
-			totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\"},");
-			totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\"},");
-			totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\"},");
-			totalRootBuffer.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("singleCrankPinWeight")+"\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\"},");
-			totalRootBuffer.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("structuralUnbalance")+"\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\"},");
-			totalRootBuffer.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("balanceWeight")+"\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\"}");
+			totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\",\"itemCode\":\"stroke\"},");
+			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("rotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"rotationDirection\"},");
+			totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\",\"itemCode\":\"offsetAngleOfCrank\"},");
+			totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\",\"itemCode\":\"crankGravityRadius\"},");
+			totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankWeight\"},");
+			totalRootBuffer.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("singleCrankPinWeight")+"\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankPinWeight\"},");
+			totalRootBuffer.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("structuralUnbalance")+"\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\",\"itemCode\":\"structuralUnbalance\"},");
+			totalRootBuffer.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("balanceWeight")+"\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"balanceWeight\"}");
 			
 			totalCount=8;
 		}else{
 			totalCount=20;
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
+				String itemName=obj[1]+"";
+				String itemValue=obj[2]+"";
+				String itemCode=obj[3]+"";
+				String itemUnit=obj[4]+"";
 				totalRootBuffer.append("{\"id\":"+obj[0]+",");
-				totalRootBuffer.append("\"itemName\":\""+obj[1]+"\",");
-				totalRootBuffer.append("\"itemValue\":\""+obj[2]+"\",");
-				totalRootBuffer.append("\"itemUnit\":\""+obj[3]+"\"},");
+				totalRootBuffer.append("\"itemName\":\""+itemName+"\",");
+				totalRootBuffer.append("\"itemValue\":\""+itemValue+"\",");
+				totalRootBuffer.append("\"itemUnit\":\""+itemUnit+"\",");
+				totalRootBuffer.append("\"itemCode\":\""+itemCode+"\"},");
 			}
 			for(int i=list.size();i<20;i++){
 				totalRootBuffer.append("{},");

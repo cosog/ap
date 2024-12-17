@@ -41,15 +41,15 @@ import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.Org;
 import com.cosog.model.PcpDeviceInformation;
 import com.cosog.model.DeviceAddInfo;
-import com.cosog.model.RpcDeviceInformation;
+import com.cosog.model.SRPDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.PCPProductionData;
-import com.cosog.model.calculate.RPCProductionData;
-import com.cosog.model.drive.RPCInteractionResponseData;
+import com.cosog.model.calculate.SRPProductionData;
+import com.cosog.model.drive.SRPInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AdditionalInformationSaveData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
@@ -100,7 +100,7 @@ public class WellInformationManagerController extends BaseController {
 	@Autowired
 	private WellInformationManagerService<DeviceInformation> deviceManagerService;
 	@Autowired
-	private WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
+	private WellInformationManagerService<SRPDeviceInformation> srpDeviceManagerService;
 	@Autowired
 	private WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
 	@Autowired
@@ -124,9 +124,9 @@ public class WellInformationManagerController extends BaseController {
 	private int totals;
 	
 	//添加绑定前缀 
-	@InitBinder("rpcDeviceInformation")
+	@InitBinder("srpDeviceInformation")
 	public void initBinder(WebDataBinder binder) {
-		binder.setFieldDefaultPrefix("rpcDeviceInformation.");
+		binder.setFieldDefaultPrefix("srpDeviceInformation.");
 	}
 	
 	@InitBinder("pcpDeviceInformation")
@@ -809,6 +809,7 @@ public class WellInformationManagerController extends BaseController {
 					auxiliaryDeviceAddInfo.setItemName(auxiliaryDeviceDetailsSaveData.getAuxiliaryDeviceDetailsList().get(i).getItemName());
 					auxiliaryDeviceAddInfo.setItemValue(auxiliaryDeviceDetailsSaveData.getAuxiliaryDeviceDetailsList().get(i).getItemValue());
 					auxiliaryDeviceAddInfo.setItemUnit(auxiliaryDeviceDetailsSaveData.getAuxiliaryDeviceDetailsList().get(i).getItemUnit());
+					auxiliaryDeviceAddInfo.setItemCode(auxiliaryDeviceDetailsSaveData.getAuxiliaryDeviceDetailsList().get(i).getItemCode());
 					this.wellInformationManagerService.saveAuxiliaryDeviceAddInfo(auxiliaryDeviceAddInfo);
 				}
 			}
@@ -1322,27 +1323,27 @@ public class WellInformationManagerController extends BaseController {
 						
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
-						type = new TypeToken<RPCProductionData>() {}.getType();
-						RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
-						if(rpcProductionData!=null){
-							if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
-								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
-								rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
+						type = new TypeToken<SRPProductionData>() {}.getType();
+						SRPProductionData srpProductionData=gson.fromJson(deviceProductionData, type);
+						if(srpProductionData!=null){
+							if(srpProductionData.getProduction()!=null && srpProductionData.getFluidPVT()!=null){
+								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpProductionData.getProduction().getWaterCut(), srpProductionData.getFluidPVT().getCrudeOilDensity(), srpProductionData.getFluidPVT().getWaterDensity());
+								srpProductionData.getProduction().setWeightWaterCut(weightWaterCut);
 							}
-							if(rpcProductionData.getManualIntervention()!=null){
+							if(srpProductionData.getManualIntervention()!=null){
 								int manualInterventionResultCode=0;
 								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
 									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode();
 								}
-								rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
+								srpProductionData.getManualIntervention().setCode(manualInterventionResultCode);
 							}
-							deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
+							deviceProductionDataSaveStr=gson.toJson(srpProductionData);
 						}
 						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 						
 						//处理抽油机数据
 						//处理抽油机型号
-						this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
+						this.wellInformationManagerService.saveSRPPumpingModel(deviceId,pumpingModelId);
 						//处理抽油机详情
 						this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
 					}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
@@ -1360,13 +1361,13 @@ public class WellInformationManagerController extends BaseController {
 							}
 							deviceProductionDataSaveStr=gson.toJson(productionData);
 							this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
-							this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
+							this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
 							this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 						}
 					}else{
 						String applicationScenarios=droductionDataInfoList.get(1);
 						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"",StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
-						this.wellInformationManagerService.saveRPCPumpingModel(deviceId,"");
+						this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
 						this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 					}
 				}
@@ -1445,17 +1446,17 @@ public class WellInformationManagerController extends BaseController {
 	public String getImportedDeviceFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			getImportedRPCDeviceFile(files);
+			getImportedSRPDeviceFile(files);
 		}else{
-			getImportedRPCDeviceFile(files);
+			getImportedSRPDeviceFile(files);
 		}
 		return null;
 	}
 	
 	
 	@SuppressWarnings({"unchecked"})
-	@RequestMapping("/getImportedRPCDeviceFile")
-	public String getImportedRPCDeviceFile(CommonsMultipartFile[] files) throws Exception {
+	@RequestMapping("/getImportedSRPDeviceFile")
+	public String getImportedSRPDeviceFile(CommonsMultipartFile[] files) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		Map<String,String> importedDeviceFileMap=(Map<String, String>) map.get("importedDeviceFileMap");
@@ -1778,7 +1779,7 @@ public class WellInformationManagerController extends BaseController {
 			}
 			if(deviceAmount<license){
 				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
-					String[] instanceCodeArr=this.rpcDeviceManagerService.getDefaultInstanceCode(0).split(";");
+					String[] instanceCodeArr=this.srpDeviceManagerService.getDefaultInstanceCode(0).split(";");
 					if(instanceCodeArr.length==4){
 						deviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
 						deviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
@@ -2040,8 +2041,8 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/downstreamRPCData")
-	public String downstreamRPCData() throws Exception {
+	@RequestMapping("/downstreamSRPData")
+	public String downstreamSRPData() throws Exception {
 		StringBuffer downstreamBuff = new StringBuffer();
 		String type = ParamUtils.getParameter(request, "type");
 		String wellId = ParamUtils.getParameter(request, "wellId");
@@ -2051,19 +2052,19 @@ public class WellInformationManagerController extends BaseController {
 		String url="";
 		String key="Model";
 		if(StringManagerUtils.stringToInteger(type)==1){
-			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicModel();
+			url=Config.getInstance().configFile.getAd().getSrp().getWriteTopicModel();
 			key="Model";
 		}else if(StringManagerUtils.stringToInteger(type)==2){
-			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicConf();
+			url=Config.getInstance().configFile.getAd().getSrp().getWriteTopicConf();
 			key="Conf";
 		}else if(StringManagerUtils.stringToInteger(type)==3){
-			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicRtc();
+			url=Config.getInstance().configFile.getAd().getSrp().getWriteTopicRtc();
 			key="Time";
 		}else if(StringManagerUtils.stringToInteger(type)==4){
-			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicDog();
+			url=Config.getInstance().configFile.getAd().getSrp().getWriteTopicDog();
 			key="Timeout";
 		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6 || StringManagerUtils.stringToInteger(type)==7){
-			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicStopRpc();
+			url=Config.getInstance().configFile.getAd().getSrp().getWriteTopicStopRpc();
 			key="Position";
 		}
 		
@@ -2109,12 +2110,12 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if(StringManagerUtils.isNotNull(result)){
 			Gson gson = new Gson();
-			java.lang.reflect.Type reflectType = new TypeToken<RPCInteractionResponseData>() {}.getType();
-			RPCInteractionResponseData rpcInteractionResponseData=gson.fromJson(result, reflectType);
-			if(rpcInteractionResponseData!=null){
-				if(rpcInteractionResponseData.getResultStatus()==1){
+			java.lang.reflect.Type reflectType = new TypeToken<SRPInteractionResponseData>() {}.getType();
+			SRPInteractionResponseData srpInteractionResponseData=gson.fromJson(result, reflectType);
+			if(srpInteractionResponseData!=null){
+				if(srpInteractionResponseData.getResultStatus()==1){
 					json = "{success:true,msg:1}";
-				}else if(rpcInteractionResponseData.getResultStatus()==0){
+				}else if(srpInteractionResponseData.getResultStatus()==0){
 					json = "{success:true,msg:0}";
 				}
 			}
@@ -2144,7 +2145,7 @@ public class WellInformationManagerController extends BaseController {
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
-		String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
+		String url=Config.getInstance().configFile.getAd().getSrp().getReadTopicReq();
 		String topic="";
 		if(StringManagerUtils.stringToInteger(type)==1){
 			topic="model";
@@ -2243,7 +2244,7 @@ public class WellInformationManagerController extends BaseController {
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getSrp().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");

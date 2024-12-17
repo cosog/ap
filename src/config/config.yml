@@ -93,7 +93,7 @@ ad:                                                          #AD程序配置
       mem: http://118.178.195.118:19200/api/probe/mem                                     #服务器内存监测
       disk: http://118.178.195.118:19200/api/probe/disk                                   #服务器磁盘监测
       host: http://118.178.195.118:19200/api/probe/host                                   #服务器主机监测
-   rpc:                                                      #rpc协议配置
+   srp:                                                      #srp协议配置
       readTopicReq: http://118.178.195.118:19200/api/ctrl/req                             #请求配置数据路径
       writeTopicModel: http://118.178.195.118:19200/api/ctrl/model                        #模型数据下行路径
       writeTopicConf: http://118.178.195.118:19200/api/ctrl/conf                          #配置数据下行路径

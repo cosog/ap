@@ -1565,7 +1565,7 @@ var ReportUnitPropertiesHandsontableHelper = {
                                 cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         	}else if (visualColIndex === 2 && visualRowIndex === 1) {
                                 this.type = 'dropdown';
-                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.RPCCalculate, loginUserLanguageResource.PCPCalculate];
+                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];
                                 this.strict = true;
                                 this.allowInvalid = false;
                             }else{
@@ -2119,7 +2119,7 @@ function SaveReportUnitData() {
                 }
             }
             reportUnitProperties.calculateType = 0;
-            if (propertiesData[1][2] == loginUserLanguageResource.RPCCalculate) {
+            if (propertiesData[1][2] == loginUserLanguageResource.SRPCalculate) {
                 reportUnitProperties.calculateType = 1;
             } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
                 reportUnitProperties.calculateType = 2;

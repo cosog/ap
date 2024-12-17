@@ -381,7 +381,7 @@ public class EquipmentDriverServerTask {
 				int i=0;
 				while(true){
 					if(i%2==0){
-//						if(deviceName.equalsIgnoreCase("rpc11")){
+//						if(deviceName.equalsIgnoreCase("srp11")){
 //							StringManagerUtils.sendPostMethod(onlineUrl, offlineData,"utf-8",0,0);
 //							Thread.sleep(1000*5);
 //							StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8",0,0);
@@ -409,19 +409,19 @@ public class EquipmentDriverServerTask {
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
 //				sendCycle=60;
 //				timeDifference=0;
-				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
-				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
-				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
-				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
-				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
-//				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
-//				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1).start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2).start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*3).start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*4).start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*5).start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*6).start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*7).start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*8).start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*9).start();
 				
-//				new ExampleDataManageThread("rpc11",sendCycle,timeDifference*0).start();
-//				new ExampleDataManageThread("rpc12",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0).start();
 				
 				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
@@ -1429,22 +1429,22 @@ public class EquipmentDriverServerTask {
 		AdOnlineProbeResponseData adOnlineProbeResponseData =adOnlineProbe();
 		if(adOnlineProbeResponseData!=null){
 			if(adOnlineProbeResponseData.getOnlineID()!=null && adOnlineProbeResponseData.getOnlineID().size()>0 ){
-				String initRPCCommSql="update tbl_acqdata_latest t set t.commstatus=1 "
+				String initSRPCommSql="update tbl_acqdata_latest t set t.commstatus=1 "
 						+ " where t.commstatus<>1 "
 						+ " and t.deviceid in ( select t2.id from tbl_device t2 where t2.tcptype='TCP Client' and t2.signinid in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineID(), ",")+") )";
 				try {
-					JDBCUtil.updateRecord(initRPCCommSql, null);
+					JDBCUtil.updateRecord(initSRPCommSql, null);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 			
 			if(adOnlineProbeResponseData.getOnlineIPPort()!=null && adOnlineProbeResponseData.getOnlineIPPort().size()>0 ){
-				String initRPCCommSql="update tbl_acqdata_latest t set t.commstatus=1 "
+				String initSRPCommSql="update tbl_acqdata_latest t set t.commstatus=1 "
 						+ " where t.commstatus<>1 "
 						+ " and t.deviceid in ( select t2.id from tbl_device t2 where t2.tcptype='TCP Server' and t2.ipport in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineIPPort(), ",")+") )";
 				try {
-					JDBCUtil.updateRecord(initRPCCommSql, null);
+					JDBCUtil.updateRecord(initSRPCommSql, null);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -1455,10 +1455,10 @@ public class EquipmentDriverServerTask {
 	
 	
 	public static int initWellCommStatus(){
-		String initRPCCommSql="update tbl_acqdata_latest t set t.commstatus=0 ";
+		String initSRPCommSql="update tbl_acqdata_latest t set t.commstatus=0 ";
 		int result=0;
 		try {
-			result = JDBCUtil.updateRecord(initRPCCommSql, null);
+			result = JDBCUtil.updateRecord(initSRPCommSql, null);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1476,8 +1476,8 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
-	public static int initWellRPCCommStatus(){
-		String initCommSql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
+	public static int initWellSRPCommStatus(){
+		String initCommSql="update tbl_srpacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
 		int result=0;
 		try {
 			result = JDBCUtil.updateRecord(initCommSql, null);

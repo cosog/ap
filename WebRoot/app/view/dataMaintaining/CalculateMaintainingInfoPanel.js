@@ -5,7 +5,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
     border: false,
     initComponent: function () {
         var me = this;
-        var RPCCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.RPCCalculateMaintainingInfoView');
+        var SRPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.SRPCalculateMaintainingInfoView');
         var PCPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.PCPCalculateMaintainingInfoView');
         Ext.apply(me, {
         	items: [{
@@ -16,9 +16,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         		tabPosition: 'top',
         		items: [{
 //        				title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">功图计算</div>',
-        				title: loginUserLanguageResource.RPCCalculate,
-        				id:'RPCCalculateMaintainingInfoPanel_Id',
-        				items: [RPCCalculateMaintainingInfoView],
+        				title: loginUserLanguageResource.SRPCalculate,
+        				id:'SRPCalculateMaintainingInfoPanel_Id',
+        				items: [SRPCalculateMaintainingInfoView],
         				iconCls: 'check3',
         				layout: "fit",
         				border: false
@@ -37,8 +37,8 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
             			},
             			tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        					if(newCard.id=="RPCCalculateMaintainingInfoPanel_Id"){
-        						refreshRPCCalculateMaintainingData();
+        					if(newCard.id=="SRPCalculateMaintainingInfoPanel_Id"){
+        						refreshSRPCalculateMaintainingData();
         					}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
         						refreshPCPCalculateMaintainingData();
         					}

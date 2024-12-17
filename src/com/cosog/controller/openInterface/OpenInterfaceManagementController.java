@@ -158,7 +158,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":2,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"StatType\":2,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -177,7 +177,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -203,7 +203,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"rpc01\"}";
+//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"srp01\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -226,7 +226,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
+//		data="{\"LiftingType\":1,\"WellName\":\"srp01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -241,7 +241,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
+//		data="{\"WellName\":\"srp01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -256,7 +256,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{\"WellName\":\"rpc01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
+//		data="{\"WellName\":\"srp01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -275,7 +275,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"Date\":\"2022-10-10\",\"StatType\":1,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"Date\":\"2022-10-10\",\"StatType\":1,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -294,7 +294,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -320,7 +320,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2022-10-08\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
+//		data="{\"LiftingType\": 1,\"WellName\":\"srp01\",\"StartDate\": \"2022-10-08\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalHistoryData(data,pager);

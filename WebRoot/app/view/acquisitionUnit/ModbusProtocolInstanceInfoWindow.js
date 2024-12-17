@@ -78,7 +78,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
-                fieldLabel: loginUserLanguageResource.idx
+                fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolInstance_Id',
                 anchor: '100%',
                 name: "protocolInstance.id"
@@ -142,7 +142,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-rpc', 'private-rpc'],['private-mqtt', 'private-mqtt'],['private-kd93', 'private-kd93'],['private-lq1000', 'private-lq1000']]
+							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-srp', 'private-srp'],['private-mqtt', 'private-mqtt'],['private-kd93', 'private-kd93'],['private-lq1000', 'private-lq1000']]
 						}),
 				displayField : 'text',
 				valueField : 'value',
@@ -173,7 +173,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-rpc', 'private-rpc'],['private-mqtt', 'private-mqtt']]
+							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-srp', 'private-srp'],['private-mqtt', 'private-mqtt']]
 						}),
 				displayField : 'text',
 				valueField : 'value',

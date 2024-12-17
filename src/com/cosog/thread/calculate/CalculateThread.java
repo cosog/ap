@@ -10,8 +10,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.service.datainterface.CalculateDataService;
@@ -59,7 +59,7 @@ public class CalculateThread extends Thread{
 					+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
 					+ " t.balanceinfo,"
 					+ " t.id"
-					+ " from tbl_rpcacqdata_hist t"
+					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device t2 on t.deviceId=t2.id"
 					+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 					+ " where t2.calculateType=1  "
@@ -84,7 +84,7 @@ public class CalculateThread extends Thread{
 					+ "t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ "t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,"
 					+ "t.id as recordId"
-					+ " from tbl_rpcacqdata_hist t,tbl_device t2 "
+					+ " from tbl_srpacqdata_hist t,tbl_device t2 "
 					+ " where t.deviceId=t2.id "
 					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1 "
@@ -96,11 +96,11 @@ public class CalculateThread extends Thread{
 			for(int j=0;j<list.size();j++){
 				try{
 					Object[] obj=(Object[])list.get(j);
-					String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
-					type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-					RPCCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
+					String requestData=calculateDataService.getObjectToSRPCalculateRequestData(obj);
+					type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+					SRPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 					if(calculateRequestData!=null){
-						RPCCalculateResponseData calculateResponseData=CalculateUtils.fesDiagramCalculate(requestData);
+						SRPCalculateResponseData calculateResponseData=CalculateUtils.fesDiagramCalculate(requestData);
 						int recordId=Integer.parseInt(obj[obj.length-1].toString());
 						if(calculateResponseData==null){
 							System.out.println("记录:"+recordId+"计算无数据返回");
@@ -183,8 +183,8 @@ public class CalculateThread extends Thread{
 				int recordId=StringManagerUtils.stringToInteger(resuleObj[resuleObj.length-1]+"");
 				String fesdiagramAcqtime=resuleObj[1]+"";
 				String productionData=resuleObj[15].toString();
-				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+				SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 				
 				commStatus=StringManagerUtils.stringToInteger(resuleObj[32]+"")==1;
 				commTime=StringManagerUtils.stringToFloat(resuleObj[33]+"");
@@ -210,8 +210,8 @@ public class CalculateThread extends Thread{
 				liquidVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
 				oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
 				waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
-				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-					volumeWaterCutList.add(rpcProductionData.getProduction().getWaterCut());
+				if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+					volumeWaterCutList.add(srpProductionData.getProduction().getWaterCut());
 				}else{
 					volumeWaterCutList.add(0.0f);
 				}
@@ -219,17 +219,17 @@ public class CalculateThread extends Thread{
 				liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
 				oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
 				waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
-				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-					weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+				if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+					weightWaterCutList.add(srpProductionData.getProduction().getWeightWaterCut());
 				}else{
 					weightWaterCutList.add(0.0f);
 				}
 				
-				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-					tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
-					casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
-					pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
-					producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
+				if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+					tubingPressureList.add(srpProductionData.getProduction().getTubingPressure());
+					casingPressureList.add(srpProductionData.getProduction().getCasingPressure());
+					pumpSettingDepthList.add(srpProductionData.getProduction().getPumpSettingDepth());
+					producingfluidLevelList.add(srpProductionData.getProduction().getProducingfluidLevel());
 				}else{
 					tubingPressureList.add(0.0f);
 					casingPressureList.add(0.0f);
@@ -321,7 +321,7 @@ public class CalculateThread extends Thread{
 					
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 						try {
-							String updateSql="update tbl_rpcacqdata_hist t "
+							String updateSql="update tbl_srpacqdata_hist t "
 									+ " set t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+","
 									+ " t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
 									+ " where t.id="+recordId;
@@ -329,7 +329,7 @@ public class CalculateThread extends Thread{
 							
 							if(currentDate.equalsIgnoreCase(acqDate)){//如果是当天数据
 								if(j==fesDiagramList.size()-1){//最后一条记录汇总后，更新实时表及汇总表数据
-									updateSql="update tbl_rpcacqdata_latest t "
+									updateSql="update tbl_srpacqdata_latest t "
 											+ " set t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+","
 											+ " t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
 											+ " where t.deviceId="+wellNo+" and t.fesdiagramAcqtime=to_date('"+fesdiagramAcqtime+"','yyyy-mm-dd hh24:mi:ss')";

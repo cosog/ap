@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.cosog.model.calculate.PCPCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.utils.CalculateUtils;
@@ -46,7 +46,7 @@ public class TotalCalculateThread extends Thread{
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		if(deviceType==0){
 			String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-					+ " from tbl_rpcdailycalculationdata t,tbl_device t2 "
+					+ " from tbl_srpdailycalculationdata t,tbl_device t2 "
 					+ " where t.wellid=t2.id "
 					+ " and t.id="+recordId;
 			String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
@@ -60,7 +60,7 @@ public class TotalCalculateThread extends Thread{
 					+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
 					+ "t.submergence,"
 					+ "t.rpm "
-					+ " from tbl_rpcacqdata_hist t "
+					+ " from tbl_srpacqdata_hist t "
 					+ " where t.wellid="+wellId+" "
 					+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.resultstatus=1 "
@@ -125,8 +125,8 @@ public class TotalCalculateThread extends Thread{
 					Object[] obj=(Object[])fesDiagramList.get(j);
 					
 					String productionData=obj[14].toString();
-					type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-					RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+					type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+					SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 					
 					acqTimeList.add(obj[0]+"");
 					commStatusList.add(StringManagerUtils.stringToInteger(totalObj[0]+""));
@@ -144,8 +144,8 @@ public class TotalCalculateThread extends Thread{
 					oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(obj[9]+""));
 					waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(obj[10]+""));
 					
-					if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-						volumeWaterCutList.add(rpcProductionData.getProduction().getWaterCut());
+					if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+						volumeWaterCutList.add(srpProductionData.getProduction().getWaterCut());
 					}else{
 						volumeWaterCutList.add(0.0f);
 					}
@@ -155,17 +155,17 @@ public class TotalCalculateThread extends Thread{
 					oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[12]+""));
 					waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[13]+""));
 					
-					if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-						weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+					if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+						weightWaterCutList.add(srpProductionData.getProduction().getWeightWaterCut());
 					}else{
 						weightWaterCutList.add(0.0f);
 					}
 					
-					if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
-						tubingPressureList.add(rpcProductionData.getProduction().getTubingPressure());
-						casingPressureList.add(rpcProductionData.getProduction().getCasingPressure());
-						pumpSettingDepthList.add(rpcProductionData.getProduction().getPumpSettingDepth());
-						producingfluidLevelList.add(rpcProductionData.getProduction().getProducingfluidLevel());
+					if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+						tubingPressureList.add(srpProductionData.getProduction().getTubingPressure());
+						casingPressureList.add(srpProductionData.getProduction().getCasingPressure());
+						pumpSettingDepthList.add(srpProductionData.getProduction().getPumpSettingDepth());
+						producingfluidLevelList.add(srpProductionData.getProduction().getProducingfluidLevel());
 					}else{
 						tubingPressureList.add(0.0f);
 						casingPressureList.add(0.0f);

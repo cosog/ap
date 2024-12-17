@@ -69,15 +69,15 @@ import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
-import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
+import com.cosog.model.calculate.SRPDeviceInfo;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TimeEffTotalResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.WellAcquisitionData;
-import com.cosog.model.calculate.RPCCalculateRequestData.EveryBalance;
+import com.cosog.model.calculate.SRPCalculateRequestData.EveryBalance;
 import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -1885,11 +1885,11 @@ public class BaseDao extends HibernateDaoSupport {
 	
 	
 	
-	public Boolean editRPCDeviceName(String oldWellName,String newWellName,String orgid) throws SQLException {
+	public Boolean editSRPDeviceName(String oldWellName,String newWellName,String orgid) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call prd_change_rpcdevicename(?,?,?)}");
+			cs = conn.prepareCall("{call prd_change_srpdevicename(?,?,?)}");
 			cs.setString(1,oldWellName);
 			cs.setString(2, newWellName);
 			cs.setString(3, orgid);
@@ -2122,9 +2122,9 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo rpcDeviceInfo,
-			RPCCalculateRequestData calculateRequestData,
-			RPCCalculateResponseData calculateResponseData,
+	public Boolean saveAcqFESDiagramAndCalculateData(DeviceInfo srpDeviceInfo,
+			SRPCalculateRequestData calculateRequestData,
+			SRPCalculateResponseData calculateResponseData,
 			boolean fesDiagramEnabled) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -2265,7 +2265,7 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagram("
+			cs = conn.prepareCall("{call prd_save_srp_diagram("
 					+ "?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,"
@@ -2288,11 +2288,11 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?"
 					+ ")}");
-			cs.setString(1,rpcDeviceInfo.getId()+"");
-			cs.setString(2,rpcDeviceInfo.getAcqTime());
+			cs.setString(1,srpDeviceInfo.getId()+"");
+			cs.setString(2,srpDeviceInfo.getAcqTime());
 			
-			cs.setString(3,RPCProductionDataToString(calculateRequestData));
-			cs.setString(4,rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit()!=null&&rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()!=null?gson.toJson(rpcDeviceInfo.getRpcCalculateRequestData().getPumpingUnit().getBalance()):"{}");
+			cs.setString(3,SRPProductionDataToString(calculateRequestData));
+			cs.setString(4,srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit()!=null&&srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit().getBalance()!=null?gson.toJson(srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit().getBalance()):"{}");
 			cs.setString(5,"");
 			
 			cs.setString(6,calculateRequestData.getFESDiagram().getAcqTime());
@@ -2537,7 +2537,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramCalculateResult(int recordId,RPCCalculateResponseData calculateResponseData) throws SQLException, ParseException {
+	public Boolean saveFESDiagramCalculateResult(int recordId,SRPCalculateResponseData calculateResponseData) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
@@ -2655,7 +2655,7 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagramcaldata("
+			cs = conn.prepareCall("{call prd_save_srp_diagramcaldata("
 					+ "?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,"
@@ -3055,7 +3055,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveFESDiagramTotalCalculateData(DeviceInfo rpcDeviceInfo,
+	public Boolean saveFESDiagramTotalCalculateData(DeviceInfo srpDeviceInfo,
 			TotalAnalysisResponseData totalAnalysisResponseData,
 			TotalAnalysisRequestData totalAnalysisRequestData,
 			String date,int recordCount) throws SQLException, ParseException {
@@ -3076,7 +3076,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagramdaily("
+			cs = conn.prepareCall("{call prd_save_srp_diagramdaily("
 					+ "?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,"
@@ -3093,7 +3093,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?"
 					+ ")}");
-			cs.setInt(1,rpcDeviceInfo.getId());
+			cs.setInt(1,srpDeviceInfo.getId());
 			cs.setInt(2,totalAnalysisResponseData.getResultStatus());
 			
 			cs.setInt(3,totalAnalysisResponseData.getResultCode());
@@ -3187,7 +3187,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagramdaily("
+			cs = conn.prepareCall("{call prd_save_srp_diagramdaily("
 					+ "?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,"
@@ -3298,7 +3298,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagramtimingtotal("
+			cs = conn.prepareCall("{call prd_save_srp_diagramtimingtotal("
 					+ "?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,"
@@ -3400,7 +3400,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_diagramdailyrecal("
+			cs = conn.prepareCall("{call prd_save_srp_diagramdailyrecal("
 					+ "?,?,"
 					+ "?,?,?,"
 					+ "?,?,?,?,?,"
@@ -3829,7 +3829,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public static String RPCProductionDataToString(RPCCalculateRequestData calculateRequestData){
+	public static String SRPProductionDataToString(SRPCalculateRequestData calculateRequestData){
 		StringBuffer productionDataBuff = new StringBuffer();
 		Gson gson=new Gson();
 		productionDataBuff.append("{");

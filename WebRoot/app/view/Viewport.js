@@ -584,7 +584,7 @@ function websocketOnMessage(evt) {
                 Ext.getCmp("acRunStatusProbeLabel_id").setText("ac");
             }
         }
-    } else if (data.functionCode.toUpperCase() == "rpcUpOnlineData".toUpperCase()) { //接收到推送 uponline 数据
+    } else if (data.functionCode.toUpperCase() == "srpUpOnlineData".toUpperCase()) { //接收到推送 uponline 数据
         if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {
             var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
             if (isNotVal(gridPanel)) {
@@ -608,7 +608,7 @@ function websocketOnMessage(evt) {
                 }
             }
         }
-    } else if (data.functionCode.toUpperCase() == "rpcDownOnlineData".toUpperCase()) { //接收到推送 uponline 数据
+    } else if (data.functionCode.toUpperCase() == "srpDownOnlineData".toUpperCase()) { //接收到推送 uponline 数据
         if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {
             var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
             if (isNotVal(gridPanel)) {
@@ -632,7 +632,7 @@ function websocketOnMessage(evt) {
                 }
             }
         }
-    } else if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline_rpc".toUpperCase()) {
+    } else if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline_srp".toUpperCase()) {
         if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {
             Ext.getCmp('UpstreamAndDownstreamInteractionDeviceListComb_Id').setValue('');
             Ext.getCmp('UpstreamAndDownstreamInteractionDeviceListComb_Id').setRawValue('');

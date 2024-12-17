@@ -46,10 +46,10 @@ import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
-import com.cosog.model.calculate.RPCCalculateRequestData;
-import com.cosog.model.calculate.RPCCalculateResponseData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.calculate.DeviceInfo;
-import com.cosog.model.calculate.RPCDeviceTodayData;
+import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
@@ -68,7 +68,7 @@ import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.task.OuterDatabaseSyncTask;
-import com.cosog.task.OuterDatabaseSyncTask.RPCWellDataSyncThread;
+import com.cosog.task.OuterDatabaseSyncTask.SRPWellDataSyncThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AlarmInfoMap;
@@ -155,7 +155,7 @@ public class DriverAPIController extends BaseController{
 					realtimeTotalInfo.setTotalItemMap(new HashMap<>());
 				}
 				String instanceCode=deviceInfo.getInstanceCode();
-				if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("RPC") || instanceCode.toUpperCase().contains("MQTT"))){
+				if(!(!StringManagerUtils.isNotNull(instanceCode)||instanceCode.toUpperCase().contains("KAFKA")||instanceCode.toUpperCase().contains("SRP") || instanceCode.toUpperCase().contains("MQTT"))){
 					if(deviceInfo.getOnLineCommStatus()>0){
 						String commRequest="{"
 								+ "\"AKString\":\"\","
@@ -1106,7 +1106,7 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	public List<AcquisitionItemInfo> CalculateDataAlarmProcessing(List<ProtocolItemResolutionData> calItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,
-			List<AcquisitionItemInfo> acquisitionItemInfoList,RPCCalculateResponseData rpcCalculateResponseData,DeviceInfo deviceInfo,String acqTime){
+			List<AcquisitionItemInfo> acquisitionItemInfoList,SRPCalculateResponseData srpCalculateResponseData,DeviceInfo deviceInfo,String acqTime){
 		
 		Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
 		DeviceAlarmInfo deviceAlarmInfo=null;
@@ -1131,9 +1131,9 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		WorkType workType=null;
-		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-//			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
-			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+//			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"");
+			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		}
 		for(int i=0;i<calItemResolutionDataList.size();i++){
 
@@ -1727,7 +1727,7 @@ public class DriverAPIController extends BaseController{
 	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,List<AcquisitionItemInfo> acquisitionItemInfoList,
 			DisplayInstanceOwnItem displayInstanceOwnItem,int items,
 			String functionCode,int commAlarmLevel,int runAlarmLevel,
-			RPCCalculateResponseData rpcCalculateResponseData,RPCCalculateRequestData rpcCalculateRequestData,int resultAlarmLevel,
+			SRPCalculateResponseData srpCalculateResponseData,SRPCalculateRequestData srpCalculateRequestData,int resultAlarmLevel,
 			AlarmShowStyle alarmShowStyle){
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
@@ -1739,25 +1739,25 @@ public class DriverAPIController extends BaseController{
 		Map<String,String>  LanguageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 		
 		WorkType workType=null;
-		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-//			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"");
-			workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+//			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"");
+			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		}
 		
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		//井筒分析图形数据
 		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
 		String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
-		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
-			int curvecount=rpcCalculateResponseData.getFESDiagram().getS().get(0).size();
-			int pointcount=rpcCalculateResponseData.getFESDiagram().getS().size();
-			if(pointcount<rpcCalculateResponseData.getFESDiagram().getF().size()){
-				pointcount=rpcCalculateResponseData.getFESDiagram().getF().size();
+		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+			int curvecount=srpCalculateResponseData.getFESDiagram().getS().get(0).size();
+			int pointcount=srpCalculateResponseData.getFESDiagram().getS().size();
+			if(pointcount<srpCalculateResponseData.getFESDiagram().getF().size()){
+				pointcount=srpCalculateResponseData.getFESDiagram().getF().size();
 			}
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
-					pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
-					pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
+					pumpFSDiagramStrBuff.append(srpCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
+					pumpFSDiagramStrBuff.append(srpCalculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
 				}
 				if(pumpFSDiagramStrBuff.toString().endsWith(",")){
 					pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
@@ -1769,16 +1769,16 @@ public class DriverAPIController extends BaseController{
 			}
 		}
 		
-		if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
-			for(int i=0;i<rpcCalculateResponseData.getRodString().getEveryRod().size();i++){
+		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+			for(int i=0;i<srpCalculateResponseData.getRodString().getEveryRod().size();i++){
 				if(i==0){
-	        		rodStressRatio1=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}else if(i==1){
-	        		rodStressRatio2=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}else if(i==2){
-	        		rodStressRatio3=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}else if(i==3){
-	        		rodStressRatio4=rpcCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
 	        	}
 			}
 		}
@@ -1787,32 +1787,32 @@ public class DriverAPIController extends BaseController{
 		if(deviceInfo.getCalculateType()==1){
 			wellBoreChartsData.append("\"success\":true,");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
-			wellBoreChartsData.append("\"acqTime\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
-			wellBoreChartsData.append("\"pointCount\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
-			wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
-			wellBoreChartsData.append("\"lowerLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
+			wellBoreChartsData.append("\"pointCount\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
+			wellBoreChartsData.append("\"upperLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
+			wellBoreChartsData.append("\"lowerLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
 			
 			String fmax="",fmin="";
-			if(rpcCalculateResponseData!=null&&(rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
-				if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax()!=null&&rpcCalculateResponseData.getFESDiagram().getFMax().size()>0){
-					fmax=rpcCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
+			if(srpCalculateResponseData!=null&&(srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMax()!=null&&srpCalculateResponseData.getFESDiagram().getFMax().size()>0){
+					fmax=srpCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
 				}
-				if(rpcCalculateResponseData.getFESDiagram()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin()!=null&&rpcCalculateResponseData.getFESDiagram().getFMin().size()>0){
-					fmin=rpcCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMin()!=null&&srpCalculateResponseData.getFESDiagram().getFMin().size()>0){
+					fmin=srpCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
 				}
 			}
 			
 			wellBoreChartsData.append("\"fmax\":\""+fmax+"\",");
 			wellBoreChartsData.append("\"fmin\":\""+fmin+"\",");
 			
-			wellBoreChartsData.append("\"stroke\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getStroke():"")+"\",");
-			wellBoreChartsData.append("\"spm\":\""+(rpcCalculateRequestData!=null&&rpcCalculateRequestData.getFESDiagram()!=null?rpcCalculateRequestData.getFESDiagram().getSPM():"")+"\",");
+			wellBoreChartsData.append("\"stroke\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getStroke():"")+"\",");
+			wellBoreChartsData.append("\"spm\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getSPM():"")+"\",");
 			
-			wellBoreChartsData.append("\"liquidProduction\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?rpcCalculateResponseData.getProduction().getLiquidWeightProduction():rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
+			wellBoreChartsData.append("\"liquidProduction\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?srpCalculateResponseData.getProduction().getLiquidWeightProduction():srpCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
 			wellBoreChartsData.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
 			wellBoreChartsData.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
-			wellBoreChartsData.append("\"resultCode\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
+			wellBoreChartsData.append("\"resultCode\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
 			
 			
 			wellBoreChartsData.append("\"rodStressRatio1\":\""+rodStressRatio1+"\",");
@@ -1820,45 +1820,45 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
 			wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
 			
-			wellBoreChartsData.append("\"pumpEff1\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff1():"")+"\",");
-			wellBoreChartsData.append("\"pumpEff2\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff2():"")+"\",");
-			wellBoreChartsData.append("\"pumpEff3\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff3():"")+"\",");
-			wellBoreChartsData.append("\"pumpEff4\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff4():"")+"\",");
-			wellBoreChartsData.append("\"pumpEff\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getPumpEfficiency().getPumpEff():"")+"\",");
+			wellBoreChartsData.append("\"pumpEff1\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getPumpEfficiency().getPumpEff1():"")+"\",");
+			wellBoreChartsData.append("\"pumpEff2\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getPumpEfficiency().getPumpEff2():"")+"\",");
+			wellBoreChartsData.append("\"pumpEff3\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getPumpEfficiency().getPumpEff3():"")+"\",");
+			wellBoreChartsData.append("\"pumpEff4\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getPumpEfficiency().getPumpEff4():"")+"\",");
+			wellBoreChartsData.append("\"pumpEff\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getPumpEfficiency().getPumpEff():"")+"\",");
 			
 			wellBoreChartsData.append("\"pumpFSDiagramData\":\""+pumpFSDiagramStrBuff.toString()+"\",");
-			wellBoreChartsData.append("\"positionCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
-			wellBoreChartsData.append("\"loadCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\"");
+			wellBoreChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
+			wellBoreChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\"");
 			
 			
 			
 			//地面分析图形数据
 			surfaceChartsData.append("\"success\":true,");
 			surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
-			surfaceChartsData.append("\"acqTime\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null)?rpcCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
-			surfaceChartsData.append("\"upStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
-			surfaceChartsData.append("\"downStrokeWattMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
-			surfaceChartsData.append("\"wattDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"upStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
-			surfaceChartsData.append("\"downStrokeIMax\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
-			surfaceChartsData.append("\"iDegreeBalance\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"deltaRadius\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"wattDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
 			
-			surfaceChartsData.append("\"positionCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
-			surfaceChartsData.append("\"loadCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");
-			surfaceChartsData.append("\"powerCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getWatt()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getWatt(), ",")):"")+"\",");
-			surfaceChartsData.append("\"currentCurveData\":\""+((rpcCalculateRequestData!=null && rpcCalculateRequestData.getFESDiagram()!=null && rpcCalculateRequestData.getFESDiagram().getI()!=null)?(StringUtils.join(rpcCalculateRequestData.getFESDiagram().getI(), ",")):"")+"\",");
+			surfaceChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
+			surfaceChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");
+			surfaceChartsData.append("\"powerCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getWatt()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getWatt(), ",")):"")+"\",");
+			surfaceChartsData.append("\"currentCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getI()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getI(), ",")):"")+"\",");
 			
-			surfaceChartsData.append("\"crankAngle\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
-			surfaceChartsData.append("\"loadRorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"crankTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"currentBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"currentNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"expectedBalanceTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"expectedNetTorque\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"polishrodV\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
-			surfaceChartsData.append("\"polishrodA\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(rpcCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
+			surfaceChartsData.append("\"crankAngle\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
+			surfaceChartsData.append("\"loadRorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"crankTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodV\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodA\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
 		}
 		wellBoreChartsData.append("}");
 		surfaceChartsData.append("}");
@@ -2126,8 +2126,8 @@ public class DriverAPIController extends BaseController{
 					CommResponseData commResponseData=null;
 					TimeEffResponseData timeEffResponseData=null;
 					
-					RPCCalculateRequestData rpcCalculateRequestData=null;
-					RPCCalculateResponseData rpcCalculateResponseData=null;
+					SRPCalculateRequestData srpCalculateRequestData=null;
+					SRPCalculateResponseData srpCalculateResponseData=null;
 					WorkType workType=null;
 					PCPCalculateResponseData pcpCalculateResponseData=null;
 					
@@ -2311,13 +2311,13 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
 					
 					if(deviceInfo.getCalculateType()==1){
-						rpcCalculateRequestData=new RPCCalculateRequestData();
-						rpcCalculateRequestData.init();
-						rpcCalculateResponseData=RPCDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
-								acqTime,calItemResolutionDataList,runStatus,rpcCalculateRequestData,save,checkSign);
-						inputItemItemResolutionDataList=getRPCInputItemData(deviceInfo);
-						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-							workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+						srpCalculateRequestData=new SRPCalculateRequestData();
+						srpCalculateRequestData.init();
+						srpCalculateResponseData=SRPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
+								acqTime,calItemResolutionDataList,runStatus,srpCalculateRequestData,save,checkSign);
+						inputItemItemResolutionDataList=getSRPInputItemData(deviceInfo);
+						if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 						}
 					}else if(deviceInfo.getCalculateType()==2){
 						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
@@ -2348,7 +2348,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
-					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,rpcCalculateResponseData,deviceInfo,acqTime);
+					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,srpCalculateResponseData,deviceInfo,acqTime);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
@@ -2470,7 +2470,7 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						//保存计算数据
-						if(rpcCalculateResponseData!=null){
+						if(srpCalculateResponseData!=null){
 							
 						}
 						if(pcpCalculateResponseData!=null){
@@ -2552,7 +2552,7 @@ public class DriverAPIController extends BaseController{
 							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
-										rpcCalculateResponseData,rpcCalculateRequestData,resultAlarmLevel,
+										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
@@ -2571,10 +2571,10 @@ public class DriverAPIController extends BaseController{
 	public void SaveFESDiagramCalData(DeviceInfo deviceInfo,
 			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
 			String acqTime,int runStatus,
-			RPCCalculateRequestData rpcCalculateRequestData,RPCCalculateResponseData rpcCalculateResponseData){
-		String realtimeTable="tbl_rpcacqdata_latest";
-		String historyTable="tbl_rpcacqdata_hist";
-		String totalDataTable="tbl_rpcdailycalculationdata";
+			SRPCalculateRequestData srpCalculateRequestData,SRPCalculateResponseData srpCalculateResponseData){
+		String realtimeTable="tbl_srpacqdata_latest";
+		String historyTable="tbl_srpacqdata_hist";
+		String totalDataTable="tbl_srpdailycalculationdata";
 		
 		String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
 		
@@ -2604,38 +2604,38 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		
-		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
-		updateTotalDataSql+=",t.CasingPressure="+rpcCalculateRequestData.getProduction().getCasingPressure()+"";
-		updateTotalDataSql+=",t.ProducingfluidLevel="+rpcCalculateRequestData.getProduction().getProducingfluidLevel()+"";
-		updateTotalDataSql+=",t.Stroke="+rpcCalculateRequestData.getFESDiagram().getStroke()+"";
-		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
-		updateTotalDataSql+=",t.TubingPressure="+rpcCalculateRequestData.getProduction().getTubingPressure()+"";
+		updateTotalDataSql+=",t.TubingPressure="+srpCalculateRequestData.getProduction().getTubingPressure()+"";
+		updateTotalDataSql+=",t.CasingPressure="+srpCalculateRequestData.getProduction().getCasingPressure()+"";
+		updateTotalDataSql+=",t.ProducingfluidLevel="+srpCalculateRequestData.getProduction().getProducingfluidLevel()+"";
+		updateTotalDataSql+=",t.Stroke="+srpCalculateRequestData.getFESDiagram().getStroke()+"";
+		updateTotalDataSql+=",t.TubingPressure="+srpCalculateRequestData.getProduction().getTubingPressure()+"";
+		updateTotalDataSql+=",t.TubingPressure="+srpCalculateRequestData.getProduction().getTubingPressure()+"";
 		
-		if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
-				&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
-				&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0
+		if(srpCalculateResponseData!=null && srpCalculateResponseData.getCalculationStatus().getResultStatus()==1 
+				&& srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232
+				&& srpCalculateResponseData.getProduction().getProducingfluidLevel()>=0
 				&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
-			updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
+			updateTotalDataSql+=",t.producingfluidLevel= "+srpCalculateResponseData.getProduction().getProducingfluidLevel();
 		}
 		
 	}
 	
-	public RPCCalculateResponseData RPCDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
-			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,RPCCalculateRequestData rpcCalculateRequestData,
+	public SRPCalculateResponseData SRPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
+			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,SRPCalculateRequestData srpCalculateRequestData,
 			boolean save,int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
 		DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
 		
-		RPCDeviceTodayData deviceTodayData=null;
-		RPCCalculateResponseData rpcCalculateResponseData=null;
+		SRPDeviceTodayData deviceTodayData=null;
+		SRPCalculateResponseData srpCalculateResponseData=null;
 		try{
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			
-			String realtimeTable="tbl_rpcacqdata_latest";
-			String historyTable="tbl_rpcacqdata_hist";
-			String totalDataTable="tbl_rpcdailycalculationdata";
+			String realtimeTable="tbl_srpacqdata_latest";
+			String historyTable="tbl_srpacqdata_hist";
+			String totalDataTable="tbl_srpdailycalculationdata";
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";
@@ -2654,11 +2654,11 @@ public class DriverAPIController extends BaseController{
 					
 					
 					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
-						rpcCalculateRequestData.getFESDiagram().setSrc(1);
+						srpCalculateRequestData.getFESDiagram().setSrc(1);
 					}else{
-						rpcCalculateRequestData.getFESDiagram().setSrc(0);
+						srpCalculateRequestData.getFESDiagram().setSrc(0);
 					}
-					updateRequestData(rpcCalculateRequestData,deviceInfo);
+					updateRequestData(srpCalculateRequestData,deviceInfo);
 					
 					
 					
@@ -2750,40 +2750,40 @@ public class DriverAPIController extends BaseController{
 									
 									if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(rpcCalculateRequestData.getProduction()!=null){
-												rpcCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateRequestData.getProduction()!=null){
+												srpCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-												deviceInfo.getRpcCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+												deviceInfo.getSrpCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("CasingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(rpcCalculateRequestData.getProduction()!=null){
-												rpcCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateRequestData.getProduction()!=null){
+												srpCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-												deviceInfo.getRpcCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+												deviceInfo.getSrpCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("WellHeadTemperature".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(rpcCalculateRequestData.getProduction()!=null){
-												rpcCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateRequestData.getProduction()!=null){
+												srpCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
 											}
-											if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-												deviceInfo.getRpcCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
+											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+												deviceInfo.getSrpCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
 											}
 										}
 									}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(rpcCalculateRequestData.getProduction()!=null){
-												rpcCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateRequestData.getProduction()!=null){
+												srpCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
-											if(deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-												deviceInfo.getRpcCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
+											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+												deviceInfo.getSrpCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
 											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
@@ -2793,13 +2793,13 @@ public class DriverAPIController extends BaseController{
 										}
 									}else if("VolumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "WaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(rpcCalculateRequestData.getProduction()!=null){
-												rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-												rpcCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateRequestData.getProduction()!=null){
+												srpCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+												srpCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
-											if(deviceInfo.getRpcCalculateRequestData()!=null&&deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-												deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-												deviceInfo.getRpcCalculateRequestData().getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
+											if(deviceInfo.getSrpCalculateRequestData()!=null&&deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+												deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+												deviceInfo.getSrpCalculateRequestData().getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 										}
 									}else if("RealtimeLiquidVolumetricProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
@@ -2831,19 +2831,19 @@ public class DriverAPIController extends BaseController{
 									        	}
 									        }
 										}
-								        rpcCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
+								        srpCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
 								        FESDiagramCalculate=true;
 									}else if("Stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-										rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
+										srpCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
 									}else if("SPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-										rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
+										srpCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
 									}else if("Position_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												rpcCalculateRequestData.getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateRequestData.getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -2851,7 +2851,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												rpcCalculateRequestData.getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateRequestData.getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -2859,7 +2859,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												rpcCalculateRequestData.getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateRequestData.getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -2867,7 +2867,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												rpcCalculateRequestData.getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateRequestData.getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -3038,209 +3038,209 @@ public class DriverAPIController extends BaseController{
 					if(isAcqCalResultData && checkSign==1){
 						fesDiagramEnabled=true;
 						
-						rpcCalculateResponseData=new RPCCalculateResponseData();
-						rpcCalculateResponseData.init();
+						srpCalculateResponseData=new SRPCalculateResponseData();
+						srpCalculateResponseData.init();
 						
-						rpcCalculateResponseData.getFESDiagram().setAcqTime(acqTime);
-						rpcCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
+						srpCalculateResponseData.getFESDiagram().setAcqTime(acqTime);
+						srpCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
 						
-						rpcCalculateResponseData.getCalculationStatus().setResultStatus(acqResultStatus);
-						rpcCalculateResponseData.getCalculationStatus().setResultCode(acqResultCode);
+						srpCalculateResponseData.getCalculationStatus().setResultStatus(acqResultStatus);
+						srpCalculateResponseData.getCalculationStatus().setResultCode(acqResultCode);
 						
-						rpcCalculateResponseData.getFESDiagram().getFMax().add(acqFMax);
-						rpcCalculateResponseData.getFESDiagram().getFMin().add(acqFMin);
-						rpcCalculateResponseData.getFESDiagram().setFullnessCoefficient(acqFullnessCoefficient);
-						rpcCalculateResponseData.getFESDiagram().setUpperLoadLine(acqUpperLoadLine);
-						rpcCalculateResponseData.getFESDiagram().setLowerLoadLine(acqLowerLoadLine);
+						srpCalculateResponseData.getFESDiagram().getFMax().add(acqFMax);
+						srpCalculateResponseData.getFESDiagram().getFMin().add(acqFMin);
+						srpCalculateResponseData.getFESDiagram().setFullnessCoefficient(acqFullnessCoefficient);
+						srpCalculateResponseData.getFESDiagram().setUpperLoadLine(acqUpperLoadLine);
+						srpCalculateResponseData.getFESDiagram().setLowerLoadLine(acqLowerLoadLine);
 						
-						rpcCalculateResponseData.getProduction().setTheoreticalProduction(acqTheoreticalProduction);
-						rpcCalculateResponseData.getProduction().setLiquidVolumetricProduction(acqLiquidVolumetricProduction);
-						rpcCalculateResponseData.getProduction().setOilVolumetricProduction(acqOilVolumetricProduction);
-						rpcCalculateResponseData.getProduction().setWaterVolumetricProduction(acqWaterVolumetricProduction);
-						rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeVolumetricProduction(acqAvailablePlungerStrokeProd_v);
-						rpcCalculateResponseData.getProduction().setPumpClearanceLeakVolumetricProduction(acqPumpClearanceLeakProd_v);
-						rpcCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakVolumetricProduction);
-						rpcCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakVolumetricProduction);
-						rpcCalculateResponseData.getProduction().setGasInfluenceVolumetricProduction(acqGasInfluenceProd_v);
+						srpCalculateResponseData.getProduction().setTheoreticalProduction(acqTheoreticalProduction);
+						srpCalculateResponseData.getProduction().setLiquidVolumetricProduction(acqLiquidVolumetricProduction);
+						srpCalculateResponseData.getProduction().setOilVolumetricProduction(acqOilVolumetricProduction);
+						srpCalculateResponseData.getProduction().setWaterVolumetricProduction(acqWaterVolumetricProduction);
+						srpCalculateResponseData.getProduction().setAvailablePlungerStrokeVolumetricProduction(acqAvailablePlungerStrokeProd_v);
+						srpCalculateResponseData.getProduction().setPumpClearanceLeakVolumetricProduction(acqPumpClearanceLeakProd_v);
+						srpCalculateResponseData.getProduction().setTVLeakVolumetricProduction(acqTVLeakVolumetricProduction);
+						srpCalculateResponseData.getProduction().setSVLeakVolumetricProduction(acqSVLeakVolumetricProduction);
+						srpCalculateResponseData.getProduction().setGasInfluenceVolumetricProduction(acqGasInfluenceProd_v);
 						
-						rpcCalculateResponseData.getProduction().setLiquidWeightProduction(acqLiquidWeightProduction);
-						rpcCalculateResponseData.getProduction().setOilWeightProduction(acqOilWeightProduction);
-						rpcCalculateResponseData.getProduction().setWaterWeightProduction(acqWaterWeightProduction);
-						rpcCalculateResponseData.getProduction().setAvailablePlungerStrokeWeightProduction(acqAvailablePlungerStrokeProd_w);
-						rpcCalculateResponseData.getProduction().setPumpClearanceLeakWeightProduction(acqPumpClearanceLeakProd_w);
-						rpcCalculateResponseData.getProduction().setTVLeakWeightProduction(acqTVLeakWeightProduction);
-						rpcCalculateResponseData.getProduction().setSVLeakWeightProduction(acqSVLeakWeightProduction);
-						rpcCalculateResponseData.getProduction().setGasInfluenceWeightProduction(acqGasInfluenceProd_w);
+						srpCalculateResponseData.getProduction().setLiquidWeightProduction(acqLiquidWeightProduction);
+						srpCalculateResponseData.getProduction().setOilWeightProduction(acqOilWeightProduction);
+						srpCalculateResponseData.getProduction().setWaterWeightProduction(acqWaterWeightProduction);
+						srpCalculateResponseData.getProduction().setAvailablePlungerStrokeWeightProduction(acqAvailablePlungerStrokeProd_w);
+						srpCalculateResponseData.getProduction().setPumpClearanceLeakWeightProduction(acqPumpClearanceLeakProd_w);
+						srpCalculateResponseData.getProduction().setTVLeakWeightProduction(acqTVLeakWeightProduction);
+						srpCalculateResponseData.getProduction().setSVLeakWeightProduction(acqSVLeakWeightProduction);
+						srpCalculateResponseData.getProduction().setGasInfluenceWeightProduction(acqGasInfluenceProd_w);
 						
-						rpcCalculateResponseData.getFESDiagram().setAvgWatt(acqAverageWatt);
-						rpcCalculateResponseData.getSystemEfficiency().setPolishRodPower(acqPolishRodPower);
-						rpcCalculateResponseData.getSystemEfficiency().setWaterPower(acqWaterPower);
-						rpcCalculateResponseData.getSystemEfficiency().setSurfaceSystemEfficiency(acqSurfaceSystemEfficiency);
-						rpcCalculateResponseData.getSystemEfficiency().setWellDownSystemEfficiency(acqWellDownSystemEfficiency);
-						rpcCalculateResponseData.getSystemEfficiency().setSystemEfficiency(acqSystemEfficiency);
-						rpcCalculateResponseData.getSystemEfficiency().setEnergyPer100mLift(acqEnergyPer100mLift);
-						rpcCalculateResponseData.getFESDiagram().setArea(acqArea);
+						srpCalculateResponseData.getFESDiagram().setAvgWatt(acqAverageWatt);
+						srpCalculateResponseData.getSystemEfficiency().setPolishRodPower(acqPolishRodPower);
+						srpCalculateResponseData.getSystemEfficiency().setWaterPower(acqWaterPower);
+						srpCalculateResponseData.getSystemEfficiency().setSurfaceSystemEfficiency(acqSurfaceSystemEfficiency);
+						srpCalculateResponseData.getSystemEfficiency().setWellDownSystemEfficiency(acqWellDownSystemEfficiency);
+						srpCalculateResponseData.getSystemEfficiency().setSystemEfficiency(acqSystemEfficiency);
+						srpCalculateResponseData.getSystemEfficiency().setEnergyPer100mLift(acqEnergyPer100mLift);
+						srpCalculateResponseData.getFESDiagram().setArea(acqArea);
 						
-						rpcCalculateResponseData.getPumpEfficiency().setRodFlexLength(acqRodFlexLength);
-						rpcCalculateResponseData.getPumpEfficiency().setTubingFlexLength(acqTubingFlexLength);
-						rpcCalculateResponseData.getPumpEfficiency().setInertiaLength(acqInertiaLength);
-						rpcCalculateResponseData.getPumpEfficiency().setPumpEff1(acqPumpEff1);
-						rpcCalculateResponseData.getPumpEfficiency().setPumpEff2(acqPumpEff2);
-						rpcCalculateResponseData.getPumpEfficiency().setPumpEff3(acqPumpEff3);
-						rpcCalculateResponseData.getPumpEfficiency().setPumpEff4(acqPumpEff4);
-						rpcCalculateResponseData.getPumpEfficiency().setPumpEff(acqPumpEff);
+						srpCalculateResponseData.getPumpEfficiency().setRodFlexLength(acqRodFlexLength);
+						srpCalculateResponseData.getPumpEfficiency().setTubingFlexLength(acqTubingFlexLength);
+						srpCalculateResponseData.getPumpEfficiency().setInertiaLength(acqInertiaLength);
+						srpCalculateResponseData.getPumpEfficiency().setPumpEff1(acqPumpEff1);
+						srpCalculateResponseData.getPumpEfficiency().setPumpEff2(acqPumpEff2);
+						srpCalculateResponseData.getPumpEfficiency().setPumpEff3(acqPumpEff3);
+						srpCalculateResponseData.getPumpEfficiency().setPumpEff4(acqPumpEff4);
+						srpCalculateResponseData.getPumpEfficiency().setPumpEff(acqPumpEff);
 						
-						rpcCalculateResponseData.getProduction().setCalcProducingfluidLevel(acqCalcProducingfluidLevel);
-						rpcCalculateResponseData.getProduction().setLevelDifferenceValue(acqLevelDifferenceValue);
+						srpCalculateResponseData.getProduction().setCalcProducingfluidLevel(acqCalcProducingfluidLevel);
+						srpCalculateResponseData.getProduction().setLevelDifferenceValue(acqLevelDifferenceValue);
 						
-						rpcCalculateResponseData.getFESDiagram().setUpStrokeWattMax(acqUpStrokeWattMax);
-						rpcCalculateResponseData.getFESDiagram().setDownStrokeWattMax(acqDownStrokeWattMax);
-						rpcCalculateResponseData.getFESDiagram().setWattDegreeBalance(acqWattDegreeBalance);
-						rpcCalculateResponseData.getFESDiagram().setUpStrokeIMax(acqUpStrokeIMax);
-						rpcCalculateResponseData.getFESDiagram().setDownStrokeIMax(acqDownStrokeIMax);
-						rpcCalculateResponseData.getFESDiagram().setIDegreeBalance(acqIDegreeBalance);
-						rpcCalculateResponseData.getFESDiagram().setDeltaRadius(acqDeltaRadius);
+						srpCalculateResponseData.getFESDiagram().setUpStrokeWattMax(acqUpStrokeWattMax);
+						srpCalculateResponseData.getFESDiagram().setDownStrokeWattMax(acqDownStrokeWattMax);
+						srpCalculateResponseData.getFESDiagram().setWattDegreeBalance(acqWattDegreeBalance);
+						srpCalculateResponseData.getFESDiagram().setUpStrokeIMax(acqUpStrokeIMax);
+						srpCalculateResponseData.getFESDiagram().setDownStrokeIMax(acqDownStrokeIMax);
+						srpCalculateResponseData.getFESDiagram().setIDegreeBalance(acqIDegreeBalance);
+						srpCalculateResponseData.getFESDiagram().setDeltaRadius(acqDeltaRadius);
 						
-						rpcCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
+						srpCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
 						
-						if(rpcCalculateRequestData.getProduction()!=null){
-							rpcCalculateResponseData.getProduction().setWaterCut(rpcCalculateRequestData.getProduction().getWaterCut());
-							rpcCalculateResponseData.getProduction().setProductionGasOilRatio(rpcCalculateRequestData.getProduction().getProductionGasOilRatio());
-							rpcCalculateResponseData.getProduction().setTubingPressure(rpcCalculateRequestData.getProduction().getTubingPressure());
-							rpcCalculateResponseData.getProduction().setCasingPressure(rpcCalculateRequestData.getProduction().getCasingPressure());
-							rpcCalculateResponseData.getProduction().setWellHeadTemperature(rpcCalculateRequestData.getProduction().getWellHeadTemperature());
-							rpcCalculateResponseData.getProduction().setPumpSettingDepth(rpcCalculateRequestData.getProduction().getPumpSettingDepth());
-							rpcCalculateResponseData.getProduction().setProducingfluidLevel(rpcCalculateRequestData.getProduction().getProducingfluidLevel());
+						if(srpCalculateRequestData.getProduction()!=null){
+							srpCalculateResponseData.getProduction().setWaterCut(srpCalculateRequestData.getProduction().getWaterCut());
+							srpCalculateResponseData.getProduction().setProductionGasOilRatio(srpCalculateRequestData.getProduction().getProductionGasOilRatio());
+							srpCalculateResponseData.getProduction().setTubingPressure(srpCalculateRequestData.getProduction().getTubingPressure());
+							srpCalculateResponseData.getProduction().setCasingPressure(srpCalculateRequestData.getProduction().getCasingPressure());
+							srpCalculateResponseData.getProduction().setWellHeadTemperature(srpCalculateRequestData.getProduction().getWellHeadTemperature());
+							srpCalculateResponseData.getProduction().setPumpSettingDepth(srpCalculateRequestData.getProduction().getPumpSettingDepth());
+							srpCalculateResponseData.getProduction().setProducingfluidLevel(srpCalculateRequestData.getProduction().getProducingfluidLevel());
 						}
 						if(isAcqRPMData){
-							rpcCalculateResponseData.setRPM(acqRPM);
+							srpCalculateResponseData.setRPM(acqRPM);
 						}
 					}
 					
 					if(FESDiagramCalculate && checkSign==1){
 						fesDiagramEnabled=true;
 						if(FESDiagramAcqCount>0){
-							if(rpcCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
+							if(srpCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
 								List<Float> curveArr=new ArrayList<Float>();
 								for(int i=0;i<FESDiagramAcqCount;i++){
-									curveArr.add(rpcCalculateRequestData.getFESDiagram().getS().get(i));
+									curveArr.add(srpCalculateRequestData.getFESDiagram().getS().get(i));
 							    }
-							    rpcCalculateRequestData.getFESDiagram().setS(curveArr);
+							    srpCalculateRequestData.getFESDiagram().setS(curveArr);
 							}
 
-							if(rpcCalculateRequestData.getFESDiagram().getF().size()>FESDiagramAcqCount){
+							if(srpCalculateRequestData.getFESDiagram().getF().size()>FESDiagramAcqCount){
 								List<Float> curveArr=new ArrayList<Float>();
 								for(int i=0;i<FESDiagramAcqCount;i++){
-									curveArr.add(rpcCalculateRequestData.getFESDiagram().getF().get(i));
+									curveArr.add(srpCalculateRequestData.getFESDiagram().getF().get(i));
 							    }
-							    rpcCalculateRequestData.getFESDiagram().setF(curveArr);
+							    srpCalculateRequestData.getFESDiagram().setF(curveArr);
 							}
 							
-							if(rpcCalculateRequestData.getFESDiagram().getWatt().size()>FESDiagramAcqCount){
+							if(srpCalculateRequestData.getFESDiagram().getWatt().size()>FESDiagramAcqCount){
 								List<Float> curveArr=new ArrayList<Float>();
 								for(int i=0;i<FESDiagramAcqCount;i++){
-									curveArr.add(rpcCalculateRequestData.getFESDiagram().getWatt().get(i));
+									curveArr.add(srpCalculateRequestData.getFESDiagram().getWatt().get(i));
 							    }
-							    rpcCalculateRequestData.getFESDiagram().setWatt(curveArr);
+							    srpCalculateRequestData.getFESDiagram().setWatt(curveArr);
 							}
 							
-							if(rpcCalculateRequestData.getFESDiagram().getI().size()>FESDiagramAcqCount){
+							if(srpCalculateRequestData.getFESDiagram().getI().size()>FESDiagramAcqCount){
 								List<Float> curveArr=new ArrayList<Float>();
 								for(int i=0;i<FESDiagramAcqCount;i++){
-									curveArr.add(rpcCalculateRequestData.getFESDiagram().getI().get(i));
+									curveArr.add(srpCalculateRequestData.getFESDiagram().getI().get(i));
 							    }
-							    rpcCalculateRequestData.getFESDiagram().setI(curveArr);
+							    srpCalculateRequestData.getFESDiagram().setI(curveArr);
 							}
 							
 							
-							if(rpcCalculateRequestData.getProduction()!=null && rpcCalculateRequestData.getFluidPVT()!=null){
-//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcCalculateRequestData.getProduction().getWaterCut(), rpcCalculateRequestData.getFluidPVT().getCrudeOilDensity(), rpcCalculateRequestData.getFluidPVT().getWaterDensity());
-								float weightWaterCut=rpcCalculateRequestData.getProduction().getWaterCut();
-								rpcCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
-								deviceInfo.getRpcCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
+							if(srpCalculateRequestData.getProduction()!=null && srpCalculateRequestData.getFluidPVT()!=null){
+//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpCalculateRequestData.getProduction().getWaterCut(), srpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), srpCalculateRequestData.getFluidPVT().getWaterDensity());
+								float weightWaterCut=srpCalculateRequestData.getProduction().getWaterCut();
+								srpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
+								deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
 							}
 						}
-						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
+						srpCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(srpCalculateRequestData));
 						
-						if(rpcCalculateResponseData!=null && isAcqRPMData){
-							rpcCalculateResponseData.setRPM(acqRPM);
+						if(srpCalculateResponseData!=null && isAcqRPMData){
+							srpCalculateResponseData.setRPM(acqRPM);
 						}
 					}
 					//计算结果回写
-					if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && rpcCalculateResponseData!=null && checkSign==1){
+					if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && srpCalculateResponseData!=null && checkSign==1){
 						ThreadPool executor = new ThreadPool("DiagramDataWriteBack",
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getCorePoolSize(), 
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getMaximumPoolSize(), 
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getKeepAliveTime(), 
 								TimeUnit.SECONDS, 
 								Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getWattingCount());
-						executor.execute(new OuterDatabaseSyncTask.DiagramDataWriteBackThread(rpcCalculateResponseData));
+						executor.execute(new OuterDatabaseSyncTask.DiagramDataWriteBackThread(srpCalculateResponseData));
 					}
 					
-					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-						workType=MemoryDataManagerTask.getWorkTypeByCode(rpcCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
-						RPCCalculateResponseData responseResultData =new RPCCalculateResponseData(); 
+					if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+						workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+						SRPCalculateResponseData responseResultData =new SRPCalculateResponseData(); 
 						responseResultData.init();
 						
-						responseResultData.setWellName(rpcCalculateResponseData.getWellName());
-						responseResultData.setRPM(rpcCalculateResponseData.getRPM());
-						responseResultData.getCalculationStatus().setResultCode(rpcCalculateResponseData.getCalculationStatus().getResultCode());
-						if(responseResultData.getFESDiagram()!=null && rpcCalculateResponseData.getFESDiagram()!=null){
-							responseResultData.getFESDiagram().setAcqTime(rpcCalculateResponseData.getFESDiagram().getAcqTime());
-							responseResultData.getFESDiagram().setStroke(rpcCalculateResponseData.getFESDiagram().getStroke());
-							responseResultData.getFESDiagram().setSPM(rpcCalculateResponseData.getFESDiagram().getSPM());
-							responseResultData.getFESDiagram().setFMax(rpcCalculateResponseData.getFESDiagram().getFMax());;
-							responseResultData.getFESDiagram().setFMin(rpcCalculateResponseData.getFESDiagram().getFMin());
-							responseResultData.getFESDiagram().setFullnessCoefficient(rpcCalculateResponseData.getFESDiagram().getFullnessCoefficient());
+						responseResultData.setWellName(srpCalculateResponseData.getWellName());
+						responseResultData.setRPM(srpCalculateResponseData.getRPM());
+						responseResultData.getCalculationStatus().setResultCode(srpCalculateResponseData.getCalculationStatus().getResultCode());
+						if(responseResultData.getFESDiagram()!=null && srpCalculateResponseData.getFESDiagram()!=null){
+							responseResultData.getFESDiagram().setAcqTime(srpCalculateResponseData.getFESDiagram().getAcqTime());
+							responseResultData.getFESDiagram().setStroke(srpCalculateResponseData.getFESDiagram().getStroke());
+							responseResultData.getFESDiagram().setSPM(srpCalculateResponseData.getFESDiagram().getSPM());
+							responseResultData.getFESDiagram().setFMax(srpCalculateResponseData.getFESDiagram().getFMax());;
+							responseResultData.getFESDiagram().setFMin(srpCalculateResponseData.getFESDiagram().getFMin());
+							responseResultData.getFESDiagram().setFullnessCoefficient(srpCalculateResponseData.getFESDiagram().getFullnessCoefficient());
 							
-							responseResultData.getFESDiagram().setWattDegreeBalance(rpcCalculateResponseData.getFESDiagram().getWattDegreeBalance());
-							responseResultData.getFESDiagram().setIDegreeBalance(rpcCalculateResponseData.getFESDiagram().getIDegreeBalance());
-							responseResultData.getFESDiagram().setDeltaRadius(rpcCalculateResponseData.getFESDiagram().getDeltaRadius());
+							responseResultData.getFESDiagram().setWattDegreeBalance(srpCalculateResponseData.getFESDiagram().getWattDegreeBalance());
+							responseResultData.getFESDiagram().setIDegreeBalance(srpCalculateResponseData.getFESDiagram().getIDegreeBalance());
+							responseResultData.getFESDiagram().setDeltaRadius(srpCalculateResponseData.getFESDiagram().getDeltaRadius());
 						}
 						
-						if(responseResultData.getProduction()!=null && rpcCalculateResponseData.getProduction()!=null){
-							responseResultData.getProduction().setTheoreticalProduction(rpcCalculateResponseData.getProduction().getTheoreticalProduction());
-							responseResultData.getProduction().setLiquidVolumetricProduction(rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction());
-							responseResultData.getProduction().setOilVolumetricProduction(rpcCalculateResponseData.getProduction().getOilVolumetricProduction());
-							responseResultData.getProduction().setWaterVolumetricProduction(rpcCalculateResponseData.getProduction().getWaterVolumetricProduction());
-							responseResultData.getProduction().setLiquidWeightProduction(rpcCalculateResponseData.getProduction().getLiquidWeightProduction());
-							responseResultData.getProduction().setOilWeightProduction(rpcCalculateResponseData.getProduction().getOilWeightProduction());
-							responseResultData.getProduction().setWaterWeightProduction(rpcCalculateResponseData.getProduction().getWaterWeightProduction());
-							responseResultData.getProduction().setWaterCut(rpcCalculateResponseData.getProduction().getWaterCut());
+						if(responseResultData.getProduction()!=null && srpCalculateResponseData.getProduction()!=null){
+							responseResultData.getProduction().setTheoreticalProduction(srpCalculateResponseData.getProduction().getTheoreticalProduction());
+							responseResultData.getProduction().setLiquidVolumetricProduction(srpCalculateResponseData.getProduction().getLiquidVolumetricProduction());
+							responseResultData.getProduction().setOilVolumetricProduction(srpCalculateResponseData.getProduction().getOilVolumetricProduction());
+							responseResultData.getProduction().setWaterVolumetricProduction(srpCalculateResponseData.getProduction().getWaterVolumetricProduction());
+							responseResultData.getProduction().setLiquidWeightProduction(srpCalculateResponseData.getProduction().getLiquidWeightProduction());
+							responseResultData.getProduction().setOilWeightProduction(srpCalculateResponseData.getProduction().getOilWeightProduction());
+							responseResultData.getProduction().setWaterWeightProduction(srpCalculateResponseData.getProduction().getWaterWeightProduction());
+							responseResultData.getProduction().setWaterCut(srpCalculateResponseData.getProduction().getWaterCut());
 							
-							responseResultData.getProduction().setPumpSettingDepth(rpcCalculateResponseData.getProduction().getPumpSettingDepth());
-							responseResultData.getProduction().setProducingfluidLevel(rpcCalculateResponseData.getProduction().getProducingfluidLevel());
-							responseResultData.getProduction().setCalcProducingfluidLevel(rpcCalculateResponseData.getProduction().getCalcProducingfluidLevel());
-							responseResultData.getProduction().setLevelDifferenceValue(rpcCalculateResponseData.getProduction().getLevelDifferenceValue());
-							responseResultData.getProduction().setSubmergence(rpcCalculateResponseData.getProduction().getSubmergence());
+							responseResultData.getProduction().setPumpSettingDepth(srpCalculateResponseData.getProduction().getPumpSettingDepth());
+							responseResultData.getProduction().setProducingfluidLevel(srpCalculateResponseData.getProduction().getProducingfluidLevel());
+							responseResultData.getProduction().setCalcProducingfluidLevel(srpCalculateResponseData.getProduction().getCalcProducingfluidLevel());
+							responseResultData.getProduction().setLevelDifferenceValue(srpCalculateResponseData.getProduction().getLevelDifferenceValue());
+							responseResultData.getProduction().setSubmergence(srpCalculateResponseData.getProduction().getSubmergence());
 							
-							responseResultData.getProduction().setTubingPressure(rpcCalculateResponseData.getProduction().getTubingPressure());
-							responseResultData.getProduction().setCasingPressure(rpcCalculateResponseData.getProduction().getCasingPressure());
-							if(rpcCalculateRequestData.getProduction()!=null){
-								responseResultData.getProduction().setWeightWaterCut(rpcCalculateRequestData.getProduction().getWeightWaterCut());
+							responseResultData.getProduction().setTubingPressure(srpCalculateResponseData.getProduction().getTubingPressure());
+							responseResultData.getProduction().setCasingPressure(srpCalculateResponseData.getProduction().getCasingPressure());
+							if(srpCalculateRequestData.getProduction()!=null){
+								responseResultData.getProduction().setWeightWaterCut(srpCalculateRequestData.getProduction().getWeightWaterCut());
 							}
 						}
 						
-						if(responseResultData.getSystemEfficiency()!=null && rpcCalculateResponseData.getSystemEfficiency()!=null){
-							responseResultData.getSystemEfficiency().setSystemEfficiency(rpcCalculateResponseData.getSystemEfficiency().getSystemEfficiency());
-							responseResultData.getSystemEfficiency().setSurfaceSystemEfficiency(rpcCalculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency());
-							responseResultData.getSystemEfficiency().setWellDownSystemEfficiency(rpcCalculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency());
-							responseResultData.getSystemEfficiency().setEnergyPer100mLift(rpcCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+						if(responseResultData.getSystemEfficiency()!=null && srpCalculateResponseData.getSystemEfficiency()!=null){
+							responseResultData.getSystemEfficiency().setSystemEfficiency(srpCalculateResponseData.getSystemEfficiency().getSystemEfficiency());
+							responseResultData.getSystemEfficiency().setSurfaceSystemEfficiency(srpCalculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency());
+							responseResultData.getSystemEfficiency().setWellDownSystemEfficiency(srpCalculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency());
+							responseResultData.getSystemEfficiency().setEnergyPer100mLift(srpCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
 						}
 						
-						if(responseResultData.getPumpEfficiency()!=null && rpcCalculateResponseData.getPumpEfficiency()!=null){
-							responseResultData.getPumpEfficiency().setPumpEff1(rpcCalculateResponseData.getPumpEfficiency().getPumpEff1());
-							responseResultData.getPumpEfficiency().setPumpEff2(rpcCalculateResponseData.getPumpEfficiency().getPumpEff2());
-							responseResultData.getPumpEfficiency().setPumpEff3(rpcCalculateResponseData.getPumpEfficiency().getPumpEff3());
-							responseResultData.getPumpEfficiency().setPumpEff4(rpcCalculateResponseData.getPumpEfficiency().getPumpEff4());
-							responseResultData.getPumpEfficiency().setPumpEff(rpcCalculateResponseData.getPumpEfficiency().getPumpEff());
+						if(responseResultData.getPumpEfficiency()!=null && srpCalculateResponseData.getPumpEfficiency()!=null){
+							responseResultData.getPumpEfficiency().setPumpEff1(srpCalculateResponseData.getPumpEfficiency().getPumpEff1());
+							responseResultData.getPumpEfficiency().setPumpEff2(srpCalculateResponseData.getPumpEfficiency().getPumpEff2());
+							responseResultData.getPumpEfficiency().setPumpEff3(srpCalculateResponseData.getPumpEfficiency().getPumpEff3());
+							responseResultData.getPumpEfficiency().setPumpEff4(srpCalculateResponseData.getPumpEfficiency().getPumpEff4());
+							responseResultData.getPumpEfficiency().setPumpEff(srpCalculateResponseData.getPumpEfficiency().getPumpEff());
 						}
-						deviceTodayData=MemoryDataManagerTask.getRPCDeviceTodayDataById(deviceInfo.getId());
+						deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
 						//删除非当天采集的功图数据
 						if(deviceTodayData!=null){
-							Iterator<RPCCalculateResponseData> it = deviceTodayData.getRPCCalculateList().iterator();
+							Iterator<SRPCalculateResponseData> it = deviceTodayData.getSRPCalculateList().iterator();
 							while(it.hasNext()){
-								RPCCalculateResponseData responseData=(RPCCalculateResponseData)it.next();
+								SRPCalculateResponseData responseData=(SRPCalculateResponseData)it.next();
 								if(responseData.getFESDiagram()==null 
 										|| !StringManagerUtils.isNotNull(responseData.getFESDiagram().getAcqTime())
 										|| !StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())
@@ -3248,18 +3248,18 @@ public class DriverAPIController extends BaseController{
 									it.remove();
 								}
 							}
-							deviceTodayData.getRPCCalculateList().add(responseResultData);
+							deviceTodayData.getSRPCalculateList().add(responseResultData);
 						}else{
-							deviceTodayData=new RPCDeviceTodayData();
+							deviceTodayData=new SRPDeviceTodayData();
 							deviceTodayData.setId(deviceInfo.getId());
-							deviceTodayData.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+							deviceTodayData.setSRPCalculateList(new ArrayList<SRPCalculateResponseData>());
 							deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
-							deviceTodayData.getRPCCalculateList().add(responseResultData);
+							deviceTodayData.getSRPCalculateList().add(responseResultData);
 						}
 					}
 					
 					
-					calItemResolutionDataList=getFESDiagramCalItemData(rpcCalculateRequestData,rpcCalculateResponseData,calItemResolutionDataList);
+					calItemResolutionDataList=getFESDiagramCalItemData(srpCalculateRequestData,srpCalculateResponseData,calItemResolutionDataList);
 					if(workType!=null){
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("优化建议","优化建议",workType.getOptimizationSuggestion(),workType.getOptimizationSuggestion(),"","optimizationSuggestion","","","","",1,1));
 					}else{
@@ -3267,27 +3267,27 @@ public class DriverAPIController extends BaseController{
 					}
 					//更新内存数据
 					//功图
-					if(rpcCalculateResponseData!=null){
-						deviceInfo.setResultStatus(rpcCalculateResponseData.getCalculationStatus().getResultStatus());
-						deviceInfo.setResultCode(rpcCalculateResponseData.getCalculationStatus().getResultCode());
+					if(srpCalculateResponseData!=null){
+						deviceInfo.setResultStatus(srpCalculateResponseData.getCalculationStatus().getResultStatus());
+						deviceInfo.setResultCode(srpCalculateResponseData.getCalculationStatus().getResultCode());
 					}else{
 						deviceInfo.setResultStatus(0);
 						deviceInfo.setResultCode(0);
 					}
 					
 					//更新液面反演值
-					if(rpcCalculateResponseData!=null && rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1 
-							&& rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232
-							&& rpcCalculateResponseData.getProduction().getProducingfluidLevel()>=0
+					if(srpCalculateResponseData!=null && srpCalculateResponseData.getCalculationStatus().getResultStatus()==1 
+							&& srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232
+							&& srpCalculateResponseData.getProduction().getProducingfluidLevel()>=0
 							&& FESDiagramCalculate
 							&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
-						updateTotalDataSql+=",t.producingfluidLevel= "+rpcCalculateResponseData.getProduction().getProducingfluidLevel();
+						updateTotalDataSql+=",t.producingfluidLevel= "+srpCalculateResponseData.getProduction().getProducingfluidLevel();
 					}
 					
 					//同时进行了时率计算和功图计算，则进行功图汇总计算
-					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
+					if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
 						//排序
-						Collections.sort(deviceTodayData.getRPCCalculateList());
+						Collections.sort(deviceTodayData.getSRPCalculateList());
 						totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, deviceInfo,deviceTodayData);
 						
 						type = new TypeToken<TotalAnalysisRequestData>() {}.getType();
@@ -3358,7 +3358,7 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						if(FESDiagramCalculate || isAcqCalResultData){
-							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
+							commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateRequestData,srpCalculateResponseData,fesDiagramEnabled);
 						}
 						
 						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
@@ -3367,7 +3367,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					//放入内存数据库中
-					MemoryDataManagerTask.updateRPCDeviceTodayDataDeviceInfo(deviceTodayData);
+					MemoryDataManagerTask.updateSRPDeviceTodayDataDeviceInfo(deviceTodayData);
 				}
 			}
 		}catch(Exception e){
@@ -3375,7 +3375,7 @@ public class DriverAPIController extends BaseController{
 		}finally{
 			
 		}
-		return rpcCalculateResponseData;
+		return srpCalculateResponseData;
 	}
 	
 	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
@@ -3698,115 +3698,115 @@ public class DriverAPIController extends BaseController{
 		return pcpCalculateResponseData;
 	}
 	
-	public static List<ProtocolItemResolutionData> getRPCInputItemData(DeviceInfo deviceInfo){
-		List<ProtocolItemResolutionData> rpcInputItemList=new ArrayList<ProtocolItemResolutionData>();
+	public static List<ProtocolItemResolutionData> getSRPInputItemData(DeviceInfo deviceInfo){
+		List<ProtocolItemResolutionData> srpInputItemList=new ArrayList<ProtocolItemResolutionData>();
 		String reservoirName="油层";
 		String tubingPressureName="油压";
 		if(deviceInfo.getApplicationScenarios()==0){
 			reservoirName="煤层";
 			tubingPressureName="管压";
 		}
-		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getFluidPVT()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getWaterDensity()+"",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getSaturationPressure()+"",deviceInfo.getRpcCalculateRequestData().getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1,3));
+		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getFluidPVT()!=null){
+			srpInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getWaterDensity()+"",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getSaturationPressure()+"",deviceInfo.getSrpCalculateRequestData().getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1,3));
 		}
 		
-		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getReservoir()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",deviceInfo.getRpcCalculateRequestData().getReservoir().getDepth()+"",deviceInfo.getRpcCalculateRequestData().getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",deviceInfo.getRpcCalculateRequestData().getReservoir().getTemperature()+"",deviceInfo.getRpcCalculateRequestData().getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1,3));
+		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getReservoir()!=null){
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",deviceInfo.getSrpCalculateRequestData().getReservoir().getDepth()+"",deviceInfo.getSrpCalculateRequestData().getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",deviceInfo.getSrpCalculateRequestData().getReservoir().getTemperature()+"",deviceInfo.getSrpCalculateRequestData().getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1,3));
 		}
 		
-		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getProduction()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData(tubingPressureName,tubingPressureName,deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压",deviceInfo.getRpcCalculateRequestData().getProduction().getCasingPressure()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",deviceInfo.getRpcCalculateRequestData().getProduction().getWellHeadTemperature()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",deviceInfo.getRpcCalculateRequestData().getProduction().getWaterCut()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getWaterCut()+"","","WaterCut","","","","%",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",deviceInfo.getRpcCalculateRequestData().getProduction().getProductionGasOilRatio()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",deviceInfo.getRpcCalculateRequestData().getProduction().getProducingfluidLevel()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",deviceInfo.getRpcCalculateRequestData().getProduction().getPumpSettingDepth()+"",deviceInfo.getRpcCalculateRequestData().getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1,3));
+		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
+			srpInputItemList.add(new ProtocolItemResolutionData(tubingPressureName,tubingPressureName,deviceInfo.getSrpCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("套压","套压",deviceInfo.getSrpCalculateRequestData().getProduction().getCasingPressure()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",deviceInfo.getSrpCalculateRequestData().getProduction().getWellHeadTemperature()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",deviceInfo.getSrpCalculateRequestData().getProduction().getWaterCut()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getWaterCut()+"","","WaterCut","","","","%",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",deviceInfo.getSrpCalculateRequestData().getProduction().getProductionGasOilRatio()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",deviceInfo.getSrpCalculateRequestData().getProduction().getProducingfluidLevel()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",deviceInfo.getSrpCalculateRequestData().getProduction().getPumpSettingDepth()+"",deviceInfo.getSrpCalculateRequestData().getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1,1));
-			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1,1));
+			srpInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1,3));
 		}
 		
-		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData()!=null && deviceInfo.getRpcCalculateRequestData().getPump()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵径","泵径",deviceInfo.getRpcCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"",deviceInfo.getRpcCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"","","PumpBoreDiameter","","","","mm",1,3));
+		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getPump()!=null){
+			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"","","PumpBoreDiameter","","","","mm",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵径","泵径","","","","PumpBoreDiameter","","","","mm",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径","","","","PumpBoreDiameter","","","","mm",1,3));
 		}
 		
-		if(deviceInfo!=null && deviceInfo.getRpcCalculateRequestData().getManualIntervention()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值",deviceInfo.getRpcCalculateRequestData().getManualIntervention().getLevelCorrectValue()+"",deviceInfo.getRpcCalculateRequestData().getManualIntervention().getLevelCorrectValue()+"","","LevelCorrectValue","","","","MPa",1,3));
+		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData().getManualIntervention()!=null){
+			srpInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值",deviceInfo.getSrpCalculateRequestData().getManualIntervention().getLevelCorrectValue()+"",deviceInfo.getSrpCalculateRequestData().getManualIntervention().getLevelCorrectValue()+"","","LevelCorrectValue","","","","MPa",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值","","","","LevelCorrectValue","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("反演液面校正值","反演液面校正值","","","","LevelCorrectValue","","","","MPa",1,3));
 		}
 		
-		return rpcInputItemList;
+		return srpInputItemList;
 	}
 	
 	public static List<ProtocolItemResolutionData> getPCPInputItemData(DeviceInfo deviceInfo){
-		List<ProtocolItemResolutionData> rpcInputItemList=new ArrayList<ProtocolItemResolutionData>();
+		List<ProtocolItemResolutionData> srpInputItemList=new ArrayList<ProtocolItemResolutionData>();
 		String reservoirName="油层";
 		if(deviceInfo.getApplicationScenarios()==0){
 			reservoirName="煤层";
 		}
 		if(deviceInfo!=null && deviceInfo.getPcpCalculateRequestData().getFluidPVT()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getWaterDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getSaturationPressure()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getCrudeOilDensity()+"","","CrudeOilDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("水密度","水密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getWaterDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getWaterDensity()+"","","WaterDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getNaturalGasRelativeDensity()+"","","NaturalGasRelativeDensity","","","","",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getSaturationPressure()+"",deviceInfo.getPcpCalculateRequestData().getFluidPVT().getSaturationPressure()+"","","SaturationPressure","","","","MPa",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("原油密度","原油密度","","","","CrudeOilDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("水密度","水密度","","","","WaterDensity","","","","g/cm^3",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("天然气相对密度","天然气相对密度","","","","NaturalGasRelativeDensity","","","","",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("饱和压力","饱和压力","","","","SaturationPressure","","","","MPa",1,3));
 		}
 		
 		if(deviceInfo!=null && deviceInfo.getPcpCalculateRequestData().getReservoir()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",deviceInfo.getPcpCalculateRequestData().getReservoir().getDepth()+"",deviceInfo.getPcpCalculateRequestData().getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",deviceInfo.getPcpCalculateRequestData().getReservoir().getTemperature()+"",deviceInfo.getPcpCalculateRequestData().getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度",deviceInfo.getPcpCalculateRequestData().getReservoir().getDepth()+"",deviceInfo.getPcpCalculateRequestData().getReservoir().getDepth()+"","","ReservoirDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度",deviceInfo.getPcpCalculateRequestData().getReservoir().getTemperature()+"",deviceInfo.getPcpCalculateRequestData().getReservoir().getTemperature()+"","","ReservoirTemperature","","","","℃",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部深度",reservoirName+"中部深度","","","","ReservoirDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData(reservoirName+"中部温度",reservoirName+"中部温度","","","","ReservoirTemperature","","","","℃",1,3));
 		}
 		
 		if(deviceInfo!=null && deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
-			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压",deviceInfo.getPcpCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压",deviceInfo.getPcpCalculateRequestData().getProduction().getCasingPressure()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",deviceInfo.getPcpCalculateRequestData().getProduction().getWellHeadTemperature()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",deviceInfo.getPcpCalculateRequestData().getProduction().getWaterCut()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getWaterCut()+"","","WaterCut","","","","%",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",deviceInfo.getPcpCalculateRequestData().getProduction().getProductionGasOilRatio()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",deviceInfo.getPcpCalculateRequestData().getProduction().getProducingfluidLevel()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",deviceInfo.getPcpCalculateRequestData().getProduction().getPumpSettingDepth()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("油压","油压",deviceInfo.getPcpCalculateRequestData().getProduction().getTubingPressure()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getTubingPressure()+"","","TubingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("套压","套压",deviceInfo.getPcpCalculateRequestData().getProduction().getCasingPressure()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getCasingPressure()+"","","CasingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度",deviceInfo.getPcpCalculateRequestData().getProduction().getWellHeadTemperature()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getWellHeadTemperature()+"","","WellHeadTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("含水率","含水率",deviceInfo.getPcpCalculateRequestData().getProduction().getWaterCut()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getWaterCut()+"","","WaterCut","","","","%",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比",deviceInfo.getPcpCalculateRequestData().getProduction().getProductionGasOilRatio()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getProductionGasOilRatio()+"","","ProductionGasOilRatio","","","","m^3/t",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("动液面","动液面",deviceInfo.getPcpCalculateRequestData().getProduction().getProducingfluidLevel()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getProducingfluidLevel()+"","","ProducingfluidLevel","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂",deviceInfo.getPcpCalculateRequestData().getProduction().getPumpSettingDepth()+"",deviceInfo.getPcpCalculateRequestData().getProduction().getPumpSettingDepth()+"","","PumpSettingDepth","","","","m",1,3));
 		}else{
-			rpcInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1,3));
-			rpcInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("油压","油压","","","","TubingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("套压","套压","","","","CasingPressure","","","","MPa",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("井口温度","井口温度","","","","WellHeadTemperature","","","","℃",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("含水率","含水率","","","","WaterCut","","","","%",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("生产气油比","生产气油比","","","","ProductionGasOilRatio","","","","m^3/t",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("动液面","动液面","","","","ProducingfluidLevel","","","","m",1,3));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵挂","泵挂","","","","PumpSettingDepth","","","","m",1,3));
 		}
 		
-		return rpcInputItemList;
+		return srpInputItemList;
 	}
 	
-	public static List<ProtocolItemResolutionData> getFESDiagramCalItemData(RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,List<ProtocolItemResolutionData> FESDiagramCalItemList){
+	public static List<ProtocolItemResolutionData> getFESDiagramCalItemData(SRPCalculateRequestData calculateRequestData,SRPCalculateResponseData calculateResponseData,List<ProtocolItemResolutionData> FESDiagramCalItemList){
 		//功图采集时间
 		FESDiagramCalItemList.add(new ProtocolItemResolutionData("功图采集时间","功图采集时间",calculateRequestData.getFESDiagram().getAcqTime(),calculateRequestData.getFESDiagram().getAcqTime(),"","FESDiagramAcqtime","","","","",1,1));
 		//冲程、冲次
@@ -4119,7 +4119,7 @@ public class DriverAPIController extends BaseController{
 		return calItemList;
 	}
 	
-	public void updateRequestData(RPCCalculateRequestData calculateRequestData,DeviceInfo deviceInfo){
+	public void updateRequestData(SRPCalculateRequestData calculateRequestData,DeviceInfo deviceInfo){
 		calculateRequestData.setWellName(deviceInfo.getDeviceName());
 		
 		if(deviceInfo.getApplicationScenarios()==0){
@@ -4128,15 +4128,15 @@ public class DriverAPIController extends BaseController{
 			calculateRequestData.setScene("oil");
 		}
 		
-		calculateRequestData.setFluidPVT(deviceInfo.getRpcCalculateRequestData().getFluidPVT());
-		calculateRequestData.setReservoir(deviceInfo.getRpcCalculateRequestData().getReservoir());
-		calculateRequestData.setRodString(deviceInfo.getRpcCalculateRequestData().getRodString());
-		calculateRequestData.setTubingString(deviceInfo.getRpcCalculateRequestData().getTubingString());
-		calculateRequestData.setCasingString(deviceInfo.getRpcCalculateRequestData().getCasingString());
-		calculateRequestData.setPump(deviceInfo.getRpcCalculateRequestData().getPump());
-		calculateRequestData.setPumpingUnit(deviceInfo.getRpcCalculateRequestData().getPumpingUnit());
-		calculateRequestData.setProduction(deviceInfo.getRpcCalculateRequestData().getProduction());
-		calculateRequestData.setManualIntervention(deviceInfo.getRpcCalculateRequestData().getManualIntervention());
+		calculateRequestData.setFluidPVT(deviceInfo.getSrpCalculateRequestData().getFluidPVT());
+		calculateRequestData.setReservoir(deviceInfo.getSrpCalculateRequestData().getReservoir());
+		calculateRequestData.setRodString(deviceInfo.getSrpCalculateRequestData().getRodString());
+		calculateRequestData.setTubingString(deviceInfo.getSrpCalculateRequestData().getTubingString());
+		calculateRequestData.setCasingString(deviceInfo.getSrpCalculateRequestData().getCasingString());
+		calculateRequestData.setPump(deviceInfo.getSrpCalculateRequestData().getPump());
+		calculateRequestData.setPumpingUnit(deviceInfo.getSrpCalculateRequestData().getPumpingUnit());
+		calculateRequestData.setProduction(deviceInfo.getSrpCalculateRequestData().getProduction());
+		calculateRequestData.setManualIntervention(deviceInfo.getSrpCalculateRequestData().getManualIntervention());
 		
 	}
 	
@@ -4292,7 +4292,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"rpc01\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"srp01\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellInformation(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4362,7 +4362,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4381,7 +4381,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4407,7 +4407,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"rpc01\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"srp01\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4430,7 +4430,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4445,7 +4445,7 @@ public class DriverAPIController extends BaseController{
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"rpc01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4460,7 +4460,7 @@ public class DriverAPIController extends BaseController{
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"rpc01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4479,7 +4479,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4498,7 +4498,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -4524,7 +4524,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\": 1,\"WellName\":\"srp01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalHistoryData(data,pager);

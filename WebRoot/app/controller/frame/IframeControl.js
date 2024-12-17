@@ -158,7 +158,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "ProductionReport"
 		&& module_Code != "ProductionData"
 		&& module_Code != "WellInformation"
-		&& module_Code != "RPCDeviceManager"
+		&& module_Code != "SRPDeviceManager"
 		&& module_Code != "PCPDeviceManager"
 		&& module_Code != "SMSDeviceManagement"
 		&& module_Code != "PumpingModelManagement"
@@ -279,10 +279,10 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}else{
 			deviceManagerDataRefresh();
 		}
-	}else if(module_Code == "RPCDeviceManager"){
-		Ext.getCmp("RPCDeviceSelectRow_Id").setValue(0);
-    	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue(0);
-		CreateAndLoadRPCDeviceInfoTable(true);
+	}else if(module_Code == "SRPDeviceManager"){
+		Ext.getCmp("SRPDeviceSelectRow_Id").setValue(0);
+    	Ext.getCmp("SRPDeviceSelectEndRow_Id").setValue(0);
+		CreateAndLoadSRPDeviceInfoTable(true);
 	}else if(module_Code == "PCPDeviceManager"){
 		Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);

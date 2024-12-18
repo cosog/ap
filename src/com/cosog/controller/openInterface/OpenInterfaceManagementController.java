@@ -115,6 +115,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		String json = "";
 		String UserAccount = "";;
 		ServletInputStream ss = request.getInputStream();
+		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{\"UserAccount\": \"admin\"}";
 		try{
@@ -125,7 +126,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		}
 		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, UserAccount);
 		StringBuffer strBuf = new StringBuffer();
-		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
+		Recursion r = new Recursion(language);// 递归类，将org集合构建成一棵树形菜单的json
 		for (Org org : list) {
 			if (!r.hasParent(list, org)) {
 				json = r.recursionMobileOrgTree(list, org);

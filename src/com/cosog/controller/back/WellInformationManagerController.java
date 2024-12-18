@@ -585,7 +585,7 @@ public class WellInformationManagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		String json="";
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
-			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
+			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,language);
 		}else{
 			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,language);
 		}
@@ -1112,7 +1112,6 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/exportWellInformationData")
 	public String exportWellInformationData() throws Exception {
-		HttpSession session=request.getSession();
 		boolean bool=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
@@ -1127,11 +1126,18 @@ public class WellInformationManagerController extends BaseController {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
 		orgId=ParamUtils.getParameter(request, "orgId");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
 		}
-		User user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
@@ -1158,33 +1164,6 @@ public class WellInformationManagerController extends BaseController {
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
-		return null;
-	}
-
-	@RequestMapping("/loadWellOrgInfo")
-	public String loadWellOrgInfo() throws Exception {
-		List<?> list = this.wellInformationManagerService.loadWellOrgInfo();
-		log.debug("loadWellOrgInfo list==" + list.size());
-		Org op = null;
-		List<Org> olist = new ArrayList<Org>();
-		for (int i = 0; i < list.size(); i++) {
-			// 使用对象数组
-			Object[] objArray = (Object[]) list.get(i);
-			// 最后使用forEach迭代obj对象
-			op = new Org();
-			op.setOrgCode(objArray[0].toString());
-			op.setOrgName(objArray[1].toString());
-			olist.add(op);
-		}
-		Gson g = new Gson();
-		String json = g.toJson(olist);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
 		return null;
 	}
 	

@@ -61,6 +61,7 @@ public class User implements java.io.Serializable {
 	private Integer roleLevel;
 	private Integer roleShowLevel;
 	private Integer roleVideoKeyEdit;
+	private Integer roleLanguageEdit;
 	
 	private String deviceTypeIds;
 
@@ -410,5 +411,14 @@ public class User implements java.io.Serializable {
 
 	public void setLanguageName(String languageName) {
 		this.languageName = languageName;
+	}
+
+	@Transient
+	public Integer getRoleLanguageEdit() {
+		return roleLanguageEdit;
+	}
+
+	public void setRoleLanguageEdit(Integer roleLanguageEdit) {
+		this.roleLanguageEdit = roleLanguageEdit;
 	}
 }

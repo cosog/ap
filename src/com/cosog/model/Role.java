@@ -23,6 +23,7 @@ public class Role implements java.io.Serializable {
 	private String roleName;
 	private Integer roleLevel;
 	private Integer roleVideoKeyEdit;
+	private Integer roleLanguageEdit;
 	private Integer showLevel;
 	private String remark;
 
@@ -35,12 +36,14 @@ public class Role implements java.io.Serializable {
 	/** full constructor */
 	public Role(Integer roleId,String roleName, Integer roleLevel,
 			Integer roleVideoKeyEdit,
+			Integer roleLanguageEdit,
 			Integer showLevel, String remark) {
 		super();
 		this.roleId = roleId;
 		this.roleName = roleName;
 		this.roleLevel = roleLevel;
 		this.roleVideoKeyEdit = roleVideoKeyEdit;
+		this.roleLanguageEdit = roleLanguageEdit;
 		this.showLevel = showLevel;
 		this.remark = remark;
 	}
@@ -99,6 +102,15 @@ public class Role implements java.io.Serializable {
 
 	public void setRoleVideoKeyEdit(Integer roleVideoKeyEdit) {
 		this.roleVideoKeyEdit = roleVideoKeyEdit;
+	}
+
+	@Column(name = "ROLE_LANGUAGEEDIT", nullable = false, length = 10)
+	public Integer getRoleLanguageEdit() {
+		return roleLanguageEdit;
+	}
+
+	public void setRoleLanguageEdit(Integer roleLanguageEdit) {
+		this.roleLanguageEdit = roleLanguageEdit;
 	}
 
 	

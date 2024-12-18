@@ -212,6 +212,7 @@ public class RoleManagerController extends BaseController {
 			String roleName = ParamUtils.getParameter(request, "roleName");
 			String roleLevel = ParamUtils.getParameter(request, "roleLevel");
 			String roleVideoKeyEditName = ParamUtils.getParameter(request, "roleVideoKeyEditName");
+			String roleLanguageEditName = ParamUtils.getParameter(request, "roleLanguageEditName");
 			String showLevel = ParamUtils.getParameter(request, "showLevel");
 			String remark = ParamUtils.getParameter(request, "remark");
 			
@@ -219,18 +220,16 @@ public class RoleManagerController extends BaseController {
 			role.setRoleId(StringManagerUtils.stringToInteger(roleId));
 			role.setRoleName(roleName);
 			role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
-			role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);;
+			role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);
+			role.setRoleLanguageEdit("true".equalsIgnoreCase(roleLanguageEditName)?1:0);
 			role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
 			role.setRemark(remark);
 			
 			log.debug("edit role ==" + role.getRoleId());
-			
-			
-			
 			HttpSession session=request.getSession();
 			User prttentuser = (User) session.getAttribute("userLogin");
 			//如果是当前登录用户角色
-			if(prttentuser.getUserType()==role.getRoleId()){
+			if(prttentuser!=null && prttentuser.getUserType()==role.getRoleId()){
 				isLoginedUserRole=true;
 			}
 			boolean userIdChange=false;

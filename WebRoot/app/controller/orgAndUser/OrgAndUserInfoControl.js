@@ -15,9 +15,6 @@ Ext.define('AP.controller.orgAndUser.OrgAndUserInfoControl', {
             'orgAndUserInfoView > toolbar button[action=editOrgInfoAction]': {
                 click: modifyOrgInfo
             },
-            'orgAndUserInfoView > toolbar button[action=saveOrgCoordAction]': {
-                click: saveOrgCoordInfo
-            },
             'orgAndUserInfoView': {
                 itemdblclick: modifyOrgInfo
             }
@@ -221,44 +218,6 @@ function openSetOrgCoordWin() {
         //给地图添加单击事件
         mapHelper.addEventListener(mapHelper.getMap(), "click", mapOrgClicked);
     });
-};
-
-//保存坐标
-function saveOrgCoordInfo() {
-	var org_panel = Ext.getCmp("OrgInfoTreeGridView_Id");
-	var m = org_panel.getStore().getUpdatedRecords();
-	var store =org_panel.getStore();
-	var jsonArray = [];
-    if (m.length>0) {
-    	Ext.each(m,function(item){
-    		jsonArray.push(item.data);
-    	});
-    	Ext.Ajax.request({
-    		method:'POST',
-    		url:context + '/orgManagerController/doOrgUpdateCoord',
-    		success:function(response) {
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,"组织坐标更新成功",function(){
-    				store.proxy.extraParams.tid = 0;
-                    store.load();
-                    store.modified = []; 
-                    if(mapHelperOrg!=null){
-						mapHelperOrg.clearOverlays();
-						SaveBackMapData(mapHelperOrg,"org",m_BackDefaultZoomLevel);
-					}
-    			});
-    		},
-    		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-    		},
-    		params: {
-            	data: JSON.stringify(jsonArray)
-            }
-    	});   
-    }else {
-        //Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
-    }
-    
-    return false;
 };
 
 function addUserInfo() {

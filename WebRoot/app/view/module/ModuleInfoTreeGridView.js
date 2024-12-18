@@ -40,9 +40,9 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 fieldLabel: loginUserLanguageResource.moduleName,
                 id: 'module_name_Id',
                 name: 'module_name',
-                labelWidth: 60,
+                labelWidth: getStringLength(loginUserLanguageResource.moduleName)*8,
                 labelAlign: 'right',
-                width: 165,
+                width: (getStringLength(loginUserLanguageResource.moduleName)*8+105),
                 xtype: 'textfield'
             }, {
                 xtype: 'button',

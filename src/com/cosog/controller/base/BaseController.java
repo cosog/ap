@@ -83,7 +83,7 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 				String	oldUserId = (String) map.get("oldUserId");
 				if (!StringManagerUtils.isNotNull(orgId)||!oldUserId.equalsIgnoreCase(curUser)) {
 					orgId = "" + user.getUserOrgid();
-					orgId = this.systemdataInfoService.findCurrentUserOrgIdInfo(orgId);
+					orgId = this.systemdataInfoService.findCurrentUserOrgIdInfo(orgId,user.getLanguageName());
 					map.remove("userOrgId");
 					map.put("userOrgId", orgId);
 					map.remove("oldUserId");

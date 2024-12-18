@@ -307,8 +307,8 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public String findCurrentUserOrgIdInfo(String orgId) {
-		return this.getCurrentUserOrgIds(Integer.parseInt(orgId));
+	public String findCurrentUserOrgIdInfo(String orgId,String language) {
+		return this.getCurrentUserOrgIds(Integer.parseInt(orgId),language);
 
 	}
 }

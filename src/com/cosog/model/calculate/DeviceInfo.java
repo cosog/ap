@@ -8,7 +8,9 @@ public class DeviceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer orgId;
-	private String orgName;
+	private String orgName_zh_CN;
+	private String orgName_en;
+	private String orgName_ru;
 	private String deviceName;
 	private Integer deviceType;
 	private String deviceTypeName_zh_CN;
@@ -205,14 +207,6 @@ public class DeviceInfo implements Serializable {
 
 	public void setSortNum(Integer sortNum) {
 		this.sortNum = sortNum;
-	}
-
-	public String getOrgName() {
-		return orgName;
-	}
-
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
 	}
 
 	public String getApplicationScenariosName() {
@@ -479,14 +473,6 @@ public class DeviceInfo implements Serializable {
 		this.dailyTotalItemMap = dailyTotalItemMap;
 	}
 
-	public String getDeviceName() {
-		return deviceName;
-	}
-
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	}
-
 	public String getDeviceTypeName_zh_CN() {
 		return deviceTypeName_zh_CN;
 	}
@@ -517,6 +503,38 @@ public class DeviceInfo implements Serializable {
 
 	public void setSrpCalculateRequestData(SRPCalculateRequestData srpCalculateRequestData) {
 		this.srpCalculateRequestData = srpCalculateRequestData;
+	}
+
+	public String getOrgName_zh_CN() {
+		return orgName_zh_CN;
+	}
+
+	public void setOrgName_zh_CN(String orgName_zh_CN) {
+		this.orgName_zh_CN = orgName_zh_CN;
+	}
+
+	public String getOrgName_en() {
+		return orgName_en;
+	}
+
+	public void setOrgName_en(String orgName_en) {
+		this.orgName_en = orgName_en;
+	}
+
+	public String getOrgName_ru() {
+		return orgName_ru;
+	}
+
+	public void setOrgName_ru(String orgName_ru) {
+		this.orgName_ru = orgName_ru;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 }

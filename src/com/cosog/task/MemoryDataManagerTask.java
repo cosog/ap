@@ -930,12 +930,14 @@ public class MemoryDataManagerTask {
 					}
 				}
 			}else{
-				String sql="select t.id,t.orgid,t.orgName,"
+				String sql="select t.id,"
+						+ "t.orgid,"
+						+ "t.orgName_zh_cn,t.orgName_en,t.orgName_ru,"//3~5
 						+ "t.devicename,"
 						+ "t.devicetype,"
-						+ "t.devicetypename_zh_cn,t.devicetypename_en,devicetypename_ru,"//6~8
-						+ "t.applicationscenarios,"//9
-						+ "t.calculateType,"//10
+						+ "t.devicetypename_zh_cn,t.devicetypename_en,devicetypename_ru,"//8~10
+						+ "t.applicationscenarios,"//11
+						+ "t.calculateType,"//12
 						+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
 						+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
 						+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
@@ -993,41 +995,43 @@ public class MemoryDataManagerTask {
 					
 					deviceInfo.setId(rs.getInt(1));
 					deviceInfo.setOrgId(rs.getInt(2));
-					deviceInfo.setOrgName(rs.getString(3));
-					deviceInfo.setDeviceName(rs.getString(4));
-					deviceInfo.setDeviceType(rs.getInt(5));
-					deviceInfo.setDeviceTypeName_zh_CN(rs.getString(6));
-					deviceInfo.setDeviceTypeName_en(rs.getString(7));
-					deviceInfo.setDeviceTypeName_ru(rs.getString(8));
+					deviceInfo.setOrgName_zh_CN(rs.getString(3));
+					deviceInfo.setOrgName_en(rs.getString(4));
+					deviceInfo.setOrgName_ru(rs.getString(5));
+					deviceInfo.setDeviceName(rs.getString(6));
+					deviceInfo.setDeviceType(rs.getInt(7));
+					deviceInfo.setDeviceTypeName_zh_CN(rs.getString(8));
+					deviceInfo.setDeviceTypeName_en(rs.getString(9));
+					deviceInfo.setDeviceTypeName_ru(rs.getString(10));
 					
-					deviceInfo.setApplicationScenarios(rs.getInt(9));
+					deviceInfo.setApplicationScenarios(rs.getInt(11));
 					deviceInfo.setApplicationScenariosName(getCodeName("APPLICATIONSCENARIOS",deviceInfo.getApplicationScenarios()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage()));
 					
-					deviceInfo.setCalculateType(rs.getInt(10));
+					deviceInfo.setCalculateType(rs.getInt(12));
 					
-					deviceInfo.setTcpType(rs.getString(11)+"");
-					deviceInfo.setSignInId(rs.getString(12)+"");
-					deviceInfo.setIpPort(rs.getString(13)+"");
-					deviceInfo.setSlave(rs.getString(14)+"");
-					deviceInfo.setPeakDelay(rs.getInt(15));
+					deviceInfo.setTcpType(rs.getString(13)+"");
+					deviceInfo.setSignInId(rs.getString(14)+"");
+					deviceInfo.setIpPort(rs.getString(15)+"");
+					deviceInfo.setSlave(rs.getString(16)+"");
+					deviceInfo.setPeakDelay(rs.getInt(17));
 					
-					deviceInfo.setVideoUrl1(rs.getString(16)+"");
-					deviceInfo.setVideoKey1(rs.getInt(17));
-					deviceInfo.setVideoUrl2(rs.getString(18)+"");
-					deviceInfo.setVideoKey2(rs.getInt(19));
+					deviceInfo.setVideoUrl1(rs.getString(18)+"");
+					deviceInfo.setVideoKey1(rs.getInt(19));
+					deviceInfo.setVideoUrl2(rs.getString(20)+"");
+					deviceInfo.setVideoKey2(rs.getInt(21));
 					
-					deviceInfo.setInstanceCode(rs.getString(20)+"");
-					deviceInfo.setInstanceName(rs.getString(21)+"");
-					deviceInfo.setAlarmInstanceCode(rs.getString(22)+"");
-					deviceInfo.setAlarmInstanceName(rs.getString(23)+"");
-					deviceInfo.setDisplayInstanceCode(rs.getString(24)+"");
-					deviceInfo.setDisplayInstanceName(rs.getString(25)+"");
-					deviceInfo.setStatus(rs.getInt(26));
-					deviceInfo.setStatusName(rs.getString(27)+"");
+					deviceInfo.setInstanceCode(rs.getString(22)+"");
+					deviceInfo.setInstanceName(rs.getString(23)+"");
+					deviceInfo.setAlarmInstanceCode(rs.getString(24)+"");
+					deviceInfo.setAlarmInstanceName(rs.getString(25)+"");
+					deviceInfo.setDisplayInstanceCode(rs.getString(26)+"");
+					deviceInfo.setDisplayInstanceName(rs.getString(27)+"");
+					deviceInfo.setStatus(rs.getInt(28));
+					deviceInfo.setStatusName(rs.getString(29)+"");
 					
-					String productionData=rs.getString(28)+"";
-					String balanceInfo=rs.getString(29)+"";
-					float stroke=rs.getFloat(30);
+					String productionData=rs.getString(30)+"";
+					String balanceInfo=rs.getString(31)+"";
+					float stroke=rs.getFloat(32);
 					
 					if(StringManagerUtils.isNotNull(productionData)){
 						if(deviceInfo.getCalculateType()==1){//功图计算
@@ -1107,15 +1111,15 @@ public class MemoryDataManagerTask {
 						deviceInfo.setSrpCalculateRequestData(null);
 						deviceInfo.setPcpCalculateRequestData(null);
 					}
-					deviceInfo.setSortNum(rs.getInt(31));
+					deviceInfo.setSortNum(rs.getInt(33));
 					
-					deviceInfo.setAcqTime(rs.getString(32));
+					deviceInfo.setAcqTime(rs.getString(34));
 					deviceInfo.setSaveTime("");
 					
-					deviceInfo.setCommStatus(rs.getInt(33));
-					deviceInfo.setCommTime(rs.getFloat(34));
-					deviceInfo.setCommEff(rs.getFloat(35));
-					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(36)));
+					deviceInfo.setCommStatus(rs.getInt(35));
+					deviceInfo.setCommTime(rs.getFloat(36));
+					deviceInfo.setCommEff(rs.getFloat(37));
+					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(38)));
 					
 					deviceInfo.setOnLineAcqTime(deviceInfo.getAcqTime());
 					deviceInfo.setOnLineCommStatus(deviceInfo.getCommStatus());
@@ -1124,13 +1128,13 @@ public class MemoryDataManagerTask {
 					deviceInfo.setOnLineCommRange(deviceInfo.getCommRange());
 					
 					deviceInfo.setRunStatusAcqTime(deviceInfo.getAcqTime());
-					deviceInfo.setRunStatus(rs.getInt(37));
-					deviceInfo.setRunTime(rs.getFloat(38));
-					deviceInfo.setRunEff(rs.getFloat(39));
-					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(40)));
+					deviceInfo.setRunStatus(rs.getInt(39));
+					deviceInfo.setRunTime(rs.getFloat(40));
+					deviceInfo.setRunEff(rs.getFloat(41));
+					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(42)));
 					
-					deviceInfo.setResultStatus(rs.getInt(41));
-					deviceInfo.setResultCode(rs.getInt(42));
+					deviceInfo.setResultStatus(rs.getInt(43));
+					deviceInfo.setResultCode(rs.getInt(44));
 					
 					//日汇总数据
 					deviceInfo.setDailyTotalItemMap(new HashMap<>());

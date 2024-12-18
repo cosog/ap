@@ -13,29 +13,29 @@ import com.cosog.model.Org;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class Recursion {
-	StringBuffer returnStr = new StringBuffer();
-
-	public Recursion() {// 构造方法里初始化模拟List
-
+	public StringBuffer returnStr = new StringBuffer();
+	public String language="";
+	public Recursion(String language) {// 构造方法里初始化模拟List
+		this.language=language;
 	}
 
 	public String recursionFn(List list, Org node) {
-
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=node.getOrgName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=node.getOrgName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=node.getOrgName_ru();
+		}
 		if (hasChild(list, node)) {
-			// returnStr.append("{ \"orgId:\"");
-			// returnStr.append(node.getOrgId());
-			returnStr.append("{\"text\":\"" + node.getOrgName() + "\"");
+			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"expanded\" : true");
 			returnStr.append(",\"orgId\":\"" + node.getOrgId() + "\"");
 			returnStr.append(",\"orgParent\":\"" + node.getOrgParent() + "\"");
 			returnStr.append(",\"orgCode\":\"");
 			returnStr.append(node.getOrgCode());
-//			if (node.getOrgParent() == 0) {
-//				returnStr.append(",\"iconCls\":\"tree_root_icon\"");
-//			} else {
-//				returnStr.append(",\"iconCls\":\"tree_node_icon\"");
-//			}
 			returnStr.append("\",\"children\":[");
 			List childList = getChildList(list, node);
 			Iterator it = childList.iterator();
@@ -50,10 +50,9 @@ public class Recursion {
 			returnStr.append("\",\"orgParent\":\"");
 			returnStr.append(node.getOrgParent());
 			returnStr.append("\",\"text\":\"");
-			returnStr.append(node.getOrgName());
+			returnStr.append(text);
 			returnStr.append("\",\"orgCode\":\"");
 			returnStr.append(node.getOrgCode());
-			//returnStr.append("\",\"iconCls\":\"tree_leaf_icon");
 			returnStr.append("\",\"leaf\":true },");
 		}
 		data = returnStr.toString();
@@ -61,10 +60,17 @@ public class Recursion {
 	}
 	
 	public String recursionOrgCombTree(List list, Org node) {
-
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=node.getOrgName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=node.getOrgName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=node.getOrgName_ru();
+		}
 		if (hasChild(list, node)) {
-			returnStr.append("{\"text\":\"" + node.getOrgName() + "\",");
+			returnStr.append("{\"text\":\"" + text + "\",");
 			returnStr.append("\"expanded\":true,");
 			returnStr.append("\"id\":" + node.getOrgId() + ",");
 			returnStr.append("\"orgParent\":" + node.getOrgParent() + ",");
@@ -80,7 +86,7 @@ public class Recursion {
 		} else {
 			returnStr.append("{\"id\":"+node.getOrgId()+",");
 			returnStr.append("\"orgParent\":"+node.getOrgParent()+",");
-			returnStr.append("\"text\":\""+node.getOrgName()+"\",");
+			returnStr.append("\"text\":\""+text+"\",");
 			returnStr.append("\"orgCode\":\""+node.getOrgCode()+"\",");
 			returnStr.append("\"leaf\":true },");
 		}
@@ -90,12 +96,17 @@ public class Recursion {
 	
 	
 	public String recursionMobileOrgTree(List list, Org node) {
-
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=node.getOrgName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=node.getOrgName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=node.getOrgName_ru();
+		}
 		if (hasChild(list, node)) {
-			// returnStr.append("{ \"orgId:\"");
-			// returnStr.append(node.getOrgId());
-			returnStr.append("{\"Text\":\"" + node.getOrgName() + "\",");
+			returnStr.append("{\"Text\":\"" + text + "\",");
 			returnStr.append("\"OrgId\":\"" + node.getOrgId() + "\",");
 			returnStr.append("\"Children\":[");
 			List childList = getChildList(list, node);
@@ -107,7 +118,7 @@ public class Recursion {
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"OrgId\":\""+node.getOrgId()+"\",");
-			returnStr.append("\"Text\":\""+node.getOrgName()+"\"},");
+			returnStr.append("\"Text\":\""+text+"\"},");
 		}
 		data = returnStr.toString();
 		return data;
@@ -142,8 +153,16 @@ public class Recursion {
 
 	public String recursionOrgFn(List list, Org node) {
 		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=node.getOrgName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=node.getOrgName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=node.getOrgName_ru();
+		}
 		if (hasChild(list, node)) {
-			returnStr.append("{\"text\":\"" + node.getOrgName() + "\"");
+			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"expanded\" : true");
 			returnStr.append(",\"orgId\":\"" + node.getOrgId() + "\"");
 			returnStr.append(",\"orgParent\":\"" + node.getOrgParent() + "\"");
@@ -163,7 +182,7 @@ public class Recursion {
 			returnStr.append("\",\"orgParent\":\"");
 			returnStr.append(node.getOrgParent());
 			returnStr.append("\",\"text\":\"");
-			returnStr.append(node.getOrgName());
+			returnStr.append(text);
 			returnStr.append("\",\"orgCode\":\"");
 			returnStr.append(node.getOrgCode());
 			returnStr.append("\",\"orgMemo\":\"");
@@ -222,11 +241,5 @@ public class Recursion {
 	public String modifyOrgStr(String returnStr) {// 修饰一下才能满足Extjs的Json格式
 		return ("[" + returnStr + "]").replaceAll(",]", "]");
 
-	}
-
-	public static void main(String[] args) {
-	//	Recursion r = new Recursion();
-		// r.recursionFn(r.nodeList, new Node(1, 0));
-		// StringManagerUtils.printLog(r.modifyStr(r.returnStr.toString()));
 	}
 }

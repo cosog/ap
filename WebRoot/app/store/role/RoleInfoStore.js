@@ -30,11 +30,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
             var currentFlag=get_rawData.currentFlag;
             var currentReportEdit=get_rawData.currentReportEdit;
             var currentVideoKeyEdit=get_rawData.currentVideoKeyEdit;
+            var currentLanguageEdit=get_rawData.currentLanguageEdit;
             
             Ext.getCmp("currentUserRoleId_Id").setValue(currentId);
             Ext.getCmp("currentUserRoleLevel_Id").setValue(currentLevel);
             Ext.getCmp("currentUserRoleShowLevel_Id").setValue(currentShowLevel);
             Ext.getCmp("currentUserRoleVideoKeyEdit_Id").setValue(currentVideoKeyEdit);
+            Ext.getCmp("currentUserRoleLanguageEdit_Id").setValue(currentLanguageEdit);
             var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var arrColumns = get_rawData.columns;
@@ -138,6 +140,36 @@ Ext.define('AP.store.role.RoleInfoStore', {
         	                    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         	    	var currentUserRoleVideoKeyEdit=Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue();
                         	    	if(parseInt(record.data.roleId)==parseInt(currentId) || currentUserRoleVideoKeyEdit==0){
+                        	    		return false;
+                        	    	}else{
+                                        return true;
+                                    }
+        	                    }else{
+        	                    	return false;
+        	                    }
+                    	    }
+                    	}
+                    }, {
+                        header: loginUserLanguageResource.roleLanguageEdit,
+                        xtype: 'checkcolumn',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                        width: 115,
+                        dataIndex: 'roleLanguageEditName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
+        	                    if(RoleManagerModuleEditFlag==1){
+        	                    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                        	    	var currentUserRoleLanguageEdit=Ext.getCmp("currentUserRoleLanguageEdit_Id").getValue();
+                        	    	if(parseInt(record.data.roleId)==parseInt(currentId) || currentUserRoleLanguageEdit==0){
                         	    		return false;
                         	    	}else{
                                         return true;

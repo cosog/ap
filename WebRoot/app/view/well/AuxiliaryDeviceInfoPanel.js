@@ -201,8 +201,8 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',
                     items: [
-                        {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*8, inputValue: 1},
-                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*8, inputValue: 0}
+                        {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*10, inputValue: 1},
+                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
                     ],
                     listeners: {
                     	change: function (radiogroup, newValue, oldValue, eOpts) {

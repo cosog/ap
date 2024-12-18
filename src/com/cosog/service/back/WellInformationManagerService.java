@@ -289,7 +289,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNum(deviceTypeStr) &&StringManagerUtils.stringToInteger(deviceTypeStr)>=300){
 			tableName="tbl_smsdevice";
 		}
-		String sql = " select  t.id,t.deviceName,t.allpath,deviceTypeAllPath "
+		String sql = " select  t.id,t.deviceName,t.allpath_"+language+",deviceTypeAllPath_"+language+" "
 				+ " from  "+tableName+" t "
 						+ " where t.orgid in ("+ orgId + ")"
 				+ " and t.deviceType in ("+deviceTypeStr+")";
@@ -393,11 +393,27 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			try{
 				if(deviceType<300){
 					List<DeviceInfo> deviceInfoList =MemoryDataManagerTask.getDeviceInfo();
+					
+					String orgNameSql="select t.org_name_zh_cn,t.org_name_en,t.org_name_ru from TBL_ORG t where t.org_id="+selectedOrgId;
+					List<?> list = this.findCallSql(orgNameSql);
+					String orgName_zh_CN="";
+					String orgName_en="";
+					String orgName_ru="";
+					if(list.size()>0){
+						Object[] obj=(Object[]) list.get(0);
+						orgName_zh_CN=obj[0]+"";
+						orgName_en=obj[1]+"";
+						orgName_ru=obj[2]+"";
+					}
+					
+					
 					for(int i=0;i<deviceInfoList.size();i++){
 						DeviceInfo deviceInfo=deviceInfoList.get(i);
 						if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
 							deviceInfo.setOrgId(StringManagerUtils.stringToInteger(selectedOrgId));
-							deviceInfo.setOrgName(selectedOrgName);
+							deviceInfo.setOrgName_zh_CN(orgName_zh_CN);
+							deviceInfo.setOrgName_en(orgName_en);
+							deviceInfo.setOrgName_ru(orgName_ru);
 							MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
 						}
 					}
@@ -1246,11 +1262,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String queryString = "SELECT u.jlbh,u.jh FROM WellInformation u order by u.jlbh ";
 		return getBaseDao().find(queryString);
 	}
-
-	public List<T> loadWellOrgInfo() {
-		String queryString = "SELECT distinct(o.orgName) as orgName ,o.orgCode FROM WellInformation u ,Org o where u.dwbh=o.org_code  order by o.orgCode";
-		return getBaseDao().find(queryString);
-	}
 	
 	
 	@SuppressWarnings("rawtypes")
@@ -1271,11 +1282,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String orgId = (String) map.get("orgId");
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,deviceName,deviceTypeName_"+language+","
+		String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 				+ " applicationScenarios,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
-				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"
+				+ " allpath_"+language+","
+				+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1440,11 +1453,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-		    String sql = "select id,orgName,deviceName,deviceTypeName_"+user.getLanguageName()+","
+		    String sql = "select id,orgName_"+user.getLanguageName()+",deviceName,deviceTypeName_"+user.getLanguageName()+","
 					+ " applicationScenarios,"
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
-					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath,to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath_"+user.getLanguageName()+","
+					+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 					+ " sortNum"
 					+ " from "+tableName+" t "
 					+ " where 1=1";
@@ -1514,7 +1528,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount) {
+	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
 		String ddicName="deviceInfo_SMSDeviceManager";
@@ -1528,7 +1542,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,deviceName,instanceName,signInId,sortNum"
+		String sql = "select id,orgName_"+language+",deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
 		sql+= " and t.orgid in ("+orgId+" )  ";		
@@ -1580,7 +1594,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getSMSDeviceInfoExportData(Map map,Page pager,int recordCount) {
+	public String getSMSDeviceInfoExportData(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String tableName="viw_smsdevice";
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -1589,7 +1603,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if (StringManagerUtils.isNotNull(wellInformationName)) {
 			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
 		}
-		String sql = "select id,orgName,wellName,instanceName,signInId,sortNum"
+		String sql = "select id,orgName_"+language+",wellName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
 		sql+= " and t.orgid in ("+orgId+" )  ";		
@@ -1645,7 +1659,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql = "select id,orgName,wellName,instanceName,signInId,sortNum"
+			String sql = "select id,orgName_"+user.getLanguageName()+",wellName,instanceName,signInId,sortNum"
 					+ " from "+tableName+" t where 1=1"
 					+ WellInformation_Str;
 			sql+= " and t.orgid in ("+orgId+" )  ";		

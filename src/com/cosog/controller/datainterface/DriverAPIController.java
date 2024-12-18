@@ -4227,6 +4227,7 @@ public class DriverAPIController extends BaseController{
 		String orgListStr = "";
 		String user = "";
 		String password = "";
+		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -4258,7 +4259,7 @@ public class DriverAPIController extends BaseController{
 		if(userCheckSign==1){
 			List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, user);
 			StringBuffer strBuf = new StringBuffer();
-			Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
+			Recursion r = new Recursion(language);// 递归类，将org集合构建成一棵树形菜单的json
 			for (Org org : list) {
 				if (!r.hasParent(list, org)) {
 					orgListStr = r.recursionMobileOrgTree(list, org);

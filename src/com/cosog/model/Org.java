@@ -17,7 +17,9 @@ import javax.persistence.Table;
 public class Org {
 	private Integer orgId;
 	private String orgCode;
-	private String orgName;
+	private String orgName_zh_CN;
+	private String orgName_en;
+	private String orgName_ru;
 	private String orgMemo;
 	private Integer orgParent;
 	private Integer orgSeq;
@@ -46,16 +48,6 @@ public class Org {
 		this.orgCode = orgCode;
 	}
 
-	@Column(name = "org_name" )
-	//@Type(type="com.gao.utils.GBKString")
-	public String getOrgName() {
-		return orgName;
-	}
-
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
-	}
-
 	@Column(name = "org_memo")
 	//@Type(type="com.gao.utils.GBKString")
 	public String getOrgMemo() {
@@ -82,5 +74,32 @@ public class Org {
 
 	public void setOrgSeq(Integer orgSeq) {
 		this.orgSeq = orgSeq;
+	}
+
+	@Column(name = "ORG_NAME_ZH_CN" )
+	public String getOrgName_zh_CN() {
+		return orgName_zh_CN;
+	}
+
+	public void setOrgName_zh_CN(String orgName_zh_CN) {
+		this.orgName_zh_CN = orgName_zh_CN;
+	}
+
+	@Column(name = "ORG_NAME_EN" )
+	public String getOrgName_en() {
+		return orgName_en;
+	}
+
+	public void setOrgName_en(String orgName_en) {
+		this.orgName_en = orgName_en;
+	}
+
+	@Column(name = "ORG_NAME_RU" )
+	public String getOrgName_ru() {
+		return orgName_ru;
+	}
+
+	public void setOrgName_ru(String orgName_ru) {
+		this.orgName_ru = orgName_ru;
 	}
 }

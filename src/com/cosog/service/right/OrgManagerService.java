@@ -191,14 +191,14 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return childIds;
 	}
 		
-		public String findChildNames(int orgid){
+		public String findChildNames(int orgid,String language){
 			String childNames="";
 			StringBuffer orgNameString = new StringBuffer();
 			List<?> list;
 			//递归查询子节点所有父节点sql语句
-			String queryString="select org_name from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
+			String queryString="select org_name_"+language+" from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
 			if(orgid==0){
-				queryString="select org_name from tbl_org t ";
+				queryString="select org_name_"+language+" from tbl_org t ";
 			}
 			list=getBaseDao().findCallSql(queryString);
 			if(list.size()>0){
@@ -228,21 +228,21 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return result;
 	}
 
-	public List<T> loadParentOrgs(Class<T> clazz) {
-		String queryString = "SELECT orgId,orgName FROM Org u order by u.orgId ";
+	public List<T> loadParentOrgs(Class<T> clazz,String language) {
+		String queryString = "SELECT orgId,orgName_"+language+" FROM Org u order by u.orgId ";
 		return getBaseDao().find(queryString);
 	}
 
-	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId) {
+	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId,String language) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("SELECT org_id,org_parent,org_name,org_memo,org_seq "
+		sqlBuffer.append("SELECT org_id,org_parent,org_name_"+language+",org_memo,org_seq "
 				+ " FROM tbl_org t "
 				+ " WHERE 1=1");
 		if(StringManagerUtils.isNotNull(orgId)){
 			sqlBuffer.append(" and t.org_id in ("+orgId+")");
 		}
 		if(StringManagerUtils.isNotNull(orgName)){
-			sqlBuffer.append(" and t.org_Name like '%" + orgName + "%' ");
+			sqlBuffer.append(" and t.org_Name_"+language+" like '%" + orgName + "%' ");
 		}
 		sqlBuffer.append(" order by t.org_seq,t.org_id");
 		return this.findCallSql(sqlBuffer.toString());

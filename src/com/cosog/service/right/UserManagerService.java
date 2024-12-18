@@ -130,7 +130,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " order by t.role_id";
 		
-		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name as orgName,u.user_id as userId,"
+		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name_"+user.getLanguageName()+" as orgName,u.user_id as userId,"
 				+ " u.user_pwd as userPwd,"
 				+ " u.user_type as userType,r.role_name as userTypeName,"
 				+ " u.user_phone as userPhone,u.user_in_email as userInEmail,"
@@ -140,7 +140,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_receivemail as receiveMail,decode(u.user_receivemail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as receiveMailName,"
 				+ " u.user_enable as userEnable,decode(u.user_enable,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as userEnableName,"
 				+ " u.user_language as userLanguage,"
-				+ " o.allpath"
+				+ " o.allpath_"+user.getLanguageName()+""
 				+ " from tbl_user u"
 				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
@@ -397,7 +397,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		StringBuffer result_json = new StringBuffer();
 		
-		String sql = "select t.user_no,t.user_name,t.user_id,o.allpath "
+		String sql = "select t.user_no,t.user_name,t.user_id,o.allpath_"+language+" "
 				+ " from tbl_user t,tbl_role r,viw_org o"
 				+ " where t.user_type=r.role_id and t.user_orgid=o.org_id"
 				+ " and t.user_orgid in (" + orgIds + ")"
@@ -520,8 +520,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void setUserRoleRight(User user){
-		Gson gson=new Gson();
-		String sql="select t.role_level,t.showlevel,t.role_videokeyedit "
+		String sql="select t.role_level,t.showlevel,t.role_videokeyedit,t.role_languageedit "
 				+ " from tbl_role t,tbl_user t2 "
 				+ " where t2.user_type=t.role_id "
 				+ " and t2.user_no="+user.getUserNo();
@@ -537,6 +536,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			user.setRoleLevel(StringManagerUtils.stringToInteger(obj[0]+""));
 			user.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[1]+""));
 			user.setRoleVideoKeyEdit(StringManagerUtils.stringToInteger(obj[2]+""));
+			user.setRoleLanguageEdit(StringManagerUtils.stringToInteger(obj[3]+""));
 		}
 		List<RoleModule> roleModuleList= new ArrayList<>();
 		if(userModuleList.size()>0){

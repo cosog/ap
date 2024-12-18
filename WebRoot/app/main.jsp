@@ -50,6 +50,7 @@
         var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
         var loginUserRoleReportEdit = true;
         var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
+        var loginUserLanguageKeyEdit = "${userLogin.roleLanguageEdit}";
         
         
         var oem = ${configFile}.ap.oem;

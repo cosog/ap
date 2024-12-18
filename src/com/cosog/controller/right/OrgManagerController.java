@@ -73,9 +73,15 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgRightTree() throws IOException {
 		String orgName = ParamUtils.getParameter(request, "orgName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		list = this.orgService.loadOrgs(Org.class,orgName,orgId,"");
 		String json = "";
-		Recursion r = new Recursion();
+		Recursion r = new Recursion(language);
 		for (Org org : list) {
 			if (!r.hasParent(list, org)) {
 				json = r.recursionFn(list, org);
@@ -96,17 +102,20 @@ public class OrgManagerController extends BaseController {
 	public String loadOrgComboxTreeData() throws IOException {
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String currentOrgId = ParamUtils.getParameter(request, "currentOrgId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			User user = null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
 		list = this.orgService.loadOrgs(Org.class,"",orgId,currentOrgId);
 		String json = "";
-		Recursion r = new Recursion();
+		Recursion r = new Recursion(language);
 		for (Org org : list) {
 			if (!r.hasParent(list, org)) {
 				json = r.recursionOrgCombTree(list, org);
@@ -136,7 +145,10 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgTree() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-//		//HttpServletResponse response = ServletActionContext.getResponse();
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -172,12 +184,10 @@ public class OrgManagerController extends BaseController {
 				orgIdString.deleteCharAt(orgIdString.length() - 1);
 				user.setUserorgids(orgIdString.toString());
 			}
-			// this.orgService.loadOrgTreeOrgs(Org.class,
-			// user.getUserOrgid(), user.getUserType());
 		}
 		String json = "";
 		StringBuffer strBuf = new StringBuffer();
-		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
+		Recursion r = new Recursion(language);// 递归类，将org集合构建成一棵树形菜单的json
 		if (user != null) {
 			for (Org org : list) {
 				if (!r.hasParent(list, org)) {
@@ -186,95 +196,6 @@ public class OrgManagerController extends BaseController {
 			}
 			json = r.modifyOrgStr(json);
 			strBuf.append(json);
-//			strBuf.append("{success:true,\"children\":"+json+"}");
-		} else {
-			strBuf.append("{success:true,flag:true,\"msg\":\"用户会话已经过期!\"}");
-		}
-		json = strBuf.toString();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-
-		return null;
-	}
-	
-	/**
-	 * <p>
-	 * 描述：前台组织树形菜单数据-异步加载
-	 * </p>
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/constructOrgTree2")
-	public String constructOrgTree2() throws IOException {
-		String parentNodeId=ParamUtils.getParameter(request, "tid");
-		//String aa=ParamUtils.getParameter(request, "parentId");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		if (user != null) {
-			user.setOrgtreeid(orgService.findOrgById(user.getUserOrgid()));
-			user.setUserParentOrgids(orgService.findParentIds(user.getUserOrgid()));
-			user.setUserorgids(orgService.findChildIds(user.getUserOrgid()));
-			user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
-			user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
-			session.setAttribute("userLogin", user);
-			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
-			if (cache) {
-				Map<String, Object> map = DataModelMap.getMapObject();
-				log.warn("用户拥有的组织启用缓存...");
-				User oldUser = (User) map.get("oldUser");
-				String curUserId = user.getUserId();
-				String oldUserId = "";
-				if (oldUser != null) {
-					oldUserId = oldUser.getUserId();
-				}
-				if (map.get("orgTree") != null && oldUserId.equalsIgnoreCase(curUserId)) {
-					list = (List<Org>) map.get("orgTree");
-				} else {
-					list = orgService.findloadOrgTreeListById2(Org.class, parentNodeId,user.getUserOrgid(),user.getUserParentOrgids(),user.getUserorgids());
-					map.put("oldUser", "");
-					map.put("oldUser", user);
-					map.put("orgTree", list);
-				}
-			}else{
-				log.warn("用户拥有的组织未启用缓存...");
-				list = orgService.findloadOrgTreeListById2(Org.class, parentNodeId,user.getUserOrgid(),user.getUserParentOrgids(),user.getUserorgids());
-			}
-		}
-		String json = "";
-		StringBuffer strBuf = new StringBuffer();
-		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
-		if (user != null) {
-			boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
-			strBuf.append("{list:[");
-			for (Org org : list) {
-				//if (r.isParentNode(user.getUserParentOrgids().split(","), org.getOrgId())||r.hasChild(listAll, org)) {
-				if (r.isParentNode(user.getAllOrgPatentNodeIds().split(","), org.getOrgId())) {
-					strBuf.append("{\"text\":\"" + org.getOrgName() + "\"");
-					if(expandedAll){//父节点全部展开
-						strBuf.append(",\"expanded\" : true");
-					}else{
-						strBuf.append(",\"leaf\" : false");
-					}
-					strBuf.append(",\"orgId\":\"" + org.getOrgId() + "\"");
-					strBuf.append(",\"orgParent\":\""+org.getOrgParent() + "\"");
-					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"},");
-				}else{
-					strBuf.append("{\"text\":\"" + org.getOrgName() + "\"");
-					strBuf.append(",\"leaf\" : true");
-					strBuf.append(",\"orgId\":\"" + org.getOrgId() + "\"");
-					strBuf.append(",\"orgParent\":\""+org.getOrgParent() + "\"");
-					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"},");
-				}
-			}
-			strBuf=strBuf.deleteCharAt(strBuf.length()-1);
-			strBuf.append("]}");
 		} else {
 			strBuf.append("{success:true,flag:true,\"msg\":\"用户会话已经过期!\"}");
 		}
@@ -299,15 +220,18 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgTreeGridTree() throws IOException {
 		String orgName = ParamUtils.getParameter(request, "orgName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
-			User user = null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		List<?> list = this.orgService.queryOrgs(Org.class, orgName,orgId);
+		List<?> list = this.orgService.queryOrgs(Org.class, orgName,orgId,language);
 		String json = "";
 		OrgRecursion r = new OrgRecursion();
 		if (list != null) {
@@ -345,7 +269,7 @@ public class OrgManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			if (org.getOrgParent() == null || org.getOrgParent()==0) {
-				String sql = "select t.org_id from tbl_org t where t.org_name='组织根节点' and t.org_parent=0 and rownum=1";
+				String sql = "select t.org_id from tbl_org t where t.org_parent=0 and rownum=1";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					org.setOrgParent(StringManagerUtils.stringToInteger(list.get(0)+""));
@@ -360,7 +284,7 @@ public class OrgManagerController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
 			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
-			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid()));
+			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
 			
@@ -403,7 +327,7 @@ public class OrgManagerController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
 			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
-			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid()));
+			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
 			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserorgids());
@@ -444,7 +368,7 @@ public class OrgManagerController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
 			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
-			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid()));
+			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
 			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserorgids());
@@ -464,7 +388,13 @@ public class OrgManagerController extends BaseController {
 	@Override
 	public String execute() throws Exception {
 		// TODO Auto-generated method stub
-		List<?> list = this.orgService.loadParentOrgs(Org.class);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		List<?> list = this.orgService.loadParentOrgs(Org.class,language);
 		log.debug("OrgManagerAction list==" + list.size());
 		OrgParent op = null;
 		List<OrgParent> olist = new ArrayList<OrgParent>();
@@ -627,37 +557,6 @@ public class OrgManagerController extends BaseController {
 		}
 		Gson g = new Gson();
 		String json = g.toJson(olist);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/doOrgUpdateCoord")
-	public String doOrgUpdateCoord() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
-		Gson gson = new Gson();
-		String json ="";
-		Org org=null;
-		List<OrgGridPanelData> list=new ArrayList<OrgGridPanelData>();
-		list= gson.fromJson(data,new TypeToken<List<OrgGridPanelData>>() {}.getType());
-		for(int i=0;i<list.size();i++){
-			org=new Org();
-			org.setOrgId(list.get(i).getOrgId());
-			org.setOrgCode(list.get(i).getOrgCode());
-			org.setOrgName(list.get(i).getText());
-			org.setOrgMemo(list.get(i).getOrgMemo());
-			org.setOrgParent(Integer.parseInt(list.get(i).getOrgParent()));
-			this.orgService.modifyOrg(org);
-		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

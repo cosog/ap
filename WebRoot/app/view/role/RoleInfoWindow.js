@@ -50,6 +50,33 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             }
         });
         
+        var RoleLanguageEditCombox = new Ext.form.ComboBox({
+            id: 'roleLanguageEditComboxfield_Id',
+            value: 0,
+            fieldLabel: loginUserLanguageResource.roleLanguageEdit+'<font color=red>*</font>',
+            labelWidth: 110,
+            typeAhead : true,
+            allowBlank: false,
+            autoSelect:true,
+            editable:false,
+            anchor: '100%',
+            emptyText: '--请选择--',
+            triggerAction: 'all',
+            store: new Ext.data.SimpleStore({
+            	autoLoad : false,
+                fields: ['roleLanguageEdit', 'roleLanguageEditName'],
+                data: [['0', loginUserLanguageResource.no], ['1', loginUserLanguageResource.yes]]
+            }),
+            displayField: 'roleLanguageEditName',
+            valueField: 'roleLanguageEdit',
+            queryMode : 'local',
+            listeners: {
+            	select: function (v,o) {
+					Ext.getCmp("roleLanguageEdit_Id").setValue(this.value);
+                }
+            }
+        });
+        
         var postroleEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -63,6 +90,11 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 xtype: "hidden",
                 name: 'role.roleVideoKeyEdit',
                 id: 'roleVideoKeyEdit_Id',
+                value: 0
+            }, {
+                xtype: "hidden",
+                name: 'role.roleLanguageEdit',
+                id: 'roleLanguageEdit_Id',
                 value: 0
             }, {
                 fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
@@ -114,7 +146,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },RoleVideoKeyEditCombox, {
+            },RoleVideoKeyEditCombox, RoleLanguageEditCombox,{
                 fieldLabel: loginUserLanguageResource.roleRemark,
                 labelWidth: 110,
                 id: 'roleRemark_Id',

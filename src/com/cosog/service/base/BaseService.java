@@ -1091,9 +1091,9 @@ public class BaseService<T> {
 	 * @param user
 	 * @return
 	 */
-	public String getCurrentUserOrgIds(int orgId) {
+	public String getCurrentUserOrgIds(int orgId,String language) {
 		StringBuffer orgIdSbuf = new StringBuffer();
-		String sql = "select org_id,org_name  from tbl_org t  start with org_id = " + orgId + "  connect by prior org_id =org_parent";
+		String sql = "select org_id,org_name_"+language+"  from tbl_org t  start with org_id = " + orgId + "  connect by prior org_id =org_parent";
 		List<?> orgList = this.findCallSql(sql);
 		for (Object o : orgList) {
 			Object[] obj = (Object[]) o;

@@ -452,20 +452,22 @@ function updateRoleInfoByGridBtn(record) {
 //    var roleFlagName=record.get("roleFlagName");
 //    var roleReportEditName=record.get("roleReportEditName");
     var roleVideoKeyEditName=record.get("roleVideoKeyEditName");
+    var roleLanguageEditName=record.get("roleLanguageEditName");
     var showLevel=record.get("showLevel");
     var remark=record.get("remark");
     Ext.Ajax.request({
 		url : context + '/roleManagerController/updateRoleInfo',
 		method : "POST",
 		params : {
-			roleId : roleId,
-			roleName : roleName,
-			roleLevel : roleLevel,
-//			roleFlagName : roleFlagName,
-//			roleReportEditName : roleReportEditName,
-			roleVideoKeyEditName : roleVideoKeyEditName,
-			showLevel : showLevel,
-			remark : remark
+			roleId:roleId,
+			roleName:roleName,
+			roleLevel:roleLevel,
+//			roleFlagName:roleFlagName,
+//			roleReportEditName:roleReportEditName,
+			roleVideoKeyEditName:roleVideoKeyEditName,
+			roleLanguageEditName:roleLanguageEditName,
+			showLevel:showLevel,
+			remark:remark
 		},
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);

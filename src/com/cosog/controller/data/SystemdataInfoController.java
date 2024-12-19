@@ -104,8 +104,10 @@ public class SystemdataInfoController extends BaseController {
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
-		String json=systemdataInfoService.findSystemdataInfo(user,typeName,findName,pager);
+		String json="{}";
+		if(user!=null){
+			json=systemdataInfoService.findSystemdataInfo(user,typeName,findName,pager);
+		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

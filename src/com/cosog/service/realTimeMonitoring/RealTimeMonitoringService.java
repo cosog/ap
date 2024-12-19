@@ -463,10 +463,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="tbl_device";
 			String calTableName="tbl_srpacqdata_latest";
-			String ddicName="realTimeMonitoring_Overview";
+			String ddicCode="realTimeMonitoring_Overview";
 			DataDictionary ddic = null;
 			
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 			String columns = ddic.getTableHeader();
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);

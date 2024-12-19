@@ -57,9 +57,12 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 id: 'addmoduleLableClassBtn_Id',
                 action: 'addmoduleAction',
                 text: loginUserLanguageResource.add,
+                hidden:true,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
-            }, "-", {
+            }, 
+//            "-", 
+            {
                 xtype: 'button',
                 itemId: 'editmoduleLableClassBtnId',
                 id: 'editmoduleLableClassBtn_Id',
@@ -68,11 +71,14 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 disabled: false,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'edit'
-            }, "-", {
+            }, 
+//            "-", 
+            {
                 xtype: 'button',
                 itemId: 'delmoduleLableClassBtnId',
                 id: 'delmoduleLableClassBtn_Id',
                 disabled: false,
+                hidden:true,
                 action: 'delmoduleAction',
                 text: loginUserLanguageResource.deleteData,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,

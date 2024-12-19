@@ -51,7 +51,7 @@
         var loginUserRoleReportEdit = true;
         var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
         var loginUserLanguageKeyEdit = "${userLogin.roleLanguageEdit}";
-        
+        var loginUserLanguage = "${userLogin.languageName}";
         
         var oem = ${configFile}.ap.oem;
 

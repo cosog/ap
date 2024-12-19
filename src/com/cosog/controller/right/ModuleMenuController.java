@@ -120,14 +120,14 @@ public class ModuleMenuController extends BaseController {
 		Integer userNo = 1;
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
 		if (user != null) {
 			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				log.warn("后台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
-				if (user != null) {
-					userNo = user.getUserNo();
-				}
+				userNo = user.getUserNo();
+				language=user.getLanguageName();
 				User oldUser = (User) map.get("backModuleUser");
 				String curUserId = user.getUserId();
 				String oldUserId = "";
@@ -150,11 +150,9 @@ public class ModuleMenuController extends BaseController {
 		String json = "";
 		BackModuleRecursion r = new BackModuleRecursion();
 		if (user != null) {
-
 			for (Module org : list) {
-
 				if (!r.hasParent(list, org)) {
-					json = r.recursionModuleFn(list, org);
+					json = r.recursionModuleFn(list, org,language);
 				}
 			}
 		}
@@ -185,6 +183,10 @@ public class ModuleMenuController extends BaseController {
 		Integer userNo = 1;
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		if (user != null) {
 			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
@@ -218,7 +220,7 @@ public class ModuleMenuController extends BaseController {
 		if (user != null) {
 			for (Module org : list) {
 				if (!r.hasParent(list, org)) {
-					json = r.recursionFuncModuleFn(list, org);
+					json = r.recursionFuncModuleFn(list, org,language);
 				}
 			}
 		}
@@ -240,14 +242,14 @@ public class ModuleMenuController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String parentNodeId=ParamUtils.getParameter(request, "tid");
+		String language="";
 		if (user != null) {
 			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				log.warn("前台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
-				if (user != null) {
-					userNo = user.getUserNo();
-				}
+				userNo = user.getUserNo();
+				language=user.getLanguageName();
 				User oldUser = (User) map.get("functionUser");
 				String curUserId = user.getUserId();
 				String oldUserId = "";
@@ -275,14 +277,22 @@ public class ModuleMenuController extends BaseController {
 			boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
 			strBuf.append("{list:[");
 			for (Module org : list) {
-				//if (r.hasChild(listAll, org)) {
+				String orgName="";
+				if("zh_CN".equalsIgnoreCase(language)){
+					orgName=org.getMdName_zh_CN();
+				}else if("en".equalsIgnoreCase(language)){
+					orgName=org.getMdName_en();
+				}else if("ru".equalsIgnoreCase(language)){
+					orgName=org.getMdName_ru();
+				}
+				
 				if (r.isModParentNode(user.getAllModParentNodeIds().split(","), org.getMdId())) {
 					strBuf.append("{\"id\":\"");
 					strBuf.append(StringManagerUtils.replaceAll(org.getMdCode()));
 					strBuf.append("\",\"mdId\":\"");
 					strBuf.append(org.getMdId());
 					strBuf.append("\",\"text\":\"");
-					strBuf.append(org.getMdName());
+					strBuf.append(orgName);
 					strBuf.append("\",\"md_icon\":\"");
 					strBuf.append(org.getMdIcon());
 					strBuf.append("\",\"mdCode\":\"");
@@ -304,7 +314,7 @@ public class ModuleMenuController extends BaseController {
 					strBuf.append("\",\"mdId\":\"");
 					strBuf.append(org.getMdId());
 					strBuf.append("\",\"text\":\"");
-					strBuf.append(org.getMdName());
+					strBuf.append(orgName);
 					strBuf.append("\",\"md_icon\":\"");
 					strBuf.append(org.getMdIcon());
 					strBuf.append("\",\"mdCode\":\"");
@@ -351,11 +361,17 @@ public class ModuleMenuController extends BaseController {
 	public String obtainAddModuleList() throws Exception {
 		// TODO Auto-generated method stub
 		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		list = this.services.queryAddModuleList(Module.class, null);
 		MainModuleRecursion r = new MainModuleRecursion();
 		for (Module module : list) {
 			if (!r.hasParent(list, module)) {
-				json = r.recursionAddModuleFn(list, module);
+				json = r.recursionAddModuleFn(list, module,language);
 			}
 		}
 		json = r.modifyStr(json);

@@ -30,6 +30,7 @@ import com.cosog.model.User;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
@@ -276,6 +277,15 @@ public class OrgManagerController extends BaseController {
 				}else{
 					org.setOrgParent(0);
 				}
+			}
+			if(!StringManagerUtils.isNotNull(org.getOrgName_zh_CN())){
+				org.setOrgName_zh_CN(MemoryDataManagerTask.getLanguageResourceItem("zh_CN","unnamed"));
+			}
+			if(!StringManagerUtils.isNotNull(org.getOrgName_en())){
+				org.setOrgName_en(MemoryDataManagerTask.getLanguageResourceItem("en","unnamed"));
+			}
+			if(!StringManagerUtils.isNotNull(org.getOrgName_ru())){
+				org.setOrgName_ru(MemoryDataManagerTask.getLanguageResourceItem("ru","unnamed"));
 			}
 			this.orgService.addOrg(org);
 			result = "{success:true,msg:true}";

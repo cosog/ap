@@ -618,8 +618,8 @@ public class HistoryQueryController extends BaseController  {
 			session.setAttribute(key, 0);
 		}
 		DataDictionary ddic = null;
-		String ddicName="historyQuery_FESDiagramOverlay";
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		String ddicCode="historyQuery_FESDiagramOverlay";
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
 		

@@ -202,7 +202,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	 *            数据字典英文名称
 	 * @return 数据字典信息对象
 	 */
-	public DataDictionary findTableSqlWhereByListFaceId(String dataEname) {
+	public DataDictionary findTableSqlWhereByListFaceId(String code) {
 		StringBuffer sqlColumn = new StringBuffer();
 		StringBuffer strBuf = new StringBuffer();
 		String sqlTable = "";
@@ -215,10 +215,10 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		DataDictionary ddic = new DataDictionary();
 		strBuf.append("[");
 		sqlColumn.append("select ");
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) order by dtm.sorts asc ";
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) order by dtm.sorts asc ";
 		try {
 			// 根据模块字典英文名称从数据库中找出该模块的字典数据信息
-			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { dataEname });
+			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { code });
 
 			if (null != dataWhereList && dataWhereList.size() > 0) {
 				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList);// 把集合中含有多表头信息的数据封装在Map

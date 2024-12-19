@@ -93,8 +93,15 @@ function UpdatemoduleDataInfoSubmitBtnForm() {
 SelectmoduleDataAttrInfoGridPanel = function () {
     var dataattr_row = Ext.getCmp("moduleInfoTreeGridView_Id").getSelectionModel().getSelection();
     var mdId = dataattr_row[0].data.mdId;
-    var mdName = dataattr_row[0].data.text;
-    var mdShowname = dataattr_row[0].data.mdShowname;
+    
+    var mdName_zh_CN = dataattr_row[0].data.mdName_zh_CN;
+    var mdName_en = dataattr_row[0].data.mdName_en;
+    var mdName_ru = dataattr_row[0].data.mdName_ru;
+    
+    var mdShowname_zh_CN = dataattr_row[0].data.mdShowname_zh_CN;
+    var mdShowname_en = dataattr_row[0].data.mdShowname_en;
+    var mdShowname_ru = dataattr_row[0].data.mdShowname_ru;
+    
     var mdCode = dataattr_row[0].data.mdCode;
     var mdUrl = dataattr_row[0].data.mdUrl;
     var mdControl = dataattr_row[0].data.mdControl;
@@ -113,8 +120,15 @@ SelectmoduleDataAttrInfoGridPanel = function () {
     parent_module_Id1.setValue(mdParentid);
     parent_module_Id1.setRawValue(moduleParentName);
     parent_module_Id.setValue(mdParentid);
-    Ext.getCmp('mdName_Id').setValue(mdName);
-    Ext.getCmp('mdShowname_Id').setValue(mdShowname);
+    
+    Ext.getCmp('mdName_zh_CN_Id').setValue(mdName_zh_CN);
+    Ext.getCmp('mdName_en_Id').setValue(mdName_en);
+    Ext.getCmp('mdName_ru_Id').setValue(mdName_ru);
+    
+    Ext.getCmp('mdShowname_zh_CN_Id').setValue(mdShowname_zh_CN);
+    Ext.getCmp('mdShowname_en_Id').setValue(mdShowname_en);
+    Ext.getCmp('mdShowname_ru_Id').setValue(mdShowname_ru);
+    
     Ext.getCmp('mdCode_Id').setValue(mdCode);
     Ext.getCmp('mdUrl_Id').setValue(mdUrl);
     Ext.getCmp('mdControl_Id').setValue(mdControl);

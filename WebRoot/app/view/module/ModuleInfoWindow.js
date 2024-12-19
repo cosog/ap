@@ -120,20 +120,51 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 name: 'module.mdParentid'
      }, xltree, {
                 fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
-                id: 'mdName_Id',
-                allowBlank: false,
+                id: 'mdName_zh_CN_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 anchor: '95%',
-                name: "module.mdName"
+                name: "module.mdName_zh_CN"
+     }, {
+         		fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
+         		id: 'mdName_en_Id',
+         		allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+         		hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+         		anchor: '95%',
+         		name: "module.mdName_en"
+     }, {
+    	 		fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
+    	 		id: 'mdName_ru_Id',
+    	 		allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+    	 		hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+    	 		anchor: '95%',
+    	 		name: "module.mdName_ru"
      }, {
                 fieldLabel: loginUserLanguageResource.moduleMemo,
-                id: 'mdShowname_Id',
+                id: 'mdShowname_zh_CN_Id',
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 value: '',
                 anchor: '95%',
-                name: "module.mdShowname"
+                name: "module.mdShowname_zh_CN"
+     }, {
+         		fieldLabel: loginUserLanguageResource.moduleMemo,
+         		id: 'mdShowname_en_Id',
+         		hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+         		value: '',
+         		anchor: '95%',
+         		name: "module.mdShowname_en"
+     }, {
+    	 		fieldLabel: loginUserLanguageResource.moduleMemo,
+    	 		id: 'mdShowname_ru_Id',
+    	 		hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+    	 		value: '',
+    	 		anchor: '95%',
+    	 		name: "module.mdShowname_ru"
      }, {
                 id: 'mdCode_Id',
                 fieldLabel: loginUserLanguageResource.moduleCode+'<font color=red>*</font>',
                 allowBlank: false,
+                hidden:true,
                 value: '',
                 anchor: '95%',
                 name: "module.mdCode"
@@ -141,6 +172,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.moduleView+'<font color=red>*</font>',
                 allowBlank: false,
+                hidden:true,
                 id: 'mdUrl_Id',
                 anchor: '95%',
                 name: "module.mdUrl"
@@ -149,6 +181,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.moduleControlller+'<font color=red>*</font>',
                 allowBlank: false,
+                hidden:true,
                 anchor: '95%',
                 id: 'mdControl_Id',
                 name: "module.mdControl"

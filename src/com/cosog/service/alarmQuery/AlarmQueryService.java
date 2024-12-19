@@ -38,21 +38,21 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	
 	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="alarmQuery_CommStatusAlarm";
+		String ddicCode="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
-			ddicName="alarmQuery_SwitchingValueAlarm";
+			ddicCode="alarmQuery_SwitchingValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-			ddicName="alarmQuery_EnumValueAlarm";
+			ddicCode="alarmQuery_EnumValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==2){
-			ddicName="alarmQuery_NumericValueAlarm";
+			ddicCode="alarmQuery_NumericValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==3){
-			ddicName="alarmQuery_CommStatusAlarm";
+			ddicCode="alarmQuery_CommStatusAlarm";
 		}
 		
 		String tableName="viw_alarminfo_hist";
 		
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName_"+language+",to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
 				+ " t.itemname,t.alarmtype,"

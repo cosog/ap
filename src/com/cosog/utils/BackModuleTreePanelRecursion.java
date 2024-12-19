@@ -37,6 +37,15 @@ public class BackModuleTreePanelRecursion {
 			returnStr.append(",\"mdTypeName\":\"" + MemoryDataManagerTask.getCodeName("MD_TYPE",module[8]+"", language) + "\"");
 			returnStr.append(",\"mdSeq\":\"" + module[6] + "\"");
 			returnStr.append(",\"mdId\":\"" + module[0] + "\"");
+			
+			returnStr.append(",\"mdName_zh_CN\":\"" + module[10] + "\"");
+			returnStr.append(",\"mdName_en\":\"" + module[11] + "\"");
+			returnStr.append(",\"mdName_ru\":\"" + module[12] + "\"");
+			
+			returnStr.append(",\"mdShowname_zh_CN\":\"" + module[13] + "\"");
+			returnStr.append(",\"mdShowname_en\":\"" + module[14] + "\"");
+			returnStr.append(",\"mdShowname_ru\":\"" + module[15] + "\"");
+			
 			returnStr.append(",\"expanded\":true");
 			returnStr.append(",\"children\":[");
 			List childList = getChildList(list, module);
@@ -47,31 +56,25 @@ public class BackModuleTreePanelRecursion {
 			}
 			returnStr.append("]},");
 		} else {
-			returnStr.append("{\"mdId\":\"");
-			returnStr.append(module[0]);
-			returnStr.append("\",\"text\":\"");
-			returnStr.append(module[1]);
-			returnStr.append("\",\"mdShowname\":\"");
-			returnStr.append(StringManagerUtils.filterNull(module[3] + ""));
-			returnStr.append("\",\"mdParentid\":\"");
-			returnStr.append(module[2]);
-			returnStr.append("\",\"mdIcon\":\"");
-			returnStr.append(module[7]);
-			returnStr.append("\",\"iconCls\":\"");
-			returnStr.append(module[7]);
-			returnStr.append("\",\"mdUrl\":\"");
-			returnStr.append(module[4]);
-			returnStr.append("\",\"mdControl\":\"");
-			returnStr.append(module[9]);
-			returnStr.append("\",\"mdCode\":\"");
-			returnStr.append(module[5]);
-			returnStr.append("\",\"mdType\":\"");
-			returnStr.append(module[8]);
-			returnStr.append("\",\"mdTypeName\":\"");
-			returnStr.append(MemoryDataManagerTask.getCodeName("MD_TYPE",module[8]+"", language));
-			returnStr.append("\",\"mdSeq\":\"");
-			returnStr.append(module[6]);
-			returnStr.append("\",\"leaf\":true},");
+			returnStr.append("{\"mdId\":\""+module[0]+"\",");
+			returnStr.append("\"text\":\""+module[1]+"\",");
+			returnStr.append("\"mdShowname\":\""+StringManagerUtils.filterNull(module[3] + "")+"\",");
+			returnStr.append("\"mdParentid\":\""+module[2]+"\",");
+			returnStr.append("\"mdIcon\":\""+module[7]+"\",");
+			returnStr.append("\"iconCls\":\""+module[7]+"\",");
+			returnStr.append("\"mdUrl\":\""+module[4]+"\",");
+			returnStr.append("\"mdControl\":\""+module[9]+"\",");
+			returnStr.append("\"mdCode\":\""+module[5]+"\",");
+			returnStr.append("\"mdType\":\""+module[8]+"\",");
+			returnStr.append("\"mdTypeName\":\""+MemoryDataManagerTask.getCodeName("MD_TYPE",module[8]+"", language)+"\",");
+			returnStr.append("\"mdSeq\":\""+module[6]+"\",");
+			returnStr.append("\"mdName_zh_CN\":\"" + module[10] + "\",");
+			returnStr.append("\"mdName_en\":\"" + module[11] + "\",");
+			returnStr.append("\"mdName_ru\":\"" + module[12] + "\",");
+			returnStr.append("\"mdShowname_zh_CN\":\"" + module[13] + "\",");
+			returnStr.append("\"mdShowname_en\":\"" + module[14] + "\",");
+			returnStr.append("\"mdShowname_ru\":\"" + module[15] + "\",");
+			returnStr.append("\"leaf\":true},");
 		}
 		data = returnStr.toString();
 		return data;

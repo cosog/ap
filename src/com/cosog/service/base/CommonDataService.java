@@ -96,17 +96,17 @@ public class CommonDataService extends BaseService {
 	 * 描述：显示当期模块的表头数据信息
 	 * </p>
 	 * 
-	 * @param ddicName
+	 * @param ddicCode
 	 *            当前模块的字典编码
 	 * 
 	 * @author gao 2014-06-13
 	 * @return columns 表头字符串
 	 */
-	public String showTableHeadersColumns(String ddicName) {
+	public String showTableHeadersColumns(String ddicCode) {
 		Map<String, Object> map = DataModelMap.getMapObject();// 获取一个map对象
 		DataDictionary ddic = null;
 		try {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);// 从字典表里获取字典数据信息
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,7 +121,7 @@ public class CommonDataService extends BaseService {
 	 * @author gao 2014-05-08
 	 * @param orgId
 	 *            组织id信息
-	 * @param ddicName
+	 * @param ddicCode
 	 *            当前数据字典英文编码
 	 * @param v
 	 *            动态参数集合
@@ -129,18 +129,18 @@ public class CommonDataService extends BaseService {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public String findCommonModuleDataById(Page pager, String orgId, String ddicName, Vector<String> v) throws IOException, SQLException {
+	public String findCommonModuleDataById(Page pager, String orgId, String ddicCode, Vector<String> v) throws IOException, SQLException {
 		String sql = "";
 		String sqlAll = "";
 		int limit = 25;
 		StringBuffer sqlwhere = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();// 获取一个map对象
-		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);// 从字典表里获取字典数据信息
-//		ddic = (DataDictionary) map.get(ddicName);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
+		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+//		ddic = (DataDictionary) map.get(ddicCode);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
 //		if (ddic == null || "".equals(ddic)) {
-//			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);// 从字典表里获取字典数据信息
-//			map.put(ddicName, ddic);
+//			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+//			map.put(ddicCode, ddic);
 //		}
 		String columns = ddic.getTableHeader();
 		/***
@@ -191,12 +191,12 @@ public class CommonDataService extends BaseService {
 		return getResult;
 	}
 	
-	public String findMonitorHistoryDataById(Page pager, String orgId, String ddicName, Vector<String> v) throws IOException, SQLException {
+	public String findMonitorHistoryDataById(Page pager, String orgId, String ddicCode, Vector<String> v) throws IOException, SQLException {
 		String sql = "";
 		String sqlAll = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		String columns = ddic.getTableHeader();
 		StringBuffer sqlwhere = new StringBuffer();
 		//StringBuffer sqlCuswhere = new StringBuffer();
@@ -255,16 +255,16 @@ public class CommonDataService extends BaseService {
 		return getResult;
 
 	}
-	public String findCommonMuchHeadModuleDataById(Page pager, String ddicName, Vector<String> v) throws IOException, SQLException {
+	public String findCommonMuchHeadModuleDataById(Page pager, String ddicCode, Vector<String> v) throws IOException, SQLException {
 		String sql = "";
 		int limit = 25;
 		StringBuffer sqlwhere = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();// 获取一个map对象
 		DataDictionary ddic = null;
-		ddic = (DataDictionary) map.get(ddicName);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
+		ddic = (DataDictionary) map.get(ddicCode);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);// 从字典表里获取字典数据信息
-			// map.put(ddicName, ddic);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+			// map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
 		/***
@@ -313,21 +313,21 @@ public class CommonDataService extends BaseService {
 	 *            分页工具信息
 	 * @param orgId
 	 *            组织id
-	 * @param ddicName
+	 * @param ddicCode
 	 *            数据字典编码
 	 * @param v
 	 *            参数集合
 	 * @return
 	 */
-	public String findGridJsonDataByDdicCode(Page pager, String orgId, String ddicName, Vector<String> v) {
+	public String findGridJsonDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v) {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		ddic = (DataDictionary) map.get(ddicName);
+		ddic = (DataDictionary) map.get(ddicCode);
 		ddic = null;
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			map.put(ddicName, ddic);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
 		StringBuffer sqlwhere = new StringBuffer();
@@ -370,18 +370,18 @@ public class CommonDataService extends BaseService {
 	 * 
 	 * @param pager
 	 * @param orgId
-	 * @param ddicName
+	 * @param ddicCode
 	 * @param v
 	 * @return
 	 */
-	public String findGridJsonAllDataByDdicCode(Page pager, String orgId, String ddicName, Vector<String> v) {
+	public String findGridJsonAllDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v) {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		ddic = (DataDictionary) map.get(ddicName);
+		ddic = (DataDictionary) map.get(ddicCode);
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			map.put(ddicName, ddic);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
 		StringBuffer sqlwhere = new StringBuffer();
@@ -1045,14 +1045,14 @@ public class CommonDataService extends BaseService {
 	 * @param field
 	 *            对应数据库中的列信息
 	 * @return null
-	 * @param ddicName
+	 * @param ddicCode
 	 *            当前模块的数据字典英文名称编码
 	 * @param v
 	 *            d动态参数集合
 	 * @throws Exception
 	 */
 
-	public String exportDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicName, Vector<String> v) throws Exception {
+	public String exportDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v) throws Exception {
 
 		OutputStream os = response.getOutputStream();//
 		response.reset();
@@ -1069,7 +1069,7 @@ public class CommonDataService extends BaseService {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		String tabNameString = ddicName.trim();
+		String tabNameString = ddicCode.trim();
 		ddic = (DataDictionary) map.get(tabNameString);// 从数据字典缓存中获取字典数据信息
 		if (ddic == null || "".equals(ddic)) {
 			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(tabNameString);
@@ -1206,7 +1206,7 @@ public class CommonDataService extends BaseService {
 		return null;
 	}
 
-	public String exportDataWellExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicName, Vector<String> v) throws Exception {
+	public String exportDataWellExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v) throws Exception {
 		OutputStream os = response.getOutputStream();//
 		response.reset();
 		response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
@@ -1219,10 +1219,10 @@ public class CommonDataService extends BaseService {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		ddic = (DataDictionary) map.get(ddicName);
+		ddic = (DataDictionary) map.get(ddicCode);
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			map.put(ddicName, ddic);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			map.put(ddicCode, ddic);
 		}
 		head = this.fieldToHeaders(field, ddic);
 		String heads[] = StringManagerUtils.splitString(head, ",");

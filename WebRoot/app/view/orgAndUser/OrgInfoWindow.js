@@ -40,10 +40,25 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
 
             },{
                 fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
-                id: 'orgName_Id',
-                allowBlank: false,
+                id: 'orgName_zh_CN_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 anchor: '95%',
-                name: "org.orgName"
+                name: "org.orgName_zh_CN"
+            },{
+                fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
+                id: 'orgName_en_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                anchor: '95%',
+                name: "org.orgName_en"
+            },{
+                fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
+                id: 'orgName_ru_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                anchor: '95%',
+                name: "org.orgName_ru"
             }, {
                 fieldLabel: cosog.string.orgMemo,
                 id: 'orgMemo_Id',

@@ -47,11 +47,11 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		if (StringUtils.isNotBlank(typeName)) {
 			// 中文类型检索
 			if (typeName.equals("0") && StringUtils.isNotBlank(name)) {
-				pager.setWhere("cname like '%" + name + "%'");
+				pager.setWhere("name_"+userInfo.getLanguageName()+" like '%" + name + "%'");
 			}
 			// 英文类型检索
 			if (typeName.equals("1") && StringUtils.isNotBlank(name)) {
-				pager.setWhere("ename like '%" + name + "%'");
+				pager.setWhere("code like '%" + name + "%'");
 			}
 		}
 
@@ -63,12 +63,12 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	
 	public String findSystemdataInfo(User user,String typeName,String findName,Page pager){
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="dictionary_DataDictionaryManage";
-		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		String ddicCode="dictionary_DataDictionaryManage";
+		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		String columns = ddic.getTableHeader();
 		
-		String sql="select t.sysdataid,t.cname,t.ename,t.sorts,t.status,t.creator,t.updateuser,"
-				+ "t.moduleid,t2.md_name as moduleName,"
+		String sql="select t.sysdataid,t.name_"+user.getLanguageName()+",t.code,t.sorts,t.status,t.creator,t.updateuser,"
+				+ "t.moduleid,t2.md_name_"+user.getLanguageName()+" as moduleName,"
 				+ "to_char(t.updatetime,'yyyy-mm-dd hh24:mi:ss') as updatetime,"
 				+ "to_char(t.createdate,'yyyy-mm-dd hh24:mi:ss') as createdate"
 				+ " from TBL_DIST_NAME t,tbl_module t2,tbl_module2role t3,tbl_role t4,tbl_user t5"
@@ -76,10 +76,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				+ " and t5.user_no="+user.getUserNo();
 		if (StringUtils.isNotBlank(typeName)) {
 			if (typeName.equals("0") && StringUtils.isNotBlank(findName)) {
-				sql+=" and cname like '%" + findName + "%'";
+				sql+=" and name_"+user.getLanguageName()+" like '%" + findName + "%'";
 			}
 			if (typeName.equals("1") && StringUtils.isNotBlank(findName)) {
-				sql+=" and ename like '%" + findName + "%'";
+				sql+=" and code like '%" + findName + "%'";
 			}
 		}
 		sql+= " order by t.sorts";
@@ -93,8 +93,8 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"sysdataid\":\""+obj[0]+"\",");
-			result_json.append("\"cname\":\""+obj[1]+"\",");
-			result_json.append("\"ename\":\""+obj[2]+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"sorts\":"+obj[3]+",");
 			result_json.append("\"status\":"+obj[4]+",");
 			result_json.append("\"creator\":\""+obj[5]+"\",");
@@ -121,7 +121,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 */
 	public boolean findResetSysDataCodeListById(User userInfo, String objId, String ename) throws Exception {
 		boolean result = false;
-		String sql = "select sys.sysdataid from tbl_dist_name sys where sys.ename=?0 and sys.status=0 and sys.tenantid=?1";
+		String sql = "select sys.sysdataid from tbl_dist_name sys where sys.code=?0 and sys.status=0 and sys.tenantid=?1";
 		List<?> esObjList = this.findCallSql(sql, new Object[] { ename, userInfo.getUserId() });
 		if (null != esObjList && esObjList.size() > 0) {
 			String jtl = (String) esObjList.get(0);
@@ -144,7 +144,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 */
 	public String saveSystemdataInfo(SystemdataInfo systemdataInfo, User userInfo, String paramsdtblstringId) throws Exception {
 		String jsonaddstr = "";
-		boolean sysBooEname = this.findResetSysDataCodeListById(userInfo, "", systemdataInfo.getEname());
+		boolean sysBooEname = this.findResetSysDataCodeListById(userInfo, "", systemdataInfo.getCode());
 		if (sysBooEname) {
 			String uuIDD = UUIDGenerator.randomUUID();
 			systemdataInfo.setSysdataid(uuIDD);
@@ -286,10 +286,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			List<SystemdataInfo> syseNameList = this.find(sqlData.toString());
 			if (null != syseNameList && syseNameList.size() > 0) {
 				for (SystemdataInfo sysInfo : syseNameList) {
-					String ename = sysInfo.getEname();//模块字典的英文名称
-					ddicDataDictionary = dataitemsInfoService.findTableSqlWhereByListFaceId(ename);
-					map.put(ename, "");
-					map.put(ename, ddicDataDictionary);//将数据存储 在map对象中
+					String code = sysInfo.getCode();//模块字典的英文名称
+					ddicDataDictionary = dataitemsInfoService.findTableSqlWhereByListFaceId(code);
+					map.put(code, "");
+					map.put(code, ddicDataDictionary);//将数据存储 在map对象中
 				}
 			}
 		} catch (Exception e) {

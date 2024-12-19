@@ -56,6 +56,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             fieldLabel: loginUserLanguageResource.roleLanguageEdit+'<font color=red>*</font>',
             labelWidth: 110,
             typeAhead : true,
+            hidden: true,
             allowBlank: false,
             autoSelect:true,
             editable:false,

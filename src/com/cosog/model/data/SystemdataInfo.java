@@ -21,8 +21,10 @@ public class SystemdataInfo implements Serializable{
     private static final long serialVersionUID = 1L;
 	private String   sysdataid;   //id（主键） 
 	private String   tenantid;    //租户
-    private String   cname;       //中文名称
-    private String   ename;       //英文名称
+    private String   name_zh_CN;       //中文名称
+    private String   name_en;       //英文名称
+    private String   name_ru;       //俄文名称
+    private String   code;       //代码
     private Integer  sorts;		   //排序	
 	private Integer  status;	   //删除标记,0未删除，1删除
 	private String 	 creator;	   //创建人
@@ -38,22 +40,6 @@ public class SystemdataInfo implements Serializable{
 	}
 	public void setSysdataid(String sysdataid) {
 		this.sysdataid = sysdataid;
-	}
-	 
-	@Column(name="CNAME")
-	public String getCname() {
-		return cname;
-	}
-	public void setCname(String cname) {
-		this.cname = cname;
-	}
-	
-	@Column(name="ENAME")
-	public String getEname() {
-		return ename;
-	}
-	public void setEname(String ename) {
-		this.ename = ename;
 	}
 	
 	@Column(name="SORTS")
@@ -118,5 +104,33 @@ public class SystemdataInfo implements Serializable{
 	}
 	public void setModuleId(Integer moduleId) {
 		this.moduleId = moduleId;
+	}
+	@Column(name="NAME_ZH_CN")
+	public String getName_zh_CN() {
+		return name_zh_CN;
+	}
+	public void setName_zh_CN(String name_zh_CN) {
+		this.name_zh_CN = name_zh_CN;
+	}
+	@Column(name="NAME_EN")
+	public String getName_en() {
+		return name_en;
+	}
+	public void setName_en(String name_en) {
+		this.name_en = name_en;
+	}
+	@Column(name="NAME_RU")
+	public String getName_ru() {
+		return name_ru;
+	}
+	public void setName_ru(String name_ru) {
+		this.name_ru = name_ru;
+	}
+	@Column(name="CODE")
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 }

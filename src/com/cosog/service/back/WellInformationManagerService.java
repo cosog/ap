@@ -712,8 +712,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int collisionCount=0;
 		int overlayCount=0;
 		int overCount=0;
-		String ddicName="deviceInfo_DeviceBatchAdd";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="deviceInfo_DeviceBatchAdd";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		
 		String deviceTypeSql="select t.name_"+user.getLanguageName()+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
@@ -1214,8 +1214,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		int overlayCount=0;
-		String ddicName="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="pumpingDevice_PumpingModelManager";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		List<PumpingModelHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPumpingModel(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout),language);
 		
 		overlayBuff.append("[");
@@ -1275,13 +1275,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer reportInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
-		String ddicName="deviceInfo_DeviceManager";
+		String ddicCode="deviceInfo_DeviceManager";
 		String tableName="viw_device";
 		String deviceName = (String) map.get("deviceName");
 		String deviceType=(String) map.get("deviceType");
 		String orgId = (String) map.get("orgId");
 		
-		String columns=service.showTableHeadersColumns(ddicName);
+		String columns=service.showTableHeadersColumns(ddicCode);
 		String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 				+ " applicationScenarios,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
@@ -1531,7 +1531,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
-		String ddicName="deviceInfo_SMSDeviceManager";
+		String ddicCode="deviceInfo_SMSDeviceManager";
 		String tableName="viw_smsdevice";
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		String deviceName = (String) map.get("deviceName");
@@ -1541,7 +1541,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.deviceName like '%" + deviceName+ "%'";
 		}
 		
-		String columns=service.showTableHeadersColumns(ddicName);
+		String columns=service.showTableHeadersColumns(ddicCode);
 		String sql = "select id,orgName_"+language+",deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1781,8 +1781,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String doPumpingModelShow(String manufacturer,String model,String language) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="pumpingDevice_PumpingModelManager";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','"+languageResourceMap.get("anticlockwise")+"','Clockwise','"+languageResourceMap.get("clockwise")+"','') as crankrotationdirection,"
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
@@ -1821,8 +1821,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String getBatchAddPumpingModelTableInfo(int recordCount) {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="pumpingDevice_PumpingModelManager";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<recordCount;i++){
@@ -2652,14 +2652,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		StringBuffer resultNameDropdownData = new StringBuffer();
-		String ddicName="deviceInfo_DeviceBatchAdd";
+		String ddicCode="deviceInfo_DeviceBatchAdd";
 		
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String columns=service.showTableHeadersColumns(ddicCode);
 		
 		deviceTypeDropdownData.append("[");
 		instanceDropdownData.append("[");
@@ -3207,9 +3207,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String doAuxiliaryDeviceShow(Map map,Page pager,String deviceType,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="auxiliaryDeviceManager";
+		String ddicCode="auxiliaryDeviceManager";
 		
-		String columns=service.showTableHeadersColumns(ddicName);
+		String columns=service.showTableHeadersColumns(ddicCode);
 		String sql = "select t.id,t.specificType,t.name,t.manufacturer,t.model,t.remark,t.sort "
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
 				+ " where t.type=t2.id";
@@ -3341,8 +3341,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String getBatchAddAuxiliaryDeviceTableInfo(int recordCount) {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="auxiliaryDeviceManager";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="auxiliaryDeviceManager";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<recordCount;i++){
@@ -3529,8 +3529,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		int overlayCount=0;
-		String ddicName="auxiliaryDeviceManager";
-		String columns=service.showTableHeadersColumns(ddicName);
+		String ddicCode="auxiliaryDeviceManager";
+		String columns=service.showTableHeadersColumns(ddicCode);
 		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout));
 		
 		overlayBuff.append("[");

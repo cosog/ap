@@ -293,9 +293,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_srpacqdata_latest";
-			String ddicName="historyQuery_Overview";
+			String ddicCode="historyQuery_Overview";
 			DataDictionary ddic = null;
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 			String columns = ddic.getTableHeader();
 			
 			if(timeEfficiencyUnitType==2){
@@ -573,7 +573,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String hisTableName="tbl_acqdata_hist";
 			String deviceTableName="tbl_device";
 			String calTableName="tbl_srpacqdata_hist";
-			String ddicName="historyQuery_HistoryData";
+			String ddicCode="historyQuery_HistoryData";
 			DataDictionary ddic = null;
 			List<String> ddicAcqColumnsList=new ArrayList<String>();
 			
@@ -593,7 +593,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 			}
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 			String columns = ddic.getTableHeader();
 			
 			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";

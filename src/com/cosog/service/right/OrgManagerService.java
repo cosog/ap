@@ -235,7 +235,8 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId,String language) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("SELECT org_id,org_parent,org_name_"+language+",org_memo,org_seq "
+		sqlBuffer.append("SELECT org_id,org_parent,org_name_"+language+" as showName,org_memo,org_seq,"
+				+ " org_name_zh_CN,org_name_en,org_name_ru"
 				+ " FROM tbl_org t "
 				+ " WHERE 1=1");
 		if(StringManagerUtils.isNotNull(orgId)){

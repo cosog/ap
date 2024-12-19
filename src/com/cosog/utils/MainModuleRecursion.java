@@ -18,11 +18,18 @@ public class MainModuleRecursion {
 	public MainModuleRecursion() {// 构造方法里初始化模拟List
 	}
 
-	public String recursionFuncModuleFn(List list, Module module) {
-
+	public String recursionFuncModuleFn(List list, Module module,String language) {
 		String data = "";
+		String mdName="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			mdName=module.getMdName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			mdName=module.getMdName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			mdName=module.getMdName_ru();
+		}
 		if (hasChild(list, module)) {
-			returnStr.append("{\"text\":\"" + module.getMdName() + "\"");
+			returnStr.append("{\"text\":\"" + mdName + "\"");
 			returnStr.append(",\"expanded\":true");
 			returnStr.append(",\"iconCls\":\"" + module.getMdIcon() + "\"");
 			returnStr.append(",\"children\":[");
@@ -30,14 +37,14 @@ public class MainModuleRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				Module n = (Module) it.next();
-				recursionFuncModuleFn(list, n);
+				recursionFuncModuleFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"id\":\"");
 			returnStr.append(StringManagerUtils.replaceAll(module.getMdCode()));
 			returnStr.append("\",\"text\":\"");
-			returnStr.append(module.getMdName());
+			returnStr.append(mdName);
 			returnStr.append("\",\"md_icon\":\"");
 			returnStr.append(module.getMdIcon());
 			returnStr.append("\",\"mdCode\":\"");
@@ -54,11 +61,18 @@ public class MainModuleRecursion {
 		return data;
 	}
 
-	public String recursionAddModuleFn(List list, Module module) {
-
+	public String recursionAddModuleFn(List list, Module module,String language) {
 		String data = "";
+		String mdName="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			mdName=module.getMdName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			mdName=module.getMdName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			mdName=module.getMdName_ru();
+		}
 		if (hasChild(list, module)) {
-			returnStr.append("{\"text\":\"" + module.getMdName() + "\"");
+			returnStr.append("{\"text\":\"" + mdName + "\"");
 			returnStr.append(",\"expanded\":true,");
 			returnStr.append("\"id\":");
 			returnStr.append(module.getMdId());
@@ -68,14 +82,14 @@ public class MainModuleRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				Module n = (Module) it.next();
-				recursionAddModuleFn(list, n);
+				recursionAddModuleFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"id\":");
 			returnStr.append(module.getMdId());
 			returnStr.append(",\"text\":\"");
-			returnStr.append(module.getMdName());
+			returnStr.append(mdName);
 			returnStr.append("\",\"md_icon\":\"");
 			returnStr.append(module.getMdIcon());
 			returnStr.append("\",\"mdCode\":\"");
@@ -111,12 +125,23 @@ public class MainModuleRecursion {
 
 	}
 
-	public String recursionModuleTreeFn(List list, Module module) {
-
+	public String recursionModuleTreeFn(List list, Module module,String language) {
 		String data = "";
+		String mdName="";
+		String showName="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			mdName=module.getMdName_zh_CN();
+			showName=module.getMdShowname_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			mdName=module.getMdName_en();
+			showName=module.getMdShowname_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			mdName=module.getMdName_ru();
+			showName=module.getMdShowname_ru();
+		}
 		if (hasChild(list, module)) {
-			returnStr.append("{\"text\":\"" + module.getMdName() + "\"");
-			returnStr.append(",\"mdShowname\":\"" + module.getMdShowname() + "\"");
+			returnStr.append("{\"text\":\"" + mdName + "\"");
+			returnStr.append(",\"mdShowname\":\"" + showName + "\"");
 			returnStr.append(",\"mdUrl\":\"" + StringManagerUtils.replaceAll(module.getMdUrl()) + "\"");
 			returnStr.append(",\"mdParentid\":\"" + module.getMdParentid() + "\"");
 			returnStr.append(",\"mdControl\":\"" + module.getMdControl() + "\"");
@@ -131,16 +156,16 @@ public class MainModuleRecursion {
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				Module n = (Module) it.next();
-				recursionModuleTreeFn(list, n);
+				recursionModuleTreeFn(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
 			returnStr.append("{\"mdId\":\"");
 			returnStr.append(module.getMdId());
 			returnStr.append("\",\"text\":\"");
-			returnStr.append(module.getMdName());
+			returnStr.append(mdName);
 			returnStr.append("\",\"mdShowname\":\"");
-			returnStr.append(module.getMdShowname());
+			returnStr.append(showName);
 			returnStr.append("\",\"mdParentid\":\"");
 			returnStr.append(module.getMdParentid());
 			returnStr.append("\",\"mdIcon\":\"");

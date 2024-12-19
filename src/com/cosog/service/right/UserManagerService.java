@@ -269,7 +269,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getUserRoleModules(User user){
-		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name,m.md_code,r.role_name "
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name "
 				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
 				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
 				+ " and u.user_no= "+user.getUserNo()
@@ -524,7 +524,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " from tbl_role t,tbl_user t2 "
 				+ " where t2.user_type=t.role_id "
 				+ " and t2.user_no="+user.getUserNo();
-		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name,m.md_code,r.role_name "
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name "
 				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
 				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
 				+ " and u.user_no= "+user.getUserNo()

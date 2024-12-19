@@ -152,6 +152,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     }, {
                         header: loginUserLanguageResource.roleLanguageEdit,
                         xtype: 'checkcolumn',
+                        hidden: true,
                         lockable: true,
                         align: 'center',
                         sortable: true,

@@ -17,8 +17,12 @@ public  class Module implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer mdId;
 	private Integer mdParentid;
-	private String mdName;
-	private String mdShowname;
+	private String mdName_zh_CN;
+	private String mdName_en;
+	private String mdName_ru;
+	private String mdShowname_zh_CN;
+	private String mdShowname_en;
+	private String mdShowname_ru;
 	private String mdUrl;
 	private String mdCode;
 	private Integer mdSeq;
@@ -31,12 +35,6 @@ public  class Module implements java.io.Serializable {
 	public Module() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
-	/** minimal constructor */
-	public Module(Integer mdParentid, String mdName) {
-		this.mdParentid = mdParentid;
-		this.mdName = mdName;
 	}
 
 	@Id
@@ -57,24 +55,6 @@ public  class Module implements java.io.Serializable {
 
 	public void setMdParentid(Integer mdParentid) {
 		this.mdParentid = mdParentid;
-	}
-
-	@Column(name = "MD_NAME", nullable = false, length = 100)
-	public String getMdName() {
-		return this.mdName;
-	}
-
-	public void setMdName(String mdName) {
-		this.mdName = mdName;
-	}
-
-	@Column(name = "MD_SHOWNAME", length = 100)
-	public String getMdShowname() {
-		return this.mdShowname;
-	}
-
-	public void setMdShowname(String mdShowname) {
-		this.mdShowname = mdShowname;
 	}
 
 	@Column(name = "MD_URL", length = 200)
@@ -147,6 +127,60 @@ public  class Module implements java.io.Serializable {
 
 	public void setMdControl(String mdControl) {
 		this.mdControl = mdControl;
+	}
+
+	@Column(name = "MD_NAME_ZH_CN", nullable = false, length = 100)
+	public String getMdName_zh_CN() {
+		return mdName_zh_CN;
+	}
+
+	public void setMdName_zh_CN(String mdName_zh_CN) {
+		this.mdName_zh_CN = mdName_zh_CN;
+	}
+
+	@Column(name = "MD_NAME_EN", nullable = false, length = 100)
+	public String getMdName_en() {
+		return mdName_en;
+	}
+
+	public void setMdName_en(String mdName_en) {
+		this.mdName_en = mdName_en;
+	}
+
+	@Column(name = "MD_NAME_RU", nullable = false, length = 100)
+	public String getMdName_ru() {
+		return mdName_ru;
+	}
+
+	public void setMdName_ru(String mdName_ru) {
+		this.mdName_ru = mdName_ru;
+	}
+
+	@Column(name = "MD_SHOWNAME_ZH_CN", length = 100)
+	public String getMdShowname_zh_CN() {
+		return mdShowname_zh_CN;
+	}
+
+	public void setMdShowname_zh_CN(String mdShowname_zh_CN) {
+		this.mdShowname_zh_CN = mdShowname_zh_CN;
+	}
+
+	@Column(name = "MD_SHOWNAME_EN", length = 100)
+	public String getMdShowname_en() {
+		return mdShowname_en;
+	}
+
+	public void setMdShowname_en(String mdShowname_en) {
+		this.mdShowname_en = mdShowname_en;
+	}
+
+	@Column(name = "MD_SHOWNAME_RU", length = 100)
+	public String getMdShowname_ru() {
+		return mdShowname_ru;
+	}
+
+	public void setMdShowname_ru(String mdShowname_ru) {
+		this.mdShowname_ru = mdShowname_ru;
 	}
 
 }

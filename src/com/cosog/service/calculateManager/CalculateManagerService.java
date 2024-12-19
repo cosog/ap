@@ -113,14 +113,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="calculateManager_SRPSingleRecord";
+		String ddicCode="calculateManager_SRPSingleRecord";
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		try{
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 			columns = ddic.getTableHeader();
 			
 			String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -298,13 +298,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="calculateManager_PCPSingleRecord";
+		String ddicCode="calculateManager_PCPSingleRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -1103,11 +1103,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="calculateManager_SRPTotalRecord";
+		String ddicCode="calculateManager_SRPTotalRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -1174,11 +1174,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="calculateManager_PCPTotalRecord";
+		String ddicCode="calculateManager_PCPTotalRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";

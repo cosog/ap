@@ -40,10 +40,10 @@ public class LogQueryService<T> extends BaseService<T>  {
 	
 	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="logQuery_DeviceOperationLog";
+		String ddicCode="logQuery_DeviceOperationLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.devicetype,t.deviceTypeName_"+user.getLanguageName()+","
 				+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
@@ -190,10 +190,10 @@ public class LogQueryService<T> extends BaseService<T>  {
 	}
 	
 	public String getSystemLogData(String orgId,String operationType,Page pager,User user,String selectUserId,String language) throws IOException, SQLException{
-		String ddicName="logQuery_SystemLog";
+		String ddicCode="logQuery_SystemLog";
 		StringBuffer result_json = new StringBuffer();
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
 		String columns = ddic.getTableHeader();
 		String currentDeviceTypeIds=user.getDeviceTypeIds();
 		String sql="select t.id,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"

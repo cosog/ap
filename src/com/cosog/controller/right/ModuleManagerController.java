@@ -106,20 +106,24 @@ public class ModuleManagerController extends BaseController {
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		BackModuleRecursion r = new BackModuleRecursion();
 		list = this.moduleService.queryRightModules(Module.class, moduleName,user);
 		boolean flag = false;
 		for (Module module : list) {
 			if (!r.hasParent(list, module)) {
 				flag = true;
-				json = r.recursionRightModuleTreeFn(list, module);
+				json = r.recursionRightModuleTreeFn(list, module,language);
 				break;
 			}
 
 		}
 		if (flag == false && list.size() > 0) {
 			for (Module module : list) {
-				json = r.recursionRightModuleTreeFn(list, module);
+				json = r.recursionRightModuleTreeFn(list, module,language);
 			}
 
 		}

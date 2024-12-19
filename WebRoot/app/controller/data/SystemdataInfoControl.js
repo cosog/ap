@@ -181,8 +181,8 @@ function editSystemdataInfo() {
 	    if (sys_row.length>0) {
 	    	var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
 	        var sysdataid_id = sys_row[0].data.sysdataid;
-	        var sdcname = sys_row[0].data.cname;
-	        var sdename = sys_row[0].data.ename;
+	        var sdname = sys_row[0].data.name;
+	        var sdcode = sys_row[0].data.code;
 	        var sdsorts = sys_row[0].data.sorts;
 	        var status = sys_row[0].data.status;
 	        
@@ -204,8 +204,8 @@ function editSystemdataInfo() {
 
 	        Ext.getCmp('hidesysdata_Id').setValue(sysdataid_id);
 	        Ext.getCmp('hidesysstatus_Id').setValue(status);
-	        Ext.getCmp('sysename_Id').setValue(sdename);
-	        Ext.getCmp('syscname_Id').setValue(sdcname);
+	        Ext.getCmp('sysename_Id').setValue(sdcode);
+	        Ext.getCmp('syscname_Id').setValue(sdname);
 	        Ext.getCmp('syssorts_Id').setValue(sdsorts);
 	        
 	        Ext.getCmp('systemdataModule_Id1').setValue(moduleId);

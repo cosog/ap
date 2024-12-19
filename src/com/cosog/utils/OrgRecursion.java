@@ -50,11 +50,14 @@ public class OrgRecursion {
 		String data = "";
 		if (hasChild(list, node)) {
 			returnStr.append("{\"text\":\"" + node[2] + "\",");
-			returnStr.append("\"expanded\" : true,");
 			returnStr.append("\"orgId\":\"" +  node[0]+ "\",");
 			returnStr.append("\"orgParent\":\"" +  node[1]+ "\",");
 			returnStr.append("\"orgMemo\":\"" +  node[3]+ "\",");
 			returnStr.append("\"orgSeq\":\"" +  node[4]+ "\",");
+			returnStr.append("\"orgName_zh_CN\":\"" +  node[5]+ "\",");
+			returnStr.append("\"orgName_en\":\"" +  node[6]+ "\",");
+			returnStr.append("\"orgName_ru\":\"" +  node[7]+ "\",");
+			returnStr.append("\"expanded\" : true,");
 			returnStr.append("\"children\":[");
 			List childList = getChildList(list, node);
 			Iterator it = childList.iterator();
@@ -69,6 +72,9 @@ public class OrgRecursion {
 			returnStr.append("\"orgParent\":\"" +  node[1]+ "\",");
 			returnStr.append("\"orgMemo\":\"" +  node[3]+ "\",");
 			returnStr.append("\"orgSeq\":\"" +  node[4]+ "\",");
+			returnStr.append("\"orgName_zh_CN\":\"" +  node[5]+ "\",");
+			returnStr.append("\"orgName_en\":\"" +  node[6]+ "\",");
+			returnStr.append("\"orgName_ru\":\"" +  node[7]+ "\",");
 			returnStr.append("\"leaf\":true },");
 		}
 		data = returnStr.toString().replaceAll("null", "");
@@ -112,11 +118,5 @@ public class OrgRecursion {
 	public String modifyOrgStr(String returnStr) {// 修饰一下才能满足Extjs的Json格式
 		return ("[" + returnStr + "]").replaceAll(",]", "]");
 
-	}
-
-	public static void main(String[] args) {
-	//	Recursion r = new Recursion();
-		// r.recursionFn(r.nodeList, new Node(1, 0));
-		// StringManagerUtils.printLog(r.modifyStr(r.returnStr.toString()));
 	}
 }

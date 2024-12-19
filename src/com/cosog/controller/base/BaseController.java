@@ -123,8 +123,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 		return jsonString;
 	}
 	
-	public String getArrayTojsonPage(List<?> oList,String ddicName) {
-		String columns=	service.showTableHeadersColumns(ddicName);
+	public String getArrayTojsonPage(List<?> oList,String ddicCode) {
+		String columns=	service.showTableHeadersColumns(ddicCode);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append(" \"start\":" + pager.getStart() + ",\"limit\":" + pager.getLimit() + ",columns:"+columns+",\"totalCount\":" + pager.getTotalCount());
@@ -144,8 +144,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 		return strBuf.toString();
 	}
 	
-	public String getArrayTojsonPage2(List<?> oList,String ddicName,Page pager) {
-		String columns=	service.showTableHeadersColumns(ddicName);
+	public String getArrayTojsonPage2(List<?> oList,String ddicCode,Page pager) {
+		String columns=	service.showTableHeadersColumns(ddicCode);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append(" \"start\":" + pager.getStart() + ",\"limit\":" + pager.getLimit() + ",columns:"+columns+",\"totalCount\":" + pager.getTotalCount());
@@ -166,8 +166,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 	}
 	
 	
-	public String getArrayTojsonPage(String data,String ddicName) {
-		String columns=	service.showTableHeadersColumns(ddicName);
+	public String getArrayTojsonPage(String data,String ddicCode) {
+		String columns=	service.showTableHeadersColumns(ddicCode);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append("columns:"+columns);

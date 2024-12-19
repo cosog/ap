@@ -92,6 +92,12 @@ SelectOrgDataAttrInfoGridPanel = function () {
     var dataattr_row = Ext.getCmp("OrgInfoTreeGridView_Id").getSelectionModel().getSelection();
     var orgId = dataattr_row[0].data.orgId;
     var orgName = dataattr_row[0].data.text;
+    
+    var orgName_zh_CN = dataattr_row[0].data.orgName_zh_CN;
+    var orgName_en = dataattr_row[0].data.orgName_en;
+    var orgName_ru = dataattr_row[0].data.orgName_ru;
+    
+    
     var orgMemo = dataattr_row[0].data.orgMemo;
     var orgSeq = dataattr_row[0].data.orgSeq;
     var orgParent = dataattr_row[0].data.orgParent;
@@ -102,7 +108,9 @@ SelectOrgDataAttrInfoGridPanel = function () {
    
     Ext.getCmp('orgOrg_Id').setValue(orgId);
     Ext.getCmp('orgName_Parent_Id').setValue(orgParent);
-    Ext.getCmp('orgName_Id').setValue(orgName);
+    Ext.getCmp('orgName_zh_CN_Id').setValue(orgName_zh_CN);
+    Ext.getCmp('orgName_en_Id').setValue(orgName_en);
+    Ext.getCmp('orgName_ru_Id').setValue(orgName_ru);
     Ext.getCmp('orgMemo_Id').setValue(orgMemo);
     Ext.getCmp('orgSeq_Id').setValue(orgSeq);
 };

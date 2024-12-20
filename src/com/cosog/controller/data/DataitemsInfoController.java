@@ -80,22 +80,25 @@ public class DataitemsInfoController extends BaseController {
 	 */
 	@RequestMapping("/findDataitemsInfoByListId")
 	public void findDataitemsInfoByListId() throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		try {
 			String getSysId = request.getParameter("sysId");
 			String getdataTabId = request.getParameter("dataTabId");
 			String getdataName = request.getParameter("dataName");
-			// 分页
 			this.pager = new Page("pagerForm", request);
 			User userInfo = this.findCurrentUserInfo();
 			List<DataitemsInfo> dataitemsInfoList = dataitemsInfoService.findDataitemsInfoPageListById(pager, userInfo, getSysId, getdataTabId, getdataName);
 
-			// 处理乱码。
 			response.setCharacterEncoding("utf-8");
-			// 输出json数据。
-			response.getWriter().write(this.getArrayTojsonPage(dataitemsInfoList));
-			// 异常抛出
+			PrintWriter pw;
+			String json=this.getArrayTojsonPage(dataitemsInfoList);
+			try {
+				pw = response.getWriter();
+				pw.print(json);
+				pw.flush();
+				pw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -106,23 +109,24 @@ public class DataitemsInfoController extends BaseController {
 	 */
 	@RequestMapping("/addDataitemsInfo")
 	public void addDataitemsInfo(@ModelAttribute DataitemsInfo dataitemsInfo) throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		String jsonaddstr = "";
-		//systemdataInfoService.initDataDictionaryPutInCache();
 		if (null != dataitemsInfo && !"".equals(dataitemsInfo)) {
-			// 当前登录用户
 			User userInfo = this.findCurrentUserInfo();
-			// 添加项值
 			String sysId = request.getParameter("sysId");
 			jsonaddstr = dataitemsInfoService.saveDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
 			jsonaddstr = "{success:true,msg:false}";
 		}
-		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		// 输出json数据。
-		response.getWriter().write(jsonaddstr);
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(jsonaddstr);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -130,21 +134,24 @@ public class DataitemsInfoController extends BaseController {
 	 */
 	@RequestMapping("/editDataitemsInfo")
 	public void editDataitemsInfo(@ModelAttribute DataitemsInfo dataitemsInfo) throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		String jsonaddstr = "";
 		if (null != dataitemsInfo && !"".equals(dataitemsInfo)) {
-			// 当前登录用户
 			User userInfo = this.findCurrentUserInfo();
 			jsonaddstr = dataitemsInfoService.editDataitemsInfo(dataitemsInfo, userInfo);
-			// jsonaddstr = "{success:true,msg:true}";
 		} else {
 			jsonaddstr = "{success:true,msg:false}";
 		}
-		systemdataInfoService.initDataDictionaryPutInCache();
-		// 处理乱码。
+//		systemdataInfoService.initDataDictionaryPutInCache();
 		response.setCharacterEncoding("utf-8");
-		// 输出json数据。
-		response.getWriter().write(jsonaddstr);
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(jsonaddstr);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -152,12 +159,10 @@ public class DataitemsInfoController extends BaseController {
 	 */
 	@RequestMapping("/deleteDataitemsInfoById")
 	public void deleteDataitemsInfoById() throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		try {
 			String jsondelete = "";
 			String getDatatId = request.getParameter("paramsId");
-			systemdataInfoService.initDataDictionaryPutInCache();
+//			systemdataInfoService.initDataDictionaryPutInCache();
 			if (StringUtils.isNotBlank(getDatatId)) {
 				boolean boo = dataitemsInfoService.deleteDataitemsInfoById(this.findCurrentUserInfo(), getDatatId);
 				if (boo) {
@@ -171,8 +176,16 @@ public class DataitemsInfoController extends BaseController {
 			// 处理乱码。
 			response.setCharacterEncoding("utf-8");
 			// 输出json数据。
-			response.getWriter().write(jsondelete);
-			// 异常抛出
+			PrintWriter pw;
+			try {
+				pw = response.getWriter();
+				pw.print(jsondelete);
+				pw.flush();
+				pw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

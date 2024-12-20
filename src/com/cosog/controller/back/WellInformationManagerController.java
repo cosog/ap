@@ -639,13 +639,19 @@ public class WellInformationManagerController extends BaseController {
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.doAuxiliaryDeviceShow(map, pager,deviceType,recordCount);
+		String json = this.wellInformationManagerService.doAuxiliaryDeviceShow(map, pager,deviceType,recordCount,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -682,7 +688,13 @@ public class WellInformationManagerController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddAuxiliaryDeviceTableInfo(recordCount);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getBatchAddAuxiliaryDeviceTableInfo(recordCount,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -829,13 +841,18 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/batchAddAuxiliaryDevice")
 	public String batchAddAuxiliaryDevice() throws Exception {
-		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
 		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,isCheckout);
+		String json=this.wellInformationManagerService.batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,isCheckout,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -920,8 +937,14 @@ public class WellInformationManagerController extends BaseController {
 	public String getBatchAddPumpingModelTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddPumpingModelTableInfo(recordCount);
+		String json = this.wellInformationManagerService.getBatchAddPumpingModelTableInfo(recordCount,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

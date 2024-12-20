@@ -295,7 +295,7 @@ public class RealTimeMonitoringController extends BaseController {
 		
 		DataDictionary ddic = null;
 		String ddicCode="realTimeMonitoring_Overview";
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
 		this.pager = new Page("pagerForm", request);

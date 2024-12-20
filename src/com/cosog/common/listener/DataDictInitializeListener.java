@@ -38,7 +38,7 @@ public class DataDictInitializeListener implements ServletContextListener {
 			ServletContext context = event.getServletContext();
 			ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);
 			BaseController base = (BaseController) ctx.getBean("baseAction");
-			base.initDataDictionaryPutInCache();
+//			base.initDataDictionaryPutInCache();
 		}else{
 			StringManagerUtils.printLog("数据字典缓存已经被禁用！");
 		}

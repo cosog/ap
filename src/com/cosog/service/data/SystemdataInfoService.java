@@ -13,6 +13,7 @@ import com.cosog.model.data.DataDictionary;
 import com.cosog.model.data.DataitemsInfo;
 import com.cosog.model.data.SystemdataInfo;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.DateUtils;
 import com.cosog.utils.Page;
@@ -64,13 +65,14 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	public String findSystemdataInfo(User user,String typeName,String findName,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="dictionary_DataDictionaryManage";
-		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
 		String columns = ddic.getTableHeader();
 		
-		String sql="select t.sysdataid,t.name_"+user.getLanguageName()+",t.code,t.sorts,t.status,t.creator,t.updateuser,"
+		String sql="select t.sysdataid,t.name_"+user.getLanguageName()+" as name,t.code,t.sorts,t.status,t.creator,t.updateuser,"
 				+ "t.moduleid,t2.md_name_"+user.getLanguageName()+" as moduleName,"
 				+ "to_char(t.updatetime,'yyyy-mm-dd hh24:mi:ss') as updatetime,"
-				+ "to_char(t.createdate,'yyyy-mm-dd hh24:mi:ss') as createdate"
+				+ "to_char(t.createdate,'yyyy-mm-dd hh24:mi:ss') as createdate,"
+				+ " t.name_zh_CN,t.name_en,t.name_ru"
 				+ " from TBL_DIST_NAME t,tbl_module t2,tbl_module2role t3,tbl_role t4,tbl_user t5"
 				+ " where t.moduleid=t2.md_id and t2.md_id=t3.rm_moduleid and t3.rm_roleid=t4.role_id and t4.role_id=t5.user_type"
 				+ " and t5.user_no="+user.getUserNo();
@@ -102,7 +104,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			result_json.append("\"moduleId\":"+obj[7]+",");
 			result_json.append("\"moduleName\":\""+obj[8]+"\",");
 			result_json.append("\"updatetime\":\""+obj[9]+"\",");
-			result_json.append("\"createdate\":\""+obj[10]+"\"},");
+			result_json.append("\"createdate\":\""+obj[10]+"\",");
+			result_json.append("\"name_zh_CN\":\""+obj[11]+"\",");
+			result_json.append("\"name_en\":\""+obj[12]+"\",");
+			result_json.append("\"name_ru\":\""+obj[13]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -119,10 +124,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean findResetSysDataCodeListById(User userInfo, String objId, String ename) throws Exception {
+	public boolean findResetSysDataCodeListById(User userInfo, String objId, String code) throws Exception {
 		boolean result = false;
 		String sql = "select sys.sysdataid from tbl_dist_name sys where sys.code=?0 and sys.status=0 and sys.tenantid=?1";
-		List<?> esObjList = this.findCallSql(sql, new Object[] { ename, userInfo.getUserId() });
+		List<?> esObjList = this.findCallSql(sql, new Object[] { code, userInfo.getUserId() });
 		if (null != esObjList && esObjList.size() > 0) {
 			String jtl = (String) esObjList.get(0);
 			if (objId.equals(jtl)) {
@@ -150,10 +155,22 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			systemdataInfo.setSysdataid(uuIDD);
 			systemdataInfo.setTenantid(userInfo.getUserId());
 			systemdataInfo.setStatus(0);
-			systemdataInfo.setUpdateuser(userInfo.getUserName());
-			systemdataInfo.setCreator(userInfo.getUserName());
+			systemdataInfo.setUpdateuser(userInfo.getUserId());
+			systemdataInfo.setCreator(userInfo.getUserId());
 			systemdataInfo.setUpdatetime(DateUtils.getTime());
 			systemdataInfo.setCreatedate(DateUtils.getTime());
+			
+			
+			if(!StringManagerUtils.isNotNull(systemdataInfo.getName_zh_CN())){
+				systemdataInfo.setName_zh_CN(MemoryDataManagerTask.getLanguageResourceItem("zh_CN","unnamed"));
+			}
+			if(!StringManagerUtils.isNotNull(systemdataInfo.getName_en())){
+				systemdataInfo.setName_en(MemoryDataManagerTask.getLanguageResourceItem("en","unnamed"));
+			}
+			if(!StringManagerUtils.isNotNull(systemdataInfo.getName_ru())){
+				systemdataInfo.setName_ru(MemoryDataManagerTask.getLanguageResourceItem("ru","unnamed"));
+			}
+//			addparamstr += "" + graw.name_zh_CN + "&" + graw.name_en+ "&" + graw.name_ru+ "&" + graw.code + "&" + graw.datavalue + "&" + graw.sorts + "&" + graw.status + "|";
 			this.save(systemdataInfo);
 			if (StringUtils.isNotBlank(paramsdtblstringId)) {
 				String[] k_paramt = paramsdtblstringId.split("\\|");
@@ -162,32 +179,50 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 					DataitemsInfo dinfo = new DataitemsInfo();
 					String[] param = add_paramobj.split("\\&");
 					if(param.length>0){
-						String i = param[3];
-						Integer sorts = 0;
-						if (StringUtils.isNotBlank(i)) {
-							sorts = StringManagerUtils.stringToInteger(i);
+						String name_zh_CN=param[0];
+						String name_en=param[1];
+						String name_ru=param[2];
+						String code=param[3];
+						String datavalue=param[4];
+						String sorts=param[5];
+						String statusStr=param[6];
+						
+						Integer sort = 0;
+						if (StringUtils.isNotBlank(sorts)) {
+							sort = StringManagerUtils.stringToInteger(sorts);
 						}
-						String ij = param[4];
 						Integer status = 0;
-						if (StringUtils.isNotBlank(ij)) {
-							if("false".equalsIgnoreCase(ij)){
-								ij="0";
-							}else if("true".equalsIgnoreCase(ij)){
-								ij="1";
+						if (StringUtils.isNotBlank(statusStr)) {
+							if("false".equalsIgnoreCase(statusStr)){
+								statusStr="0";
+							}else if("true".equalsIgnoreCase(statusStr)){
+								statusStr="1";
 							}
-							status = StringManagerUtils.stringToInteger(ij);
+							status = StringManagerUtils.stringToInteger(statusStr);
 						}
 						dinfo.setSysdataid(uuIDD);
-						dinfo.setCname("" + param[0]);
-						dinfo.setEname("" + param[1]);
-						dinfo.setSorts(sorts);
-						dinfo.setDatavalue("" + param[2]);
+						dinfo.setName_zh_CN(name_zh_CN);
+						dinfo.setName_en(name_en);
+						dinfo.setName_ru(name_ru);
+						dinfo.setCode(code);
+						dinfo.setDatavalue(datavalue);
+						dinfo.setSorts(sort);
 						dinfo.setStatus(status);
 						dinfo.setTenantid(userInfo.getUserId());
 						dinfo.setCreator(userInfo.getUserId());
 						dinfo.setCreatedate(DateUtils.getTime());
-						dinfo.setUpdateuser(userInfo.getUserName());
+						dinfo.setUpdateuser(userInfo.getUserId());
 						dinfo.setUpdatetime(DateUtils.getTime());
+						
+						if(!StringManagerUtils.isNotNull(dinfo.getName_zh_CN())){
+							dinfo.setName_zh_CN(MemoryDataManagerTask.getLanguageResourceItem("zh_CN","unnamed"));
+						}
+						if(!StringManagerUtils.isNotNull(dinfo.getName_en())){
+							dinfo.setName_en(MemoryDataManagerTask.getLanguageResourceItem("en","unnamed"));
+						}
+						if(!StringManagerUtils.isNotNull(dinfo.getName_ru())){
+							dinfo.setName_ru(MemoryDataManagerTask.getLanguageResourceItem("ru","unnamed"));
+						}
 					}
 					dataitemsInfoService.saveDataitemsInfo(dinfo);
 				}
@@ -277,27 +312,27 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 * @author gao 2014-05-08
 	 * @return  Map<String, Object> 
 	 */
-	@SuppressWarnings("deprecation")
-	public Map<String, Object> initDataDictionaryPutInCache() {
-		String sqlData = " from SystemdataInfo  sys  where  sys.status=0 ";
-		Map<String, Object> map = DataModelMap.getMapObject();
-		DataDictionary ddicDataDictionary = null;
-		try {
-			List<SystemdataInfo> syseNameList = this.find(sqlData.toString());
-			if (null != syseNameList && syseNameList.size() > 0) {
-				for (SystemdataInfo sysInfo : syseNameList) {
-					String code = sysInfo.getCode();//模块字典的英文名称
-					ddicDataDictionary = dataitemsInfoService.findTableSqlWhereByListFaceId(code);
-					map.put(code, "");
-					map.put(code, ddicDataDictionary);//将数据存储 在map对象中
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return map;
-	}
+//	@SuppressWarnings("deprecation")
+//	public Map<String, Object> initDataDictionaryPutInCache() {
+//		String sqlData = " from SystemdataInfo  sys  where  sys.status=0 ";
+//		Map<String, Object> map = DataModelMap.getMapObject();
+//		DataDictionary ddicDataDictionary = null;
+//		try {
+//			List<SystemdataInfo> syseNameList = this.find(sqlData.toString());
+//			if (null != syseNameList && syseNameList.size() > 0) {
+//				for (SystemdataInfo sysInfo : syseNameList) {
+//					String code = sysInfo.getCode();//模块字典的英文名称
+//					ddicDataDictionary = dataitemsInfoService.findTableSqlWhereByListFaceId(code);
+//					map.put(code, "");
+//					map.put(code, ddicDataDictionary);//将数据存储 在map对象中
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		return map;
+//	}
 
 	/**
 	 * <p>递归获取当前组织id信息</p>

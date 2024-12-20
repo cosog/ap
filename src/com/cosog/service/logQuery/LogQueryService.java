@@ -43,7 +43,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		String ddicCode="logQuery_DeviceOperationLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.devicetype,t.deviceTypeName_"+user.getLanguageName()+","
 				+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
@@ -193,7 +193,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		String ddicCode="logQuery_SystemLog";
 		StringBuffer result_json = new StringBuffer();
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		String columns = ddic.getTableHeader();
 		String currentDeviceTypeIds=user.getDeviceTypeIds();
 		String sql="select t.id,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"

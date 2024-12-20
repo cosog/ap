@@ -92,15 +92,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	@Autowired
 	private TabInfoManagerService<?> tabInfoManagerService;
 
-	public String getAcquisitionUnitList(Map map,Page pager) {
+	public String getAcquisitionUnitList(Map map,Page pager,String language) {
 		String protocolName = (String) map.get("protocolName");
 		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark "
 				+ " from tbl_acq_unit_conf t where 1=1");
-//		if (StringManagerUtils.isNotNull(protocolName)) {
-//			sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
-//		}
 		sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
 		
 		
@@ -111,7 +108,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		sqlBuffer.append(" order by t.id  asc");
 		String json = "";
-		String columns=service.showTableHeadersColumns("acquisitionUnit");
+		String columns=service.showTableHeadersColumns("acquisitionUnit",language);
 		try {
 			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
 		} catch (Exception e) {

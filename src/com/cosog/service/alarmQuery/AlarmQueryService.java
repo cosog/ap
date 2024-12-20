@@ -52,7 +52,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		String tableName="viw_alarminfo_hist";
 		
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName_"+language+",to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
 				+ " t.itemname,t.alarmtype,"

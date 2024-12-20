@@ -81,7 +81,7 @@ public class ModuleManagerController extends BaseController {
 			}
 		}
 		json = r.modifyStr(json);
-		json=	this.getArrayTojsonPage(json,"module_ModuleManage");
+		json=	this.getArrayTojsonPage(json,"module_ModuleManage",user.getLanguageName());
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

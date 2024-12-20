@@ -79,8 +79,6 @@ public class SystemdataInfoController extends BaseController {
 	 */
 	@RequestMapping("/findSystemdataInfoByListId")
 	public void findSystemdataInfoByListId() throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		String typeName = request.getParameter("typeName");
 		String findName = request.getParameter("sysName");
 		// 分页
@@ -88,12 +86,15 @@ public class SystemdataInfoController extends BaseController {
 		// 当前登录用户
 		User userInfo = this.findCurrentUserInfo();
 		List<SystemdataInfo> systemdatainfoList = systemdataInfoService.findSystemdataInfoPageListById(pager, userInfo, typeName, findName);
-		systemdataInfoService.initDataDictionaryPutInCache();
+//		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage");
+		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage",userInfo.getLanguageName());
 		// 输出json数据。
-		response.getWriter().write(data);
+		PrintWriter pw = response.getWriter();
+		pw.print(data);
+		pw.flush();
+		pw.close();
 	}
 	
 	@RequestMapping("/findSystemdataInfo")
@@ -123,10 +124,7 @@ public class SystemdataInfoController extends BaseController {
 	 */
 	@RequestMapping("/addSystemdataInfo")
 	public void addSystemdataInfo(@ModelAttribute SystemdataInfo systemdataInfo) throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		String jsonaddstr = "";
-		systemdataInfoService.initDataDictionaryPutInCache();
 		if (null != systemdataInfo && !"".equals(systemdataInfo)) {
 			// 当前登录用户
 			User userInfo = this.findCurrentUserInfo();
@@ -139,8 +137,10 @@ public class SystemdataInfoController extends BaseController {
 		}
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		// 输出json数据。
-		response.getWriter().write(jsonaddstr);
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonaddstr);
+		pw.flush();
+		pw.close();
 	}
 
 	/**
@@ -158,11 +158,13 @@ public class SystemdataInfoController extends BaseController {
 		} else {
 			jsonaddstr = "{success:true,msg:false}";
 		}
-		systemdataInfoService.initDataDictionaryPutInCache();
+//		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		// 输出json数据。
-		response.getWriter().write(jsonaddstr);
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonaddstr);
+		pw.flush();
+		pw.close();
 	}
 
 	/**
@@ -170,11 +172,9 @@ public class SystemdataInfoController extends BaseController {
 	 */
 	@RequestMapping("/deleteSystemdataInfoById")
 	public void deleteSystemdataInfoById() throws Exception {
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		//HttpServletRequest request = ServletActionContext.getRequest();
 		String jsondelete = "";
 		String getSysDaId = request.getParameter("paramsId");
-		systemdataInfoService.initDataDictionaryPutInCache();
+//		systemdataInfoService.initDataDictionaryPutInCache();
 		if (!StringUtils.isBlank(getSysDaId)) {
 			boolean boo = systemdataInfoService.deleteSystemdataInfoById(findCurrentUserInfo(), getSysDaId);
 			if (boo) {
@@ -187,8 +187,10 @@ public class SystemdataInfoController extends BaseController {
 		}
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		// 输出json数据。
-		response.getWriter().write(jsondelete);
+		PrintWriter pw = response.getWriter();
+		pw.print(jsondelete);
+		pw.flush();
+		pw.close();
 	}
 
 }

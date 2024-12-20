@@ -120,7 +120,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		try{
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			columns = ddic.getTableHeader();
 			
 			String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -304,7 +304,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -1088,7 +1088,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if("3".equals(calculateType)){
 			json=this.getFESDiagramTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate,  calculateType,language);
 		}else if("4".equals(calculateType)){
-			json=this.getRPMTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate, calculateType);
+			json=this.getRPMTotalCalculateResultData(orgId,deviceId, deviceName, pager, deviceType, startDate, endDate, calculateType,language);
 		}
 		
 		return json;
@@ -1107,7 +1107,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";
@@ -1165,7 +1165,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getRPMTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType)
+	public String getRPMTotalCalculateResultData(String orgId,String deviceId, String deviceName, Page pager,String deviceType,String startDate,String endDate,String calculateType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -1178,7 +1178,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,";

@@ -123,8 +123,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 		return jsonString;
 	}
 	
-	public String getArrayTojsonPage(List<?> oList,String ddicCode) {
-		String columns=	service.showTableHeadersColumns(ddicCode);
+	public String getArrayTojsonPage(List<?> oList,String ddicCode,String language) {
+		String columns=	service.showTableHeadersColumns(ddicCode,language);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append(" \"start\":" + pager.getStart() + ",\"limit\":" + pager.getLimit() + ",columns:"+columns+",\"totalCount\":" + pager.getTotalCount());
@@ -144,8 +144,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 		return strBuf.toString();
 	}
 	
-	public String getArrayTojsonPage2(List<?> oList,String ddicCode,Page pager) {
-		String columns=	service.showTableHeadersColumns(ddicCode);
+	public String getArrayTojsonPage2(List<?> oList,String ddicCode,Page pager,String language) {
+		String columns=	service.showTableHeadersColumns(ddicCode,language);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append(" \"start\":" + pager.getStart() + ",\"limit\":" + pager.getLimit() + ",columns:"+columns+",\"totalCount\":" + pager.getTotalCount());
@@ -166,8 +166,8 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 	}
 	
 	
-	public String getArrayTojsonPage(String data,String ddicCode) {
-		String columns=	service.showTableHeadersColumns(ddicCode);
+	public String getArrayTojsonPage(String data,String ddicCode,String language) {
+		String columns=	service.showTableHeadersColumns(ddicCode,language);
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("{success:true,");
 		strBuf.append("columns:"+columns);
@@ -196,9 +196,9 @@ public class BaseController extends ActionSupport implements SessionAware, Servl
 	 * @author gao 2014-05-08
 	 * @return map
 	 */
-	public Map<String, Object> initDataDictionaryPutInCache() {
-		return systemdataInfoService.initDataDictionaryPutInCache();
-	}
+//	public Map<String, Object> initDataDictionaryPutInCache() {
+//		return systemdataInfoService.initDataDictionaryPutInCache();
+//	}
 
 	public void print(String name, String value) {
 	}

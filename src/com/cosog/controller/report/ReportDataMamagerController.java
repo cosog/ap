@@ -1004,6 +1004,13 @@ public class ReportDataMamagerController extends BaseController {
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		orgId=this.findCurrentUserOrgIdInfo(orgId);
 		deviceName = java.net.URLDecoder.decode(deviceName, "utf-8");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
 		if (StringManagerUtils.isNotNull(deviceName)) {
 			v.add(deviceName);
 		}else{
@@ -1020,7 +1027,7 @@ public class ReportDataMamagerController extends BaseController {
 			v.add(addDate);
 		}
 		// String ReportPumpingUnit = "采出---抽油机井---日报表";
-		this.commonDataService.exportDataExcel(response, fileName, "采出井日报数据", null, heads, fields, orgId, "pumpUnitDayReport", v);
+		this.commonDataService.exportDataExcel(response, fileName, "采出井日报数据", null, heads, fields, orgId, "pumpUnitDayReport", v,language);
 		return null;
 	}
 	

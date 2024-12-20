@@ -274,6 +274,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		unitName = ParamUtils.getParameter(request, "unitName");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
@@ -284,7 +290,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put("unitName", unitName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager);
+		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

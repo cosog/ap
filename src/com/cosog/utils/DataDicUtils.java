@@ -96,16 +96,28 @@ public class DataDicUtils {
 	 *            数据字典集合信息
 	 * @return Map<String, Set<DataDictionary>> map 数据对象
 	 */
-	public static Map<String, List<DataDictionary>> initData(List<DataitemsInfo> data) {
+	public static Map<String, List<DataDictionary>> initData(List<DataitemsInfo> data,String language) {
 		Map<String, List<DataDictionary>> map = new HashMap<String, List<DataDictionary>>();
 		List<DataDictionary> set = null;
 		DataDictionary ddic = null;
 		for (DataitemsInfo str : data) {
-			String strArr[] = str.getEname().split("_");
+			String strArr[] = str.getCode().split("_");
 			String rootVal = strArr[0];
 			if (strArr.length > 1 && strArr[1].equals("root")) {
 				for (DataitemsInfo d : data) {
-					String sdataArr[] = d.getEname().split("#");
+					String sdataArr[] = d.getCode().split("#");
+					
+					String header="";
+					if("zh_CN".equalsIgnoreCase(language)){
+						header=d.getName_zh_CN();
+					}else if("EN".equalsIgnoreCase(language)){
+						header=d.getName_en();
+					}else if("RU".equalsIgnoreCase(language)){
+						header=d.getName_ru();
+					}
+					
+					
+					
 					if (sdataArr[0].equals(rootVal)) {
 						String colString = sdataArr[sdataArr.length - 1];
 						if (colString.indexOf(" as ") > 0) {
@@ -116,7 +128,7 @@ public class DataDicUtils {
 							set = map.get(secondValString);
 							ddic = new DataDictionary();
 							ddic.setColunn(colString);
-							ddic.setHead(d.getCname());
+							ddic.setHead(header);
 							//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
 							if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
 							ddic.setDataValue(d.getDatavalue());
@@ -129,7 +141,7 @@ public class DataDicUtils {
 							ddic = new DataDictionary();
 							set = new ArrayList<DataDictionary>();
 							ddic.setColunn(colString);
-							ddic.setHead(d.getCname());
+							ddic.setHead(header);
 							//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
 							if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
 								ddic.setDataValue(d.getDatavalue());

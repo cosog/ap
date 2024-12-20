@@ -102,11 +102,11 @@ public class CommonDataService extends BaseService {
 	 * @author gao 2014-06-13
 	 * @return columns 表头字符串
 	 */
-	public String showTableHeadersColumns(String ddicCode) {
+	public String showTableHeadersColumns(String ddicCode,String language) {
 		Map<String, Object> map = DataModelMap.getMapObject();// 获取一个map对象
 		DataDictionary ddic = null;
 		try {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);// 从字典表里获取字典数据信息
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,14 +129,14 @@ public class CommonDataService extends BaseService {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public String findCommonModuleDataById(Page pager, String orgId, String ddicCode, Vector<String> v) throws IOException, SQLException {
+	public String findCommonModuleDataById(Page pager, String orgId, String ddicCode, Vector<String> v,String language) throws IOException, SQLException {
 		String sql = "";
 		String sqlAll = "";
 		int limit = 25;
 		StringBuffer sqlwhere = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();// 获取一个map对象
-		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);// 从字典表里获取字典数据信息
 //		ddic = (DataDictionary) map.get(ddicCode);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
 //		if (ddic == null || "".equals(ddic)) {
 //			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
@@ -191,12 +191,12 @@ public class CommonDataService extends BaseService {
 		return getResult;
 	}
 	
-	public String findMonitorHistoryDataById(Page pager, String orgId, String ddicCode, Vector<String> v) throws IOException, SQLException {
+	public String findMonitorHistoryDataById(Page pager, String orgId, String ddicCode, Vector<String> v,String language) throws IOException, SQLException {
 		String sql = "";
 		String sqlAll = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
-		ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+		ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		String columns = ddic.getTableHeader();
 		StringBuffer sqlwhere = new StringBuffer();
 		//StringBuffer sqlCuswhere = new StringBuffer();
@@ -255,7 +255,7 @@ public class CommonDataService extends BaseService {
 		return getResult;
 
 	}
-	public String findCommonMuchHeadModuleDataById(Page pager, String ddicCode, Vector<String> v) throws IOException, SQLException {
+	public String findCommonMuchHeadModuleDataById(Page pager, String ddicCode, Vector<String> v,String language) throws IOException, SQLException {
 		String sql = "";
 		int limit = 25;
 		StringBuffer sqlwhere = new StringBuffer();
@@ -263,7 +263,7 @@ public class CommonDataService extends BaseService {
 		DataDictionary ddic = null;
 		ddic = (DataDictionary) map.get(ddicCode);// 从缓存中获取当前模块的字典信息,如果不存在，则从数据库中查询
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);// 从字典表里获取字典数据信息
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);// 从字典表里获取字典数据信息
 			// map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
@@ -319,14 +319,14 @@ public class CommonDataService extends BaseService {
 	 *            参数集合
 	 * @return
 	 */
-	public String findGridJsonDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v) {
+	public String findGridJsonDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v,String language) {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
 		ddic = (DataDictionary) map.get(ddicCode);
 		ddic = null;
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
@@ -374,13 +374,13 @@ public class CommonDataService extends BaseService {
 	 * @param v
 	 * @return
 	 */
-	public String findGridJsonAllDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v) {
+	public String findGridJsonAllDataByDdicCode(Page pager, String orgId, String ddicCode, Vector<String> v,String language) {
 		String sql = "";
 		Map<String, Object> map = DataModelMap.getMapObject();
 		DataDictionary ddic = null;
 		ddic = (DataDictionary) map.get(ddicCode);
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			map.put(ddicCode, ddic);
 		}
 		String columns = ddic.getTableHeader();
@@ -599,7 +599,7 @@ public class CommonDataService extends BaseService {
 
 	}
 
-	public String findReportPumpUnitDataById(Page pager, String orgId, Vector<String> v) throws IOException, SQLException {
+	public String findReportPumpUnitDataById(Page pager, String orgId, Vector<String> v,String language) throws IOException, SQLException {
 		String sql = "";
 		int limit = 25;
 		StringBuffer sqlwhere = new StringBuffer();
@@ -607,7 +607,7 @@ public class CommonDataService extends BaseService {
 		DataDictionary ddic = null;
 		ddic = (DataDictionary) map.get("pumpUnitDayReport");
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId("pumpUnitDayReport");
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId("pumpUnitDayReport",language);
 			map.put("pumpUnitDayReport", ddic);
 		}
 		String columns = ddic.getTableHeader();
@@ -1052,7 +1052,7 @@ public class CommonDataService extends BaseService {
 	 * @throws Exception
 	 */
 
-	public String exportDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v) throws Exception {
+	public String exportDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v,String language) throws Exception {
 
 		OutputStream os = response.getOutputStream();//
 		response.reset();
@@ -1072,7 +1072,7 @@ public class CommonDataService extends BaseService {
 		String tabNameString = ddicCode.trim();
 		ddic = (DataDictionary) map.get(tabNameString);// 从数据字典缓存中获取字典数据信息
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(tabNameString);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(tabNameString,language);
 			map.put(tabNameString, ddic);
 		}
 		head = this.fieldToHeaders(field, ddic);
@@ -1206,7 +1206,7 @@ public class CommonDataService extends BaseService {
 		return null;
 	}
 
-	public String exportDataWellExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v) throws Exception {
+	public String exportDataWellExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicCode, Vector<String> v,String language) throws Exception {
 		OutputStream os = response.getOutputStream();//
 		response.reset();
 		response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
@@ -1221,7 +1221,7 @@ public class CommonDataService extends BaseService {
 		DataDictionary ddic = null;
 		ddic = (DataDictionary) map.get(ddicCode);
 		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			map.put(ddicCode, ddic);
 		}
 		head = this.fieldToHeaders(field, ddic);
@@ -1338,7 +1338,7 @@ public class CommonDataService extends BaseService {
 		return null;
 	}
 
-	public boolean exportReportPumpunitCustomDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, DataModels data, Vector<String> v) {
+	public boolean exportReportPumpunitCustomDataExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, DataModels data, Vector<String> v,String language) {
 		WritableWorkbook wbook = null;
 		try {
 			OutputStream os = response.getOutputStream();//
@@ -1355,7 +1355,7 @@ public class CommonDataService extends BaseService {
 			DataDictionary ddic = null;
 			ddic = (DataDictionary) map.get("pumpUnitDayReport");
 			if (ddic == null || "".equals(ddic)) {
-				ddic = dataitemsInfoService.findTableSqlWhereByListFaceId("pumpUnitDayReport");
+				ddic = dataitemsInfoService.findTableSqlWhereByListFaceId("pumpUnitDayReport",language);
 				map.put("pumpUnitDayReport", ddic);
 			}
 			head = this.fieldToHeaders(field, ddic);

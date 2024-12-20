@@ -100,12 +100,23 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                 {
                     header: loginUserLanguageResource.dataColumnName,
                     flex: 1,
-                    dataIndex: 'cname'
+                    hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                    dataIndex: 'name_zh_CN'
+                },{
+                    header: loginUserLanguageResource.dataColumnName,
+                    flex: 1,
+                    hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                    dataIndex: 'name_en'
+                },{
+                    header: loginUserLanguageResource.dataColumnName,
+                    flex: 1,
+                    hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                    dataIndex: 'name_ru'
                 },
                 {
                     header: loginUserLanguageResource.dataColumnCode,
                     flex: 1,
-                    dataIndex: 'ename'
+                    dataIndex: 'code'
                 },
                 {
                     header: loginUserLanguageResource.dataColumnParams,
@@ -160,15 +171,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
     },
     listeners: {
         selectionchange: function (sm, selections) {
-//            var n = selections.length || 0;
-//            this.down('#editfindtattxtBtnId').setDisabled(n != 1);
-//            if (n > 0) {
-//                this.down('#addfindtattxtBtnId').setDisabled(true);
-//                this.down('#delfindtattxtBtnId').setDisabled(false);
-//            } else {
-//                this.down('#addfindtattxtBtnId').setDisabled(false);
-//                this.down('#delfindtattxtBtnId').setDisabled(true);
-//            }
+        	
         }
     }
 });

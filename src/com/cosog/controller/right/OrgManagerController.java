@@ -244,7 +244,7 @@ public class OrgManagerController extends BaseController {
 			}
 		}
 		json = r.modifyOrgStr(json);
-		json = this.getArrayTojsonPage(json, "orgAndUser_OrgManage");
+		json = this.getArrayTojsonPage(json, "orgAndUser_OrgManage",language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

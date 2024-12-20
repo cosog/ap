@@ -76,8 +76,6 @@ function addSystemdataInfo() {
         });
         SystemdataInfoWin.show();
         SystemdataInfoWin.down('form').getForm().reset();
-//        Ext.getCmp("DataitemsInfoEditGridPanelId").hide();
-//        Ext.getCmp("DataitemsInfoAddGridPanelId").show();
         var sysadditems = Ext.create("AP.view.data.DataitemsInfoAddGridPanel");
         Ext.getCmp("DataItemsListPanel_Id").removeAll();
         Ext.getCmp("DataItemsListPanel_Id").add(sysadditems);
@@ -93,13 +91,15 @@ function oktosysfordata() {
     var dataitemswin = Ext.getCmp("DataitemsInfoWinId");
     var adddataitemswinFormId = dataitemswin.down('form');
     if (adddataitemswinFormId.getForm().isValid()) {
-        var dtebCname = Ext.getCmp("sysdatacname_Ids").getValue();
-        var dtebEname = Ext.getCmp("sysdataename_Ids").getValue();
+        var name_zh_CN = Ext.getCmp("sysDataName_zh_CN_Ids").getValue();
+        var name_en = Ext.getCmp("sysDataName_en_Ids").getValue();
+        var name_ru = Ext.getCmp("sysDataName_ru_Ids").getValue();
+        var code = Ext.getCmp("sysDataCode_Ids").getValue();
         var dtebSorts = Ext.getCmp("sysdatasorts_Ids").getValue();
         var dtebValue = Ext.getCmp("sysdatadatavalue_Ids").getValue();
         var status_ = Ext.getCmp("dataitemsInfo_status_id").getValue()['dataitemsInfo.status'];
 
-        var dtebData = [[dtebCname, dtebEname, dtebValue, dtebSorts, status_]];
+        var dtebData = [[name_zh_CN,name_en,name_ru, code, dtebValue, dtebSorts, status_]];
         var dgp = Ext.getCmp("DataitemsInfoAddGridPanelId").getStore();
         var count = dgp.data.length;
         dgp.insert(count, dtebData);
@@ -117,11 +117,10 @@ function savesystemdataInfoSubmit() {
         var count = addparamfindg.getCount();
         var addparamstr = "";
         if (count != null && count != "") {
-
             for (var i = 0; i < count; i++) {
                 var stat = addparamfindg.getAt(i);
                 var graw = stat.data;
-                addparamstr += "" + graw.cname + "&" + graw.ename + "&" + graw.datavalue + "&" + graw.sorts + "&" + graw.status + "|";
+                addparamstr += "" + graw.name_zh_CN + "&" + graw.name_en+ "&" + graw.name_ru+ "&" + graw.code + "&" + graw.datavalue + "&" + graw.sorts + "&" + graw.status + "|";
             }
             addparamstr = addparamstr.substring(0, addparamstr.length - 1);
         }
@@ -182,6 +181,11 @@ function editSystemdataInfo() {
 	    	var sys_row = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
 	        var sysdataid_id = sys_row[0].data.sysdataid;
 	        var sdname = sys_row[0].data.name;
+	        
+	        var sdname_zh_CN = sys_row[0].data.name_zh_CN;
+	        var sdname_en = sys_row[0].data.name_en;
+	        var sdname_ru = sys_row[0].data.name_ru;
+	        
 	        var sdcode = sys_row[0].data.code;
 	        var sdsorts = sys_row[0].data.sorts;
 	        var status = sys_row[0].data.status;
@@ -204,8 +208,12 @@ function editSystemdataInfo() {
 
 	        Ext.getCmp('hidesysdata_Id').setValue(sysdataid_id);
 	        Ext.getCmp('hidesysstatus_Id').setValue(status);
-	        Ext.getCmp('sysename_Id').setValue(sdcode);
-	        Ext.getCmp('syscname_Id').setValue(sdname);
+	        
+	        Ext.getCmp('sysName_zh_CN_Id').setValue(sdname_zh_CN);
+	        Ext.getCmp('sysName_en_Id').setValue(sdname_en);
+	        Ext.getCmp('sysName_ru_Id').setValue(sdname_ru);
+	        
+	        Ext.getCmp('sysCode_Id').setValue(sdcode);
 	        Ext.getCmp('syssorts_Id').setValue(sdsorts);
 	        
 	        Ext.getCmp('systemdataModule_Id1').setValue(moduleId);
@@ -239,8 +247,10 @@ function editfindtattxtInfo() {
     	var sdata_row = Ext.getCmp("DataitemsInfoEditGridPanelId").getSelectionModel().getSelection();
         var dataitemid = sdata_row[0].data.dataitemid;
         var sysdataid = sdata_row[0].data.sysdataid;
-        var cname = sdata_row[0].data.cname;
-        var ename = sdata_row[0].data.ename;
+        var name_zh_CN = sdata_row[0].data.name_zh_CN;
+        var name_en = sdata_row[0].data.name_en;
+        var name_ru = sdata_row[0].data.name_ru;
+        var code = sdata_row[0].data.code;
         var sorts = sdata_row[0].data.sorts;
         var datavalue = sdata_row[0].data.datavalue;
 
@@ -254,8 +264,10 @@ function editfindtattxtInfo() {
         Ext.getCmp("editttosysfordataFormBtnId").show();
         Ext.getCmp("hide_addsys_Id").setValue(sysdataid);
         Ext.getCmp("hide_dataitemids").setValue(dataitemid);
-        Ext.getCmp("sysdatacname_Ids").setValue(cname);
-        Ext.getCmp("sysdataename_Ids").setValue(ename);
+        Ext.getCmp("sysDataName_zh_CN_Ids").setValue(name_zh_CN);
+        Ext.getCmp("sysDataName_en_Ids").setValue(name_en);
+        Ext.getCmp("sysDataName_ru_Ids").setValue(name_ru);
+        Ext.getCmp("sysDataCode_Ids").setValue(code);
         Ext.getCmp("sysdatasorts_Ids").setValue(sorts);
         Ext.getCmp("sysdatadatavalue_Ids").setValue(datavalue);
     }else {

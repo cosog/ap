@@ -44,10 +44,10 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		}
 		if (StringUtils.isNotBlank(tab)) {
 			if (StringUtils.isNotBlank(dataName) && tab.equals("0")) {
-				pager.setWhere("ename  like'%" + dataName + "%'");
+				pager.setWhere("code  like'%" + dataName + "%'");
 			}
 			if (StringUtils.isNotBlank(dataName) && tab.equals("1")) {
-				pager.setWhere("cname  like'%" + dataName + "%'");
+				pager.setWhere("name_"+userInfo.getLanguageName()+"  like'%" + dataName + "%'");
 			}
 		}
 
@@ -143,14 +143,14 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	/**
 	 * 根据字典的英文查询域值集合信息
 	 * 
-	 * @param dataEname
+	 * @param dataCode
 	 * @return
 	 */
-	public List<DataitemsInfo> findTableHeaderByListFaceId(String dataEname) {
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) ";
+	public List<DataitemsInfo> findTableHeaderByListFaceId(String dataCode) {
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) ";
 		List<DataitemsInfo> getDataitemsInfoList = null;
 		try {
-			getDataitemsInfoList = this.find(sqlData.toString(), new Object[] { dataEname });
+			getDataitemsInfoList = this.find(sqlData.toString(), new Object[] { dataCode });
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -160,23 +160,31 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	/**
 	 * 查询表头列信息集合
 	 * 
-	 * @param dataEname
+	 * @param dataCode
 	 * @return
 	 */
-	public String findTableHeaderByColumnsFaceId(String dataEname) {
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) order by sorts ";
+	public String findTableHeaderByColumnsFaceId(String dataCode,String language) {
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) order by sorts ";
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("[");
 		try {
-			List<DataitemsInfo> dataColumnsList = this.find(sqlData.toString(), new Object[] { dataEname });
+			List<DataitemsInfo> dataColumnsList = this.find(sqlData.toString(), new Object[] { dataCode });
 			if (null != dataColumnsList && dataColumnsList.size() > 0) {
 				for (DataitemsInfo dataInfo : dataColumnsList) {
-					String _Ename = dataInfo.getEname();
-					if (!_Ename.equals("table") && !_Ename.equals("where") && !_Ename.equals("order") && !_Ename.equals("group") && !_Ename.equals("params")) {
+					String code = dataInfo.getCode();
+					if (!code.equals("table") && !code.equals("where") && !code.equals("order") && !code.equals("group") && !code.equals("params")) {
+						String header="";
+						if("zh_CN".equalsIgnoreCase(language)){
+							header=dataInfo.getName_zh_CN();
+						}else if("EN".equalsIgnoreCase(language)){
+							header=dataInfo.getName_en();
+						}else if("RU".equalsIgnoreCase(language)){
+							header=dataInfo.getName_ru();
+						}
 						strBuf.append("{ ");
-						strBuf.append("\"header\":\"" + dataInfo.getCname() + "\",");
-						strBuf.append("\"dataIndex\":\"" + dataInfo.getEname() + "\"");
+						strBuf.append("\"header\":\"" + header + "\",");
+						strBuf.append("\"dataIndex\":\"" + dataInfo.getCode() + "\"");
 						if (StringUtils.isNotBlank(dataInfo.getDatavalue())) {
 							strBuf.append("," + dataInfo.getDatavalue());
 						}
@@ -198,11 +206,11 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	 * 描述：字典SQL查询语句,查询数据字典构建数据字典对象信息
 	 * </p>
 	 * 
-	 * @param dataEname
+	 * @param dataCode
 	 *            数据字典英文名称
 	 * @return 数据字典信息对象
 	 */
-	public DataDictionary findTableSqlWhereByListFaceId(String code) {
+	public DataDictionary findTableSqlWhereByListFaceId(String code,String language) {
 		StringBuffer sqlColumn = new StringBuffer();
 		StringBuffer strBuf = new StringBuffer();
 		String sqlTable = "";
@@ -221,43 +229,52 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { code });
 
 			if (null != dataWhereList && dataWhereList.size() > 0) {
-				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList);// 把集合中含有多表头信息的数据封装在Map
+				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList,language);// 把集合中含有多表头信息的数据封装在Map
 																							// 集合了里
 			TreeMap<String, List<DataDictionary>> treemap = new TreeMap<String, List<DataDictionary>>(map);
 				for (DataitemsInfo dataInfo : dataWhereList) {
-					String _Ename = dataInfo.getEname();// 字典英文名称对应数据库中的字段信息
-					String enameField = _Ename.trim();
+					String dataCode = dataInfo.getCode();// 字典英文名称对应数据库中的字段信息
+					
+					String header="";
+					if("zh_CN".equalsIgnoreCase(language)){
+						header=dataInfo.getName_zh_CN();
+					}else if("EN".equalsIgnoreCase(language)){
+						header=dataInfo.getName_en();
+					}else if("RU".equalsIgnoreCase(language)){
+						header=dataInfo.getName_ru();
+					}
+					
+					String enameField = dataCode.trim();
 					String dataValueString = dataInfo.getDatavalue();
 					if (!StringUtils.isNotBlank(dataValueString)) {
 						dataValueString = "";
 					}
 
-					if (_Ename.indexOf("root") == -1) { // 过滤掉根节点
-						if (_Ename.indexOf(" as ") > 0) {
+					if (dataCode.indexOf("root") == -1) { // 过滤掉根节点
+						if (dataCode.indexOf(" as ") > 0) {
 							/* 当该字段中含有 as 时，截取as后的字符串作为字段数据 */
-							enameField = _Ename.substring(_Ename.indexOf(" as ") + 3).trim();
+							enameField = dataCode.substring(dataCode.indexOf(" as ") + 3).trim();
 
-						} else if (_Ename.indexOf("#") > 0) {
-							enameField = _Ename.substring(_Ename.lastIndexOf("#") + 1);// 如果字段中含有“#”截取最后一段作为字段数据
+						} else if (dataCode.indexOf("#") > 0) {
+							enameField = dataCode.substring(dataCode.lastIndexOf("#") + 1);// 如果字段中含有“#”截取最后一段作为字段数据
 						}
 					}
-					if (!_Ename.equals("table") && !_Ename.equals("where") && !_Ename.equals("order") && !_Ename.equals("group") && !_Ename.equals("params")) {
-
-						int index = _Ename.indexOf("root");
+					if (!dataCode.equals("table") && !dataCode.equals("where") && !dataCode.equals("order") && !dataCode.equals("group") && !dataCode.equals("params")) {
+						int index = dataCode.indexOf("root");
 						if (index >= 0) {
-							String[] rootVal = _Ename.split("_");// 判断当前节点是根节点
+							String[] rootVal = dataCode.split("_");// 判断当前节点是根节点
 							String key = rootVal[0];
-							strBuf.append(" { header: \"" + dataInfo.getCname() + "\",dataIndex:\"" + key + "\",children:[");
+							strBuf.append(" { header: \"" + header + "\",dataIndex:\"" + key + "\",children:[");
 							DataDicUtils.emptyBuffer();
 							String resultString = DataDicUtils.createChildHeader(key, treemap);// 调用递归函数创建子节点数据信息
 							strBuf.append(resultString);
 							strBuf.append(" ]},");
 						} else {
 							// 该节点不含有root字符串代表为普通的字段
-							int nowIndex = _Ename.indexOf("#");// 不能存在“#”字符信息
+							int nowIndex = dataCode.indexOf("#");// 不能存在“#”字符信息
 							if (nowIndex == -1) {
 								strBuf.append("{ ");
-								strBuf.append("\"header\":\"" + dataInfo.getCname() + "\",");
+								strBuf.append("\"header\":\"" + header + "\",");
 								strBuf.append("\"dataIndex\":\"" + enameField.trim() + "\"");
 								if (StringUtils.isNotBlank(dataValueString) &&!"null".equals(dataValueString)) {
 									strBuf.append("," + dataValueString);
@@ -266,29 +283,29 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 							}
 						}
 
-						if (_Ename.indexOf("root") == -1) {
-							if (_Ename.indexOf("#") > 0) {
-								_Ename = _Ename.substring(_Ename.lastIndexOf("#") + 1);
+						if (dataCode.indexOf("root") == -1) {
+							if (dataCode.indexOf("#") > 0) {
+								dataCode = dataCode.substring(dataCode.lastIndexOf("#") + 1);
 							}
-							if (_Ename.indexOf("child") == -1) {
-								sqlColumn.append(_Ename + ",");
-								headers.add(dataInfo.getCname());
+							if (dataCode.indexOf("child") == -1) {
+								sqlColumn.append(dataCode + ",");
+								headers.add(header);
 							}
 
 						}
-						if (_Ename.indexOf("root") == -1 && _Ename.indexOf("child") == -1) {
+						if (dataCode.indexOf("root") == -1 && dataCode.indexOf("child") == -1) {
 							fields.add(enameField.trim());
 						}
-					} else if (_Ename.equals("table")) {
+					} else if (dataCode.equals("table")) {
 						sqlTable = "  from  " + dataValueString;
-					} else if (_Ename.equals("where")) {
+					} else if (dataCode.equals("where")) {
 						sqlWhere = " where  1=1 " + dataValueString;
-					} else if (_Ename.equals("order")) {
+					} else if (dataCode.equals("order")) {
 						sqlOrderBy = "  " + dataValueString;
-					} else if(_Ename.equals("group")){
+					} else if(dataCode.equals("group")){
 						sqlGroupBy="  "+dataValueString;
 					}
-					else if (_Ename.equals("params")) {
+					else if (dataCode.equals("params")) {
 						dynamics.add(dataValueString);
 					}
 				}
@@ -327,11 +344,11 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		StringBuffer weightItemIds= new StringBuffer();
 		StringBuffer volumetricItemIds= new StringBuffer();
 		int r=0;
-		String weightItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
-				+ " where t.cname like '%t/d%'";
+		String weightItemSql="select t.dataitemid,t.sysdataid,t.name_zh_cn,t.code,t.status from TBL_DIST_ITEM t"
+				+ " where t.name_zh_cn like '%t/d%'";
 		String showWeightItemSql=weightItemSql+" and t.status=1";
-		String volumetricItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
-				+ " where t.cname like '%m^3/d%' and t.cname<>'理论排量(m^3/d)' and t.cname<>'生产气油比(m^3/d)'";
+		String volumetricItemSql="select t.dataitemid,t.sysdataid,t.name_zh_cn,t.code,t.status from TBL_DIST_ITEM t"
+				+ " where t.name_zh_cn like '%m^3/d%' and t.name_zh_cn<>'理论排量(m^3/d)' and t.name_zh_cn<>'生产气油比(m^3/d)'";
 		String showVolumetricItemSql=volumetricItemSql+" and t.status=1";
 		
 		int showWeightItemCount=this.getTotalCountRows(showWeightItemSql);
@@ -385,16 +402,16 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+weightItemIds+")";
 			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+volumetricItemIds+")";
 			
-			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.ename)='weightwatercut'";
-			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.ename)='volumewatercut'";
+			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.code)='weightwatercut'";
+			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.code)='volumewatercut'";
 			
 			
 		}else if(showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
 			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+weightItemIds+")";
 			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+volumetricItemIds+")";
 			
-			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.ename)='weightwatercut' and t.sysdataid not in('436802a1c0074a79aafd00ce539166f4','aad8b76fdaf84a1194de5ec0a4453631')";
-			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.ename)='volumewatercut'";
+			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.code)='weightwatercut' and t.sysdataid not in('436802a1c0074a79aafd00ce539166f4','aad8b76fdaf84a1194de5ec0a4453631')";
+			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.code)='volumewatercut'";
 		}
 		if(StringManagerUtils.isNotNull(updateWeightItemsSql)){
 			r=this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);

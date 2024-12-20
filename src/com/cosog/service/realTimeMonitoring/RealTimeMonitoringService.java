@@ -466,7 +466,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String ddicCode="realTimeMonitoring_Overview";
 			DataDictionary ddic = null;
 			
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			String columns = ddic.getTableHeader();
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1630,7 +1630,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getDeviceInfoData(String deviceId,String deviceName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_DeviceInfo");
+		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_DeviceInfo",user.getLanguageName());
 		
 		List<String> heads=ddic.getHeaders();
 		List<String> fields=ddic.getFields();

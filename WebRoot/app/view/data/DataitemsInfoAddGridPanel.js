@@ -19,11 +19,13 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
             plugins: [cellEditing],
             store: Ext.create('Ext.data.Store', {
                 fields: [
-                'cname',
-                'ename',
-                'datavalue',
-                'sorts',
-                'status'
+                	'name_zh_CN',
+                    'name_en',
+                    'name_ru',
+                    'code',
+                    'datavalue',
+                    'sorts',
+                    'status'
             ],
                 data: []
             }),
@@ -31,7 +33,26 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                 {
                     header: loginUserLanguageResource.dataColumnName,
                     align: 'center',
-                    dataIndex: 'cname',
+                    dataIndex: 'name_zh_CN',
+                    hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                    field: {
+                        xtype: 'textfield'
+                    }
+                },
+                {
+                    header: loginUserLanguageResource.dataColumnName,
+                    align: 'center',
+                    dataIndex: 'name_en',
+                    hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                    field: {
+                        xtype: 'textfield'
+                    }
+                },
+                {
+                    header: loginUserLanguageResource.dataColumnName,
+                    align: 'center',
+                    dataIndex: 'name_ru',
+                    hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
                     field: {
                         xtype: 'textfield'
                     }
@@ -39,7 +60,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                 {
                     header: loginUserLanguageResource.dataColumnCode,
                     align: 'center',
-                    dataIndex: 'ename',
+                    dataIndex: 'code',
                     field: {
                         xtype: 'textfield'
                     }

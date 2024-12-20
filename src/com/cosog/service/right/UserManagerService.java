@@ -124,7 +124,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer language_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",user.getLanguageName());
-		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage");
+		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage",user.getLanguageName());
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"

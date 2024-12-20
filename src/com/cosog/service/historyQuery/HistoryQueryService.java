@@ -295,7 +295,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String calTableName="tbl_srpacqdata_latest";
 			String ddicCode="historyQuery_Overview";
 			DataDictionary ddic = null;
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			String columns = ddic.getTableHeader();
 			
 			if(timeEfficiencyUnitType==2){
@@ -593,7 +593,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 			}
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			String columns = ddic.getTableHeader();
 			
 			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
@@ -4045,7 +4045,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 			}
 			List<?> list=this.findCallSql(finalSql);
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay");
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay",language);
 			String columns = ddic.getTableHeader();
 			if(timeEfficiencyUnitType==2){
 				columns=columns.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");

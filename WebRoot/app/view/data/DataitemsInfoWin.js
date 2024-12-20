@@ -12,20 +12,10 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     bodyStyle: 'background-color:#ffffff;',
     initComponent: function () {
         var me = this;
-        //中文名称
-        var sysdata_cname = Ext.create("Ext.form.TextField", {
-            id: "sysdatacname_Ids",
-            name: 'dataitemsInfo.cname',
-            fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
-            allowBlank: false,
-            width: 350,
-            msgTarget: 'side',
-            blankText: loginUserLanguageResource.required
-        });
         //英文名称
-        var sysdata_ename = Ext.create("Ext.form.TextField", {
-            id: "sysdataename_Ids",
-            name: 'dataitemsInfo.ename',
+        var sysdata_code = Ext.create("Ext.form.TextField", {
+            id: "sysDataCode_Ids",
+            name: 'dataitemsInfo.code',
             fieldLabel: loginUserLanguageResource.dataColumnCode+'<font color=red>*</font>',
             allowBlank: false,
             width: 350,
@@ -58,6 +48,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             border: false,
             labelSeparator: ':',
             bodyStyle: 'padding:20px;',
+            defaultType: 'textfield',
             items: [
                 {
                     xtype: 'container',
@@ -65,7 +56,36 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     width: 501,
                     html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">'+loginUserLanguageResource.tip+'：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> '+loginUserLanguageResource.requiredInfo+' </td></tr></table><div  class="divider_s"></div>'
                 },
-        sysdata_cname, sysdata_ename,
+                {
+                    id: "sysDataName_zh_CN_Ids",
+                    name: 'dataitemsInfo.name_zh_CN',
+                    fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
+                    allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                    hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                    width: 350,
+                    msgTarget: 'side',
+                    blankText: loginUserLanguageResource.required
+                },
+                {
+                    id: "sysDataName_en_Ids",
+                    name: 'dataitemsInfo.name_en',
+                    fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
+                    allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                    hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                    width: 350,
+                    msgTarget: 'side',
+                    blankText: loginUserLanguageResource.required
+                },
+                {
+                    id: "sysDataName_ru_Ids",
+                    name: 'dataitemsInfo.name_ru',
+                    fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
+                    allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                    hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                    width: 350,
+                    msgTarget: 'side',
+                    blankText: loginUserLanguageResource.required
+                }, sysdata_code,
                 {
                     xtype: 'radiogroup',
                     width: 200,

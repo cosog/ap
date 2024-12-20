@@ -190,9 +190,9 @@ public class UserLoginManagerController extends BaseController {
 //				user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
 				user = this.service.doLogin(username, StringManagerUtils.stringToMD5(userPass));
 			}
-			if (user != null&&user.getUserEnable()==1) {
-				service.setUserRoleRight(user);
+			if (user != null && user.getUserEnable()==1) {
 				service.setUserLanguage(user);
+				service.setUserRoleRight(user);
 				locale=user.getLanguageName();
 				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
 				

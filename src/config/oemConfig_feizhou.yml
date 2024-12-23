@@ -1,10 +1,5 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
-   #feizhou
-   title: 智能化监控系统   #软件名称
-   profile: 《智能化监控系统》 主要针对泵设备和管设备系列产品，通过驱动配置，实现采集、控制与报警等功能。模块包括实时监控、历史查询、生产报表、故障查询、设备日志、系统日志、计算维护、驱动配置、权限管理（组织用户、角色管理）、设备管理（设备信息、辅件设备、短信设备）和系统配置（模块配置、字典配置）等功能。
-   copy: ""               #技术支持
-   linkaddress: ""
-   linkshow: ""
+   languageResourcePath: oem/feizhou/locale
    favicon: "./oem/feizhou/images/logo/logo.png"      #网页图标
    logo: "./oem/feizhou/images/logo/logo.png"            #软件logo
    loginBackgroundImage: "./oem/feizhou/images/login/login.jpg"  #登录界面背景图片
@@ -32,7 +27,7 @@ others:
    deviceShowName: 设备名称
    timeEfficiencyUnit: 2               #时率单位 1-小数 2-百分数
    cache: false
-   loginLanguage: zh_CN
+   loginLanguage: zh_CN                   #zh_CN en ru
    pageSize: 100
    syncOrAsync: false
    expandedAll: true

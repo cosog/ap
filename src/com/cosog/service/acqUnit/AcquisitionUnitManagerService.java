@@ -4548,6 +4548,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		
 		String sql="select t.name,t.code,t.sort,t.devicetype,t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath "
@@ -4597,17 +4598,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
 	}
 	
-	public String exportProtocolTreeData(String deviceTypeIds){
+	public String exportProtocolTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		if(modbusProtocolConfig!=null){
@@ -4633,13 +4634,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
 	}
 	
-	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds){
+	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds,String language){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
@@ -10064,6 +10065,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getUploadedProtocolTreeData(List<ModbusProtocolConfig.Protocol> protocolList,String deviceType,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String allDeviceIds=tabInfoManagerService.queryTabs(user);
 		
 		String overlayProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
@@ -10134,7 +10136,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"协议列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();

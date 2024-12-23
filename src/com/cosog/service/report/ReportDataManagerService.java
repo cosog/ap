@@ -240,6 +240,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}else{
 					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom;
+					}else if("resultName".equalsIgnoreCase(column)){
+						column="resultCode as resultName";
+					}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+						column="resultCode as optimizationSuggestion";
 					}
 					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
@@ -317,11 +321,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int j=0;j<reportOtherItemList.size();j++){
 					if(reportOtherItemList.get(j).getSort()>=1){
 						String addValue="";
+						String column=reportOtherItemList.get(j).getItemCode();
 						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
 							addValue=reportDataObj[j+startIndex]+"";
 						}
+						
+						if("resultName".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
+						}
+						
 						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 					}
 				}
@@ -548,6 +560,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}else{
 						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 							column=column+"*"+timeEfficiencyZoom;
+						}else if("resultName".equalsIgnoreCase(column)){
+							column="resultCode as resultName";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							column="resultCode as optimizationSuggestion";
 						}
 						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
@@ -619,10 +635,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int j=0;j<reportOtherItemList.size();j++){
 						if(reportOtherItemList.get(j).getSort()>=1){
 							String addValue="";
+							String column=reportOtherItemList.get(j).getItemCode();
 							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
 								addValue=reportDataObj[j+startIndex]+"";
+							}
+							if("resultName".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+							}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
 							}
 							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 						}
@@ -1197,6 +1219,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}else{
 					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom;
+					}else if("resultName".equalsIgnoreCase(column)){
+						column="resultCode as resultName";
+					}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+						column="resultCode as optimizationSuggestion";
 					}
 					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
@@ -1284,11 +1310,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int j=0;j<reportOtherItemList.size();j++){
 					if(reportOtherItemList.get(j).getSort()>=1){
 						String addValue="";
+						String column=reportOtherItemList.get(j).getItemCode();
 						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
 							addValue=reportDataObj[j+startIndex]+"";
 						}
+						
+						if("resultName".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
+						}
+						
 						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 					}
 				}
@@ -1542,6 +1576,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}else{
 						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 							column=column+"*"+timeEfficiencyZoom;
+						}else if("resultName".equalsIgnoreCase(column)){
+							column="resultCode as resultName";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							column="resultCode as optimizationSuggestion";
 						}
 						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
@@ -1623,10 +1661,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int j=0;j<reportOtherItemList.size();j++){
 						if(reportOtherItemList.get(j).getSort()>=1){
 							String addValue="";
+							String column=reportOtherItemList.get(j).getItemCode();
 							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
 								addValue=reportDataObj[j+startIndex]+"";
+							}
+							
+							if("resultName".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+							}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
 							}
 							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 						}
@@ -2259,6 +2304,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}else{
 					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom;
+					}else if("resultName".equalsIgnoreCase(column)){
+						column="resultCode as resultName";
+					}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+						column="resultCode as optimizationSuggestion";
 					}
 					sqlBuff.append(","+tableAlias+"."+column+"");
 				}
@@ -2364,6 +2413,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int j=0;j<reportOtherItemList.size();j++){
 					if(reportOtherItemList.get(j).getSort()>=1){
 						String addValue="";
+						String column=reportOtherItemList.get(j).getItemCode();
 						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 						}else{
@@ -2374,6 +2424,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
 								addValue="";
 							}
+						}
+						
+						if("resultName".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
 						}
 						
 						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
@@ -2622,6 +2678,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}else{
 						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 							column=column+"*"+timeEfficiencyZoom;
+						}else if("resultName".equalsIgnoreCase(column)){
+							column="resultCode as resultName";
+						}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+							column="resultCode as optimizationSuggestion";
 						}
 						sqlBuff.append(","+tableAlias+"."+column+"");
 					}
@@ -2724,6 +2784,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					for(int j=0;j<reportOtherItemList.size();j++){
 						if(reportOtherItemList.get(j).getSort()>=1){
 							String addValue="";
+							String column=reportOtherItemList.get(j).getItemCode();
 							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 							}else{
@@ -2735,7 +2796,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue="";
 								}
 							}
-							
+							if("resultName".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+							}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+								addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
+							}
 							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
 							
 							//求和

@@ -2320,7 +2320,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/exportProtocolTreeData")
 	public String exportProtocolTreeData() throws IOException {
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.exportProtocolTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.exportProtocolTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2333,7 +2339,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndAcqUnitTreeData")
 	public String modbusProtocolAndAcqUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

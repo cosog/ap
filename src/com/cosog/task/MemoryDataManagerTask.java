@@ -4628,7 +4628,7 @@ public class MemoryDataManagerTask {
 			while (iterator.hasNext()) {
 				Map.Entry<String, JSONArray> entry = iterator.next();
 			    String key = entry.getKey();
-			    if(key.equalsIgnoreCase("language") || key.equalsIgnoreCase("oem") || key.equalsIgnoreCase("calculate") || key.equalsIgnoreCase("module")){
+			    if(key.equalsIgnoreCase("general") || key.equalsIgnoreCase("oem") || key.equalsIgnoreCase("calculate") || key.equalsIgnoreCase("function")){
 			    	JSONArray arr = entry.getValue();
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);

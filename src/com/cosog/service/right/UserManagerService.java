@@ -204,7 +204,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"userEnable\":\""+obj[17]+"\",");
 			result_json.append("\"userEnableName\":"+(StringManagerUtils.stringToInteger(obj[17]+"")==1)+",");
 			result_json.append("\"userLanguage\":\""+obj[19]+"\",");
-			result_json.append("\"userLanguageName\":\""+languageCodeMap.get(obj[19]+"").getItemname()+"\",");
+			result_json.append("\"userLanguageName\":\""+(languageCodeMap.get(obj[19]+"")!=null?languageCodeMap.get(obj[19]+"").getItemname():"")+"\",");
 			result_json.append("\"allPath\":\""+obj[20]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {

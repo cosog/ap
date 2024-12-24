@@ -1407,7 +1407,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceTypeName\":\""+obj[3]+"\",");
 			
 			result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
-			result_json.append("\"applicationScenariosName\":\""+codeMap.get(obj[4]+"").getItemname()+"\",");
+			result_json.append("\"applicationScenariosName\":\""+(codeMap.get(obj[4]+"")!=null?codeMap.get(obj[4]+"").getItemname():"")+"\",");
 			
 			result_json.append("\"instanceName\":\""+obj[5]+"\",");
 			result_json.append("\"displayInstanceName\":\""+obj[6]+"\",");

@@ -484,9 +484,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         id: 'DeviceCalculateDataType_Id',
                         cls: 'x-check-group-alt',
                         items: [
-                            {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.SRPCalculate)*8, inputValue: 1},
-                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*8, inputValue: 2},
-                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*8, inputValue: 0}
+                            {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.SRPCalculate)*10, inputValue: 1},
+                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*10, inputValue: 2},
+                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
                         ],
                         listeners: {
                         	change: function (radiogroup, newValue, oldValue, eOpts) {

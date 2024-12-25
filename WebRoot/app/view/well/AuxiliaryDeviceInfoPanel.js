@@ -93,9 +93,9 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     				if(startRow!=''&&endRow!=''){
     					startRow=parseInt(startRow);
     					endRow=parseInt(endRow);
-    					var deleteInfo='是否删除第'+(startRow+1)+"行~第"+(endRow+1)+"行数据";
+    					var deleteInfo=loginUserLanguageResource.confirmDelete;
     					if(startRow==endRow){
-    						deleteInfo='是否删除第'+(startRow+1)+"行数据";
+    						deleteInfo=loginUserLanguageResource.confirmDelete;
     					}
     					
     					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
@@ -116,7 +116,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
     	    	                        	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
     	    	                            CreateAndLoadAuxiliaryDeviceInfoTable();
     	    	                        } else {
@@ -134,7 +134,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
     		}, '-', {
@@ -571,7 +571,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         if (rdata.success) {
                         	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo=loginUserLanguageResource.saveSuccessfully+rdata.successCount+'条记录,'+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
@@ -794,34 +794,34 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                contextMenu: {
 	                    items: {
 	                        "row_above": {
-	                            name: '向上插入一行',
+	                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
 	                        },
 	                        "row_below": {
-	                            name: '向下插入一行',
+	                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
 	                        },
 	                        "col_left": {
-	                            name: '向左插入一列',
+	                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
 	                        },
 	                        "col_right": {
-	                            name: '向右插入一列',
+	                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
 	                        },
 	                        "remove_row": {
-	                            name: '删除行',
+	                            name: loginUserLanguageResource.contextMenu_removeRow,
 	                        },
 	                        "remove_col": {
-	                            name: '删除列',
+	                            name: loginUserLanguageResource.contextMenu_removeColumn,
 	                        },
 	                        "merge_cell": {
-	                            name: '合并单元格',
+	                            name: loginUserLanguageResource.contextMenu_mergeCell,
 	                        },
 	                        "copy": {
-	                            name: '复制',
+	                            name: loginUserLanguageResource.contextMenu_copy,
 	                        },
 	                        "cut": {
-	                            name: '剪切',
+	                            name: loginUserLanguageResource.contextMenu_cut,
 	                        },
 	                        "paste": {
-	                            name: '粘贴',
+	                            name: loginUserLanguageResource.contextMenu_paste,
 	                            disabled: function () {
 	                            },
 	                            callback: function () {

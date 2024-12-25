@@ -224,7 +224,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                 },'->',{
                 	xtype: 'label',
                 	hidden:false,
-                	html: '保留最近<font color=red>'+resourceMonitoringSaveData+'</font>条记录'
+                	html: loginUserLanguageResource.resourcesMonitoringHistoryCountTip+':<font color=red>'+resourceMonitoringSaveData+'</font>'
                 }
         	],
         	html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;"></div>',

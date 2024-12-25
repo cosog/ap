@@ -153,7 +153,7 @@ function delOrgInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, '是否删除所选组织及其子节点', function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
             if (btn == "yes") {
         		Ext.Ajax.request({
         			url : context + '/orgManagerController/doOrgBulkDelete',
@@ -418,7 +418,7 @@ function delUserInfoByGridBtn(record) {
 //  record.drop();
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
   Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-  Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, '是否删除用户'+record.get("userId"), function (btn) {
+  Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete+",userId:"+record.get("userId"), function (btn) {
       if (btn == "yes") {
           var deletejson = [];
           var noDelete=[];

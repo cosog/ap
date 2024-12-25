@@ -624,19 +624,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			String groupCode = ParamUtils.getParameter(request, "groupCode");
+			String groupId = ParamUtils.getParameter(request, "groupId");
+//			String groupCode = ParamUtils.getParameter(request, "groupCode");
 			String protocolName = ParamUtils.getParameter(request, "protocol");
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
-			String groupId="";
-			String groupName="";
-			String groupIdSql="select t.id,t.group_name from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
-			List list = this.service.findCallSql(groupIdSql);
-			if(list.size()>0){
-				Object[] obj=(Object[]) list.get(0);
-				groupId=obj[0]+"";
-				groupName=obj[1]+"";
-			}
+//			String groupName="";
+//			String groupIdSql="select t.id,t.group_name from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
+//			List list = this.service.findCallSql(groupIdSql);
+//			if(list.size()>0){
+//				Object[] obj=(Object[]) list.get(0);
+//				groupId=obj[0]+"";
+//				groupName=obj[1]+"";
+//			}
 			
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			if (StringManagerUtils.isNotNull(groupId) && protocol!=null) {
@@ -668,7 +668,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						acquisitionGroupItem = new AcquisitionGroupItem();
 						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
-						log.debug("groupCode==" + groupCode);
 						acquisitionGroupItem.setItemName(itemName);
 						if(bitIndex!=-99){
 							acquisitionGroupItem.setBitIndex(bitIndex);

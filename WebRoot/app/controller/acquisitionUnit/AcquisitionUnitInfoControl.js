@@ -482,6 +482,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
     var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue();
     var selectedItem=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
     
+    var groupId = selectedItem.data.id;
     var groupCode = selectedItem.data.code;
     var protocol=selectedItem.data.protocol;
     if (!isNotVal(groupCode)) {
@@ -533,7 +534,8 @@ var grantAcquisitionItemsPermission = function (groupType) {
             async :  false,
             params: {
                 params: addparams,
-                protocol :protocol,
+                protocol: protocol,
+                groupId: groupId,
                 groupCode: groupCode,
                 matrixCodes: matrixCodes_
             },

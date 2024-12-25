@@ -76,9 +76,9 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     				if(startRow!='' && endRow!=''){
     					startRow=parseInt(startRow);
     					endRow=parseInt(endRow);
-    					var deleteInfo='是否删除第'+(startRow+1)+"行~第"+(endRow+1)+"行数据";
+    					var deleteInfo=loginUserLanguageResource.confirmDelete;
     					if(startRow==endRow){
-    						deleteInfo='是否删除第'+(startRow+1)+"行数据";
+    						deleteInfo=loginUserLanguageResource.confirmDelete;
     					}
     					
     					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
@@ -99,7 +99,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
     	    	                            //保存以后重置全局容器
     	    	                            videoKeyDataHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("VideoKeySelectRow_Id").setValue(0);
@@ -120,7 +120,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
     		},"-", {

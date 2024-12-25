@@ -170,7 +170,7 @@ function submitImportedDeviceFile() {
 //                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
 //                        }
                         else if (result.columns[i].dataIndex.toUpperCase() === "applicationScenariosName".toUpperCase()) {
-                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['油井', '煤层气井']}";
+                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.applicationScenarios1+"', '"+loginUserLanguageResource.applicationScenarios0+"']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
                             columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDeviceHandsontableHelper);}}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
@@ -185,7 +185,7 @@ function submitImportedDeviceFile() {
                         		|| result.columns[i].dataIndex.toUpperCase() === "rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "rodGrade4".toUpperCase()) {
                         	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['A', 'B', 'C', 'D', 'K', 'KD', 'HL', 'HY']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "crankRotationDirection".toUpperCase()) {
-                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['顺时针', '逆时针']}";
+                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.clockwise+"', '"+loginUserLanguageResource.anticlockwise+"']}";
                         } else {
                             columns += "{data:'" + result.columns[i].dataIndex + "'}";
                         }
@@ -250,34 +250,34 @@ var ImportDeviceHandsontableHelper = {
                 contextMenu: {
                     items: {
                         "row_above": {
-                            name: '向上插入一行',
+                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
                         },
                         "row_below": {
-                            name: '向下插入一行',
+                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
                         },
                         "col_left": {
-                            name: '向左插入一列',
+                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
                         },
                         "col_right": {
-                            name: '向右插入一列',
+                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
                         },
                         "remove_row": {
-                            name: '删除行',
+                            name: loginUserLanguageResource.contextMenu_removeRow,
                         },
                         "remove_col": {
-                            name: '删除列',
+                            name: loginUserLanguageResource.contextMenu_removeColumn,
                         },
                         "merge_cell": {
-                            name: '合并单元格',
+                            name: loginUserLanguageResource.contextMenu_mergeCell,
                         },
                         "copy": {
-                            name: '复制',
+                            name: loginUserLanguageResource.contextMenu_copy,
                         },
                         "cut": {
-                            name: '剪切',
+                            name: loginUserLanguageResource.contextMenu_cut,
                         },
                         "paste": {
-                            name: '粘贴',
+                            name: loginUserLanguageResource.contextMenu_paste,
                             disabled: function () {
                             },
                             callback: function () {

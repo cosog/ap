@@ -365,42 +365,42 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                search: true,
 	                outsideClickDeselects:false,
 	                contextMenu: {
-	                	items: {
-	                	    "row_above": {
-	                	      name: '向上插入一行',
-	                	    },
-	                	    "row_below": {
-	                	      name: '向下插入一行',
-	                	    },
-	                	    "col_left": {
-	                	      name: '向左插入一列',
-	                	    },
-	                	    "col_right": {
-	                	      name: '向右插入一列',
-	                	    },
-	                	    "remove_row": {
-	                	      name: '删除行',
-	                	    },
-	                	    "remove_col": {
-	                	      name: '删除列',
-	                	    },
-	                	    "merge_cell": {
-	                	      name: '合并单元格',
-	                	    },
-	                	    "copy": {
-	                	      name: '复制',
-	                	    },
-	                	    "cut": {
-	                	      name: '剪切',
-	                	    },
-	                	    "paste": {
-	                	      name: '粘贴',
-	                	      disabled: function() {
-	                	      },
-	                	      callback: function() {
-	                	      }
-	                	    }
-	                	}
+	                    items: {
+	                        "row_above": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
+	                        },
+	                        "row_below": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
+	                        },
+	                        "col_left": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
+	                        },
+	                        "col_right": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
+	                        },
+	                        "remove_row": {
+	                            name: loginUserLanguageResource.contextMenu_removeRow,
+	                        },
+	                        "remove_col": {
+	                            name: loginUserLanguageResource.contextMenu_removeColumn,
+	                        },
+	                        "merge_cell": {
+	                            name: loginUserLanguageResource.contextMenu_mergeCell,
+	                        },
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy,
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut,
+	                        },
+	                        "paste": {
+	                            name: loginUserLanguageResource.contextMenu_paste,
+	                            disabled: function () {
+	                            },
+	                            callback: function () {
+	                            }
+	                        }
+	                    }
 	                },//右键菜单展示
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
@@ -898,42 +898,42 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	                renderAllRows: true,
 	                search: true,
 	                contextMenu: {
-	                	items: {
-	                	    "row_above": {
-	                	      name: '向上插入一行',
-	                	    },
-	                	    "row_below": {
-	                	      name: '向下插入一行',
-	                	    },
-	                	    "col_left": {
-	                	      name: '向左插入一列',
-	                	    },
-	                	    "col_right": {
-	                	      name: '向右插入一列',
-	                	    },
-	                	    "remove_row": {
-	                	      name: '删除行',
-	                	    },
-	                	    "remove_col": {
-	                	      name: '删除列',
-	                	    },
-	                	    "merge_cell": {
-	                	      name: '合并单元格',
-	                	    },
-	                	    "copy": {
-	                	      name: '复制',
-	                	    },
-	                	    "cut": {
-	                	      name: '剪切',
-	                	    },
-	                	    "paste": {
-	                	      name: '粘贴',
-	                	      disabled: function() {
-	                	      },
-	                	      callback: function() {
-	                	      }
-	                	    }
-	                	}
+	                    items: {
+	                        "row_above": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
+	                        },
+	                        "row_below": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
+	                        },
+	                        "col_left": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
+	                        },
+	                        "col_right": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
+	                        },
+	                        "remove_row": {
+	                            name: loginUserLanguageResource.contextMenu_removeRow,
+	                        },
+	                        "remove_col": {
+	                            name: loginUserLanguageResource.contextMenu_removeColumn,
+	                        },
+	                        "merge_cell": {
+	                            name: loginUserLanguageResource.contextMenu_mergeCell,
+	                        },
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy,
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut,
+	                        },
+	                        "paste": {
+	                            name: loginUserLanguageResource.contextMenu_paste,
+	                            disabled: function () {
+	                            },
+	                            callback: function () {
+	                            }
+	                        }
+	                    }
 	                },//右键菜单展示
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};

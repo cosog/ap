@@ -59,7 +59,7 @@ Ext.define('AP.store.acquisitionUnit.ImportReportUnitContentTreeInfoStore', {
                             }
                         }
                     },{
-                    	header: '冲突信息',
+                    	header: loginUserLanguageResource.collisionInfo,
                     	flex: 12,
                     	dataIndex: 'msg',
                     	renderer:function(value,o,p,e){

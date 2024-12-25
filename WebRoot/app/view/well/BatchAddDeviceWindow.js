@@ -309,34 +309,34 @@ var BatchAddDeviceHandsontableHelper = {
                 contextMenu: {
                     items: {
                         "row_above": {
-                            name: '向上插入一行',
+                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
                         },
                         "row_below": {
-                            name: '向下插入一行',
+                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
                         },
                         "col_left": {
-                            name: '向左插入一列',
+                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
                         },
                         "col_right": {
-                            name: '向右插入一列',
+                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
                         },
                         "remove_row": {
-                            name: '删除行',
+                            name: loginUserLanguageResource.contextMenu_removeRow,
                         },
                         "remove_col": {
-                            name: '删除列',
+                            name: loginUserLanguageResource.contextMenu_removeColumn,
                         },
                         "merge_cell": {
-                            name: '合并单元格',
+                            name: loginUserLanguageResource.contextMenu_mergeCell,
                         },
                         "copy": {
-                            name: '复制',
+                            name: loginUserLanguageResource.contextMenu_copy,
                         },
                         "cut": {
-                            name: '剪切',
+                            name: loginUserLanguageResource.contextMenu_cut,
                         },
                         "paste": {
-                            name: '粘贴',
+                            name: loginUserLanguageResource.contextMenu_paste,
                             disabled: function () {
                             },
                             callback: function () {

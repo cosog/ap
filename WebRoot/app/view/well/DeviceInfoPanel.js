@@ -182,7 +182,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.DeviceInfoWindow", {
-                        title: '添加'+deviceTypeName+'设备'
+                        title: loginUserLanguageResource.adddDevie
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -208,9 +208,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     				if(startRow!='' && endRow!=''){
     					startRow=parseInt(startRow);
     					endRow=parseInt(endRow);
-    					var deleteInfo='是否删除第'+(startRow+1)+"行~第"+(endRow+1)+"行数据";
+    					var deleteInfo=loginUserLanguageResource.confirmDelete;
     					if(startRow==endRow){
-    						deleteInfo='是否删除第'+(startRow+1)+"行数据";
+    						deleteInfo=loginUserLanguageResource.confirmDelete;
     					}
     					
     					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
@@ -231,7 +231,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "删除成功");
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
     	    	                            //保存以后重置全局容器
     	    	                            deviceInfoHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("DeviceSelectRow_Id").setValue(0);
@@ -254,7 +254,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请先选中要删除的行");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
     		},"-", {
@@ -497,23 +497,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 				if(isNotVal(DeviceSelectRow)){
                 					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
                     	        	if(deviceInfoHandsontableData.length>0){
-                    	        		var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
-                    	        		deviceId=rowdata[0];
-                    	        		deviceName=rowdata[1];
-                    	        		
-                    	        		
-                    	        		var applicationScenariosindex=-1;
-                    	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-                    	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
-                    	                    	applicationScenariosindex=i;
-                    	                    	break;
-                    	                    }
-                    	                }
-                    	        		if(applicationScenariosindex>=0){
-                    	        			if(rowdata[applicationScenariosindex]=='油井'){
-                    	        				applicationScenarios=1;
-                    	        			} 
-                    	        		}
+                    	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+                    	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+                    	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+                    	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+                	        				applicationScenarios=1;
+                	        			}
                     	        	}
                 				}
                 				
@@ -596,22 +585,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         				if(isNotVal(DeviceSelectRow)){
         					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
             	        	if(deviceInfoHandsontableData.length>0){
-            	        		var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
-            	        		deviceId=rowdata[0];
-            	        		deviceName=rowdata[1];
-            	        		
-            	        		var applicationScenariosindex=-1;
-            	            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-            	                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
-            	                    	applicationScenariosindex=i;
-            	                    	break;
-            	                    }
-            	                }
-            	        		if(applicationScenariosindex>=0){
-            	        			if(rowdata[applicationScenariosindex]=='油井'){
-            	        				applicationScenarios=1;
-            	        			} 
-            	        		}
+            	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+            	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+            	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+            	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+        	        				applicationScenarios=1;
+        	        			}
             	        	}
         				}
         				CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios);
@@ -879,7 +858,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceName');
             	var applicationScenarios=0;
             	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
-            	if(applicationScenariosName=='油井'){
+            	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     				applicationScenarios=1;
     			}
             	
@@ -1054,7 +1033,7 @@ var DeviceInfoHandsontableHelper = {
                         	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'deviceName');
                         	var applicationScenarios=0;
                         	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'applicationScenariosName');
-                        	if(applicationScenariosName=='油井'){
+                        	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     	        				applicationScenarios=1;
     	        			}
                         	CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios);
@@ -1107,7 +1086,7 @@ var DeviceInfoHandsontableHelper = {
                                 	if(productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined){
                             			const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
                                     	var hiddenRows=[0,3,9,10];
-                                    	if(params[3] == "煤层气井"){
+                                    	if(params[3] == loginUserLanguageResource.applicationScenarios0){
                                     		plugin.hideRows(hiddenRows);
                                     		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
                                     		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
@@ -1205,23 +1184,14 @@ var DeviceInfoHandsontableHelper = {
                 deviceInfoHandsontableHelper.insertExpressCount();
                 //获取设备ID
                 var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
-                var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(DeviceSelectRow);
-            	var deviceId=rowdata[0];
-            	
-            	var applicationScenariosindex=-1;
-            	for (var i = 0; i < deviceInfoHandsontableHelper.columns.length; i++) {
-                    if(deviceInfoHandsontableHelper.columns[i].data.toUpperCase() === "applicationScenariosName".toUpperCase()){
-                    	applicationScenariosindex=i;
-                    	break;
-                    }
-                }
-            	
-            	var applicationScenarios=0;
-        		if(applicationScenariosindex>=0){
-        			if(rowdata[applicationScenariosindex]=='油井'){
-        				applicationScenarios=1;
-        			} 
-        		}
+                
+                var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+        		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+        		var applicationScenarios=0;
+        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+    				applicationScenarios=1;
+    			}
             	
             	
             	var deviceAdditionalInformationData={};
@@ -1281,11 +1251,6 @@ var DeviceInfoHandsontableHelper = {
                     deviceAdditionalInformationData.data=JSON.stringify(videoInfoList);
             	}else if(additionalInformationType==3){
             		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-            		
-            		
-            		
-//            		var applicationScenarios=Ext.getCmp("DeviceApplicationScenariosType_Id").getValue().deviceApplicationScenariosType;
-            		
             		if(deviceCalculateDataType==1){//指定为功图计算
             			//生产数据
                         var deviceProductionData={};
@@ -1779,7 +1744,7 @@ var DeviceInfoHandsontableHelper = {
                         if (rdata.success) {
                         	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo=loginUserLanguageResource.saveSuccessfully+rdata.successCount+'条记录,'+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
@@ -2662,34 +2627,34 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	                contextMenu: {
 	                    items: {
 	                        "row_above": {
-	                            name: '向上插入一行',
+	                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
 	                        },
 	                        "row_below": {
-	                            name: '向下插入一行',
+	                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
 	                        },
 	                        "col_left": {
-	                            name: '向左插入一列',
+	                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
 	                        },
 	                        "col_right": {
-	                            name: '向右插入一列',
+	                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
 	                        },
 	                        "remove_row": {
-	                            name: '删除行',
+	                            name: loginUserLanguageResource.contextMenu_removeRow,
 	                        },
 	                        "remove_col": {
-	                            name: '删除列',
+	                            name: loginUserLanguageResource.contextMenu_removeColumn,
 	                        },
 	                        "merge_cell": {
-	                            name: '合并单元格',
+	                            name: loginUserLanguageResource.contextMenu_mergeCell,
 	                        },
 	                        "copy": {
-	                            name: '复制',
+	                            name: loginUserLanguageResource.contextMenu_copy,
 	                        },
 	                        "cut": {
-	                            name: '剪切',
+	                            name: loginUserLanguageResource.contextMenu_cut,
 	                        },
 	                        "paste": {
-	                            name: '粘贴',
+	                            name: loginUserLanguageResource.contextMenu_paste,
 	                            disabled: function () {
 	                            },
 	                            callback: function () {

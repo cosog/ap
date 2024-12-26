@@ -1128,11 +1128,11 @@ function renderControlBtn(btn,btnIndex){
     	}
     }else if(resolutionMode == 0 && itemMeaning.length > 0){
     	if(btnIndex==0){
-    		btn.setText('开');
-        	btn.setTooltip('开');
+    		btn.setText(loginUserLanguageResource.switchingOpenValue);
+        	btn.setTooltip(loginUserLanguageResource.switchingOpenValue);
     	}else if(btnIndex==1){
-    		btn.setText('关');
-        	btn.setTooltip('关');
+    		btn.setText(loginUserLanguageResource.switchingCloseValue);
+        	btn.setTooltip(loginUserLanguageResource.switchingCloseValue);
     	}
     }else{
     	if(btnIndex==0){
@@ -1163,7 +1163,7 @@ function controlBtnHandler(btn,btnIndex){
 	    var resolutionMode = record.data.resolutionMode;
 	    var itemMeaning = record.data.itemMeaning;
 		
-	    var all_loading = new Ext.LoadMask({msg: '命令发送中，请稍后...',target: Ext.getBody().component});
+	    var all_loading = new Ext.LoadMask({msg: loginUserLanguageResource.commandSending+'...',target: Ext.getBody().component});
 	    
 	    if(resolutionMode == 1 && itemMeaning.length == 1) {
 	    	if(btnIndex==0){
@@ -1350,12 +1350,6 @@ function controlBtnHandler(btn,btnIndex){
             }
 	    }else{
 	    	if(btnIndex==0){
-                var operaName = "";
-                if (text == "停抽" || text == "启抽" || text == "即时采集" || text == "即时刷新") {
-                    operaName = "是否执行" + text + "操作";
-                } else {
-                    operaName = "是否执行" + text + item.split("(")[0] + "操作";
-                }
                 Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                 Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 
@@ -1364,7 +1358,7 @@ function controlBtnHandler(btn,btnIndex){
                     win_Obj.destroy();
                 }
                 var DeviceControlCheckPassWindow = Ext.create("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
-                    title: "设备控制"
+                    title: loginUserLanguageResource.deviceControl
                 });
                 var resolutionModeName='';
                 if(resolutionMode==0){

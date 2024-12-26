@@ -75,7 +75,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 iconCls: 'edit',
                 handler: function (v, o) {
             		var all_loading = new Ext.LoadMask({
-                        msg: '命令发送中，请稍后...',
+                        msg: loginUserLanguageResource.commandSending+'...',
                         target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
                     });
                 	all_loading.show();
@@ -168,7 +168,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                         });
                 	}else{
                 		all_loading.hide();
-                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>数据格式有误，请检查！</font>");
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.dataFormattingError+"</font>");
                 	}
                 	
             	}

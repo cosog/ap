@@ -210,7 +210,7 @@ private CommonDataService service;
 	}
 	
 	public List<T> queryRightTabsWithoutRoot(Class<T> clazz, User user) throws Exception {
-		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.id <>9999 and tab.id in " 
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.parentId <>0 and tab.id in " 
 				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
 				+ "where  role.roleId =rt.rdRoleId   " 
 				+ " and role.roleId = u.userType   and u.userNo="

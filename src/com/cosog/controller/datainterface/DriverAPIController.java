@@ -1784,6 +1784,7 @@ public class DriverAPIController extends BaseController{
 		}
 		wellBoreChartsData.append("{");
 		surfaceChartsData.append("{");
+		
 		if(deviceInfo.getCalculateType()==1){
 			wellBoreChartsData.append("\"success\":true,");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
@@ -2026,6 +2027,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
+//		System.out.println(webSocketSendData.toString());
 		return webSocketSendData.toString();
 	}
 	
@@ -3152,14 +3154,15 @@ public class DriverAPIController extends BaseController{
 							    srpCalculateRequestData.getFESDiagram().setI(curveArr);
 							}
 							
-							
-							if(srpCalculateRequestData.getProduction()!=null && srpCalculateRequestData.getFluidPVT()!=null){
-//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpCalculateRequestData.getProduction().getWaterCut(), srpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), srpCalculateRequestData.getFluidPVT().getWaterDensity());
-								float weightWaterCut=srpCalculateRequestData.getProduction().getWaterCut();
-								srpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
-								deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
-							}
 						}
+						
+						if(srpCalculateRequestData.getProduction()!=null && srpCalculateRequestData.getFluidPVT()!=null){
+//							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpCalculateRequestData.getProduction().getWaterCut(), srpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), srpCalculateRequestData.getFluidPVT().getWaterDensity());
+							float weightWaterCut=srpCalculateRequestData.getProduction().getWaterCut();
+							srpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
+							deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
+						}
+						
 						srpCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(srpCalculateRequestData));
 						
 						if(srpCalculateResponseData!=null && isAcqRPMData){

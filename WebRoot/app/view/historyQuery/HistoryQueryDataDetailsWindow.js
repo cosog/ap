@@ -3,7 +3,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.historyQueryDataDetailsWindow',
     layout: 'fit',
-    title:'详细数据',
+    title:loginUserLanguageResource.detailsData,
     border: false,
     hidden: false,
     collapsible: true,

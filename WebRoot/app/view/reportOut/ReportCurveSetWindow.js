@@ -4,7 +4,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     alias: 'widget.reportCurveSetWindow',
     id: 'ReportCurveSetWindow_Id',
     layout: 'fit',
-    title:'报表曲线设置',
+    title:loginUserLanguageResource.reportDiagramSet,
     border: false,
     hidden: false,
     collapsible: true,

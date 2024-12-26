@@ -422,8 +422,8 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('DeviceOperationLogQueryEndDate_Id').rawValue;
                	 	
-               	 	var fileName='设备操作日志';
-               	 	var title='设备操作日志';
+               	 	var fileName=loginUserLanguageResource.deviceOperationLog;
+               	 	var title=loginUserLanguageResource.deviceOperationLog;
                	 	var columnStr=Ext.getCmp("DeviceOperationLogColumnStr_Id").getValue();
                	 	exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                 }

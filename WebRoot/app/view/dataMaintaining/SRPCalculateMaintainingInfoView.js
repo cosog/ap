@@ -533,15 +533,15 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                     var showWellName=deviceName;
                 	if(deviceName == '' || deviceName == null){
                 		if(calculateType==1){
-                			showWellName='所选组织下全部功图计算井';
+                			showWellName=loginUserLanguageResource.allSRPCalculateWell;
                 		}else if(calculateType==2){
-                			showWellName='所选组织下全部转速计产井';
+                			showWellName=loginUserLanguageResource.allPCPCalculateWell;
                 		}
                 	}else{
 //                		showWellName+='井';
                 	}
-                	var operaName="生效范围："+showWellName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
-                	Ext.Msg.confirm("操作确认", operaName, function (btn) {
+                	var operaName=loginUserLanguageResource.takeEffectScope+":"+showWellName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
+                	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
                         if (btn == "yes") {
                         	Ext.Ajax.request({
         	            		method:'POST',
@@ -549,7 +549,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
         	            		success:function(response) {
         	            			var rdata=Ext.JSON.decode(response.responseText);
         	            			if (rdata.success) {
-        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无未计算时，计算完成。");
+        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
         	                            //保存以后重置全局容器
         	                            srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
         	                            Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
@@ -592,7 +592,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
                     	document.location.href = url;
                 	}else{
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"未选择记录");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                 	}
                 }
             },{
@@ -630,7 +630,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 		+'&deviceType='+deviceType;
                     	document.location.href = url;
                     }else{
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message,"未选择记录");
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                     }
                 }
             }],
@@ -754,9 +754,10 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
             			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
             		continue;
             	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-            		colHeader=colHeader.replace('油层','煤层');
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirDepth,loginUserLanguageResource.reservoirDepth_cbm);
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirTemperature,loginUserLanguageResource.reservoirTemperature_cbm);
             	}else if(dataIndex.toUpperCase() === "TubingPressure".toUpperCase()){
-            		colHeader=colHeader.replace('油压','管压');
+            		colHeader=colHeader.replace(loginUserLanguageResource.tubingPressure,loginUserLanguageResource.tubingPressure_cbm);
             	}
             }
         	
@@ -1054,7 +1055,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	            		success:function(response) {
 	            			var rdata=Ext.JSON.decode(response.responseText);
 	            			if (rdata.success) {
-	                        	var successInfo='保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列，无未计算记录时，计算完成。';
+	                        	var successInfo=loginUserLanguageResource.calculateMaintainingEditSuccessInfo;
 	                            //保存以后重置全局容器
 	                            srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
 	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
@@ -1151,13 +1152,13 @@ function ReTotalFESDiagramData(){
     		reCalculateData+=_record[index].data.id+","+_record[index].data.wellId+","+_record[index].data.wellName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
-    	Ext.getCmp("SRPTotalCalculateMaintainingPanel").el.mask('重新计算中，请稍后...').show();
+    	Ext.getCmp("SRPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();
     	Ext.Ajax.request({
     		method:'POST',
     		url:context + '/calculateManagerController/reTotalCalculate',
     		success:function(response) {
     			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,"重新计算完成。");
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.recalculationComplete);
                 Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){

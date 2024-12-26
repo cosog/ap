@@ -403,8 +403,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             	var runStatusStatValue=Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").getValue();
                     			var deviceTypeStatValue=Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").getValue();
                            	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-                           	 	var fileName='历史数据设备列表';
-                           	 	var title='历史数据设备列表';
+                           	 	var fileName=loginUserLanguageResource.historyQueryDeviceList;
+                           	 	var title=loginUserLanguageResource.historyQueryDeviceList;
                            	 	var columnStr=Ext.getCmp("HistoryQueryWellListColumnStr_Id").getValue();
                            	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                             }
@@ -733,8 +733,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
                        	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-                       	 	var fileName=deviceName+'功图叠加数据';
-                       	 	var title=deviceName+'功图叠加数据';
+                       	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
+                       	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
                        	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
                        	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }
@@ -799,8 +799,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
                        	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-                       	 	var fileName=deviceName+'功图数据';
-                       	 	var title=deviceName+'功图数据';
+                       	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
+                       	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
                        	 	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title);
                         }
                     }, {

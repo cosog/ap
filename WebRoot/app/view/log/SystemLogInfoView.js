@@ -422,8 +422,8 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                     var selectUserId=Ext.getCmp('systemLogUserListComb_Id').getValue();
                 	var operationType=Ext.getCmp('systemLogActionListComb_Id').getValue();
                	 	
-               	 	var fileName='系统日志';
-               	 	var title='系统日志';
+               	 	var fileName=loginUserLanguageResource.systemLog;
+               	 	var title=loginUserLanguageResource.systemLog;
                	 	var columnStr=Ext.getCmp("SystemLogColumnStr_Id").getValue();
                	 	exportSystemLogExcel(orgId,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),selectUserId,operationType,fileName,title,columnStr);
                 }

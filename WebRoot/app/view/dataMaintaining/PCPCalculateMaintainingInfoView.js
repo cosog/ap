@@ -525,17 +525,17 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                     var calculateSign=Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').getValue();
                     var deviceType=1;
                     var calculateType=2;
-                    var showWellName=wellName;
+                    var showDeviceName=deviceName;
                     if(deviceName == '' || deviceName == null){
                 		if(calculateType==1){
-                			showWellName=loginUserLanguageResource.allSRPCalculateWell;
+                			showDeviceName=loginUserLanguageResource.allSRPCalculateWell;
                 		}else if(calculateType==2){
-                			showWellName=loginUserLanguageResource.allPCPCalculateWell;
+                			showDeviceName=loginUserLanguageResource.allPCPCalculateWell;
                 		}
                 	}else{
-//                		showWellName+='井';
+//                		showDeviceName+='井';
                 	}
-                	var operaName=loginUserLanguageResource.takeEffectScope+":"+showWellName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
+                	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
                 	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
                         if (btn == "yes") {
                         	Ext.Ajax.request({
@@ -615,12 +615,12 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                     if (_record.length>0) {
                     	var recordId=_record[0].data.id;
                     	var wellId=_record[0].data.wellId;
-                    	var wellName=_record[0].data.wellName;
+                    	var deviceName=_record[0].data.deviceName;
                     	var calDate=_record[0].data.calDate;
                 		var deviceType=1;
                 		var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
                 		+'&wellId='+wellId
-                		+'&wellName='+URLencode(URLencode(wellName))
+                		+'&deviceName='+URLencode(URLencode(deviceName))
                 		+'&calDate='+calDate
                 		+'&deviceType='+deviceType;
                     	document.location.href = url;
@@ -763,7 +763,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
         	columns+="{data:'"+dataIndex+"'";
         	if(dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
-        	}else if(dataIndex.toUpperCase()==="wellName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
+        	}else if(dataIndex.toUpperCase()==="deviceName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
     		}else if(dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
@@ -1113,7 +1113,7 @@ function ReTotalRPMData(){
     if (_record.length>0) {
     	var reCalculateData='';
     	Ext.Array.each(_record, function (name, index, countriesItSelf) {
-    		reCalculateData+=_record[index].data.id+","+_record[index].data.wellId+","+_record[index].data.wellName+","+_record[index].data.calDate+";"
+    		reCalculateData+=_record[index].data.id+","+_record[index].data.wellId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
     	Ext.getCmp("PCPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();

@@ -327,10 +327,10 @@ function websocketOnMessage(evt) {
                         }
                     } else if (activeId == "RealTimeMonitoringFSDiagramAnalysisTabPanel_Id") {
                         //井筒分析
-                    	if(data.wellBoreChartsData.resultCode==1232){
-                    		showSurfaceCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
-                    	}else{
+                    	if(isNotVal(data.wellBoreChartsData.pumpFSDiagramData)){
                     		showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
+                    	}else{
+                    		showSurfaceCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
                     	}
                         showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id"); // 调用画杆柱应力的函数
                         showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数

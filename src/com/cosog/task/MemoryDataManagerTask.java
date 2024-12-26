@@ -953,7 +953,7 @@ public class MemoryDataManagerTask {
 						+ " left outer join tbl_srpacqdata_latest t3 on t3.deviceid=t.id "
 						+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
 						+ " where 1=1 ";
-				String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemname,t4.itemvalue "
+				String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue "
 						+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 						+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 						+ " and t3.specifictype=1";
@@ -986,7 +986,7 @@ public class MemoryDataManagerTask {
 					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
 					auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
 					auxiliaryDeviceAddInfo.setModel(obj[3]+"");
-					auxiliaryDeviceAddInfo.setItemName(obj[4]+"");
+					auxiliaryDeviceAddInfo.setItemCode(obj[4]+"");
 					auxiliaryDeviceAddInfo.setItemValue(obj[5]+"");
 					auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
 				}
@@ -1065,18 +1065,20 @@ public class MemoryDataManagerTask {
 								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
 									manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
 									model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
-									if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
-									}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("crankGravityRadius".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									}else if("crankGravityRadius".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("singleCrankWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									}else if("singleCrankWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("singleCrankPinWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									}else if("singleCrankPinWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemName())){
+									}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("rotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
 									}
 								}
 								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);

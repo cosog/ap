@@ -2027,7 +2027,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-		System.out.println(webSocketSendData.toString());
+//		System.out.println(webSocketSendData.toString());
 		return webSocketSendData.toString();
 	}
 	

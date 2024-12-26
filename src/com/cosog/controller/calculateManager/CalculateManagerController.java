@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +28,7 @@ import com.cosog.model.gridmodel.CalculateManagerHandsontableChangedData;
 import com.cosog.model.gridmodel.ElecInverCalculateManagerHandsontableChangedData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.calculateManager.CalculateManagerService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
@@ -57,7 +59,6 @@ public class CalculateManagerController extends BaseController {
 	private int page;
 	private int limit;
 	private int totals;
-	private String wellName;
 	private String orgId;
 	
 	@RequestMapping("/getCalculateResultData")
@@ -125,7 +126,7 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/getWellList")
 	public String getWellList() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
@@ -143,7 +144,7 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		String json = calculateManagerService.getWellList(orgId, wellName, pager,deviceType,calculateSign,calculateType,language);
+		String json = calculateManagerService.getWellList(orgId, deviceName, pager,deviceType,calculateSign,calculateType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -269,7 +270,7 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/recalculateByProductionData")
 	public String recalculateByProductionData() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		String wellName = ParamUtils.getParameter(request, "wellName");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
@@ -283,7 +284,7 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserOrgid();
 			}
 		}
-		this.calculateManagerService.recalculateByProductionData(orgId,wellName,deviceType,startDate,endDate,calculateSign,calculateType);
+		this.calculateManagerService.recalculateByProductionData(orgId,deviceName,deviceType,startDate,endDate,calculateSign,calculateType);
 		String json ="{success:true}";
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
@@ -320,18 +321,19 @@ public class CalculateManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=calculateManagerService.getCalculateRequestData(recordId,deviceName, acqTime,calculateType,language);
 		
 		Date date = df.parse(acqTime);
 		acqTime=df2.format(date);
 		
-		String fileName="请求数据-"+wellName+"-"+acqTime+".json";
+		String fileName=languageResourceMap.get("requestData")+"-"+deviceName+"-"+acqTime+".json";
 		if("1".equals(calculateType)){
-			fileName="请求数据-"+wellName+"-"+acqTime+".json";
+			fileName=languageResourceMap.get("requestData")+"-"+deviceName+"-"+acqTime+".json";
 		}else if("2".equals(calculateType)){
-			fileName="转速计产请求数据-"+wellName+"-"+acqTime+".json";
+			fileName=languageResourceMap.get("PCPCalculateRequestData")+"-"+deviceName+"-"+acqTime+".json";
 		}else if("5".equals(calculateType)){
-			fileName="反演请求数据-"+wellName+"-"+acqTime+".json";
+			fileName=languageResourceMap.get("elecInverCalculateRequestData")+"-"+deviceName+"-"+acqTime+".json";
 		}
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
@@ -442,12 +444,23 @@ public class CalculateManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		
 		String recordId=ParamUtils.getParameter(request, "recordId");
-		String wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String wellId=ParamUtils.getParameter(request, "wellId");
 		String calDate=ParamUtils.getParameter(request, "calDate");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
-		String json=calculateManagerService.exportTotalCalculateRequestData(deviceType,recordId,wellId,wellName,calDate);
-		String fileName="汇总请求数据-"+wellName+"-"+calDate+".json";
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		String json=calculateManagerService.exportTotalCalculateRequestData(deviceType,recordId,wellId,deviceName,calDate);
+		
+		String fileName=languageResourceMap.get("totalCalculateRequestData")+"-"+deviceName+"-"+calDate+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
 		try {
@@ -491,16 +504,6 @@ public class CalculateManagerController extends BaseController {
 
 	public void setTotals(int totals) {
 		this.totals = totals;
-	}
-	
-	
-
-	public String getWellName() {
-		return wellName;
-	}
-
-	public void setWellName(String wellName) {
-		this.wellName = wellName;
 	}
 
 	public String getOrgId() {

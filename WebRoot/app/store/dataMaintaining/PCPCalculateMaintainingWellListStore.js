@@ -1,7 +1,7 @@
 Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.PCPCalculateMaintainingWellListStore',
-    fields: ['id','wellName'],
+    fields: ['id','deviceName'],
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
@@ -121,12 +121,12 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var wellName = Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
+        	var deviceName = Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
-            		wellName: wellName,
+            		deviceName: deviceName,
                     deviceType:deviceType,
                     calculateType:calculateType
                 };

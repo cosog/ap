@@ -1077,8 +1077,6 @@ public class MemoryDataManagerTask {
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
 									}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("rotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
 									}
 								}
 								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);

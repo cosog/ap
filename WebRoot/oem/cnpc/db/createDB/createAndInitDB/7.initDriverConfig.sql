@@ -2,7 +2,7 @@
 /* 初始化TBL_PROTOCOL数据                                        */
 /*==============================================================*/
 insert into TBL_PROTOCOL (ID, NAME, CODE, DEVICETYPE, SORT)
-values (1, 'A11协议', 'protocol1', 9999, 1);
+values (1, 'A11协议', 'protocol1', 1, 1);
 
 DECLARE  
   clobValue TBL_PROTOCOL.ITEMS%TYPE;  

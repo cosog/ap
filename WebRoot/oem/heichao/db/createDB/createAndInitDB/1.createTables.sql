@@ -6,7 +6,9 @@ create table TBL_DEVICETYPEINFO
   id       NUMBER(10) not null,
   parentid NUMBER(10) default 0 not null,
   sortnum  NUMBER(10),
-  name     VARCHAR2(100)
+  NAME_ZH_CN     VARCHAR2(100),
+  NAME_EN VARCHAR2(100),
+  NAME_RU VARCHAR2(100)
 )
 tablespace AP_DATA
   storage
@@ -50,7 +52,9 @@ create table TBL_ORG
 (
   org_id     NUMBER(10) not null,
   org_code   VARCHAR2(20),
-  org_name   VARCHAR2(100) not null,
+  org_name_zh_CN   VARCHAR2(100),
+  org_name_en   VARCHAR2(100),
+  org_name_ru   VARCHAR2(100),
   org_memo   VARCHAR2(4000),
   org_parent NUMBER(10) default 0 not null,
   org_seq    NUMBER(10)
@@ -74,6 +78,7 @@ create table TBL_ROLE
   role_level        NUMBER(3) default 1,
   showlevel         NUMBER(10) default 0,
   role_videokeyedit NUMBER(10) default 0,
+  role_languageedit NUMBER(10) default 0,
   remark            VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -125,8 +130,12 @@ create table TBL_MODULE
 (
   md_id       NUMBER(10) not null,
   md_parentid NUMBER(10) default 0 not null,
-  md_name     VARCHAR2(100) not null,
-  md_showname VARCHAR2(100),
+  md_name_zh_CN     VARCHAR2(100),
+  md_name_en     VARCHAR2(100),
+  md_name_ru     VARCHAR2(100),
+  md_showname_zh_CN VARCHAR2(100),
+  md_showname_en VARCHAR2(100),
+  md_showname_ru VARCHAR2(100),
   md_url      VARCHAR2(200),
   md_code     VARCHAR2(200),
   md_seq      NUMBER(20),
@@ -193,7 +202,8 @@ create table TBL_USER
   user_quicklogin NUMBER(1) default 0,
   user_enable      NUMBER(1) default 1,
   user_receivesms  NUMBER(10) default 0,
-  user_receivemail NUMBER(10) default 0
+  user_receivemail NUMBER(10) default 0,
+  user_language NUMBER(1) default 1
 )
 tablespace AP_DATA
   storage
@@ -214,8 +224,10 @@ create table TBL_DIST_NAME
   sysdataid  VARCHAR2(32) not null,
   moduleid   NUMBER(10),
   tenantid   VARCHAR2(50),
-  cname      VARCHAR2(50),
-  ename      VARCHAR2(50),
+  name_zh_CN      VARCHAR2(50),
+  name_en      VARCHAR2(50),
+  name_ru      VARCHAR2(50),
+  code      VARCHAR2(50),
   sorts      NUMBER,
   status     NUMBER,
   creator    VARCHAR2(50),
@@ -242,8 +254,10 @@ create table TBL_DIST_ITEM
   dataitemid VARCHAR2(32) not null,
   tenantid   VARCHAR2(50),
   sysdataid  VARCHAR2(50),
-  cname      VARCHAR2(50),
-  ename      VARCHAR2(200),
+  name_zh_CN      VARCHAR2(50),
+  name_en      VARCHAR2(50),
+  name_ru      VARCHAR2(50),
+  code      VARCHAR2(200),
   datavalue  VARCHAR2(200),
   sorts      NUMBER,
   status     NUMBER,
@@ -862,6 +876,7 @@ create table TBL_AUXILIARYDEVICEADDINFO
   id        NUMBER(10) not null,
   deviceid  NUMBER(10) not null,
   itemname  VARCHAR2(200) not null,
+  itemcode  VARCHAR2(200),
   itemvalue VARCHAR2(200),
   itemunit  VARCHAR2(200)
 )
@@ -895,31 +910,6 @@ tablespace AP_DATA
   )
 /
 alter table TBL_AUXILIARY2MASTER add constraint PK_AUXILIARY2MASTER primary key (ID)
-/
-
-/*==============================================================*/
-/* Table: TBL_RPC_WORKTYPE                                    */
-/*==============================================================*/
-create table TBL_RPC_WORKTYPE
-(
-  id                     NUMBER(10) not null,
-  resultcode             NUMBER(4) not null,
-  resultname             VARCHAR2(200) not null,
-  resultdescription      VARCHAR2(200),
-  resulttemplate         BLOB,
-  optimizationsuggestion VARCHAR2(200),
-  remark                 VARCHAR2(200)
-)
-tablespace AP_DATA
-  storage
-  (
-    initial 64K
-    minextents 1
-    maxextents unlimited
-  )
-/
-alter table TBL_RPC_WORKTYPE
-  add constraint PK_RPC_WORKTYPE primary key (ID)
 /
 
 /*==============================================================*/
@@ -1237,9 +1227,9 @@ alter table TBL_REALTIMETOTALCALCULATIONDATA
 /
 
 /*==============================================================*/
-/* Table: TBL_RPCACQDATA_LATEST                                    */
+/* Table: TBL_SRPACQDATA_LATEST                                    */
 /*==============================================================*/
-create table TBL_RPCACQDATA_LATEST
+create table TBL_SRPACQDATA_LATEST
 (
   id                                 NUMBER(10) not null,
   deviceid                           NUMBER(10),
@@ -1379,7 +1369,7 @@ alter table TBL_RPCACQDATA_LATEST
 /
 
 /*==============================================================*/
-/* Table: TBL_RPCACQDATA_HIST                                    */
+/* Table: TBL_SRPACQDATA_HIST                                    */
 /*==============================================================*/
 create table TBL_RPCACQDATA_HIST
 (
@@ -1521,9 +1511,9 @@ alter table TBL_RPCACQDATA_HIST
 /
 
 /*==============================================================*/
-/* Table: TBL_RPCDAILYCALCULATIONDATA                                    */
+/* Table: TBL_SRPDAILYCALCULATIONDATA                                    */
 /*==============================================================*/
-create table TBL_RPCDAILYCALCULATIONDATA
+create table TBL_SRPDAILYCALCULATIONDATA
 (
   id                             NUMBER(10) not null,
   deviceid                       NUMBER(10),
@@ -1596,9 +1586,9 @@ alter table TBL_RPCDAILYCALCULATIONDATA
 /
 
 /*==============================================================*/
-/* Table: TBL_RPCTIMINGCALCULATIONDATA                                    */
+/* Table: TBL_SRPTIMINGCALCULATIONDATA                                    */
 /*==============================================================*/
-create table TBL_RPCTIMINGCALCULATIONDATA
+create table TBL_SRPTIMINGCALCULATIONDATA
 (
   id                                 NUMBER(10) not null,
   deviceid                           NUMBER(10),

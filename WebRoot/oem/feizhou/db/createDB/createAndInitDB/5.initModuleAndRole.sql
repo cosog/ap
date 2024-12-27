@@ -2,97 +2,97 @@
 /* 初始化TBL_DEVICETYPEINFO数据                                          */
 /*==============================================================*/
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (9999, 0, 0, '设备类型根节点');
+values (1, 0, 0, '设备类型根节点');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (1, 9999, 1, '泵设备');
+values (2, 1, 1, '泵设备');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (2, 9999, 2, '管设备');
+values (3, 1, 2, '管设备');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (3, 1, 11, '隔膜泵');
+values (4, 2, 11, '隔膜泵');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (4, 1, 12, '螺杆泵');
+values (5, 2, 12, '螺杆泵');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (5, 1, 13, '直线电机泵');
+values (6, 2, 13, '直线电机泵');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (6, 1, 14, '电潜泵');
+values (7, 2, 14, '电潜泵');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (7, 1, 15, '射流泵');
+values (8, 2, 15, '射流泵');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (8, 2, 21, '加热管');
+values (9, 3, 21, '加热管');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (9, 2, 22, '采水管');
+values (10, 3, 22, '采水管');
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME)
-values (10, 2, 23, '集输管');
+values (11, 3, 23, '集输管');
 
 /*==============================================================*/
 /* 初始化tbl_module数据                                          */
 /*==============================================================*/
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (9999, 0, '功能导航', '功能导航', '#', 'Navigation', 1, null, null, 'function', 0, '#');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (9999, 0, '功能导航', '功能导航', '#', 'Navigation', 1, null, null, 'function', 0, '#', 'Navigation', '功能导航', 'Navigation', '功能导航');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1998, 9999, '实时监控', '实时监控', 'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView', 'DeviceRealTimeMonitoring', 1010010, null, null, 'realtime', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (1998, 9999, '实时监控', '实时监控', 'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView', 'DeviceRealTimeMonitoring', 1010010, null, null, 'realtime', 0, 'AP.controller.frame.MainIframeControl', 'RealTimeMonitoring', '实时监控', 'RealTimeMonitoring', '实时监控');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2018, 9999, '历史查询', '历史查询', 'AP.view.historyQuery.HistoryQueryInfoView', 'DeviceHistoryQuery', 1020010, null, null, 'history', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2018, 9999, '历史查询', '历史查询', 'AP.view.historyQuery.HistoryQueryInfoView', 'DeviceHistoryQuery', 1020010, null, null, 'history', 0, 'AP.controller.frame.MainIframeControl', 'HistoryQuery', '历史查询', 'HistoryQuery', '历史查询');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2158, 9999, '生产报表', '生产报表', 'AP.view.reportOut.ReportOutDailyReportView', 'DailyReport', 1030010, null, null, 'report', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2158, 9999, '生产报表', '生产报表', 'AP.view.reportOut.ReportOutDailyReportView', 'DailyReport', 1030010, null, null, 'report', 0, 'AP.controller.frame.MainIframeControl', 'Report', '生产报表', 'Report', '生产报表');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2058, 9999, '故障查询', '故障查询', 'AP.view.alarmQuery.AlarmQueryInfoView', 'AlarmQuery', 1040010, null, null, 'alarm', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2058, 9999, '故障查询', '故障查询', 'AP.view.alarmQuery.AlarmQueryInfoView', 'AlarmQuery', 1040010, null, null, 'alarm', 0, 'AP.controller.frame.MainIframeControl', 'AlarmQuery', '故障查询', 'AlarmQuery', '故障查询');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2038, 9999, '设备日志', '设备日志', 'AP.view.log.DeviceOperationLogInfoView', 'DeviceOperationLogQuery', 1050010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2038, 9999, '设备日志', '设备日志', 'AP.view.log.DeviceOperationLogInfoView', 'DeviceOperationLogQuery', 1050010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl', 'DeviceLog', '设备日志', 'DeviceLog', '设备日志');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2238, 9999, '系统日志', '系统日志', 'AP.view.log.SystemLogInfoView', 'SystemLogQuery', 1060010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2238, 9999, '系统日志', '系统日志', 'AP.view.log.SystemLogInfoView', 'SystemLogQuery', 1060010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl', 'SystemLog', '系统日志', 'SystemLog', '系统日志');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2179, 9999, '计算维护', '计算维护', 'AP.view.dataMaintaining.CalculateMaintainingInfoView', 'CalculateMaintaining', 1070010, null, null, 'calculate', 0, '#');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2179, 9999, '计算维护', '计算维护', 'AP.view.dataMaintaining.CalculateMaintainingInfoView', 'CalculateMaintaining', 1070010, null, null, 'calculate', 0, '#', 'CalculateMaintaining', '计算维护', 'CalculateMaintaining', '计算维护');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1777, 9999, '驱动配置', '驱动配置', 'AP.view.acquisitionUnit.ProtocolConfigInfoView', 'DriverManagement', 1080010, null, null, 'driverConfig', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (1777, 9999, '驱动配置', '驱动配置', 'AP.view.acquisitionUnit.ProtocolConfigInfoView', 'DriverManagement', 1080010, null, null, 'driverConfig', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', 'DriverConfig', '驱动配置', 'DriverConfig', '驱动配置');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (27, 9999, '权限管理', '权限管理', '#', 'AuthorityManagement', 2030000, null, null, 'right', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (27, 9999, '权限管理', '权限管理', '#', 'AuthorityManagement', 2030000, null, null, 'right', 0, 'AP.controller.frame.MainIframeControl', 'AuthorityManagement', '权限管理', 'AuthorityManagement', '权限管理');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (24, 27, '组织用户', '组织用户', 'AP.view.orgAndUser.OrgAndUserInfoView', 'OrganizationAndUserManagement', 2030100, null, null, 'org', 0, 'AP.controller.orgAndUser.OrgAndUserInfoControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (24, 27, '组织用户', '组织用户', 'AP.view.orgAndUser.OrgAndUserInfoView', 'OrganizationAndUserManagement', 2030100, null, null, 'org', 0, 'AP.controller.orgAndUser.OrgAndUserInfoControl', 'OrganizationAndUser', '组织用户', 'OrganizationAndUser', '组织用户');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (29, 27, '角色管理', '角色管理', 'AP.view.role.RoleInfoView', 'RoleManagement', 2030300, null, null, 'role', 0, 'AP.controller.role.RoleInfoControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (29, 27, '角色管理', '角色管理', 'AP.view.role.RoleInfoView', 'RoleManagement', 2030300, null, null, 'role', 0, 'AP.controller.role.RoleInfoControl', 'RoleManagement', '角色管理', 'RoleManagement', '角色管理');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (31, 9999, '设备管理', '设备管理', '#', 'DeviceManagement', 2040000, null, null, 'dataConfig', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (31, 9999, '设备管理', '设备管理', '#', 'DeviceManagement', 2040000, null, null, 'dataConfig', 0, 'AP.controller.frame.MainIframeControl', 'DeviceManagement', '设备管理', 'DeviceManagement', '设备管理');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (34, 31, '设备信息', '设备信息', 'AP.view.well.DeviceManagerInfoView', 'WellInformation', 2040100, null, null, 'wellInformation', 0, 'AP.controller.well.WellInfoController');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (34, 31, '井名信息', '井名信息', 'AP.view.well.DeviceManagerInfoView', 'WellInformation', 2040100, null, null, 'wellInformation', 0, 'AP.controller.well.WellInfoController', 'DeviceInformation', '井名信息', 'DeviceInformation', '井名信息');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2218, 31, '辅件设备', '辅件设备', 'AP.view.well.AuxiliaryDeviceInfoView', 'AuxiliaryDeviceManager', 2040200, null, null, 'auxiliaryDevice', 0, 'AP.controller.well.WellInfoController');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2218, 31, '辅件设备', '辅件设备', 'AP.view.well.AuxiliaryDeviceInfoView', 'AuxiliaryDeviceManager', 2040200, null, null, 'auxiliaryDevice', 0, 'AP.controller.well.WellInfoController', 'AuxiliaryDeviceManagement', '辅件设备', 'AuxiliaryDeviceManagement', '辅件设备');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2078, 31, '短信设备', '短信设备管理', 'AP.view.well.SMSDeviceInfoView', 'SMSDeviceManager', 2040300, null, null, 'smsDevice', 0, 'AP.controller.well.WellInfoController');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2078, 31, '短信设备', '短信设备管理', 'AP.view.well.SMSDeviceInfoView', 'SMSDeviceManager', 2040300, null, null, 'smsDevice', 0, 'AP.controller.well.WellInfoController', 'SMSDeviceManager', '短信设备', 'SMSDeviceManager', '短信设备管理');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (23, 9999, '系统配置', '系统配置', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (23, 9999, '系统配置', '系统配置', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl', 'SystemManagement', '系统配置', 'SystemManagement', '系统配置');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (26, 23, '模块配置', '模块配置', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090100, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (26, 23, '模块配置', '模块配置', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090100, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl', 'ModuleManagement', '模块配置', 'ModuleManagement', '模块配置');
 
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090200, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl');
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090200, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'DataDictionaryManagement', '字典配置', 'DataDictionaryManagement', '字典配置');
 
 /*==============================================================*/
 /* 初始化tbl_role数据                                          */
@@ -479,289 +479,289 @@ values (482, 2238, 111, '1,0,0');
 /* 初始化TBL_DEVICETYPE2ROLE数据                                          */
 /*==============================================================*/
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (1, 1, 1, '0,0,0');
+values (1, 2, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (2, 2, 1, '0,0,0');
+values (2, 3, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (162, 3, 1, '0,0,0');
+values (162, 4, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (163, 4, 1, '0,0,0');
+values (163, 5, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (164, 5, 1, '0,0,0');
+values (164, 6, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (165, 6, 1, '0,0,0');
+values (165, 7, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (166, 7, 1, '0,0,0');
+values (166, 8, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (167, 8, 1, '0,0,0');
+values (167, 9, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (168, 9, 1, '0,0,0');
+values (168, 10, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (169, 10, 1, '0,0,0');
+values (169, 11, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (3, 9999, 1, '0,0,0');
+values (3, 1, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (182, 1, 2, '0,0,0');
+values (182, 2, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (188, 2, 2, '0,0,0');
+values (188, 3, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (183, 3, 2, '0,0,0');
+values (183, 4, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (184, 4, 2, '0,0,0');
+values (184, 5, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (185, 5, 2, '0,0,0');
+values (185, 6, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (186, 6, 2, '0,0,0');
+values (186, 7, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (187, 7, 2, '0,0,0');
+values (187, 8, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (189, 8, 2, '0,0,0');
+values (189, 9, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (190, 9, 2, '0,0,0');
+values (190, 10, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (191, 10, 2, '0,0,0');
+values (191, 11, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (181, 9999, 2, '0,0,0');
+values (181, 1, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (193, 1, 3, '0,0,0');
+values (193, 2, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (199, 2, 3, '0,0,0');
+values (199, 3, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (194, 3, 3, '0,0,0');
+values (194, 4, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (195, 4, 3, '0,0,0');
+values (195, 5, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (196, 5, 3, '0,0,0');
+values (196, 6, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (197, 6, 3, '0,0,0');
+values (197, 7, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (198, 7, 3, '0,0,0');
+values (198, 8, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (200, 8, 3, '0,0,0');
+values (200, 9, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (201, 9, 3, '0,0,0');
+values (201, 10, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (202, 10, 3, '0,0,0');
+values (202, 11, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (192, 9999, 3, '0,0,0');
+values (192, 1, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (204, 1, 4, '0,0,0');
+values (204, 2, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (210, 2, 4, '0,0,0');
+values (210, 3, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (205, 3, 4, '0,0,0');
+values (205, 4, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (206, 4, 4, '0,0,0');
+values (206, 5, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (207, 5, 4, '0,0,0');
+values (207, 6, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (208, 6, 4, '0,0,0');
+values (208, 7, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (209, 7, 4, '0,0,0');
+values (209, 8, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (211, 8, 4, '0,0,0');
+values (211, 9, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (212, 9, 4, '0,0,0');
+values (212, 10, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (213, 10, 4, '0,0,0');
+values (213, 11, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (203, 9999, 4, '0,0,0');
+values (203, 1, 4, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (215, 1, 44, '0,0,0');
+values (215, 2, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (221, 2, 44, '0,0,0');
+values (221, 3, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (216, 3, 44, '0,0,0');
+values (216, 4, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (217, 4, 44, '0,0,0');
+values (217, 5, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (218, 5, 44, '0,0,0');
+values (218, 6, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (219, 6, 44, '0,0,0');
+values (219, 7, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (220, 7, 44, '0,0,0');
+values (220, 8, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (222, 8, 44, '0,0,0');
+values (222, 9, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (223, 9, 44, '0,0,0');
+values (223, 10, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (224, 10, 44, '0,0,0');
+values (224, 11, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (214, 9999, 44, '0,0,0');
+values (214, 1, 44, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (241, 1, 104, '0,0,0');
+values (241, 2, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (242, 3, 104, '0,0,0');
+values (242, 4, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (243, 4, 104, '0,0,0');
+values (243, 5, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (244, 5, 104, '0,0,0');
+values (244, 6, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (245, 6, 104, '0,0,0');
+values (245, 7, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (246, 7, 104, '0,0,0');
+values (246, 8, 104, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (247, 2, 105, '0,0,0');
+values (247, 3, 105, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (248, 8, 105, '0,0,0');
+values (248, 9, 105, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (249, 9, 105, '0,0,0');
+values (249, 10, 105, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (250, 10, 105, '0,0,0');
+values (250, 11, 105, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (251, 1, 106, '0,0,0');
+values (251, 2, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (252, 3, 106, '0,0,0');
+values (252, 4, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (253, 4, 106, '0,0,0');
+values (253, 5, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (254, 5, 106, '0,0,0');
+values (254, 6, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (255, 6, 106, '0,0,0');
+values (255, 7, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (256, 7, 106, '0,0,0');
+values (256, 8, 106, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (257, 2, 107, '0,0,0');
+values (257, 3, 107, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (258, 8, 107, '0,0,0');
+values (258, 9, 107, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (259, 9, 107, '0,0,0');
+values (259, 10, 107, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (260, 10, 107, '0,0,0');
+values (260, 11, 107, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (261, 1, 108, '0,0,0');
+values (261, 2, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (262, 3, 108, '0,0,0');
+values (262, 4, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (263, 4, 108, '0,0,0');
+values (263, 5, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (264, 5, 108, '0,0,0');
+values (264, 6, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (265, 6, 108, '0,0,0');
+values (265, 7, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (266, 7, 108, '0,0,0');
+values (266, 8, 108, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (267, 2, 109, '0,0,0');
+values (267, 3, 109, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (268, 8, 109, '0,0,0');
+values (268, 9, 109, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (269, 9, 109, '0,0,0');
+values (269, 10, 109, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (270, 10, 109, '0,0,0');
+values (270, 11, 109, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (271, 1, 110, '0,0,0');
+values (271, 2, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (272, 3, 110, '0,0,0');
+values (272, 4, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (273, 4, 110, '0,0,0');
+values (273, 5, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (274, 5, 110, '0,0,0');
+values (274, 6, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (275, 6, 110, '0,0,0');
+values (275, 7, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (276, 7, 110, '0,0,0');
+values (276, 8, 110, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (277, 2, 111, '0,0,0');
+values (277, 3, 111, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (278, 8, 111, '0,0,0');
+values (278, 9, 111, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (279, 9, 111, '0,0,0');
+values (279, 10, 111, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (280, 10, 111, '0,0,0');
+values (280, 11, 111, '0,0,0');
 
 /*==============================================================*/
 /* 初始化tbl_org数据                                          */

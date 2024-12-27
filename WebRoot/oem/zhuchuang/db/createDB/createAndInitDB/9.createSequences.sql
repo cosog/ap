@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 150017
+start with 150717
 increment by 1
 cache 20;
 
@@ -327,38 +327,31 @@ start with 303
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCACQDATA_HIST
+create sequence SEQ_SRPACQDATA_HIST
 minvalue 0
 maxvalue 999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCACQDATA_LATEST
+create sequence SEQ_SRPACQDATA_LATEST
 minvalue 0
 maxvalue 999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCDAILYCALCULATIONDATA
+create sequence SEQ_SRPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCTIMINGCALCULATIONDATA
+create sequence SEQ_SRPTIMINGCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
 start with 1
-increment by 1
-cache 20;
-
-create sequence SEQ_RPC_WORKTYPE
-minvalue 1
-maxvalue 999999999999999999999999
-start with 34
 increment by 1
 cache 20;
 

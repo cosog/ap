@@ -1996,7 +1996,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
-				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t.stroke,t.balanceinfo from tbl_device t where t.id="+deviceId;
 		String auxiliaryDeviceSql="select t3.name,t3.manufacturer,t3.model "
@@ -2005,11 +2005,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " and t3.specifictype=1"
 				+ " and t.id="+deviceId;
 		
-		String auxiliaryDeviceDetailsSql="select t4.itemname,t4.itemvalue "
+		String auxiliaryDeviceDetailsSql="select t4.itemname,t4.itemvalue,t4.itemcode "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 				+ " and t3.specifictype=1"
-				+ " and t4.itemname in('"+languageResourceMap.get("stroke")+"','"+languageResourceMap.get("balanceWeight")+"') "
+				+ " and lower(t4.itemcode) in('stroke','balanceweight') "
 				+ " and t.id="+deviceId;
 		
 		String json = "";
@@ -2027,10 +2027,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<auxiliaryDeviceDetailsList.size();i++){
 			Object[] obj = (Object[]) auxiliaryDeviceDetailsList.get(i);
-			if(languageResourceMap.get("stroke").equalsIgnoreCase(obj[0]+"")){
-				strokeArrStr=obj[1]+"";
-			}else if(languageResourceMap.get("balanceWeight").equalsIgnoreCase(obj[0]+"")){
-				balanceInfoArrStr=obj[1]+"";
+			String itemName=obj[0]+"";
+			String itemValue=obj[1]+"";
+			String itemCode=obj[2]+"";
+			if("stroke".equalsIgnoreCase(itemCode)){
+				strokeArrStr=itemValue;
+			}else if("balanceWeight".equalsIgnoreCase(itemCode)){
+				balanceInfoArrStr=itemValue;
 			}
 		}
 		
@@ -3272,7 +3275,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					String itemUnit=obj[4]+"";
 					if("stroke".equalsIgnoreCase(itemCode)){
 						stroke=itemValue+"";
-					}else if("rotationDirection".equalsIgnoreCase(itemCode)){
+					}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
 						if("Clockwise".equalsIgnoreCase(itemValue)){
 							crankRotationDirection=languageResourceMap.get("clockwise");
 						}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
@@ -3294,7 +3297,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}
 			}
 			totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\",\"itemCode\":\"stroke\"},");
-			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("rotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"rotationDirection\"},");
+			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("crankRotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"crankRotationDirection\"},");
 			totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\",\"itemCode\":\"offsetAngleOfCrank\"},");
 			totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\",\"itemCode\":\"crankGravityRadius\"},");
 			totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankWeight\"},");

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
@@ -1188,23 +1189,174 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	
 	public String getFSDiagramCalculateRequestData(String recordId,String deviceName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		String sql=""
-				+ " select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
+				+ " select t2.deviceName,decode(t2.applicationscenarios,0,'煤层气井','油井') as applicationscenarios,"
 				+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " t.productiondata,"
-				+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
-				+ " t.balanceinfo"
-				+ " from tbl_rpcacqdata_hist t"
+				+ " t.balanceinfo,"
+				+ " t2.stroke as inputStroke"
+				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device t2 on t.deviceId=t2.id"
-				+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 				+ " where 1=1  "
 				+ " and t.id="+recordId;
+		
+		String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemname,t4.itemvalue "
+				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4,"
+				+ " tbl_srpacqdata_hist t5"
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid"
+				+ " and t5.deviceId=t.id "
+				+ " and t3.specifictype=1"
+				+ " and t5.id="+recordId;
+		
 		List<?> list = this.findCallSql(sql);
+		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
+		
+		
 		if(list.size()>0){
-			Object[] obj=(Object[])list.get(0);
-			requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+			Object[] object=(Object[])list.get(0);
+//			requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+
+			String productionData=object[10].toString();
+			
+			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+			RPCCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
+			if(calculateRequestData==null){
+				calculateRequestData=new RPCCalculateRequestData();
+				calculateRequestData.init();
+			}
+			
+			calculateRequestData.setWellName(object[0]+"");
+			calculateRequestData.setScene(object[1]+"");
+
+			//功图数据
+			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
+	        calculateRequestData.getFESDiagram().setAcqTime(object[2]+"");
+	        calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[3]+""));
+	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[4]+""));
+	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[5]+""));
+			
+	        List<Float> F=new ArrayList<Float>();
+	        List<Float> S=new ArrayList<Float>();
+	        List<Float> Watt=new ArrayList<Float>();
+	        List<Float> I=new ArrayList<Float>();
+	        
+	        int count =Integer.MAX_VALUE;
+//	        if(StringManagerUtils.isNum(object[21]+"") || StringManagerUtils.isNumber(object[21]+"")){
+//	        	count=StringManagerUtils.stringToInteger(object[21]+"");
+//	        }
+	        
+	        SerializableClobProxy proxy=null;
+	        CLOB realClob =null;
+	        String clobStr="";
+	        String[] curveData=null;
+	        if(object[6]!=null){//位移曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[6]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length && i<count;i++){
+					S.add(StringManagerUtils.stringToFloat(curveData[i]));
+				}
+	        }
+	        if(object[7]!=null){//载荷曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[7]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length && i<count;i++){
+					F.add(StringManagerUtils.stringToFloat(curveData[i]));
+				}
+	        }
+	        if(object[8]!=null){//功率曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[8]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(clobStr)){
+					curveData=clobStr.split(",");
+					for(int i=0;i<curveData.length && i<count;i++){
+						Watt.add(StringManagerUtils.stringToFloat(curveData[i]));
+					}
+				}
+	        }
+	        if(object[9]!=null){//电流曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[9]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(clobStr)){
+					curveData=clobStr.split(",");
+					for(int i=0;i<curveData.length && i<count;i++){
+						I.add(StringManagerUtils.stringToFloat(curveData[i]));
+					}
+				}
+	        }
+	        calculateRequestData.getFESDiagram().setF(F);
+	        calculateRequestData.getFESDiagram().setS(S);
+	        calculateRequestData.getFESDiagram().setWatt(Watt);
+	        calculateRequestData.getFESDiagram().setI(I);
+	        
+	        
+	        if(auxiliaryDeviceList.size()>0){
+	        	List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+	        	for(int i=0;i<auxiliaryDeviceList.size();i++){
+	        		Object[] obj=(Object[])auxiliaryDeviceList.get(i);
+	        		
+	        		AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+					auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(obj[0]+""));
+					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
+					auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
+					auxiliaryDeviceAddInfo.setModel(obj[3]+"");
+					auxiliaryDeviceAddInfo.setItemName(obj[4]+"");
+					auxiliaryDeviceAddInfo.setItemValue(obj[5]+"");
+					auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+				}
+	        	
+	        	
+	        	if(auxiliaryDeviceAddInfoList.size()>0){
+	        		String balanceInfo=object[11]+"";
+					String inputStroke=object[12]+"";
+	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+	        		String manufacturer="";
+					String model="";
+					for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
+						manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
+						model=auxiliaryDeviceAddInfoList.get(i).getModel();
+						if("旋转方向".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
+						}else if("曲柄偏置角".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+						}else if("曲柄重心半径".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+						}else if("单块曲柄重量".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+						}else if("单块曲柄销重量".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+						}else if("结构不平衡重".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemName())){
+							calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+						}
+					}
+					
+					
+					calculateRequestData.getPumpingUnit().setManufacturer(manufacturer);
+					calculateRequestData.getPumpingUnit().setModel(model);
+					calculateRequestData.getPumpingUnit().setStroke(StringManagerUtils.stringToFloat(inputStroke,2));
+					
+					
+					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+					if(balance!=null){
+						calculateRequestData.getPumpingUnit().setBalance(balance);
+					}
+	        	}else{
+	        		calculateRequestData.setPumpingUnit(null);
+	        	}
+	        }else{
+        		calculateRequestData.setPumpingUnit(null);
+        	}
+	        requestData=calculateRequestData.toString();
 		}
 		return requestData;
 	}

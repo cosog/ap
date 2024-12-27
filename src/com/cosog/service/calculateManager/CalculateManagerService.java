@@ -1062,8 +1062,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 							calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
 						}else if("structuralUnbalance".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 							calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-						}else if("rotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-							calculateRequestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
 						}
 					}
 					

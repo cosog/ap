@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 150017
+start with 150717
 increment by 1
 cache 20;
 
@@ -29,28 +29,28 @@ cache 20;
 create sequence SEQ_ACQUISITIONGROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 6
+start with 105
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQUISITIONUNIT
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 4
+start with 103
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQ_GROUP_ITEM
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 65
+start with 1050
 increment by 1
 cache 20;
 
 create sequence SEQ_ACQ_UNIT_GROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 6
+start with 105
 increment by 1
 cache 20;
 
@@ -176,14 +176,14 @@ cache 2;
 create sequence SEQ_DISPLAY_ITEMS2UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 160
+start with 2056
 increment by 1
 cache 20;
 
 create sequence SEQ_DISPLAY_UNIT_CONF
 minvalue 1
 maxvalue 999999999999999999999999
-start with 4
+start with 103
 increment by 1
 cache 20;
 
@@ -246,14 +246,14 @@ cache 20;
 create sequence SEQ_PROTOCOLDISPLAYINSTANCE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 4
+start with 103
 increment by 1
 cache 20;
 
 create sequence SEQ_PROTOCOLINSTANCE
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 4
+start with 105
 increment by 1
 cache 20;
 
@@ -327,38 +327,31 @@ start with 303
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCACQDATA_HIST
+create sequence SEQ_SRPACQDATA_HIST
 minvalue 0
 maxvalue 999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCACQDATA_LATEST
+create sequence SEQ_SRPACQDATA_LATEST
 minvalue 0
 maxvalue 999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCDAILYCALCULATIONDATA
+create sequence SEQ_SRPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
 start with 1
 increment by 1
 cache 20;
 
-create sequence SEQ_RPCTIMINGCALCULATIONDATA
+create sequence SEQ_SRPTIMINGCALCULATIONDATA
 minvalue 1
 maxvalue 999999999999999999999999
 start with 1
-increment by 1
-cache 20;
-
-create sequence SEQ_RPC_WORKTYPE
-minvalue 1
-maxvalue 999999999999999999999999
-start with 34
 increment by 1
 cache 20;
 

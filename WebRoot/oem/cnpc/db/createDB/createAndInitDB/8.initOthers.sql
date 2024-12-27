@@ -156,7 +156,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (50, 22, '冲程', '1.4,1.2,1,0.8', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (51, 22, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (51, 22, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (52, 22, '曲柄偏置角', '-14', '°', 'offsetAngleOfCrank');
@@ -180,7 +180,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (58, 82, '冲程', '2.5,2.1,1.8', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (59, 82, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (59, 82, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (60, 82, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -204,7 +204,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (66, 83, '冲程', '2.5,2.1,1.7,1.4,1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (67, 83, '旋转方向', 'Anticlockwise', null, 'rotationDirection');
+values (67, 83, '旋转方向', 'Anticlockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (68, 83, '曲柄偏置角', '0', '°', 'offsetAngleOfCrank');
@@ -228,7 +228,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (117, 102, '冲程', '2.5,2.1,1.8', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (118, 102, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (118, 102, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (119, 102, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -252,7 +252,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (125, 103, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (126, 103, '旋转方向', 'Anticlockwise', null, 'rotationDirection');
+values (126, 103, '旋转方向', 'Anticlockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (127, 103, '曲柄偏置角', '0', '°', 'offsetAngleOfCrank');
@@ -276,7 +276,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (133, 104, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (134, 104, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (134, 104, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (135, 104, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -300,7 +300,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (141, 105, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (142, 105, '旋转方向', 'Anticlockwise', null, 'rotationDirection');
+values (142, 105, '旋转方向', 'Anticlockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (143, 105, '曲柄偏置角', '0', '°', 'offsetAngleOfCrank');
@@ -324,7 +324,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (149, 106, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (150, 106, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (150, 106, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (151, 106, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -348,7 +348,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (157, 107, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (158, 107, '旋转方向', 'Anticlockwise', null, 'rotationDirection');
+values (158, 107, '旋转方向', 'Anticlockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (159, 107, '曲柄偏置角', '0', '°', 'offsetAngleOfCrank');
@@ -372,7 +372,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (165, 108, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (166, 108, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (166, 108, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (167, 108, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -396,7 +396,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (173, 109, '冲程', '4.2,3.6,3', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (174, 109, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (174, 109, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (175, 109, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -420,7 +420,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (181, 110, '冲程', '3,2.5,2.1', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (182, 110, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (182, 110, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (183, 110, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -444,7 +444,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (189, 111, '冲程', '4.2,3.6,3', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (190, 111, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (190, 111, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (191, 111, '曲柄偏置角', '-8', '°', 'offsetAngleOfCrank');
@@ -468,7 +468,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (197, 112, '冲程', '5.5,4.6,3.7', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (198, 112, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (198, 112, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (199, 112, '曲柄偏置角', '-7.5', '°', 'offsetAngleOfCrank');
@@ -492,7 +492,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (205, 113, '冲程', '6,5,4', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (206, 113, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (206, 113, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (207, 113, '曲柄偏置角', '-7.5', '°', 'offsetAngleOfCrank');
@@ -516,7 +516,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (213, 114, '冲程', '5.5,4.6,3.7', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (214, 114, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (214, 114, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (215, 114, '曲柄偏置角', '-7.5', '°', 'offsetAngleOfCrank');
@@ -540,7 +540,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (221, 115, '冲程', '6,5,4', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (222, 115, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (222, 115, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (223, 115, '曲柄偏置角', '-7.5', '°', 'offsetAngleOfCrank');
@@ -564,7 +564,7 @@ insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, IT
 values (229, 116, '冲程', '2.5,3', 'm', 'stroke');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
-values (230, 116, '旋转方向', 'Clockwise', null, 'rotationDirection');
+values (230, 116, '旋转方向', 'Clockwise', null, 'crankRotationDirection');
 
 insert into TBL_AUXILIARYDEVICE (ID, DEVICEID, ITEMNAME, ITEMVALUE, ITEMUNIT, ITEMCODE)
 values (231, 116, '曲柄偏置角', '0', '°', 'offsetAngleOfCrank');

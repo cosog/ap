@@ -546,7 +546,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	var itemValue=isNotVal(auxiliaryDeviceDetailsData[index][2])?auxiliaryDeviceDetailsData[index][2]:"";
                         	var itemUnit=isNotVal(auxiliaryDeviceDetailsData[index][3])?auxiliaryDeviceDetailsData[index][3]:"";
                         	var itemCode=isNotVal(auxiliaryDeviceDetailsData[index][4])?auxiliaryDeviceDetailsData[index][4]:"";
-                        	if(auxiliaryDeviceSpecificType==1 && itemName==loginUserLanguageResource.rotationDirection){
+                        	if(auxiliaryDeviceSpecificType==1 && itemName==loginUserLanguageResource.crankRotationDirection){
                         		if(itemValue==loginUserLanguageResource.clockwise){
                         			itemValue='Clockwise';
                         		}else if(itemValue==loginUserLanguageResource.anticlockwise){

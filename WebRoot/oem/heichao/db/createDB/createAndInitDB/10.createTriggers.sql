@@ -90,7 +90,8 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER trg_b_code_i   before  insert on TBL_CODE FOR EACH ROW
+CREATE OR REPLACE TRIGGER 
+trg_b_code_i   before  insert on "TBL_CODE" FOR EACH ROW
 BEGIN
   SELECT SEQ_code.nextval INTO :new.id FROM dual;
 END;
@@ -279,36 +280,6 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE TRIGGER trg_b_rpcacqdata_hist_i   before  insert on tbl_rpcacqdata_hist FOR EACH ROW
-BEGIN
-  SELECT seq_rpcacqdata_hist.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_rpcacqdata_latest_i   before  insert on tbl_rpcacqdata_latest FOR EACH ROW
-BEGIN
-  SELECT seq_rpcacqdata_latest.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_RPCDAILY_i   before  insert on TBL_RPCDAILYCALCULATIONDATA FOR EACH ROW
-BEGIN
-  SELECT SEQ_RPCDAILYCALCULATIONDATA.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_RPCTIMINGCALCULATIONDATA_i   before  insert on TBL_RPCTIMINGCALCULATIONDATA FOR EACH ROW
-BEGIN
-  SELECT SEQ_RPCTIMINGCALCULATIONDATA.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_rpc_worktype_i_u   before insert on TBL_RPC_WORKTYPE FOR EACH ROW
-BEGIN
-  SELECT SEQ_RPC_WORKTYPE.nextval INTO :new.id FROM dual;
-END;
-/
-
 CREATE OR REPLACE TRIGGER trg_b_runstatusconfig_i   before  insert on tbl_runstatusconfig FOR EACH ROW
 BEGIN
   SELECT seq_runstatusconfig.nextval INTO :new.id FROM dual;
@@ -318,6 +289,34 @@ END;
 CREATE OR REPLACE TRIGGER trg_b_smsdevice_i   before  insert on tbl_smsdevice FOR EACH ROW
 BEGIN
   SELECT seq_smsdevice.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER 
+trg_b_srpacqdata_hist_i   before  insert on TBL_SRPACQDATA_HIST FOR EACH ROW
+BEGIN
+  SELECT seq_srpacqdata_hist.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER 
+trg_b_srpacqdata_latest_i   before  insert on TBL_SRPACQDATA_LATEST FOR EACH ROW
+BEGIN
+  SELECT seq_srpacqdata_latest.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER 
+trg_b_SRPDAILY_i   before  insert on "TBL_SRPDAILYCALCULATIONDATA" FOR EACH ROW
+BEGIN
+  SELECT SEQ_SRPDAILYCALCULATIONDATA.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER 
+trg_b_SRPTIMINGCALCULATIONDATA_i   before  insert on TBL_SRPTIMINGCALCULATIONDATA FOR EACH ROW
+BEGIN
+  SELECT SEQ_SRPTIMINGCALCULATIONDATA.nextval INTO :new.id FROM dual;
 end;
 /
 

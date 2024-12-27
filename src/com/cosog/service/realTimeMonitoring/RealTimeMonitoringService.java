@@ -643,11 +643,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType";//18
 			
-			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from tbl_device t,tbl_deviceaddinfo t2 "
+			String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit from "
+					+ " tbl_device t,tbl_deviceaddinfo t2 "
 					+ " where t.id=t2.deviceid "
 					+ " and t.orgid in ("+orgId+") ";
 			
-			String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.remark from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
+			String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.remark "
+					+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
 					+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
 					+ " and t.orgid in ("+orgId+") ";
 			sql+= " from "+deviceTableName+" t "
@@ -2021,7 +2023,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ " where t.id=t2.deviceid and t.id="+deviceId
 				+ " order by t2.id";
 		
-		String auxiliaryDeviceDetailsSql="select t4.deviceid,t4.itemname,t4.itemvalue,t3.specifictype "
+		String auxiliaryDeviceDetailsSql="select t4.deviceid,t4.itemname,t4.itemvalue,t3.specifictype,t4.itemcode "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 				+ " and t3.type= "+deviceType
@@ -2047,11 +2049,29 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String itemName=detailsObj[1]+"";
 				String itemValue=detailsObj[2]+"";
 				String specificType=detailsObj[3]+"";
-				if("1".equalsIgnoreCase(specificType) && languageResourceMap.get("rotationDirection").equalsIgnoreCase(itemName)){
-					if("Clockwise".equalsIgnoreCase(itemValue)){
-						itemValue=languageResourceMap.get("clockwise");
-					}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
-						itemValue=languageResourceMap.get("anticlockwise");
+				String itemCode=detailsObj[4]+"";
+				if("1".equalsIgnoreCase(specificType)){
+					if("stroke".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("stroke");
+					}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
+						if("Clockwise".equalsIgnoreCase(itemValue)){
+							itemValue=languageResourceMap.get("clockwise");
+						}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
+							itemValue=languageResourceMap.get("anticlockwise");
+						}
+						itemName=languageResourceMap.get("crankRotationDirection");
+					}else if("offsetAngleOfCrank".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("offsetAngleOfCrank");
+					}else if("crankGravityRadius".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("crankGravityRadius");
+					}else if("singleCrankWeight".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("singleCrankWeight");
+					}else if("singleCrankPinWeight".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("singleCrankPinWeight");
+					}else if("structuralUnbalance".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("structuralUnbalance");
+					}else if("balanceWeight".equalsIgnoreCase(itemCode)){
+						itemName=languageResourceMap.get("balanceWeight");
 					}
 				}
 				if((detailsObj[0]+"").equalsIgnoreCase(obj[0]+"")){

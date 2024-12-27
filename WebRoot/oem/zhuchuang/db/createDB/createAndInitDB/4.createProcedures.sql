@@ -20,12 +20,6 @@ END BlobToClob;
 
 create or replace function GETELEMENTFROMARRAYBYINDEX(Liststr in varchar2,sPlitVal in varchar2,iPos integer)
 return varchar2 is
-  /*
-  Liststr--传入将要被分割的字符串
-  sPlitVal--用来分割的字符串
-  iPos--获取分割后的数组中该位置的元素值
-
-  */
   type tt_type is table of varchar2(100) INDEX BY BINARY_INTEGER;
   V1 tt_type;
   --FieldNames转化为数组
@@ -91,10 +85,10 @@ EXECUTE IMMEDIATE 'truncate table tbl_dailytotalcalculate_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_dailycalculationdata';
 EXECUTE IMMEDIATE 'truncate table tbl_timingcalculationdata';
 
-EXECUTE IMMEDIATE 'truncate table tbl_rpcacqdata_latest';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcacqdata_hist';
-EXECUTE IMMEDIATE 'truncate table tbl_rpcdailycalculationdata';
-EXECUTE IMMEDIATE 'truncate table tbl_rpctimingcalculationdata';
+EXECUTE IMMEDIATE 'truncate table tbl_srpacqdata_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_srpacqdata_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_srpdailycalculationdata';
+EXECUTE IMMEDIATE 'truncate table tbl_srptimingcalculationdata';
 
 
 EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_latest';
@@ -127,10 +121,10 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
  prd_reset_sequence('seq_timingcalculationdata');
 
 
- prd_reset_sequence('seq_rpcacqdata_latest');
- prd_reset_sequence('seq_rpcacqdata_hist');
- prd_reset_sequence('seq_rpcdailycalculationdata');
- prd_reset_sequence('seq_rpctimingcalculationdata');
+ prd_reset_sequence('seq_srpacqdata_latest');
+ prd_reset_sequence('seq_srpacqdata_hist');
+ prd_reset_sequence('seq_srpdailycalculationdata');
+ prd_reset_sequence('seq_srptimingcalculationdata');
 
  prd_reset_sequence('seq_pcpacqdata_latest');
  prd_reset_sequence('seq_pcpacqdata_hist');
@@ -186,15 +180,15 @@ CREATE OR REPLACE PROCEDURE prd_init_device_reportdate(v_offsetHour  in NUMBER,
                                                        v_interval  in NUMBER
 ) as
 begin
-    insert into tbl_rpcdailycalculationdata (deviceid,caldate)
+    insert into tbl_srpdailycalculationdata (deviceid,caldate)
     select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_device well
-    where well.calculatetype=1 and well.id not in ( select t2.deviceid from tbl_rpcdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    where well.calculatetype=1 and well.id not in ( select t2.deviceid from tbl_srpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
     commit;
 
-    update tbl_rpcdailycalculationdata t set t.headerlabelinfo=
-    ( select t2.headerlabelinfo from  tbl_rpcdailycalculationdata t2
+    update tbl_srpdailycalculationdata t set t.headerlabelinfo=
+    ( select t2.headerlabelinfo from  tbl_srpdailycalculationdata t2
     where t2.deviceid=t.deviceid and t2.caldate=
-    ( select max(t3.caldate) from tbl_rpcdailycalculationdata t3 where t3.deviceid=t2.deviceid and t3.headerlabelinfo is not null ))
+    ( select max(t3.caldate) from tbl_srpdailycalculationdata t3 where t3.deviceid=t2.deviceid and t3.headerlabelinfo is not null ))
     where t.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
     and t.headerlabelinfo is null;
     commit;
@@ -225,17 +219,17 @@ CREATE OR REPLACE PROCEDURE prd_init_device_timingreportdate(
   p_msg varchar2(3000) := 'error';
 begin
     if v_calculateType=1 then
-      select count(1) into recordCount from tbl_rpctimingcalculationdata t  where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
+      select count(1) into recordCount from tbl_srptimingcalculationdata t  where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
       if recordCount=0 then
-        insert into tbl_rpctimingcalculationdata (deviceid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
+        insert into tbl_srptimingcalculationdata (deviceid,caltime)values(v_deviceId,to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss'));
         commit;
       end if;
       --更新采集生产数据
-      update tbl_rpctimingcalculationdata t set
+      update tbl_srptimingcalculationdata t set
         (stroke,spm,tubingpressure,casingpressure,producingfluidlevel,bottomholepressure)
         =(
           select t2.stroke,t2.spm,t2.tubingpressure,t2.casingpressure,t2.producingfluidlevel,t2.bottomholepressure
-          from TBL_RPCDAILYCALCULATIONDATA t2
+          from TBL_srpDAILYCALCULATIONDATA t2
            where t2.caldate=to_date(v_dateStr,'yyyy-mm-dd')
            and t2.deviceid=v_deviceId
            and rownum=1
@@ -243,14 +237,14 @@ begin
         where t.deviceid=v_deviceId and t.caltime=to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss');
       commit;
       --更新采集实时产量
-      update tbl_rpctimingcalculationdata t set
+      update tbl_srptimingcalculationdata t set
            (t.realtimewatervolumetricproduction,t.realtimegasvolumetricproduction) =
            ( select t2.realtimewatervolumetricproduction,t2.realtimegasvolumetricproduction
-           from tbl_rpcacqdata_hist t2
+           from tbl_srpacqdata_hist t2
            where t2.id=(
                  select v2.id from
                  (select v.id,rownum r from
-                 (select t3.id from  tbl_rpcacqdata_hist t3
+                 (select t3.id from  tbl_srpacqdata_hist t3
                  where t3.commstatus=1 and t3.realtimewatervolumetricproduction is not null
                  and t3.acqtime between to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_timeStr,'yyyy-mm-dd hh24:mi:ss')
                  and t3.deviceid=v_deviceId
@@ -347,46 +341,46 @@ CREATE OR REPLACE PROCEDURE prd_save_alarmcolor (    overviewBackgroundColor0   
   p_msg varchar2(30) := 'error';
 begin
     --数据报警
-    Update tbl_code t1 set t1.itemname=overviewBackgroundColor0 where t1.itemcode='BJYS' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=overviewBackgroundColor1 where t1.itemcode='BJYS' and t1.itemvalue=100;
-    Update tbl_code t1 set t1.itemname=overviewBackgroundColor2 where t1.itemcode='BJYS' and t1.itemvalue=200;
-    Update tbl_code t1 set t1.itemname=overviewBackgroundColor3 where t1.itemcode='BJYS' and t1.itemvalue=300;
+    Update tbl_code t1 set t1.itemname=overviewBackgroundColor0 where t1.itemcode='ALARMBACKCOLOR' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=overviewBackgroundColor1 where t1.itemcode='ALARMBACKCOLOR' and t1.itemvalue=100;
+    Update tbl_code t1 set t1.itemname=overviewBackgroundColor2 where t1.itemcode='ALARMBACKCOLOR' and t1.itemvalue=200;
+    Update tbl_code t1 set t1.itemname=overviewBackgroundColor3 where t1.itemcode='ALARMBACKCOLOR' and t1.itemvalue=300;
 
-    Update tbl_code t1 set t1.itemname=overviewColor0 where t1.itemcode='BJQJYS' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=overviewColor1 where t1.itemcode='BJQJYS' and t1.itemvalue=100;
-    Update tbl_code t1 set t1.itemname=overviewColor2 where t1.itemcode='BJQJYS' and t1.itemvalue=200;
-    Update tbl_code t1 set t1.itemname=overviewColor3 where t1.itemcode='BJQJYS' and t1.itemvalue=300;
+    Update tbl_code t1 set t1.itemname=overviewColor0 where t1.itemcode='ALARMFORECOLOR' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=overviewColor1 where t1.itemcode='ALARMFORECOLOR' and t1.itemvalue=100;
+    Update tbl_code t1 set t1.itemname=overviewColor2 where t1.itemcode='ALARMFORECOLOR' and t1.itemvalue=200;
+    Update tbl_code t1 set t1.itemname=overviewColor3 where t1.itemcode='ALARMFORECOLOR' and t1.itemvalue=300;
 
-    Update tbl_code t1 set t1.itemname=overviewOpacity0 where t1.itemcode='BJYSTMD' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=overviewOpacity1 where t1.itemcode='BJYSTMD' and t1.itemvalue=100;
-    Update tbl_code t1 set t1.itemname=overviewOpacity2 where t1.itemcode='BJYSTMD' and t1.itemvalue=200;
-    Update tbl_code t1 set t1.itemname=overviewOpacity3 where t1.itemcode='BJYSTMD' and t1.itemvalue=300;
+    Update tbl_code t1 set t1.itemname=overviewOpacity0 where t1.itemcode='ALARMCOLOROPACITY' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=overviewOpacity1 where t1.itemcode='ALARMCOLOROPACITY' and t1.itemvalue=100;
+    Update tbl_code t1 set t1.itemname=overviewOpacity2 where t1.itemcode='ALARMCOLOROPACITY' and t1.itemvalue=200;
+    Update tbl_code t1 set t1.itemname=overviewOpacity3 where t1.itemcode='ALARMCOLOROPACITY' and t1.itemvalue=300;
 
     --通信
-    Update tbl_code t1 set t1.itemname=goOnlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=2;
-    Update tbl_code t1 set t1.itemname=onlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=offlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=goOnlineBackgroundColor where t1.itemcode='COMMALARMBACKCOLOR' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=onlineBackgroundColor where t1.itemcode='COMMALARMBACKCOLOR' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=offlineBackgroundColor where t1.itemcode='COMMALARMBACKCOLOR' and t1.itemvalue=0;
 
-    Update tbl_code t1 set t1.itemname=goOnlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=2;
-    Update tbl_code t1 set t1.itemname=onlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=offlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=goOnlineColor where t1.itemcode='COMMALARMFORECOLOR' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=onlineColor where t1.itemcode='COMMALARMFORECOLOR' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=offlineColor where t1.itemcode='COMMALARMFORECOLOR' and t1.itemvalue=0;
 
-    Update tbl_code t1 set t1.itemname=goOnlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=2;
-    Update tbl_code t1 set t1.itemname=onlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=offlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=goOnlineOpacity where t1.itemcode='COMMALARMCOLOROPACITY' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=onlineOpacity where t1.itemcode='COMMALARMCOLOROPACITY' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=offlineOpacity where t1.itemcode='COMMALARMCOLOROPACITY' and t1.itemvalue=0;
 
     --运行
-    Update tbl_code t1 set t1.itemname=runBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=stopBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=noDataBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=runBackgroundColor where t1.itemcode='RUNALARMBACKCOLOR' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=stopBackgroundColor where t1.itemcode='RUNALARMBACKCOLOR' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataBackgroundColor where t1.itemcode='RUNALARMBACKCOLOR' and t1.itemvalue=2;
 
-    Update tbl_code t1 set t1.itemname=runColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=stopColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=noDataColor where t1.itemcode='YXBJQJYS' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=runColor where t1.itemcode='RUNALARMFORECOLOR' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=stopColor where t1.itemcode='RUNALARMFORECOLOR' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataColor where t1.itemcode='RUNALARMFORECOLOR' and t1.itemvalue=2;
 
-    Update tbl_code t1 set t1.itemname=runOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=1;
-    Update tbl_code t1 set t1.itemname=stopOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=0;
-    Update tbl_code t1 set t1.itemname=noDataOpacity where t1.itemcode='YXBJYSTMD' and t1.itemvalue=2;
+    Update tbl_code t1 set t1.itemname=runOpacity where t1.itemcode='RUNALARMCOLOROPACITY' and t1.itemvalue=1;
+    Update tbl_code t1 set t1.itemname=stopOpacity where t1.itemcode='RUNALARMCOLOROPACITY' and t1.itemvalue=0;
+    Update tbl_code t1 set t1.itemname=noDataOpacity where t1.itemcode='RUNALARMCOLOROPACITY' and t1.itemvalue=2;
     commit;
     p_msg := '修改成功';
 
@@ -601,7 +595,7 @@ CREATE OR REPLACE PROCEDURE prd_save_device (
                                                     v_orgId  in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
+                                                    v_applicationScenarios    in NUMBER,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -638,7 +632,7 @@ begin
       if othercount=0 then
         Update tbl_device t
         Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
-          t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+          t.applicationscenarios=v_applicationScenarios,
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
           t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
           t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
@@ -652,7 +646,7 @@ begin
         v_resultstr := '修改成功';
         p_msg := '修改成功';
       else
-        select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+        select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name_zh_cn,'/') as path
           from tbl_org org
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v
@@ -678,7 +672,7 @@ begin
             values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
             commit;
             update tbl_device t
-            set t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+            set t.applicationscenarios=v_applicationScenarios,
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                 t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
@@ -694,7 +688,7 @@ begin
             p_msg := '井数许可超限';
           end if;
         else
-          select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name_zh_cn,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
@@ -726,7 +720,7 @@ begin
             values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
             commit;
             update tbl_device t
-            set t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+            set t.applicationscenarios=v_applicationScenarios,
                 t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                 t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                 t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
@@ -742,7 +736,7 @@ begin
             p_msg := '井数许可超限';
           end if;
         else
-          select substr(v.path||'/'||t.devicename||'抽油机',2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          select substr(v.path||'/'||t.devicename||'抽油机',2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name_zh_cn,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
@@ -1068,6 +1062,7 @@ begin
           t.casingpressure=v_casingPressure,t.tubingpressure=v_tubingPressure
        where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
        commit;
+       dbms_output.put_line('更新汇总结果');
        update tbl_pcptimingcalculationdata t set
              (
              t.theoreticalproduction,
@@ -1102,6 +1097,7 @@ begin
              and t2.deviceid=v_wellId )
              where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss');
         commit;
+        dbms_output.put_line('更新实时结果');
     end if;
     p_msg := '更新成功';
   elsif p_count=0 then
@@ -1211,14 +1207,65 @@ Exception
 end prd_save_resourcemonitoring;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
+CREATE OR REPLACE PROCEDURE prd_save_smsdevice (v_orgname   in varchar2,
+                                                    v_wellName    in varchar2,
+                                                    v_instance    in varchar2,
+                                                    v_signInId    in varchar2,
+                                                    v_sortNum  in NUMBER,
+                                                    v_orgId in varchar2) as
+  wellcount number :=0;
+  smsOrgId number :=0;
+  orgcount number :=0;
+  otherCount number :=0;
+  p_msg varchar2(3000) := 'error';
+  p_sql varchar2(3000);
+begin
+  p_sql:='select count(*)  from tbl_org t where t.org_name='''||v_orgname||''' and t.org_id in ('||v_orgId||')';
+  EXECUTE IMMEDIATE p_sql into orgcount;
+  p_sql:='select count(*)  from tbl_smsdevice t where t.wellname='''||v_wellName||''' and  t.orgid not in ('||v_orgId||')';
+  EXECUTE IMMEDIATE p_sql into otherCount;
+  if orgcount=1 and otherCount=0 then
+    p_sql:='select t.org_id  from tbl_org t where t.org_name='''||v_orgname||''' and t.org_id in ('||v_orgId||')';
+    EXECUTE IMMEDIATE p_sql into smsOrgId;
+    select count(*) into wellcount from tbl_smsdevice t where t.deviceName=v_wellName;
+    if wellcount>0 then
+      Update tbl_smsdevice t set
+               t.orgid=smsOrgId,
+               t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1),
+               t.signinid=v_signInId,
+               t.sortnum=v_sortNum
+           Where t.deviceName=v_wellName;
+           commit;
+           p_msg := '修改成功';
+    elsif wellcount=0 then
+      insert into tbl_smsdevice(orgId,deviceName,signinid,Sortnum)
+      values(smsOrgId,v_wellName,v_signInId,v_sortNum);
+      commit;
+      update tbl_smsdevice t set
+             t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1)
+      Where t.deviceName=v_wellName;
+      commit;
+      p_msg := '添加成功';
+    end if;
+  else
+    p_msg:='无权限';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_smsdevice;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagram (
        v_wellId in NUMBER,v_AcqTime in varchar2,
        v_productionData in varchar2,v_balanceInfo in varchar2,v_pumpingModelId in NUMBER,
        v_fesdiagramAcqTime in varchar2,v_fesdiagramSrc in NUMBER,v_STROKE in NUMBER,v_SPM in NUMBER,
-       v_POSITION_CURVE in tbl_rpcacqdata_hist.POSITION_CURVE%TYPE,
-       v_LOAD_CURVE in tbl_rpcacqdata_hist.LOAD_CURVE%TYPE,
-       v_POWER_CURVE in tbl_rpcacqdata_hist.POWER_CURVE%TYPE,
-       v_CURRENT_CURVE in tbl_rpcacqdata_hist.CURRENT_CURVE%TYPE,
+       v_POSITION_CURVE in tbl_srpacqdata_hist.POSITION_CURVE%TYPE,
+       v_LOAD_CURVE in tbl_srpacqdata_hist.LOAD_CURVE%TYPE,
+       v_POWER_CURVE in tbl_srpacqdata_hist.POWER_CURVE%TYPE,
+       v_CURRENT_CURVE in tbl_srpacqdata_hist.CURRENT_CURVE%TYPE,
        v_ResultStatus in NUMBER,
        v_Fmax in NUMBER,v_Fmin in NUMBER,
        v_UpStrokeIMax in NUMBER,v_DownStrokeIMax in NUMBER,v_UPStrokeWattMax in NUMBER,v_DownStrokeWattMax in NUMBER,v_IDegreeBalance in NUMBER,v_WattDegreeBalance in NUMBER,
@@ -1229,7 +1276,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_PlungerStroke in NUMBER,v_AvailablePlungerStroke in NUMBER,v_NoLiquidAvailableStroke  in NUMBER,
        v_UpperLoadLine in NUMBER,v_UpperLoadLineOfExact in NUMBER,v_LowerLoadLine in NUMBER,
        v_SMaxIndex in NUMBER,v_SMinIndex in NUMBER,
-       v_PumpFSDiagram in tbl_rpcacqdata_hist.PumpFSDiagram%TYPE,
+       v_PumpFSDiagram in tbl_srpacqdata_hist.PumpFSDiagram%TYPE,
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
        v_AvailablePlungerStrokeProd_V in NUMBER,v_PumpClearanceLeakProd_V in NUMBER,
@@ -1250,22 +1297,22 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
        v_PumpOutletP in NUMBER,v_PumpOutletT in NUMBER,v_PumpOutletGOL in NUMBER,v_PumpOutletVisl in NUMBER,v_PumpOutletBo in NUMBER,
        v_RodString in varchar2,
-       v_crankAngle in tbl_rpcacqdata_hist.crankangle%TYPE,
-       v_polishRodV in tbl_rpcacqdata_hist.polishrodv%TYPE,
-       v_polishRodA in tbl_rpcacqdata_hist.polishroda%TYPE,
-       v_PR in tbl_rpcacqdata_hist.pr%TYPE,
-       v_TF in tbl_rpcacqdata_hist.tf%TYPE,
-       v_loadTorque in tbl_rpcacqdata_hist.loadtorque%TYPE,
-       v_crankTorque in tbl_rpcacqdata_hist.cranktorque%TYPE,
-       v_currentBalanceTorque in tbl_rpcacqdata_hist.currentbalancetorque%TYPE,
-       v_currentNetTorque in tbl_rpcacqdata_hist.currentnettorque%TYPE,
-       v_expectedBalanceTorque in tbl_rpcacqdata_hist.expectedbalancetorque%TYPE,
-       v_expectedNetTorque in tbl_rpcacqdata_hist.expectednettorque%TYPE,
-       v_wellboreSlice in tbl_rpcacqdata_hist.wellboreslice%TYPE,
+       v_crankAngle in tbl_srpacqdata_hist.crankangle%TYPE,
+       v_polishRodV in tbl_srpacqdata_hist.polishrodv%TYPE,
+       v_polishRodA in tbl_srpacqdata_hist.polishroda%TYPE,
+       v_PR in tbl_srpacqdata_hist.pr%TYPE,
+       v_TF in tbl_srpacqdata_hist.tf%TYPE,
+       v_loadTorque in tbl_srpacqdata_hist.loadtorque%TYPE,
+       v_crankTorque in tbl_srpacqdata_hist.cranktorque%TYPE,
+       v_currentBalanceTorque in tbl_srpacqdata_hist.currentbalancetorque%TYPE,
+       v_currentNetTorque in tbl_srpacqdata_hist.currentnettorque%TYPE,
+       v_expectedBalanceTorque in tbl_srpacqdata_hist.expectedbalancetorque%TYPE,
+       v_expectedNetTorque in tbl_srpacqdata_hist.expectednettorque%TYPE,
+       v_wellboreSlice in tbl_srpacqdata_hist.wellboreslice%TYPE,
        v_rpm in NUMBER) as
   p_msg varchar2(3000) := 'error';
 begin
-  update tbl_rpcacqdata_latest t
+  update tbl_srpacqdata_latest t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
@@ -1311,7 +1358,7 @@ begin
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.deviceid=v_wellId;
   commit;
-  update tbl_rpcacqdata_hist t
+  update tbl_srpacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
@@ -1363,10 +1410,10 @@ Exception
   When Others Then
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagram;
+end prd_save_srp_diagram;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramcaldata (
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagramcaldata (
        v_recordId in NUMBER,
        v_ResultStatus in NUMBER,
        v_Fmax in NUMBER,v_Fmin in NUMBER,
@@ -1378,7 +1425,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramcaldata (
        v_PlungerStroke in NUMBER,v_AvailablePlungerStroke in NUMBER,v_NoLiquidAvailableStroke  in NUMBER,
        v_UpperLoadLine in NUMBER,v_UpperLoadLineOfExact in NUMBER,v_LowerLoadLine in NUMBER,
        v_SMaxIndex in NUMBER,v_SMinIndex in NUMBER,
-       v_PumpFSDiagram in tbl_rpcacqdata_hist.PumpFSDiagram%TYPE,
+       v_PumpFSDiagram in tbl_srpacqdata_hist.PumpFSDiagram%TYPE,
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
        v_AvailablePlungerStrokeProd_V in NUMBER,v_PumpClearanceLeakProd_V in NUMBER,
@@ -1399,21 +1446,21 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramcaldata (
        v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
        v_PumpOutletP in NUMBER,v_PumpOutletT in NUMBER,v_PumpOutletGOL in NUMBER,v_PumpOutletVisl in NUMBER,v_PumpOutletBo in NUMBER,
        v_RodString in varchar2,
-       v_crankAngle in tbl_rpcacqdata_hist.crankangle%TYPE,
-       v_polishRodV in tbl_rpcacqdata_hist.polishrodv%TYPE,
-       v_polishRodA in tbl_rpcacqdata_hist.polishroda%TYPE,
-       v_PR in tbl_rpcacqdata_hist.pr%TYPE,
-       v_TF in tbl_rpcacqdata_hist.tf%TYPE,
-       v_loadTorque in tbl_rpcacqdata_hist.loadtorque%TYPE,
-       v_crankTorque in tbl_rpcacqdata_hist.cranktorque%TYPE,
-       v_currentBalanceTorque in tbl_rpcacqdata_hist.currentbalancetorque%TYPE,
-       v_currentNetTorque in tbl_rpcacqdata_hist.currentnettorque%TYPE,
-       v_expectedBalanceTorque in tbl_rpcacqdata_hist.expectedbalancetorque%TYPE,
-       v_expectedNetTorque in tbl_rpcacqdata_hist.expectednettorque%TYPE,
-       v_wellboreSlice in tbl_rpcacqdata_hist.wellboreslice%TYPE) as
+       v_crankAngle in tbl_srpacqdata_hist.crankangle%TYPE,
+       v_polishRodV in tbl_srpacqdata_hist.polishrodv%TYPE,
+       v_polishRodA in tbl_srpacqdata_hist.polishroda%TYPE,
+       v_PR in tbl_srpacqdata_hist.pr%TYPE,
+       v_TF in tbl_srpacqdata_hist.tf%TYPE,
+       v_loadTorque in tbl_srpacqdata_hist.loadtorque%TYPE,
+       v_crankTorque in tbl_srpacqdata_hist.cranktorque%TYPE,
+       v_currentBalanceTorque in tbl_srpacqdata_hist.currentbalancetorque%TYPE,
+       v_currentNetTorque in tbl_srpacqdata_hist.currentnettorque%TYPE,
+       v_expectedBalanceTorque in tbl_srpacqdata_hist.expectedbalancetorque%TYPE,
+       v_expectedNetTorque in tbl_srpacqdata_hist.expectednettorque%TYPE,
+       v_wellboreSlice in tbl_srpacqdata_hist.wellboreslice%TYPE) as
   p_msg varchar2(3000) := 'error';
 begin
-  update tbl_rpcacqdata_hist t
+  update tbl_srpacqdata_hist t
       set t.resultstatus=v_ResultStatus,
           t.fmax=v_Fmax,t.fmin=v_Fmin,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
@@ -1458,12 +1505,12 @@ Exception
   When Others Then
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagramcaldata;
+end prd_save_srp_diagramcaldata;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagramdaily (
   v_wellId in number,v_ResultStatus in number,
-  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
+  v_resultcode in number,v_resultString in tbl_srpdailycalculationdata.resultstring%TYPE,
   v_ExtendedDays in number,
   v_Stroke in number,v_SPM in number,
   v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
@@ -1479,26 +1526,26 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_casingPressure in number,v_tubingPressure in number,
   v_rpm in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
-  v_commRange in tbl_rpcdailycalculationdata.commrange%TYPE,
+  v_commRange in tbl_srpdailycalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
-  v_runRange in tbl_rpcdailycalculationdata.runrange%TYPE,
+  v_runRange in tbl_srpdailycalculationdata.runrange%TYPE,
   v_calDate in varchar2,
   v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
 begin
-  select count(*) into p_count from tbl_rpcdailycalculationdata t where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
+  select count(*) into p_count from tbl_srpdailycalculationdata t where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
   if p_count>0 then
     p_msg := '记录存在';
-    update tbl_rpcdailycalculationdata t
+    update tbl_srpdailycalculationdata t
     set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.deviceid=v_wellId and t.caldate=to_date(v_calDate,'yyyy-mm-dd') ;
     commit;
 
     if v_recordCount>0 then
-      update tbl_rpcdailycalculationdata t
+      update tbl_srpdailycalculationdata t
       set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
           t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
           t.theoreticalproduction=v_TheoreticalProduction,
@@ -1522,7 +1569,7 @@ begin
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
-    insert into tbl_rpcdailycalculationdata(
+    insert into tbl_srpdailycalculationdata(
            deviceid,caldate,resultstatus,resultcode,resultstring,extendeddays,
     stroke,spm,fmax,fmin,fullnesscoefficient,
     theoreticalproduction,
@@ -1562,12 +1609,12 @@ Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagramdaily;
+end prd_save_srp_diagramdaily;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagramdailyrecal (
   v_recordId in number,v_ResultStatus in number,
-  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
+  v_resultcode in number,v_resultString in tbl_srpdailycalculationdata.resultstring%TYPE,
   v_ExtendedDays in number,
   v_Stroke in number,v_SPM in number,
   v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
@@ -1587,7 +1634,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdailyrecal (
   p_msg varchar2(3000) := 'error';
 begin
   if v_recordCount>0 then
-    update tbl_rpcdailycalculationdata t
+    update tbl_srpdailycalculationdata t
     set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
         t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
         t.theoreticalproduction=v_TheoreticalProduction,
@@ -1613,12 +1660,12 @@ Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagramdailyrecal;
+end prd_save_srp_diagramdailyrecal;
 /
 
-CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagramtimingtotal (
   v_wellId in number,v_ResultStatus in number,
-  v_resultcode in number,v_resultString in tbl_rpcdailycalculationdata.resultstring%TYPE,
+  v_resultcode in number,v_resultString in tbl_srpdailycalculationdata.resultstring%TYPE,
   v_ExtendedDays in number,
   v_Stroke in number,v_SPM in number,
   v_FMax in number,v_FMin in number,v_fullnessCoefficient in number,
@@ -1635,26 +1682,26 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramtimingtotal (
   v_rpm in number,
 
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
-  v_commRange in tbl_rpctimingcalculationdata.commrange%TYPE,
+  v_commRange in tbl_srptimingcalculationdata.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
-  v_runRange in tbl_rpctimingcalculationdata.runrange%TYPE,
+  v_runRange in tbl_srptimingcalculationdata.runrange%TYPE,
   v_calTime in varchar2,
   v_recordCount in number
   ) is
   p_msg varchar2(3000) := 'error';
   p_count number:=0;
 begin
-  select count(1) into p_count from tbl_rpctimingcalculationdata t where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
+  select count(1) into p_count from tbl_srptimingcalculationdata t where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
   if p_count>0 then
     p_msg := '记录存在';
-    update tbl_rpctimingcalculationdata t
+    update tbl_srptimingcalculationdata t
     set t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
     t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange
     where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
     commit;
 
     if v_recordCount>0 then
-      update tbl_rpctimingcalculationdata t
+      update tbl_srptimingcalculationdata t
       set t.resultstatus=v_ResultStatus,t.resultcode=v_resultcode,t.resultstring=v_resultString,t.extendeddays=v_ExtendedDays,
           t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax,t.fmin=v_FMin,t.fullnesscoefficient=v_fullnessCoefficient,
           t.theoreticalproduction=v_TheoreticalProduction,
@@ -1674,7 +1721,7 @@ begin
       where t.deviceid=v_wellId and t.caltime=to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss') ;
       commit;
       --更新实时计算数据
-      update tbl_rpctimingcalculationdata t set
+      update tbl_srptimingcalculationdata t set
              (
              t.resultcode,t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,
              t.theoreticalproduction,
@@ -1699,11 +1746,11 @@ begin
              t2.calcProducingfluidLevel,t2.levelDifferenceValue,
              t2.submergence,
              t2.rpm
-             from tbl_rpcacqdata_hist t2
+             from tbl_srpacqdata_hist t2
              where t2.id=(
                    select v2.id from
                    (select v.id,rownum r from
-                   (select t3.id from  tbl_rpcacqdata_hist t3
+                   (select t3.id from  tbl_srpacqdata_hist t3
                    where t3.commstatus=1 and t3.resultstatus=1
                    and t3.acqtime between to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')-1 and  to_date(v_calTime,'yyyy-mm-dd hh24:mi:ss')
                    and t3.deviceid=v_wellId
@@ -1718,7 +1765,7 @@ begin
     p_msg := '更新成功';
   elsif p_count=0 then
     p_msg := '记录不存在';
-    insert into tbl_rpctimingcalculationdata(
+    insert into tbl_srptimingcalculationdata(
            deviceid,caltime,resultstatus,resultcode,resultstring,extendeddays,
     stroke,spm,fmax,fmin,fullnesscoefficient,
     theoreticalproduction,
@@ -1758,58 +1805,7 @@ Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_rpc_diagramtimingtotal;
-/
-
-CREATE OR REPLACE PROCEDURE prd_save_smsdevice (v_orgname   in varchar2,
-                                                    v_wellName    in varchar2,
-                                                    v_instance    in varchar2,
-                                                    v_signInId    in varchar2,
-                                                    v_sortNum  in NUMBER,
-                                                    v_orgId in varchar2) as
-  wellcount number :=0;
-  smsOrgId number :=0;
-  orgcount number :=0;
-  otherCount number :=0;
-  p_msg varchar2(3000) := 'error';
-  p_sql varchar2(3000);
-begin
-  p_sql:='select count(*)  from tbl_org t where t.org_name='''||v_orgname||''' and t.org_id in ('||v_orgId||')';
-  EXECUTE IMMEDIATE p_sql into orgcount;
-  p_sql:='select count(*)  from tbl_smsdevice t where t.wellname='''||v_wellName||''' and  t.orgid not in ('||v_orgId||')';
-  EXECUTE IMMEDIATE p_sql into otherCount;
-  if orgcount=1 and otherCount=0 then
-    p_sql:='select t.org_id  from tbl_org t where t.org_name='''||v_orgname||''' and t.org_id in ('||v_orgId||')';
-    EXECUTE IMMEDIATE p_sql into smsOrgId;
-    select count(*) into wellcount from tbl_smsdevice t where t.deviceName=v_wellName;
-    if wellcount>0 then
-      Update tbl_smsdevice t set
-               t.orgid=smsOrgId,
-               t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1),
-               t.signinid=v_signInId,
-               t.sortnum=v_sortNum
-           Where t.deviceName=v_wellName;
-           commit;
-           p_msg := '修改成功';
-    elsif wellcount=0 then
-      insert into tbl_smsdevice(orgId,deviceName,signinid,Sortnum)
-      values(smsOrgId,v_wellName,v_signInId,v_sortNum);
-      commit;
-      update tbl_smsdevice t set
-             t.instancecode=(select t2.code from tbl_protocolsmsinstance t2 where t2.name=v_instance and rownum=1)
-      Where t.deviceName=v_wellName;
-      commit;
-      p_msg := '添加成功';
-    end if;
-  else
-    p_msg:='无权限';
-  end if;
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_save_smsdevice;
+end prd_save_srp_diagramtimingtotal;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_systemLog (
@@ -1880,8 +1876,7 @@ end prd_update_auxiliarydevice;
 
 CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_deviceName    in varchar2,
-                                                    v_devicetype in NUMBER,
-                                                    v_applicationScenariosName    in varchar2,
+                                                    v_applicationScenarios    in NUMBER,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -1913,8 +1908,7 @@ begin
         if v_recordId >0 and othercount=0 then
           Update tbl_device t
            Set t.devicename=v_deviceName,
-               t.devicetype=v_devicetype,
-               t.applicationscenarios=(select t2.itemvalue from tbl_code t2 where t2.itemcode='APPLICATIONSCENARIOS' and t2.itemname=v_applicationScenariosName),
+               t.applicationscenarios=v_applicationScenarios,
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
@@ -1929,7 +1923,12 @@ begin
            v_resultstr := '修改成功';
            p_msg := '修改成功';
         elsif othercount>0 then
-          select substr(v.path||'/'||t.devicename,2) into otherDeviceAllPath  from tbl_device t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          select substr(v.path_zh_cn||'/'||t.devicename,2) into otherDeviceAllPath  
+          from tbl_device t, 
+          (select org.org_id, 
+          sys_connect_by_path(org.org_name_zh_cn,'/') as path_zh_cn,
+          sys_connect_by_path(org.org_name_en,'/') as path_en,
+          sys_connect_by_path(org.org_name_ru,'/') as path_ru
           from tbl_org org
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v

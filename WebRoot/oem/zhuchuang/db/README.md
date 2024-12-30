@@ -4,167 +4,167 @@
 
 **目 录**
 
-[一、表	1](#_Toc169883162)
+[一、表	1](#_Toc186478457)
 
->   [1.1 概览	1](#_Toc169883163)
+>   [1.1 概览	1](#_Toc186478458)
 
->   [1.2 详述	3](#_Toc169883164)
+>   [1.2 详述	3](#_Toc186478459)
 
->   [1.2.1 tbl_devicetype	3](#_Toc169883165)
+>   [1.2.1 tbl_devicetypeinfo	3](#_Toc186478460)
 
->   [1.2.2 tbl_protocol	3](#_Toc169883166)
+>   [1.2.2 tbl_protocol	3](#_Toc186478461)
 
->   [1.2.3 tbl_org	3](#_Toc169883167)
+>   [1.2.3 tbl_org	3](#_Toc186478462)
 
->   [1.2.4 tbl_role	4](#_Toc169883168)
+>   [1.2.4 tbl_role	4](#_Toc186478463)
 
->   [1.2.5 tbl_devicetype2 role	4](#_Toc169883169)
+>   [1.2.5 tbl_devicetype2 role	4](#_Toc186478464)
 
->   [1.2.6 tbl_module	4](#_Toc169883170)
+>   [1.2.6 tbl_module	5](#_Toc186478465)
 
->   [1.2.7 tbl_module2role	6](#_Toc169883171)
+>   [1.2.7 tbl_module2role	6](#_Toc186478466)
 
->   [1.2.8 tbl_user	6](#_Toc169883172)
+>   [1.2.8 tbl_user	6](#_Toc186478467)
 
->   [1.2.9 tbl_dist_name	7](#_Toc169883173)
+>   [1.2.9 tbl_dist_name	7](#_Toc186478468)
 
->   [1.2.10 tbl_dist_item	8](#_Toc169883174)
+>   [1.2.10 tbl_dist_item	8](#_Toc186478469)
 
->   [1.2.11 tbl_code	9](#_Toc169883175)
+>   [1.2.11 tbl_code	9](#_Toc186478470)
 
->   [1.2.12 tbl_datamapping	9](#_Toc169883176)
+>   [1.2.12 tbl_datamapping	9](#_Toc186478471)
 
->   [1.2.13 tbl_runstatusconfig	9](#_Toc169883177)
+>   [1.2.13 tbl_runstatusconfig	9](#_Toc186478472)
 
->   [1.2.14 tbl_acq_unit_conf	11](#_Toc169883178)
+>   [1.2.14 tbl_acq_unit_conf	11](#_Toc186478473)
 
->   [1.2.15 tbl_acq_group_conf	11](#_Toc169883179)
+>   [1.2.15 tbl_acq_group_conf	11](#_Toc186478474)
 
->   [1.2.16 tbl_acq_item2group_conf	11](#_Toc169883180)
+>   [1.2.16 tbl_acq_item2group_conf	11](#_Toc186478475)
 
->   [1.2.17 tbl_acq_group2unit_conf	13](#_Toc169883181)
+>   [1.2.17 tbl_acq_group2unit_conf	13](#_Toc186478476)
 
->   [1.2.18 tbl_alarm_unit_conf	13](#_Toc169883182)
+>   [1.2.18 tbl_alarm_unit_conf	13](#_Toc186478477)
 
->   [1.2.19 tbl_alarm_item2unit_conf	13](#_Toc169883183)
+>   [1.2.19 tbl_alarm_item2unit_conf	13](#_Toc186478478)
 
->   [1.2.20 tbl_display_unit_conf	14](#_Toc169883184)
+>   [1.2.20 tbl_display_unit_conf	14](#_Toc186478479)
 
->   [1.2.21 tbl_display_item2unit_conf	14](#_Toc169883185)
+>   [1.2.21 tbl_display_item2unit_conf	14](#_Toc186478480)
 
->   [1.2.22 tbl_report_unit_conf	15](#_Toc169883186)
+>   [1.2.22 tbl_report_unit_conf	15](#_Toc186478481)
 
->   [1.2.23 tbl_report_items2unit_conf	15](#_Toc169883187)
+>   [1.2.23 tbl_report_items2unit_conf	15](#_Toc186478482)
 
->   [1.2.24 tbl_protocolinstance	17](#_Toc169883188)
+>   [1.2.24 tbl_protocolinstance	17](#_Toc186478483)
 
->   [1.2.25 tbl_protocolalarminstance	17](#_Toc169883189)
+>   [1.2.25 tbl_protocolalarminstance	17](#_Toc186478484)
 
->   [1.2.26 tbl_protocoldisplayinstance	18](#_Toc169883190)
+>   [1.2.26 tbl_protocoldisplayinstance	18](#_Toc186478485)
 
->   [1.2.27 tbl_protocolreportinstance	18](#_Toc169883191)
+>   [1.2.27 tbl_protocolreportinstance	18](#_Toc186478486)
 
->   [1.2.28 tbl_protocolsmsinstance	18](#_Toc169883192)
+>   [1.2.28 tbl_protocolsmsinstance	18](#_Toc186478487)
 
->   [1.2.29 tbl_rpcdevice	19](#_Toc169883193)
+>   [1.2.29 tbl_rpcdevice	19](#_Toc186478488)
 
->   [1.2.30 tbl_smsdevice	21](#_Toc169883194)
+>   [1.2.30 tbl_smsdevice	21](#_Toc186478489)
 
->   [1.2.31 tbl_deviceaddinfo	21](#_Toc169883195)
+>   [1.2.31 tbl_deviceaddinfo	21](#_Toc186478490)
 
->   [1.2.32 tbl_auxiliarydevice	21](#_Toc169883196)
+>   [1.2.32 tbl_auxiliarydevice	21](#_Toc186478491)
 
->   [1.2.33 tbl_auxiliarydeviceaddinfo	22](#_Toc169883197)
+>   [1.2.33 tbl_auxiliarydeviceaddinfo	22](#_Toc186478492)
 
->   [1.2.34 tbl_auxiliary2master	22](#_Toc169883198)
+>   [1.2.34 tbl_auxiliary2master	22](#_Toc186478493)
 
->   [1.2.35 tbl_rpc_worktype	22](#_Toc169883199)
+>   [1.2.35 tbl_rpc_worktype	22](#_Toc186478494)
 
->   [1.2.36 tbl_devicegraphicset	23](#_Toc169883200)
+>   [1.2.36 tbl_devicegraphicset	23](#_Toc186478495)
 
->   [1.2.37 tbl_acqdata_latest	24](#_Toc169883201)
+>   [1.2.37 tbl_acqdata_latest	24](#_Toc186478496)
 
->   [1.2.38 tbl_acqdata_hist	24](#_Toc169883202)
+>   [1.2.38 tbl_acqdata_hist	24](#_Toc186478497)
 
->   [1.2.39 tbl_acqrawdata	25](#_Toc169883203)
+>   [1.2.39 tbl_acqrawdata	25](#_Toc186478498)
 
->   [1.2.40 tbl_alarminfo_latest	26](#_Toc169883204)
+>   [1.2.40 tbl_alarminfo_latest	26](#_Toc186478499)
 
->   [1.2.41 tbl_alarminfo_hist	26](#_Toc169883205)
+>   [1.2.41 tbl_alarminfo_hist	26](#_Toc186478500)
 
->   [1.2.42 tbl_dailytotalcalculate_latest	26](#_Toc169883206)
+>   [1.2.42 tbl_dailytotalcalculate_latest	26](#_Toc186478501)
 
->   [1.2.43 tbl_dailytotalcalculate_hist	27](#_Toc169883207)
+>   [1.2.43 tbl_dailytotalcalculate_hist	27](#_Toc186478502)
 
->   [1.2.44 tbl_dailycalculationdata	27](#_Toc169883208)
+>   [1.2.44 tbl_dailycalculationdata	27](#_Toc186478503)
 
->   [1.2.45 tbl_timingcalculationdata	27](#_Toc169883209)
+>   [1.2.45 tbl_timingcalculationdata	27](#_Toc186478504)
 
->   [1.2.46 tbl_rpcacqdata_latest	29](#_Toc169883210)
+>   [1.2.46 tbl_srpacqdata_latest	29](#_Toc186478505)
 
->   [1.2.47 tbl_rpcacqdata_hist	33](#_Toc169883211)
+>   [1.2.47 tbl_srpacqdata_hist	33](#_Toc186478506)
 
->   [1.2.48 tbl_rpcdailycalculationdata	34](#_Toc169883212)
+>   [1.2.48 tbl_srpdailycalculationdata	34](#_Toc186478507)
 
->   [1.2.49 tbl_rpctimingcalculationdata	36](#_Toc169883213)
+>   [1.2.49 tbl_srptimingcalculationdata	36](#_Toc186478508)
 
->   [1.2.50 tbl_pcpacqdata_latest	38](#_Toc169883214)
+>   [1.2.50 tbl_pcpacqdata_latest	38](#_Toc186478509)
 
->   [1.2.51 tbl_pcpacqdata_hist	40](#_Toc169883215)
+>   [1.2.51 tbl_pcpacqdata_hist	40](#_Toc186478510)
 
->   [1.2.52 tbl_pcpdailycalculationdata	40](#_Toc169883216)
+>   [1.2.52 tbl_pcpdailycalculationdata	40](#_Toc186478511)
 
->   [1.2.53 tbl_pcptimingcalculationdata	42](#_Toc169883217)
+>   [1.2.53 tbl_pcptimingcalculationdata	42](#_Toc186478512)
 
->   [1.2.54 tbl_deviceoperationlog	44](#_Toc169883218)
+>   [1.2.54 tbl_deviceoperationlog	44](#_Toc186478513)
 
->   [1.2.55 tbl_systemlog	44](#_Toc169883219)
+>   [1.2.55 tbl_systemlog	44](#_Toc186478514)
 
->   [1.2.56 tbl_resourcemonitoring	45](#_Toc169883220)
+>   [1.2.56 tbl_resourcemonitoring	45](#_Toc186478515)
 
->   [1.2.57 tbl_videokey	45](#_Toc169883221)
+>   [1.2.57 tbl_videokey	45](#_Toc186478516)
 
-[二、视图	46](#_Toc169883222)
+[二、视图	46](#_Toc186478517)
 
->   [2.1 概览	46](#_Toc169883223)
+>   [2.1 概览	46](#_Toc186478518)
 
->   [2.2 详述	47](#_Toc169883224)
+>   [2.2 详述	47](#_Toc186478519)
 
->   [2.2.1 viw_org	47](#_Toc169883225)
+>   [2.2.1 viw_org	47](#_Toc186478520)
 
->   [2.2.2 viw_rpcdevice	48](#_Toc169883226)
+>   [2.2.2 viw_rpcdevice	48](#_Toc186478521)
 
->   [2.2.3 viw_pcpdevice	49](#_Toc169883227)
+>   [2.2.3 viw_pcpdevice	49](#_Toc186478522)
 
->   [2.2.4 viw_smsdevice	49](#_Toc169883228)
+>   [2.2.4 viw_smsdevice	49](#_Toc186478523)
 
->   [2.2.5 viw_rpcacqrawdata	51](#_Toc169883229)
+>   [2.2.5 viw_rpcacqrawdata	51](#_Toc186478524)
 
->   [2.2.6 viw_pcpacqrawdata	51](#_Toc169883230)
+>   [2.2.6 viw_pcpacqrawdata	51](#_Toc186478525)
 
->   [2.2.7 viw_rpcalarminfo_latest	52](#_Toc169883231)
+>   [2.2.7 viw_rpcalarminfo_latest	52](#_Toc186478526)
 
->   [2.2.8 viw_rpcalarminfo_hist	52](#_Toc169883232)
+>   [2.2.8 viw_rpcalarminfo_hist	52](#_Toc186478527)
 
->   [2.2.9 viw_pcpalarminfo_latest	53](#_Toc169883233)
+>   [2.2.9 viw_pcpalarminfo_latest	53](#_Toc186478528)
 
->   [2.2.10 viw_pcpalarminfo_hist	53](#_Toc169883234)
+>   [2.2.10 viw_pcpalarminfo_hist	53](#_Toc186478529)
 
->   [2.2.11 viw_deviceoperationlog	54](#_Toc169883235)
+>   [2.2.11 viw_deviceoperationlog	54](#_Toc186478530)
 
->   [2.2.12 viw_systemlog	54](#_Toc169883236)
+>   [2.2.12 viw_systemlog	54](#_Toc186478531)
 
->   [2.2.13 viw_rpcdailycalculationdata	54](#_Toc169883237)
+>   [2.2.13 viw_rpcdailycalculationdata	54](#_Toc186478532)
 
->   [2.2.14 viw_pcpdailycalculationdata	56](#_Toc169883238)
+>   [2.2.14 viw_pcpdailycalculationdata	56](#_Toc186478533)
 
->   [2.2.15 viw_rpc_calculatemain	57](#_Toc169883239)
+>   [2.2.15 viw_rpc_calculatemain	57](#_Toc186478534)
 
->   [2.2.16 viw_pcp_calculatemain	58](#_Toc169883240)
+>   [2.2.16 viw_pcp_calculatemain	58](#_Toc186478535)
 
-[三、存储过程	59](#_Toc169883241)
+[三、存储过程	59](#_Toc186478536)
 
-[四、触发器	60](#_Toc169883242)
+[四、触发器	60](#_Toc186478537)
 
 # 一、表
 
@@ -172,7 +172,7 @@
 
 | **序号** | **名称**                       | **描述**               |
 |----------|--------------------------------|------------------------|
-| 1        | tbl\_devicetype                | 设备类型表             |
+| 1        | tbl\_devicetypeinfo            | 设备类型表             |
 | 2        | tbl_protocol                   | 协议表                 |
 | 3        | tbl_org                        | 组织数据表             |
 | 4        | tbl_role                       | 角色数据表             |
@@ -217,10 +217,10 @@
 | 43       | tbl_dailytotalcalculate_hist   | 日累计计算历史数据表   |
 | 44       | tbl\_dailycalculationdata      | 日汇总数据表           |
 | 45       | tbl_timingcalculationdata      | 定时汇总数据表         |
-| 46       | tbl\_rpcacqdata_latest         | 功图计算实时数据表     |
-| 47       | tbl\_rpcacqdata_hist           | 功图计算历史数据表     |
-| 48       | tbl_rpcdailycalculationdata    | 功图计算日汇总数据表   |
-| 49       | tbl_rpctimingcalculationdata   | 功图计算定时汇总数据表 |
+| 46       | tbl\_srpacqdata_latest         | 功图计算实时数据表     |
+| 47       | tbl\_srpacqdata_hist           | 功图计算历史数据表     |
+| 48       | tbl\_srpdailycalculationdata   | 功图计算日汇总数据表   |
+| 49       | tbl\_srptimingcalculationdata  | 功图计算定时汇总数据表 |
 | 50       | tbl\_pcpacqdata_latest         | 转速计产实时数据表     |
 | 51       | tbl\_pcpacqdata_hist           | 转速计产历史数据表     |
 | 52       | tbl\_pcpdailycalculationdata   | 转速计产日汇总数据表   |
@@ -232,16 +232,18 @@
 
 ## 1.2 详述
 
-### 1.2.1 tbl\_devicetype
+### 1.2.1 tbl\_devicetypeinfo
 
 设备类型表
 
-| **序号** | **代码** | **名称** | **类型**      | **单位** | **为空** | **键** | **备注** |
-|----------|----------|----------|---------------|----------|----------|--------|----------|
-| 1        | ID       | 编号     | NUMBER(10)    |          | N        | 主键   |          |
-| 2        | PARENTID | 父级编号 | NUMBER(10)    |          | N        |        |          |
-| 3        | NAME     | 类型名称 | VARCHAR2(100) |          | Y        |        |          |
-| 4        | SORTNUM  | 排序编号 | NUMBER(10)    |          | Y        |        |          |
+| **序号** | **代码**    | **名称**      | **类型**      | **单位** | **为空** | **键** | **备注** |
+|----------|-------------|---------------|---------------|----------|----------|--------|----------|
+| 1        | ID          | 编号          | NUMBER(10)    |          | N        | 主键   |          |
+| 2        | PARENTID    | 父级编号      | NUMBER(10)    |          | N        |        |          |
+| 3        | NAME\_ZH_CN | 类型名称-中文 | VARCHAR2(100) |          | Y        |        |          |
+| 4        | NAME\_EN    | 类型名称-英文 | VARCHAR2(100) |          | Y        |        |          |
+| 5        | NAME\_RU    | 类型名称-俄文 | VARCHAR2(100) |          | Y        |        |          |
+| 6        | SORTNUM     | 排序编号      | NUMBER(10)    |          | Y        |        |          |
 
 ### 1.2.2 tbl\_protocol
 
@@ -260,27 +262,30 @@
 
 组织数据表
 
-| **序号** | **代码**   | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注** |
-|----------|------------|--------------|----------------|----------|----------|--------|----------|
-| 1        | ORG_ID     | 单位序号     | NUMBER(10)     |          | N        | 主键   |          |
-| 2        | ORG_CODE   | 单位编码     | VARCHAR2(20)   |          | Y        |        |          |
-| 3        | ORG_NAME   | 单位名称     | VARCHAR2(100)  |          | N        |        |          |
-| 4        | ORG_MEMO   | 单位说明     | VARCHAR2(4000) |          | Y        |        |          |
-| 5        | ORG_PARENT | 父级单位编号 | NUMBER(10)     |          | N        |        |          |
-| 6        | ORG_SEQ    | 单位排序     | NUMBER(10)     |          | Y        |        |          |
+| **序号** | **代码**        | **名称**     | **类型**       | **单位** | **为空** | **键** | **备注** |
+|----------|-----------------|--------------|----------------|----------|----------|--------|----------|
+| 1        | ORG_ID          | 单位序号     | NUMBER(10)     |          | N        | 主键   |          |
+| 2        | ORG_CODE        | 单位编码     | VARCHAR2(20)   |          | Y        |        |          |
+| 3        | ORG_NAME\_ZH_CN | 单位中文名称 | VARCHAR2(100)  |          | N        |        |          |
+| 4        | ORG_NAME\_EN    | 单位英文名称 | VARCHAR2(100)  |          | N        |        |          |
+| 5        | ORG_NAME\_RU    | 单位俄文名称 | VARCHAR2(100)  |          | N        |        |          |
+| 6        | ORG_MEMO        | 单位说明     | VARCHAR2(4000) |          | Y        |        |          |
+| 7        | ORG_PARENT      | 父级单位编号 | NUMBER(10)     |          | N        |        |          |
+| 8        | ORG_SEQ         | 单位排序     | NUMBER(10)     |          | Y        |        |          |
 
 ### 1.2.4 tbl\_role
 
 角色数据表
 
-| **序号** | **代码**          | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**   |
-|----------|-------------------|------------------|----------------|----------|----------|--------|------------|
-| 1        | ROLE_ID           | 角色序号         | NUMBER(10)     |          | N        | 主键   |            |
-| 2        | ROLE_NAME         | 角色名称         | VARCHAR2(40)   |          | N        |        |            |
-| 3        | ROLE_LEVEL        | 角色级别         | NUMBER(3)      |          | Y        |        |            |
-| 4        | SHOWLEVEL         | 数据显示级别     | NUMBER(10)     |          | Y        |        |            |
-| 5        | ROLE_VIDEOKEYEDIT | 视频账号编辑权限 | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
-| 6        | REMARK            | 角色描述         | VARCHAR2(2000) |          | Y        |        |            |
+| **序号** | **代码**           | **名称**         | **类型**       | **单位** | **为空** | **键** | **备注**   |
+|----------|--------------------|------------------|----------------|----------|----------|--------|------------|
+| 1        | ROLE_ID            | 角色序号         | NUMBER(10)     |          | N        | 主键   |            |
+| 2        | ROLE_NAME          | 角色名称         | VARCHAR2(40)   |          | N        |        |            |
+| 3        | ROLE_LEVEL         | 角色级别         | NUMBER(3)      |          | Y        |        |            |
+| 4        | SHOWLEVEL          | 数据显示级别     | NUMBER(10)     |          | Y        |        |            |
+| 5        | ROLE_VIDEOKEYEDIT  | 视频账号编辑权限 | NUMBER(10)     |          | Y        |        | 0-无，1-是 |
+|          | ROLE\_LANGUAGEEDIT | 语言编辑权限     | NUMBER(10)     |          | Y        |        | 预留       |
+| 6        | REMARK             | 角色描述         | VARCHAR2(2000) |          | Y        |        |            |
 
 ### 1.2.5 tbl\_devicetype2 role
 
@@ -297,20 +302,24 @@
 
 模块数据表
 
-| **序号** | **代码**    | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**               |
-|----------|-------------|--------------|---------------|----------|----------|--------|------------------------|
-| 1        | MD_ID       | 模块序号     | NUMBER(10)    |          | N        | 主键   |                        |
-| 2        | MD_PARENTID | 父级模块序号 | NUMBER(10)    |          | N        |        |                        |
-| 3        | MD_NAME     | 模块名称     | VARCHAR2(100) |          | N        |        |                        |
-| 4        | MD_SHOWNAME | 模块简介     | VARCHAR2(100) |          | Y        |        |                        |
-| 5        | MD_URL      | 模块URL      | VARCHAR2(200) |          | Y        |        |                        |
-| 6        | MD_CODE     | 模块编码     | VARCHAR2(200) |          | Y        |        |                        |
-| 7        | MD_SEQ      | 模块排序     | NUMBER(20)    |          | Y        |        |                        |
-| 8        | MD_LEVEL    | 模块级别     | NUMBER(10)    |          | Y        |        |                        |
-| 9        | MD_FLAG     | 模块标志     | NUMBER(10)    |          | Y        |        |                        |
-| 10       | MD_ICON     | 模块图标     | VARCHAR2(100) |          | Y        |        |                        |
-| 11       | MD_TYPE     | 模块类型     | NUMBER(1)     |          | Y        |        | 0-启用模块，2-备用模块 |
-| 12       | MD_CONTROL  | 模块控制器   | VARCHAR2(100) |          | Y        |        |                        |
+| **序号** | **代码**           | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注**               |
+|----------|--------------------|--------------|---------------|----------|----------|--------|------------------------|
+| 1        | MD_ID              | 模块序号     | NUMBER(10)    |          | N        | 主键   |                        |
+| 2        | MD_PARENTID        | 父级模块序号 | NUMBER(10)    |          | N        |        |                        |
+| 3        | MD_NAME\_ZH_CN     | 模块中文名称 | VARCHAR2(100) |          | N        |        |                        |
+| 4        | MD_NAME\_EN        | 模块英文名称 | VARCHAR2(100) |          | N        |        |                        |
+| 5        | MD_NAME\_RU        | 模块名称     | VARCHAR2(100) |          | N        |        |                        |
+| 6        | MD_SHOWNAME\_ZH_CN | 模块中文简介 | VARCHAR2(100) |          | Y        |        |                        |
+| 7        | MD_SHOWNAME\_EN    | 模块英文简介 | VARCHAR2(100) |          | Y        |        |                        |
+| 8        | MD_SHOWNAME\_RU    | 模块俄文简介 | VARCHAR2(100) |          | Y        |        |                        |
+| 9        | MD_URL             | 模块URL      | VARCHAR2(200) |          | Y        |        |                        |
+| 10       | MD_CODE            | 模块编码     | VARCHAR2(200) |          | Y        |        |                        |
+| 11       | MD_SEQ             | 模块排序     | NUMBER(20)    |          | Y        |        |                        |
+| 12       | MD_LEVEL           | 模块级别     | NUMBER(10)    |          | Y        |        |                        |
+| 13       | MD_FLAG            | 模块标志     | NUMBER(10)    |          | Y        |        |                        |
+| 14       | MD_ICON            | 模块图标     | VARCHAR2(100) |          | Y        |        |                        |
+| 15       | MD_TYPE            | 模块类型     | NUMBER(1)     |          | Y        |        | 0-启用模块，2-备用模块 |
+| 16       | MD_CONTROL         | 模块控制器   | VARCHAR2(100) |          | Y        |        |                        |
 
 ### 1.2.7 tbl\_module2role
 
@@ -339,45 +348,50 @@
 | 8        | USER_ORGID       | 用户所属组织     | NUMBER(10)   |          | N        |        | 对应tbl_org表中org_id字段   |
 | 9        | USER_REGTIME     | 用户注册时间     | DATE         |          | Y        |        |                             |
 | 10       | USER_QUICKLOGIN  | 是否快捷登录     | NUMBER(1)    |          | Y        |        | 0-不是 1-是                 |
-| 11       | USER_ENABLE      | 使能或者失效     | NUMBER(1)    |          |          |        | 0-失效 1-使能               |
-| 12       | USER_RECEIVESMS  | 是否接收报警短信 | NUMBER(10)   |          |          |        | 0-否，1-是                  |
-| 13       | USER_RECEIVEMAIL | 是否接收报警邮件 | NUMBER(10)   |          |          |        | 0-否，1-是                  |
+| 11       | USER_ENABLE      | 使能或者失效     | NUMBER(1)    |          | Y        |        | 0-失效 1-使能               |
+| 12       | USER_RECEIVESMS  | 是否接收报警短信 | NUMBER(10)   |          | Y        |        | 0-否，1-是                  |
+| 13       | USER_RECEIVEMAIL | 是否接收报警邮件 | NUMBER(10)   |          | Y        |        | 0-否，1-是                  |
+| 14       | USER\_LANGUAGE   | 用户语言         | NUMBER(1)    |          | Y        |        | 1-中文，2-英文，3-俄文      |
 
 ### 1.2.9 tbl_dist_name
 
 字典名称表
 
-| **序号** | **代码**   | **名称** | **类型**     | **单位** | **为空** | **键** | **备注**       |
-|----------|------------|----------|--------------|----------|----------|--------|----------------|
-| 1        | SYSDATAID  | 字典编码 | VARCHAR2(32) |          | N        | 主键   |                |
-| 2        | TENANTID   | 组织编号 | VARCHAR2(50) |          | Y        |        |                |
-| 3        | CNAME      | 中文名称 | VARCHAR2(50) |          | Y        |        |                |
-| 4        | ENAME      | 英文名称 | VARCHAR2(50) |          | Y        |        |                |
-| 5        | SORTS      | 排序     | NUMBER       |          | Y        |        |                |
-| 6        | STATUS     | 显示状态 | NUMBER       |          | Y        |        | 0-显示，1-隐藏 |
-| 7        | CREATOR    | 创建人   | VARCHAR2(50) |          | Y        |        |                |
-| 8        | UPDATEUSER | 修改人   | VARCHAR2(50) |          | Y        |        |                |
-| 9        | UPDATETIME | 创建时间 | DATE         |          | Y        |        | SYSDATE        |
-| 10       | CREATEDATE | 修改时间 | DATE         |          | N        |        | SYSDATE        |
+| **序号** | **代码**    | **名称** | **类型**     | **单位** | **为空** | **键** | **备注**       |
+|----------|-------------|----------|--------------|----------|----------|--------|----------------|
+| 1        | SYSDATAID   | 字典编码 | VARCHAR2(32) |          | N        | 主键   |                |
+| 2        | TENANTID    | 组织编号 | VARCHAR2(50) |          | Y        |        |                |
+| 3        | NAME\_ZH_CN | 中文名称 | VARCHAR2(50) |          | Y        |        |                |
+| 4        | NAME\_EN    | 英文名称 | VARCHAR2(50) |          | Y        |        |                |
+| 5        | NAME\_RU    | 俄文名称 | VARCHAR2(50) |          | Y        |        |                |
+| 6        | CODE        | 编码     | VARCHAR2(50) |          | Y        |        |                |
+| 7        | SORTS       | 排序     | NUMBER       |          | Y        |        |                |
+| 8        | STATUS      | 显示状态 | NUMBER       |          | Y        |        | 0-显示，1-隐藏 |
+| 9        | CREATOR     | 创建人   | VARCHAR2(50) |          | Y        |        |                |
+| 10       | UPDATEUSER  | 修改人   | VARCHAR2(50) |          | Y        |        |                |
+| 11       | UPDATETIME  | 创建时间 | DATE         |          | Y        |        | SYSDATE        |
+| 12       | CREATEDATE  | 修改时间 | DATE         |          | N        |        | SYSDATE        |
 
 ### 1.2.10 tbl_dist_item
 
 字典数据项表
 
-| **序号** | **代码**   | **名称**   | **类型**      | **单位** | **为空** | **键** | **备注**       |
-|----------|------------|------------|---------------|----------|----------|--------|----------------|
-| 1        | DATAITEMID | 数据项编码 | VARCHAR2(32)  |          | N        | 主键   |                |
-| 2        | TENANTID   | 组织编号   | VARCHAR2(50)  |          | Y        |        |                |
-| 3        | SYSDATAID  | 字典编码   | VARCHAR2(50)  |          | Y        |        |                |
-| 4        | CNAME      | 中文名称   | VARCHAR2(50)  |          | Y        |        |                |
-| 5        | ENAME      | 英文名称   | VARCHAR2(200) |          | Y        |        |                |
-| 6        | DATAVALUE  | 数据项值   | VARCHAR2(200) |          | Y        |        |                |
-| 7        | SORTS      | 排序       | NUMBER        |          | Y        |        |                |
-| 8        | STATUS     | 显示状态   | NUMBER        |          | Y        |        | 0-显示，1-隐藏 |
-| 9        | CREATOR    | 创建人     | VARCHAR2(50)  |          | Y        |        |                |
-| 10       | UPDATEUSER | 修改人     | VARCHAR2(50)  |          | Y        |        |                |
-| 11       | UPDATETIME | 创建时间   | DATE          |          | Y        |        | SYSDATE        |
-| 12       | CREATEDATE | 修改时间   | DATE          |          | Y        |        | SYSDATE        |
+| **序号** | **代码**    | **名称**   | **类型**      | **单位** | **为空** | **键** | **备注**       |
+|----------|-------------|------------|---------------|----------|----------|--------|----------------|
+| 1        | DATAITEMID  | 数据项编码 | VARCHAR2(32)  |          | N        | 主键   |                |
+| 2        | TENANTID    | 组织编号   | VARCHAR2(50)  |          | Y        |        |                |
+| 3        | SYSDATAID   | 字典编码   | VARCHAR2(50)  |          | Y        |        |                |
+| 4        | NAME\_ZH_CN | 中文名称   | VARCHAR2(50)  |          | Y        |        |                |
+| 5        | NAME\_EN    | 英文名称   | VARCHAR2(50)  |          | Y        |        |                |
+| 6        | NAME\_RU    | 俄文名称   | VARCHAR2(50)  |          | Y        |        |                |
+| 7        | CODE        | 编码       | VARCHAR2(200) |          | Y        |        |                |
+| 8        | DATAVALUE   | 数据项值   | VARCHAR2(200) |          | Y        |        |                |
+| 9        | SORTS       | 排序       | NUMBER        |          | Y        |        |                |
+| 10       | STATUS      | 显示状态   | NUMBER        |          | Y        |        | 0-显示，1-隐藏 |
+| 11       | CREATOR     | 创建人     | VARCHAR2(50)  |          | Y        |        |                |
+| 12       | UPDATEUSER  | 修改人     | VARCHAR2(50)  |          | Y        |        |                |
+| 13       | UPDATETIME  | 创建时间   | DATE          |          | Y        |        | SYSDATE        |
+| 14       | CREATEDATE  | 修改时间   | DATE          |          | Y        |        | SYSDATE        |
 
 ### 1.2.11 tbl_code
 
@@ -740,6 +754,7 @@
 | 3        | ITEMNAME  | 名称     | VARCHAR2(200) |          | Y        |        |                                 |
 | 4        | ITEMVALUE | 变量     | VARCHAR2(200) |          | Y        |        |                                 |
 | 5        | ITEMUNIT  | 单位     | VARCHAR2(200) |          | Y        |        |                                 |
+| 6        | ITEMCODE  |          |               |          |          |        |                                 |
 
 ### 1.2.34 tbl_auxiliary2master
 
@@ -897,7 +912,7 @@
 | …        | …                  | …            |                |          | Y        |        | 根据协议自动生成的字段 |
 | …        | …                  | …            |                |          | Y        |        |                        |
 
-### 1.2.46 tbl\_rpcacqdata_latest
+### 1.2.46 tbl\_srpacqdata_latest
 
 功图计算实时数据表
 
@@ -1028,11 +1043,11 @@
 | 123      | REALTIMELIQUIDWEIGHTPRODUCTION     | 实时产液量               | NUMBER(12,3)   | 吨       | Y        |        |                     |
 | 124      | SAVETIME                           | 保存时间                 | DATE           |          | Y        |        |                     |
 
-### 1.2.47 tbl\_rpcacqdata_hist
+### 1.2.47 tbl\_srpacqdata_hist
 
 同tbl\_rpcacqdata_latest
 
-### 1.2.48 tbl_rpcdailycalculationdata
+### 1.2.48 tbl\_srpdailycalculationdata
 
 功图计算日汇总数据表
 
@@ -1095,7 +1110,7 @@
 | 55       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
 | 56       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.49 tbl_rpctimingcalculationdata
+### 1.2.49 tbl\_srptimingcalculationdata
 
 功图计算定时汇总数据表
 
@@ -1355,18 +1370,20 @@
 
 表1-45 资源监测数据表
 
-| **序号** | **代码**       | **名称**         | **类型**     | **单位** | **为空** | **键** | **备注** |
-|----------|----------------|------------------|--------------|----------|----------|--------|----------|
-| 1        | ID             | 记录编号         | NUMBER(10)   |          | N        | 主键   |          |
-| 2        | ACQTIME        | 采集时间         | DATE         |          | Y        |        |          |
-| 3        | APPRUNSTATUS   | AC运行状态       | NUMBER(2)    |          | Y        |        |          |
-| 4        | APPVERSION     | AC版本信息       | VARCHAR2(50) |          | Y        |        |          |
-| 5        | ADRUNSTATUS    | 驱动程序运行状态 | NUMBER(2)    |          | Y        |        |          |
-| 6        | ADVERSION      | 驱动程序版本信息 | VARCHAR2(50) |          | Y        |        |          |
-| 7        | CPUUSEDPERCENT | CPU使用率        | VARCHAR2(50) | %        | Y        |        |          |
-| 8        | MEMUSEDPERCENT | 内存使用率       | NUMBER(8,2)  | %        | Y        |        |          |
-| 9        | TABLESPACESIZE | 数据库表空间大小 | NUMBER(10,2) | Mb       | Y        |        |          |
-| 10       | JEDISSTATUS    | REDIS状态        | NUMBER(2)    |          | Y        |        |          |
+| **序号** | **代码**        | **名称**         | **类型**     | **单位** | **为空** | **键** | **备注** |
+|----------|-----------------|------------------|--------------|----------|----------|--------|----------|
+| 1        | ID              | 记录编号         | NUMBER(10)   |          | N        | 主键   |          |
+| 2        | ACQTIME         | 采集时间         | DATE         |          | Y        |        |          |
+| 3        | APPRUNSTATUS    | AC运行状态       | NUMBER(2)    |          | Y        |        |          |
+| 4        | APPVERSION      | AC版本信息       | VARCHAR2(50) |          | Y        |        |          |
+| 5        | ADRUNSTATUS     | 驱动程序运行状态 | NUMBER(2)    |          | Y        |        |          |
+| 6        | ADVERSION       | 驱动程序版本信息 | VARCHAR2(50) |          | Y        |        |          |
+| 7        | CPUUSEDPERCENT  | CPU使用率        | VARCHAR2(50) | %        | Y        |        |          |
+| 8        | MEMUSEDPERCENT  | 内存使用率       | NUMBER(8,2)  | %        | Y        |        |          |
+| 9        | TABLESPACESIZE  | 数据库表空间大小 | NUMBER(10,2) | Mb       | Y        |        |          |
+| 10       | JEDISSTATUS     | REDIS状态        | NUMBER(2)    |          | Y        |        |          |
+|          | CACHEMAXMEMORY  | REDIS最大内存    | NUMBER(20)   | kb       | Y        |        |          |
+|          | CACHEUSEDMEMORY | REDIS已用内存    | NUMBER(20)   | kb       | Y        |        |          |
 
 ### 1.2.57 tbl\_videokey
 

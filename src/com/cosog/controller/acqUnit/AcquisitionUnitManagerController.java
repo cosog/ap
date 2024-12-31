@@ -4084,8 +4084,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveDatabaseColumnMappingTable")
 	public String saveDatabaseColumnMappingTable() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data");
 		String protocolType = ParamUtils.getParameter(request, "protocolType");
+		protocolType="0";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";

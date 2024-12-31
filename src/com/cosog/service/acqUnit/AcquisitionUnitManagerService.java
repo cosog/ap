@@ -4598,7 +4598,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -6143,8 +6143,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				String calColumn=MemoryDataManagerTask.getCalculateColumnFromName(StringManagerUtils.stringToInteger(protocolType), 
 						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName(),language);
 				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
-						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName()+"' "
-						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' ";
+						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName().replaceAll("&nbsp;", "").replaceAll("null", "")+"' "
+						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn().replaceAll("&nbsp;", "").replaceAll("null", "")+"' ";
 				getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}

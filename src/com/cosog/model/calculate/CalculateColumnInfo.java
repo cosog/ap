@@ -71,8 +71,8 @@ public class CalculateColumnInfo implements Serializable{
 		return SRPCalculateColumnList;
 	}
 
-	public void setSRPCalculateColumnList(List<CalculateColumn> SRPCalculateColumnList) {
-		SRPCalculateColumnList = SRPCalculateColumnList;
+	public void setSRPCalculateColumnList(List<CalculateColumn> srpCalculateColumnList) {
+		SRPCalculateColumnList = srpCalculateColumnList;
 	}
 	
 	

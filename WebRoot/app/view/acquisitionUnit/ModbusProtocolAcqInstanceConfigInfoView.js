@@ -385,7 +385,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {
 			                    	this.type = 'checkbox';
-			                    }else if(visualColIndex === 2 && (visualRowIndex===11) || visualRowIndex===12){
+			                    }else if(visualColIndex === 2 && (visualRowIndex===11 || visualRowIndex===12)){
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
 			                    	}

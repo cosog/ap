@@ -268,9 +268,6 @@ function websocketOnMessage(evt) {
                     for (var i = 0; i < store.getCount(); i++) {
                         var record = store.getAt(i);
                         if (record.data.id == data.deviceId) {
-                            record.set("commStatusName", loginUserLanguageResource.online);
-                            record.set("commStatus", 1);
-                            record.set("acqTime", data.acqTime);
                             for (var j = 0; j < data.allItemInfo.length; j++) {
                                 for (let item in record.data) {
                                     if (item.toUpperCase() == data.allItemInfo[j].column.toUpperCase()) {
@@ -282,6 +279,9 @@ function websocketOnMessage(evt) {
                                     }
                                 }
                             }
+                            record.set("commStatusName", loginUserLanguageResource.online);
+                            record.set("commStatus", 1);
+                            record.set("acqTime", data.acqTime);
                             record.set("commAlarmLevel", data.commAlarmLevel);
                             record.set("runAlarmLevel", data.runAlarmLevel);
                             record.set("resultAlarmLevel", data.resultAlarmLevel);

@@ -525,7 +525,7 @@ public class EquipmentDriverServerTask {
 				}
 				
 				for(String itemName:itemNameList){
-					if(!StringManagerUtils.existOrNot(acquisitionItemNameList, itemName, false)){
+					if(!StringManagerUtils.existOrNot(acquisitionItemNameList, itemName, true)){
 						delSql="delete from tbl_datamapping t where t.name='"+itemName+"'";
 						result=OracleJdbcUtis.executeSqlUpdate(delSql);
 					}

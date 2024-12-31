@@ -2339,11 +2339,11 @@ public class DriverAPIController extends BaseController{
 					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 					if(alarmInstanceOwnItem!=null){
 						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
-							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase("在线")){
+							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase("online")){
 								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
 								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemName().equalsIgnoreCase(runStatus==1?"运行":(runStatus==0?"停止":languageResourceMap.get("emptyMsg")))){
+							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(runStatus==1?"run":(runStatus==0?"stop":languageResourceMap.get("emptyMsg")))){
 								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
 							}
 						}
@@ -3037,6 +3037,7 @@ public class DriverAPIController extends BaseController{
 					boolean fesDiagramEnabled=false;
 					
 					//如果采集了计算数据
+					deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
 					if(isAcqCalResultData && checkSign==1){
 						fesDiagramEnabled=true;
 						
@@ -3238,7 +3239,7 @@ public class DriverAPIController extends BaseController{
 							responseResultData.getPumpEfficiency().setPumpEff4(srpCalculateResponseData.getPumpEfficiency().getPumpEff4());
 							responseResultData.getPumpEfficiency().setPumpEff(srpCalculateResponseData.getPumpEfficiency().getPumpEff());
 						}
-						deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
+						
 						//删除非当天采集的功图数据
 						if(deviceTodayData!=null){
 							Iterator<SRPCalculateResponseData> it = deviceTodayData.getSRPCalculateList().iterator();
@@ -3539,6 +3540,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//进行转速计算
+					deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
 					if(isAcqRPM && checkSign==1){
 						if(pcpCalculateRequestData.getProduction()!=null && pcpCalculateRequestData.getFluidPVT()!=null){
 							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(pcpCalculateRequestData.getProduction().getWaterCut(), pcpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), pcpCalculateRequestData.getFluidPVT().getWaterDensity());
@@ -3588,7 +3590,7 @@ public class DriverAPIController extends BaseController{
 							
 							
 							//删除非当天采集的转速数据
-							deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
+							
 							if(deviceTodayData!=null){
 								Iterator<PCPCalculateResponseData> it = deviceTodayData.getPCPCalculateList().iterator();
 								while(it.hasNext()){

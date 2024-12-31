@@ -306,7 +306,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String sql="select t.id,t.devicename,c1.name_"+language+" as devicetypename,"
 					+ " to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ " t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
+					+ " decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"
 					+ " t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"
 					+ " decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"
 					+ " t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"

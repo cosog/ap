@@ -633,7 +633,13 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data=[];
 	        	for(var i=0;i<importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header.length;i++){
-		        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
+		        	if(loginUserLanguage=='zh_CN'){
+		        		importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		}
 		        }
 	        }
 	        
@@ -1038,8 +1044,14 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data=[];
 	        	for(var i=0;i<importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.header.length;i++){
-		        	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
-		        }
+	        		if(loginUserLanguage=='zh_CN'){
+	        			importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data.push(importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		}
+	        	}
 	        }
 	        
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -1439,8 +1451,14 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	        importReportUnitProductionTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitProductionTemplateHandsontableHelper.data=[];
 	        	for(var i=0;i<importReportUnitProductionTemplateHandsontableHelper.templateData.header.length;i++){
-		        	importReportUnitProductionTemplateHandsontableHelper.data.push(importReportUnitProductionTemplateHandsontableHelper.templateData.header[i].title);
-		        }
+	        		if(loginUserLanguage=='zh_CN'){
+	        			importReportUnitProductionTemplateHandsontableHelper.data.push(importReportUnitProductionTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			importReportUnitProductionTemplateHandsontableHelper.data.push(importReportUnitProductionTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			importReportUnitProductionTemplateHandsontableHelper.data.push(importReportUnitProductionTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		}
+	        	}
 	        }
 	        
 	        importReportUnitProductionTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {

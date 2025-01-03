@@ -82,7 +82,11 @@ public class ReportTemplate  implements Serializable{
 		
 	    private TdStyle tdStyle;
 
-	    private List<String> title;
+	    private List<String> title_zh_CN;
+	    
+	    private List<String> title_en;
+	    
+	    private List<String> title_ru;
 
 	    public void setTdStyle(TdStyle tdStyle){
 	        this.tdStyle = tdStyle;
@@ -90,12 +94,24 @@ public class ReportTemplate  implements Serializable{
 	    public TdStyle getTdStyle(){
 	        return this.tdStyle;
 	    }
-	    public void setTitle(List<String> title){
-	        this.title = title;
-	    }
-	    public List<String> getTitle(){
-	        return this.title;
-	    }
+		public List<String> getTitle_zh_CN() {
+			return title_zh_CN;
+		}
+		public void setTitle_zh_CN(List<String> title_zh_CN) {
+			this.title_zh_CN = title_zh_CN;
+		}
+		public List<String> getTitle_en() {
+			return title_en;
+		}
+		public void setTitle_en(List<String> title_en) {
+			this.title_en = title_en;
+		}
+		public List<String> getTitle_ru() {
+			return title_ru;
+		}
+		public void setTitle_ru(List<String> title_ru) {
+			this.title_ru = title_ru;
+		}
 	}
 	
 	public static class MergeCells implements Serializable

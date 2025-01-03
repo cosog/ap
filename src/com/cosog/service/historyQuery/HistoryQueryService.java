@@ -1168,7 +1168,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 				result_json.append("\"calculateType\":"+obj[6]+",");
-				result_json.append("\"details\":\"\",");
+				result_json.append("\"details\":\""+languageResourceMap.get("details")+"\",");
 				
 				if(displayInputItemList.size()>0){
 					String productionData=(obj[obj.length-2]+"").replaceAll("null", "");

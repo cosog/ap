@@ -524,9 +524,10 @@ iconHistoryQueryDetailsData = function(value, e, o) {
 	var recordId=o.data.id;
 	var deviceName=o.data.deviceName;
 	var deviceId=o.data.deviceId;
+	var details=o.data.details;
 	var calculateType=o.data.calculateType;
 	var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-			"onclick=callBackHistoryData(\""+recordId+"\",\""+deviceId+"\",\""+deviceName+"\",\""+calculateType+"\")>详细...</a>";
+			"onclick=callBackHistoryData(\""+recordId+"\",\""+deviceId+"\",\""+deviceName+"\",\""+calculateType+"\")>"+details+"...</a>";
 	return resultstring;
 }
 

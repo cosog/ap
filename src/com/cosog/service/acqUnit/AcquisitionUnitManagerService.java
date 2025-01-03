@@ -1946,7 +1946,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
 			int columnCoumnt=template.getColumnWidths().size();
 			if(template.getHeader().size()>0){
-				columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle().size();
+				if("zh_CN".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().size();
+				}else if("en".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_en().size();
+				}else if("ru".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().size();
+				}
 			}
 			
 			List<String> itemsList=new ArrayList<String>();
@@ -2005,9 +2011,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<columnCoumnt;i++){
 				String headerName="";
 				if(template.getHeader().size()>0){
-					headerName=template.getHeader().get(template.getHeader().size()-1).getTitle().get(i);
-					if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle().size()>=i ){
-						headerName=template.getHeader().get(template.getHeader().size()-2).getTitle().get(i);
+					if("zh_CN".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().get(i);
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_en().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_en().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_en().get(i);
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_ru().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
+						}
 					}
 				}
 				
@@ -2187,7 +2205,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
 			int columnCoumnt=template.getColumnWidths().size();
 			if(template.getHeader().size()>0){
-				columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle().size();
+				if("zh_CN".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().size();
+				}else if("en".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_en().size();
+				}else if("ru".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().size();
+				}
 			}
 			
 			List<String> itemsList=new ArrayList<String>();
@@ -2246,9 +2270,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<columnCoumnt;i++){
 				String headerName="";
 				if(template.getHeader().size()>0){
-					headerName=template.getHeader().get(template.getHeader().size()-1).getTitle().get(i);
-					if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle().size()>=i ){
-						headerName=template.getHeader().get(template.getHeader().size()-2).getTitle().get(i);
+					if("zh_CN".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().get(i);
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_en().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_en().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_en().get(i);
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_ru().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
+						}
 					}
 				}
 				

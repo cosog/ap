@@ -519,6 +519,13 @@ var ProductionDailyReportHelper = {
 	        productionDailyReportHelper.initData=function(){
 	        	productionDailyReportHelper.data=[];
 	        	for(var i=0;i<productionDailyReportHelper.templateData.header.length;i++){
+	        		if(loginUserLanguage=='zh_CN'){
+	        			productionDailyReportHelper.templateData.header[i].title=productionDailyReportHelper.templateData.header[i].title_zh_CN;
+	        		}else if(loginUserLanguage=='en'){
+	        			productionDailyReportHelper.templateData.header[i].title=productionDailyReportHelper.templateData.header[i].title_en;
+	        		}else if(loginUserLanguage=='ru'){
+	        			productionDailyReportHelper.templateData.header[i].title=productionDailyReportHelper.templateData.header[i].title_ru;
+	        		}
 	        		productionDailyReportHelper.templateData.header[i].title.push('');
 	        		productionDailyReportHelper.columnCount=productionDailyReportHelper.templateData.header[i].title.length;
 	        		

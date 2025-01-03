@@ -2,7 +2,7 @@
     "singleWellRangeReportTemplate": [{
         "calculateType": 1,
         "templateCode": "oilWell_Pumping",
-        "templateName": "油井_抽油机井单井日报表",
+        "templateName": "SRP Daily Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -12,7 +12,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -22,7 +24,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Date", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -32,7 +36,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "","", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_ru": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -128,7 +134,7 @@
     },{
         "calculateType": 0,
         "templateCode": "CBMWell_heichao",
-        "templateName": "煤层气井排采数据表_单井日报表",
+        "templateName": "CBM Daily Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -138,7 +144,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel daily report", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -149,7 +157,9 @@
                 "backgroundColor": "",
                 "textAlign": "center"
             },
-            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["Position：label      Seam number：label        Production interval of well：label        Pump Model/Pumpbore Diameter：label        Pump Setting Depth：label", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -159,7 +169,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["日期", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
+            "title_zh_CN": ["日期", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"],
+            "title_en": ["Date", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Daily Production", "", "Pressure(Mpa)", "", "Cumulative Production", "", "Remark"],
+            "title_ru": ["日期", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -169,7 +181,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
+            "title_zh_CN": ["", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""],
+            "title_en": ["", "", "SPM", "Stroke", "", "Gas(m^3)", "Water(m^3)", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3)", "Water(m^3)", ""],
+            "title_ru": ["", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
         }],
         "fixedRowsTop": 4,
         "fixedRowsBottom": 0,
@@ -245,7 +259,7 @@
     }, {
         "calculateType": 2,
         "templateCode": "oilWell_ScrewPump",
-        "templateName": "油井_螺杆泵井单井日报表",
+        "templateName": "PCP Daily Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -255,7 +269,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel井日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -265,7 +281,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Date", "Comm", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -275,7 +293,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_ru": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -362,7 +382,7 @@
     "singleWellDailyReportTemplate": [{
         "calculateType": 1,
         "templateCode": "oilWell_PumpingDailyReport",
-        "templateName": "油井_抽油机井单井班报表",
+        "templateName": "SRP Hourly Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -372,7 +392,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -382,7 +404,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "时间", "通信", "", "", "时率", "", "", "工况", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "时间", "通信", "", "", "时率", "", "", "工况", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Time", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "时间", "通信", "", "", "时率", "", "", "工况", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -392,7 +416,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "","", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_ru": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "","", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -493,7 +519,7 @@
     },{
         "calculateType": 0,
         "templateCode": "CBMWell_heichaoDailyReport",
-        "templateName": "煤层气井排采数据表_单井班报表",
+        "templateName": "CBM Hourly Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -503,7 +529,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -514,7 +542,9 @@
                 "backgroundColor": "",
                 "textAlign": "center"
             },
-            "title": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["Position：label      Seam number：label        Production interval of well：label        Pump Model/Pumpbore Diameter：label        Pump Setting Depth：label", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -524,7 +554,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["时间", "当日生产时间/h", "工作制度", "", "动液面(m)", "压 力(Mpa)", "", "瞬时产量", "", "日累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"]
+            "title_zh_CN": ["时间", "当日生产时间/h", "工作制度", "", "动液面(m)", "压 力(Mpa)", "", "瞬时产量", "", "日累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"],
+            "title_en": ["Time", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Pressure(Mpa)", "", "Realtime Production", "", "Daily Production", "", "Flowback Rate(%)", "Chloride Ion Concentration(mg/L)", "Remark"],
+            "title_ru": ["时间", "当日生产时间/h", "工作制度", "", "动液面(m)", "压 力(Mpa)", "", "瞬时产量", "", "日累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -534,7 +566,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "冲次", "冲程", "", "井底压力", "套压", "气(方/小时)", "水(方/小时)", "气(方)", "水(方)", "", "", ""]
+            "title_zh_CN": ["", "", "冲次", "冲程", "", "井底压力", "套压", "气(方/小时)", "水(方/小时)", "气(方)", "水(方)", "", "", ""],
+            "title_en": ["", "", "SPM", "Stroke", "", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3/h)", "Water(m^3/h)", "Gas(m^3)", "Water(m^3)", "", "", ""],
+            "title_ru": ["", "", "冲次", "冲程", "", "井底压力", "套压", "气(方/小时)", "水(方/小时)", "气(方)", "水(方)", "", "", ""]
         }],
         "fixedRowsTop": 4,
         "fixedRowsBottom": 0,
@@ -630,7 +664,7 @@
     }, {
         "calculateType": 2,
         "templateCode": "oilWell_ScrewPumpDailyReport",
-        "templateName": "油井_螺杆泵井单井班报表",
+        "templateName": "PCP Hourly Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -640,7 +674,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -650,7 +686,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "时间", "通信", "", "", "时率", "", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "时间", "通信", "", "", "时率", "", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Time", "Comm", "", "", "Time Efficiency", "", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "时间", "通信", "", "", "时率", "", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -660,7 +698,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -752,7 +792,7 @@
     "productionReportTemplate": [{
         "calculateType": 1,
         "templateCode": "oilWell_PumpingProductionReport",
-        "templateName": "油井_抽油机井区域日报",
+        "templateName": "SRP Area Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -762,7 +802,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["orgNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -772,7 +814,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Well Name", "Date", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -782,7 +826,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_ru": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -883,7 +929,7 @@
     },{
         "calculateType": 0,
         "templateCode": "CBMWell_heichaoProductionReport",
-        "templateName": "煤层气井排采生产报表_区域日报",
+        "templateName": "CBM Area Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -893,7 +939,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["orgNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""]
         },{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -903,7 +951,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["日期","井名", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
+            "title_zh_CN": ["日期","井名", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"],
+            "title_en": ["Date","Well Name", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Daily Production", "", "Pressure(Mpa)", "", "Cumulative Production", "", "Remark"],
+            "title_ru": ["日期","井名", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -913,7 +963,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
+            "title_zh_CN": ["", "", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""],
+            "title_en": ["", "", "", "SPM", "Stroke", "", "Gas(m^3)", "Water(m^3)", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3)", "Water(m^3)", ""],
+            "title_ru": ["", "", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,
@@ -984,7 +1036,7 @@
     }, {
         "calculateType": 2,
         "templateCode": "oilWell_ScrewPumpProductionReoirt",
-        "templateName": "油井_螺杆泵井区域日报",
+        "templateName": "PCP Area Report",
         "header": [{
             "tdStyle": {
                 "fontWeight": "bold",
@@ -994,7 +1046,9 @@
                 "color": "",
                 "backgroundColor": ""
             },
-            "title": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            "title_zh_CN": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["orgNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["orgNameLabel日报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -1004,7 +1058,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
+            "title_zh_CN": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
+            "title_en": ["Idx", "Well Name", "Date", "Comm", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+            "title_ru": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -1014,7 +1070,9 @@
                 "color": "rgb(0, 0, 51)",
                 "backgroundColor": "rgb(242, 242, 242)"
             },
-            "title": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
+            "title_zh_CN": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
+            "title_en": ["", "", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+            "title_ru": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""]
         }],
         "fixedRowsTop": 3,
         "fixedRowsBottom": 0,

@@ -528,7 +528,13 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
             singleWellRangeReportTemplateHandsontableHelper.data = [];
             if(singleWellRangeReportTemplateHandsontableHelper.templateData.header!=undefined){
             	for (var i = 0; i < singleWellRangeReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                    singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title);
+                    if(loginUserLanguage=='zh_CN'){
+                    	singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			singleWellRangeReportTemplateHandsontableHelper.data.push(singleWellRangeReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		}
                 }
             }
         }
@@ -762,7 +768,13 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
             singleWellDailyReportTemplateHandsontableHelper.data = [];
             if(singleWellDailyReportTemplateHandsontableHelper.templateData.header!=undefined){
             	for (var i = 0; i < singleWellDailyReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                    singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title);
+            		if(loginUserLanguage=='zh_CN'){
+            			singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			singleWellDailyReportTemplateHandsontableHelper.data.push(singleWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		} 
                 }
             }
         }
@@ -1691,7 +1703,13 @@ var ProductionReportTemplateHandsontableHelper = {
             productionReportTemplateHandsontableHelper.data = [];
             if(productionReportTemplateHandsontableHelper.templateData.header!=undefined){
             	for (var i = 0; i < productionReportTemplateHandsontableHelper.templateData.header.length; i++) {
-                    productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title);
+                    if(loginUserLanguage=='zh_CN'){
+                    	productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			productionReportTemplateHandsontableHelper.data.push(productionReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		} 
                 }
             }
         }

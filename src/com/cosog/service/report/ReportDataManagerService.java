@@ -121,15 +121,40 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		if(template!=null){
 			int columnCount=0;
-			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-				columnCount=template.getHeader().get(0).getTitle().size();
-				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-					String header=template.getHeader().get(0).getTitle().get(i);
-					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
+			if("zh_CN".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+					columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+						String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("en".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+					columnCount=template.getHeader().get(0).getTitle_en().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+						String header=template.getHeader().get(0).getTitle_en().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("ru".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+					columnCount=template.getHeader().get(0).getTitle_ru().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+						String header=template.getHeader().get(0).getTitle_ru().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
 					}
 				}
 			}
+			
+			
+			
 			if(template.getHeader().size()>0){
 				String labelInfoStr="";
 				String[] labelInfoArr=null;
@@ -150,15 +175,41 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 						for(int j=0;j<template.getHeader().size();j++){
 							boolean exit=false;
-							if(template.getHeader().get(j).getTitle()!=null){
-								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
-										exit=true;
-										break;
+							
+							if("zh_CN".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+							}else if("en".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_en()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+							}else if("ru".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_ru()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
 									}
 								}
 							}
+							
+							
+							
 							if(exit){
 								break;
 							}
@@ -426,13 +477,34 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			if(template!=null){
 				int columnCount=0;
 				headerRowCount=template.getHeader().size();
-				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-					columnCount=template.getHeader().get(0).getTitle().size();
-					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-						String header=template.getHeader().get(0).getTitle().get(i);
-						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("deviceNameLabel", deviceName);
-//							template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
+				if("zh_CN".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+						columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+							String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
+						}
+					}
+				}else if("en".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+						columnCount=template.getHeader().get(0).getTitle_en().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+							String header=template.getHeader().get(0).getTitle_en().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
+						}
+					}
+				}else if("ru".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+						columnCount=template.getHeader().get(0).getTitle_ru().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+							String header=template.getHeader().get(0).getTitle_ru().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
 						}
 					}
 				}
@@ -457,15 +529,39 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 							for(int j=0;j<template.getHeader().size();j++){
 								boolean exit=false;
-								if(template.getHeader().get(j).getTitle()!=null){
-									for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-										if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
-											exit=true;
-											break;
+								
+								if("zh_CN".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+											if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
+										}
+									}
+								}else if("en".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_en()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+											if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
+										}
+									}
+								}else if("ru".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_ru()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+											if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
 										}
 									}
 								}
+								
 								if(exit){
 									break;
 								}
@@ -473,16 +569,48 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					for(int j=0;j<template.getHeader().size();j++){
-						if(template.getHeader().get(j).getTitle()!=null){
-							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+						if("zh_CN".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+									if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
 								}
-								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-									if(timeEfficiencyUnitType==2){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-									}else{
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_en()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+									if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
+								}
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_ru()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+									if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
 									}
 								}
 							}
@@ -654,13 +782,32 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				for(int i=0;i<template.getHeader().size();i++){
 					List<Object> record = new ArrayList<>();
-					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
-						if(i==0 && j==0){
-							record.add(title);
-						}else{
-							record.add(template.getHeader().get(i).getTitle().get(j));
+					if("zh_CN".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_zh_CN().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_zh_CN().get(j));
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_en().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_en().get(j));
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_ru().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_ru().get(j));
+							}
 						}
 					}
+					
 					sheetDataList.add(record);
 				}
 				for(int i=0;i<dataList.size();i++){
@@ -781,15 +928,40 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sheetTemplateList.add(template);
 					
 					int columnCount=0;
-					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-						columnCount=template.getHeader().get(0).getTitle().size();
-						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
-							String header=template.getHeader().get(0).getTitle().get(j);
-							if(StringManagerUtils.isNotNull(header)){
-								title=header.replaceAll("deviceNameLabel", deviceName);
+					
+					if("zh_CN".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+							columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_zh_CN().size();j++){
+								String header=template.getHeader().get(0).getTitle_zh_CN().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+							columnCount=template.getHeader().get(0).getTitle_en().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_en().size();j++){
+								String header=template.getHeader().get(0).getTitle_en().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+							columnCount=template.getHeader().get(0).getTitle_ru().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_ru().size();j++){
+								String header=template.getHeader().get(0).getTitle_ru().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
 							}
 						}
 					}
+					
+					
 					
 					titleList.add(title);
 					
@@ -813,15 +985,39 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								}
 								for(int l=0;l<template.getHeader().size();l++){
 									boolean exit=false;
-									if(template.getHeader().get(l).getTitle()!=null){
-										for(int k=0;k<template.getHeader().get(l).getTitle().size();k++){
-											if(template.getHeader().get(l).getTitle().get(k).indexOf("label")>=0){
-												template.getHeader().get(l).getTitle().set(k, template.getHeader().get(l).getTitle().get(k).replaceFirst("label", labelInfoArr[j]));
-												exit=true;
-												break;
+									if("zh_CN".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_zh_CN()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_zh_CN().size();k++){
+												if(template.getHeader().get(l).getTitle_zh_CN().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_zh_CN().set(k, template.getHeader().get(l).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
+											}
+										}
+									}else if("en".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_en()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_en().size();k++){
+												if(template.getHeader().get(l).getTitle_en().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_en().set(k, template.getHeader().get(l).getTitle_en().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
+											}
+										}
+									}else if("ru".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_ru()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_ru().size();k++){
+												if(template.getHeader().get(l).getTitle_ru().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_ru().set(k, template.getHeader().get(l).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
 											}
 										}
 									}
+									
+									
 									if(exit){
 										break;
 									}
@@ -829,20 +1025,54 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 						for(int j=0;j<template.getHeader().size();j++){
-							if(template.getHeader().get(j).getTitle()!=null){
-								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+							if("zh_CN".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
+										}
 									}
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-										if(timeEfficiencyUnitType==2){
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-										}else{
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+								}
+							}else if("en".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_en()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
+										}
+									}
+								}
+							}else if("ru".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_ru()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
 										}
 									}
 								}
 							}
+							
+							
 						}
 					}
 					
@@ -995,13 +1225,32 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(int k=0;k<template.getHeader().size();k++){
 						List<Object> record = new ArrayList<>();
-						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
-							if(k==0 && j==0){
-								record.add(title);
-							}else{
-								record.add(template.getHeader().get(k).getTitle().get(j));
+						if("zh_CN".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_zh_CN().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_zh_CN().get(j));
+								}
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_en().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_en().get(j));
+								}
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_ru().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_ru().get(j));
+								}
 							}
 						}
+						
 						sheetDataList.add(record);
 					}
 					for(int k=0;k<dataList.size();k++){
@@ -1100,15 +1349,40 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		if(template!=null){
 			int columnCount=0;
-			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-				columnCount=template.getHeader().get(0).getTitle().size();
-				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-					String header=template.getHeader().get(0).getTitle().get(i);
-					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("deviceNameLabel", deviceName));
+			if("zh_CN".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+					columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+						String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("en".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+					columnCount=template.getHeader().get(0).getTitle_en().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+						String header=template.getHeader().get(0).getTitle_en().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("ru".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+					columnCount=template.getHeader().get(0).getTitle_ru().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+						String header=template.getHeader().get(0).getTitle_ru().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
 					}
 				}
 			}
+			
+			
+			
 			if(template.getHeader().size()>0){
 				String labelInfoStr="";
 				String[] labelInfoArr=null;
@@ -1129,15 +1403,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 						for(int j=0;j<template.getHeader().size();j++){
 							boolean exit=false;
-							if(template.getHeader().get(j).getTitle()!=null){
-								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
-										exit=true;
-										break;
+							if("zh_CN".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+							}else if("en".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_en()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
+									}
+								}
+							}else if("ru".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_ru()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[i]));
+											exit=true;
+											break;
+										}
 									}
 								}
 							}
+							
 							if(exit){
 								break;
 							}
@@ -1446,15 +1743,39 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			if(template!=null){
 				int columnCount=0;
 				headerRowCount=template.getHeader().size();
-				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-					columnCount=template.getHeader().get(0).getTitle().size();
-					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-						String header=template.getHeader().get(0).getTitle().get(i);
-						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("deviceNameLabel", deviceName);
+				if("zh_CN".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+						columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+							String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
+						}
+					}
+				}else if("en".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+						columnCount=template.getHeader().get(0).getTitle_en().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+							String header=template.getHeader().get(0).getTitle_en().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
+						}
+					}
+				}else if("ru".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+						columnCount=template.getHeader().get(0).getTitle_ru().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+							String header=template.getHeader().get(0).getTitle_ru().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("deviceNameLabel", deviceName);
+							}
 						}
 					}
 				}
+				
+				
 				
 				if(template.getHeader().size()>0){
 					String labelInfoStr="";
@@ -1476,15 +1797,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 							for(int j=0;j<template.getHeader().size();j++){
 								boolean exit=false;
-								if(template.getHeader().get(j).getTitle()!=null){
-									for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-										if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceFirst("label", labelInfoArr[i]));
-											exit=true;
-											break;
+								if("zh_CN".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+											if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
+										}
+									}
+								}else if("en".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_en()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+											if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
+										}
+									}
+								}else if("ru".equalsIgnoreCase(language)){
+									if(template.getHeader().get(j).getTitle_ru()!=null){
+										for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+											if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[i]));
+												exit=true;
+												break;
+											}
 										}
 									}
 								}
+								
 								if(exit){
 									break;
 								}
@@ -1492,16 +1836,48 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					for(int j=0;j<template.getHeader().size();j++){
-						if(template.getHeader().get(j).getTitle()!=null){
-							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-								if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+						if("zh_CN".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+									if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
 								}
-								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-									if(timeEfficiencyUnitType==2){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-									}else{
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_en()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+									if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
+								}
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							if(template.getHeader().get(j).getTitle_ru()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+									if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+										template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("label", ""));
+									}
+									if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
 									}
 								}
 							}
@@ -1705,13 +2081,32 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				for(int i=0;i<template.getHeader().size();i++){
 					List<Object> record = new ArrayList<>();
-					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
-						if(i==0 && j==0){
-							record.add(title);
-						}else{
-							record.add(template.getHeader().get(i).getTitle().get(j));
+					if("zh_CN".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_zh_CN().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_zh_CN().get(j));
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_en().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_en().get(j));
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_ru().size();j++){
+							if(i==0 && j==0){
+								record.add(title);
+							}else{
+								record.add(template.getHeader().get(i).getTitle_ru().get(j));
+							}
 						}
 					}
+					
 					sheetDataList.add(record);
 				}
 				for(int i=0;i<dataList.size();i++){
@@ -1842,15 +2237,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sheetTemplateList.add(template);
 					
 					int columnCount=0;
-					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-						columnCount=template.getHeader().get(0).getTitle().size();
-						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
-							String header=template.getHeader().get(0).getTitle().get(j);
-							if(StringManagerUtils.isNotNull(header)){
-								title=header.replaceAll("deviceNameLabel", deviceName);
+					if("zh_CN".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+							columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_zh_CN().size();j++){
+								String header=template.getHeader().get(0).getTitle_zh_CN().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+							columnCount=template.getHeader().get(0).getTitle_en().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_en().size();j++){
+								String header=template.getHeader().get(0).getTitle_en().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+							columnCount=template.getHeader().get(0).getTitle_ru().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_ru().size();j++){
+								String header=template.getHeader().get(0).getTitle_ru().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("deviceNameLabel", deviceName);
+								}
 							}
 						}
 					}
+					
 					titleList.add(title);
 					
 					if(template.getHeader().size()>0){
@@ -1873,15 +2291,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								}
 								for(int l=0;l<template.getHeader().size();l++){
 									boolean exit=false;
-									if(template.getHeader().get(l).getTitle()!=null){
-										for(int k=0;k<template.getHeader().get(l).getTitle().size();k++){
-											if(template.getHeader().get(l).getTitle().get(k).indexOf("label")>=0){
-												template.getHeader().get(l).getTitle().set(k, template.getHeader().get(l).getTitle().get(k).replaceFirst("label", labelInfoArr[j]));
-												exit=true;
-												break;
+									if("zh_CN".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_zh_CN()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_zh_CN().size();k++){
+												if(template.getHeader().get(l).getTitle_zh_CN().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_zh_CN().set(k, template.getHeader().get(l).getTitle_zh_CN().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
+											}
+										}
+									}else if("en".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_en()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_en().size();k++){
+												if(template.getHeader().get(l).getTitle_en().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_en().set(k, template.getHeader().get(l).getTitle_en().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
+											}
+										}
+									}else if("ru".equalsIgnoreCase(language)){
+										if(template.getHeader().get(l).getTitle_ru()!=null){
+											for(int k=0;k<template.getHeader().get(l).getTitle_ru().size();k++){
+												if(template.getHeader().get(l).getTitle_ru().get(k).indexOf("label")>=0){
+													template.getHeader().get(l).getTitle_ru().set(k, template.getHeader().get(l).getTitle_ru().get(k).replaceFirst("label", labelInfoArr[j]));
+													exit=true;
+													break;
+												}
 											}
 										}
 									}
+									
 									if(exit){
 										break;
 									}
@@ -1889,16 +2330,48 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 						}
 						for(int j=0;j<template.getHeader().size();j++){
-							if(template.getHeader().get(j).getTitle()!=null){
-								for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("label")>=0){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replaceAll("label", ""));
+							if("zh_CN".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
+										}
 									}
-									if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-										if(timeEfficiencyUnitType==2){
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-										}else{
-											template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+								}
+							}else if("en".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_en()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
+										}
+									}
+								}
+							}else if("ru".equalsIgnoreCase(language)){
+								if(template.getHeader().get(j).getTitle_ru()!=null){
+									for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("label")>=0){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("label", ""));
+										}
+										if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+											if(timeEfficiencyUnitType==2){
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+											}else{
+												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+											}
 										}
 									}
 								}
@@ -2090,13 +2563,32 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(int k=0;k<template.getHeader().size();k++){
 						List<Object> record = new ArrayList<>();
-						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
-							if(k==0 && j==0){
-								record.add(title);
-							}else{
-								record.add(template.getHeader().get(k).getTitle().get(j));
+						if("zh_CN".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_zh_CN().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_zh_CN().get(j));
+								}
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_en().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_en().get(j));
+								}
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_ru().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_ru().get(j));
+								}
 							}
 						}
+						
 						sheetDataList.add(record);
 					}
 					for(int k=0;k<dataList.size();k++){
@@ -2188,15 +2680,38 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		if(template!=null){
 			int columnCount=0;
-			if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-				columnCount=template.getHeader().get(0).getTitle().size();
-				for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-					String header=template.getHeader().get(0).getTitle().get(i);
-					if(StringManagerUtils.isNotNull(header)){
-						template.getHeader().get(0).getTitle().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+			if("zh_CN".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+					columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+						String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+						}
+					}
+				}
+			}else if("en".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+					columnCount=template.getHeader().get(0).getTitle_en().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+						String header=template.getHeader().get(0).getTitle_en().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+						}
+					}
+				}
+			}else if("ru".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+					columnCount=template.getHeader().get(0).getTitle_ru().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+						String header=template.getHeader().get(0).getTitle_ru().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+						}
 					}
 				}
 			}
+			
 			
 			String templateStr=gson.toJson(template).replace("label", "");
 			if(timeEfficiencyUnitType==2){
@@ -2553,30 +3068,83 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			if(template!=null){
 				int columnCount=0;
 				headerRowCount=template.getHeader().size();
-				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-					columnCount=template.getHeader().get(0).getTitle().size();
-					for(int i=0;i<template.getHeader().get(0).getTitle().size();i++){
-						String header=template.getHeader().get(0).getTitle().get(i);
-						if(StringManagerUtils.isNotNull(header)){
-							title=header.replaceAll("orgNameLabel", selectedOrgName);
-							template.getHeader().get(0).getTitle().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+				if("zh_CN".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+						columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+							String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("orgNameLabel", selectedOrgName);
+								template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+							}
 						}
 					}
-				}
-				
-				for(int j=0;j<template.getHeader().size();j++){
-					if(template.getHeader().get(j).getTitle()!=null){
-						for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-							if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-								if(timeEfficiencyUnitType==2){
-									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-								}else{
-									template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+					
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+								if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
+								}
+							}
+						}
+					}
+				}else if("en".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+						columnCount=template.getHeader().get(0).getTitle_en().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+							String header=template.getHeader().get(0).getTitle_en().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("orgNameLabel", selectedOrgName);
+								template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+							}
+						}
+					}
+					
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle_en()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+								if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
+								}
+							}
+						}
+					}
+				}else if("ru".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+						columnCount=template.getHeader().get(0).getTitle_ru().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+							String header=template.getHeader().get(0).getTitle_ru().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								title=header.replaceAll("orgNameLabel", selectedOrgName);
+								template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("orgNameLabel", selectedOrgName));
+							}
+						}
+					}
+					
+					for(int j=0;j<template.getHeader().size();j++){
+						if(template.getHeader().get(j).getTitle_ru()!=null){
+							for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+								if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+									if(timeEfficiencyUnitType==2){
+										template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+									}else{
+										template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+									}
 								}
 							}
 						}
 					}
 				}
+				
 				
 				fileName="";
 				fileName+=title+"-"+reportDate;
@@ -2837,9 +3405,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				for(int i=0;i<template.getHeader().size();i++){
 					List<Object> record = new ArrayList<>();
-					for(int j=0;j<template.getHeader().get(i).getTitle().size();j++){
-						record.add(template.getHeader().get(i).getTitle().get(j));
+					if("zh_CN".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_zh_CN().size();j++){
+							record.add(template.getHeader().get(i).getTitle_zh_CN().get(j));
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_en().size();j++){
+							record.add(template.getHeader().get(i).getTitle_en().get(j));
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_ru().size();j++){
+							record.add(template.getHeader().get(i).getTitle_ru().get(j));
+						}
 					}
+					
 					sheetDataList.add(record);
 				}
 				for(int i=0;i<dataList.size();i++){
@@ -2956,30 +3535,80 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sheetTemplateList.add(template);
 					
 					int columnCount=0;
-					
-					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle()!=null){
-						columnCount=template.getHeader().get(0).getTitle().size();
-						for(int j=0;j<template.getHeader().get(0).getTitle().size();j++){
-							String header=template.getHeader().get(0).getTitle().get(j);
-							if(StringManagerUtils.isNotNull(header)){
-								title=header.replaceAll("orgNameLabel", selectedOrgName);
-								template.getHeader().get(0).getTitle().set(j, title);
+					if("zh_CN".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+							columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_zh_CN().size();j++){
+								String header=template.getHeader().get(0).getTitle_zh_CN().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("orgNameLabel", selectedOrgName);
+									template.getHeader().get(0).getTitle_zh_CN().set(j, title);
+								}
 							}
 						}
-					}
-					for(int j=0;j<template.getHeader().size();j++){
-						if(template.getHeader().get(j).getTitle()!=null){
-							for(int k=0;k<template.getHeader().get(j).getTitle().size();k++){
-								if(template.getHeader().get(j).getTitle().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle().get(k).indexOf("运行时率")>=0){
-									if(timeEfficiencyUnitType==2){
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
-									}else{
-										template.getHeader().get(j).getTitle().set(k, template.getHeader().get(j).getTitle().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+						for(int j=0;j<template.getHeader().size();j++){
+							if(template.getHeader().get(j).getTitle_zh_CN()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_zh_CN().size();k++){
+									if(template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_zh_CN().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
+								}
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+							columnCount=template.getHeader().get(0).getTitle_en().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_en().size();j++){
+								String header=template.getHeader().get(0).getTitle_en().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("orgNameLabel", selectedOrgName);
+									template.getHeader().get(0).getTitle_en().set(j, title);
+								}
+							}
+						}
+						for(int j=0;j<template.getHeader().size();j++){
+							if(template.getHeader().get(j).getTitle_en()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_en().size();k++){
+									if(template.getHeader().get(j).getTitle_en().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_en().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
+									}
+								}
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+							columnCount=template.getHeader().get(0).getTitle_ru().size();
+							for(int j=0;j<template.getHeader().get(0).getTitle_ru().size();j++){
+								String header=template.getHeader().get(0).getTitle_ru().get(j);
+								if(StringManagerUtils.isNotNull(header)){
+									title=header.replaceAll("orgNameLabel", selectedOrgName);
+									template.getHeader().get(0).getTitle_ru().set(j, title);
+								}
+							}
+						}
+						for(int j=0;j<template.getHeader().size();j++){
+							if(template.getHeader().get(j).getTitle_ru()!=null){
+								for(int k=0;k<template.getHeader().get(j).getTitle_ru().size();k++){
+									if(template.getHeader().get(j).getTitle_ru().get(k).indexOf("在线时率")>=0 || template.getHeader().get(j).getTitle_ru().get(k).indexOf("运行时率")>=0){
+										if(timeEfficiencyUnitType==2){
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)"));
+										}else{
+											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
+										}
 									}
 								}
 							}
 						}
 					}
+					
 					titleList.add(title);
 					
 					
@@ -3241,13 +3870,32 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(int k=0;k<template.getHeader().size();k++){
 						List<Object> record = new ArrayList<>();
-						for(int j=0;j<template.getHeader().get(k).getTitle().size();j++){
-							if(k==0 && j==0){
-								record.add(title);
-							}else{
-								record.add(template.getHeader().get(k).getTitle().get(j));
+						if("zh_CN".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_zh_CN().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_zh_CN().get(j));
+								}
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_en().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_en().get(j));
+								}
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(k).getTitle_ru().size();j++){
+								if(k==0 && j==0){
+									record.add(title);
+								}else{
+									record.add(template.getHeader().get(k).getTitle_ru().get(j));
+								}
 							}
 						}
+						
 						sheetDataList.add(record);
 					}
 					for(int k=0;k<dataList.size();k++){

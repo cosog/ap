@@ -523,6 +523,14 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
         singleWellRangeReportTemplateHandsontableHelper.hot = '';
         singleWellRangeReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
+        singleWellRangeReportTemplateHandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	singleWellRangeReportTemplateHandsontableHelper.colWidths=singleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	singleWellRangeReportTemplateHandsontableHelper.colWidths=singleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	singleWellRangeReportTemplateHandsontableHelper.colWidths=singleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_ru
+	    }
 
         singleWellRangeReportTemplateHandsontableHelper.initData = function () {
             singleWellRangeReportTemplateHandsontableHelper.data = [];
@@ -637,7 +645,8 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                 rowHeaders: false,
                 colHeaders: false,
                 rowHeights: singleWellRangeReportTemplateHandsontableHelper.templateData.rowHeights,
-                colWidths: singleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths,
+                colWidths: singleWellRangeReportTemplateHandsontableHelper.colWidths,
+//                colWidths:[80, 100,80,80,140,100,100,100,100,100,100,1000],
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },
@@ -763,6 +772,14 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
         singleWellDailyReportTemplateHandsontableHelper.hot = '';
         singleWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
+        singleWellDailyReportTemplateHandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	singleWellDailyReportTemplateHandsontableHelper.colWidths=singleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	singleWellDailyReportTemplateHandsontableHelper.colWidths=singleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	singleWellDailyReportTemplateHandsontableHelper.colWidths=singleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_ru
+	    }
 
         singleWellDailyReportTemplateHandsontableHelper.initData = function () {
             singleWellDailyReportTemplateHandsontableHelper.data = [];
@@ -877,7 +894,8 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
                 rowHeaders: false,
                 colHeaders: false,
                 rowHeights: singleWellDailyReportTemplateHandsontableHelper.templateData.rowHeights,
-                colWidths: singleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths,
+                colWidths: singleWellDailyReportTemplateHandsontableHelper.colWidths,
+//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
                 //					rowHeaders: true, //显示行头
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
@@ -1698,6 +1716,14 @@ var ProductionReportTemplateHandsontableHelper = {
         productionReportTemplateHandsontableHelper.hot = '';
         productionReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
+        productionReportTemplateHandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	productionReportTemplateHandsontableHelper.colWidths=productionReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	productionReportTemplateHandsontableHelper.colWidths=productionReportTemplateHandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	productionReportTemplateHandsontableHelper.colWidths=productionReportTemplateHandsontableHelper.templateData.columnWidths_ru
+	    }
 
         productionReportTemplateHandsontableHelper.initData = function () {
             productionReportTemplateHandsontableHelper.data = [];
@@ -1812,7 +1838,7 @@ var ProductionReportTemplateHandsontableHelper = {
                 rowHeaders: false,
                 colHeaders: false,
                 rowHeights: productionReportTemplateHandsontableHelper.templateData.rowHeights,
-                colWidths: productionReportTemplateHandsontableHelper.templateData.columnWidths,
+                colWidths: productionReportTemplateHandsontableHelper.colWidths,
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },

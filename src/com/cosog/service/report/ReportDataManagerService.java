@@ -255,7 +255,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 				reportUnitItem.setDataSource(reportItemObj[6]+"");
 				
-				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 					reportAcqItemList.add(reportUnitItem);
 				}else{
 					reportOtherItemList.add(reportUnitItem);
@@ -271,7 +271,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String tableAlias="t";
 				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
-					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
@@ -652,7 +652,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 					reportUnitItem.setDataSource(reportItemObj[6]+"");
 					
-					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 						reportAcqItemList.add(reportUnitItem);
 					}else{
 						reportOtherItemList.add(reportUnitItem);
@@ -668,7 +668,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String tableAlias="t";
 					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
-						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
@@ -837,7 +837,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -1105,7 +1105,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 						reportUnitItem.setDataSource(reportItemObj[6]+"");
 						
-						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 							reportAcqItemList.add(reportUnitItem);
 						}else{
 							reportOtherItemList.add(reportUnitItem);
@@ -1121,7 +1121,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String tableAlias="t";
 						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
-							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportUnitItem.getDataSource(), false)){
 								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
@@ -1283,7 +1283,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -1478,7 +1478,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 				reportUnitItem.setDataSource(reportItemObj[6]+"");
-				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 					reportAcqItemList.add(reportUnitItem);
 				}else{
 					reportOtherItemList.add(reportUnitItem);
@@ -1496,7 +1496,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String tableAlias="t";
 				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
-					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
@@ -1914,7 +1914,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 					reportUnitItem.setDataSource(reportItemObj[6]+"");
-					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 						reportAcqItemList.add(reportUnitItem);
 					}else{
 						reportOtherItemList.add(reportUnitItem);
@@ -1932,7 +1932,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String tableAlias="t";
 					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
-						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
@@ -2136,7 +2136,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -2406,7 +2406,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
 						reportUnitItem.setDataSource(reportItemObj[6]+"");
-						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 							reportAcqItemList.add(reportUnitItem);
 						}else{
 							reportOtherItemList.add(reportUnitItem);
@@ -2424,7 +2424,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String tableAlias="t";
 						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
-							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportUnitItem.getDataSource(), false)){
 								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
@@ -2622,7 +2622,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -2782,7 +2782,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 				reportUnitItem.setDataSource(reportItemObj[8]+"");
 				
-				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 					reportAcqItemList.add(reportUnitItem);
 				}else{
 					reportOtherItemList.add(reportUnitItem);
@@ -2799,7 +2799,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String tableAlias="t";
 				String column=reportOtherItemList.get(i).getItemCode();
 				if(reportUnitCalculateType>0){
-					if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.generalCalColumnFiter(column)){
 							tableAlias="t";
 						}else{
@@ -3209,7 +3209,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 					reportUnitItem.setDataSource(reportItemObj[8]+"");
 					
-					if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 						reportAcqItemList.add(reportUnitItem);
 					}else{
 						reportOtherItemList.add(reportUnitItem);
@@ -3226,7 +3226,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					String tableAlias="t";
 					String column=reportOtherItemList.get(i).getItemCode();
 					if(reportUnitCalculateType>0){
-						if("计算".equalsIgnoreCase(reportOtherItemList.get(i).getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportOtherItemList.get(i).getDataSource(), false)){
 							if(StringManagerUtils.generalCalColumnFiter(column)){
 								tableAlias="t";
 							}else{
@@ -3457,7 +3457,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -3674,7 +3674,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[7]+""));
 						reportUnitItem.setDataSource(reportItemObj[8]+"");
 						
-						if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 							reportAcqItemList.add(reportUnitItem);
 						}else{
 							reportOtherItemList.add(reportUnitItem);
@@ -3693,7 +3693,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						String tableAlias="t";
 						String column=reportUnitItem.getItemCode();
 						if(reportUnitCalculateType>0){
-							if("计算".equalsIgnoreCase(reportUnitItem.getDataSource())){
+							if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportUnitItem.getDataSource(), false)){
 								if(StringManagerUtils.generalCalColumnFiter(column)){
 									tableAlias="t";
 								}else{
@@ -3938,7 +3938,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList);
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
 				saveSystemLog(user,4,"导出文件:"+fileName);
 			}
@@ -4094,9 +4094,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportCurveItemList.size();i++){
 				String tableAlias="t";
 				if(reportUnitCalculateType>0){
-					if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 						tableAlias="t2";
-					}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportCurveItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
 							tableAlias="t";
 						}else{
@@ -4127,7 +4127,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
 				for(int j=2;j<obj.length;j++){
 					String addValue=obj[j]+"";
-					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(j-2).getDataSource(), false)){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							
@@ -4313,9 +4313,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportCurveItemList.size();i++){
 				String tableAlias="t";
 				if(reportUnitCalculateType>0){
-					if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 						tableAlias="t2";
-					}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportCurveItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
 							tableAlias="t";
 						}else{
@@ -4350,7 +4350,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int j=2;j<obj.length;j++){
 					String addValue=obj[j]+"";
 
-					if("采集".equalsIgnoreCase(reportCurveItemList.get(j-2).getDataSource())){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							addValue="";
@@ -4542,7 +4542,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		if(reportCurveItemList.size()>0){
 			boolean acqSign=false;
 			for(ReportUnitItem reportUnitItem:reportCurveItemList){
-				if("采集".equalsIgnoreCase(reportUnitItem.getDataSource())){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportUnitItem.getDataSource(), false)){
 					acqSign=true;
 					break;
 				}
@@ -4554,9 +4554,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<reportCurveItemList.size();i++){
 					String tableAlias="t";
 					if(reportUnitCalculateType>0){
-						if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 							tableAlias="t2";
-						}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+						}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportCurveItemList.get(i).getDataSource(), false)){
 							if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
 								tableAlias="t";
 							}else{
@@ -4626,9 +4626,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<reportCurveItemList.size();i++){
 					String tableAlias="t";
 					if(reportUnitCalculateType>0){
-						if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+						if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 							tableAlias="t2";
-						}else if("计算".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+						}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("calculate"), reportCurveItemList.get(i).getDataSource(), false)){
 							if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
 								tableAlias="t";
 							}else{
@@ -4682,7 +4682,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						float avg=0;
 						for(int j=0;j<dataList.size();j++){
 							String addValue=dataList.get(j)[i+1]+"";
-							if("采集".equalsIgnoreCase(reportCurveItemList.get(i).getDataSource())){
+							if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
 								String[] totalValueArr=addValue.split(";");
 								addValue="";
 								if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){

@@ -199,7 +199,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: 40,
+                    	width: getStringLength(loginUserLanguageResource.save)*10,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -216,13 +216,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: 40,
+                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
                         items: [{
                             iconCls: 'delete',
-                            tooltip: '删除角色',
+                            tooltip: loginUserLanguageResource.deleteData,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
         	                    if(RoleManagerModuleEditFlag==1){

@@ -526,6 +526,15 @@ var SingleWellRangeReportHelper = {
 	        singleWellRangeReportHelper.editData={};
 	        singleWellRangeReportHelper.contentUpdateList = [];
 	        
+	        singleWellRangeReportHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	singleWellRangeReportHelper.colWidths=singleWellRangeReportHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	singleWellRangeReportHelper.colWidths=singleWellRangeReportHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	singleWellRangeReportHelper.colWidths=singleWellRangeReportHelper.templateData.columnWidths_ru
+		    }
+	        
 	        singleWellRangeReportHelper.initData=function(){
 	        	singleWellRangeReportHelper.data=[];
 	        	for(var i=0;i<singleWellRangeReportHelper.templateData.header.length;i++){
@@ -659,7 +668,8 @@ var SingleWellRangeReportHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: singleWellRangeReportHelper.templateData.rowHeights,
-					colWidths: singleWellRangeReportHelper.templateData.columnWidths,
+					colWidths: singleWellRangeReportHelper.colWidths,
+//					colWidths: [50, 120, 105, 100, 130, 105, 100, 130, 140, 120, 100, 100, 100, 80, 140, 120, 150, 120, 140, 140, 100, 130, 130, 130, 150, 120, 75],
 					rowHeaders: false, //显示行头
 //					rowHeaders(index) {
 //					    return 'Row ' + (index + 1);
@@ -938,6 +948,15 @@ var SingleWellDailyReportHelper = {
 	        singleWellDailyReportHelper.contentUpdateList = [];
 	        singleWellDailyReportHelper.totalCount=totalCount;
 	        
+	        singleWellDailyReportHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	singleWellDailyReportHelper.colWidths=singleWellDailyReportHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	singleWellDailyReportHelper.colWidths=singleWellDailyReportHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	singleWellDailyReportHelper.colWidths=singleWellDailyReportHelper.templateData.columnWidths_ru
+		    }
+	        
 	        singleWellDailyReportHelper.initData=function(){
 	        	singleWellDailyReportHelper.data=[];
 	        	for(var i=0;i<singleWellDailyReportHelper.templateData.header.length;i++){
@@ -990,9 +1009,6 @@ var SingleWellDailyReportHelper = {
 	        			
 	        			var value=singleWellDailyReportHelper.data[i][j];
 	        			var valueLength=12;
-	        			if(singleWellDailyReportHelper.templateData.columnWidths[j]>=120){
-	        				valueLength=16;
-	        			}
 		                if((!editable)&&value.length>valueLength){
 		                	value=value.substring(0, valueLength-1)+"...";
 		                	singleWellDailyReportHelper.data[i][j]=value;
@@ -1075,7 +1091,8 @@ var SingleWellDailyReportHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: singleWellDailyReportHelper.templateData.rowHeights,
-					colWidths: singleWellDailyReportHelper.templateData.columnWidths,
+					colWidths: singleWellDailyReportHelper.colWidths,
+//					colWidths: [50, 120, 105, 100, 130, 105, 100, 130, 140, 120, 100, 100, 100, 100, 100, 100, 80, 140, 120, 150, 120, 140, 140, 100, 130, 130, 130, 150, 120, 75],
 					rowHeaders: false, //显示行头
 //					rowHeaders(index) {
 //					    return 'Row ' + (index + 1);

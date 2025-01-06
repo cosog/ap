@@ -11,7 +11,7 @@ public class CalculateColumnInfo implements Serializable{
 	
 	private List<CalculateColumn> SRPCalculateColumnList;
 
-	private List<CalculateColumn> PCPCalculateColumnList;
+//	private List<CalculateColumn> PCPCalculateColumnList;
 	
 	public static class CalculateColumn  implements Comparable<CalculateColumn>,Serializable{
 		
@@ -59,13 +59,13 @@ public class CalculateColumnInfo implements Serializable{
 		}
 	}
 	
-	public List<CalculateColumn> getPCPCalculateColumnList() {
-		return PCPCalculateColumnList;
-	}
-	
-	public void setPCPCalculateColumnList(List<CalculateColumn> pCPCalculateColumnList) {
-		PCPCalculateColumnList = pCPCalculateColumnList;
-	}
+//	public List<CalculateColumn> getPCPCalculateColumnList() {
+//		return PCPCalculateColumnList;
+//	}
+//	
+//	public void setPCPCalculateColumnList(List<CalculateColumn> pCPCalculateColumnList) {
+//		PCPCalculateColumnList = pCPCalculateColumnList;
+//	}
 
 	public List<CalculateColumn> getSRPCalculateColumnList() {
 		return SRPCalculateColumnList;

@@ -210,7 +210,11 @@ public class ReportTemplate  implements Serializable{
 
 	    private List<Integer> rowHeights;
 
-	    private List<Integer> columnWidths;
+	    private List<Integer> columnWidths_zh_CN;
+	    
+	    private List<Integer> columnWidths_en;
+	    
+	    private List<Integer> columnWidths_ru;
 
 	    private List<MergeCells> mergeCells;
 
@@ -257,12 +261,6 @@ public class ReportTemplate  implements Serializable{
 	    public List<Integer> getRowHeights(){
 	        return this.rowHeights;
 	    }
-	    public void setColumnWidths(List<Integer> columnWidths){
-	        this.columnWidths = columnWidths;
-	    }
-	    public List<Integer> getColumnWidths(){
-	        return this.columnWidths;
-	    }
 	    public void setMergeCells(List<MergeCells> mergeCells){
 	        this.mergeCells = mergeCells;
 	    }
@@ -288,6 +286,30 @@ public class ReportTemplate  implements Serializable{
 
 		public void setCalculateType(int calculateType) {
 			this.calculateType = calculateType;
+		}
+
+		public List<Integer> getColumnWidths_zh_CN() {
+			return columnWidths_zh_CN;
+		}
+
+		public void setColumnWidths_zh_CN(List<Integer> columnWidths_zh_CN) {
+			this.columnWidths_zh_CN = columnWidths_zh_CN;
+		}
+
+		public List<Integer> getColumnWidths_en() {
+			return columnWidths_en;
+		}
+
+		public void setColumnWidths_en(List<Integer> columnWidths_en) {
+			this.columnWidths_en = columnWidths_en;
+		}
+
+		public List<Integer> getColumnWidths_ru() {
+			return columnWidths_ru;
+		}
+
+		public void setColumnWidths_ru(List<Integer> columnWidths_ru) {
+			this.columnWidths_ru = columnWidths_ru;
 		}
 	}
 

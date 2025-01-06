@@ -516,6 +516,15 @@ var ProductionDailyReportHelper = {
 	        productionDailyReportHelper.editData={};
 	        productionDailyReportHelper.contentUpdateList = [];
 	        
+	        productionDailyReportHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	productionDailyReportHelper.colWidths=productionDailyReportHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	productionDailyReportHelper.colWidths=productionDailyReportHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	productionDailyReportHelper.colWidths=productionDailyReportHelper.templateData.columnWidths_ru
+		    }
+	        
 	        productionDailyReportHelper.initData=function(){
 	        	productionDailyReportHelper.data=[];
 	        	for(var i=0;i<productionDailyReportHelper.templateData.header.length;i++){
@@ -663,7 +672,8 @@ var ProductionDailyReportHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: productionDailyReportHelper.templateData.rowHeights,
-					colWidths: productionDailyReportHelper.templateData.columnWidths,
+					colWidths: productionDailyReportHelper.colWidths,
+//					colWidths: [50, 90, 120, 105, 100, 130, 105, 100, 130, 140, 120, 100, 100, 100, 80, 140, 120, 150, 120, 140, 140, 100, 130, 130, 130, 150, 120, 75],
 					rowHeaders: false, //显示行头
 //					rowHeaders(index) {
 //					    return 'Row ' + (index + 1);

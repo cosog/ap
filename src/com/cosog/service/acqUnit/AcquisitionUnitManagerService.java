@@ -1943,8 +1943,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"totalRoot\":[");
 		rawData.append("[");
-		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
-			int columnCoumnt=template.getColumnWidths().size();
+		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
+			int columnCoumnt=template.getColumnWidths_zh_CN().size();
+			if("zh_CN".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_zh_CN().size();
+			}else if("en".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_en().size();
+			}else if("ru".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_ru().size();
+			}
+			
 			if(template.getHeader().size()>0){
 				if("zh_CN".equalsIgnoreCase(language)){
 					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().size();
@@ -2202,8 +2210,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"totalRoot\":[");
 		
-		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths().size()>0)   ){
-			int columnCoumnt=template.getColumnWidths().size();
+		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
+			int columnCoumnt=template.getColumnWidths_zh_CN().size();
+			if("zh_CN".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_zh_CN().size();
+			}else if("en".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_en().size();
+			}else if("ru".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_ru().size();
+			}
 			if(template.getHeader().size()>0){
 				if("zh_CN".equalsIgnoreCase(language)){
 					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().size();
@@ -2445,7 +2460,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("reportCurve")+"\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
 				+ "]";
 		
@@ -2672,7 +2687,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+dataMappingColumn.getName()+"\","
 					+ "\"unit\":\"\","
 					+ "\"totalType\":\""+totalType+"\","
-					+ "\"dataSource\":\"采集\","
+					+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"sort\":\""+sortStr+"\","
 					+ "\"prec\":\""+prec+"\","

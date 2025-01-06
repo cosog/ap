@@ -279,7 +279,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: 40,
+                    	width: getStringLength(loginUserLanguageResource.save)*10,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -299,13 +299,13 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: 40,
+                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
                         items: [{
                             iconCls: 'delete',
-                            tooltip: '删除用户',
+                            tooltip: loginUserLanguageResource.deleteData,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
         	                    if(OrgAndUserModuleEditFlag==1){

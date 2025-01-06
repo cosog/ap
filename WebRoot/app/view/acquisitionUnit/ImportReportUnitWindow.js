@@ -630,6 +630,15 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot = '';
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
+	        
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data=[];
 	        	for(var i=0;i<importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.header.length;i++){
@@ -741,7 +750,7 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);
@@ -1040,6 +1049,14 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot = '';
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+		    	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths=importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
 	        
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data=[];
@@ -1152,7 +1169,7 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);
@@ -1447,6 +1464,14 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	        importReportUnitProductionTemplateHandsontableHelper.hot = '';
 	        importReportUnitProductionTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        importReportUnitProductionTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	importReportUnitProductionTemplateHandsontableHelper.colWidths=importReportUnitProductionTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	importReportUnitProductionTemplateHandsontableHelper.colWidths=importReportUnitProductionTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+		    	importReportUnitProductionTemplateHandsontableHelper.colWidths=importReportUnitProductionTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
 	        
 	        importReportUnitProductionTemplateHandsontableHelper.initData=function(){
 	        	importReportUnitProductionTemplateHandsontableHelper.data=[];
@@ -1559,7 +1584,7 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: importReportUnitProductionTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: importReportUnitProductionTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: importReportUnitProductionTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);

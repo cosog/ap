@@ -855,7 +855,7 @@ public class ExcelUtils {
     }
     
     public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, String sheetName, List<List<Object>> sheetDataList, 
-    		File file, Map<Integer, List<String>> selectMap,int headerRowCount,ReportTemplate.Template template) {
+    		File file, Map<Integer, List<String>> selectMap,int headerRowCount,ReportTemplate.Template template,String language) {
     	// 整个 Excel 表格 book 对象
     	SXSSFWorkbook book = new SXSSFWorkbook();
     	sheetName=sheetName.replaceAll("\\*", "x");
@@ -893,10 +893,24 @@ public class ExcelUtils {
 		rowStyle.setBorderTop(BorderStyle.THIN); //上边框
 		// 设置表格列宽度（默认为15个字节）
 		sheet.setDefaultColumnWidth(15);
-		if(template!=null && template.getColumnWidths()!=null && template.getColumnWidths().size()>0){
-			for(int i=0;i<template.getColumnWidths().size();i++){
+		if(template!=null && 
+				(template.getHeader().size()>0 
+						|| (template.getColumnWidths_zh_CN()!=null && template.getColumnWidths_zh_CN().size()>0 )
+						|| (template.getColumnWidths_en()!=null && template.getColumnWidths_en().size()>0) 
+						|| (template.getColumnWidths_ru()!=null && template.getColumnWidths_ru().size()>0)
+						)   ){
+			List<Integer> columnWidths=template.getColumnWidths_zh_CN();
+			if("zh_CN".equalsIgnoreCase(language)){
+				columnWidths=template.getColumnWidths_zh_CN();
+			}else if("en".equalsIgnoreCase(language)){
+				columnWidths=template.getColumnWidths_en();
+			}else if("ru".equalsIgnoreCase(language)){
+				columnWidths=template.getColumnWidths_ru();
+			}
+			
+			for(int i=0;i<columnWidths.size();i++){
 				int colummWidth=15;
-				float coefficient=((float)template.getColumnWidths().get(i))/((float)80);
+				float coefficient=((float)columnWidths.get(i))/((float)80);
 				colummWidth=(int) (colummWidth*coefficient);
 				sheet.setColumnWidth(i, colummWidth*256+184);//列宽7 宽度的单位是字符数的256分之一
 			}
@@ -964,7 +978,8 @@ public class ExcelUtils {
     
     public static void exportDataWithTitleAndHead(HttpServletResponse response, String fileName, 
     		List<String> titleList,List<String> sheetNameList, List<List<List<Object>>> sheetList, 
-    		File file, Map<Integer, List<String>> selectMap,List<ReportTemplate.Template> sheetTemplateList) {
+    		File file, Map<Integer, List<String>> selectMap,List<ReportTemplate.Template> sheetTemplateList,
+    		String language) {
     	// 整个 Excel 表格 book 对象
     	SXSSFWorkbook book = new SXSSFWorkbook();
     	// 设置标题背景色（默认色）
@@ -1004,11 +1019,27 @@ public class ExcelUtils {
     		int headerRowCount=0;
     		// 设置表格列宽度（默认为15个字节）
     		sheet.setDefaultColumnWidth(15);
-    		if(sheetTemplateList.get(n)!=null && sheetTemplateList.get(n).getColumnWidths()!=null && sheetTemplateList.get(n).getColumnWidths().size()>0){
+    		
+    		List<Integer> columnWidths=new ArrayList<>();
+    		if(sheetTemplateList.get(n)!=null && 
+    				(sheetTemplateList.get(n).getHeader().size()>0 
+    						|| (sheetTemplateList.get(n).getColumnWidths_zh_CN()!=null && sheetTemplateList.get(n).getColumnWidths_zh_CN().size()>0 )
+    						|| (sheetTemplateList.get(n).getColumnWidths_en()!=null && sheetTemplateList.get(n).getColumnWidths_en().size()>0 )
+    						|| (sheetTemplateList.get(n).getColumnWidths_ru()!=null && sheetTemplateList.get(n).getColumnWidths_ru().size()>0)  )   ){
+    			columnWidths=sheetTemplateList.get(n).getColumnWidths_zh_CN();
+    			if("zh_CN".equalsIgnoreCase(language)){
+    				columnWidths=sheetTemplateList.get(n).getColumnWidths_zh_CN();
+    			}else if("en".equalsIgnoreCase(language)){
+    				columnWidths=sheetTemplateList.get(n).getColumnWidths_en();
+    			}else if("ru".equalsIgnoreCase(language)){
+    				columnWidths=sheetTemplateList.get(n).getColumnWidths_ru();
+    			}
+    		}
+    		if(sheetTemplateList.get(n)!=null && columnWidths!=null && columnWidths.size()>0){
     			headerRowCount=sheetTemplateList.get(n).getHeader().size();
-    			for(int i=0;i<sheetTemplateList.get(n).getColumnWidths().size();i++){
+    			for(int i=0;i<columnWidths.size();i++){
     				int colummWidth=15;
-    				float coefficient=((float)sheetTemplateList.get(n).getColumnWidths().get(i))/((float)80);
+    				float coefficient=((float)columnWidths.get(i))/((float)80);
     				colummWidth=(int) (colummWidth*coefficient);
     				sheet.setColumnWidth(i, colummWidth*256+184);//列宽7 宽度的单位是字符数的256分之一
     			}

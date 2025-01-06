@@ -528,6 +528,14 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.hot = '';
 	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
 	        
 	        reportInstanceSingleWellRangeReportTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceSingleWellRangeReportTemplateHandsontableHelper.data=[];
@@ -642,7 +650,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: reportInstanceSingleWellRangeReportTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);
@@ -966,6 +974,14 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.hot = '';
 	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.colWidths=reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
 	        
 	        reportInstanceSingleWellDailyReportTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceSingleWellDailyReportTemplateHandsontableHelper.data=[];
@@ -1080,7 +1096,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: reportInstanceSingleWellDailyReportTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);
@@ -1864,6 +1880,14 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 	        reportInstanceProductionTemplateHandsontableHelper.hot = '';
 	        reportInstanceProductionTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
+	        reportInstanceProductionTemplateHandsontableHelper.colWidths=[];
+	        if(loginUserLanguage=='zh_CN'){
+	        	reportInstanceProductionTemplateHandsontableHelper.colWidths=reportInstanceProductionTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+	        }else if(loginUserLanguage=='en'){
+	        	reportInstanceProductionTemplateHandsontableHelper.colWidths=reportInstanceProductionTemplateHandsontableHelper.templateData.columnWidths_en
+		    }else if(loginUserLanguage=='ru'){
+	        	reportInstanceProductionTemplateHandsontableHelper.colWidths=reportInstanceProductionTemplateHandsontableHelper.templateData.columnWidths_ru
+		    }
 	        
 	        reportInstanceProductionTemplateHandsontableHelper.initData=function(){
 	        	reportInstanceProductionTemplateHandsontableHelper.data=[];
@@ -1978,7 +2002,7 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: reportInstanceProductionTemplateHandsontableHelper.templateData.rowHeights,
-					colWidths: reportInstanceProductionTemplateHandsontableHelper.templateData.columnWidths,
+					colWidths: reportInstanceProductionTemplateHandsontableHelper.colWidths,
 //					rowHeaders: true, //显示行头
 					rowHeaders(index) {
 					    return 'Row ' + (index + 1);

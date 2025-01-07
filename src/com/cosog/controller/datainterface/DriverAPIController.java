@@ -1181,7 +1181,7 @@ public class DriverAPIController extends BaseController{
 					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 					if(alarmLevel>0){
 						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-						acquisitionItemInfo.setAlarmInfo("工况报警:"+workType.getResultName());
+						acquisitionItemInfo.setAlarmInfo(workType.getResultName());
 						acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
 						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());

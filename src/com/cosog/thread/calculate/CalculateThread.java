@@ -56,12 +56,10 @@ public class CalculateThread extends Thread{
 					+ " t.stroke,t.spm,"
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 					+ " t.productiondata,"
-					+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
 					+ " t.balanceinfo,"
 					+ " t.id"
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device t2 on t.deviceId=t2.id"
-					+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 					+ " where t2.calculateType=1  "
 					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.productiondata is not null"
@@ -91,6 +89,7 @@ public class CalculateThread extends Thread{
 					+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+acqDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 					+ " and t.deviceId="+wellNo+""
 					+ " order by t.fesdiagramacqTime ";
+			
 			List<?> list = calculateDataService.findCallSql(sql);
 			count=list.size();
 			for(int j=0;j<list.size();j++){

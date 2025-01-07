@@ -48,8 +48,8 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 id: 'RoleName_Id',
                 fieldLabel: loginUserLanguageResource.roleName,
                 name: 'RoleName',
-                labelWidth: 60,
-                width: 165,
+                labelWidth: (getStringLength(loginUserLanguageResource.roleName)*8),
+                width: (getStringLength(loginUserLanguageResource.roleName)*8+100),
                 labelAlign: 'right',
                 xtype: 'textfield'
     		}, {

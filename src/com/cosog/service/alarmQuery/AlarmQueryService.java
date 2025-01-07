@@ -50,7 +50,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		
 		String tableName="viw_alarminfo_hist";
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		DataDictionary ddic = null;
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 		String columns = ddic.getTableHeader();
@@ -90,13 +90,23 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		
 		for(int i=0;i<list.size();i++){
 			Object[]obj=(Object[]) list.get(i);
+			
+			String itemName=obj[6]+"";
+			if(StringManagerUtils.stringToInteger(alarmType)==4){
+				itemName=languageResourceMap.get("FESDiagramResultAlarm");
+			}else if(StringManagerUtils.stringToInteger(alarmType)==6){
+				itemName=languageResourceMap.get("runStatusAlarm");
+			}else if(StringManagerUtils.stringToInteger(alarmType)==3){
+				itemName=languageResourceMap.get("commStatusAlarm");
+			}
+			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"deviceId\":\""+obj[1]+"\",");
 			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"deviceType\":\""+obj[3]+"\",");
 			result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
 			result_json.append("\"alarmTime\":\""+obj[5]+"\",");
-			result_json.append("\"itemName\":\""+obj[6]+"\",");
+			result_json.append("\"itemName\":\""+itemName+"\",");
 			result_json.append("\"alarmType\":\""+obj[7]+"\",");
 			result_json.append("\"alarmTypeName\":\""+MemoryDataManagerTask.getCodeName("ALARMTYPE",obj[7]+"", language)+"\",");
 			result_json.append("\"alarmValue\":\""+obj[8]+"\",");
@@ -123,6 +133,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_alarminfo_hist";
+			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -172,6 +184,16 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				obj=(Object[]) list.get(i);
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
+				
+				String itemName=obj[6]+"";
+				if(StringManagerUtils.stringToInteger(alarmType)==4){
+					itemName=languageResourceMap.get("FESDiagramResultAlarm");
+				}else if(StringManagerUtils.stringToInteger(alarmType)==6){
+					itemName=languageResourceMap.get("runStatusAlarm");
+				}else if(StringManagerUtils.stringToInteger(alarmType)==3){
+					itemName=languageResourceMap.get("commStatusAlarm");
+				}
+				
 				result_json.append("{\"id\":\""+(i+1)+"\",");
 				result_json.append("\"deviceId\":\""+obj[1]+"\",");
 				result_json.append("\"deviceName\":\""+obj[2]+"\",");

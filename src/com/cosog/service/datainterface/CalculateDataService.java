@@ -222,9 +222,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        List<Float> I=new ArrayList<Float>();
 	        
 	        int count =Integer.MAX_VALUE;
-//	        if(StringManagerUtils.isNum(object[21]+"") || StringManagerUtils.isNumber(object[21]+"")){
-//	        	count=StringManagerUtils.stringToInteger(object[21]+"");
-//	        }
 	        
 	        SerializableClobProxy proxy=null;
 	        CLOB realClob =null;
@@ -275,31 +272,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        calculateRequestData.getFESDiagram().setWatt(Watt);
 	        calculateRequestData.getFESDiagram().setI(I);
 	        
-	        
-	        if(object.length>11){
-	        	int pumpingModelId=StringManagerUtils.stringToInteger(object[11]+"");
-	        	if(pumpingModelId>0){
-	        		calculateRequestData.setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
-	        		calculateRequestData.getPumpingUnit().setManufacturer(object[12]+"");
-	        		calculateRequestData.getPumpingUnit().setModel(object[13]+"");
-	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[14]+"");
-	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[15]+""));
-					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[16]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[17]+""));
-					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[18]+""));
-					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[19]+""));
-					String balanceInfo=object[20]+"";
-					type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
-					SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
-					if(balance!=null){
-						calculateRequestData.getPumpingUnit().setBalance(balance);
-					}
-	        	}else{
-	        		calculateRequestData.setPumpingUnit(null);
-	        	}
-	        }else{
-        		calculateRequestData.setPumpingUnit(null);
-        	}
 	        result=calculateRequestData.toString();
 	        
 		}catch(Exception e){

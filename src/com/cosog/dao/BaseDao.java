@@ -3859,6 +3859,7 @@ public class BaseDao extends HibernateDaoSupport {
 		productionDataBuff.append("\"RodString\":"+(calculateRequestData.getRodString()!=null?gson.toJson(calculateRequestData.getRodString()):"{}")+",");
 		productionDataBuff.append("\"TubingString\":"+(calculateRequestData.getTubingString()!=null?gson.toJson(calculateRequestData.getTubingString()):"{}")+",");
 		productionDataBuff.append("\"CasingString\":"+(calculateRequestData.getCasingString()!=null?gson.toJson(calculateRequestData.getCasingString()):"{}")+",");
+		productionDataBuff.append("\"PumpingUnit\":"+(calculateRequestData.getPumpingUnit()!=null?gson.toJson(calculateRequestData.getPumpingUnit()):"{}")+",");
 		productionDataBuff.append("\"Pump\":"+(calculateRequestData.getPump()!=null?gson.toJson(calculateRequestData.getPump()):"{}")+",");
 		productionDataBuff.append("\"Production\":"+(calculateRequestData.getProduction()!=null?gson.toJson(calculateRequestData.getProduction()):"{}")+",");
 		productionDataBuff.append("\"ManualIntervention\":"+(calculateRequestData.getManualIntervention()!=null?gson.toJson(calculateRequestData.getManualIntervention()):"{}"));

@@ -70,10 +70,10 @@ ad:                                                          #AD程序配置
       server:                                                #目标服务器初始化
          url: http://39.101.64.71:19200/api/init/server                                #初始化路径
          content:                                            #始化内容 数组，可配置多个
-            idOnlineStatusPushURL: http://127.0.0.1:16100/ap/api/acq/id/online       #ID在线状态推送URL
-            idAcqGroupDataPushURL: http://127.0.0.1:16100/ap/api/acq/id/group       #ID采集组数据推送URL
-            ipPortOnlineStatusPushURL: http://127.0.0.1:16100/ap/api/acq/ipport/online       #IPPort在线状态推送URL
-            ipPortAcqGroupDataPushURL: http://127.0.0.1:16100/ap/api/acq/ipport/group        #IPPort采集组数据推送URL
+            idOnlineStatusPushURL: http://127.0.0.1:80/ap/api/acq/id/online       #ID在线状态推送URL
+            idAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/id/group       #ID采集组数据推送URL
+            ipPortOnlineStatusPushURL: http://127.0.0.1:80/ap/api/acq/ipport/online       #IPPort在线状态推送URL
+            ipPortAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/ipport/group        #IPPort采集组数据推送URL
       protocol: http://39.101.64.71:19200/api/init/protocol                            #协议初始化
       instance: http://39.101.64.71:19200/api/init/instance                            #实例初始化
       id: http://39.101.64.71:19200/api/init/id                                        #id初始化 下位机为tcp client模式

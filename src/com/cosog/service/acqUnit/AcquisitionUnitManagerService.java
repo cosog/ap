@@ -139,10 +139,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"groupName\" ,children:[] },"
-				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("code")+"\",\"dataIndex\":\"groupCode\" ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("groupTimingInterval")+"(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("groupSavingInterval")+"(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
-				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("description")+"\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sqlBuffer.toString());
 		jsonBuffer.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
@@ -271,10 +271,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线顺序\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线颜色\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线顺序\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线颜色\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1305,10 +1305,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												}
 												
 												if(realtimeCurveConfObj!=null){
-													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 												}
 												if(historyCurveConfObj!=null){
-													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 												}
 												
 												break;
@@ -1371,10 +1371,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										}
 										
 										if(realtimeCurveConfObj!=null){
-											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 										}
 										if(historyCurveConfObj!=null){
-											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 										}
 										break;
 									}
@@ -1634,7 +1634,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+languageResourceMap.get("dailyCalculate"));
+				CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
 				calItemList.add(calItem);
 			}
 		}
@@ -1718,10 +1718,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						break;
 					}
@@ -1874,10 +1874,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						break;
 					}
@@ -2060,7 +2060,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				String dataType="";
 				
-				String action="双击配置";
+				String action="config";
 				
 				for(int k=0;k<itemsList.size();k++){
 					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
@@ -2097,7 +2097,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2326,7 +2326,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				String dataType="";
 				
-				String action="双击配置";
+				String action="config";
 				
 				for(int k=0;k<itemsList.size();k++){
 					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
@@ -2363,7 +2363,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2563,7 +2563,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 							
 							if(reportCurveConfObj!=null){
-								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 							}
 							
 							
@@ -2659,7 +2659,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						
 						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 						}
 						
 						
@@ -2786,7 +2786,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportCurveConfObj!=null){
-				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 			}
 			
 			String curveStatType="";
@@ -2919,7 +2919,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(reportCurveConfObj!=null){
-				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?"右":"左")+";"+reportCurveConfObj.getColor();
+				reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
 			}
 			
 			String curveStatType="";
@@ -3144,10 +3144,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -3444,7 +3444,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+languageResourceMap.get("dailyCalculate"));
+				CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
 				calItemList.add(calItem);
 			}
 		}
@@ -3483,10 +3483,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -3629,10 +3629,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 				
 				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 				}
 				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 				}
 				
 				realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -7020,10 +7020,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									}
 									
 									if(realtimeCurveConfObj!=null){
-										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 									}
 									if(historyCurveConfObj!=null){
-										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 									}
 									
 									realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -7188,10 +7188,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									}
 									
 									if(realtimeCurveConfObj!=null){
-										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+										realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 									}
 									if(historyCurveConfObj!=null){
-										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+										historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 									}
 									
 									realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -10954,6 +10954,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":[],");
 		result_json.append("\"totalRoot\":[");
 		ModbusProtocolConfig.Protocol protocol =MemoryDataManagerTask.getProtocolByName(protocolName);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<ExportDisplayUnitData.DisplayItem> displayItemList=new ArrayList<>();
 		
 		List<CalItem> calItemList=new ArrayList<>();
@@ -11010,10 +11011,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			if(displayItemList.get(i).getRealtimeCurveConf()!=null && displayItemList.get(i).getRealtimeCurveConf().getSort()>0 && StringManagerUtils.isNotNull(displayItemList.get(i).getRealtimeCurveConf().getColor())){
-				realtimeCurveConfShowValue=displayItemList.get(i).getRealtimeCurveConf().getSort()+";"+(displayItemList.get(i).getRealtimeCurveConf().getYAxisOpposite()?"右":"左")+";"+displayItemList.get(i).getRealtimeCurveConf().getColor();
+				realtimeCurveConfShowValue=displayItemList.get(i).getRealtimeCurveConf().getSort()+";"+(displayItemList.get(i).getRealtimeCurveConf().getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+displayItemList.get(i).getRealtimeCurveConf().getColor();
 			}
 			if(displayItemList.get(i).getHistoryCurveConf()!=null && displayItemList.get(i).getHistoryCurveConf().getSort()>0 && StringManagerUtils.isNotNull(displayItemList.get(i).getHistoryCurveConf().getColor())){
-				historyCurveConfShowValue=displayItemList.get(i).getHistoryCurveConf().getSort()+";"+(displayItemList.get(i).getHistoryCurveConf().getYAxisOpposite()?"右":"左")+";"+displayItemList.get(i).getHistoryCurveConf().getColor();
+				historyCurveConfShowValue=displayItemList.get(i).getHistoryCurveConf().getSort()+";"+(displayItemList.get(i).getHistoryCurveConf().getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+displayItemList.get(i).getHistoryCurveConf().getColor();
 			}
 			
 			result_json.append("{"
@@ -11241,6 +11242,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":[],");
 		result_json.append("\"totalRoot\":[");
 		List<ExportReportUnitData.ReportItem> reportItemList=new ArrayList<>();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(uploadUnitList!=null && uploadUnitList.size()>0){
 			for(int i=0;i<uploadUnitList.size();i++){
 				if(unitName.equalsIgnoreCase(uploadUnitList.get(i).getUnitName()) ){
@@ -11265,11 +11267,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(uploadUnitList.get(i).getItemList()!=null && uploadUnitList.get(i).getItemList().size()>0){
 						for(ExportReportUnitData.ReportItem reportItem:uploadUnitList.get(i).getItemList()){
 							int itemReportType=-99;
-							if("单井日报表".equalsIgnoreCase(reportItem.getReportType())){
+							if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("deviceDailyReport"), reportItem.getReportType(), false)){
 								itemReportType=0;
-							}else if("区域报表".equalsIgnoreCase(reportItem.getReportType())){
+							}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("areaDailyReport"), reportItem.getReportType(), false)){
 								itemReportType=1;
-							}else if("单井班报表".equalsIgnoreCase(reportItem.getReportType())){
+							}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("deviceHourlyReport"), reportItem.getReportType(), false)){
 								itemReportType=2;
 							}
 							
@@ -11300,7 +11302,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String averageSignStr=reportItemList.get(i).getAverageSign();
 			String reportCurveConfShowValue="";
 			if(reportItemList.get(i).getReportCurveConf()!=null){
-				reportCurveConfShowValue=reportItemList.get(i).getReportCurveConf().getSort()+";"+(reportItemList.get(i).getReportCurveConf().getYAxisOpposite()?"右":"左")+";"+reportItemList.get(i).getReportCurveConf().getColor();
+				reportCurveConfShowValue=reportItemList.get(i).getReportCurveConf().getSort()+";"+(reportItemList.get(i).getReportCurveConf().getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportItemList.get(i).getReportCurveConf().getColor();
 			}
 			
 			String curveStatType=reportItemList.get(i).getCurveStatType().replaceAll("null", "");
@@ -11892,10 +11894,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 							
 							if(realtimeCurveConfObj!=null){
-								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?"右":"左")+";"+realtimeCurveConfObj.getColor();
+								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 							}
 							if(historyCurveConfObj!=null){
-								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?"右":"左")+";"+historyCurveConfObj.getColor();
+								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 							}
 							
 							realtimeCurveConfList.add(realtimeCurveConfShowValue);
@@ -12035,7 +12037,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										}
 									}
 								}
-								CalItem calItem=new CalItem(name,code,unit,2,"组态",itemName+languageResourceMap.get("dailyCalculate"));
+								CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
 								calItemList.add(calItem);
 							}
 							

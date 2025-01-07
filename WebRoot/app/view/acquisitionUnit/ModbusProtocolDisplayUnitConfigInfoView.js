@@ -423,7 +423,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [25, 50, 140, 80, 60, 80, 80, 80, 80, 80, 80, 80, 80],
+                colWidths: [25, 50, 140, 80, 60, 80, 80, 80, 100, 80, 80, 80, 100],
                 columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -765,7 +765,7 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60, 80,80,80,80, 80,80,80,80, 80,80,80,80],
+	                colWidths: [25,50,140,80,60, 80,80,80,100, 80,80,80,100, 80,80,80,80],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1322,7 +1322,7 @@ var ProtocolDisplayUnitInputItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,80,80,80,80,80,80,80,80],
+	                colWidths: [25,50,140,80,60,80,80,80,100,80,80,80,100],
 	                columns:protocolDisplayUnitInputItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

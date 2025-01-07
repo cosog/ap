@@ -158,7 +158,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 	var tableType=Ext.getCmp('curveConfigSelectedTableType_Id').getValue();
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
                 		if(tableType==0){
-                			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+";"+(yAxisOpposite?'右':'左')+';'+color);
+                			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+";"+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
@@ -171,7 +171,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
                 			}
                 		}else if(tableType==1){
-                			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?'右':'左')+';'+color);
+                			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
@@ -184,7 +184,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
                 			}
                 		}else if(tableType==3){
-                			protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?'右':'左')+';'+color);
+                			protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
@@ -197,7 +197,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
                 			}
                 		}else if(tableType==21){//单井区间报表汇总计算项
-                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?'右':'左')+';'+color);
+                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
@@ -208,7 +208,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),9,curveConfig);
                 			}
                 		}else if(tableType==22){//区域报表汇总计算项
-                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?'右':'左')+';'+color);
+                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
@@ -219,7 +219,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 				reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),12,curveConfig);
                 			}
                 		}else if(tableType==23){//单井单日报表汇总计算项
-                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?'右':'左')+';'+color);
+                			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;

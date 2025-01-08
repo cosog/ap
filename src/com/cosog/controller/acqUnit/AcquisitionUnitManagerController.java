@@ -303,23 +303,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/doModbusProtocolAdd")
 	public String doModbusProtocolAdd(@ModelAttribute ProtocolModel protocolModel) throws IOException {
 		String result = "";
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		Gson gson = new Gson();
-//		String fileName="modbus.json";
-//		String path=stringManagerUtils.getFilePath(fileName,"protocol/");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		PrintWriter out = response.getWriter();
 		try {
-//			String name = ParamUtils.getParameter(request, "modbusProtocol.name");
-//			String deviceType = ParamUtils.getParameter(request, "modbusProtocol.deviceType");
-//			String sort = ParamUtils.getParameter(request, "modbusProtocol.sort");
-			
-			protocolModel.setName(protocolModel.getName().replaceAll(" ", ""));
+			protocolModel.setName(protocolModel.getName());
 			this.protocolModelManagerService.doProtocolAdd(protocolModel);
-			
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加协议:"+protocolModel.getName());
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addProtocol")+":"+protocolModel.getName());
 			}
 			
 			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
@@ -464,11 +460,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
-			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加采集单元:"+acquisitionUnit.getUnitName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addAcqUnit")+":"+acquisitionUnit.getUnitName());
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -490,8 +491,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"编辑采集单元:"+acquisitionUnit.getUnitName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqUnit")+":"+acquisitionUnit.getUnitName());
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
@@ -513,11 +519,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String ids = ParamUtils.getParameter(request, "paramsId");
 			String deviceType = ParamUtils.getParameter(request, "deviceType");
-			this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(ids);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"删除采集单元");
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(ids);
+			
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqUnit"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
@@ -2896,7 +2908,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
 						
 						if(user!=null){
-							this.service.saveSystemLog(user,2,"修改协议:"+modbusProtocolConfig.getProtocol().get(i).getName());
+							this.service.saveSystemLog(user,2,languageResourceMap.get("editProtocol")+":"+modbusProtocolConfig.getProtocol().get(i).getName());
 						}
 						break;
 					}
@@ -2929,12 +2941,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveAcquisitionUnitHandsontableData")
 	public String saveAcquisitionUnitHandsontableData() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		
 		Gson gson = new Gson();
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		java.lang.reflect.Type type = new TypeToken<AcquisitionUnitHandsontableChangeData>() {}.getType();
 		AcquisitionUnitHandsontableChangeData acquisitionUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionUnitHandsontableChangeData!=null){
@@ -2953,7 +2971,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					executor.execute(dataSynchronizationThread);
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除采控单元");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqUnit"));
 					}
 				}
 			}
@@ -2967,7 +2985,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionUnit.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑采控单元:"+acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqUnit")+":"+acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
 					}
 				}
 			}
@@ -2982,7 +3000,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionUnit.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑采控单元:"+acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqUnit")+":"+acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
 					}
 				}
 			}
@@ -3002,7 +3020,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@SuppressWarnings("static-access")
 	@RequestMapping("/saveAcquisitionGroupHandsontableData")
 	public String saveAcquisitionGroupHandsontableData() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		Gson gson = new Gson();
@@ -3090,7 +3108,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveDisplayUnitHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
@@ -3111,7 +3134,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除显示单元");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteDisplayUnit"));
 					}
 				}
 			}
@@ -3128,7 +3151,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					this.displayUnitManagerService.doDisplayUnitEdit(displayUnit);
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑显示单元:"+displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editDisplayUnit")+":"+displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
 					}
 				}
 			}
@@ -3145,7 +3168,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					this.displayUnitManagerService.doDisplayUnitAdd(displayUnit);
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑显示单元:"+displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editDisplayUnit")+":"+displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
 					}
 				}
 			}
@@ -3165,16 +3188,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/doModbusProtocolInstanceAdd")
 	public String doModbusProtocolInstanceAdd(@ModelAttribute ProtocolInstance protocolInstance) throws IOException {
 		String result = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try {
 			if(protocolInstance.getPacketSendInterval()==null){
 				protocolInstance.setPacketSendInterval(100);
 			}
 			this.protocolInstanceManagerService.doModbusProtocolInstanceAdd(protocolInstance);
 			
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加采控实例:"+protocolInstance.getName());
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addAcqInstance")+":"+protocolInstance.getName());
 			}
 			
 			List<String> instanceList=new ArrayList<String>();
@@ -3216,8 +3244,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.alarmUnitManagerService.doAlarmUnitAdd(alarmUnit);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加报警单元:"+alarmUnit.getUnitName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addAlarmUnit")+":"+alarmUnit.getUnitName());
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -3240,8 +3273,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.displayUnitManagerService.doDisplayUnitAdd(displayUnit);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加显示单元:"+displayUnit.getUnitName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addDisplayUnit")+":"+displayUnit.getUnitName());
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -3287,11 +3325,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
 					
-//					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
-//					this.acquisitionUnitManagerService.doModbusProtocolAlarmUnitDelete(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
-					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除报警单元");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAlarmUnit"));
 					}
 				}
 			}
@@ -3307,7 +3342,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑报警单元:"+modbusProtocolAlarmUnitSaveData.getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmUnit")+":"+modbusProtocolAlarmUnitSaveData.getUnitName());
 					}
 					this.alarmUnitManagerService.deleteCurrentAlarmUnitOwnItems(modbusProtocolAlarmUnitSaveData);
 					if(modbusProtocolAlarmUnitSaveData.getAlarmItems()!=null){
@@ -3411,6 +3446,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3438,7 +3478,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除采控实例");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqInstance"));
 					}
 					
 //					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
@@ -3488,7 +3528,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					this.protocolInstanceManagerService.doModbusProtocolInstanceEdit(protocolInstance);
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑采控实例:"+protocolInstance.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqInstance")+":"+protocolInstance.getName());
 					}
 					
 					//实例名称是否改变
@@ -3561,8 +3601,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加显示实例:"+protocolDisplayInstance.getName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addDisplayInstance")+":"+protocolDisplayInstance.getName());
 			}
 			
 			result = "{success:true,msg:true}";
@@ -3587,8 +3632,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.reportUnitManagerService.doModbusProtocolReportUnitAdd(reportUnit);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加报表单元:"+reportUnit.getUnitName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportUnit")+":"+reportUnit.getUnitName());
 			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -3612,8 +3662,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceAdd(protocolReportInstance);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加报表实例:"+protocolReportInstance.getName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportInstance")+":"+protocolReportInstance.getName());
 			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -3634,6 +3689,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolDisplayInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3655,12 +3715,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					executor.execute(dataSynchronizationThread);
-					
-//					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i),"delete");
-//					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceBulkDelete(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
-					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除显示实例");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteDisplayInstance"));
 					}
 				}
 			}
@@ -3686,7 +3742,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					executor.execute(dataSynchronizationThread);
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑显示实例:"+protocolDisplayInstance.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editDisplayInstance")+":"+protocolDisplayInstance.getName());
 					}
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
@@ -3712,6 +3768,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolReportUnitData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3724,7 +3785,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					this.reportUnitManagerService.doModbusProtocolReportUnitBulkDelete(modbusProtocolReportUnitSaveData.getDelidslist().get(i));
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除报表单元");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteReportUnit"));
 					}
 				}
 			}
@@ -3746,7 +3807,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				try {
 					this.reportUnitManagerService.doModbusProtocolReportUnitEdit(reportUnit);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑报表单元:"+reportUnit.getUnitName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportUnit")+":"+reportUnit.getUnitName());
 					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
@@ -3768,6 +3829,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolReportInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3780,7 +3846,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceBulkDelete(modbusProtocolReportInstanceSaveData.getDelidslist().get(i));
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除报表实例");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteReportInstance"));
 					}
 				}
 			}
@@ -3808,7 +3874,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				try {
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceEdit(protocolReportInstance);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑报表实例:"+protocolReportInstance.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportInstance")+":"+protocolReportInstance.getName());
 					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
@@ -3844,8 +3910,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 //			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加报警实例:"+protocolAlarmInstance.getName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addAlarmInstance")+":"+protocolAlarmInstance.getName());
 			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -3866,6 +3937,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolAlarmInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
@@ -3889,7 +3965,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceBulkDelete(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
 					
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"删除报警实例");
+						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAlarmInstance"));
 					}
 				}
 			}
@@ -3914,7 +3990,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					executor.execute(dataSynchronizationThread);
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(protocolAlarmInstance.getId()+"","update");
 					if(user!=null){
-						this.service.saveSystemLog(user,2,"编辑报警实例:"+protocolAlarmInstance.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmInstance")+":"+protocolAlarmInstance.getName());
 					}
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
@@ -3944,8 +4020,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			EquipmentDriverServerTask.initSMSInstanceConfig(instanceList, "update");
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"添加短信实例:"+protocolSMSInstance.getName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addSMSInstance")+":"+protocolSMSInstance.getName());
 			}
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -3974,8 +4055,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"编辑短信实例:"+protocolSMSInstance.getName());
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("editSMSInstance")+":"+protocolSMSInstance.getName());
 			}
 			
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -4000,8 +4086,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionUnitManagerService.doModbusProtocolSMSInstanceDelete(ids);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"删除短信实例");
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteSMSInstance"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
@@ -4093,6 +4184,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<DatabaseMappingProHandsontableChangedData>() {}.getType();
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
@@ -4100,7 +4192,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType,language);
 			EquipmentDriverServerTask.syncDataMappingTable();
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"修改协议字段映射");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("updateColumnMapping"));
 			}
 		}
 		String json ="{success:true}";
@@ -4130,8 +4222,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
 		if(user!=null){
-			this.service.saveSystemLog(user,2,"修改协议"+protocolName+"运行状态运算逻辑");
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		if(user!=null){
+			this.service.saveSystemLog(user,2,languageResourceMap.get("updateRunStatusConfig"));
 		}
 		
 		String json ="{success:true}";
@@ -4147,7 +4244,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/judgeProtocolExistOrNot")
 	public String judgeProtocolExistOrNot() throws IOException {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String protocolName = ParamUtils.getParameter(request, "protocolName").replaceAll(" ", "");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		boolean flag = this.acquisitionUnitManagerService.judgeProtocolExistOrNot(protocolName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4381,8 +4478,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
+			String language="";
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出协议"+protocolName+"数据");
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			if(user!=null){
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocol")+":"+protocolName);
 			}
 			
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -4418,29 +4520,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String key = ParamUtils.getParameter(request, "key");
 		String json=acquisitionUnitManagerService.getProtocolExportData(protocolListStr);
 		String fileName="";
-		if(!fileName.endsWith("协议")){
-			fileName+="协议";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
 		}
-		
-		fileName+="导出数据"+".json";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		fileName+=languageResourceMap.get("exportProtocol")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
-//		File file=StringManagerUtils.createJsonFileWithoutFormat(json, path);
 		
 		File file=StringManagerUtils.createJsonFile(json, path);
 		
-		
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
+			
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出协议数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocol"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -4474,24 +4576,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String protocolListStr=ParamUtils.getParameter(request, "protocolList");
 		String key = ParamUtils.getParameter(request, "key");
-		String json=acquisitionUnitManagerService.exportProtocolInitData(protocolListStr);
-		String fileName="协议初始化";
-		fileName+="导出数据"+".json";
-		String path=stringManagerUtils.getFilePath(fileName,"download/");
-		File file=StringManagerUtils.createJsonFile(json, path);
 		
 		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		String json=acquisitionUnitManagerService.exportProtocolInitData(protocolListStr);
+		String fileName=languageResourceMap.get("exportProtocolInitData")+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出协议初始化数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocolInitData"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -4767,9 +4874,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveImportProtocolData")
 	public String saveImportProtocolData() throws Exception {
 		String json ="{success:true}";
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String check=ParamUtils.getParameter(request, "check");
-		System.out.println("协议导入内容"+data);
 		
 		if("1".equals(check)){
 			json = acquisitionUnitItemManagerService.importProtocolCheck(data);
@@ -4779,8 +4885,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String language="";
 		if(user!=null){
-			this.service.saveSystemLog(user,2,"导入协议");
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		if(user!=null){
+			this.service.saveSystemLog(user,2,languageResourceMap.get("importProtocol"));
 		}
 		
 //		json ="{success:true}";
@@ -4865,22 +4976,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String unitList=ParamUtils.getParameter(request, "unitList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolAcqUnitExportData(unitList);
-		String fileName="采控单元导出数据"+".json";
+		String fileName=languageResourceMap.get("exportAcqUnit")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出采控单元数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -4914,22 +5030,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String unitList=ParamUtils.getParameter(request, "unitList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolAlarmUnitExportData(unitList);
-		String fileName="报警单元导出数据"+".json";
+		String fileName=languageResourceMap.get("exportAlarmUnit")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出报警单元数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -4969,8 +5090,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolReportUnitExportData(unitList,language);
-		String fileName="报表单元导出数据"+".json";
+		String fileName=languageResourceMap.get("exportReportUnit")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
 		InputStream in=null;
@@ -4981,7 +5103,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				session.setAttribute(key, 0);
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出报表单元数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5015,22 +5137,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String unitList=ParamUtils.getParameter(request, "unitList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolDisplayUnitExportData(unitList);
-		String fileName="显示单元导出数据"+".json";
+		String fileName=languageResourceMap.get("exportDisplayUnit")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出显示单元数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5064,22 +5191,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String instanceList=ParamUtils.getParameter(request, "instanceList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolAcqInstanceExportData(instanceList);
-		String fileName="采控实例导出数据"+".json";
+		String fileName=languageResourceMap.get("exportAcqInstance")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出采控实例数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqInstance"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5113,22 +5245,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String instanceList=ParamUtils.getParameter(request, "instanceList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolAcqInstanceInitExportData(instanceList);
-		String fileName="采控实例初始化导出数据"+".json";
+		String fileName=languageResourceMap.get("exportAcqInstanceInitData")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出采控实例初始化数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqInstanceInitData"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5162,22 +5299,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String instanceList=ParamUtils.getParameter(request, "instanceList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolDisplayInstanceExportData(instanceList);
-		String fileName="显示实例导出数据"+".json";
+		String fileName=languageResourceMap.get("exportDisplayInstance")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出显示实例数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayInstance"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5211,22 +5353,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String instanceList=ParamUtils.getParameter(request, "instanceList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolAlarmInstanceExportData(instanceList);
-		String fileName="报警实例导出数据"+".json";
+		String fileName=languageResourceMap.get("exportAlarmInstance")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出报警实例数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmInstance"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5260,22 +5407,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String instanceList=ParamUtils.getParameter(request, "instanceList");
 		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String json=acquisitionUnitManagerService.getProtocolReportInstanceExportData(instanceList);
-		String fileName="报表实例导出数据"+".json";
+		String fileName=languageResourceMap.get("exportReportInstance")+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
-		HttpSession session=request.getSession();
 		InputStream in=null;
 		OutputStream out=null;
 		try {
-			User user = null;
 			if(session!=null){
 				session.removeAttribute(key);
 				session.setAttribute(key, 0);
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,"导出报表实例数据");
+				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportInstance"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));

@@ -802,8 +802,8 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String auxiliaryDeviceSpecificType = ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
-		String auxiliaryDeviceDetailsSaveDataStr = ParamUtils.getParameter(request, "auxiliaryDeviceDetailsSaveData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String auxiliaryDeviceDetailsSaveDataStr = ParamUtils.getParameter(request, "auxiliaryDeviceDetailsSaveData").replaceAll("&nbsp;", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
 		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
@@ -841,7 +841,7 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/batchAddAuxiliaryDevice")
 	public String batchAddAuxiliaryDevice() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1080,7 +1080,7 @@ public class WellInformationManagerController extends BaseController {
 	public String saveVideoKeyHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
 		String json ="{success:true}";
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		Gson gson = new Gson();
 		
@@ -1204,8 +1204,8 @@ public class WellInformationManagerController extends BaseController {
 	public String saveWellHandsontableData() throws Exception {
 		String json ="{success:true}";
 		int deviceId = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "deviceId"));
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
-		String deviceAdditionalInformationData = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "deviceAdditionalInformationData"));
+		String data = ParamUtils.getParameter(request, "data");
+		String deviceAdditionalInformationData = ParamUtils.getParameter(request, "deviceAdditionalInformationData");
 		
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		
@@ -1230,10 +1230,10 @@ public class WellInformationManagerController extends BaseController {
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3]);
 						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
@@ -1241,10 +1241,10 @@ public class WellInformationManagerController extends BaseController {
 				}
 				if(wellHandsontableChangedData.getInsertlist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0]);
+						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1]);
+						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2]);
+						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3]);
 						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
@@ -1316,10 +1316,10 @@ public class WellInformationManagerController extends BaseController {
 				if(droductionDataInfoList!=null && droductionDataInfoList.size()>=1){
 					String deviceCalculateDataType=droductionDataInfoList.get(0);
 					if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
-						String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(1));
+						String deviceProductionData = droductionDataInfoList.get(1);
 						String pumpingModelId = droductionDataInfoList.get(2);
 						String stroke = droductionDataInfoList.get(3);
-						String balanceInfo = StringManagerUtils.delSpace(droductionDataInfoList.get(4));
+						String balanceInfo = droductionDataInfoList.get(4);
 						String manualInterventionResultName = droductionDataInfoList.get(5);
 						String applicationScenarios=droductionDataInfoList.get(6);
 						
@@ -1349,7 +1349,7 @@ public class WellInformationManagerController extends BaseController {
 						//处理抽油机详情
 						this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
 					}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
-						String deviceProductionData = StringManagerUtils.delSpace(droductionDataInfoList.get(1));
+						String deviceProductionData = droductionDataInfoList.get(1);
 						String applicationScenarios=droductionDataInfoList.get(2);
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
@@ -1393,7 +1393,7 @@ public class WellInformationManagerController extends BaseController {
 	public String batchAddDevice() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -1407,10 +1407,10 @@ public class WellInformationManagerController extends BaseController {
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
-						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getUpdatelist().get(i).setInstanceName(instanceNameArr[0]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setDisplayInstanceName(instanceNameArr[1]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setAlarmInstanceName(instanceNameArr[2]);
+						wellHandsontableChangedData.getUpdatelist().get(i).setReportInstanceName(instanceNameArr[3]);
 						wellHandsontableChangedData.getUpdatelist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getUpdatelist().get(i).setSignInId(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 						wellHandsontableChangedData.getUpdatelist().get(i).setSlave("01");
@@ -1418,10 +1418,10 @@ public class WellInformationManagerController extends BaseController {
 				}
 				if(wellHandsontableChangedData.getInsertlist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2].replaceAll(" ", ""));
-						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3].replaceAll(" ", ""));
+						wellHandsontableChangedData.getInsertlist().get(i).setInstanceName(instanceNameArr[0]);
+						wellHandsontableChangedData.getInsertlist().get(i).setDisplayInstanceName(instanceNameArr[1]);
+						wellHandsontableChangedData.getInsertlist().get(i).setAlarmInstanceName(instanceNameArr[2]);
+						wellHandsontableChangedData.getInsertlist().get(i).setReportInstanceName(instanceNameArr[3]);
 						wellHandsontableChangedData.getInsertlist().get(i).setTcpType("TCP Client");
 						wellHandsontableChangedData.getInsertlist().get(i).setSignInId(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 						wellHandsontableChangedData.getInsertlist().get(i).setSlave("01");
@@ -1548,64 +1548,64 @@ public class WellInformationManagerController extends BaseController {
 			        int columns = oFirstSheet.getColumns();//获取工作表中的总列数  
 			        for (int j = 3; j < rows; j++) {
 			        	try{
-			        		String id=oFirstSheet.getCell(0,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String wellName=oFirstSheet.getCell(1,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String applicationScenariosName=oFirstSheet.getCell(2,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String instanceName=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String displayInstanceName=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String alarmInstanceName=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String signInId=oFirstSheet.getCell(6,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String slave=oFirstSheet.getCell(7,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String statusName=oFirstSheet.getCell(8,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String sortNum=oFirstSheet.getCell(9,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String crudeOilDensity=oFirstSheet.getCell(10,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String waterDensity=oFirstSheet.getCell(11,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String naturalGasRelativeDensity=oFirstSheet.getCell(12,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String saturationPressure=oFirstSheet.getCell(13,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String reservoirDepth=oFirstSheet.getCell(14,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String reservoirTemperature=oFirstSheet.getCell(15,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String tubingPressure=oFirstSheet.getCell(16,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String casingPressure=oFirstSheet.getCell(17,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String wellHeadTemperature=oFirstSheet.getCell(18,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String waterCut=oFirstSheet.getCell(19,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String productionGasOilRatio=oFirstSheet.getCell(20,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String producingfluidLevel=oFirstSheet.getCell(21,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String pumpSettingDepth=oFirstSheet.getCell(22,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String pumpType=oFirstSheet.getCell(23,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String barrelType=oFirstSheet.getCell(24,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String pumpGrade=oFirstSheet.getCell(25,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String pumpBoreDiameter=oFirstSheet.getCell(26,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String plungerLength=oFirstSheet.getCell(27,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String tubingStringInsideDiameter=oFirstSheet.getCell(28,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String casingStringInsideDiameter=oFirstSheet.getCell(29,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodGrade1=oFirstSheet.getCell(30,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodOutsideDiameter1=oFirstSheet.getCell(31,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodInsideDiameter1=oFirstSheet.getCell(32,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodLength1=oFirstSheet.getCell(33,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodGrade2=oFirstSheet.getCell(34,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodOutsideDiameter2=oFirstSheet.getCell(35,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodInsideDiameter2=oFirstSheet.getCell(36,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodLength2=oFirstSheet.getCell(37,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodGrade3=oFirstSheet.getCell(38,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodOutsideDiameter3=oFirstSheet.getCell(39,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodInsideDiameter3=oFirstSheet.getCell(40,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodLength3=oFirstSheet.getCell(41,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodGrade4=oFirstSheet.getCell(42,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodOutsideDiameter4=oFirstSheet.getCell(43,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodInsideDiameter4=oFirstSheet.getCell(44,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String rodLength4=oFirstSheet.getCell(45,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String netGrossRatio=oFirstSheet.getCell(46,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String manufacturer=oFirstSheet.getCell(47,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String model=oFirstSheet.getCell(48,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String stroke=oFirstSheet.getCell(49,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String crankRotationDirection=oFirstSheet.getCell(50,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String offsetAngleOfCrank=oFirstSheet.getCell(51,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String crankGravityRadius=oFirstSheet.getCell(52,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String singleCrankWeight=oFirstSheet.getCell(53,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String singleCrankPinWeight=oFirstSheet.getCell(54,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String structuralUnbalance=oFirstSheet.getCell(55,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String balanceWeight=oFirstSheet.getCell(56,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-			        		String balancePosition=oFirstSheet.getCell(57,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String id=oFirstSheet.getCell(0,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String wellName=oFirstSheet.getCell(1,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String applicationScenariosName=oFirstSheet.getCell(2,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String instanceName=oFirstSheet.getCell(3,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String displayInstanceName=oFirstSheet.getCell(4,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String alarmInstanceName=oFirstSheet.getCell(5,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String signInId=oFirstSheet.getCell(6,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String slave=oFirstSheet.getCell(7,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String statusName=oFirstSheet.getCell(8,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String sortNum=oFirstSheet.getCell(9,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String crudeOilDensity=oFirstSheet.getCell(10,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String waterDensity=oFirstSheet.getCell(11,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String naturalGasRelativeDensity=oFirstSheet.getCell(12,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String saturationPressure=oFirstSheet.getCell(13,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String reservoirDepth=oFirstSheet.getCell(14,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String reservoirTemperature=oFirstSheet.getCell(15,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String tubingPressure=oFirstSheet.getCell(16,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String casingPressure=oFirstSheet.getCell(17,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String wellHeadTemperature=oFirstSheet.getCell(18,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String waterCut=oFirstSheet.getCell(19,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String productionGasOilRatio=oFirstSheet.getCell(20,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String producingfluidLevel=oFirstSheet.getCell(21,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String pumpSettingDepth=oFirstSheet.getCell(22,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String pumpType=oFirstSheet.getCell(23,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String barrelType=oFirstSheet.getCell(24,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String pumpGrade=oFirstSheet.getCell(25,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String pumpBoreDiameter=oFirstSheet.getCell(26,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String plungerLength=oFirstSheet.getCell(27,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String tubingStringInsideDiameter=oFirstSheet.getCell(28,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String casingStringInsideDiameter=oFirstSheet.getCell(29,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodGrade1=oFirstSheet.getCell(30,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodOutsideDiameter1=oFirstSheet.getCell(31,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodInsideDiameter1=oFirstSheet.getCell(32,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodLength1=oFirstSheet.getCell(33,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodGrade2=oFirstSheet.getCell(34,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodOutsideDiameter2=oFirstSheet.getCell(35,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodInsideDiameter2=oFirstSheet.getCell(36,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodLength2=oFirstSheet.getCell(37,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodGrade3=oFirstSheet.getCell(38,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodOutsideDiameter3=oFirstSheet.getCell(39,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodInsideDiameter3=oFirstSheet.getCell(40,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodLength3=oFirstSheet.getCell(41,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodGrade4=oFirstSheet.getCell(42,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodOutsideDiameter4=oFirstSheet.getCell(43,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodInsideDiameter4=oFirstSheet.getCell(44,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String rodLength4=oFirstSheet.getCell(45,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String netGrossRatio=oFirstSheet.getCell(46,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String manufacturer=oFirstSheet.getCell(47,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String model=oFirstSheet.getCell(48,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String stroke=oFirstSheet.getCell(49,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String crankRotationDirection=oFirstSheet.getCell(50,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String offsetAngleOfCrank=oFirstSheet.getCell(51,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String crankGravityRadius=oFirstSheet.getCell(52,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String singleCrankWeight=oFirstSheet.getCell(53,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String singleCrankPinWeight=oFirstSheet.getCell(54,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String structuralUnbalance=oFirstSheet.getCell(55,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String balanceWeight=oFirstSheet.getCell(56,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+			        		String balancePosition=oFirstSheet.getCell(57,j).getContents().replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
 			        		
 			        		result_json.append("{");
 				        	result_json.append("\"id\":\""+id+"\",");
@@ -1700,7 +1700,7 @@ public class WellInformationManagerController extends BaseController {
 	 */
 	@RequestMapping("/savePumpingModelHandsontableData")
 	public String savePumpingModelHandsontableData() throws Exception {
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String selectedRecordId = ParamUtils.getParameter(request, "selectedRecordId");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1726,7 +1726,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/savePumpingPRTFData")
 	public String savePumpingPRTFData() throws Exception {
 		HttpSession session=request.getSession();
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String recordId = ParamUtils.getParameter(request, "recordId");
 		String json=this.wellInformationManagerService.savePumpingPRTFData(recordId,data);
 		response.setContentType("application/json;charset=utf-8");
@@ -1741,7 +1741,7 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/batchAddPumpingModel")
 	public String batchAddPumpingModel() throws Exception {
-		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
+		String data = ParamUtils.getParameter(request, "data");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1783,10 +1783,10 @@ public class WellInformationManagerController extends BaseController {
 				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
 					String[] instanceCodeArr=this.srpDeviceManagerService.getDefaultInstanceCode(0).split(";");
 					if(instanceCodeArr.length==4){
-						deviceInformation.setInstanceCode(instanceCodeArr[0].replaceAll(" ", ""));
-						deviceInformation.setDisplayInstanceCode(instanceCodeArr[1].replaceAll(" ", ""));
-						deviceInformation.setAlarmInstanceCode(instanceCodeArr[2].replaceAll(" ", ""));
-						deviceInformation.setReportInstanceCode(instanceCodeArr[3].replaceAll(" ", ""));
+						deviceInformation.setInstanceCode(instanceCodeArr[0]);
+						deviceInformation.setDisplayInstanceCode(instanceCodeArr[1]);
+						deviceInformation.setAlarmInstanceCode(instanceCodeArr[2]);
+						deviceInformation.setReportInstanceCode(instanceCodeArr[3]);
 						deviceInformation.setTcpType("TCP Client");
 						deviceInformation.setSignInId(deviceInformation.getDeviceName());
 						deviceInformation.setSlave("01");;
@@ -2071,7 +2071,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		
 		if(StringManagerUtils.stringToInteger(type)<=2){
-			data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+			data=data.replaceAll("\r\n", "\n").replaceAll("\n", "");
 		}else if(StringManagerUtils.stringToInteger(type)==3){
 //			data=data.replaceAll("\"", "").replaceAll("\r\n", "").replaceAll("\n", "");
 			data=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -2289,7 +2289,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 	    if(user!=null){
 	    	try {
-				wellInformationManagerService.saveSystemLog(user,4,"导出文件:"+title);
+				wellInformationManagerService.saveSystemLog(user,4,title);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

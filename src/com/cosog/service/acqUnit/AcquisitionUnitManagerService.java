@@ -919,7 +919,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			String itemCode="online";
 			int value=1;
-			if("离线".equals(commStatusItemsList.get(i))){
+			if(languageResourceMap.get("offline").equals(commStatusItemsList.get(i))){
 				itemCode="offline";
 				value=0;
 			}
@@ -1004,7 +1004,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 			String itemCode="run";
 			int value=1;
-			if("停止".equals(runStatusItemsList.get(i))){
+			if(languageResourceMap.get("stop").equals(runStatusItemsList.get(i))){
 				itemCode="stop";
 				value=0;
 			}

@@ -991,8 +991,6 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		List<String> initWellList=new ArrayList<String>();
-//		List<String> updateWellList=new ArrayList<String>();
-//		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<String> disableWellIdList=new ArrayList<String>();
@@ -1000,60 +998,38 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		
-//		Map<String,Integer> deviceTypeMap=new HashMap<>();
-//		if(!StringManagerUtils.isNum(deviceType)){
-//			String sql="select t.name_"+user.getLanguageName()+",t.id from tbl_devicetypeinfo t where t.id in("+user.getDeviceTypeIds()+") order by t.id";
-//			List<?> deviceTypeList=this.findCallSql(sql);
-//			for(int i=0;i<deviceTypeList.size();i++){
-//				Object[] obj=(Object[]) deviceTypeList.get(i);
-//				deviceTypeMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
-//			}
-//		}
-		
 		try {
 			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())){
+							DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(wellHandsontableChangedData.getUpdatelist().get(i).getId());
+							
 							int status=1;
 							if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
 								status=0;
 								disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
 							}
 							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
-							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							
-//							String saveDeviceType=deviceType;
-//							if(!StringManagerUtils.isNum(deviceType)){
-//								String deviceTypeName="";
-//								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
-//								}else if("en".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
-//								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_ru();
-//								}
-//								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
-//							}
-//							cs.setString(3, saveDeviceType);
-							
-							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName(), user.getLanguageName());
 							cs.setInt(3, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
-							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getReportInstanceName().replaceAll(" ", ""));
-							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""));
-							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName());
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName());
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getReportInstanceName());
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId());
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll("：", ":"));
+							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getSlave());
+							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay());
 							
 							cs.setInt(13, status);
 							
-							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
 							cs.registerOutParameter(15, Types.INTEGER);
 							cs.registerOutParameter(16,Types.VARCHAR);
 							cs.executeUpdate();
@@ -1065,15 +1041,15 @@ public class BaseDao extends HibernateDaoSupport {
 							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(""),"",currentTiem);
-//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName(),0,user,deviceInfo!=null?deviceInfo.getDeviceType():0,"",currentTiem);
+//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 								}else if(saveSign==1){//更新
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(""),"",currentTiem);
-//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName(),1,user,deviceInfo!=null?deviceInfo.getDeviceType():0,"",currentTiem);
+//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 								}
-								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							}else if(saveSign==-33){
-								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(languageResourceMap.get("collisionInfo3")+":"+wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(languageResourceMap.get("collisionInfo3")+":"+wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							}else if(saveSign==-22){
 								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(languageResourceMap.get("collisionInfo1"));
 							}
@@ -1088,44 +1064,31 @@ public class BaseDao extends HibernateDaoSupport {
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
+							DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(wellHandsontableChangedData.getInsertlist().get(i).getId());
 							int status=1;
 							if(languageResourceMap.get("disable").equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
 								status=0;
 								disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
 							}
 							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
-							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 							
-//							String saveDeviceType=deviceType;
-//							if(!StringManagerUtils.isNum(deviceType)){
-//								String deviceTypeName="";
-//								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
-//								}else if("en".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_en();
-//								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
-//									deviceTypeName=wellHandsontableChangedData.getInsertlist().get(i).getDeviceTypeName_ru();
-//								}
-//								saveDeviceType=deviceTypeMap.get(deviceTypeName)+"";
-//							}
-//							cs.setString(3, saveDeviceType);
-							
-							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName(), user.getLanguageName());
 							cs.setInt(3, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
-							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName().replaceAll(" ", ""));
-							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", ""));
-							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-							cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName());
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName());
+							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName());
+							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName());
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
+							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId());
+							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll("：", ":"));
+							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getSlave());
+							cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay());
 							
 							cs.setInt(13, status);
 							
-							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
 							cs.registerOutParameter(15, Types.INTEGER);
 							cs.registerOutParameter(16,Types.VARCHAR);
 							cs.executeUpdate();
@@ -1137,15 +1100,13 @@ public class BaseDao extends HibernateDaoSupport {
 							collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-//									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(""),"",currentTiem);
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName(),0,user,deviceInfo!=null?deviceInfo.getDeviceType():0,"",currentTiem);
 								}else if(saveSign==1){//更新
-//									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(""),"",currentTiem);
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName(),1,user,deviceInfo!=null?deviceInfo.getDeviceType():0,"",currentTiem);
 								}
-								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 							}else if(saveSign==-33){
-								wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(languageResourceMap.get("collisionInfo3")+":"+wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+								wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(languageResourceMap.get("collisionInfo3")+":"+wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 							}else if(saveSign==-22){
 								wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(languageResourceMap.get("collisionInfo1"));
 							}
@@ -1273,13 +1234,13 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							
 							cs.setString(1, orgId);
-							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							
 							String saveDeviceType=deviceType;
 							if(!StringManagerUtils.isNum(deviceType)){
 								String deviceTypeName="";
 								if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
-									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN();
 								}else if("en".equalsIgnoreCase(user.getLanguageName())){
 									deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
 								}else if("ru".equalsIgnoreCase(user.getLanguageName())){
@@ -1289,21 +1250,21 @@ public class BaseDao extends HibernateDaoSupport {
 							}
 							cs.setString(3, saveDeviceType);
 							
-							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName(), user.getLanguageName());
 							cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
-							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getReportInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""));
-							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName());
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName());
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getReportInstanceName());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName());
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId());
+							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getIpPort().replaceAll("：", ":"));
+							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getSlave());
 							cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
 							
 							cs.setInt(14, status);
-							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
 							
 							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
 							cs.setInt(17, license);
@@ -1314,14 +1275,14 @@ public class BaseDao extends HibernateDaoSupport {
 							String saveResultStr=cs.getString(19);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
-//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName(),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 								}else if(saveSign==1){//更新
-									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
-//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName(),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 								}
 								
-								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							}else{//保存失败，数据冲突或者超出限制
 								wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
 								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
@@ -1352,13 +1313,13 @@ public class BaseDao extends HibernateDaoSupport {
 								}
 								
 								cs.setString(1, orgId);
-								cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+								cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 
 								String saveDeviceType=deviceType;
 								if(!StringManagerUtils.isNum(deviceType)){
 									String deviceTypeName="";
 									if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
-										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN().replaceAll(" ", "");
+										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_zh_CN();
 									}else if("en".equalsIgnoreCase(user.getLanguageName())){
 										deviceTypeName=wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTypeName_en();
 									}else if("ru".equalsIgnoreCase(user.getLanguageName())){
@@ -1368,21 +1329,21 @@ public class BaseDao extends HibernateDaoSupport {
 								}
 								cs.setString(3, saveDeviceType);
 								
-								String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""), user.getLanguageName());
+								String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName(), user.getLanguageName());
 								cs.setInt(4, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 								
-								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-								cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName().replaceAll(" ", ""));
-								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-								cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
-								cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", ""));
-								cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll(" ", "").replaceAll("：", ":"));
-								cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
+								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName());
+								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName());
+								cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getReportInstanceName());
+								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName());
+								cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
+								cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSignInId());
+								cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getIpPort().replaceAll("：", ":"));
+								cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getSlave());
 								cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
 								
 								cs.setInt(14, status);
-								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
 								
 								cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
 								cs.setInt(17, license);
@@ -1393,13 +1354,13 @@ public class BaseDao extends HibernateDaoSupport {
 								String saveResultStr=cs.getString(19);
 								if(saveSign==0||saveSign==1){//保存成功
 									if(saveSign==0){//添加
-//										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
+										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName(),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 									}else if(saveSign==1){//更新
-//										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
+//										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
+										this.saveDeviceOperationLog(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName(),1,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
 									}
-									initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+									initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 								}else{//保存失败，数据冲突或者超出限制
 									wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
 									wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
@@ -1510,17 +1471,17 @@ public class BaseDao extends HibernateDaoSupport {
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())){
 							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
-							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
+							cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName());
 							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll("：", ":"));
-							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
 							cs.executeUpdate();
-							updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
-							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""))
-									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""))
-									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", "")) 
+							updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
+							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName())
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId())
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName()) 
 									){
-								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName());
 							}
 						}
 					}catch(Exception e){
@@ -1534,17 +1495,17 @@ public class BaseDao extends HibernateDaoSupport {
 					try{
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){
 							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
-							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-							cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
+							cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName());
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll("：", ":"));
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
 							cs.executeUpdate();
-							addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
-							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""))
-									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "")) 
-									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", "")) 
+							addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
+							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId()) 
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getInstanceName()) 
 									){
-								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());
 							}
 						}
 					}catch(Exception e){
@@ -1857,6 +1818,7 @@ public class BaseDao extends HibernateDaoSupport {
 	public boolean saveDeviceControlLog(String deviceId,String wellName,String deviceType,String title,String value,User user) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		try {
 			cs = conn.prepareCall("{call prd_save_deviceOperationLog(?,?,?,?,?,?,?)}");
 			String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -1866,7 +1828,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setInt(4, 3);
 			cs.setString(5, user.getUserId());
 			cs.setString(6, user.getLoginIp());
-			cs.setString(7, "控制项:"+title+",写入值:"+value);
+			cs.setString(7, languageResourceMap.get("controlItem")+":"+title+","+languageResourceMap.get("writeValue")+":"+value);
 			cs.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

@@ -60,7 +60,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		String password = "";
 		
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"Account\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -116,7 +116,7 @@ public class OpenInterfaceManagementController extends BaseController{
 		String UserAccount = "";;
 		ServletInputStream ss = request.getInputStream();
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"UserAccount\": \"admin\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -157,7 +157,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/statisticsData")
 	public String getPumpingRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":2,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
@@ -176,7 +176,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/wellListData")
 	public String getOilWellRealtimeWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -202,7 +202,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/wellHistoryData")
 	public String getOilWellHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"srp01\"}";
 		this.pager = new Page("pagerForm", request);
@@ -225,7 +225,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/wellAnalysisData")
 	public String getOilWellAnalysisData()throws Exception{
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"WellName\":\"srp01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
@@ -241,7 +241,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/singleFESDiagramData")
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"WellName\":\"srp01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
@@ -256,7 +256,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/realtime/historyFESDiagramData")
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"WellName\":\"srp01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
@@ -274,7 +274,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/total/statisticsData")
 	public String getOilWellTotalStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"Date\":\"2022-10-10\",\"StatType\":1,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
@@ -293,7 +293,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/total/wellListData")
 	public String getOilWellTotalWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -319,7 +319,7 @@ public class OpenInterfaceManagementController extends BaseController{
 	@RequestMapping("/access/oilWell/total/wellHistoryData")
 	public String getOilWellTotalHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"LiftingType\": 1,\"WellName\":\"srp01\",\"StartDate\": \"2022-10-08\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";

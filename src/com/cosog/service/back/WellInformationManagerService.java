@@ -348,6 +348,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		result_json.append("{\"totals\":"+codeMap.size()+",\"list\":[");
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();

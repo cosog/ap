@@ -738,7 +738,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							int alarmType=alarmInstanceOwnItem.getItemList().get(k).getType();
 							if(alarmType<=2&&item.getTitle().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemName()) && item.getAddr()==alarmInstanceOwnItem.getItemList().get(k).getItemAddr()){
 								if(alarmType==2){//数据量报警
-									alarmInfo.append("{\"item\":\""+ddicAcqColumnsList.get(j).replaceAll(" ", "")+"\","
+									alarmInfo.append("{\"item\":\""+ddicAcqColumnsList.get(j)+"\","
 											+ "\"itemName\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemName()+"\","
 											+ "\"itemAddr\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemAddr()+"\","
 											+ "\"alarmType\":\""+alarmType+"\","
@@ -758,7 +758,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 									}
 										
-									alarmInfo.append("{\"item\":\""+ddicAcqColumnsList.get(j).replaceAll(" ", "")+"\","
+									alarmInfo.append("{\"item\":\""+ddicAcqColumnsList.get(j)+"\","
 											+ "\"itemName\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemName()+"\","
 											+ "\"itemAddr\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemAddr()+"\","
 											+ "\"alarmType\":\""+alarmType+"\","
@@ -772,7 +772,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 					}
-					result_json.append("\""+ddicAcqColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\",");
+					result_json.append("\""+ddicAcqColumnsList.get(j)+"\":\""+value+"\",");
 				}
 				
 				if(result_json.toString().endsWith(",")){
@@ -3332,7 +3332,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			
 			if(graphicSetList.size()>0){
-				graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+				graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 			}
 			
 			itemsBuff.append("[");
@@ -3606,7 +3606,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int resolutionMode=0;
 		
 		if(graphicSetList.size()>0){
-			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			String graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 			type = new TypeToken<GraphicSetData>() {}.getType();
 			graphicSetData=gson.fromJson(graphicSet, type);
 		}
@@ -3725,7 +3725,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			GraphicSetData graphicSetData=null;
 			if(graphicSetList.size()>0){
-				String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+				String graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 				type = new TypeToken<GraphicSetData>() {}.getType();
 				graphicSetData=gson.fromJson(graphicSet, type);
 			}

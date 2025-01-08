@@ -2133,7 +2133,7 @@ public class StringManagerUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileContent; //.replaceAll(" ", "");
+        return fileContent;
     }
 
     /*
@@ -4151,6 +4151,14 @@ public class StringManagerUtils {
     	return s.replaceAll("\\s*", "").replaceAll("\r\n", "\n").replaceAll("\n", "\r").replaceAll("\r", "").replaceAll("&nbsp;", "").replaceAll("null", "").replaceAll("　", "").replaceAll(" ", "");
     }
     
+    public static String removeTrailingSpaces(String str) {
+        int i = str.length() - 1;
+        while (i >= 0 && Character.isWhitespace(str.charAt(i))) {
+            i--;
+        }
+        return str.substring(0, i + 1);
+    }
+    
     public static String getRequesrUrl(String ip,int port,String srcUrl){
     	String url="";
     	String networkProtocol = "http";
@@ -4184,7 +4192,7 @@ public class StringManagerUtils {
 				} else if (col.indexOf(".") > 0) {
 					col = col.substring(col.lastIndexOf(".") + 1);//如果字段中含有“.”截取最后一段作为字段数据
 				}
-    			colList.add("\""+col.replaceAll(" ", "")+"\"");
+    			colList.add("\""+col+"\"");
     		}
     	}
     	return colList;

@@ -1190,7 +1190,8 @@ public class DriverAPIController extends BaseController{
 					break;
 				}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
 						&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
-						&& calItemResolutionDataList.get(i).getValue().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemName()) ){
+						&& alarmInstanceOwnItem.getItemList().get(k).getValue()==StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getRawValue())
+						){
 					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 					if(alarmLevel>0){
 						acquisitionItemInfo.setAlarmLevel(alarmLevel);
@@ -4169,7 +4170,7 @@ public class DriverAPIController extends BaseController{
 		String password = "";
 		
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -4235,7 +4236,7 @@ public class DriverAPIController extends BaseController{
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -4296,7 +4297,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/wellInformation")
 	public String getOilWellInformation() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"srp01\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -4332,7 +4333,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss=null;
 		try {
 			ss = request.getInputStream();
-			String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+			String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //			data="{}";
 //			data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
 			this.pager = new Page("pagerForm", request);
@@ -4366,7 +4367,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/statisticsData")
 	public String getPumpingRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
@@ -4385,7 +4386,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/wellListData")
 	public String getOilWellRealtimeWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -4411,7 +4412,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/wellHistoryData")
 	public String getOilWellHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"srp01\"}";
 		this.pager = new Page("pagerForm", request);
@@ -4434,7 +4435,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/wellAnalysisData")
 	public String getOilWellAnalysisData()throws Exception{
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
@@ -4450,7 +4451,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/singleFESDiagramData")
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
@@ -4465,7 +4466,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/realtime/historyFESDiagramData")
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
@@ -4483,7 +4484,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/total/statisticsData")
 	public String getOilWellTotalStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
@@ -4502,7 +4503,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/total/wellListData")
 	public String getOilWellTotalWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -4528,7 +4529,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/read/oilWell/total/wellHistoryData")
 	public String getOilWellTotalHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\": 1,\"WellName\":\"srp01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
@@ -4555,7 +4556,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/write/production")
 	public String writeOilWellProductionData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		this.pager = new Page("pagerForm", request);
 		String json = "{\"Msg\":\"此接口位预留\"}";
 		response.setContentType("application/json;charset=utf-8");
@@ -4579,7 +4580,7 @@ public class DriverAPIController extends BaseController{
 	@RequestMapping("/write/FESDiagram")
 	public String writeOilWellFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		this.pager = new Page("pagerForm", request);
 		String json = "{\"Msg\":\"此接口位预留\"}";
 		response.setContentType("application/json;charset=utf-8");

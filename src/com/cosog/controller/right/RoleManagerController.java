@@ -355,7 +355,7 @@ public class RoleManagerController extends BaseController {
 	
 	@RequestMapping("/judgeRoleExistsOrNot")
 	public String judgeRoleExistsOrNot() throws IOException {
-		roleName = ParamUtils.getParameter(request, "roleName").replaceAll(" ", "");
+		roleName = ParamUtils.getParameter(request, "roleName");
 		boolean flag = this.roleService.judgeRoleExistsOrNot(roleName,"");
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

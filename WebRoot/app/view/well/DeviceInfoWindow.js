@@ -5,7 +5,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
     layout: 'fit',
     iframe: true,
     closeAction: 'destroy',
-    width: 300,
+    width: 400,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -19,6 +19,47 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var me = this;
         var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
         
+        var labelWidth=getStringLength(loginUserLanguageResource.deviceName);
+        if(labelWidth<getStringLength(loginUserLanguageResource.deviceType)){
+        	labelWidth=getStringLength(loginUserLanguageResource.deviceType);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.applicationScenarios)){
+        	labelWidth=getStringLength(loginUserLanguageResource.applicationScenarios);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.acqInstance)){
+        	labelWidth=getStringLength(loginUserLanguageResource.acqInstance);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.displayInstance)){
+        	labelWidth=getStringLength(loginUserLanguageResource.displayInstance);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.reportInstance)){
+        	labelWidth=getStringLength(loginUserLanguageResource.reportInstance);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.alarmInstance)){
+        	labelWidth=getStringLength(loginUserLanguageResource.alarmInstance);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.deviceTcpType)){
+        	labelWidth=getStringLength(loginUserLanguageResource.deviceTcpType);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.signInId)){
+        	labelWidth=getStringLength(loginUserLanguageResource.signInId);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.ipPort)){
+        	labelWidth=getStringLength(loginUserLanguageResource.ipPort);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.slave)){
+        	labelWidth=getStringLength(loginUserLanguageResource.slave);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.peakDelay)){
+        	labelWidth=getStringLength(loginUserLanguageResource.peakDelay);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.status)){
+        	labelWidth=getStringLength(loginUserLanguageResource.status);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.sortNum)){
+        	labelWidth=getStringLength(loginUserLanguageResource.sortNum);
+        }
+        labelWidth=labelWidth*8;
         var deviceTypeStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
@@ -53,6 +94,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceTypeComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.deviceType+'<font color=red>*</font>',
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectDeviceType,
 					blankText : loginUserLanguageResource.selectDeviceType,
 					id : 'deviceTypeComb_Id',
@@ -115,6 +157,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var applicationScenariosComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.applicationScenarios,
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectApplicationScenarios,
 					blankText : loginUserLanguageResource.selectApplicationScenarios,
 					id : 'deviceApplicationScenariosComb_Id',
@@ -174,6 +217,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceAcqInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.acqInstance,
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectAcqInstance,
 					blankText : loginUserLanguageResource.selectAcqInstance,
 					id : 'deviceAcqInstanceComb_Id',
@@ -234,6 +278,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceDisplayInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.displayInstance,
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectdisplayInstance,
 					blankText : loginUserLanguageResource.selectdisplayInstance,
 					id : 'deviceDisplayInstanceComb_Id',
@@ -294,6 +339,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceReportInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.reportInstance,
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectReportInstance,
 					blankText : loginUserLanguageResource.selectReportInstance,
 					id : 'deviceReportInstanceComb_Id',
@@ -354,6 +400,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var deviceAlarmInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.alarmInstance,
+					labelWidth: labelWidth,
 					emptyText : loginUserLanguageResource.selectAlarmInstance,
 					blankText : loginUserLanguageResource.selectAlarmInstance,
 					id : 'deviceAlarmInstanceComb_Id',
@@ -390,17 +437,20 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },{
                 xtype: "hidden",
                 fieldLabel: '设备编号',
+                labelWidth: labelWidth,
                 id: 'device_Id',
                 value: '',
                 name: "deviceInformation.id"
             },{
                 xtype: "hidden",
                 fieldLabel: '单位编号',
+                labelWidth: labelWidth,
                 id: 'addDeviceOrg_Id',
                 value: '',
                 name: "deviceInformation.orgId"
             },{
                 fieldLabel: loginUserLanguageResource.deviceName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'deviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -439,6 +489,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },deviceTypeComb,{
          		xtype: "textfield",
          		fieldLabel: loginUserLanguageResource.deviceType,
+         		labelWidth: labelWidth,
          		hidden:true,
          		id: 'addDeviceType_Id',
          		anchor: '95%',
@@ -447,36 +498,42 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },applicationScenariosComb,{
             	xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.applicationScenarios,
+                labelWidth: labelWidth,
                 id: 'deviceApplicationScenarios_Id',
                 value: '',
                 name: "deviceInformation.applicationScenarios"
             },deviceAcqInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '采控实例编码',
+                labelWidth: labelWidth,
                 id: 'deviceAcqInstanceCode_Id',
                 value: '',
                 name: "deviceInformation.instanceCode"
             },deviceDisplayInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '显示实例编码',
+                labelWidth: labelWidth,
                 id: 'deviceDisplayInstanceCode_Id',
                 value: '',
                 name: "deviceInformation.displayInstanceCode"
             },deviceReportInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '报表实例编码',
+                labelWidth: labelWidth,
                 id: 'deviceReportInstanceCode_Id',
                 value: '',
                 name: "deviceInformation.reportInstanceCode"
             },deviceAlarmInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '报警实例编码',
+                labelWidth: labelWidth,
                 id: 'deviceAlarmInstanceCode_Id',
                 value: '',
                 name: "deviceInformation.alarmInstanceCode"
             }, {
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.deviceTcpType,
+				labelWidth: labelWidth,
 				id : 'deviceTcpTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
@@ -510,12 +567,14 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.deviceTcpType,
+                labelWidth: labelWidth,
                 id: 'deviceTcpType_Id',
                 value: '',
                 name: "deviceInformation.tcpType"
             },{
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.signInId,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 id: 'deviceSignInId_Id',
                 anchor: '95%',
@@ -557,6 +616,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },{
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.ipPort,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 hidden: !IoTConfig,
                 id: 'deviceIpPort_Id',
@@ -600,6 +660,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: loginUserLanguageResource.slave,
+         		labelWidth: labelWidth,
          		id: 'deviceSlave_Id',
          		anchor: '95%',
          		name: "deviceInformation.slave",
@@ -642,6 +703,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             	id: "devicePeakDelay_Id",
             	name: "deviceInformation.peakDelay",
                 fieldLabel: loginUserLanguageResource.peakDelay+'(s)',
+                labelWidth: labelWidth,
                 allowBlank: true,
                 hidden: !IoTConfig,
                 minValue: 0,
@@ -650,6 +712,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },{
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.status+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 defaultType: 'radiofield',
                 id: 'deviceStatus_Id',
                 anchor: '100%',
@@ -676,6 +739,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             	id: "deviceSortNum_Id",
             	name: "deviceInformation.sortNum",
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',

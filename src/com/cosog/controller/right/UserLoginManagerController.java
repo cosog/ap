@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -163,6 +164,7 @@ public class UserLoginManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		String locale=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Locale l = Locale.getDefault(); 
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
 		
 		if(flag!=null && flag.equals("1")){
 			Cookie cookie = new Cookie("cookieuser", userId+"-"+userPwd);
@@ -195,6 +197,7 @@ public class UserLoginManagerController extends BaseController {
 				service.setUserRoleRight(user);
 				locale=user.getLanguageName();
 				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
+				languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
 				
 				user.setPicUrl(picUrl);// 通过session传到前台
 				int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize();
@@ -221,17 +224,11 @@ public class UserLoginManagerController extends BaseController {
 				session.setAttribute("loginUserLanguageResource", languageResourceStr);
 				SessionLockHelper.putSession(session);
 				out.print("{success:true,flag:'normal'}");
-				this.service.saveSystemLog(user,0,"用户登录");
+				this.service.saveSystemLog(user,0,languageResourceMap.get("userLogin"));
 			}else if(user != null && user.getUserEnable()!=1){
-				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "已被禁用 !</font>' }");
+				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
 			} else {
-				if(locale.equalsIgnoreCase("zh_CN")){
-					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "的账号或密码错误 !</font>' }");
-				}else if(locale.equalsIgnoreCase("en")){
-					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">User "+ username +"\\'s account or password is wrong!</font>' }");
-				}else if(locale.equalsIgnoreCase("ru")){
-					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">Аккаунт пользователя "+username+" или ошибка пароля!</font>' }");
-				}
+				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("accountOrPasswordError")+"</font>' }");
 			}
 		}
 		

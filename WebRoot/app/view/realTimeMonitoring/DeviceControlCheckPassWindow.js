@@ -14,8 +14,8 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 600,
-    minWidth: 600,
+    width: 700,
+    minWidth: 700,
     height: 410,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口

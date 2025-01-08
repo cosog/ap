@@ -3974,7 +3974,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceid="+deviceId;
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		if(graphicSetList.size()>0){
-			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 		}
 		
 		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
@@ -4192,7 +4192,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		if(graphicSetList.size()>0){
-			graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 		}
 		
 		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
@@ -4755,7 +4755,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<GraphicSetData.Graphic> graphicList=null;
 		if(graphicSetList.size()>0){
-			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			String graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 			type = new TypeToken<GraphicSetData>() {}.getType();
 			GraphicSetData graphicSetData=gson.fromJson(graphicSet, type);
 			if(graphicSetData!=null){
@@ -4861,7 +4861,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			GraphicSetData graphicSetData=null;
 			if(graphicSetList.size()>0){
-				String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
+				String graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
 				type = new TypeToken<GraphicSetData>() {}.getType();
 				graphicSetData=gson.fromJson(graphicSet, type);
 			}

@@ -2253,6 +2253,102 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static String getCalItemNameByCode(String oldName,String code,String language){
+		String name="";
+		CalItem c=getCalItemByCode(code,language);
+		if(c!=null){
+			name=c.getName();
+		}else{
+			name=oldName;
+		}
+		return name;
+	}
+	
+	public static CalItem getCalItemByCode(String code,String language){
+		CalItem c=null;
+		List<CalItem> list= getAcqCalculateItem(language);
+		c=getSingleCalItemByCode(code,list);
+		if(c==null){
+			list= getSRPCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		if(c==null){
+			list= getPCPCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		return c;
+	}
+	
+	public static String calItemLanguageSwitchover(String name,String language){
+		String r="";
+		int type=0;
+		String code="";
+		if(languageList!=null && languageList.size()>0){
+			for(String l:languageList){
+				List<CalItem> list= getAcqCalculateItem(l);
+				CalItem c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=1;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getSRPCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=2;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getPCPCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=3;
+					code=c.getCode();
+					break;
+				}
+			}
+		}
+		if(type>0){
+			if(type==1){
+				List<CalItem> list= getAcqCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==2){
+				List<CalItem> list= getSRPCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==3){
+				List<CalItem> list= getPCPCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}
+		}else{
+			r=name;
+		}
+		return r;
+	}
+	
+	public static CalItem getSingleCalItemByCode(String code,List<CalItem> list){
+		CalItem item=null;
+		if(list!=null){
+			for(CalItem calItem:list){
+				if(code.equalsIgnoreCase(calItem.getCode())){
+					item=calItem;
+					break;
+				}
+			}
+		}
+		return item;
+	}
+	
 	public static CalItem getSingleCalItem(String name,List<CalItem> list){
 		CalItem item=null;
 		if(list!=null){
@@ -2551,6 +2647,89 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static String getTotalCalItemNameByCode(String oldName,String code,String language){
+		String name="";
+		CalItem c=getTotalCalItemByCode(code,language);
+		if(c!=null){
+			name=c.getName();
+		}else{
+			name=oldName;
+		}
+		return name;
+	}
+	
+	public static CalItem getTotalCalItemByCode(String code,String language){
+		CalItem c=null;
+		List<CalItem> list= getAcqTotalCalculateItem(language);
+		c=getSingleCalItemByCode(code,list);
+		if(c==null){
+			list= getSRPTotalCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		if(c==null){
+			list= getPCPTotalCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		return c;
+	}
+	
+	public static String totalCalItemLanguageSwitchover(String name,String language){
+		String r="";
+		int type=0;
+		String code="";
+		if(languageList!=null && languageList.size()>0){
+			for(String l:languageList){
+				List<CalItem> list= getAcqTotalCalculateItem(l);
+				CalItem c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=1;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getSRPTotalCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=2;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getPCPTotalCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=3;
+					code=c.getCode();
+					break;
+				}
+			}
+		}
+		if(type>0){
+			if(type==1){
+				List<CalItem> list= getAcqTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==2){
+				List<CalItem> list= getSRPTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==3){
+				List<CalItem> list= getPCPTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}
+		}else{
+			r=name;
+		}
+		return r;
+	}
+	
 	public static List<CalItem> getAcqTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
@@ -2819,6 +2998,89 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static String getTimingTotalCalItemNameByCode(String oldName,String code,String language){
+		String name="";
+		CalItem c=getTimingTotalCalItemByCode(code,language);
+		if(c!=null){
+			name=c.getName();
+		}else{
+			name=oldName;
+		}
+		return name;
+	}
+	
+	public static CalItem getTimingTotalCalItemByCode(String code,String language){
+		CalItem c=null;
+		List<CalItem> list= getAcqTimingTotalCalculateItem(language);
+		c=getSingleCalItemByCode(code,list);
+		if(c==null){
+			list= getSRPTimingTotalCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		if(c==null){
+			list= getPCPTimingTotalCalculateItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		return c;
+	}
+	
+	public static String timingTotalCalItemLanguageSwitchover(String name,String language){
+		String r="";
+		int type=0;
+		String code="";
+		if(languageList!=null && languageList.size()>0){
+			for(String l:languageList){
+				List<CalItem> list= getAcqTimingTotalCalculateItem(l);
+				CalItem c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=1;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getSRPTimingTotalCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=2;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getPCPTimingTotalCalculateItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=3;
+					code=c.getCode();
+					break;
+				}
+			}
+		}
+		if(type>0){
+			if(type==1){
+				List<CalItem> list= getAcqTimingTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==2){
+				List<CalItem> list= getSRPTimingTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==3){
+				List<CalItem> list= getPCPTimingTotalCalculateItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}
+		}else{
+			r=name;
+		}
+		return r;
 	}
 	
 	public static List<CalItem> getAcqTimingTotalCalculateItem(String language){
@@ -3122,6 +3384,73 @@ public class MemoryDataManagerTask {
 			}
 		}
 	}
+	
+	
+	public static String getInputItemNameByCode(String oldName,String code,String language){
+		String name="";
+		CalItem c=getInputItemByCode(code,language);
+		if(c!=null){
+			name=c.getName();
+		}else{
+			name=oldName;
+		}
+		return name;
+	}
+	
+	public static CalItem getInputItemByCode(String code,String language){
+		CalItem c=null;
+		List<CalItem> list= getSRPInputItem(language);
+		c=getSingleCalItemByCode(code,list);
+		if(c==null){
+			list= getPCPInputItem(language);
+			c=getSingleCalItemByCode(code,list);
+		}
+		return c;
+	}
+	
+	public static String inputItemLanguageSwitchover(String name,String language){
+		String r="";
+		int type=0;
+		String code="";
+		if(languageList!=null && languageList.size()>0){
+			for(String l:languageList){
+				List<CalItem> list= getSRPInputItem(l);
+				CalItem c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=1;
+					code=c.getCode();
+					break;
+				}
+				
+				list= getPCPInputItem(l);
+				c=getSingleCalItem(name,list);
+				if(c!=null){
+					type=2;
+					code=c.getCode();
+					break;
+				}
+			}
+		}
+		if(type>0){
+			if(type==1){
+				List<CalItem> list= getSRPInputItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}else if(type==2){
+				List<CalItem> list= getPCPInputItem(language);
+				CalItem c=getSingleCalItemByCode(code,list);
+				if(c!=null){
+					r=c.getName();
+				}
+			}
+		}else{
+			r=name;
+		}
+		return r;
+	}
+	
 	
 	public static List<CalItem> getSRPInputItem(String language){
 		Jedis jedis=null;
@@ -4715,6 +5044,37 @@ public class MemoryDataManagerTask {
 		return languageResourceValueList;
 	}
 	
+	public static String itemLanguageSwitchover(String value,String language){
+		String r=value;
+		String code="";
+		
+		if(languageList!=null && languageList.size()>0){
+			for(String l:languageList){
+				Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(l);
+				Iterator<Map.Entry<String,String>> it = languageResourceMap.entrySet().iterator();
+				while(it.hasNext()){
+					Map.Entry<String,String> entry = it.next();
+					String c=entry.getValue();
+					String v=entry.getValue();
+					if(v.equals(value)){
+						code=c;
+						break;
+					}
+					if(StringManagerUtils.isNotNull(code)){
+						break;
+					}
+				}
+			}
+		}
+		
+		if(StringManagerUtils.isNotNull(code)){
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			r=languageResourceMap.get(code);
+		}
+		
+		return r;
+	}
+	
 	public static Map<String,WorkType> getWorkTypeMap(String language){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
@@ -4752,6 +5112,23 @@ public class MemoryDataManagerTask {
 		return workType;
 	}
 	
+	public static String getWorkTypeName(String resultCode,String language){
+		String name="";
+		WorkType workType=getWorkTypeByCode(resultCode,language);
+		if(workType!=null){
+			name=workType.getResultName();
+		}
+		return name;
+	}
+	
+	public static int getWorkTypeCode(String resultName,String language){
+		int code=0;
+		WorkType workType=getWorkTypeByName(resultName,language);
+		if(workType!=null){
+			code=workType.getResultCode();
+		}
+		return code;
+	}
 	
 //	public static int getResultCodeByName(String resultName,String language){
 //		int resultCode=0;

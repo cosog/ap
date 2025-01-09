@@ -29,13 +29,15 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public int retriggerTime;
 	public int isSendMessage;
 	public int isSendMail;
+	
+	public int type;
 	public AcquisitionItemInfo() {
 		super();
 	}
 
 	public AcquisitionItemInfo(int addr, String column, String title,String rawTitle, String value, String rawValue, String dataType,
 			String unit, int alarmLevel, String resolutionMode, String bitIndex, int sort, float alarmLimit,
-			float hystersis, String alarmInfo, int alarmType, int alarmDelay, int isSendMessage, int isSendMail) {
+			float hystersis, String alarmInfo, int alarmType, int alarmDelay, int isSendMessage, int isSendMail,int type) {
 		super();
 		this.addr = addr;
 		this.column = column;
@@ -56,6 +58,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.alarmDelay = alarmDelay;
 		this.isSendMessage = isSendMessage;
 		this.isSendMail = isSendMail;
+		this.type=type;
 	}
 
 	@Override
@@ -250,6 +253,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setRetriggerTime(int retriggerTime) {
 		this.retriggerTime = retriggerTime;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 }

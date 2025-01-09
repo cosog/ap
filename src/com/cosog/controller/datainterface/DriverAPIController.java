@@ -59,6 +59,7 @@ import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.AcqOnline;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.service.mobile.MobileService;
@@ -953,6 +954,7 @@ public class DriverAPIController extends BaseController{
 		
 		for(int i=0;i<protocolItemResolutionDataList.size();i++){
 			int alarmLevel=0;
+			
 			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
 			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getAddr()));
 			acquisitionItemInfo.setColumn(protocolItemResolutionDataList.get(i).getColumn());
@@ -966,6 +968,7 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setAlarmLevel(alarmLevel);
 			acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
 			acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
+			acquisitionItemInfo.setType(protocolItemResolutionDataList.get(i).getType());
 			
 			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn()+"_"+acquisitionItemInfo.getBitIndex();
 			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
@@ -1151,6 +1154,7 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setAlarmLevel(alarmLevel);
 			acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
 			acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
+			acquisitionItemInfo.setType(calItemResolutionDataList.get(i).getType());
 			
 			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn()+"_"+acquisitionItemInfo.getBitIndex();
 			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
@@ -1314,6 +1318,7 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setAlarmLevel(alarmLevel);
 			acquisitionItemInfo.setUnit(inputItemItemResolutionDataList.get(i).getUnit());
 			acquisitionItemInfo.setSort(inputItemItemResolutionDataList.get(i).getSort());
+			acquisitionItemInfo.setType(inputItemItemResolutionDataList.get(i).getType());
 			acquisitionItemInfoList.add(acquisitionItemInfo);
 		}
 		return acquisitionItemInfoList;
@@ -1380,21 +1385,26 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	public void cleanDailyTotalItems(DeviceInfo deviceInfo,AcqInstanceOwnItem acqInstanceOwnItem){
-		List<String> dailyTotalItemList=new ArrayList<>();
-		for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
-			if(acqItem.getDailyTotalCalculate()==1){
-				dailyTotalItemList.add((acqItem.getItemCode()+"_total").toUpperCase());
+		try{
+			List<String> dailyTotalItemList=new ArrayList<>();
+			for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+				if(acqItem.getDailyTotalCalculate()==1){
+					dailyTotalItemList.add((acqItem.getItemCode()+"_total").toUpperCase());
+				}
 			}
+			Iterator<Map.Entry<String, DailyTotalItem>> iterator = deviceInfo.getDailyTotalItemMap().entrySet().iterator();
+			while (iterator.hasNext()) {
+			    Map.Entry<String,  DeviceInfo.DailyTotalItem> entry = iterator.next();
+			    String key = entry.getKey();
+			    DeviceInfo.DailyTotalItem value = entry.getValue();
+			    if(!StringManagerUtils.existOrNot(dailyTotalItemList, key, false)){
+			    	iterator.remove();
+			    }
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		Iterator<Map.Entry<String, DailyTotalItem>> iterator = deviceInfo.getDailyTotalItemMap().entrySet().iterator();
-		while (iterator.hasNext()) {
-		    Map.Entry<String,  DeviceInfo.DailyTotalItem> entry = iterator.next();
-		    String key = entry.getKey();
-		    DeviceInfo.DailyTotalItem value = entry.getValue();
-		    if(!StringManagerUtils.existOrNot(dailyTotalItemList, key, false)){
-		    	deviceInfo.getDailyTotalItemMap().remove(key);
-		    }
-		}
+		
 	}
 	
 	public List<ProtocolItemResolutionData> DataProcessing(DeviceInfo deviceInfo,String acqTime,AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,
@@ -1964,7 +1974,19 @@ public class DriverAPIController extends BaseController{
 					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
 					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
-					
+					if(finalAcquisitionItemInfoList.get(index).getType()==1){
+						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, userInfo.getLanguageName());
+						if(calItem!=null){
+							columnName=calItem.getName();
+							unit=calItem.getUnit();
+						}
+					}else if(finalAcquisitionItemInfoList.get(index).getType()==3){
+						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, userInfo.getLanguageName());
+						if(calItem!=null){
+							columnName=calItem.getName();
+							unit=calItem.getUnit();
+						}
+					}
 					for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
 						if("0".equalsIgnoreCase(resolutionMode) 
 								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  

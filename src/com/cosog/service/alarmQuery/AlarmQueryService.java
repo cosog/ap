@@ -92,12 +92,54 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			Object[]obj=(Object[]) list.get(i);
 			
 			String itemName=obj[6]+"";
-			if(StringManagerUtils.stringToInteger(alarmType)==4){
-				itemName=languageResourceMap.get("FESDiagramResultAlarm");
-			}else if(StringManagerUtils.stringToInteger(alarmType)==6){
-				itemName=languageResourceMap.get("runStatusAlarm");
-			}else if(StringManagerUtils.stringToInteger(alarmType)==3){
+			String alarmTypeStr=obj[7]+"";
+			String alarmValue=obj[8]+"";
+			String alarmInfo=obj[9]+"";
+			
+			if(StringManagerUtils.stringToInteger(alarmTypeStr)==0){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("switchingOpenValue"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("switchingOpenValue");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("switchingCloseValue"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("switchingCloseValue");
+				}
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==1){
+				
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==2){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("highAlarm"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("highAlarm");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("lowAlarm"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("lowAlarm");
+				}
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==3){
 				itemName=languageResourceMap.get("commStatusAlarm");
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("goOnline"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("goOnline");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("online"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("online");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("offline"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("offline");
+				}
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==4){
+				itemName=languageResourceMap.get("FESDiagramResultAlarm");
+				alarmInfo =MemoryDataManagerTask.getWorkTypeName(alarmValue,language);
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==5){
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("highAlarm"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("highAlarm");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("lowAlarm"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("lowAlarm");
+				}
+				itemName=MemoryDataManagerTask.calItemLanguageSwitchover(itemName,language);
+			}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==6){
+				itemName=languageResourceMap.get("runStatusAlarm");
+				
+				if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("run"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("run");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("stop"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("stop");
+				}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("emptyMsg"), alarmInfo, true)){
+					alarmInfo=languageResourceMap.get("emptyMsg");
+				}
+				
 			}
 			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
@@ -107,10 +149,10 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
 			result_json.append("\"alarmTime\":\""+obj[5]+"\",");
 			result_json.append("\"itemName\":\""+itemName+"\",");
-			result_json.append("\"alarmType\":\""+obj[7]+"\",");
+			result_json.append("\"alarmType\":\""+alarmTypeStr+"\",");
 			result_json.append("\"alarmTypeName\":\""+MemoryDataManagerTask.getCodeName("ALARMTYPE",obj[7]+"", language)+"\",");
-			result_json.append("\"alarmValue\":\""+obj[8]+"\",");
-			result_json.append("\"alarmInfo\":\""+obj[9]+"\",");
+			result_json.append("\"alarmValue\":\""+alarmValue+"\",");
+			result_json.append("\"alarmInfo\":\""+alarmInfo+"\",");
 			result_json.append("\"alarmLimit\":\""+obj[10]+"\",");
 			result_json.append("\"hystersis\":\""+obj[11]+"\",");
 			result_json.append("\"alarmLevel\":\""+obj[12]+"\",");
@@ -186,12 +228,54 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				record = new ArrayList<>();
 				
 				String itemName=obj[6]+"";
-				if(StringManagerUtils.stringToInteger(alarmType)==4){
-					itemName=languageResourceMap.get("FESDiagramResultAlarm");
-				}else if(StringManagerUtils.stringToInteger(alarmType)==6){
-					itemName=languageResourceMap.get("runStatusAlarm");
-				}else if(StringManagerUtils.stringToInteger(alarmType)==3){
+				String alarmTypeStr=obj[7]+"";
+				String alarmValue=obj[8]+"";
+				String alarmInfo=obj[9]+"";
+				
+				if(StringManagerUtils.stringToInteger(alarmTypeStr)==0){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("switchingOpenValue"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("switchingOpenValue");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("switchingCloseValue"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("switchingCloseValue");
+					}
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==1){
+					
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==2){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("highAlarm"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("highAlarm");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("lowAlarm"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("lowAlarm");
+					}
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==3){
 					itemName=languageResourceMap.get("commStatusAlarm");
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("goOnline"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("goOnline");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("online"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("online");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("offline"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("offline");
+					}
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==4){
+					itemName=languageResourceMap.get("FESDiagramResultAlarm");
+					alarmInfo =MemoryDataManagerTask.getWorkTypeName(alarmValue,language);
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==5){
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("highAlarm"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("highAlarm");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("lowAlarm"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("lowAlarm");
+					}
+					itemName=MemoryDataManagerTask.calItemLanguageSwitchover(itemName,language);
+				}else if(StringManagerUtils.stringToInteger(alarmTypeStr)==6){
+					itemName=languageResourceMap.get("runStatusAlarm");
+					
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("run"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("run");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("stop"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("stop");
+					}else if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("emptyMsg"), alarmInfo, true)){
+						alarmInfo=languageResourceMap.get("emptyMsg");
+					}
+					
 				}
 				
 				result_json.append("{\"id\":\""+(i+1)+"\",");
@@ -200,11 +284,11 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("\"deviceType\":\""+obj[3]+"\",");
 				result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
 				result_json.append("\"alarmTime\":\""+obj[5]+"\",");
-				result_json.append("\"itemName\":\""+obj[6]+"\",");
-				result_json.append("\"alarmType\":\""+obj[7]+"\",");
+				result_json.append("\"itemName\":\""+itemName+"\",");
+				result_json.append("\"alarmType\":\""+alarmTypeStr+"\",");
 				result_json.append("\"alarmTypeName\":\""+MemoryDataManagerTask.getCodeName("ALARMTYPE",obj[7]+"", user.getLanguageName())+"\",");
-				result_json.append("\"alarmValue\":\""+obj[8]+"\",");
-				result_json.append("\"alarmInfo\":\""+obj[9]+"\",");
+				result_json.append("\"alarmValue\":\""+alarmValue+"\",");
+				result_json.append("\"alarmInfo\":\""+alarmInfo+"\",");
 				result_json.append("\"alarmLimit\":\""+obj[10]+"\",");
 				result_json.append("\"hystersis\":\""+obj[11]+"\",");
 				result_json.append("\"alarmLevel\":\""+obj[12]+"\",");

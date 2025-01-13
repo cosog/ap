@@ -39,6 +39,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
             emptyText: '--'+loginUserLanguageResource.checkModule+'--',
             blankText: '--'+loginUserLanguageResource.checkModule+'--',
             displayField: 'text',
+            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
             allowBlank: false,
             autoScroll:true,
             forceSelection : true,// 只能选择下拉框里面的内容
@@ -84,6 +85,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
+		                                        disabled: loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
 		                                    },{
 		                                    	xtype:'textfield',
@@ -95,6 +97,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
+		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
 		                                    },{
 		                                    	xtype:'textfield',
@@ -106,6 +109,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        labelWidth: 70,
 		                                        width: 300,
 		                                        msgTarget: 'side',
+		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
 		                                    }, {
 		                                    	xtype:'textfield',
@@ -117,6 +121,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        width: 300,
 		                                        allowBlank: false,
 		                                        msgTarget: 'side',
+		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
 		                                    },moduleTree,{
 		                                        xtype: "hidden",
@@ -124,6 +129,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        id: 'sysmodule_Id',
 		                                        labelWidth: 70,
 		                                        width: 300,
+		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        name: 'systemdataInfo.moduleId'
 		                                    }, {
 		                                    	xtype:'numberfield',
@@ -131,6 +137,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        name: 'systemdataInfo.sorts',
 		                                        fieldLabel: loginUserLanguageResource.displayOrder+'<font color=red>*</font>',
 		                                        allowBlank: false,
+		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        minValue: 0,
 		                                        labelWidth: 70,
 		                                        width: 300,

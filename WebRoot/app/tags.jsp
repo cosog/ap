@@ -52,13 +52,12 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 -->
 
-<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 <!--<script src="https://open.ys7.com/sdk/js/1.3/ezuikit.js"></script>-->
 <%if(showVideo){ %>
-<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <%} %>
 
 <script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
@@ -78,4 +77,6 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 
 <!-- reconnecting-websocket -->
 <script type="text/javascript" src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+
+<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!-- JavaScript （结束） -->

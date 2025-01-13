@@ -23,9 +23,10 @@ import redis.clients.jedis.Jedis;
 @Service("tabInfoManagerService")
 public class TabInfoManagerService<T> extends BaseService<T> {
 	public List<?> queryTabs(Class<T> clazz, User user) {
-		String nameColumn="name_"+user.getLanguageName();
-		String queryString = "select t.id,t.parentid,t."+nameColumn+",t.sortnum from tbl_devicetypeinfo t where t.parentid<>0 ";
+		List<?> list = new ArrayList<>();
 		if(user!=null){
+			String nameColumn="name_"+user.getLanguageName();
+			String queryString = "select t.id,t.parentid,t."+nameColumn+",t.sortnum from tbl_devicetypeinfo t where t.parentid<>0 ";
 			queryString+= " and t.id in "
 					+ " ("
 					+ " select distinct(rd.rd_devicetypeid) "
@@ -35,9 +36,11 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 					+ " where r.role_id= rd.rd_roleid and r.role_id=u.user_type "
 					+ " and u.user_no="+user.getUserNo()
 					+" ) ";
+			queryString+= " order by t.sortnum,t.id";
+			list=this.findCallSql(queryString);
 		}
-		queryString+= " order by t.sortnum,t.id";
-		return this.findCallSql(queryString);
+		
+		return list;
 	}
 	
 	public String queryTabs(User user) {

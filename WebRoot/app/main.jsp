@@ -53,6 +53,17 @@
         var loginUserLanguageKeyEdit = "${userLogin.roleLanguageEdit}";
         var loginUserLanguage = "${userLogin.languageName}";
         
+        var loginUserLanguageResource='${userLogin.languageResource}';
+        var deviceShowName="";
+		var deviceShowNameLength=4;
+        if(isNotVal(loginUserLanguageResource)){
+        	loginUserLanguageResource=JSON.parse(loginUserLanguageResource);
+        	deviceShowName=loginUserLanguageResource.deviceName;
+        	deviceShowNameLength=getStringLength(deviceShowName);
+        }else{
+        	loginUserLanguageResource={};
+        }
+        
         var oem = ${configFile}.ap.oem;
 
         var bannerLogoImg = oem.logo;
@@ -116,12 +127,6 @@
         
         var resourceMonitoringSaveData=${configFile}.ap.others.resourceMonitoringSaveData; 
         
-        var loginUserLanguageResource=${loginUserLanguageResource};
-        //var deviceShowName = ${configFile}.ap.others.deviceShowName; 
-		var deviceShowName=loginUserLanguageResource.deviceName;
-		var deviceShowNameLength=getStringLength(deviceShowName);
-		
-		var browserLang=${browserLang};
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
             $("#banner_help").css("background", "url(" + helpButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
@@ -133,6 +138,9 @@
             	$("#bannerLogoImg").attr("src", bannerLogoImg + "?timestamp="+oemStaticResourceTimestamp);
             }
             $('#bannerTitle').html(loginUserLanguageResource.projectName);
+            
+            $('#banner_exit_text').html(loginUserLanguageResource.exit);
+            $('#banner_help_text').html(loginUserLanguageResource.help);
         }
 
     </script>
@@ -167,7 +175,7 @@
     <!-- 加载效果 -->
     <div id="loading_div_id">
         <div class="loading-indicator">
-            <img src="<%=path%>/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
+            <img src="<%=path%>/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">Loading UI…</span>
         </div>
     </div>
     <script type="text/javascript">

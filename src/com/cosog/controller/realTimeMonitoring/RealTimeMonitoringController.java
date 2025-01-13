@@ -560,6 +560,7 @@ public class RealTimeMonitoringController extends BaseController {
 		
 		// 用户不存在
 		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			String getUpwd = userInfo.getUserPwd();
 //			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			String getOld = StringManagerUtils.stringToMD5(password);
@@ -580,25 +581,25 @@ public class RealTimeMonitoringController extends BaseController {
 						if(StringManagerUtils.isNotNull(slave)){
 							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令执行失败。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandExecutedFailure")+"</font>'}";
 							}else if(reslut==-1){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>'}";
 							}else{
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送异常:"+reslut+"。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendException")+"</font>'}";
 							}
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>协议配置有误，请核查！</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>该井不存在，请核查！</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
 				}
 			}else if(getOld.equals(getUpwd) && !StringManagerUtils.isNumber(controlValue)){
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>数据有误，请检查输入数据！</font>'}";
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
 			} else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>您输入的密码有误！</font>'}";
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputPasswordError")+"</font>'}";
 			}
 
 		} else {
@@ -626,6 +627,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(controlValue) && StringManagerUtils.isNumber(controlValue)) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
@@ -643,23 +645,23 @@ public class RealTimeMonitoringController extends BaseController {
 						if(StringManagerUtils.isNotNull(slave)){
 							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令执行失败。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandExecutedFailure")+"</font>'}";
 							}else if(reslut==-1){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>'}";
 							}else{
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送异常:"+reslut+"。</font>'}";
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendException")+"</font>'}";
 							}
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>协议配置有误，请核查！</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>该设备不存在，请核查！</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>数据有误，请检查输入数据！</font>'}";
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
 			}
 
 		} else {

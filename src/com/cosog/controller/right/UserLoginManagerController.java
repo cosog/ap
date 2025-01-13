@@ -216,12 +216,11 @@ public class UserLoginManagerController extends BaseController {
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
 				user.setDeviceTypeIds(tabInfoManagerService.queryTabs(user));
 				user.setLoginIp(clientIp);
+				user.setLanguageResource(languageResourceStr);
 				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-				
 				
 				session.setAttribute("userLogin", user);
 				session.setAttribute("SESSION_USERNAME", username);
-				session.setAttribute("loginUserLanguageResource", languageResourceStr);
 				SessionLockHelper.putSession(session);
 				out.print("{success:true,flag:'normal'}");
 				this.service.saveSystemLog(user,0,languageResourceMap.get("userLogin"));

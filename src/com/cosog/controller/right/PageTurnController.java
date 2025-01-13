@@ -105,6 +105,12 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("showVideo", configFile.getAp().getOthers().getShowVideo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
+		
+//		if(session.getAttribute("loginUserLanguageResource")==null){
+//			session.setAttribute("loginUserLanguageResource", "{}");
+//		}
+		
+		
 		return "app/main";
 	}
 	@RequestMapping("/toTouchMain")

@@ -49,4 +49,4 @@ others:
    simulateAcqEnable: true         #是否发送模拟数据，用于演示
    sendCycle: 600                  #模拟数据发送周期，单位：秒
    timeDifference: 60              #模拟数据井之间发送间隔，单位：秒
-   otherStaticResourceTimestamp: 20250103090000  #其他静态资源时间戳，修改此项重新加载资源
+   otherStaticResourceTimestamp: 20250113163000  #其他静态资源时间戳，修改此项重新加载资源

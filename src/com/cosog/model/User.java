@@ -64,6 +64,8 @@ public class User implements java.io.Serializable {
 	private Integer roleLanguageEdit;
 	
 	private String deviceTypeIds;
+	
+	private String languageResource;
 
 	/**
 	 * 组织节点orgCode集合
@@ -420,5 +422,14 @@ public class User implements java.io.Serializable {
 
 	public void setRoleLanguageEdit(Integer roleLanguageEdit) {
 		this.roleLanguageEdit = roleLanguageEdit;
+	}
+
+	@Transient
+	public String getLanguageResource() {
+		return languageResource;
+	}
+
+	public void setLanguageResource(String languageResource) {
+		this.languageResource = languageResource;
 	}
 }

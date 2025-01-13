@@ -8,7 +8,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
     },
     columnLines: true,
     border:false,
-    selType: 'checkboxmodel',
+    selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
     multiSelect: true,
     initComponent: function () {
         var appEditDataItesmStore = Ext.create("AP.store.data.DataitemsInfoStore");
@@ -74,6 +74,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     action: 'addfindtattxtInfoAction',
                     text: loginUserLanguageResource.add,
                     iconCls: 'add',
+                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     tooltip: loginUserLanguageResource.addDataItem
                 }, '-',
                 {
@@ -82,7 +83,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     id: 'editfindtattxtBtn_Id',
                     text: loginUserLanguageResource.update,
                     action: 'editfindtattxtInfoBtnAction',
-                    disabled: false,
+                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     tooltip: loginUserLanguageResource.editDataItem
                 }, '-',
@@ -90,7 +91,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     xtype: 'button',
                     itemId: 'delfindtattxtBtnId',
                     id: 'delfindtattxtBtn_Id',
-                    disabled: false,
+                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     action: 'delfindtattxtInfoBtnAction',
                     text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete'
@@ -131,6 +132,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                 {
                     xtype: 'checkcolumn',
                     header: loginUserLanguageResource.enable,
+                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     dataIndex: 'status',
                     width: 65,
                     editor: {

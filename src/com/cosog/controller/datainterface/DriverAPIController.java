@@ -432,16 +432,16 @@ public class DriverAPIController extends BaseController{
 							if(alarmInstanceOwnItem!=null){
 								Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 								if(acqOnline.getStatus()){
-									key=deviceId+","+deviceType+",上线";
-									alarmInfo="上线";
-									alarmSMSContent="设备"+deviceName+"于"+currentTime+"上线";
+									key=deviceId+","+deviceType+",online";
+									alarmInfo="online";
+									alarmSMSContent=currentTime+":"+deviceName+"online";
 								}else{
-									key=deviceId+","+deviceType+",离线";
-									alarmInfo="离线";
-									alarmSMSContent="设备"+deviceName+"于"+currentTime+"离线";
+									key=deviceId+","+deviceType+",offline";
+									alarmInfo="offline";
+									alarmSMSContent=currentTime+":"+deviceName+"offline";
 								}
 								for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
-									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 &&   alarmInfo.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(j).getItemName()) && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0){
+									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0 && (acqOnline.getStatus()?2:0)==alarmInstanceOwnItem.getItemList().get(j).getValue()){
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
@@ -704,16 +704,16 @@ public class DriverAPIController extends BaseController{
 							if(alarmInstanceOwnItem!=null){
 								Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 								if(acqOnline.getStatus()){
-									key=deviceId+","+deviceType+",上线";
-									alarmInfo="上线";
-									alarmSMSContent="设备"+deviceName+"于"+currentTime+"上线";
+									key=deviceId+","+deviceType+",online";
+									alarmInfo="online";
+									alarmSMSContent=currentTime+":"+deviceName+"online";
 								}else{
-									key=deviceId+","+deviceType+",离线";
-									alarmInfo="离线";
-									alarmSMSContent="设备"+deviceName+"于"+currentTime+"离线";
+									key=deviceId+","+deviceType+",offline";
+									alarmInfo="offline";
+									alarmSMSContent=currentTime+":"+deviceName+"offline";
 								}
 								for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
-									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 &&   alarmInfo.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(j).getItemName()) && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0){
+									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0 && (acqOnline.getStatus()?2:0)==alarmInstanceOwnItem.getItemList().get(j).getValue()){
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();

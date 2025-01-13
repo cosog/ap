@@ -5,7 +5,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
     layout: 'fit',
     iframe: true,
     closeAction: 'destroy',
-    width: 300,
+    width: 400,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -27,6 +27,44 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             }
         });
         var me = this;
+        
+        
+        var labelWidth=getStringLength(loginUserLanguageResource.userName);
+        if(labelWidth<getStringLength(loginUserLanguageResource.userAccount)){
+        	labelWidth=getStringLength(loginUserLanguageResource.userAccount);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.userPassword)){
+        	labelWidth=getStringLength(loginUserLanguageResource.userPassword);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.enterPasswordAgain)){
+        	labelWidth=getStringLength(loginUserLanguageResource.enterPasswordAgain);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.role)){
+        	labelWidth=getStringLength(loginUserLanguageResource.role);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.phone)){
+        	labelWidth=getStringLength(loginUserLanguageResource.phone);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.email)){
+        	labelWidth=getStringLength(loginUserLanguageResource.email);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.userQuickLogin)){
+        	labelWidth=getStringLength(loginUserLanguageResource.userQuickLogin);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.receiveAlarmSMS)){
+        	labelWidth=getStringLength(loginUserLanguageResource.receiveAlarmSMS);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.receiveAlarmMail)){
+        	labelWidth=getStringLength(loginUserLanguageResource.receiveAlarmMail);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.language)){
+        	labelWidth=getStringLength(loginUserLanguageResource.language);
+        }
+        if(labelWidth<getStringLength(loginUserLanguageResource.status)){
+        	labelWidth=getStringLength(loginUserLanguageResource.status);
+        }
+        labelWidth=labelWidth*8;
+        
         var roleComboxStore = new Ext.data.SimpleStore({
             fields: [{
                 name: "boxkey",
@@ -52,6 +90,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.role+'<font color=red>*</font>',
                 id: 'userType_Id1',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: '',
                 store: roleComboxStore,
@@ -96,6 +135,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.language+'<font color=red>*</font>',
                 id: 'userLanguage_Id1',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: '',
                 store: languageComboxStore,
@@ -148,6 +188,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             },{
                     fieldLabel: loginUserLanguageResource.userName + '<font color=red>*</font>',
                     id: 'userName_Id',
+                    labelWidth: labelWidth,
                     anchor: '100%',
                     allowBlank: false,
                     name: "user.userName",
@@ -155,6 +196,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             },{
                     fieldLabel: loginUserLanguageResource.userAccount + '<font color=red>*</font>',
                     allowBlank: false,
+                    labelWidth: labelWidth,
                     anchor: '100%',
                     id: 'userId_Id',
                     name: "user.userId",
@@ -192,7 +234,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                     anchor: '100%',
                     fieldLabel: loginUserLanguageResource.userPassword + '<font color=red>*</font>',
                     emptyText: loginUserLanguageResource.enterPassword,
-                    labelWidth: 100,
+                    labelWidth: labelWidth,
                     allowBlank: false,
                     msgTarget: 'side',
                     tpl:'aaaa',
@@ -207,12 +249,13 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                     anchor: '100%',
                     fieldLabel: loginUserLanguageResource.enterPasswordAgain + '<font color=red>*</font>',
                     allowBlank: false,
-                    labelWidth: 100,
+                    labelWidth: labelWidth,
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
             },roleCombox,{
                     fieldLabel: loginUserLanguageResource.phone,
                     id: 'userPhone_Id',
+                    labelWidth: labelWidth,
                     anchor: '100%',
                     name: "user.userPhone",
                     regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
@@ -220,6 +263,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             }, {
                     fieldLabel: loginUserLanguageResource.email,
                     id: 'userInEmail_Id',
+                    labelWidth: labelWidth,
                     anchor: '100%',
                     regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
                     regexText: loginUserLanguageResource.emailFormatError,
@@ -228,6 +272,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.userQuickLogin+'<font color=red>*</font>',
                 defaultType: 'radiofield',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {
                     flex: 1
@@ -251,6 +296,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.receiveAlarmSMS+'<font color=red>*</font>',
                 defaultType: 'radiofield',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {
                     flex: 1
@@ -274,6 +320,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.receiveAlarmMail+'<font color=red>*</font>',
                 defaultType: 'radiofield',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {
                     flex: 1
@@ -298,6 +345,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                 fieldLabel : loginUserLanguageResource.status+'<font color=red>*</font>',
                 defaultType: 'radiofield',
                 id: 'userEnableRadioGroup_Id',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {
                     flex: 1

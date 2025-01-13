@@ -15,8 +15,8 @@ Ext.define('AP.view.Viewport', {
                 'z-index': 10
             },
             html: '<div id="bannerDiv"><img id="bannerLogoImg" style="display:none;"/><span id="bannerTitle">bannerTitle</span>' +
-            "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'>"+loginUserLanguageResource.exit+"</span></a></div>" +    //userLoginOut
-            "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'>"+loginUserLanguageResource.help+"</span></a></div>" +
+            "<div id='bannerToolbar'><a href='#' id='banner_exit' onclick='userLoginOut()'><span id='banner_exit_text'></span></a></div>" +    //userLoginOut
+            "<div id='bannerToolbar'><a href='#' id='banner_help' onclick='showHelpDocumentWinFn()'><span id='banner_help_text'></span></a></div>" +
             "</div>"
     }, {
             id: 'center_ids',

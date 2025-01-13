@@ -197,7 +197,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     xtype: 'radiogroup',
                     fieldLabel: loginUserLanguageResource.specificType,
                     hidden: onlyMonitor,
-                    labelWidth: 60,
+                    labelWidth: getStringLength(loginUserLanguageResource.specificType)*8,
                     id: 'AuxiliaryDeviceSpecificType_Id',
                     cls: 'x-check-group-alt',
                     items: [

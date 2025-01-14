@@ -41,12 +41,10 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
         Ext.apply(this, {
             plugins: [cellEditing],
             store: appEditDataItesmStore,
-            tbar: [
-                   findtatsimp,
-                {
+            tbar: [findtatsimp,'-',{
                     xtype: 'textfield',
                     id: 'findtattxtnames_Id',
-                    fieldLabel: '&nbsp' + loginUserLanguageResource.name,
+                    fieldLabel: loginUserLanguageResource.name,
                     labelWidth: 35,
                     width: 155,
                     listeners: {
@@ -54,9 +52,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                             RefreachEnter(e, "DataitemsInfoEditGridPanelId");
                         }
                     }
-
-                 }, '&nbsp',
-                {
+                },'-',{
                     xtype: 'button',
                     id: "findtattxtInfoBtnId",
                     text: loginUserLanguageResource.search,
@@ -65,9 +61,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     handler: function () {
                         reFreshg("DataitemsInfoEditGridPanelId");
                     }
-                 },
-                 '->',
-                {
+                },'->',{
                     xtype: 'button',
                     itemId: 'addfindtattxtBtnId',
                     id: 'addfindtattxtBtn_Id',
@@ -76,8 +70,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     iconCls: 'add',
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     tooltip: loginUserLanguageResource.addDataItem
-                }, '-',
-                {
+                }, '-',{
                     xtype: 'button',
                     itemId: 'editfindtattxtBtnId',
                     id: 'editfindtattxtBtn_Id',
@@ -86,8 +79,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     iconCls: 'edit',
                     tooltip: loginUserLanguageResource.editDataItem
-                }, '-',
-                {
+                }, '-',{
                     xtype: 'button',
                     itemId: 'delfindtattxtBtnId',
                     id: 'delfindtattxtBtn_Id',
@@ -95,7 +87,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     action: 'delfindtattxtInfoBtnAction',
                     text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete'
-                }],
+               }],
             bbar: bbar,
             columns: [
                 {
@@ -166,7 +158,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                         }
                     }
                 }
-        ]
+            ]
         });
 
         this.callParent(arguments);

@@ -57,53 +57,6 @@ public class ModuleMenuController extends BaseController {
 		this.list = list;
 	}
 
-	// 获取前台模块菜单树信息
-	@RequestMapping("/obtainMainModuleList")
-	public String obtainMainModuleList() throws Exception {
-		Gson g = new Gson();
-		Integer userNo = 1;
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		Map<String, Object> map = DataModelMap.getMapObject();
-		if (user != null) {
-			userNo = user.getUserNo();
-		}
-		User oldUser = (User) map.get("mainModuleUser");
-		String curUserId = user.getUserId();
-		String oldUserId = "";
-		if (oldUser != null) {
-			oldUserId = oldUser.getUserId();
-		}
-		if (user != null) {
-			if (map.get("mainModule") != null && oldUserId.equalsIgnoreCase(curUserId)) {
-				list = (List<Module>) map.get("mainModule");
-			} else {
-				list = this.services.queryMainModuleList(Module.class, userNo);
-				map.put("mainModuleUser", "");
-				map.put("mainModuleUser", user);
-				map.put("mainModule", list);
-
-			}
-		}
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		String json = g.toJson(list);
-		log.debug("list=" + list + "\n" + json);
-		try {
-			pw = response.getWriter();
-			pw.write(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	/**
 	 * <p>
 	 * 描述：用来动态创建后台左侧的功能模块树
@@ -367,7 +320,8 @@ public class ModuleMenuController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		list = this.services.queryAddModuleList(Module.class, null);
+//		list = this.services.queryAddModuleList(Module.class, user);
+		list = this.services.queryModuleList(Module.class, user);
 		MainModuleRecursion r = new MainModuleRecursion();
 		for (Module module : list) {
 			if (!r.hasParent(list, module)) {

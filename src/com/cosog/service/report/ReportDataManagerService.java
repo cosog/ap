@@ -4349,22 +4349,22 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
 				for(int j=2;j<obj.length;j++){
 					String addValue=obj[j]+"";
-
-					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(i).getDataSource(), false)){
+					int idx=j-2;
+					if(StringManagerUtils.existOrNot(MemoryDataManagerTask.getLanguageResourceValueList("acquisition"), reportCurveItemList.get(idx).getDataSource(), false)){
 						if(StringManagerUtils.isNotNull(addValue)){
 							String[] totalValueArr=addValue.split(";");
 							addValue="";
-							if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
+							if(reportCurveItemList.get(idx).getTotalType()==1 && totalValueArr.length>=1){
 								addValue=totalValueArr[0];
-							}else if(reportCurveItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
+							}else if(reportCurveItemList.get(idx).getTotalType()==2 && totalValueArr.length>=2){
 								addValue=totalValueArr[1];
-							}else if(reportCurveItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
+							}else if(reportCurveItemList.get(idx).getTotalType()==3 && totalValueArr.length>=3){
 								addValue=totalValueArr[2];
-							}else if(reportCurveItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
+							}else if(reportCurveItemList.get(idx).getTotalType()==4 && totalValueArr.length>=4){
 								addValue=totalValueArr[3];
-							}else if(reportCurveItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
+							}else if(reportCurveItemList.get(idx).getTotalType()==5 && totalValueArr.length>=5){
 								addValue=totalValueArr[4];
-							}else if(reportCurveItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
+							}else if(reportCurveItemList.get(idx).getTotalType()==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
 							}
 						}

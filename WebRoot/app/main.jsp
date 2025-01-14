@@ -41,7 +41,8 @@
 
         var user_ = "${userLogin.userNo}";
         if (user_ == null || "" == (user_)) {
-            window.location.href = "../login/toLogin";
+           // window.location.href = "../login";
+            window.location.href = "<%=path%>/login";
         }
         
         var userAccount = "${userLogin.userId}";

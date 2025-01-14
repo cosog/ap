@@ -1,35 +1,33 @@
-Ext.define('AP.store.data.SystemdataInfoStore', {
-    extend: 'Ext.data.BufferedStore',
-    id: "SystemdataInfoStoreId",
-    alias: 'widget.systemdataInfoStore',
-    model: 'AP.model.data.SystemdataInfoModel',
-    autoLoad: true,
-    pageSize: defaultPageSize,
+Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
+	extend:'Ext.data.Store',
+	id:"DataDictionaryItemInfoStoreId",
+	alias : 'widget.dataDictionaryItemInfoStore',
+//	pageSize:defaultPageSize, 
+	model:'AP.model.data.DataitemsInfoModel',
+	autoLoad:true,
     proxy: {
-        type: 'ajax',
-        url: context + '/systemdataInfoController/findSystemdataInfo',
-        actionMethods: {
-            read: 'POST'
-        },
-        start: 0,
-        limit: defaultPageSize,
+        type: 'ajax', 
+        url : context+'/dataitemsInfoController/getDataDictionaryItemList',       
+        actionMethods : {
+			read : 'POST'
+		},
+		start:0,
+		limit:defaultPageSize,	 
         reader: {
             type: 'json',
-            rootProperty: 'totalRoot',
-            totalProperty: 'totalCount',
+            rootProperty: 'totalRoot', 
+            totalProperty:'totalCount',
             keepRawData: true
         }
-    },
-    //分页监听事件
+    }, 
     listeners: {
-        load: function (store, options, eOpts) {
-            //获得列表数
+    	load: function (store, options, eOpts) {
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var gridPanel = Ext.getCmp("SystemdataInfoGridPanelId");
+            var gridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "SystemdataInfoGridPanelId",
+                    id: "dataDictionaryItemGridPanel_Id",
                     selModel: 'cellmodel',//cellmodel rowmodel
                     plugins: [{
                         ptype: 'cellediting',//cellediting rowediting
@@ -52,17 +50,48 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     },
                     store: store,
                     columns: [{
-                        text: loginUserLanguageResource.idx,
+                        header: loginUserLanguageResource.idx,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
                         width: 50,
-                        xtype: 'rownumberer',
-                        sortable: false,
+                        xtype: 'rownumberer'
+                    },{
+                    	header: loginUserLanguageResource.dataColumnName,
+                    	align: 'center',
+                    	flex: 1,
+                    	hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                    	dataIndex: 'name_zh_CN',
+                    	editor: {
+                            allowBlank: false,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+                        },
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    },{
+                    	header: loginUserLanguageResource.dataColumnName,
+                    	align: 'center',
+                    	flex: 1,
+                    	hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                    	dataIndex: 'name_en',
+                    	editor: {
+                            allowBlank: false,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+                        },
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    },{
+                        header: loginUserLanguageResource.dataColumnName,
                         align: 'center',
-                        locked: false
-                    }, {
-                        text: 'Name',
-                        flex: 2,
-                        align: 'center',
-                        dataIndex: 'name',
+                        flex: 1,
+                        hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                        dataIndex: 'name_ru',
                         editor: {
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
@@ -72,10 +101,10 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
                         }
-                    }, {
-                        text: 'Code',
-                        flex: 3,
+                    },{
+                        header: loginUserLanguageResource.dataColumnCode,
                         align: 'center',
+                        flex: 1,
                         dataIndex: 'code',
                         editor: {
                             allowBlank: false,
@@ -86,49 +115,49 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
                         }
-                    }, {
-                        text: 'Sort',
-                        flex: 1,
-                        align: 'center',
-                        dataIndex: 'sorts',
-                        editor: {
+                    },{
+                    	header: loginUserLanguageResource.dataColumnParams,
+                    	align: 'center',
+                    	flex: 1,
+                    	dataIndex: 'datavalue',
+                    	editor: {
+                            allowBlank: false,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+                        },
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    },{
+                    	header: loginUserLanguageResource.sortNum,
+                    	align: 'center',
+                    	width: 40,
+                    	dataIndex: 'sorts',
+                    	editor: {
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             minValue: 1
                         }
-                    }, {
-                        text: 'Module',
-                        flex: 2,
-                        align: 'center',
-                        dataIndex: 'moduleName',
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
-                    }, {
-                        text: 'Creator',
-                        flex: 1,
-                        align: 'center',
-                        dataIndex: 'creator',
-                        hidden: true,
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
-                    }, {
-                        text: 'Update Time',
-                        flex: 2,
-                        sortable: false,
-                        align: 'center',
-                        dataIndex: 'updatetime',
-                        hidden: true,
-                        renderer:function(value,o,p,e){
-                        	return adviceTimeFormat(value,o,p,e);
-                        }
+                    },{
+                    	xtype: 'checkcolumn',
+                    	align: 'center',
+                    	header: loginUserLanguageResource.enable,
+                    	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                    	dataIndex: 'status',
+                    	width: 65,
+                    	editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    		checkchange: function (sm, e, ival, o, n) {
+                    			
+                    		}
+                    	}
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
@@ -166,31 +195,35 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     }],
                     listeners: {
                         itemdblclick: function () {
-//                        	editSystemdataInfo();
+                        	
                         },
                         selectionchange: function (sm, selections) {
-                        	var dataDictionaryItemGridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id"); 
-                        	if (isNotVal(dataDictionaryItemGridPanel)) {
-                        		dataDictionaryItemGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create("AP.store.data.DataDictionaryItemInfoStore");
-                        	}
+                        	
                         }
                     }
                 });
-                Ext.getCmp("SystemdataInfoGridPanelViewId").add(gridPanel);
+                Ext.getCmp("dataDictionaryItemPanel_Id").add(gridPanel);
             }
-            var selectRow=0;
-			gridPanel.getSelectionModel().deselectAll(true);
-        	gridPanel.getSelectionModel().select(selectRow, true);
+            
+            
+            
         },
-        beforeload: function (store, options) {
-            var new_params = {
-                typeName: Ext.getCmp('sysdatacomboxfield_Id').getValue(),
-                sysName: Ext.getCmp('sysname_Id').getValue()
-
-            };
-            Ext.apply(store.proxy.extraParams, new_params);
+    	beforeload: function(store, options) {
+        	var dictionaryId='';
+        	var type=Ext.getCmp('dataDictionaryItemSearchTypeComb_Id').getValue();
+        	var value=Ext.getCmp('dataDictionaryItemSearchValue_Id').getValue();
+        	
+        	var dictionarySelection= Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+        	if(dictionarySelection.length>0){
+        		dictionaryId = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection()[0].data.sysdataid;
+        	}
+        	
+        	var new_params = {
+        			dictionaryId:dictionaryId,
+        			type:type,
+        			value:value
+        	};
+            Ext.apply(store.proxy.extraParams, new_params); 	
         }
     }
 });

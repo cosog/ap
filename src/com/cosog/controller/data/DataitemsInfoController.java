@@ -103,6 +103,35 @@ public class DataitemsInfoController extends BaseController {
 			ex.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 查询数据项值信息
+	 */
+	@RequestMapping("/getDataDictionaryItemList")
+	public void getDataDictionaryItemList() throws Exception {
+		try {
+			String dictionaryId = request.getParameter("dictionaryId");
+			String type = request.getParameter("type");
+			String value = request.getParameter("value");
+			this.pager = new Page("pagerForm", request);
+			User userInfo = this.findCurrentUserInfo();
+			List<DataitemsInfo> dataitemsInfoList = dataitemsInfoService.getDataDictionaryItemList(pager, userInfo, dictionaryId, type, value);
+
+			response.setCharacterEncoding("utf-8");
+			PrintWriter pw;
+			String json=this.getArrayTojsonPage(dataitemsInfoList);
+			try {
+				pw = response.getWriter();
+				pw.print(json);
+				pw.flush();
+				pw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	/**
 	 * 创建字典信息

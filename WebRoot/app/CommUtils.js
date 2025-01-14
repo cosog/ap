@@ -1119,7 +1119,7 @@ var userLoginOut = function() {
 							var obj = Ext.decode(response.responseText);
 							if (isNotVal(obj)) {
 								if (obj.flag) {
-									window.location.href = context+ "/login/toLogin";
+									window.location.href = context+ "/login";
 								}
 
 							}

@@ -22,13 +22,13 @@ import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/")
 @Scope("prototype")
 public class PageTurnController extends BaseController {
 	private static final long serialVersionUID = 1L;
 	@Autowired
 	private TabInfoManagerService<DeviceTypeInfo> tabInfoManagerService;
-	@RequestMapping("/toLogin")
+	@RequestMapping("/login")
 	public String toLogin() throws Exception {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")
@@ -53,12 +53,16 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		session.setAttribute("loginLanguageResource", languageResourceStr);
 		return "Login";
+		
+//		return "forward:/Login.jsp";
+		
+//		return "redirect:/Login.jsp";
 	}
 	@RequestMapping("/toTouchLogin")
 	public String toTouchLogin() throws Exception {
 		return "touchLogin";
 	}
-	@RequestMapping("/toMain")
+	@RequestMapping("/home")
 	public String toMain() throws Exception {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")
@@ -106,12 +110,9 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		
-//		if(session.getAttribute("loginUserLanguageResource")==null){
-//			session.setAttribute("loginUserLanguageResource", "{}");
-//		}
-		
-		
 		return "app/main";
+//		return "forward:/app/main.jsp";
+//		return "redirect:/app/main.jsp";
 	}
 	@RequestMapping("/toTouchMain")
 	public String toTouchMain() throws Exception {

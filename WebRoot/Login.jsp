@@ -259,10 +259,10 @@
 		}
 		if (obj.flag == "normal") {
 			//$.cookie("username", username, { expires: 7 });
-			window.location.href = "<%=path%>/login/toMain";
+			window.location.href = "<%=path%>/home";
 		} else if (obj.flag == "admin") {
 			resultObj.html(obj.msg);
-			window.location.href = "<%=path%>/login/toBackLogin";
+			window.location.href = "<%=path%>/toBackLogin";
 		} else {
 			resultObj.html(obj.msg);
 		}

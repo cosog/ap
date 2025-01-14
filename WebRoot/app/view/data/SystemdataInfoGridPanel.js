@@ -44,11 +44,11 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 id: 'sysname_Id',
                 name: 'sysdata_name',
                 action: "findsysdatatextaction"
-         }, {
+    		}, {
                 xtype: "textfield",
                 id: "sys_txt_find_ids",
                 hidden: true
-         },'-', {
+    		},'-', {
                 xtype: 'button',
                 id: "findSystemdataInfoId",
                 text: loginUserLanguageResource.search,
@@ -56,7 +56,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 handler: function () {
                     reFreshg("SystemdataInfoGridPanelId");
                 }
-         }, '->', {
+    		}, '->', {
                 xtype: 'button',
                 itemId: 'addBtnId',
                 id: 'addSystemdataInfoAction_Id',
@@ -64,7 +64,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
-         }, '-', {
+    		}, '-', {
                 xtype: 'button',
                 itemId: 'editBtnId',
                 id: 'editSDBtnId',
@@ -73,7 +73,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 action: 'editSystemdataInfoAction',
                 iconCls: 'edit'
 
-         }, '-', {
+    		}, '-', {
                 xtype: 'button',
                 itemId: 'delBtnId',
                 id: 'delSDBtnId',
@@ -82,7 +82,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 text: loginUserLanguageResource.deleteData,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
-         }]
+    		}]
         });
         this.callParent(arguments);
         Ext.getCmp("sysname_Id").focus(true, true);

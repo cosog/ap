@@ -56,6 +56,24 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 
 		return list;
 	}
+	
+	public List<DataitemsInfo> getDataDictionaryItemList(Page pager, User userInfo, String dictionaryId, String type, String value) throws Exception {
+		List<DataitemsInfo> list = null;
+		if (StringUtils.isNotBlank(dictionaryId)) {
+			pager.setWhere("sysdataid='" + dictionaryId + "'");
+		}
+		if (StringUtils.isNotBlank(value)) {
+			if ("0".equals(type)) {
+				pager.setWhere("code  like'%" + value + "%'");
+			}else if ("1".equals(type)) {
+				pager.setWhere("name_"+userInfo.getLanguageName()+"  like'%" + value + "%'");
+			}
+		}
+		pager.setSort(" sorts  asc");
+		list = findAllPageByEntity(pager);
+
+		return list;
+	}
 
 	/**
 	 * 创建数据项值信息

@@ -273,6 +273,21 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		}
 		return jsonaddstr;
 	}
+	
+	public int updateDataDictionaryInfo(String sysdataid,String name,String code,String sorts,String moduleName,String language){
+		int r=0;
+		try {
+			String sql = "update TBL_DIST_NAME t "
+					+ "set t.name_"+language+"='"+name+"',"
+					+ "t.code='"+code+"',"
+					+ "t.sorts= "+sorts
+					+ "where t.sysdataid='"+sysdataid+"' ";;
+			r=this.getBaseDao().updateOrDeleteBySql(sql);
+		} catch (Exception e) {
+			r=0;
+		}
+		return r;
+	}
 
 	/**
 	 * 删除字典信息

@@ -19,12 +19,12 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
         var findtatsimp = new Ext.form.ComboBox({
             id: 'findtattxtcobmoxfield_Id',
             value: 0,
-            fieldLabel: cosog.string.type,
+            fieldLabel: loginUserLanguageResource.type,
             allowBlank: false,
             triggerAction: 'all',
             store: findtatimsstore,
-            labelWidth: 35,
-            width: 155,
+            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
+            width: getStringLength(loginUserLanguageResource.type)*8+120,
             displayField: 'findtatName',
             valueField: 'findtatId'
         });
@@ -45,8 +45,8 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     xtype: 'textfield',
                     id: 'findtattxtnames_Id',
                     fieldLabel: loginUserLanguageResource.name,
-                    labelWidth: 35,
-                    width: 155,
+                    labelWidth: getStringLength(loginUserLanguageResource.name)*8,
+                    width: getStringLength(loginUserLanguageResource.name)*8+120,
                     listeners: {
                         specialkey: function (field, e) {
                             RefreachEnter(e, "DataitemsInfoEditGridPanelId");

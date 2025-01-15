@@ -125,10 +125,10 @@ ExtDelspace_ObjectInfo=function(space,grid_id,row,data_id,action_name){
 							    Ext.getCmp(g_spl[g]).getStore().load();
 							 } 
 							} 
-					 	    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】，" + row.length + "条数据信息。");
+					 	    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
 						}
 					 	if(result.flag ==false){		 		 
-					 		Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
+					 		Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
 					 	}
 					 	  
 					},
@@ -475,10 +475,10 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 						+ context
 						+ "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm+"";
 				if (result.flag == true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ row.length + "条数据信息。");
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
 				}
 				if (result.flag == false) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
 				}
 				if(grid_id=="OrgInfoTreeGridView_Id"){
 					var store=Ext.getCmp(grid_id).getStore()
@@ -492,7 +492,7 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 			}
 		});
 	}else{
-		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
 	}
 	return false;
 };

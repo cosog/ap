@@ -13,22 +13,6 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         		region:'center',
         		layout: "fit",
         		header:false,
-        		tbar:[{
-                	id: 'DataDictionaryManagementModuleViewFlag',
-                	xtype: 'textfield',
-                    value: loginUserDataDictionaryManagementModuleRight.viewFlag,
-                    hidden: true
-                 },{
-                	id: 'DataDictionaryManagementModuleEditFlag',
-                	xtype: 'textfield',
-                    value: loginUserDataDictionaryManagementModuleRight.editFlag,
-                    hidden: true
-                 },{
-                	id: 'DataDictionaryManagementModuleControlFlag',
-                	xtype: 'textfield',
-                    value: loginUserDataDictionaryManagementModuleRight.controlFlag,
-                    hidden: true
-                }],
         		items:SystemdataInfoGridPanel
         	},{
         		region:'east',
@@ -39,9 +23,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         		tbar:[{
         			xtype : "combobox",
         			id : 'dataDictionaryItemSearchTypeComb_Id',
-        			fieldLabel: cosog.string.type,
-    				labelWidth: 95,
-    	            width: 100,
+        			fieldLabel: loginUserLanguageResource.type,
+    	            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
+    	            width: getStringLength(loginUserLanguageResource.type)*8+120,
     				triggerAction : 'all',
     				selectOnFocus : false,
     			    forceSelection : true,
@@ -61,8 +45,8 @@ Ext.define("AP.view.data.SystemdataInfoView", {
                 	xtype: 'textfield',
                     id: 'dataDictionaryItemSearchValue_Id',
                     fieldLabel: loginUserLanguageResource.name,
-                    labelWidth: 35,
-                    width: 155
+                    labelWidth: getStringLength(loginUserLanguageResource.name)*8,
+                    width: getStringLength(loginUserLanguageResource.name)*8+120
                 },'-',{
                 	xtype: 'button',
                     text: loginUserLanguageResource.search,
@@ -82,26 +66,29 @@ Ext.define("AP.view.data.SystemdataInfoView", {
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     tooltip: loginUserLanguageResource.addDataItem,
                     handler: function () {
-                    	
+                    	addfindtattxtInfo();
                     }
-                },'-',{
+                }
+//                ,'-',{
+//                	xtype: 'button',
+//                    text: loginUserLanguageResource.update,
+//                    iconCls: 'edit',
+//                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+//                    tooltip: loginUserLanguageResource.editDataItem,
+//                    handler: function () {
+//                    	
+//                    }
+//                }
+                ,'-',{
                 	xtype: 'button',
-                    text: loginUserLanguageResource.update,
-                    iconCls: 'edit',
-                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                    tooltip: loginUserLanguageResource.editDataItem,
-                    handler: function () {
-                    	
-                    }
-                },'-',{
-                	xtype: 'button',
-                    text: loginUserLanguageResource.deleteData,
+                    text: loginUserLanguageResource.batchDeleteData,
                     iconCls: 'delete',
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     handler: function () {
-                    	
+                    	delfindtattxtInfo();
                     }
-                }]
+                }
+                ]
         	}]
         });
         me.callParent(arguments);

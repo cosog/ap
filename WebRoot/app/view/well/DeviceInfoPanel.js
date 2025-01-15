@@ -480,7 +480,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		tbar:[{
                         xtype: 'radiogroup',
                         fieldLabel: loginUserLanguageResource.calculateType,
-                        labelWidth: 60,
+                        labelWidth: getStringLength(loginUserLanguageResource.calculateType)*8,
                         id: 'DeviceCalculateDataType_Id',
                         cls: 'x-check-group-alt',
                         items: [

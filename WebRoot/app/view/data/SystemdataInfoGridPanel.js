@@ -18,14 +18,34 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
             allowBlank: false,
             triggerAction: 'all',
             store: sysdatastore,
-            labelWidth: 35,
-            width: 155,
+            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
+            width: getStringLength(loginUserLanguageResource.type)*8+120,
             displayField: 'sysdataName',
             valueField: 'sysdataId',
             mode: 'local'
         });
         Ext.apply(this, {
             tbar: [{
+            	id: 'DataDictionaryManagementModuleViewFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.viewFlag,
+                hidden: true
+             },{
+            	id: 'DataDictionaryManagementModuleEditFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.editFlag,
+                hidden: true
+             },{
+            	id: 'DataDictionaryManagementModuleControlFlag',
+            	xtype: 'textfield',
+                value: loginUserDataDictionaryManagementModuleRight.controlFlag,
+                hidden: true
+            },{
+            	id: 'selectedDataDictionaryId',
+            	xtype: 'textfield',
+                value: '',
+                hidden: true
+            },{
                 xtype: 'button',
                 text: loginUserLanguageResource.refresh,
                 iconCls: 'note-refresh',
@@ -38,9 +58,9 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 }
     		},'-',sysdatacomboxsimp,'-', {
                 xtype: 'textfield',
-                fieldLabel: '&nbsp;' + loginUserLanguageResource.name,
-                labelWidth: 35,
-                width: 155,
+                fieldLabel: loginUserLanguageResource.name,
+                labelWidth: getStringLength(loginUserLanguageResource.name)*8,
+                width: getStringLength(loginUserLanguageResource.name)*8+120,
                 id: 'sysname_Id',
                 name: 'sysdata_name',
                 action: "findsysdatatextaction"
@@ -64,25 +84,27 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
-    		}, '-', {
-                xtype: 'button',
-                itemId: 'editBtnId',
-                id: 'editSDBtnId',
-                text: loginUserLanguageResource.update,
-                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                action: 'editSystemdataInfoAction',
-                iconCls: 'edit'
-
-    		}, '-', {
-                xtype: 'button',
-                itemId: 'delBtnId',
-                id: 'delSDBtnId',
-                disabled: false,
-                action: 'delSystemdataInfoAction',
-                text: loginUserLanguageResource.deleteData,
-                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                iconCls: 'delete'
-    		}]
+    		}
+//    		, '-', {
+//                xtype: 'button',
+//                itemId: 'editBtnId',
+//                id: 'editSDBtnId',
+//                text: loginUserLanguageResource.update,
+//                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+//                action: 'editSystemdataInfoAction',
+//                iconCls: 'edit'
+//
+//    		}, '-', {
+//                xtype: 'button',
+//                itemId: 'delBtnId',
+//                id: 'delSDBtnId',
+//                disabled: false,
+//                action: 'delSystemdataInfoAction',
+//                text: loginUserLanguageResource.deleteData,
+//                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+//                iconCls: 'delete'
+//    		}
+    		]
         });
         this.callParent(arguments);
         Ext.getCmp("sysname_Id").focus(true, true);

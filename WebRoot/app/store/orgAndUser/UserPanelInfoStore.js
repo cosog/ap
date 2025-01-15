@@ -63,10 +63,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: false,
                         dataIndex: 'userName',
                         flex:2,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value, o, p, e) {
                             return adviceCurrentUserName(value, o, p, e);
                         }
@@ -77,10 +77,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userId',
                         flex:2,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -93,7 +93,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userTypeName',
                         flex:2,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             xtype: 'combo',
                             typeAhead: true,
                             triggerAction: 'all',
@@ -101,7 +101,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             editable: false,
                             store: get_rawData.roleList,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
@@ -112,11 +112,11 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userPhone',
                         flex:2,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                         	regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
                         	allowBlank: true,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                             if(isNotVal(value)){
                             	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? " " : value) + "</span>";
@@ -129,12 +129,12 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userInEmail',
                         flex:3,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                         	vtype: 'email',
                             regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
                             allowBlank: true,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -213,7 +213,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userLanguageName',
                         flex:2,
-                        editor: {
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             xtype: 'combo',
                             typeAhead: true,
                             triggerAction: 'all',
@@ -221,7 +221,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             editable: false,
                             store: get_rawData.languageList,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
@@ -286,6 +286,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         items: [{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
         	                    if(OrgAndUserModuleEditFlag==1){
@@ -306,6 +307,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
         	                    if(OrgAndUserModuleEditFlag==1){
@@ -318,7 +320,12 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     		var record = grid.getStore().getAt(rowIndex);
                             var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
-                            if (rowIndex==0 && ( dataIndex.toUpperCase()=='userId'.toUpperCase() || dataIndex.toUpperCase()=='userTypeName'.toUpperCase() || dataIndex.toUpperCase()=='userEnableName'.toUpperCase()  )) {
+                            if (record.data.userNo==user_ 
+                            		&& ( dataIndex.toUpperCase()=='userId'.toUpperCase() 
+                            				|| dataIndex.toUpperCase()=='userTypeName'.toUpperCase() 
+                            				|| dataIndex.toUpperCase()=='userEnableName'.toUpperCase()  
+                            				)
+                            	) {
                                 return false;
                             } else {
                                 return true;

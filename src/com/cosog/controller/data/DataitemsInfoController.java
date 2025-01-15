@@ -23,7 +23,9 @@ import com.cosog.model.User;
 import com.cosog.model.data.DataitemsInfo;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.service.data.SystemdataInfoService;
+import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
+import com.cosog.utils.ParamUtils;
 
 /**
  * 系统数据字典数据项值表
@@ -115,11 +117,9 @@ public class DataitemsInfoController extends BaseController {
 			String value = request.getParameter("value");
 			this.pager = new Page("pagerForm", request);
 			User userInfo = this.findCurrentUserInfo();
-			List<DataitemsInfo> dataitemsInfoList = dataitemsInfoService.getDataDictionaryItemList(pager, userInfo, dictionaryId, type, value);
-
+			String json = dataitemsInfoService.getDataDictionaryItemList(pager, userInfo, dictionaryId, type, value);
 			response.setCharacterEncoding("utf-8");
 			PrintWriter pw;
-			String json=this.getArrayTojsonPage(dataitemsInfoList);
 			try {
 				pw = response.getWriter();
 				pw.print(json);
@@ -131,6 +131,39 @@ public class DataitemsInfoController extends BaseController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	@RequestMapping("/updateDataDictionaryItemInfo")
+	public String updateDataDictionaryItemInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			String dataitemid = ParamUtils.getParameter(request, "dataitemid");
+			String name = ParamUtils.getParameter(request, "name");
+			String code = ParamUtils.getParameter(request, "code");
+			String sorts = ParamUtils.getParameter(request, "sorts");
+			String datavalue = ParamUtils.getParameter(request, "datavalue");
+			String status = ParamUtils.getParameter(request, "status");
+			User userInfo = this.findCurrentUserInfo();
+			int r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemid,name,code,sorts,datavalue,status,userInfo.getLanguageName());
+			if(r==1){
+				result = "{success:true,flag:true}";
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
 	}
 
 	/**

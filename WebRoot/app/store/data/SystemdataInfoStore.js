@@ -42,7 +42,8 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     stripeRows: true,
                     forceFit: false,
                     selModel:{
-                    	selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
+//                    	selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
+                    	selType:'',
                     	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
                     	allowDeselect:false
@@ -63,10 +64,10 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         flex: 2,
                         align: 'center',
                         dataIndex: 'name',
-                        editor: {
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -77,10 +78,10 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         flex: 3,
                         align: 'center',
                         dataIndex: 'code',
-                        editor: {
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -91,13 +92,13 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         flex: 1,
                         align: 'center',
                         dataIndex: 'sorts',
-                        editor: {
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             minValue: 1
-                        }
+                        }:""
                     }, {
                         text: 'Module',
                         flex: 2,
@@ -139,11 +140,12 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         items: [{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
-//        	                    if(OrgAndUserModuleEditFlag==1){
-//        	                    	updateUserInfoByGridBtn(record);
-//        	                    }
+                            	var editFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+        	                    if(editFlag==1){
+        	                    	updateDataDictionaryInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     },{
@@ -156,19 +158,21 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
-//        	                    if(OrgAndUserModuleEditFlag==1){
-//        	                    	delUserInfoByGridBtn(record);
-//        	                    }
+        	                    var editFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+        	                    if(editFlag==1){
+        	                    	deleteDataDictionaryInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     }],
                     listeners: {
                         itemdblclick: function () {
-//                        	editSystemdataInfo();
+                        	
                         },
-                        selectionchange: function (sm, selections) {
+                        select: function(grid, record, index, eOpts) {
+                        	Ext.getCmp("selectedDataDictionaryId").setValue(record.data.sysdataid);
                         	var dataDictionaryItemGridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id"); 
                         	if (isNotVal(dataDictionaryItemGridPanel)) {
                         		dataDictionaryItemGridPanel.getStore().load();
@@ -181,6 +185,18 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                 Ext.getCmp("SystemdataInfoGridPanelViewId").add(gridPanel);
             }
             var selectRow=0;
+            var selectedDataDictionaryId=Ext.getCmp("selectedDataDictionaryId").getValue();
+            
+            if(isNotVal(selectedDataDictionaryId)){
+				for(var i=0;i<get_rawData.totalRoot.length;i++){
+        			if(selectedDataDictionaryId==get_rawData.totalRoot[i].sysdataid){
+        				selectRow=i;
+        				break;
+        			}
+        		}
+			}
+            
+            
 			gridPanel.getSelectionModel().deselectAll(true);
         	gridPanel.getSelectionModel().select(selectRow, true);
         },

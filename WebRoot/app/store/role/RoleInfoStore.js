@@ -79,10 +79,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         flex: 1,
                         dataIndex: 'roleName',
-                        editor: {
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value, o, p, e) {
                             return adviceCurrentRoleName(value, o, p, e);
                         },
@@ -98,13 +98,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         flex: 1,
                         dataIndex: 'roleLevel',
-                        editor: {
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             minValue: currentLevel+1
-                        }
+                        }:""
                     }, {
                         header: loginUserLanguageResource.dataShowLevel,
                         lockable: true,
@@ -112,13 +112,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         flex: 1,
                         dataIndex: 'showLevel',
-                        editor: {
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             minValue: currentShowLevel+1
-                        }
+                        }:""
                     }, {
                         header: loginUserLanguageResource.roleVideoKeyEdit,
                         xtype: 'checkcolumn',
@@ -187,10 +187,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         sortable: true,
                         flex: 3,
                         dataIndex: 'remark',
-                        editor: {
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
                         	allowBlank: true,
                         	disabled:loginUserRoleManagerModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                             if (isNotVal(value)) {
                                 return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -206,6 +206,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         items: [{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
         	                    if(RoleManagerModuleEditFlag==1){
@@ -223,6 +224,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
         	                    if(RoleManagerModuleEditFlag==1){

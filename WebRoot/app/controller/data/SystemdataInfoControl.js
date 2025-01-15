@@ -173,6 +173,21 @@ function delSystemdataInfo() {
     }
 };
 
+function deleteDataDictionaryInfoByGridBtn(record) {
+	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+    if(DataDictionaryManagementModuleEditFlag==1){
+    	//获得被选中的对象
+        var sys_row = [];
+        sys_row.push(record);
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
+                function (btn) {
+                    if (btn == "yes") {
+                        ExtDelspace_ObjectInfo("systemdataInfoController", "SystemdataInfoGridPanelId", sys_row, "sysdataid", "deleteSystemdataInfoById");
+                    }
+                });
+    }
+}
+
 function editSystemdataInfo() {
 	var DataDictionaryManagementModuleEditFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
 
@@ -282,7 +297,7 @@ function savetoSysDataItems() {
     var tosavedatawin = Ext.getCmp("DataitemsInfoWinId");
     var sysdataForm = tosavedatawin.down('form');
     if (sysdataForm.getForm().isValid()) {
-        var getSysId = Ext.getCmp("sys_txt_find_ids").getValue();
+        var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
         sysdataForm.getForm().submit({
             url: context + '/dataitemsInfoController/addDataitemsInfo',
             clientValidation: true,
@@ -295,7 +310,7 @@ function savetoSysDataItems() {
             success: function (response, action) {
                 if (action.result.msg == true) {
                     tosavedatawin.close();
-                    reFreshg("DataitemsInfoEditGridPanelId");
+                    reFreshg("dataDictionaryItemGridPanel_Id");
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
@@ -368,15 +383,102 @@ function editsystemdataInfoUpdata() {
     }
     return false;
 };
-//del-to-action[字典项目]
-function delfindtattxtInfo() {
-    var obj_row = Ext.getCmp("DataitemsInfoEditGridPanelId").getSelectionModel().getSelection();
+
+function updateDataDictionaryInfoByGridBtn(record) {
+    var sysdataid=record.get("sysdataid");
+    var name=record.get("name");
+    var code=record.get("code");
+    var sorts=record.get("sorts");
+    var moduleName=record.get("moduleName");
+    Ext.Ajax.request({
+		url : context + '/systemdataInfoController/updateDataDictionaryInfo',
+		method : "POST",
+		params : {
+			sysdataid : sysdataid,
+			name : name,
+			code : code,
+			sorts : sorts,
+			moduleName : moduleName
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true && result.flag == true) {
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+			}else if (result.success==true && result.flag == false) {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+			}else {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+			}
+			Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
+		},
+		failure : function() {
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+		}
+	});
+}
+
+function updateDataDictionaryItemInfoByGridBtn(record) {
+	var dataitemid=record.get("dataitemid");
+    var name=record.get("name");
+    var code=record.get("code");
+    var datavalue=record.get("datavalue");
+    var sorts=record.get("sorts");
+    var status=record.get("status");
+    Ext.Ajax.request({
+		url : context + '/dataitemsInfoController/updateDataDictionaryItemInfo',
+		method : "POST",
+		params : {
+			dataitemid : dataitemid,
+			name : name,
+			code : code,
+			datavalue : datavalue,
+			sorts : sorts,
+			status : status
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true && result.flag == true) {
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+			}else if (result.success==true && result.flag == false) {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+			}else {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+			}
+			Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
+		},
+		failure : function() {
+			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+		}
+	});
+}
+
+function deleteDataDictionaryItemInfoByGridBtn(record) {
+    var obj_row = [];
+    obj_row.push(record);
     if (obj_row.length > 0) {
     	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
                 function (btn) {
                     if (btn == "yes") {
                         //调用Grid公共方法 
-                        ExtDelspace_ObjectInfo("dataitemsInfoController", "DataitemsInfoEditGridPanelId", obj_row, "dataitemid", "deleteDataitemsInfoById");
+                        ExtDelspace_ObjectInfo("dataitemsInfoController", "dataDictionaryItemGridPanel_Id", obj_row, "dataitemid", "deleteDataitemsInfoById");
+                    }
+                });
+    } else {
+    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    }
+    return false;
+};
+
+
+//del-to-action[字典项目]
+function delfindtattxtInfo() {
+    var obj_row = Ext.getCmp("dataDictionaryItemGridPanel_Id").getSelectionModel().getSelection();
+    if (obj_row.length > 0) {
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
+                function (btn) {
+                    if (btn == "yes") {
+                        //调用Grid公共方法 
+                        ExtDelspace_ObjectInfo("dataitemsInfoController", "dataDictionaryItemGridPanel_Id", obj_row, "dataitemid", "deleteDataitemsInfoById");
                     }
                 });
     } else {

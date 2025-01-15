@@ -41,7 +41,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     forceFit: false,
                     selModel:{
                     	selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
                     	allowDeselect:false
                     },
@@ -60,42 +60,11 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	header: loginUserLanguageResource.dataColumnName,
                     	align: 'center',
                     	flex: 1,
-                    	hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
-                    	dataIndex: 'name_zh_CN',
-                    	editor: {
+                    	dataIndex: 'name',
+                    	editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
-                    },{
-                    	header: loginUserLanguageResource.dataColumnName,
-                    	align: 'center',
-                    	flex: 1,
-                    	hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
-                    	dataIndex: 'name_en',
-                    	editor: {
-                            allowBlank: false,
-                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
-                    },{
-                        header: loginUserLanguageResource.dataColumnName,
-                        align: 'center',
-                        flex: 1,
-                        hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
-                        dataIndex: 'name_ru',
-                        editor: {
-                            allowBlank: false,
-                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -106,10 +75,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         align: 'center',
                         flex: 1,
                         dataIndex: 'code',
-                        editor: {
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -120,10 +89,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	align: 'center',
                     	flex: 1,
                     	dataIndex: 'datavalue',
-                    	editor: {
+                    	editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        },
+                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -134,13 +103,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	align: 'center',
                     	width: 40,
                     	dataIndex: 'sorts',
-                    	editor: {
+                    	editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             minValue: 1
-                        }
+                        }:""
                     },{
                     	xtype: 'checkcolumn',
                     	align: 'center',
@@ -168,11 +137,12 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         items: [{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
-//        	                    if(OrgAndUserModuleEditFlag==1){
-//        	                    	updateUserInfoByGridBtn(record);
-//        	                    }
+                            	var editFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+        	                    if(editFlag==1){
+        	                    	updateDataDictionaryItemInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     },{
@@ -185,11 +155,12 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             handler: function (view, recIndex, cellIndex, item, e, record) {
-//                            	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
-//        	                    if(OrgAndUserModuleEditFlag==1){
-//        	                    	delUserInfoByGridBtn(record);
-//        	                    }
+                            	var editFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
+        	                    if(editFlag==1){
+        	                    	deleteDataDictionaryItemInfoByGridBtn(record);
+        	                    }
                             }
                         }]
                     }],

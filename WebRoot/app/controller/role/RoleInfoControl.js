@@ -229,7 +229,7 @@ function delroleInfo() {
                 }
             });
     	}else{
-    		Ext.Msg.alert(loginUserLanguageResource.message, '该角色不可删除!');
+    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
     	}
         
     } else {
@@ -425,10 +425,10 @@ function delRoleInfoByGridBtn(record) {
           			success : function(response) {
           				var result = Ext.JSON.decode(response.responseText);
           				if (result.flag == true) {
-          					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deleteRoleId.length + "条数据信息。");
+          					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
           				}
           				if (result.flag == false) {
-          					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！删除失败。</font>");
+          					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
           				}
           				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
           			},
@@ -440,7 +440,7 @@ function delRoleInfoByGridBtn(record) {
         });
 
     } else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, '该角色不可删除!');
+    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
     }
 }
 

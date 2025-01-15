@@ -57,7 +57,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		return list;
 	}
 	
-	public List<DataitemsInfo> getDataDictionaryItemList(Page pager, User userInfo, String dictionaryId, String type, String value) throws Exception {
+public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, String dictionaryId, String type, String value) throws Exception {
 		List<DataitemsInfo> list = null;
 		if (StringUtils.isNotBlank(dictionaryId)) {
 			pager.setWhere("sysdataid='" + dictionaryId + "'");
@@ -66,13 +66,68 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 			if ("0".equals(type)) {
 				pager.setWhere("code  like'%" + value + "%'");
 			}else if ("1".equals(type)) {
-				pager.setWhere("name_"+userInfo.getLanguageName()+"  like'%" + value + "%'");
+				pager.setWhere("name_"+user.getLanguageName()+"  like'%" + value + "%'");
 			}
 		}
 		pager.setSort(" sorts  asc");
 		list = findAllPageByEntity(pager);
-
 		return list;
+	}
+	
+	public String getDataDictionaryItemList(Page pager, User user, String dictionaryId, String type, String value) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String ddicCode="dictionary_DataDictionaryManage";
+		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
+		String columns = ddic.getTableHeader();
+		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,t.status "
+				+ "from tbl_dist_item t "
+				+ "where t.sysdataid='"+dictionaryId+"' ";
+		if (StringUtils.isNotBlank(value)) {
+			if ("0".equals(type)) {
+				sql+=" and t.code like '%"+value+"%'";
+			}else if ("1".equals(type)) {
+				sql+=" and t.name_"+user.getLanguageName()+"  like'%" + value + "%'";
+			}
+		}
+		sql+="order by t.sorts";
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"dataitemid\":\""+obj[0]+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"code\":\""+obj[2]+"\",");
+			result_json.append("\"datavalue\":\""+obj[3]+"\",");
+			result_json.append("\"sorts\":"+obj[4]+",");
+			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[5]+"")==1)+"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int updateDataDictionaryItemInfo(String dataitemid,String name,String code,String sorts,String datavalue,String status,String language){
+		int r=0;
+		try {
+			String sql = "update tbl_dist_item t "
+					+ " set t.name_"+language+"='"+name+"',"
+					+ " t.code='"+code+"',"
+					+ " t.sorts= "+sorts+","
+					+ " t.datavalue ='"+datavalue+"',"
+					+ " t.status="+("true".equalsIgnoreCase(status)?1:0)
+					+ " where t.dataitemid='"+dataitemid+"' ";;
+			r=this.getBaseDao().updateOrDeleteBySql(sql);
+		} catch (Exception e) {
+			r=0;
+		}
+		return r;
 	}
 
 	/**

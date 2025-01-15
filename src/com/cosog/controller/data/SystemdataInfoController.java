@@ -1,6 +1,8 @@
 package com.cosog.controller.data;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,8 +23,11 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.User;
 import com.cosog.model.data.SystemdataInfo;
 import com.cosog.service.data.SystemdataInfoService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
+import com.cosog.utils.ParamUtils;
+import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 
 /**
@@ -165,6 +170,38 @@ public class SystemdataInfoController extends BaseController {
 		pw.print(jsonaddstr);
 		pw.flush();
 		pw.close();
+	}
+	
+	@RequestMapping("/updateDataDictionaryInfo")
+	public String updateDataDictionaryInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			String sysdataid = ParamUtils.getParameter(request, "sysdataid");
+			String name = ParamUtils.getParameter(request, "name");
+			String code = ParamUtils.getParameter(request, "code");
+			String sorts = ParamUtils.getParameter(request, "sorts");
+			String moduleName = ParamUtils.getParameter(request, "moduleName");
+			User userInfo = this.findCurrentUserInfo();
+			int r=this.systemdataInfoService.updateDataDictionaryInfo(sysdataid,name,code,sorts,moduleName,userInfo.getLanguageName());
+			if(r==1){
+				result = "{success:true,flag:true}";
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
 	}
 
 	/**

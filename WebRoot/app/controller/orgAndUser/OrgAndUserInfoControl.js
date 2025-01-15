@@ -164,10 +164,10 @@ function delOrgInfo() {
         			success : function(response) {
         				var result = Ext.JSON.decode(response.responseText);
         				if (result.flag == true) {
-        					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ result.deleteCount + "条数据信息。");
+        					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
         				}
         				if (result.flag == false) {
-        					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
+        					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
         				}
         				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
         			},
@@ -387,10 +387,10 @@ function delUserInfo() {
             			success : function(response) {
             				var result = Ext.JSON.decode(response.responseText);
             				if (result.flag == true) {
-            					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
+            					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
             				}
             				if (result.flag == false) {
-            					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
+            					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
             				}
             				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
             			},
@@ -399,9 +399,9 @@ function delUserInfo() {
             			}
             		});
             	}else if(noDelete.length>0){
-            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>不能删除当前登录用户。</font>");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
             	}else{
-            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
             	}
                 
                 
@@ -414,11 +414,9 @@ function delUserInfo() {
 };
 
 function delUserInfoByGridBtn(record) {
-//	alert(record.data.userNo);
-//  record.drop();
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
-  Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-  Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete+",userId:"+record.get("userId"), function (btn) {
+	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
+	Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete+",userId:"+record.get("userId"), function (btn) {
       if (btn == "yes") {
           var deletejson = [];
           var noDelete=[];
@@ -444,10 +442,10 @@ function delUserInfoByGridBtn(record) {
       			success : function(response) {
       				var result = Ext.JSON.decode(response.responseText);
       				if (result.flag == true) {
-      					Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
+      					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
       				}
       				if (result.flag == false) {
-      					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>删除失败。</font>");
+      					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
       				}
       				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
       			},
@@ -456,9 +454,9 @@ function delUserInfoByGridBtn(record) {
       			}
       		});
       	}else if(noDelete.length>0){
-      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>不能删除当前登录用户。</font>");
+      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
       	}else{
-      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>所选属性无效，删除失败。</font>");
+      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
       	}
       }
   });

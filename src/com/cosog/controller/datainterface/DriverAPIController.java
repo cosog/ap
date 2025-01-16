@@ -2539,7 +2539,7 @@ public class DriverAPIController extends BaseController{
 					
 					
 					//处理websocket推送
-					System.out.println(key+":step 20");
+//					System.out.println(key+":step 20");
 					int userCount=0;
 					if(displayInstanceOwnItem!=null && websocketClientUserList.size()>0){
 						for (String websocketClientUser : websocketClientUserList) {
@@ -2554,7 +2554,7 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 					}
-					System.out.println(key+":step 21,sendUserCount:"+userCount);
+//					System.out.println(key+":step 21,sendUserCount:"+userCount);
 				}
 			}
 		}catch(Exception e){

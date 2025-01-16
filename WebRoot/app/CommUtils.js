@@ -2695,17 +2695,25 @@ function getDateAndTime(dateStr,h,m,s){
 showSurfaceCard = function(result, divId) {
     var positionCurveData=result.positionCurveData.split(","); 
     var loadCurveData=result.loadCurveData.split(",");
+    var yAxisMin=0;
+	var minLoadValue=0;
 	var data = "["; // 功图data
 	for (var i=0; i <= positionCurveData.length; i++) {
 		if(i<positionCurveData.length){
 			data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
+			if(changeTwoDecimal(loadCurveData[i])<minLoadValue){
+				minLoadValue=changeTwoDecimal(loadCurveData[i]);
+			}
 		}else{
 			data += "[" + changeTwoDecimal(positionCurveData[1]) + ","+changeTwoDecimal(loadCurveData[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 		}
 	}
 	data+="]";
 	var pointdata = Ext.JSON.decode(data);
-	initSurfaceCardChart(pointdata, result, divId);
+	if(minLoadValue<0){
+		yAxisMin=null;
+	}
+	initSurfaceCardChart(pointdata, result, divId, yAxisMin);
 	return false;
 }
 
@@ -2720,10 +2728,15 @@ showFSDiagramFromPumpcard = function(result, divId) {
 	var upStrokeData = "["; // 上冲程数据
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
+	var yAxisMin=0;
+	var minLoadValue=0;
 	if(gt.length>0){
 		for (var i=0; i <= gt.length; i+=2) {
 			if(i<gt.length){
 				data += "[" + changeTwoDecimal(gt[i]) + ","+changeTwoDecimal(gt[i+1])+"],";
+				if(changeTwoDecimal(gt[i+1])<minLoadValue){
+					minLoadValue=changeTwoDecimal(gt[i+1]);
+				}
 			}else{
 				data += "[" + changeTwoDecimal(gt[0]) + ","+changeTwoDecimal(gt[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
@@ -2784,15 +2797,18 @@ showFSDiagramFromPumpcard = function(result, divId) {
 	upStrokeData+="]";
 	downStrokeData+="]";
 	
+	if(minLoadValue<0){
+		yAxisMin=null;
+	}
 	
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initSurfaceCardChart(pointdata,result, divId);
+	initSurfaceCardChart(pointdata,result, divId, yAxisMin);
 	return false;
 }
 
-function initSurfaceCardChart(pointdata, gtdata, divId) {
+function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	var deviceName=gtdata.deviceName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
@@ -2863,7 +2879,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId) {
                     },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: '',   // 不显示次刻度线
-		            min: 0                  // 最小值
+		            min: yAxisMin                  // 最小值
 		        },
 		        exporting:{
                     enabled:true,    
@@ -4214,6 +4230,8 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var lowerLoadLine=null;
 	var fmax=null;
 	var fmin=null;
+	var yAxisMin=0;
+	var minLoadValue=0;
 	var strokeMax=0;
 	var visiblestr='';
 	if(!visible){
@@ -4280,6 +4298,9 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 		for (var j=0; j <= diagramPoint; j++) {
 			if(j<diagramPoint){
 				data += "[" + changeTwoDecimal(xData[j]) + ","+changeTwoDecimal(yData[j])+"],";
+				if(changeTwoDecimal(yData[j])<minLoadValue){
+					minLoadValue=changeTwoDecimal(yData[j]);
+				}
 			}else{
 				data += "[" + changeTwoDecimal(xData[0]) + ","+changeTwoDecimal(yData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
@@ -4326,8 +4347,11 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
     if(isNaN(upperlimit)){
     	upperlimit=null;
     }
+    if(minLoadValue<0){
+		yAxisMin=null;
+	}
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
+    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,yAxisMin);
 	}else {
 		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId);
 	}
@@ -4335,7 +4359,7 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
+function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,yAxisMin) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -4377,7 +4401,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   
 		            minorTickInterval: '',    // 不显示次刻度线
-		            min:0
+		            min:yAxisMin
 		        },
 		        exporting:{    
                     enabled:true,    

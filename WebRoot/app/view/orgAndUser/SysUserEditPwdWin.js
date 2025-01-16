@@ -132,7 +132,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                                     buttons: Ext.Msg.OK,
                                     fn: function () {
                                         Ext.getCmp("SysUserEditPwdWinId").close();
-                                        window.location.href = context + "/login/toLogin";
+                                        window.location.href = context + "/login";
                                     }
                                 });
 

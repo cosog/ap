@@ -86,7 +86,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 				chain.doFilter(request, response);
 			}else {
 				//对外开放端口
-				if(urlString.equals("toLogin")||urlString.equals("toMain")||urlString.equals("toBackMain")
+				if(urlString.equals("toLogin")||urlString.equals("toMain")||urlString.equals("toBackMain")||urlString.equals("login")||urlString.equals("home")
 						||urlString.equals("getUserList")||urlString.equals("userLogin")
 						||urlString.equals("getBatchCalculateTime")
 						||urlString.equals("getPCPBatchCalculateTime")

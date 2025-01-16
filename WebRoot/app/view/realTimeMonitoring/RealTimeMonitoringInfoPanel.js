@@ -1187,7 +1187,7 @@ function controlBtnHandler(btn,btnIndex){
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
-                                    window.location.href = context + "/login/toLogin";
+                                    window.location.href = context + "/login";
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
@@ -1226,7 +1226,7 @@ function controlBtnHandler(btn,btnIndex){
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
-                                    window.location.href = context + "/login/toLogin";
+                                    window.location.href = context + "/login";
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
@@ -1261,7 +1261,7 @@ function controlBtnHandler(btn,btnIndex){
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
-                                    window.location.href = context + "/login/toLogin";
+                                    window.location.href = context + "/login";
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
@@ -1298,7 +1298,7 @@ function controlBtnHandler(btn,btnIndex){
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
-                                    window.location.href = context + "/login/toLogin";
+                                    window.location.href = context + "/login";
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {
@@ -1333,7 +1333,7 @@ function controlBtnHandler(btn,btnIndex){
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
-                                    window.location.href = context + "/login/toLogin";
+                                    window.location.href = context + "/login";
                                 }
                             });
                         } else if (data.flag == true && data.error == false) {

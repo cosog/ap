@@ -150,7 +150,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                                         icon: Ext.MessageBox.INFO,
                                         buttons: Ext.Msg.OK,
                                         fn: function () {
-                                            window.location.href = context + "/login/toLogin";
+                                            window.location.href = context + "/login";
                                         }
                                     });
                                 } else if (result.flag == true && result.error == false) {

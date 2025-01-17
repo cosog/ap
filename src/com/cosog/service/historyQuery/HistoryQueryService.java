@@ -3868,10 +3868,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
-			String[] heads={"井号","日期时间","冲程(m)","冲次(次/分钟)","最小载荷(kN)","最大载荷(kN)","曲线点数","位移","载荷"};
-			String[] columns={"deviceName","acqTime","stroke","spm","fmin","fmax","pointCount","positionCurveData","loadCurveData"};
+			String[] heads={languageResourceMap.get("deviceName"),languageResourceMap.get("acqTime"),
+					languageResourceMap.get("stroke")+"(m)",languageResourceMap.get("SPM")+"(1/min)",
+					languageResourceMap.get("fMax")+"(kN)",languageResourceMap.get("fMin")+"(kN)",
+					languageResourceMap.get("pointCount"),
+					languageResourceMap.get("displacement"),languageResourceMap.get("load"),
+					languageResourceMap.get("activePower"),languageResourceMap.get("electricity")};
+			String[] columns={"deviceName","acqTime","stroke","spm","fmax","fmin","pointCount","positionCurveData","loadCurveData","powerCurveData","currentCurveData"};
 			
 			List<Object> headRow = new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
@@ -3883,7 +3889,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy/mm/dd hh24:mi:ss') as acqTime,"
 					+ " t.stroke,t.spm,"
 					+ " t.fmax,t.fmin,"
-					+ " t.position_curve,t.load_curve"
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
@@ -3910,21 +3916,35 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				CLOB realClob=null;
 				SerializableClobProxy   proxy=null;
-				String DiagramXData="";
-		        String DiagramYData="";
+				String positionCurveData="";
+		        String loadCurveData="";
+		        String powerCurveData="";
+		        String currentCurveData="";
 		        String pointCount="";
 		        if(obj[7]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
-					DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+					positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-		        if(StringManagerUtils.isNotNull(DiagramXData)){
-					pointCount=DiagramXData.split(",").length+"";
+		        if(StringManagerUtils.isNotNull(positionCurveData)){
+					pointCount=positionCurveData.split(",").length+"";
 				}
 		        if(obj[8]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
-					DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+					loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+				}
+		        
+		        if(obj[9]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					powerCurveData=StringManagerUtils.CLOBtoString(realClob);
+				}
+		        
+		        if(obj[10]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[10]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					currentCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				
 		        result_json.append("{ \"id\":\"" + obj[0] + "\",");
@@ -3935,8 +3955,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		        result_json.append("\"fmax\":\""+obj[5]+"\",");
 		        result_json.append("\"fmin\":\""+obj[6]+"\",");
 		        result_json.append("\"pointCount\":\""+pointCount+"\","); 
-		        result_json.append("\"positionCurveData\":\""+DiagramXData+"\",");
-		        result_json.append("\"loadCurveData\":\""+DiagramYData+"\"}");
+		        result_json.append("\"positionCurveData\":\""+positionCurveData+"\",");
+		        result_json.append("\"loadCurveData\":\""+loadCurveData+"\",");
+		        result_json.append("\"powerCurveData\":\""+powerCurveData+"\",");
+		        result_json.append("\"currentCurveData\":\""+currentCurveData+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -3961,6 +3983,174 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			return false;
 		}
 		return true;
+	}
+	
+	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int intPage = pager.getPage();
+		int limit = pager.getLimit();
+		int start = pager.getStart();
+		int maxvalue = limit + start;
+		String allsql="",sql="",totalSql="";
+		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ " t.upStrokeWattMax,t.downStrokeWattMax,t.wattDegreeBalance,t.deltaRadius,"
+				+ " t.position_curve,t.power_curve"
+				+ " from tbl_srpacqdata_hist t"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.deviceId="+deviceId+" ";
+		totalSql="select count(1) from tbl_srpacqdata_hist t"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.deviceId="+deviceId+" ";
+		
+		int totals = getTotalCountRows(totalSql);//获取总记录数
+		
+		int rarefy=totals/vacuateThreshold+1;
+		if(rarefy>1){
+			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+			totals = getTotalCountRows(totalSql);
+			
+		}
+		allsql+= " order by t.fesdiagramacqtime desc";
+		if(rarefy>1){
+			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+		}
+		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		
+		List<?> list=this.findCallSql(sql);
+		PageHandler handler = new PageHandler(intPage, totals, limit);
+		int totalPages = handler.getPageCount(); // 总页数
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
+		
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			CLOB realClob=null;
+			SerializableClobProxy   proxy=null;
+			String DiagramXData="";
+	        String DiagramYData="";
+	        String pointCount="";
+	        
+	        
+	        if(obj[7]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(StringManagerUtils.isNotNull(DiagramXData)){
+				pointCount=DiagramXData.split(",").length+"";
+			}
+	        if(obj[8]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        
+			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
+			dynSbf.append("\"deviceName\":\"" + obj[1] + "\",");
+			dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
+			dynSbf.append("\"upStrokeWattMax\":\""+obj[3]+"\",");
+			dynSbf.append("\"downStrokeWattMax\":\""+obj[4]+"\",");
+			dynSbf.append("\"wattDegreeBalance\":\""+obj[5]+"\",");
+			dynSbf.append("\"deltaRadius\":\""+obj[6]+"\",");
+			
+			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
+			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");
+			dynSbf.append("\"powerCurveData\":\""+DiagramYData+"\"},");
+		}
+		if(dynSbf.toString().endsWith(",")){
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString().replaceAll("null", "");
+	}
+	
+	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int intPage = pager.getPage();
+		int limit = pager.getLimit();
+		int start = pager.getStart();
+		int maxvalue = limit + start;
+		String allsql="",sql="",totalSql="";
+		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ " t.upStrokeIMax,t.downStrokeIMax,t.iDegreeBalance,t.deltaRadius,"
+				+ " t.position_curve,t.current_curve"
+				+ " from tbl_srpacqdata_hist t"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.deviceId="+deviceId+" ";
+		totalSql="select count(1) from tbl_srpacqdata_hist t"
+				+ " left outer join tbl_device well on well.id=t.deviceId"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.deviceId="+deviceId+" ";
+		
+		int totals = getTotalCountRows(totalSql);//获取总记录数
+		
+		int rarefy=totals/vacuateThreshold+1;
+		if(rarefy>1){
+			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+			totals = getTotalCountRows(totalSql);
+			
+		}
+		allsql+= " order by t.fesdiagramacqtime desc";
+		if(rarefy>1){
+			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+		}
+		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		
+		List<?> list=this.findCallSql(sql);
+		PageHandler handler = new PageHandler(intPage, totals, limit);
+		int totalPages = handler.getPageCount(); // 总页数
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
+		
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			CLOB realClob=null;
+			SerializableClobProxy   proxy=null;
+			String DiagramXData="";
+	        String DiagramYData="";
+	        String pointCount="";
+	        
+	        
+	        if(obj[7]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(StringManagerUtils.isNotNull(DiagramXData)){
+				pointCount=DiagramXData.split(",").length+"";
+			}
+	        if(obj[8]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        
+			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
+			dynSbf.append("\"deviceName\":\"" + obj[1] + "\",");
+			dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
+			dynSbf.append("\"upStrokeIMax\":\""+obj[3]+"\",");
+			dynSbf.append("\"downStrokeIMax\":\""+obj[4]+"\",");
+			dynSbf.append("\"iDegreeBalance\":\""+obj[5]+"\",");
+			dynSbf.append("\"deltaRadius\":\""+obj[6]+"\",");
+			
+			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
+			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");
+			dynSbf.append("\"currentCurveData\":\""+DiagramYData+"\"},");
+		}
+		if(dynSbf.toString().endsWith(",")){
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString().replaceAll("null", "");
 	}
 	
 	@SuppressWarnings("deprecation")

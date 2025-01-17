@@ -140,6 +140,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
             
+            updateTotalRecords(get_rawData.totalCount,"SurfaceCardTotalCount_Id");
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

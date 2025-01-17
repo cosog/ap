@@ -76,6 +76,8 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                 panel.add(gridPanel);
             }
             
+            updateTotalRecords(get_rawData.totalCount,"SurfaceCardTotalCount_Id");
+            
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);

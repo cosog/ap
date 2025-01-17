@@ -495,8 +495,102 @@ public class HistoryQueryController extends BaseController  {
 		return null;
 	}
 	
-	@RequestMapping("/exportHistoryQueryFESDiagramDataExcel")
-	public String exportHistoryQueryFESDiagramDataExcel() throws IOException {
+	@RequestMapping("/getPSDiagramTiledData")
+	public String getPSDiagramTiledData() throws IOException {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		this.pager = new Page("pagerForm", request);
+		String tableName="tbl_srpacqdata_hist";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
+		try {
+			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
+				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
+				List list = this.service.reportDateJssj(sql);
+				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+					endDate = list.get(0).toString();
+				} else {
+					endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				}
+				if(!StringManagerUtils.isNotNull(startDate)){
+					startDate=endDate.split(" ")[0]+" 00:00:00";
+				}
+			}
+			pager.setStart_date(startDate);
+			pager.setEnd_date(endDate);
+			json = this.historyQueryService.getPSDiagramTiledData(orgId,deviceId,deviceName,deviceType,pager,language);
+			pw.print(json);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getISDiagramTiledData")
+	public String getISDiagramTiledData() throws IOException {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		this.pager = new Page("pagerForm", request);
+		String tableName="tbl_srpacqdata_hist";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
+		try {
+			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
+				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
+				List list = this.service.reportDateJssj(sql);
+				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+					endDate = list.get(0).toString();
+				} else {
+					endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				}
+				if(!StringManagerUtils.isNotNull(startDate)){
+					startDate=endDate.split(" ")[0]+" 00:00:00";
+				}
+			}
+			pager.setStart_date(startDate);
+			pager.setEnd_date(endDate);
+			json = this.historyQueryService.getISDiagramTiledData(orgId,deviceId,deviceName,deviceType,pager,language);
+			pw.print(json);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportHistoryQueryDiagramTiledDataExcel")
+	public String exportHistoryQueryDiagramTiledDataExcel() throws IOException {
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
@@ -504,9 +598,9 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
-		
-		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
+		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
+		String diagramType = ParamUtils.getParameter(request, "diagramType");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
@@ -532,7 +626,14 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		if("FSDiagram".equalsIgnoreCase(diagramType)){
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		}else if("PSDiagram".equalsIgnoreCase(diagramType)){
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		}else if("ISDiagram".equalsIgnoreCase(diagramType)){
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+		}
+		
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

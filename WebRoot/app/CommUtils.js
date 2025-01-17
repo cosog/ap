@@ -2976,6 +2976,13 @@ showRodPress = function(result, divId) {
 }
 
 function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
+	var yAxisMax=100;
+	for(var i=0;i<ydata.length;i++){
+		if(parseFloat(ydata[i])>=100){
+			yAxisMax=null;
+			break;
+		}
+	}
 	var rodStressChart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
@@ -3031,7 +3038,7 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		        },                                                                                   
 		        yAxis: {    
 		        	min: 0,
-		        	max:100,
+		        	max: yAxisMax,
 		            title: {                                                                         
 		                text: loginUserLanguageResource.rodStressRatio+'(%)'  // 应力百分比(%)                                                          
 		            },
@@ -3242,7 +3249,7 @@ showPumpEfficiency = function(bxzcData, divId) {
 	var pumpEff3=bxzcData.pumpEff3;       // 漏失系数
 	var pumpEff4=bxzcData.pumpEff4;   // 液体收缩系数
 	var ydata="[" + pumpEff1 + "," + pumpEff2 + "," + pumpEff3 + "," + pumpEff4 + "]";
-	if(pumpEff1==0&&pumpEff2==0&&pumpEff3==0&&pumpEff4==0){
+	if(pumpEff1==0 && pumpEff2==0 && pumpEff3==0 && pumpEff4==0){
 		ydata="[]";
 	}
 	ydata = Ext.JSON.decode(ydata);
@@ -3269,10 +3276,10 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        },
 		        xAxis: { 
 		        	categories: [
-		        		loginUserLanguageResource.pumpEff1,
-		        		loginUserLanguageResource.pumpEff2,
-		        		loginUserLanguageResource.pumpEff3,
-		        		loginUserLanguageResource.pumpEff4
+		        		loginUserLanguageResource.pumpEffChart_pumpEff1,
+		        		loginUserLanguageResource.pumpEffChart_pumpEff2,
+		        		loginUserLanguageResource.pumpEffChart_pumpEff3,
+		        		loginUserLanguageResource.pumpEffChart_pumpEff4
 		        	],
 		        	gridLineWidth: 0
 		        }, 
@@ -3318,7 +3325,7 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 
 showPSDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
-		title=loginUserLanguageResource.FWattDiagram;
+		title=loginUserLanguageResource.PSDiagram;
 	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var powerCurveData=result.powerCurveData.split(",");
@@ -3334,10 +3341,14 @@ showPSDiagram = function(result, divId,title) {
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
 	var gtcount=positionCurveData.length; // 功图点数
+	var yAxisMin=0;
 	if(positionCurveData.length>0 && result.powerCurveData!="" && powerCurveData.length>1){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"],";
+				if(changeTwoDecimal(powerCurveData[i])<yAxisMin){
+					yAxisMin=changeTwoDecimal(powerCurveData[i]);
+				}
 			}else{
 				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(powerCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
@@ -3402,11 +3413,11 @@ showPSDiagram = function(result, divId,title) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,loginUserLanguageResource.activePower+"(kW)",['#FF6633','#009999']);
+	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divId,title,xtext,loginUserLanguageResource.activePower+"(kW)",['#FF6633','#009999'],yAxisMin);
 	return false;
 }
 
-function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
+function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color,yAxisMin) {
 	var deviceName=gtdata.deviceName;         // 井名
 	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
@@ -3448,8 +3459,8 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 		                text: ytext   // 载荷（kN） 
                     },
 		            allowDecimals: false,    // 刻度值是否为小数
+//		            min: yAxisMin<0?null:0,                  // 最小值
 		            minorTickInterval: ''   // 不显示次刻度线
-//		            min: 0                  // 最小值
 		        },
 		        exporting:{
                     enabled:true,    
@@ -3509,7 +3520,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 
 showASDiagram = function(result, divId,title) {
 	if (!isNotVal(title)){
-		title=loginUserLanguageResource.FIDiagram;
+		title=loginUserLanguageResource.ISDiagram;
 	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var currentCurveData=result.currentCurveData.split(",");

@@ -110,7 +110,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     			var activeId = tabPanel.getActiveTab().id;
                 				if(activeId=="HistoryDataTabPanel"){
             						Ext.getCmp("HistoryDataExportBtn_Id").show();
-            						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
+            						Ext.getCmp("SurfaceCardTotalCount_Id").show();
             						var HistoryQueryDataGridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
                                     if (isNotVal(HistoryQueryDataGridPanel)) {
                                     	HistoryQueryDataGridPanel.getStore().loadPage(1);
@@ -120,10 +120,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             					}else if(activeId=="HistoryDiagramTabPanel"){
             						Ext.getCmp("HistoryDataExportBtn_Id").hide();
             						Ext.getCmp("SurfaceCardTotalCount_Id").show();
-            						loadSurfaceCardList(1);
+            						loadHistoryDiagramTiledList(1);
             					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
             						Ext.getCmp("HistoryDataExportBtn_Id").hide();
-            						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
+            						Ext.getCmp("SurfaceCardTotalCount_Id").show();
             						
             						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
                                     if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
@@ -175,7 +175,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
 				
 				
 //				else if(activeId=="HistoryDiagramTabPanel"){
-//					loadSurfaceCardList(1);
+//					loadHistoryDiagramTiledList(1);
 //				}else if(activeId=="HistoryDiagramOverlayTabPanel"){
 //					var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
 //                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {

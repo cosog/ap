@@ -87,7 +87,7 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(cosog.string.loading).show();
+            Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

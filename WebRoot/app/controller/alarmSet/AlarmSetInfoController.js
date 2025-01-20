@@ -31,8 +31,8 @@ var SaveAlarmSetSubmitBtnForm = function () {
             url: context + '/AlarmSetController/addAlarmSet',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('AlarmSetWindow_Id').close();
                 Ext.getCmp("AlarmSet_Id").getStore().load();
@@ -49,7 +49,7 @@ var SaveAlarmSetSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;

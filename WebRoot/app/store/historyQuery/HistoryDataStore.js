@@ -19,6 +19,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
+        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").getEl().unmask();
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
@@ -117,6 +118,8 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+        	
+        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
         	
             var new_params = {
             		orgId: orgId,

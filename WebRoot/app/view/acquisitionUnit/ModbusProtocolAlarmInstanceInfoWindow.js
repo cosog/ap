@@ -111,7 +111,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }

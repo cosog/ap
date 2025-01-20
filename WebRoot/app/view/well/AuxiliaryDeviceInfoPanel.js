@@ -70,11 +70,11 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 style: 'margin-right:15px'
             }, '->',{
     			xtype: 'button',
-                text: loginUserLanguageResource.adddDevie,
+                text: loginUserLanguageResource.addDevie,
                 iconCls: 'add',
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.AuxiliaryDeviceInfoWindow", {
-                        title: loginUserLanguageResource.adddDevie
+                        title: loginUserLanguageResource.addDevie
                     });
                     window.show();
                     var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");

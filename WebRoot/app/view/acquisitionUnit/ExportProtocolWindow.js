@@ -69,7 +69,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
     	        			key='exportProtocolInitData'+'_'+timestamp;
     	        			url=context + '/acquisitionUnitManagerController/exportProtocolInitData?key='+key+'&protocolList='+exportProtocolList.join(",");
     	        		}
-    	        		exportDataMask(key,maskPanelId,cosog.string.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     	        	    openExcelWindow(url);
 //                    	document.location.href = url;
     				}else{

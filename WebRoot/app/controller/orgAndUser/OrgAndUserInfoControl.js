@@ -31,8 +31,8 @@ var SaveOrgDataInfoSubmitBtnForm = function () {
             url: context + '/orgManagerController/doOrgAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('org_addwin_Id').close();
                 if (action.result.msg == true) {
@@ -192,7 +192,7 @@ function modifyOrgInfo() {
             win_Obj.destroy();
         }
         var orgUpdateInfoWindow = Ext.create("AP.view.orgAndUser.OrgInfoWindow", {
-            title: cosog.string.updateOrg
+            title: loginUserLanguageResource.updateOrg
         });
         orgUpdateInfoWindow.show();
         Ext.getCmp("addFormOrg_Id").hide();
@@ -203,29 +203,6 @@ function modifyOrgInfo() {
     }
     
     return false;
-};
-
-//创建设置组织坐标窗口
-function openSetOrgCoordWin() {
-	var win_Obj = Ext.getCmp("orgCoordSetWindow_Id")
-    if (win_Obj != undefined) {
-    	win_Obj.destroy();
-    }
-	var OrgCoordSetWindow = Ext.create("AP.view.org.OrgCoordSetWindow", {
-		title: cosog.string.setCoord
-		});
-	OrgCoordSetWindow.show();
-	$(function () {
-        //初始化地图
-		var div=Ext.getCmp("orgCoordSetDiv_Id");
-		var div2=$("#orgCoordSetDiv_Id");
-        mapHelper = MapHelper.createNew("orgCoordSetDiv_Id", m_DefaultPosition, m_DefaultZoomLevel, false, 1000);
-        SetMapLocation(39.904, 116.404, 19);
-        //获取组织信息
-        SaveOrgData();
-        //给地图添加单击事件
-        mapHelper.addEventListener(mapHelper.getMap(), "click", mapOrgClicked);
-    });
 };
 
 function addUserInfo() {
@@ -518,8 +495,8 @@ var SaveUserDataInfoSubmitBtnForm = function () {
             url: context + '/userManagerController/doUserAdd',
             clientValidation: false, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('user_addwin_Id').close();
                 Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
@@ -552,7 +529,7 @@ function UpdateUserDataInfoSubmitBtnForm() {
             clientValidation: false, // 进行客户端验证
             method: "POST",
             waitMsg: loginUserLanguageResource.updateWait+'...',
-            waitTitle: 'Please Wait...',
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('user_addwin_Id').close();
                 Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
@@ -583,7 +560,7 @@ function EditUserPasswordSubmitBtnForm() {
             clientValidation: false, // 进行客户端验证
             method: "POST",
             waitMsg: loginUserLanguageResource.updateWait+'...',
-            waitTitle: 'Please Wait...',
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('userEditPasswordWindow_Id').close();
                 if (action.result.flag == true) {

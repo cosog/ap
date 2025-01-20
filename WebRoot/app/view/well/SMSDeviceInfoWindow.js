@@ -132,8 +132,8 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doSMSDeviceAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: cosog.string.sendServer,
-                            waitTitle: 'Please Wait...',
+                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('SMSDeviceInfoWindow_Id').close();
                                 CreateAndLoadSMSDeviceInfoTable();

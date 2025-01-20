@@ -106,7 +106,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         	CreateProductionDailyReportTable();
                         	CreateProductionDailyReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -128,7 +128,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         	CreateProductionDailyReportTable();
                         	CreateProductionDailyReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -308,7 +308,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"ProductionDailyReportPanel_view",cosog.string.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loading);
                             	document.location.href = url;
                             }
                         },'-',{
@@ -360,7 +360,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"ProductionDailyReportPanel_view",cosog.string.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loading);
                             	document.location.href = url;
                             }
                         },'-', {
@@ -444,7 +444,7 @@ function CreateProductionDailyReportTable(){
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("ProductionDailyReportPanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("ProductionDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportData',
@@ -930,7 +930,7 @@ function CreateProductionDailyReportCurve(){
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportCurveData',

@@ -45,7 +45,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolDisplayInstanceWindow", {
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolDisplayInstanceData?key='+key+'&instanceList='+exportDisplayInstanceList.join(",");
     	        		
-    	        		exportDataMask(key,maskPanelId,cosog.string.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的显示实例");

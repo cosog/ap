@@ -31,7 +31,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(cosog.string.loading).show();
+        	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	        				cleanDeviceAddInfoAndControlInfo();
         	        				oldCard.removeAll();
         	        				oldCard.setIconCls(null);
@@ -117,9 +117,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         id:"CPUUsedPercentLabel_id",
 //                        width: 180,
                         height:25,
-                        text: 'cpu:',
+                        text: loginUserLanguageResource.resourcesMonitoring_cpu+':',
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cpu usage(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cpuUsage+"(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("cpuUsedPercent");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -130,10 +130,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"memUsedPercentLabel_id",
-                        text: 'mem:',
+                        text: loginUserLanguageResource.resourcesMonitoring_mem+':',
 //                        width: 130,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("mem usage(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.memUsage+"(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("memUsedPercent");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -144,10 +144,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"tableSpaceSizeProbeLabel_id",
-                        text: 'db tablespaces:',
+                        text: loginUserLanguageResource.resourcesMonitoring_tablespaces+':',
 //                        width: 130,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("db tablespaces usage(%)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.tablespacesUsage+"(%)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -158,10 +158,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"redisRunStatusProbeLabel_id",
-                        text: 'cache',
+                        text: loginUserLanguageResource.resourcesMonitoring_cache+'',
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("cache db memory(m)");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cacheDbMemory+"(m)");
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -172,11 +172,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"adRunStatusProbeLabel_id",
-                        text: 'ad',
+                        text: loginUserLanguageResource.resourcesMonitoring_ad,
                         hidden: !IoTConfig,
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ad status");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.adStatus);
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("adRunStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -187,10 +187,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                 	},{
                 		xtype: 'button',
                         id:"acRunStatusProbeLabel_id",
-                        text: 'ac',
+                        text: loginUserLanguageResource.resourcesMonitoring_ac,
 //                        width: 100,
                         handler: function (v, o) {
-                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue("ac status");
+                        	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.acStatus);
                             Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("acRunStatus");
                             var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
@@ -219,7 +219,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(cosog.string.loading).show();
+    					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
     					if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{
@@ -647,7 +647,7 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagra
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -710,7 +710,7 @@ function loadAndInitFESdiagramResultStat(all){
 		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 		commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	}
-	Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
@@ -832,7 +832,7 @@ function loadAndInitCommStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
@@ -980,7 +980,7 @@ function loadAndInitRunStatusStat(all){
 	}
 
 	if(isNotVal(Ext.getCmp(panelId))){
-		Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	}
 	
 	Ext.Ajax.request({
@@ -1263,7 +1263,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var eastPanelId="RealTimeMonitoringEastPanel_Id";
 	var panelId="RealTimeMonitoringCurveTabPanel_Id";
 	
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;

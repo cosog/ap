@@ -116,12 +116,12 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                                 var obj = Ext.decode(response.responseText);
                                 var msg_ = obj.msg;
                                 if (msg_ == "1") {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + cosog.string.exist);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + loginUserLanguageResource.exist);
                                     t.setValue("");
                                 }
                             },
                             failure: function (response, opts) {
-                                Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                             }
                         });
                     }

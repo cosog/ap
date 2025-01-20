@@ -26,10 +26,10 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
         var oldPassword = Ext.create("Ext.form.field.Text", {
             id: "sysreSetPasswordWinId_old_password",
             inputType: 'password',
-            fieldLabel: '<font color="red">*</font>' + cosog.string.enterOldPwd,
+            fieldLabel: '<font color="red">*</font>' + loginUserLanguageResource.enterOldPwd,
             //vtype:"loginnum_",
             allowBlank: false,
-            emptyText: cosog.string.enterOldPwd,
+            emptyText: loginUserLanguageResource.enterOldPwd,
             labelWidth: 100,
             msgTarget: 'side',
             blankText: loginUserLanguageResource.required
@@ -38,8 +38,8 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
         var newPassword = Ext.create("Ext.form.field.Text", {
             id: "sysreSetPasswordWinId_new_password",
             inputType: 'password',
-            fieldLabel: '<font color="red">*</font>' + cosog.string.enterNewPwd,
-            emptyText: cosog.string.enterNewPwd,
+            fieldLabel: '<font color="red">*</font>' + loginUserLanguageResource.enterNewPwd,
+            emptyText: loginUserLanguageResource.enterNewPwd,
             // vtype:"loginnum_",
             labelWidth: 100,
             allowBlank: false,
@@ -118,7 +118,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                         url: context + '/userLoginManagerController/resetPwdmessage',
                         method: "POST",
                         waitMsg: loginUserLanguageResource.updateWait+'...',
-                        waitTitle: 'Please Wait...',
+                        waitTitle: loginUserLanguageResource.wait,
                         params: {
                             oldPassword: Ext.getCmp('sysreSetPasswordWinId_old_password').getValue(),
                             newPassword: Ext.getCmp('sysreSetPasswordWinId_new_password').getValue()
@@ -127,7 +127,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                             if (action.result.flag == false) {
                                 Ext.MessageBox.show({
                                     title: loginUserLanguageResource.tip,
-                                    msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                     icon: Ext.MessageBox.INFO,
                                     buttons: Ext.Msg.OK,
                                     fn: function () {

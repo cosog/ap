@@ -17,7 +17,7 @@ Ext.define('AP.controller.frame.MainIframeControl', {
 function extFuncTreeItemsClk(view, rec, item, index, e) {
     try {
         if (rec.isLeaf()) {
-        	Ext.getCmp("frame_center_ids").el.mask(cosog.string.loading).show();
+        	Ext.getCmp("frame_center_ids").el.mask(loginUserLanguageResource.loading).show();
         	
         	var module_Id_ = rec.data.id;
             var tabPanel = Ext.getCmp("frame_center_ids");
@@ -46,7 +46,7 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
                     }
                     if (ViewUrl != "#") {
                     	var all_loading = new Ext.LoadMask({
-                            msg: cosog.string.loading,
+                            msg: loginUserLanguageResource.loading,
                             target: Ext.getBody().component
                         });
                         all_loading.show();

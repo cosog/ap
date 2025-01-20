@@ -65,7 +65,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     	        			url=context + '/acquisitionUnitManagerController/exportProtocolAcqInstanceInitData?key='+key+'&instanceList='+exportAcqInstanceList.join(",");
     	        		}
     	        		
-    	        		exportDataMask(key,maskPanelId,cosog.string.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的采控实例");

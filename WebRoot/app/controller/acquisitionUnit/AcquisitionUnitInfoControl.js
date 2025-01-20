@@ -62,8 +62,8 @@ var saveModbusProtocolSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocol_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
@@ -118,8 +118,8 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAcquisitionGroupAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
@@ -237,8 +237,8 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAcquisitionUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('acquisitionUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
@@ -637,8 +637,8 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
@@ -680,8 +680,8 @@ var SaveAlarmUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAlarmUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('alarmUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
@@ -723,8 +723,8 @@ var SaveDisplayUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doDisplayUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('displayUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
@@ -785,8 +785,8 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolReportUnitInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
@@ -818,8 +818,8 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolDisplayInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolDisplayInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
@@ -850,8 +850,8 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
@@ -893,8 +893,8 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAlarmInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolAlarmInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().load();
@@ -976,8 +976,8 @@ var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();

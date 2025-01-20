@@ -84,8 +84,8 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             url: context + '/roleManagerController/doRoleAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('role_addwin_Id').close();
                 
@@ -243,7 +243,7 @@ function modifyroleInfo() {
     var _record = role_model.getSelection();
     if (_record.length>0) {
     	var roleUpdateInfoWindow = Ext.create("AP.view.role.RoleInfoWindow", {
-            title: cosog.string.editRole
+            title: loginUserLanguageResource.editRole
         });
         roleUpdateInfoWindow.show();
         Ext.getCmp("addFormrole_Id").hide();
@@ -278,7 +278,7 @@ var grantRolePermission = function () {//授予角色模块权限
     var roleCode = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
     var RightOldModuleIds_Id = Ext.getCmp("RightOldModuleIds_Id").getValue();
     if (!isNotVal(roleCode)) {
-        Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.pleaseChooseRole);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.pleaseChooseRole);
         return false
     }
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
@@ -311,10 +311,10 @@ var grantRolePermission = function () {//授予角色模块权限
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + addjson.length + "" + cosog.string.jgModule + "。");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.grantSuccess + "</font>】" + addjson.length);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.grantFailure + "</font>");
             }
             Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
         },
@@ -353,7 +353,7 @@ var grantRoleTabPermission = function () {//授予角色模块权限
     var roleCode = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
     var RightOldModuleIds_Id = Ext.getCmp("RightOldModuleIds_Id").getValue();
     if (!isNotVal(roleCode)) {
-        Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.pleaseChooseRole);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.pleaseChooseRole);
         return false
     }
     
@@ -392,10 +392,10 @@ var grantRoleTabPermission = function () {//授予角色模块权限
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "个标签。");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.grantSuccess + "</font>】" + _record.length);
             }
             if (result.msg == false) {
-                Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.grantFailure + "</font>");
             }
             // 刷新Grid
             Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();

@@ -5,7 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	String path = request.getContextPath();
-   	String browserLang=(String)request.getAttribute("browserLang");
+   	String browserLang=(String)session.getAttribute("browserLang");
    	String viewProjectName=(String)session.getAttribute("viewProjectName");
    	String favicon=(String)session.getAttribute("favicon");
 	favicon=favicon.substring(favicon.indexOf("/"),favicon.length());
@@ -15,6 +15,8 @@
    	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
    	request.setAttribute("browserLang",browserLang );
+   	String loadingUI="Loading UI…";
+   	loadingUI=(String)session.getAttribute("loadingUI");
 %>
 <html>
 
@@ -176,7 +178,7 @@
     <!-- 加载效果 -->
     <div id="loading_div_id">
         <div class="loading-indicator">
-            <img src="<%=path%>/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">Loading UI…</span>
+            <img src="<%=path%>/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg"><%=loadingUI%></span>
         </div>
     </div>
     <script type="text/javascript">

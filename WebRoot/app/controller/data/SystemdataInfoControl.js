@@ -128,8 +128,8 @@ function savesystemdataInfoSubmit() {
         adddtbFrom.getForm().submit({
             url: context + '/systemdataInfoController/addSystemdataInfo',
             clientValidation: true, // 进行客户端验证
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             method: "POST",
             params: {
                 paramsdtblstringId: addparamstr
@@ -146,7 +146,7 @@ function savesystemdataInfoSubmit() {
 
             },
             failure: function () {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.adddatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.addFailure + "");
             }
         });
 
@@ -301,8 +301,8 @@ function savetoSysDataItems() {
         sysdataForm.getForm().submit({
             url: context + '/dataitemsInfoController/addDataitemsInfo',
             clientValidation: true,
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             method: "POST",
             params: {
                 sysId: getSysId
@@ -319,7 +319,7 @@ function savetoSysDataItems() {
 
             },
             failure: function () {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.adddatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.addFailure + "");
             }
         });
     }
@@ -348,7 +348,7 @@ function edittoSysDatasItems() {
             },
             failure: function () {
                 editsysdataForm.getEl().unmask();
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.editdatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailure + "");
             }
         });
     }
@@ -377,7 +377,7 @@ function editsystemdataInfoUpdata() {
             },
             failure: function () {
                 editsysobjForm.getEl().unmask();
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】：" + cosog.string.editdatException + "！");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailure + "");
             }
         });
     }

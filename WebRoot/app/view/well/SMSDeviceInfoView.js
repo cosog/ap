@@ -70,7 +70,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         try {
                             CreateAndLoadSMSDeviceInfoTable();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -135,7 +135,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                     + "&fileName=" + URLencode(URLencode("短信设备")) 
                     + "&title=" + URLencode(URLencode("短信设备"))
                     + '&key='+key;
-                    exportDataMask(key,maskPanelId,cosog.string.loading);
+                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
                     openExcelWindow(url + '?flag=true' + param);
                 }
     		}, '-', {
@@ -146,7 +146,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 style: 'margin-right:15px'
     		}, '->', {
                 xtype: 'button',
-                text: loginUserLanguageResource.adddDevie,
+                text: loginUserLanguageResource.addDevie,
                 iconCls: 'add',
                 handler: function (v, o) {
                     var selectedOrgName = "";
@@ -164,7 +164,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         }
                     }
                     var window = Ext.create("AP.view.well.SMSDeviceInfoWindow", {
-                        title: loginUserLanguageResource.adddDevie
+                        title: loginUserLanguageResource.addDevie
                     });
                     window.show();
                     Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>" + selectedOrgName + "</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -288,7 +288,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
     }
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceName = Ext.getCmp('SMSDeviceListComb_Id').getValue();
-    Ext.getCmp("SMSDeviceTablePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("SMSDeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',

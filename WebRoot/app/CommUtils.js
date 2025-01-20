@@ -662,7 +662,7 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 					categories : catagories,
 					tickInterval : tickInterval,
 					title : {
-						text : cosog.string.date
+						text : loginUserLanguageResource.date
 					}
 				},
 				yAxis : [{
@@ -786,7 +786,7 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 					categories : catagories,
 					tickInterval : tickInterval,
 					title : {
-						text : cosog.string.date
+						text : loginUserLanguageResource.date
 					}
 				},
 				yAxis : [{
@@ -921,7 +921,7 @@ function initCurveChart(years, values, tickInterval, divId) {
 					categories : years,
 					tickInterval : tickInterval,
 					title : {
-						text : cosog.string.date
+						text : loginUserLanguageResource.date
 					}
 				},
 				yAxis : [{

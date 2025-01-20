@@ -146,7 +146,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                             		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                                     Ext.MessageBox.show({
                                         title: loginUserLanguageResource.tip,
-                                        msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
                                         icon: Ext.MessageBox.INFO,
                                         buttons: Ext.Msg.OK,
                                         fn: function () {

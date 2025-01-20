@@ -27,7 +27,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(cosog.string.loading).show();
+        	        				Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	        				oldCard.setIconCls(null);
         	        				newCard.setIconCls('check2');
         	        				oldCard.removeAll();
@@ -122,7 +122,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(cosog.string.loading).show();
+    					Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
     					oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
     					if(oldCard.xtype=='tabpanel'){

@@ -172,18 +172,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
 					tabPanel.remove("HistoryDiagramTabPanel");
 					tabPanel.remove("HistoryDiagramOverlayTabPanel");
 				}
-				
-				
-//				else if(activeId=="HistoryDiagramTabPanel"){
-//					loadHistoryDiagramTiledList(1);
-//				}else if(activeId=="HistoryDiagramOverlayTabPanel"){
-//					var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-//                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-//                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
-//                    }else{
-//                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
-//                    }
-//				}
             }
             Ext.getCmp("HistoryQueryRootTabPanel").getEl().unmask();
         },

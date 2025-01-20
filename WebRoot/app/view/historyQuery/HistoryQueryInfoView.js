@@ -27,7 +27,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(cosog.string.loading).show();
+        	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	        			oldCard.removeAll();
         	        			oldCard.setIconCls(null);
     	        				newCard.setIconCls('check2');
@@ -108,7 +108,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(cosog.string.loading).show();
+        				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
         				if(oldCard.xtype=='tabpanel'){
         					oldCard.activeTab.removeAll();
         				}else{
@@ -339,7 +339,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -393,7 +393,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -448,7 +448,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -491,7 +491,7 @@ function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceN
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -530,7 +530,7 @@ function deviceHistoryQueryCurve(deviceType){
     var endTime_Hour=Ext.getCmp(endHourId).getValue();
 	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
 	var endTime_Second=Ext.getCmp(endSecondId).getValue();
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getHistoryQueryCurveData',
@@ -818,7 +818,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
@@ -952,7 +952,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
@@ -1084,7 +1084,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").setValue('');
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
-	Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
@@ -1210,7 +1210,7 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
+	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringDeviceTypeStatData',
@@ -1370,7 +1370,7 @@ loadHistoryDiagramTiledList = function (page) {
 
 loadSurfaceCardList = function (page) {
 	diagramPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(cosog.string.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;
     if(page==1){
@@ -1411,7 +1411,7 @@ loadSurfaceCardList = function (page) {
         	if(page==1){
         		$("#surfaceCardContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(cosog.string.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             
@@ -1474,7 +1474,7 @@ loadSurfaceCardList = function (page) {
 
 loadPSDiagramTiledList = function (page) {
 	diagramPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(cosog.string.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;
     if(page==1){
@@ -1515,7 +1515,7 @@ loadPSDiagramTiledList = function (page) {
         	if(page==1){
         		$("#PSDiagramTiledContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(cosog.string.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             
@@ -1577,7 +1577,7 @@ loadPSDiagramTiledList = function (page) {
 
 loadISDiagramTiledList = function (page) {
 	diagramPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(cosog.string.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;
     if(page==1){
@@ -1618,7 +1618,7 @@ loadISDiagramTiledList = function (page) {
         	if(page==1){
         		$("#ISDiagramTiledContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(cosog.string.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             

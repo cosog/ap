@@ -537,6 +537,6 @@ function exportSystemLogExcel(orgId,startDate,endDate,selectUserId,operationType
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,cosog.string.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);
 };

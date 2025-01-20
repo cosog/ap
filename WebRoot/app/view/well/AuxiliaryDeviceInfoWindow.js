@@ -56,7 +56,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -104,7 +104,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -146,7 +146,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -182,8 +182,8 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doAuxiliaryDeviceAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: cosog.string.sendServer,
-                            waitTitle: 'Please Wait...',
+                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('AuxiliaryDeviceInfoWindow_Id').close();
                                 CreateAndLoadAuxiliaryDeviceInfoTable();

@@ -110,7 +110,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         	CreateSingleWellReportTable();
                         	CreateSingleWellReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -134,7 +134,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         	CreateSingleWellReportTable();
                         	CreateSingleWellReportCurve();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -460,7 +460,7 @@ function CreateSingleWellRangeReportTable(){
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
     
-    Ext.getCmp("SingleWellRangeReportPanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("SingleWellRangeReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getSingleWellRangeReportData',
@@ -875,7 +875,7 @@ function CreateSingleWellDailyReportTable(){
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
     
-    Ext.getCmp("SingleWellDailyReportPanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("SingleWellDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getSingleWellDailyReportData',
@@ -1346,7 +1346,7 @@ function CreateSingleWellRangeReportCurve(){
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
     
-    Ext.getCmp("SingleWellRangeReportCurvePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("SingleWellRangeReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getSingleWellRangeReportCurveData',
@@ -1532,7 +1532,7 @@ function CreateSingleWellDailyReportCurve(){
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
     
-    Ext.getCmp("SingleWellDailyReportCurvePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("SingleWellDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getSingleWellDailyReportCurveData',
@@ -1863,7 +1863,7 @@ function ExportSingleWellRangeReportData(){
 	+'&endDate='+endDate
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",cosog.string.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
 	document.location.href = url;
 }
 
@@ -1891,7 +1891,7 @@ function batchExportSingleWellRangeReportData(){
 	+'&reportDate='+reportDate
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",cosog.string.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
 	document.location.href = url;
 }
 
@@ -1928,7 +1928,7 @@ function ExportSingleWellDailyReportData(){
 	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",cosog.string.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
 	document.location.href = url;
 }
 
@@ -1955,6 +1955,6 @@ function batchExportSingleWellDailyReportData(){
 	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",cosog.string.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
 	document.location.href = url;
 }

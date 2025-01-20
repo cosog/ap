@@ -162,7 +162,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
         	
-        	Ext.getCmp("HistoryDiagramOverlayTabPanel").el.mask(cosog.string.loading).show();
+        	Ext.getCmp("HistoryDiagramOverlayTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

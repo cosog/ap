@@ -85,7 +85,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
 
 
 function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType){
-	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getDeviceHistoryDetailsData',

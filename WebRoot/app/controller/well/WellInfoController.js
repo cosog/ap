@@ -34,8 +34,8 @@ var SavewellInfoSubmitBtnForm = function () {
             url: context + '/wellInformationManagerController/doWellInformationAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('wellInfo_addwin_Id').close();
                 Ext.getCmp("wellPanel_Id").getStore().load();
@@ -56,7 +56,7 @@ var SavewellInfoSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+        Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -105,7 +105,7 @@ function addwellInfo() {
             win_Obj.destroy();
         }
         var WellInfoWindow = Ext.create("AP.view.well.WellInfoWindow", {
-            title: cosog.string.addWell
+            title: loginUserLanguageResource.addDevie
         });
         WellInfoWindow.show();
         var save_btn = Ext.getCmp("addFromwellBtn_Id");
@@ -129,7 +129,7 @@ function modifywellInfo() {
 	            win_Obj.destroy();
 	        }
 	        var wellInfoWindow = Ext.create("AP.view.well.WellInfoWindow", {
-	            title: cosog.string.editWell
+	            title: loginUserLanguageResource.editDevie
 	        });
 	        wellInfoWindow.show();
 	        Ext.getCmp("addFromwellBtn_Id").hide();
@@ -141,29 +141,6 @@ function modifywellInfo() {
 	    }
         
     }
-
-//创建设置井坐标窗口
-function openSetWellCoordWin() {
-	var win_Obj = Ext.getCmp("wellCoordSetWindow_Id")
-    if (win_Obj != undefined) {
-    	win_Obj.destroy();
-    }
-	var wellInfoWindow = Ext.create("AP.view.well.WellCoordSetWindow", {
-		title: cosog.string.setCoord
-		});
-	wellInfoWindow.show();
-	$(function () {
-        //初始化地图
-		var div=Ext.getCmp("wellCoordSetDiv_Id");
-		var div2=$("#wellCoordSetDiv_Id");
-        mapHelper = MapHelper.createNew("wellCoordSetDiv_Id", m_DefaultPosition, m_DefaultZoomLevel, false, 1000);
-        SetMapLocation(39.904, 116.404, 19);
-        //获取后台油井数据
-        SaveBackgroundWellData();
-        //给地图添加单击事件
-        mapHelper.addEventListener(mapHelper.getMap(), "click", mapClicked);
-    });
-};
 
 //保存表格变化数据
 function saveWellEditerGridDataInfo() {

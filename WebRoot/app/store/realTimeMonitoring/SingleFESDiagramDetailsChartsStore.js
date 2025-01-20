@@ -82,7 +82,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){//地面分析
             	type=2;
             }
-            Ext.getCmp(activeId).el.mask(cosog.string.loading).show();
+            Ext.getCmp(activeId).el.mask(loginUserLanguageResource.loading).show();
             var new_params = { // 将图形数据id作为参数传给后台
                 id: id,
                 deviceName:deviceName,

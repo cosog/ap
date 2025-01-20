@@ -28,7 +28,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(cosog.string.loading).show();
+        	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	        			oldCard.setIconCls(null);
                 				newCard.setIconCls('check1');
                 				oldCard.removeAll();
@@ -107,7 +107,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				Ext.getCmp("AlarmQueryRootTabPanel").el.mask(cosog.string.loading).show();
+        				Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
         				oldCard.setIconCls(null);
         				newCard.setIconCls('check1');
         				if(oldCard.xtype=='tabpanel'){

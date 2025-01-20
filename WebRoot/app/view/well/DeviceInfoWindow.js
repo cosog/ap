@@ -480,7 +480,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -607,7 +607,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -651,7 +651,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -692,7 +692,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -758,8 +758,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doDeviceAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: cosog.string.sendServer,
-                            waitTitle: 'Please Wait...',
+                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('deviceInfoWindow_Id').close();
                                 CreateAndLoadDeviceInfoTable();
@@ -795,8 +795,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doDeviceEdit',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: cosog.string.sendServer,
-                            waitTitle: 'Please Wait...',
+                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('deviceInfoWindow_Id').close();
                                 CreateAndLoadDeviceInfoTable();
@@ -813,7 +813,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                             }
                         });
                     } else {
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + cosog.string.validdata + "</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>");
                     }
                     return false;
                 }

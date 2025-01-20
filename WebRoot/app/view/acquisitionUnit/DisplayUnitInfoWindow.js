@@ -181,7 +181,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -195,7 +195,6 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 			}, {
                 id: 'formDisplayUnitCode_Id',
                 name: "displayUnit.unitCode",
-                fieldLabel: '单元编码',
                 hidden:true,
                 anchor: '100%',
                 value: ''

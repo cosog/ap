@@ -8,53 +8,7 @@ Ext.define('AP.controller.right.RightInfoControl', {
         this.control({})
     }
 });
-var addRoleInfo = function () {
-    var right_panel = Ext.getCmp("RightRoleInfoGridPanel_Id");
-    var right_model = right_panel.getSelectionModel();
-    var _record = right_model.getSelection();
-    var addUrl = context + '/rightManagerController/doRightSaveOrUpdate'
-        // 添加条件
-    var addjson = [];
-    var userNo_ = Ext.getCmp("RightUserNo_Id").getValue();
-    var oldCodes_ = Ext.getCmp("RightOldRoleCodes_Id").getValue();
-    if (_record.length > 0) {
-        Ext.Array.each(_record, function (name, index, countriesItSelf) {
-            addjson.push(_record[index].get('roleCode'));
-        })
-        var addparamsId = "" + addjson.join(",");
-        // AJAX提交方式
-        Ext.Ajax.request({
-            url: addUrl,
-            method: "POST",
-            // 提交参数
-            params: {
-                paramsId: addparamsId,
-                oldCodes: oldCodes_,
-                userNo: userNo_
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + cosog.string.jgRole + "。");
-                }
-                if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grantFail + "。</font>");
-                }
-                // 刷新Grid
-                Ext.getCmp("RightRoleInfoGridPanel_Id").getStore().load();
-            },
-            failure: function () {
-                Ext.Msg
-                    .alert("warn",
-                        "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
-            }
-        });
 
-    } else {
-        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + cosog.string.pleaseChooseRole + '</font>');
-    }
-    return false;
-}
 var addModuleInfo = function () {
     var rightmodule_panel = Ext.getCmp("RightModuleTreeInfoGridPanel_Id");
     //var rightmodule_model = rightmodule_panel.getSelectionModel();
@@ -68,7 +22,7 @@ var addModuleInfo = function () {
     var roleCode = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
     var RightOldModuleIds_Id = Ext.getCmp("RightOldModuleIds_Id").getValue();
     if (!isNotVal(roleCode)) {
-        Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.pleaseChooseRole);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.pleaseChooseRole);
         return false
     }
     if (_record.length > 0) {
@@ -112,10 +66,10 @@ var addModuleInfo = function () {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.grantSuccess + "</font>】" + _record.length);
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
+                    Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.grantFailure + "</font>");
                 }
                 // 刷新Grid
                 Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
@@ -126,10 +80,10 @@ var addModuleInfo = function () {
         });
 
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + loginUserLanguageResource.chooseGrantModule + '</font>');
     }
     return false;
 }
 var addActionInfo = function () {
-    Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>请您选择需要分配的动作！</font>');
+    Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>'+loginUserLanguageResource.checkOne+'</font>');
 }

@@ -257,7 +257,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                                 + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) 
                                 + "&title=" + URLencode(URLencode(wellName+"含水数据"))
                                 + '&key='+key;
-                                exportDataMask(key,maskPanelId,cosog.string.loading);
+                                exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
                                 openExcelWindow(url + '?flag=true' + param);
                             }
                         }, '-',{

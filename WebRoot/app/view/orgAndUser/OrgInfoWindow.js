@@ -60,7 +60,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 anchor: '95%',
                 name: "org.orgName_ru"
             }, {
-                fieldLabel: cosog.string.orgMemo,
+                fieldLabel: loginUserLanguageResource.remark,
                 id: 'orgMemo_Id',
                 hidden: true,
                 anchor: '95%',

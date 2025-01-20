@@ -79,7 +79,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         try {
                             CreateAndLoadDeviceInfoTable();
                         } catch (ex) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                         }
                     }
                 }
@@ -148,7 +148,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
                     + "&title=" + URLencode(URLencode(deviceTypeName))
                     + '&key='+key;
-                    exportDataMask(key,maskPanelId,cosog.string.loading);
+                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
                     openExcelWindow(url + '?flag=true' + param);
                 }
             },'-',{
@@ -159,7 +159,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 style: 'margin-right:15px'
             },'->', {
     			xtype: 'button',
-                text: loginUserLanguageResource.adddDevie,
+                text: loginUserLanguageResource.addDevie,
                 iconCls: 'add',
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
@@ -182,7 +182,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.DeviceInfoWindow", {
-                        title: loginUserLanguageResource.adddDevie
+                        title: loginUserLanguageResource.addDevie
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -709,7 +709,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
     var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
-    Ext.getCmp("DeviceTablePanel_id").el.mask(cosog.string.loading).show();
+    Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
@@ -1879,7 +1879,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 		productionHandsontableHelper=null;
 	}
 	if(deviceCalculateDataType!=0){
-		Ext.getCmp("ProductionDataInfoPanel_Id").el.mask(cosog.string.loading).show();
+		Ext.getCmp("ProductionDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 		
 		Ext.Ajax.request({
 			method:'POST',
@@ -2136,7 +2136,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 	}
 	
 	if(deviceCalculateDataType==1){
-		Ext.getCmp("PumpingInfoPanel_Id").el.mask(cosog.string.loading).show();
+		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 		Ext.Ajax.request({
 			method:'POST',
 			url:context + '/wellInformationManagerController/getDevicePumpingInfo',
@@ -2337,7 +2337,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		videoInfoHandsontableHelper=null;
 	}
 	videoInfoHandsontableHelper=null;
-	Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',

@@ -60,7 +60,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                                     }
                                 },
                                 failure: function (response, opts) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, cosog.string.fail);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
                                 }
                             });
                         }
@@ -97,8 +97,8 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                             url: context + '/wellInformationManagerController/doVideoKeyAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: cosog.string.sendServer,
-                            waitTitle: 'Please Wait...',
+                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('VideoKeyAddWindow_Id').close();
                                 CreateDeviceKeyDataTable();

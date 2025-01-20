@@ -22,13 +22,13 @@ import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping({"/","/login"})
 @Scope("prototype")
 public class PageTurnController extends BaseController {
 	private static final long serialVersionUID = 1L;
 	@Autowired
 	private TabInfoManagerService<DeviceTypeInfo> tabInfoManagerService;
-	@RequestMapping("/login")
+	@RequestMapping({"/login","toLogin"})
 	public String toLogin() throws Exception {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")
@@ -62,7 +62,7 @@ public class PageTurnController extends BaseController {
 	public String toTouchLogin() throws Exception {
 		return "touchLogin";
 	}
-	@RequestMapping("/home")
+	@RequestMapping({"/home","/toMain"})
 	public String toMain() throws Exception {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")
@@ -71,18 +71,22 @@ public class PageTurnController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		List<?> list = this.tabInfoManagerService.queryTabs(DeviceTypeInfo.class,user);
-		
+		String loadingUI="Loading UI…";
 		
 		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
 		String viewProjectName="";
 		if(user!=null){
 			loginLanguage=user.getLanguageName();
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
-			if(languageResourceMap.containsKey("projectName")){
-				viewProjectName=languageResourceMap.get("projectName");
-			}
 		}
-		String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(loginLanguage);
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
+		if(languageResourceMap.containsKey("projectName")){
+			viewProjectName=languageResourceMap.get("projectName");
+		}
+		
+		if(languageResourceMap.containsKey("loadingTheUI")){
+			loadingUI=languageResourceMap.get("loadingTheUI");
+		}
 		
 		
 		String tabInfoJson = "";
@@ -109,7 +113,7 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("showVideo", configFile.getAp().getOthers().getShowVideo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
-		
+		session.setAttribute("loadingUI", loadingUI);
 		return "app/main";
 //		return "forward:/app/main.jsp";
 //		return "redirect:/app/main.jsp";

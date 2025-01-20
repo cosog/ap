@@ -31,8 +31,8 @@ var SavemoduleDataInfoSubmitBtnForm = function () {
             url: context + '/moduleManagerController/doModuleAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: cosog.string.sendServer,
-            waitTitle: 'Please Wait...',
+            waitMsg: loginUserLanguageResource.sendServer,
+            waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('module_addwin_Id').close();
                 Ext.getCmp("moduleInfoTreeGridView_Id").getStore().load();

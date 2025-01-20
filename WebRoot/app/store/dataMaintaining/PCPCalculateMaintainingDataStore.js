@@ -81,7 +81,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(cosog.string.loading).show();
+            Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

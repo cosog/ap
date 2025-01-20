@@ -766,7 +766,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 		deviceRealTimeMonitoringDataHandsontableHelper=null;
 	}
 	
-	Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
@@ -1183,7 +1183,7 @@ function controlBtnHandler(btn,btnIndex){
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
                                 title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
@@ -1222,7 +1222,7 @@ function controlBtnHandler(btn,btnIndex){
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
                                 title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
@@ -1257,7 +1257,7 @@ function controlBtnHandler(btn,btnIndex){
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
                                 title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
@@ -1294,7 +1294,7 @@ function controlBtnHandler(btn,btnIndex){
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
                                 title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {
@@ -1329,7 +1329,7 @@ function controlBtnHandler(btn,btnIndex){
                         if (data.success == true && data.flag == false) {
                             Ext.MessageBox.show({
                                 title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + cosog.string.sessionINvalid + "。</font>",
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
                                 icon: Ext.MessageBox.INFO,
                                 buttons: Ext.Msg.OK,
                                 fn: function () {

@@ -134,6 +134,7 @@ var historyQueryCenterTabPanelItems=[{
     	id:'FSDiagramTiledTabPanel_Id',
     	layout: "fit",
         autoScroll: true,
+        iconCls: 'check3',
         html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
         listeners: {
         	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -236,7 +237,11 @@ var historyQueryCenterTabPanelItems=[{
         }
     }],
     listeners: {
-    	tabchange: function (tabPanel, newCard,oldCard, obj) {
+    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+			oldCard.setIconCls(null);
+			newCard.setIconCls('check3');
+		},
+		tabchange: function (tabPanel, newCard,oldCard, obj) {
     		if(newCard.id=="FSDiagramTiledTabPanel_Id"){
     			
     		}else if(newCard.id=="PSDiagramTiledTabPanel_Id"){

@@ -169,7 +169,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
 
 
 function CreateDeviceKeyDataTable(){
-	Ext.getCmp("VideoKeyPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.getCmp("VideoKeyPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',

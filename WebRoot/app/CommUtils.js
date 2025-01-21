@@ -1076,7 +1076,7 @@ function backLoginOut() {
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出后台管理系统？", function(btn) {
 		if (btn == "yes") {
-			LoadingWin("正在退出");
+			LoadingWin(loginUserLanguageResource.signOutInfo);
 			// 动态返回当前用户拥有哪些角色信息
 			// 动态返回当前用户拥有哪些角色信息
 			Ext.Ajax.request({
@@ -1109,7 +1109,7 @@ var userLoginOut = function() {
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.exitConfirm, function(btn) {
 		if (btn == "yes") {
-			LoadingWin("正在退出");
+			LoadingWin(loginUserLanguageResource.signOutInfo);
 			// 动态返回当前用户拥有哪些角色信息
 			Ext.Ajax.request({
 						method : 'POST',

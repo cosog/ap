@@ -2297,6 +2297,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										if(calItemList!=null && calItemList.size()>0){
 											for(CalItem calItem:calItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
+													itemName=calItem.getName();
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
 													}
@@ -2313,6 +2314,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										if(inputItemList!=null && inputItemList.size()>0){
 											for(CalItem calItem:inputItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
+													itemName=calItem.getName();
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
 													}

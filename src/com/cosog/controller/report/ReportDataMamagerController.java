@@ -715,7 +715,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo());
+			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -806,7 +806,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user.getUserNo());
+			json = reportDataManagerService.getSingleWellDailyReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,reportDate,reportInterval,user);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -892,7 +892,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = reportDataManagerService.getReportQueryCurveSetData(deviceId,deviceType,reportType,user.getUserNo());
+			json = reportDataManagerService.getReportQueryCurveSetData(deviceId,deviceType,reportType,user.getUserNo(),user.getLanguageName());
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

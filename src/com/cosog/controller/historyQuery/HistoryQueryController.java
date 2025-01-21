@@ -416,7 +416,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = historyQueryService.getHistoryQueryCurveSetData(deviceId,deviceType,user.getUserNo());
+			json = historyQueryService.getHistoryQueryCurveSetData(deviceId,deviceType,user.getUserNo(),user.getLanguageName());
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

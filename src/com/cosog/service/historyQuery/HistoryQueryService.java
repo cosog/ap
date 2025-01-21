@@ -1002,6 +1002,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String header=displayItemList.get(k).getItemName();
 						String dataIndex=displayItemList.get(k).getItemCode();
 						String unit="";
+						
 						if(displayItemList.get(k).getType()==0){
 							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, header);
 							if(item!=null){
@@ -1017,16 +1018,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 								}
 							}else{
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, calItemList);
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, calItemList);
 								if(calItem!=null){
+									header=calItem.getName();
 									unit=calItem.getUnit();
 								}
 							}
 							
 							
 						}else if(displayItemList.get(k).getType()==3){
-							CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, inputItemList);
+							CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, inputItemList);
 							if(calItem!=null){
+								header=calItem.getName();
 								unit=calItem.getUnit();
 							}
 						}
@@ -1797,14 +1800,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 								}
 							}else{
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, calItemList);
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, calItemList);
 								if(calItem!=null){
+									header=calItem.getName();
 									unit=calItem.getUnit();
 								}
 							}
 						}else if(displayInstanceOwnItem.getItemList().get(k).getType()==3){
-							CalItem calItem=MemoryDataManagerTask.getSingleCalItem(header, inputItemList);
+							CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, inputItemList);
 							if(calItem!=null){
+								header=calItem.getName();
 								unit=calItem.getUnit();
 							}
 						}
@@ -3207,6 +3212,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										if(calItemList!=null && calItemList.size()>0){
 											for(CalItem calItem:calItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
+													itemName=calItem.getName();
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
 													}
@@ -3224,6 +3230,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										if(inputItemList!=null && inputItemList.size()>0){
 											for(CalItem calItem:inputItemList){
 												if(itemcode.equalsIgnoreCase(calItem.getCode())){
+													itemName=calItem.getName();
 													if(StringManagerUtils.isNotNull(calItem.getUnit())){
 														itemName=itemName+"("+calItem.getUnit()+")";
 													}
@@ -3576,7 +3583,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
-	public String getHistoryQueryCurveSetData(String deviceId,String deviceType,int userNo)throws Exception {
+	public String getHistoryQueryCurveSetData(String deviceId,String deviceType,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -3596,14 +3603,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " and t4.historycurveconf is not null "
 				+ " and (t4.showlevel is null or t4.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t4.realtimeSort,t4.id";
-		List<?> protocolList = this.findCallSql(protocolSql);
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);
-		String protocolName="";
-		String unit="";
-		String dataType="";
 		GraphicSetData graphicSetData=null;
-		int resolutionMode=0;
 		
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
@@ -3619,6 +3621,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			displayItem.setItemCode(itemObj[3]+"");
 			displayItem.setType(StringManagerUtils.stringToInteger(itemObj[4]+""));
 			displayItem.setHistoryCurveConf(itemObj[2]+"");
+			
+			if(displayItem.getType()==1){
+				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(displayItem.getItemCode(), language);
+				if(calItem!=null){
+					displayItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+				}
+			}else if(displayItem.getType()==3){
+				CalItem calItem=MemoryDataManagerTask.getInputItemByCode(displayItem.getItemCode(), language);
+				if(calItem!=null){
+					displayItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+				}
+			}
+			
 			itemList.add(displayItem);
 		}
 		if(itemList.size()>0){

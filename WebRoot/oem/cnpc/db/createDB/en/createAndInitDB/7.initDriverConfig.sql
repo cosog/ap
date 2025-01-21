@@ -248,7 +248,7 @@ values (2, 'alarmunit2', 'PCP Alarm Unit', 'A11 Protocol', 'PCP Alarm Unit', 2);
 /* 初始化TBL_ALARM_ITEM2UNIT_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL, RETRIGGERTIME)
-values (1, 1, null, 'offline', 'offline', 0, 0.000, null, null, null, null, 100, 1, 3, 0, 0, 0, null);
+values (1, 1, null, 'Offline', 'offline', 0, 0.000, null, null, null, null, 100, 1, 3, 0, 0, 0, null);
 
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL, RETRIGGERTIME)
 values (2, 1, null, 'code1201', '1201', 0, 1201.000, null, null, null, 60, 0, 0, 4, 0, 0, 0, null);
@@ -341,13 +341,13 @@ insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, IT
 values (31, 1, null, 'code1232', '1232', 0, 1232.000, null, null, null, 60, 100, 1, 4, 0, 0, 0, null);
 
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL, RETRIGGERTIME)
-values (32, 1, null, 'stop', 'stop', 0, 0.000, null, null, null, null, 100, 1, 6, 0, 0, 0, null);
+values (32, 1, null, 'Stopped', 'stop', 0, 0.000, null, null, null, null, 100, 1, 6, 0, 0, 0, null);
 
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL, RETRIGGERTIME)
-values (33, 2, null, 'offline', 'offline', 0, 0.000, null, null, null, null, 100, 1, 3, 0, 0, 0, null);
+values (33, 2, null, 'Offline', 'offline', 0, 0.000, null, null, null, null, 100, 1, 3, 0, 0, 0, null);
 
 insert into TBL_ALARM_ITEM2UNIT_CONF (ID, UNITID, ITEMID, ITEMNAME, ITEMCODE, ITEMADDR, VALUE, UPPERLIMIT, LOWERLIMIT, HYSTERSIS, DELAY, ALARMLEVEL, ALARMSIGN, TYPE, BITINDEX, ISSENDMESSAGE, ISSENDMAIL, RETRIGGERTIME)
-values (34, 2, null, 'stop', 'stop', 0, 0.000, null, null, null, null, 100, 1, 6, 0, 0, 0, null);
+values (34, 2, null, 'Stopped', 'stop', 0, 0.000, null, null, null, null, 100, 1, 6, 0, 0, 0, null);
 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                */
@@ -799,7 +799,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (24, null, 'Energy Per 100m Lift', 'EnergyPer100mLift', 1, 25, null, null, null, null, null, 2, 0, '0,0,0', null, 0, 'Calculate');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (25, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 26, null, null, null, null, null, 2, 0, '0,0,0', null, 0, 'Acquisition');
+values (25, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 26, null, null, null, null, null, 2, 0, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (26, null, 'Remark', 'Remark', 1, 27, null, null, null, null, null, 1, 0, '0,0,0', null, 0, 'Input');
@@ -880,7 +880,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (51, null, 'Energy Per 100m Lift', 'EnergyPer100mLift', 1, 26, null, 0, 0, null, null, 2, 1, '0,0,0', null, 0, 'Calculate');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (52, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 27, null, 1, 1, null, null, 2, 1, '0,0,0', null, 0, 'Acquisition');
+values (52, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 27, null, 1, 1, null, null, 2, 1, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (53, null, 'Remark', 'Remark', 1, 28, null, 0, 0, null, null, 1, 1, '0,0,0', null, 0, 'Input');
@@ -970,7 +970,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (81, null, 'Remark', 'Remark', 1, 30, null, null, null, null, null, 1, 2, '0,0,0', null, 0, 'Input');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (82, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 29, null, null, null, null, null, 2, 2, '0,0,0', null, 0, 'Acquisition');
+values (82, null, 'Active Power Consumption', 'C_CLOUMN14', 1, 29, null, null, null, null, null, 2, 2, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (83, null, 'Date', 'CalDate', 2, 2, null, null, null, null, null, 3, 0, '0,0,0', null, 0, 'Calculate');
@@ -1024,7 +1024,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (99, null, 'Energy Per 100m Lift', 'EnergyPer100mLift', 2, 18, null, null, null, null, null, 2, 0, '0,0,0', null, 0, 'Calculate');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (100, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 19, null, null, null, null, null, 2, 0, '0,0,0', null, 0, 'Acquisition');
+values (100, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 19, null, null, null, null, null, 2, 0, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (101, null, 'Remark', 'Remark', 2, 20, null, null, null, null, null, 1, 0, '0,0,0', null, 0, 'Input');
@@ -1084,7 +1084,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (119, null, 'Energy Per 100m Lift', 'EnergyPer100mLift', 2, 19, null, 0, 0, null, null, 2, 1, '0,0,0', null, 0, 'Calculate');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (120, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 20, null, 1, 1, null, null, 2, 1, '0,0,0', null, 0, 'Acquisition');
+values (120, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 20, null, 1, 1, null, null, 2, 1, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (121, null, 'Remark', 'Remark', 2, 21, null, 0, 0, null, null, 1, 1, '0,0,0', null, 0, 'Input');
@@ -1150,7 +1150,7 @@ insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, 
 values (141, null, 'Energy Per 100m Lift', 'EnergyPer100mLift', 2, 21, null, null, null, null, null, 2, 2, '0,0,0', null, 0, 'Calculate');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
-values (142, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 22, null, null, null, null, null, 2, 2, '0,0,0', null, 0, 'Acquisition');
+values (142, null, 'Active Power Consumption', 'C_CLOUMN14', 2, 22, null, null, null, null, null, 2, 2, '0,0,0', null, 6, 'Acquisition');
 
 insert into TBL_REPORT_ITEMS2UNIT_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, UNITID, SORT, SHOWLEVEL, SUMSIGN, AVERAGESIGN, REPORTCURVECONF, CURVESTATTYPE, DATATYPE, REPORTTYPE, MATRIX, PREC, TOTALTYPE, DATASOURCE)
 values (143, null, 'Remark', 'Remark', 2, 23, null, null, null, null, null, 1, 2, '0,0,0', null, 0, 'Input');

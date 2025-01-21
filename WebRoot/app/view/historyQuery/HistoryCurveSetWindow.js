@@ -4,7 +4,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
     alias: 'widget.historyCurveSetWindow',
     id: 'HistoryCurveSetWindow_Id',
     layout: 'fit',
-    title:'历史曲线设置',
+    title: loginUserLanguageResource.historyDiagramSet,
     border: false,
     hidden: false,
     collapsible: true,
@@ -65,8 +65,9 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 			var match=false;
                 			if(chart.yAxis[i].series.length>0){
                 				for(var j=0;j<chart.yAxis[i].series.length;j++){
-                					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
-                					if(serieName==curveSetData[index][0]){
+//                					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
+                					var serieName=chart.yAxis[i].series[j].name;
+                					if(serieName==curveSetData[index][0] || serieName.replace('（','(').split('(')[0]==curveSetData[index][0].replace('（','(').split('(')[0]){
                 						match=true;
                 						chart.yAxis[i].update({max: maxValue,min: minValue});
                 						break;

@@ -1177,7 +1177,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [50, 150, 150, 80, 60, 60, 60, 60, 85, 80],
+                colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: singleWellRangeReportTemplateContentHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -1403,7 +1403,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [50, 150, 150, 80, 60, 60, 60, 60, 85, 80],
+                colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: singleWellDailyReportTemplateContentHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -2041,7 +2041,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [50, 150, 150, 60, 60, 70, 60, 60, 30, 45, 85, 70, 60],
+                colWidths: [50, 150, 150, 60, 90, 120, 80, 60, 50, 50, 110, 110, 60],
                 columns: productionReportTemplateContentHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -2238,7 +2238,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                 if (item.dataType == 2) {
                     item.itemPrec = itemsConfigData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
@@ -2277,7 +2277,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                 if (item.dataType == 2) {
                     item.itemPrec = itemsConfigData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
@@ -2338,7 +2338,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
                 if (item.dataType == 2) {
                     item.itemPrec = itemsConfigData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (itemsConfigData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (itemsConfigData[index][5] == loginUserLanguageResource.minValue) {
@@ -2465,7 +2465,7 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 if (item.dataType == 2) {
                     item.itemPrec = calItemsData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {
@@ -2504,7 +2504,7 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 if (item.dataType == 2) {
                     item.itemPrec = calItemsData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {
@@ -2565,7 +2565,7 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
                 if (item.dataType == 2) {
                     item.itemPrec = calItemsData[index][8];
 
-                    if (item.dataSource == '采集') {
+                    if (item.dataSource == loginUserLanguageResource.acquisition) {
                         if (calItemsData[index][5] == loginUserLanguageResource.maxValue) {
                             item.totalType = 1;
                         } else if (calItemsData[index][5] == loginUserLanguageResource.minValue) {

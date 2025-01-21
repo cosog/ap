@@ -1187,32 +1187,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 //			String sort = ParamUtils.getParameter(request, "sort");
 			
 			List<String> calItemName=new ArrayList<>();
-			
-			String key="acqTotalCalItemList";
-			
-			if(StringManagerUtils.stringToInteger(reportType)==2){
-				key="acqTimingTotalCalItemList";
-				if("1".equalsIgnoreCase(calculateType)){
-					key="srpTimingTotalCalItemList";
-				}else if("2".equalsIgnoreCase(calculateType)){
-					key="pcpTimingTotalCalItemList";
-				}
-			}else{
-				key="acqTotalCalItemList";
-				if("1".equalsIgnoreCase(calculateType)){
-					key="srpTotalCalItemList";
-				}else if("2".equalsIgnoreCase(calculateType)){
-					key="pcpTotalCalItemList";
-				}
-			}
-			
 			List<CalItem> calItemList=null;
-			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+			if(StringManagerUtils.stringToInteger(reportType)==2){
+				if("1".equalsIgnoreCase(calculateType)){
+					calItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
+				}else if("2".equalsIgnoreCase(calculateType)){
+					calItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
+				}else{
+					calItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
+				}
 			}else{
-				calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+				if("1".equalsIgnoreCase(calculateType)){
+					calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
+				}else if("2".equalsIgnoreCase(calculateType)){
+					calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+				}else{
+					calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+				}
 			}
 			
 			for(CalItem calItem:calItemList){
@@ -1226,10 +1217,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			
 			if (totalCalItemsToReportUnitSaveData!=null && totalCalItemsToReportUnitSaveData.getItemList()!=null && totalCalItemsToReportUnitSaveData.getItemList().size()>0) {
-				
+				List<String> calculatelanguageList =MemoryDataManagerTask.getLanguageResourceValueList("calculate");
 				for (int i = 0; i < totalCalItemsToReportUnitSaveData.getItemList().size(); i++) {
 					boolean save=true;
-					if("计算".equalsIgnoreCase(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource())){
+					if(StringManagerUtils.existOrNot(calculatelanguageList,totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource(),false)){
 						if(!StringManagerUtils.existOrNot(calItemName, totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName(), false)){
 							save=false;
 						}

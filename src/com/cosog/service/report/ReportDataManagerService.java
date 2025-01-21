@@ -41,6 +41,7 @@ import com.cosog.model.gridmodel.GraphicSetData.Graphic;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
@@ -3951,7 +3952,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,
 			String deviceId,String deviceName,String calculateType,
-			String startDate,String endDate,int userNo)throws Exception {
+			String startDate,String endDate,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -4002,10 +4003,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
 				+ " and t.reportcurveconf is not null "
-				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+user.getUserNo()+"))"
 				+ " order by t.sort,t.id";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		
+		List<String> calculatelanguageList =MemoryDataManagerTask.getLanguageResourceValueList("calculate");
+		List<String> inputlanguageList =MemoryDataManagerTask.getLanguageResourceValueList("input");
 		for(int i=0;i<reportCurveItemQuertList.size();i++){
 			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
 			ReportUnitItem reportUnitItem=new ReportUnitItem();
@@ -4015,6 +4019,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
 			reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
 			reportUnitItem.setDataSource(reportCurveItemObj[5]+"");
+			
+			if(StringManagerUtils.existOrNot(calculatelanguageList, reportUnitItem.getDataSource(), false) || StringManagerUtils.existOrNot(inputlanguageList, reportUnitItem.getDataSource(), false)){
+				CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(reportUnitItem.getItemCode(), user.getLanguageName());
+				if(calItem!=null){
+					reportUnitItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+				}
+			}
+			
 			if(reportUnitItem.getDataType()==2){
 				reportCurveItemList.add(reportUnitItem);
 			}
@@ -4165,7 +4177,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,
 			String deviceId,String deviceName,String calculateType,
 			String startDate,String endDate,String reportDate,String reportInterval,
-			int userNo)throws Exception {
+			User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -4220,10 +4232,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " and t.sort>=0"
 				+ " and t.reportType= "+reportType
 				+ " and t.reportcurveconf is not null "
-				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+user.getUserNo()+"))"
 				+ " order by t.sort,t.id";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		
+		List<String> calculatelanguageList =MemoryDataManagerTask.getLanguageResourceValueList("calculate");
+		List<String> inputlanguageList =MemoryDataManagerTask.getLanguageResourceValueList("input");
+		
 		for(int i=0;i<reportCurveItemQuertList.size();i++){
 			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
 			ReportUnitItem reportUnitItem=new ReportUnitItem();
@@ -4233,6 +4249,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
 			reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportCurveItemObj[5]+""));
 			reportUnitItem.setDataSource(reportCurveItemObj[6]+"");
+			
+			
+			if(StringManagerUtils.existOrNot(calculatelanguageList, reportUnitItem.getDataSource(), false) || StringManagerUtils.existOrNot(inputlanguageList, reportUnitItem.getDataSource(), false)){
+				CalItem calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(reportUnitItem.getItemCode(), user.getLanguageName());
+				if(calItem!=null){
+					reportUnitItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+				}
+			}
+			
 			if(reportUnitItem.getDataType()==2){
 				reportCurveItemList.add(reportUnitItem);
 			}
@@ -4271,27 +4296,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		
 		itemsBuff.append("[");
+		itemsCodeBuff.append("[");
+		curveConfBuff.append("[");
+		
 		for(int i=0;i<reportCurveItemList.size();i++){
 			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+"\",");
+			itemsCodeBuff.append("\""+reportCurveItemList.get(i).getItemCode()+"\",");
+			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
 		}
+		
 		if (itemsBuff.toString().endsWith(",")) {
 			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
 		}
 		itemsBuff.append("]");
 		
-		itemsCodeBuff.append("[");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			itemsCodeBuff.append("\""+reportCurveItemList.get(i).getItemCode()+"\",");
-		}
 		if (itemsCodeBuff.toString().endsWith(",")) {
 			itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
 		}
 		itemsCodeBuff.append("]");
 		
-		curveConfBuff.append("[");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
-		}
 		if (curveConfBuff.toString().endsWith(",")) {
 			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 		}
@@ -4441,6 +4464,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " order by t.sort,t.id";
 		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		List<String> calculatelanguageList =MemoryDataManagerTask.getLanguageResourceValueList("calculate");
+		List<String> inputlanguageList =MemoryDataManagerTask.getLanguageResourceValueList("input");
 		for(int i=0;i<reportCurveItemQuertList.size();i++){
 			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
 			ReportUnitItem reportUnitItem=new ReportUnitItem();
@@ -4454,6 +4479,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			String curveStatTypeStr=reportCurveItemObj[4]+"";
 			reportUnitItem.setCurveStatType(StringManagerUtils.isNumber(curveStatTypeStr)?StringManagerUtils.stringToInteger(curveStatTypeStr):null);
+			
+			if(StringManagerUtils.existOrNot(calculatelanguageList, reportUnitItem.getDataSource(), false) || StringManagerUtils.existOrNot(inputlanguageList, reportUnitItem.getDataSource(), false)){
+				CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(reportUnitItem.getItemCode(), language);
+				if(calItem!=null){
+					reportUnitItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+				}
+			}
+			
 			if(StringManagerUtils.isNumber(curveStatTypeStr) && reportUnitItem.getDataType()==2 ){
 				reportCurveItemList.add(reportUnitItem);
 			}
@@ -4734,7 +4767,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportQueryCurveSetData(String deviceId,String deviceType,String reportType,int userNo)throws Exception {
+	public String getReportQueryCurveSetData(String deviceId,String deviceType,String reportType,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -4778,6 +4811,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
 			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
 			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
+			
+			CalItem calItem=null;
+			if(StringManagerUtils.stringToInteger(reportType)==0){
+				calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(reportUnitItem.getItemCode(), language);
+			}else if(StringManagerUtils.stringToInteger(reportType)==2){
+				calItem=MemoryDataManagerTask.getTotalCalItemByCode(reportUnitItem.getItemCode(), language);
+			}
+			
+			if(calItem!=null){
+				reportUnitItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
+			}
+			
 			if(reportUnitItem.getDataType()==2){
 				reportCurveItemList.add(reportUnitItem);
 			}

@@ -76,8 +76,8 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                     			var match=false;
                     			if(chart.yAxis[i].series.length>0){
                     				for(var j=0;j<chart.yAxis[i].series.length;j++){
-                    					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
-                    					if(serieName==curveSetData[index][0]){
+                    					var serieName=chart.yAxis[i].series[j].name;
+                    					if(serieName==curveSetData[index][0] || serieName.replace('（','(').split('(')[0]==curveSetData[index][0].replace('（','(').split('(')[0]){
                     						match=true;
                     						chart.yAxis[i].update({max: maxValue,min: minValue});
                     						break;
@@ -113,8 +113,8 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                     			var match=false;
                     			if(chart.yAxis[i].series.length>0){
                     				for(var j=0;j<chart.yAxis[i].series.length;j++){
-                    					var serieName=chart.yAxis[i].series[j].name.replace('（','(').split('(')[0];
-                    					if(serieName==curveSetData[index][0]){
+                    					var serieName=chart.yAxis[i].series[j].name;
+                    					if(serieName==curveSetData[index][0] || serieName.replace('（','(').split('(')[0]==curveSetData[index][0].replace('（','(').split('(')[0]){
                     						match=true;
                     						chart.yAxis[i].update({max: maxValue,min: minValue});
                     						break;

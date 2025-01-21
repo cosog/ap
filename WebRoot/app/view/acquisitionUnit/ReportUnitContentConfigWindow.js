@@ -260,17 +260,16 @@ function CreateReportUnitContentConfigTable() {
 				reportUnitContentConfigHandsontableHelper.columns=columns;
 				
 				reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
-		        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,85,85];
-		        
+		        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        if(reportType==0){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
-			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,85,85];
+			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        }else if(reportType==1){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15];
-		        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,25,25,85,85];
+		        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,100,60,60,40,40,100,85];
 		        }else if(reportType==2){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
-			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,60,60,60,85,85];
+			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        }
 				
 				reportUnitContentConfigHandsontableHelper.createTable(result.totalRoot);
@@ -1090,7 +1089,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
         			
-        			if(item.dataSource=='采集'){
+        			if(item.dataSource==loginUserLanguageResource.acquisition){
         				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
                 		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
@@ -1129,7 +1128,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
         			
-        			if(item.dataSource=='采集'){
+        			if(item.dataSource==loginUserLanguageResource.acquisition){
         				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
                 		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
@@ -1184,7 +1183,7 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
-        			if(item.dataSource=='采集'){
+        			if(item.dataSource==loginUserLanguageResource.acquisition){
         				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
                 			item.totalType=1;
                 		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){

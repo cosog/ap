@@ -1304,7 +1304,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceId\":\""+obj[1]+"\",");
 			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
-			result_json.append("\"resultName\":\""+MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language)+"\",");
+			result_json.append("\"resultName\":\""+MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language).getResultName()+"\",");
 			result_json.append("\"resultString\":\""+obj[5]+"\",");
 			
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){

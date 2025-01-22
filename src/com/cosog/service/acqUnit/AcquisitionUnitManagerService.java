@@ -890,10 +890,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> commStatusItemsList=new ArrayList<String>();
-		commStatusItemsList.add(languageResourceMap.get("goOnline"));
-		commStatusItemsList.add(languageResourceMap.get("offline"));
+		List<String> itemCodeList=new ArrayList<String>();
+		List<String> commStatusItemCodeList=new ArrayList<String>();
+		commStatusItemCodeList.add("goOnline");
+		commStatusItemCodeList.add("offline");
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
@@ -909,24 +909,28 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
-				itemsList.add(obj[0]+"");
+				itemCodeList.add(obj[1]+"");
 			}
 		}
 		
 		
-		for(int i=0;i<commStatusItemsList.size();i++){
+		for(int i=0;i<commStatusItemCodeList.size();i++){
 			boolean checked=false;
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-			String itemCode="online";
+			String itemName=languageResourceMap.get(commStatusItemCodeList.get(i));
+			String itemCode=commStatusItemCodeList.get(i);
 			int value=1;
-			if(languageResourceMap.get("offline").equals(commStatusItemsList.get(i))){
-				itemCode="offline";
+			if("offline".equalsIgnoreCase(itemCode)){
 				value=0;
+			}else if("online".equalsIgnoreCase(itemCode)){
+				value=1;
+			}else if("goOnline".equalsIgnoreCase(itemCode)){
+				value=2;
 			}
-			if(StringManagerUtils.existOrNot(itemsList,commStatusItemsList.get(i),false)){
+			if(StringManagerUtils.existOrNot(itemCodeList,commStatusItemCodeList.get(i),false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
-					if(commStatusItemsList.get(i).equalsIgnoreCase(obj[0]+"")){
+					if(commStatusItemCodeList.get(i).equalsIgnoreCase(obj[1]+"")){
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
@@ -940,7 +944,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(i+1)+","
-					+ "\"title\":\""+commStatusItemsList.get(i)+"\","
+					+ "\"title\":\""+itemName+"\","
 					+ "\"code\":\""+itemCode+"\","
 					+ "\"value\":\""+value+"\","
 					+ "\"delay\":\""+delay+"\","
@@ -975,10 +979,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> runStatusItemsList=new ArrayList<String>();
-		runStatusItemsList.add(languageResourceMap.get("run"));
-		runStatusItemsList.add(languageResourceMap.get("stop"));
+		List<String> itemCodeList=new ArrayList<String>();
+		List<String> runStatusItemCodeList=new ArrayList<String>();
+		runStatusItemCodeList.add("run");
+		runStatusItemCodeList.add("stop");
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,"
@@ -994,25 +998,29 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
-				itemsList.add(obj[0]+"");
+				itemCodeList.add(obj[1]+"");
 			}
 		}
 		
 		
-		for(int i=0;i<runStatusItemsList.size();i++){
+		for(int i=0;i<runStatusItemCodeList.size();i++){
 			boolean checked=false;
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-			String itemCode="run";
-			int value=1;
-			if(languageResourceMap.get("stop").equals(runStatusItemsList.get(i))){
-				itemCode="stop";
+			
+			String itemName=languageResourceMap.get(runStatusItemCodeList.get(i));
+			String itemCode=runStatusItemCodeList.get(i);
+			
+			int value=2;
+			if("stop".equalsIgnoreCase(itemCode)){
 				value=0;
+			}else if("run".equalsIgnoreCase(itemCode)){
+				value=1;
 			}
 			
-			if(StringManagerUtils.existOrNot(itemsList,runStatusItemsList.get(i),false)){
+			if(StringManagerUtils.existOrNot(itemCodeList,runStatusItemCodeList.get(i),false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
-					if(runStatusItemsList.get(i).equalsIgnoreCase(obj[0]+"")){
+					if(runStatusItemCodeList.get(i).equalsIgnoreCase(obj[1]+"")){
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
@@ -1026,7 +1034,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(i+1)+","
-					+ "\"title\":\""+runStatusItemsList.get(i)+"\","
+					+ "\"title\":\""+itemName+"\","
 					+ "\"code\":\""+itemCode+"\","
 					+ "\"value\":\""+value+"\","
 					+ "\"delay\":\""+delay+"\","
@@ -1079,7 +1087,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
-				itemsList.add(obj[0]+"");
+				itemsList.add(obj[1]+"");
 			}
 		}
 		
@@ -1092,10 +1100,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			boolean checked=false;
 			idx++;
 			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-			if(StringManagerUtils.existOrNot(itemsList,workType.getResultName()+"",false)){
+			if(StringManagerUtils.existOrNot(itemsList,workType.getResultCode()+"",false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
-					if((workType.getResultName()).equalsIgnoreCase(obj[0]+"")){
+					if((workType.getResultCode()+"").equalsIgnoreCase(obj[1]+"")){
 						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";

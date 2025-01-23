@@ -4,7 +4,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
     id:'ImportProtocolWindow_Id',
     alias: 'widget.ImportProtocolWindow',
     layout: 'fit',
-    title:'协议导入',
+    title:loginUserLanguageResource.importProtocol,
     border: false,
     hidden: false,
     collapsible: true,
@@ -25,21 +25,21 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
         	tbar: [{
         		xtype:'form',
         		id:'ProtocolImportForm_Id',
-        		width: 300,
+        		width: 400,
         	    bodyPadding: 0,
         	    frame: true,
         	    items: [{
         	    	xtype: 'filefield',
                 	id:'ProtocolImportFilefield_Id',
                     name: 'file',
-                    fieldLabel: '上传文件',
-                    labelWidth: 60,
+                    fieldLabel: loginUserLanguageResource.uploadFile,
+                    labelWidth: getStringLength(loginUserLanguageResource.uploadFile)*8,
                     width:'100%',
                     msgTarget: 'side',
                     allowBlank: true,
                     anchor: '100%',
                     draggable:true,
-                    buttonText: '请选择上传文件',
+                    buttonText: loginUserLanguageResource.selectUploadFile,
                     accept:'.json',
                     listeners:{
                         change:function(cmp){
@@ -68,7 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
 				value:'0'
 			},'->',{
     	    	xtype: 'button',
-                text: '全部保存',
+                text: loginUserLanguageResource.saveAll,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var treeStore = Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore();
@@ -109,7 +109,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
             items: [{
             	region: 'west',
             	width:'25%',
-            	title:'上传协议列表',
+            	title:loginUserLanguageResource.uploadProtocolList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,

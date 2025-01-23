@@ -95,8 +95,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         					var window = Ext.create("AP.view.acquisitionUnit.ImportProtocolWindow");
                             window.show();
         				}
-        				Ext.getCmp("ImportProtocolWinTabLabel_Id").setHtml("协议将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
-        			    Ext.getCmp("ImportProtocolWinTabLabel_Id").show();
+        				Ext.getCmp("ImportProtocolWinTabLabel_Id").setHtml(loginUserLanguageResource.owningDeviceType+":<font color=red>"+selectedDeviceTypeName+"</font>,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+        				Ext.getCmp("ImportProtocolWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportProtocolWinDeviceType_Id').setValue(selectedDeviceTypeId);
         				

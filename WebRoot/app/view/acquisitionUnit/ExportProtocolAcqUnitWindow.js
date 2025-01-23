@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqUnitWindow", {
     alias: 'widget.ExportProtocolAcqUnitWindow',
     id: 'ExportProtocolAcqUnitWindow_Id',
     layout: 'fit',
-    title:'采控单元导出',
+    title:loginUserLanguageResource.exportAcqUnit,
     border: false,
     hidden: false,
     collapsible: true,

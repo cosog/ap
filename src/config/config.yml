@@ -54,49 +54,49 @@ ap:
          wattingCount: 0
 ac:                                                    #AC程序配置
    probe:                                              #状态监测
-      app: http://39.101.64.71:18100/api/probe/app                               #运行状态监测
-      mem: http://39.101.64.71:18100/api/probe/mem                               #服务器内存监测
-      disk: http://39.101.64.71:18100/api/probe/disk                             #服务器磁盘监测
-      host: http://39.101.64.71:18100/api/probe/host                             #服务器主机监测
-      cpu: http://39.101.64.71:18100/api/probe/cpu                               #服务器 CPU 监测
-   FESDiagram: http://39.101.64.71:18100/api/calc/rpc/fesdiagram/pro             #功图计算
-   RPM: http://39.101.64.71:18100/api/calc/pcp/rpm                               #螺杆泵转速计产
-   communication: http://39.101.64.71:18100/api/calc/plugin/timeeff/comm         #通信时率计算
-   run: http://39.101.64.71:18100/api/calc/plugin/timeeff/run                    #运行时率计算
-   energy: http://39.101.64.71:18100/api/calc/plugin/energy                      #能耗计算
-   totalCalculation: http://39.101.64.71:18100/api/analy/total/well              #全井汇总
+      app: http://118.178.195.118:18100/api/probe/app                               #运行状态监测
+      mem: http://118.178.195.118:18100/api/probe/mem                               #服务器内存监测
+      disk: http://118.178.195.118:18100/api/probe/disk                             #服务器磁盘监测
+      host: http://118.178.195.118:18100/api/probe/host                             #服务器主机监测
+      cpu: http://118.178.195.118:18100/api/probe/cpu                               #服务器 CPU 监测
+   FESDiagram: http://118.178.195.118:18100/api/calc/rpc/fesdiagram/pro             #功图计算
+   RPM: http://118.178.195.118:18100/api/calc/pcp/rpm                               #螺杆泵转速计产
+   communication: http://118.178.195.118:18100/api/calc/plugin/timeeff/comm         #通信时率计算
+   run: http://118.178.195.118:18100/api/calc/plugin/timeeff/run                    #运行时率计算
+   energy: http://118.178.195.118:18100/api/calc/plugin/energy                      #能耗计算
+   totalCalculation: http://118.178.195.118:18100/api/analy/total/well              #全井汇总
 ad:                                                          #AD程序配置 
    init:                                                     #初始化配置
       server:                                                #目标服务器初始化
-         url: http://39.101.64.71:19200/api/init/server                                #初始化路径
+         url: http://118.178.195.118:19200/api/init/server                                #初始化路径
          content:                                            #始化内容 数组，可配置多个
             idOnlineStatusPushURL: http://127.0.0.1:80/ap/api/acq/id/online       #ID在线状态推送URL
             idAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/id/group       #ID采集组数据推送URL
             ipPortOnlineStatusPushURL: http://127.0.0.1:80/ap/api/acq/ipport/online       #IPPort在线状态推送URL
             ipPortAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/ipport/group        #IPPort采集组数据推送URL
-      protocol: http://39.101.64.71:19200/api/init/protocol                            #协议初始化
-      instance: http://39.101.64.71:19200/api/init/instance                            #实例初始化
-      id: http://39.101.64.71:19200/api/init/id                                        #id初始化 下位机为tcp client模式
-      ipPort: http://39.101.64.71:19200/api/init/ipport                                #idport初始化 下位机为tcp server模式
-      SMS: http://39.101.64.71:19200/api/init/sms                                      #短信设备初始化
+      protocol: http://118.178.195.118:19200/api/init/protocol                            #协议初始化
+      instance: http://118.178.195.118:19200/api/init/instance                            #实例初始化
+      id: http://118.178.195.118:19200/api/init/id                                        #id初始化 下位机为tcp client模式
+      ipPort: http://118.178.195.118:19200/api/init/ipport                                #idport初始化 下位机为tcp server模式
+      SMS: http://118.178.195.118:19200/api/init/sms                                      #短信设备初始化
    rw:                                                       #读写路径配置
-      readAddr: http://39.101.64.71:19200/api/read/id/addr                             #读地址路径 下位机为tcp client模式时使用
-      readAddr_ipPort: http://39.101.64.71:19200/api/read/ipport/addr                  #读地址路径 下位机为tcp server模式时使用
-      writeAddr: http://39.101.64.71:19200/api/write/id/addr                           #写地址路径 下位机为tcp client模式时使用
-      writeAddr_ipPort: http://39.101.64.71:19200/api/write/ipport/addr                #写地址路径 下位机为tcp server模式时使用
-      writeSMS: http://39.101.64.71:19200/api/write/sms                                #发送短信路径
+      readAddr: http://118.178.195.118:19200/api/read/id/addr                             #读地址路径 下位机为tcp client模式时使用
+      readAddr_ipPort: http://118.178.195.118:19200/api/read/ipport/addr                  #读地址路径 下位机为tcp server模式时使用
+      writeAddr: http://118.178.195.118:19200/api/write/id/addr                           #写地址路径 下位机为tcp client模式时使用
+      writeAddr_ipPort: http://118.178.195.118:19200/api/write/ipport/addr                #写地址路径 下位机为tcp server模式时使用
+      writeSMS: http://118.178.195.118:19200/api/write/sms                                #发送短信路径
    probe:                                                    #状态监测
-      init: http://39.101.64.71:19200/api/probe/init                                   #初始化状态监测
-      app: http://39.101.64.71:19200/api/probe/app                                     #运行状态监测
-      online: http://39.101.64.71:19200/api/probe/online                               #在线状态监测
-      cpu: http://39.101.64.71:19200/api/probe/cpu                                     #服务器 CPU 监测
-      mem: http://39.101.64.71:19200/api/probe/mem                                     #服务器内存监测
-      disk: http://39.101.64.71:19200/api/probe/disk                                   #服务器磁盘监测
-      host: http://39.101.64.71:19200/api/probe/host                                   #服务器主机监测
+      init: http://118.178.195.118:19200/api/probe/init                                   #初始化状态监测
+      app: http://118.178.195.118:19200/api/probe/app                                     #运行状态监测
+      online: http://118.178.195.118:19200/api/probe/online                               #在线状态监测
+      cpu: http://118.178.195.118:19200/api/probe/cpu                                     #服务器 CPU 监测
+      mem: http://118.178.195.118:19200/api/probe/mem                                     #服务器内存监测
+      disk: http://118.178.195.118:19200/api/probe/disk                                   #服务器磁盘监测
+      host: http://118.178.195.118:19200/api/probe/host                                   #服务器主机监测
    srp:                                                      #srp协议配置
-      readTopicReq: http://39.101.64.71:19200/api/ctrl/req                             #请求配置数据路径
-      writeTopicModel: http://39.101.64.71:19200/api/ctrl/model                        #模型数据下行路径
-      writeTopicConf: http://39.101.64.71:19200/api/ctrl/conf                          #配置数据下行路径
-      writeTopicRtc: http://39.101.64.71:19200/api/ctrl/rtc                            #时钟下行路径
-      writeTopicDog: http://39.101.64.71:19200/api/ctrl/dog                            #看门狗重启路径
-      writeTopicStopRpc: http://39.101.64.71:19200/api/ctrl/stoprpc                    #停抽下行路径
+      readTopicReq: http://118.178.195.118:19200/api/ctrl/req                             #请求配置数据路径
+      writeTopicModel: http://118.178.195.118:19200/api/ctrl/model                        #模型数据下行路径
+      writeTopicConf: http://118.178.195.118:19200/api/ctrl/conf                          #配置数据下行路径
+      writeTopicRtc: http://118.178.195.118:19200/api/ctrl/rtc                            #时钟下行路径
+      writeTopicDog: http://118.178.195.118:19200/api/ctrl/dog                            #看门狗重启路径
+      writeTopicStopRpc: http://118.178.195.118:19200/api/ctrl/stoprpc                    #停抽下行路径

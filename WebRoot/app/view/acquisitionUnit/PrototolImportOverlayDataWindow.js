@@ -28,7 +28,7 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 5',
-                html: '<font color=red>以下导入内容已存在，继续保存将覆盖已有记录</font>'
+                html: '<font color=red>'+loginUserLanguageResource.uploadCollisionInfo3+'</font>'
             },'->',{
                 xtype: 'button',
                 text: loginUserLanguageResource.save,

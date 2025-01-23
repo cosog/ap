@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAlarmUnitWindow", {
     alias: 'widget.ExportProtocolAlarmUnitWindow',
     id: 'ExportProtocolAlarmUnitWindow_Id',
     layout: 'fit',
-    title:loginUserLanguageResource.exportData,
+    title:loginUserLanguageResource.exportAlarmUnit,
     border: false,
     hidden: false,
     collapsible: true,

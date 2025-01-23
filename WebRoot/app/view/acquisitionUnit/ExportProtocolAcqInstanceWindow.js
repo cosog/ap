@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     alias: 'widget.ExportProtocolAcqInstanceWindow',
     id: 'ExportProtocolAcqInstanceWindow_Id',
     layout: 'fit',
-    title:'采控实例导出',
+    title: loginUserLanguageResource.exportAcqInstance,
     border: false,
     hidden: false,
     collapsible: true,
@@ -13,8 +13,8 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 400,
-    minWidth: 400,
+    width: 450,
+    minWidth: 450,
     height: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -30,8 +30,8 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
               name: 'type',
               hidden: !exportAdInitData,
               items: [
-                  {boxLabel: '界面导入导出格式',width: 120, inputValue: 1, checked: true},
-                  {boxLabel: '协议通格式',width: 90, inputValue: 2}
+                  {boxLabel: loginUserLanguageResource.exportProtocolFormat1,width: getStringLength(loginUserLanguageResource.exportProtocolFormat1)*8, inputValue: 1, checked: true},
+                  {boxLabel: loginUserLanguageResource.exportProtocolFormat2,width: getStringLength(loginUserLanguageResource.exportProtocolFormat2)*8, inputValue: 2}
               ],
               listeners: {
              	 	change: function (radiogroup, newValue, oldValue, eOpts) {

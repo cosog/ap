@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolReportInstanceWindow", {
     alias: 'widget.ExportProtocolReportInstanceWindow',
     id: 'ExportProtocolReportInstanceWindow_Id',
     layout: 'fit',
-    title:loginUserLanguageResource.exportData,
+    title:loginUserLanguageResource.exportReportInstance,
     border: false,
     hidden: false,
     collapsible: true,

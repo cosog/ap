@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolDisplayInstanceWindow", {
     alias: 'widget.ExportProtocolDisplayInstanceWindow',
     id: 'ExportProtocolDisplayInstanceWindow_Id',
     layout: 'fit',
-    title:'显示实例导出',
+    title: loginUserLanguageResource.exportDisplayInstance,
     border: false,
     hidden: false,
     collapsible: true,

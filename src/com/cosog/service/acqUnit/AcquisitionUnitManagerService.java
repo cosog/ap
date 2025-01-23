@@ -4630,27 +4630,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("},");
 		}
 		
-		
-//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-//		String[] deviceTypeIdArr=deviceTypeIds.split(",");
-//		if(modbusProtocolConfig!=null){
-//			//排序
-//			Collections.sort(modbusProtocolConfig.getProtocol());
-//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-//				
-//				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
-//					tree_json.append("{\"classes\":1,");
-//					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-//					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-//					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-//					tree_json.append("\"iconCls\": \"protocol\",");
-//					tree_json.append("\"leaf\": true");
-//					tree_json.append("},");
-//				}
-//			}
-//		}
-		
-		
 		if(tree_json.toString().endsWith(",")){
 			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
@@ -4912,7 +4891,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		String unitSql="select t.id,t.unit_code,t.unit_name,"
 				+ "t.calculateType,"
-				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
+				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
 				+ "t.sort "
 				+ " from tbl_report_unit_conf t "
@@ -5846,16 +5825,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
-				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] },"
-				+ "{ \"header\":\"计算字段\",\"dataIndex\":\"calColumn\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] }"
 				+ "]";
 		
 		calColumnNameBuff.append("[''");
 		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo(language);
 		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getSRPCalculateColumnList();
-//		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-//			calculateColumnList=calculateColumnInfo.getPCPCalculateColumnList();
-//		}
+
 		for(int i = 0; i < calculateColumnList.size(); i++){
 			calColumnNameBuff.append(",'"+calculateColumnList.get(i).getName()+"'");
 		}
@@ -6075,8 +6052,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(resolutionMode)==2){//数据量
 			columns="["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-					+ "{ \"header\":\"运算关系\",\"dataIndex\":\"condition\",\"flex\":1,\"children\":[] },"
-					+ "{ \"header\":\"值\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("alarmLogic")+"\",\"dataIndex\":\"condition\",\"flex\":1,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",\"flex\":1,\"children\":[] }"
 					+ "]";
 		}
 		
@@ -6158,7 +6135,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			result_json.append("{\"id\":1,");
-			result_json.append("\"condition\":\"大于\",");
+			result_json.append("\"condition\":\""+languageResourceMap.get("greaterThan")+"\",");
 			if("1".equals(status)){
 				result_json.append("\"value\":\""+runValue1+"\"},");
 			}else{
@@ -6166,7 +6143,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"condition\":\"大于等于\",");
+			result_json.append("\"condition\":\""+languageResourceMap.get("greatThanOrEqualTo")+"\",");
 			if("1".equals(status)){
 				result_json.append("\"value\":\""+runValue2+"\"},");
 			}else{
@@ -6174,7 +6151,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"condition\":\"小于等于\",");
+			result_json.append("\"condition\":\""+languageResourceMap.get("lessThanOrEqualTo")+"\",");
 			if("1".equals(status)){
 				result_json.append("\"value\":\""+runValue3+"\"},");
 			}else{
@@ -6182,7 +6159,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"condition\":\"小于\",");
+			result_json.append("\"condition\":\""+languageResourceMap.get("lessThan")+"\",");
 			if("1".equals(status)){
 				result_json.append("\"value\":\""+runValue4+"\"}");
 			}else{
@@ -6234,13 +6211,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public boolean judgeProtocolExistOrNot(String protocolName) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(protocolName)) {
-//			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-//				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-//					flag = true;
-//					break;
-//				}
-//			}
 			String sql = "select t.id from TBL_PROTOCOL t where t.name='"+protocolName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
@@ -8938,10 +8908,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String importProtocolCheck(String data){
+	public String importProtocolCheck(String data,String language){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"success\":true,\"overlayList\":[");
 		StringBuffer  errorDataBuff=new StringBuffer ();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		errorDataBuff.append("[");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -8954,7 +8925,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
 			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName());
 			if(protocolExist){//如果协议已存在
-				result_json.append("{\"classes\":0,\"typeName\":\"协议\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
+				result_json.append("{\"classes\":0,\"typeName\":\""+languageResourceMap.get("protocol")+"\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
 				
 				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
 				
@@ -8971,7 +8942,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for(int j=0;j<exportProtocolConfig.getAcqInstanceList().size();j++){
 							if(importProtocolContent.getAcqInstanceList().get(i)==exportProtocolConfig.getAcqInstanceList().get(j).getId()){
 								if(!StringManagerUtils.existOrNot(acqUnitIdList, exportProtocolConfig.getAcqInstanceList().get(j).getUnitId())){
-									errorDataBuff.append("{\"classes\":1,\"typeName\":\"采控实例\",\"type\":3,\"id\":"+exportProtocolConfig.getAcqInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAcqInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择采控实例对应的采控单元\"},");
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("acqInstance")+"\",\"type\":3,\"id\":"+exportProtocolConfig.getAcqInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAcqInstanceList().get(j).getName()+"\",\"errorInfo\":\""+languageResourceMap.get("acqUnitUnselected")+"\"},");
 								}
 							}
 						}
@@ -8983,7 +8954,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for(int j=0;j<exportProtocolConfig.getDisplayUnitList().size();j++){
 							if(importProtocolContent.getDisplayUnitList().get(i)==exportProtocolConfig.getDisplayUnitList().get(j).getId()){
 								if(!StringManagerUtils.existOrNot(acqUnitIdList, exportProtocolConfig.getDisplayUnitList().get(j).getAcqUnitId())){
-									errorDataBuff.append("{\"classes\":1,\"typeName\":\"显示单元\",\"type\":1,\"id\":"+exportProtocolConfig.getDisplayUnitList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayUnitList().get(j).getUnitName()+"\",\"errorInfo\":\"未选择显示单元对应的采控单元\"},");
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("displayUnit")+"\",\"type\":1,\"id\":"+exportProtocolConfig.getDisplayUnitList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayUnitList().get(j).getUnitName()+"\",\"errorInfo\":\""+languageResourceMap.get("acqUnitUnselected")+"\"},");
 								}
 							}
 						}
@@ -8995,7 +8966,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for(int j=0;j<exportProtocolConfig.getDisplayInstanceList().size();j++){
 							if(importProtocolContent.getDisplayInstanceList().get(i)==exportProtocolConfig.getDisplayInstanceList().get(j).getId()){
 								if(!StringManagerUtils.existOrNot(importProtocolContent.getDisplayUnitList(), exportProtocolConfig.getDisplayInstanceList().get(j).getDisplayUnitId())){
-									errorDataBuff.append("{\"classes\":1,\"typeName\":\"显示实例\",\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择显示实例对应的显示单元\"},");
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("displayInstance")+"\",\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(j).getName()+"\",\"errorInfo\":\""+languageResourceMap.get("displayUnitUnselected")+"\"},");
 								}
 							}
 						}
@@ -9007,7 +8978,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for(int j=0;j<exportProtocolConfig.getAlarmInstanceList().size();j++){
 							if(importProtocolContent.getAlarmInstanceList().get(i)==exportProtocolConfig.getAlarmInstanceList().get(j).getId()){
 								if(!StringManagerUtils.existOrNot(importProtocolContent.getAlarmUnitList(), exportProtocolConfig.getAlarmInstanceList().get(j).getAlarmUnitId())){
-									errorDataBuff.append("{\"classes\":1,\"typeName\":\"报警实例\",\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(j).getName()+"\",\"errorInfo\":\"未选择报警实例对应的报警单元\"},");
+									errorDataBuff.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("alarmInstance")+"\",\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(j).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(j).getName()+"\",\"errorInfo\":\""+languageResourceMap.get("alarmUnitUnselected")+"\"},");
 								}
 							}
 						}
@@ -9039,7 +9010,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									Object[] existAcqUnitObj = (Object[]) addAcqUnitList.get(0);
 									int existAcqUnitId=StringManagerUtils.stringToInteger(existAcqUnitObj[0]+"");
 									String existAcqUnitCode=existAcqUnitObj[1]+"";
-									result_json.append("{\"classes\":1,\"typeName\":\"采控单元\",\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
+									result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("acqUnit")+"\",\"type\":0,\"id\":"+acqUnit.getId()+",\"text\":\""+acqUnit.getUnitName()+"\"},");
 									//判断采控组是否存在
 									if(acqUnit.getAcqGroupList()!=null && acqUnit.getAcqGroupList().size()>0){
 										for(int j=0;j<acqUnit.getAcqGroupList().size();j++){
@@ -9054,7 +9025,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												if(addAcqGroupList.size()>0){//采控组已存在
 													Object[] existAcqGroupObj = (Object[]) addAcqGroupList.get(0);
 													int existAcqGroupId=StringManagerUtils.stringToInteger(existAcqGroupObj[0]+"");
-													result_json.append("{\"classes\":2,\"typeName\":\"采控组\",\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\",\"unitId\":"+acqUnit.getId()+"},");
+													result_json.append("{\"classes\":2,\"typeName\":\""+languageResourceMap.get("acqGroup")+"\",\"type\":0,\"id\":"+acqUnit.getAcqGroupList().get(j).getId()+",\"text\":\""+acqUnit.getAcqGroupList().get(j).getGroupName()+"\",\"unitId\":"+acqUnit.getId()+"},");
 												}
 											}
 										}
@@ -9076,7 +9047,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												if(addAcqInstanceList.size()>0){//采控实例已存在
 													Object[] existAcqInstanceObj = (Object[]) addAcqInstanceList.get(0);
 													int existAcqInstanceId=StringManagerUtils.stringToInteger(existAcqInstanceObj[0]+"");
-													result_json.append("{\"classes\":1,\"typeName\":\"采控实例\",\"type\":3,\"id\":"+acqInstance.getId()+",\"text\":\""+acqInstance.getName()+"\"},");
+													result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("acqInstance")+"\",\"type\":3,\"id\":"+acqInstance.getId()+",\"text\":\""+acqInstance.getName()+"\"},");
 												}
 											}
 										}
@@ -9099,7 +9070,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												if(addDisplayUnitList.size()>0){//显示单元已存在
 													Object[] existDisplayUnitObj = (Object[]) addDisplayUnitList.get(0);
 													int existDisplayUnitId=StringManagerUtils.stringToInteger(existDisplayUnitObj[0]+"");
-													result_json.append("{\"classes\":1,\"typeName\":\"显示单元\",\"type\":1,\"id\":"+displayUnit.getId()+",\"text\":\""+displayUnit.getUnitName()+"\"},");
+													result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("displayUnit")+"\",\"type\":1,\"id\":"+displayUnit.getId()+",\"text\":\""+displayUnit.getUnitName()+"\"},");
 													
 													//如果显示单元存在，判断改单元对应的显示实例是否存在
 													if(importProtocolContent.getDisplayInstanceList()!=null && importProtocolContent.getDisplayInstanceList().size()>0 ){
@@ -9111,7 +9082,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																if(addDisplayInstanceList.size()>0){//显示实例已存在
 																	Object[] existDisplayInstanceObj = (Object[]) addDisplayInstanceList.get(0);
 																	int existDisplayInstanceId=StringManagerUtils.stringToInteger(existDisplayInstanceObj[0]+"");
-																	result_json.append("{\"classes\":1,\"typeName\":\"显示实例\",\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"\"},");
+																	result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("displayInstance")+"\",\"type\":4,\"id\":"+exportProtocolConfig.getDisplayInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getDisplayInstanceList().get(m).getName()+"\"},");
 																}
 															}
 														}
@@ -9145,7 +9116,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									Object[] addAlarmUnitObj = (Object[]) addAlarmUnitList.get(0);
 									int existAlarmUnitId=StringManagerUtils.stringToInteger(addAlarmUnitObj[0]+"");
 									String existAlarmUnitCode=addAlarmUnitObj[1]+"";
-									result_json.append("{\"classes\":1,\"typeName\":\"报警单元\",\"type\":2,\"id\":"+alarmUnit.getId()+",\"text\":\""+alarmUnit.getUnitName()+"\"},");
+									result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("alarmUnit")+"\",\"type\":2,\"id\":"+alarmUnit.getId()+",\"text\":\""+alarmUnit.getUnitName()+"\"},");
 									
 									//如果报警单元存在，判断对应的报警实例是否存在
 									if(importProtocolContent.getAlarmInstanceList()!=null && importProtocolContent.getAlarmInstanceList().size()>0 && exportProtocolConfig.getAlarmInstanceList()!=null){
@@ -9162,7 +9133,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													Object[] addAlarmInstanceObj = (Object[]) addAlarmInstanceList.get(0);
 													int existAlarmInstanceId=StringManagerUtils.stringToInteger(addAlarmInstanceObj[0]+"");
 													String existAlarmInstanceCode=addAlarmInstanceObj[1]+"";
-													result_json.append("{\"classes\":1,\"typeName\":\"报警实例\",\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"\"},");
+													result_json.append("{\"classes\":1,\"typeName\":\""+languageResourceMap.get("alarmInstance")+"\",\"type\":5,\"id\":"+exportProtocolConfig.getAlarmInstanceList().get(m).getId()+",\"text\":\""+exportProtocolConfig.getAlarmInstanceList().get(m).getName()+"\"},");
 												}
 											}
 										}
@@ -10137,7 +10108,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 //				+ " and t.devicetype in (select id from tbl_devicetypeinfo start with id="+deviceType+" connect by prior  id=parentid)";
 		
 		String collisionProtoolSql="select t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
-				+ " (select t2.id, sys_connect_by_path(t2."+user.getLanguageName()+",'/') as path"
+				+ " (select t2.id, sys_connect_by_path(t2.name_"+user.getLanguageName()+",'/') as path"
 				+ " from tbl_devicetypeinfo t2"
 				+ " start with t2.parentid=0"
 				+ " connect by   t2.parentid= prior t2.id) v"
@@ -10160,7 +10131,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getName())){
 							saveSign=1;//覆盖
 							overlayCount++;
-							msg=obj[1]+"已存在，继续保存将覆盖";
+							msg=obj[1]+languageResourceMap.get("uploadCollisionInfo1");
 							break;
 						}
 					}
@@ -10172,7 +10143,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getName())){
 							saveSign=2;//冲突
 							collisionCount++;
-							msg=obj[1]+"已存在，无权限进行修改";
+							msg=obj[1]+languageResourceMap.get("uploadCollisionInfo2");
 							break;
 						}
 					}
@@ -10279,6 +10250,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(protocol!=null){
 			Gson gson = new Gson();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			String updateSql="update TBL_PROTOCOL t set t.sort="+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+",t.deviceType="+protocol.getDeviceType()+",t.items=?"
 					+" where t.name='"+protocol.getName()+"'";
 			List<String> clobCont=new ArrayList<String>();
@@ -10295,7 +10267,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
 				if(user!=null){
 					try {
-						this.service.saveSystemLog(user,2,"导入协议:"+protocol.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("importProtocol")+":"+protocol.getName());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -10335,14 +10307,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							Object[] obj=(Object[])unitQueryList.get(j);
 							if((obj[0]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getUnitName()) && (obj[1]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getProtocol())){
 								saveSign=1;//覆盖
-								msg=obj[0]+"已存在，继续保存将覆盖";
+								msg=obj[0]+languageResourceMap.get("uploadCollisionInfo1");
 								break;
 							}
 						}
 					}
 				}else{
 					saveSign=2;
-					msg="单元所属协议"+uploadAcqUnitList.get(i).getProtocol()+"不存在，请先添加对应协议";
+					msg=languageResourceMap.get("protocolDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -10523,6 +10495,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t.unit_name='"+exportAcqUnitData.getUnitName()+"' and t2.name='"+exportAcqUnitData.getProtocol()+"'"
 				+ " order by t.id desc";
 		List<?> unitList = this.findCallSql(unitsql);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String unitId="";
 		String unitCode="";
 		int r=0;
@@ -10624,7 +10597,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入采控单元:"+exportAcqUnitData.getUnitName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importAcqUnit")+":"+exportAcqUnitData.getUnitName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -10661,14 +10634,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							Object[] obj=(Object[])unitQueryList.get(j);
 							if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getUnitName()) && (obj[1]+"").equalsIgnoreCase(uploadUnitList.get(i).getProtocol())){
 								saveSign=1;//覆盖
-								msg=obj[0]+"已存在，继续保存将覆盖";
+								msg=obj[0]+languageResourceMap.get("uploadCollisionInfo1");
 								break;
 							}
 						}
 					}
 				}else{
 					saveSign=2;
-					msg="单元所属协议"+uploadUnitList.get(i).getProtocol()+"不存在，请先添加对应协议";
+					msg=languageResourceMap.get("protocolDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -10800,6 +10773,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " where t.protocol=t2.name "
 				+ " and t.unit_name='"+exportAlarmUnitData.getUnitName()+"' and t2.name='"+exportAlarmUnitData.getProtocol()+"'"
 				+ " order by t.id desc";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		List<?> unitList = this.findCallSql(unitsql);
 		String unitId="";
 		String unitCode="";
@@ -10872,7 +10846,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(unitId, "update");
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入报警单元:"+exportAlarmUnitData.getUnitName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importAlarmUnit")+":"+exportAlarmUnitData.getUnitName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -10916,18 +10890,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										&& (obj[2]+"").equalsIgnoreCase(uploadUnitList.get(i).getProtocol())
 										){
 									saveSign=1;//覆盖
-									msg=obj[0]+"已存在，继续保存将覆盖";
+									msg=obj[0]+languageResourceMap.get("uploadCollisionInfo1");
 									break;
 								}
 							}
 						}
 					}else{
 						saveSign=2;
-						msg="单元所属采控单元"+uploadUnitList.get(i).getAcqUnit()+"不存在，请先添加对应协议";
+						msg=languageResourceMap.get("protocolDoesNotExist");
 					}
 				}else{
 					saveSign=2;
-					msg="单元所属协议"+uploadUnitList.get(i).getProtocol()+"不存在，请先添加对应协议及采控单元";
+					msg=languageResourceMap.get("acqUnitDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -11060,6 +11034,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+"' and t2.unit_name='"+exportDisplayUnitData.getAcqUnit()
 				+"' and t2.protocol='"+exportDisplayUnitData.getProtocol()+"' "
 				+ " order by t.id desc";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		List<?> unitList = this.findCallSql(unitsql);
 		String unitId="";
 		String unitCode="";
@@ -11141,7 +11116,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId, "update");
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入显示单元:"+exportDisplayUnitData.getUnitName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importDisplayUnit")+":"+exportDisplayUnitData.getUnitName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -11169,7 +11144,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						Object[] obj=(Object[])unitQueryList.get(j);
 						if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getUnitName())){
 							saveSign=1;//覆盖
-							msg=obj[0]+"已存在，继续保存将覆盖";
+							msg=obj[0]+languageResourceMap.get("uploadCollisionInfo1");
 							break;
 						}
 					}
@@ -11447,7 +11422,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(unitId)){
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入报表单元:"+exportReportUnitData.getUnitName());
+					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importReportUnit")+":"+exportReportUnitData.getUnitName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -11492,18 +11468,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
 										){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
 									break;
 								}
 							}
 						}
 					}else{
 						saveSign=2;
-						msg="实例所属采控单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应采控单元";
+						msg=languageResourceMap.get("acqUnitDoesNotExist");
 					}
 				}else{
 					saveSign=2;
-					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议及采控单元";
+					msg=languageResourceMap.get("protocolDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -11714,7 +11690,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入采控实例:"+instanceData.getName());
+					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importAcqInstance")+":"+instanceData.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -11762,18 +11739,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
 										){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
 									break;
 								}
 							}
 						}
 					}else{
 						saveSign=2;
-						msg="实例所属显示单元"+uploadInstanceList.get(i).getDisplayUnitName()+"不存在，请先添加对应显示单元";
+						msg=languageResourceMap.get("displayUnitDoesNotExist");
 					}
 				}else{
 					saveSign=2;
-					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议、采控单元以及显示单元";
+					msg=languageResourceMap.get("protocolDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -12253,7 +12230,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入显示实例:"+instanceData.getName());
+					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importDisplayInstance")+":"+instanceData.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -12297,18 +12275,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
 										){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
 									break;
 								}
 							}
 						}
 					}else{
 						saveSign=2;
-						msg="实例所属报警单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应报警单元";
+						msg=languageResourceMap.get("alarmUnitDoesNotExist");
 					}
 				}else{
 					saveSign=2;
-					msg="实例所属协议"+uploadInstanceList.get(i).getProtocol()+"不存在，请先添加对应协议及报警单元";
+					msg=languageResourceMap.get("protocolDoesNotExist");
 				}
 				
 				tree_json.append("{\"classes\":1,");
@@ -12509,7 +12487,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadDeviceInfoByAlarmInstanceId(instanceId,"update");
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入报警实例:"+instanceData.getName());
+					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importAlarmInstance")+":"+instanceData.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -12544,14 +12523,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getUnitName())
 									){
 								saveSign=1;//覆盖
-								msg=uploadInstanceList.get(i).getName()+"已存在，继续保存将覆盖";
+								msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
 								break;
 							}
 						}
 					}
 				}else{
 					saveSign=2;
-					msg="实例所属报表单元"+uploadInstanceList.get(i).getUnitName()+"不存在，请先添加对应报表单元";
+					msg=languageResourceMap.get("reportUnitDoesNotExist");
 				}
 				tree_json.append("{\"classes\":1,");
 				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
@@ -12649,7 +12628,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(instanceId)){
 			if(user!=null){
 				try {
-					this.service.saveSystemLog(user,2,"导入报表实例:"+instanceData.getName());
+					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importReportInstance")+":"+instanceData.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -542,13 +542,13 @@ function saveProtocolRunStatusConfig(){
 				for(var i=0;i<runValueSelection.length;i++){
 					if(isNumber(runValueSelection[i].data.value)){
 						var sign="";
-						if(runValueSelection[i].data.condition=="大于"){
+						if(runValueSelection[i].data.id==1){
 							sign=">";
-						}else if(runValueSelection[i].data.condition=="大于等于"){
+						}else if(runValueSelection[i].data.id==2){
 							sign=">=";
-						}else if(runValueSelection[i].data.condition=="小于等于"){
+						}else if(runValueSelection[i].data.id==3){
 							sign="<=";
-						}else if(runValueSelection[i].data.condition=="小于"){
+						}else if(runValueSelection[i].data.id==4){
 							sign="<";
 						}
 						runCondition+=sign+","+runValueSelection[i].data.value+";"

@@ -32,21 +32,16 @@ Ext.define("AP.view.well.ExcelImportDeviceWindow", {
         	    	xtype: 'filefield',
                 	id:'DeviceInfoImportFilefield_Id',
                     name: 'file',
-                    fieldLabel: '上传文件',
+                    fieldLabel: loginUserLanguageResource.uploadFile,
                     labelWidth: 60,
                     width:'100%',
                     msgTarget: 'side',
                     allowBlank: false,
                     anchor: '100%',
                     draggable:true,
-                    buttonText: '请选择上传文件',
+                    buttonText: loginUserLanguageResource.selectUploadFile,
                     accept:'.xls',
                     listeners:{
-//                        afterrender:function(cmp){
-//                            cmp.fileInputEl.set({
-//                                multiple:'multiple'
-//                            });
-//                        },
                         change:function(cmp){
                         	submitImportedDeviceFile();
                         }

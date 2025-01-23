@@ -4867,19 +4867,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
 		String check=ParamUtils.getParameter(request, "check");
-		
-		if("1".equals(check)){
-			json = acquisitionUnitItemManagerService.importProtocolCheck(data);
-		}else{
-			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
-		}
-		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		if("1".equals(check)){
+			json = acquisitionUnitItemManagerService.importProtocolCheck(data,language);
+		}else{
+			json = acquisitionUnitItemManagerService.saveImportProtocolData(data);
+		}
+		
+		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		if(user!=null){
 			this.service.saveSystemLog(user,2,languageResourceMap.get("importProtocol"));

@@ -10730,7 +10730,7 @@ var data$8 = [
 	{
 		moduleCode: "",
 		detailCode: "10031",
-		description: "子账户或萤石用户没有权限",
+		description: "Subaccounts or fluorite users do not have permissions",
 		solution: "",
 		updateTime: 1543990462000
 	},
@@ -14181,7 +14181,7 @@ var data$8 = [
 	{
 		moduleCode: "",
 		detailCode: "110031",
-		description: "子账户或萤石用户没有权限",
+		description: "Subaccounts or fluorite users do not have permissions",
 		solution: "",
 		updateTime: 1522034840000
 	},

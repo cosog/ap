@@ -32,14 +32,14 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
         	    	xtype: 'filefield',
                 	id:'AcqInstanceImportFilefield_Id',
                     name: 'file',
-                    fieldLabel: '上传文件',
+                    fieldLabel: loginUserLanguageResource.uploadFile,
                     labelWidth: 60,
                     width:'100%',
                     msgTarget: 'side',
                     allowBlank: true,
                     anchor: '100%',
                     draggable:true,
-                    buttonText: '请选择上传文件',
+                    buttonText: loginUserLanguageResource.selectUploadFile,
                     accept:'.json',
                     listeners:{
                         change:function(cmp){
@@ -68,7 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
 				value:'0'
 			},'->',{
     	    	xtype: 'button',
-                text: '全部保存',
+                text: loginUserLanguageResource.saveAll,
                 iconCls: 'save',
                 handler: function (v, o) {
                 	var treeStore = Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore();

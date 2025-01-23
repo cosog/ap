@@ -12,7 +12,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
     id: 'ImportReportUnitWindow_Id',
     alias: 'widget.ImportReportUnitWindow',
     layout: 'fit',
-    title: loginUserLanguageResource.importData,
+    title: loginUserLanguageResource.importReportUnit,
     border: false,
     hidden: false,
     collapsible: true,
@@ -40,14 +40,14 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                     xtype: 'filefield',
                     id: 'ReportUnitImportFilefield_Id',
                     name: 'file',
-                    fieldLabel: '上传文件',
+                    fieldLabel: loginUserLanguageResource.uploadFile,
                     labelWidth: 60,
                     width: '100%',
                     msgTarget: 'side',
                     allowBlank: true,
                     anchor: '100%',
                     draggable: true,
-                    buttonText: '请选择上传文件',
+                    buttonText: loginUserLanguageResource.selectUploadFile,
                     accept: '.json',
                     listeners: {
                         change: function (cmp) {
@@ -76,7 +76,7 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                 value: '0'
 			}, '->', {
                 xtype: 'button',
-                text: '全部保存',
+                text: loginUserLanguageResource.saveAll,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var treeStore = Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore();

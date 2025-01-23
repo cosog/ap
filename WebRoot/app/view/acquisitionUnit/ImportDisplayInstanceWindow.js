@@ -35,14 +35,14 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                     xtype: 'filefield',
                     id: 'DisplayInstanceImportFilefield_Id',
                     name: 'file',
-                    fieldLabel: '上传文件',
+                    fieldLabel: loginUserLanguageResource.uploadFile,
                     labelWidth: 60,
                     width: '100%',
                     msgTarget: 'side',
                     allowBlank: true,
                     anchor: '100%',
                     draggable: true,
-                    buttonText: '请选择上传文件',
+                    buttonText: loginUserLanguageResource.selectUploadFile,
                     accept: '.json',
                     listeners: {
                         change: function (cmp) {
@@ -71,7 +71,7 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                 value: '0'
 			}, '->', {
                 xtype: 'button',
-                text: '全部保存',
+                text: loginUserLanguageResource.saveAll,
                 iconCls: 'save',
                 handler: function (v, o) {
                     var treeStore = Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore();

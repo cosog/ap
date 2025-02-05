@@ -2303,8 +2303,8 @@ public class DriverAPIController extends BaseController{
 						deviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						
 						String efficiencyStr=StringManagerUtils.dataAccuracyConversion(commResponseData.getCurrent().getCommEfficiency().getEfficiency()*timeEfficiencyZoom+"",2);
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",efficiencyStr,efficiencyStr,"","commTime","","","","",1,1));
-						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"","","commtimeEfficiency","","","","",1,1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","",1,1));
+						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",efficiencyStr,efficiencyStr,"","commtimeEfficiency","","","","",1,1));
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("通信区间","通信区间",commResponseData.getCurrent().getCommEfficiency().getRangeString(),commResponseData.getCurrent().getCommEfficiency().getRangeString(),"","commRange","","","","",1,1));
 					}
 					updateRealtimeData+=",t.runStatus= "+runStatus;

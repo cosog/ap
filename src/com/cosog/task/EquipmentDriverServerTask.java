@@ -28,7 +28,6 @@ import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
-import com.cosog.thread.calculate.RedisConnTestThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;

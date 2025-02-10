@@ -115,6 +115,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitPropertiesHandsontableHelper!=null && protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
+//                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -132,234 +133,115 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 },{
                 	border: true,
                 	region: 'center',
-                	
-                	
-//                	layout: 'fit',
-//            		autoScroll: true,
-//            		border: false,
-//            		html: '<div id="displayUnitItemsConfigContainer" class="hbox" style="width:100%;height:100%;"><div id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id" style="flex:auto;"></div><div id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div><div id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div><div id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div></div>',
-//            		listeners: {
-//                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//                        	
-//                        }
-//                    }
-                	
-                	
-                	
-                	
-                	
-                	
-                	
-                	autoScroll: true,
-                	layout: {
-                        type: 'vbox',
-                        pack: 'start',
-                        align: 'stretch'
-                    },
-                    items: [{
-//                    	flex: 1,
-                    	height:800,
-                    	title:loginUserLanguageResource.acquisitionItemConfig,
-                		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
-                        layout: 'fit',
-                        html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
+                	layout: "border",
+                	items: [{
+                		region: 'center',
+                		layout: "border",
+                		items: [{
+                    		region: 'center',
+                    		title:loginUserLanguageResource.acquisitionItemConfig,
+                    		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
+                            layout: 'fit',
+                            html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
+//                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.refreshDimensions();
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
                             }
-                        }
-                    },{
-//                    	flex: 1,
-                    	height:800,
-                    	title:loginUserLanguageResource.controlItemConfig,
-                		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
-                        layout: 'fit',
+                    	},{
+                    		region: 'south',
+                        	height:'50%',
+                        	title:loginUserLanguageResource.controlItemConfig,
+                    		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
+                            layout: 'fit',
+                            collapsible: true,
+                            split: true,
+                            html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
+                            }
+                    	}]
+                	},{
+                		region: 'east',
+                		width:'50%',
+                		layout: "border",
+                		header: false,
+                		split: true,
                         collapsible: true,
-                        split: true,
-                        html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
+                    	items: [{
+                    		region: 'center',
+                        	layout: 'fit',
+                        	title:loginUserLanguageResource.inputItemConfig,
+                    		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
+                            html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null && protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
                             }
-                        }
-                    },{
-//                    	flex: 1,
-                    	height:800,
-                    	title:loginUserLanguageResource.inputItemConfig,
-                		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
-                        html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null && protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
+                    	},{
+                    		region: 'south',
+                        	height:'50%',
+                        	layout: 'fit',
+                            collapsible: true,
+                            split: true,
+                        	title:loginUserLanguageResource.calculateItemConfig,
+                        	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
+                            html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
+                                		var newWidth=width;
+                                		var newHeight=height;
+                                		var header=thisPanel.getHeader();
+                                		if(header){
+                                			newHeight=newHeight-header.lastBox.height-2;
+                                		}
+                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
+                                			width:newWidth,
+                                			height:newHeight
+                                		});
+                                	}
+                                }
                             }
-                        }
-                    },{
-//                    	flex: 1,
-                    	height:800,
-                    	title:loginUserLanguageResource.calculateItemConfig,
-                    	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
-                        html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
-                            }
-                        }
-                    }]
-                	
-                	
-                
-//            	layout: "border",
-//                	items: [{
-//                		region: 'center',
-//                		layout: "border",
-//                		items: [{
-//                    		region: 'center',
-//                    		title:loginUserLanguageResource.acquisitionItemConfig,
-//                    		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
-//                            layout: 'fit',
-//                            html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
-//                            listeners: {
-//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
-//                                		var newWidth=width;
-//                                		var newHeight=height;
-//                                		var header=thisPanel.getHeader();
-//                                		if(header){
-//                                			newHeight=newHeight-header.lastBox.height-2;
-//                                		}
-//                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings({
-//                                			width:newWidth,
-//                                			height:newHeight
-//                                		});
-//                                	}
-//                                }
-//                            }
-//                    	},{
-//                    		region: 'south',
-//                        	height:'50%',
-//                        	title:loginUserLanguageResource.controlItemConfig,
-//                    		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
-//                            layout: 'fit',
-//                            collapsible: true,
-//                            split: true,
-//                            html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
-//                            listeners: {
-//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
-//                                		var newWidth=width;
-//                                		var newHeight=height;
-//                                		var header=thisPanel.getHeader();
-//                                		if(header){
-//                                			newHeight=newHeight-header.lastBox.height-2;
-//                                		}
-//                                		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings({
-//                                			width:newWidth,
-//                                			height:newHeight
-//                                		});
-//                                	}
-//                                }
-//                            }
-//                    	}]
-//                	},{
-//                		region: 'east',
-//                		width:'50%',
-//                		layout: "border",
-//                		header: false,
-//                		split: true,
-//                        collapsible: true,
-//                    	items: [{
-//                    		region: 'center',
-//                        	layout: 'fit',
-//                        	title:loginUserLanguageResource.inputItemConfig,
-//                    		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
-//                            html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
-//                            listeners: {
-//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null && protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
-//                                		var newWidth=width;
-//                                		var newHeight=height;
-//                                		var header=thisPanel.getHeader();
-//                                		if(header){
-//                                			newHeight=newHeight-header.lastBox.height-2;
-//                                		}
-//                                		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
-//                                			width:newWidth,
-//                                			height:newHeight
-//                                		});
-//                                	}
-//                                }
-//                            }
-//                    	},{
-//                    		region: 'south',
-//                        	height:'50%',
-//                        	layout: 'fit',
-//                            collapsible: true,
-//                            split: true,
-//                        	title:loginUserLanguageResource.calculateItemConfig,
-//                        	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
-//                            html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
-//                            listeners: {
-//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-//                                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
-//                                		var newWidth=width;
-//                                		var newHeight=height;
-//                                		var header=thisPanel.getHeader();
-//                                		if(header){
-//                                			newHeight=newHeight-header.lastBox.height-2;
-//                                		}
-//                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
-//                                			width:newWidth,
-//                                			height:newHeight
-//                                		});
-//                                	}
-//                                }
-//                            }
-//                    	}]
-//                	}] 
+                    	}]
+                	}] 
                 }]
             }]
     	});
@@ -368,17 +250,17 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
 });
 
 function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName) {
-//    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
         success: function (response) {
-//            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 2) {
-//                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
             } else {
-//                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
             }
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
@@ -419,7 +301,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             }
         },
         failure: function () {
-//            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
@@ -713,18 +595,18 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 
 
 function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-//	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCalItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-//			if(classes==2){
-//				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.calculateItemConfig);
-//			}else{
-//				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
-//			}
+			if(classes==2){
+				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.calculateItemConfig);
+			}else{
+				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
+			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
@@ -762,7 +644,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 		},
 		failure:function(){
-//			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1064,18 +946,18 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
-//	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCtrlItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-//			if(classes==2){
-//				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
-//			}else{
-//				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
-//			}
+			if(classes==2){
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
+			}else{
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
+			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
@@ -1099,7 +981,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 		},
 		failure:function(){
-//			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1271,18 +1153,18 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-//	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitInputItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-//			if(classes==2){
-//				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.inputItemConfig);
-//			}else{
-//				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
-//			}
+			if(classes==2){
+				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.inputItemConfig);
+			}else{
+				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
+			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
@@ -1319,7 +1201,7 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 		},
 		failure:function(){
-//			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

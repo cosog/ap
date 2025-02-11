@@ -1137,11 +1137,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String language){
+	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		java.lang.reflect.Type type=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		try{
+			if("1".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+			}else if("2".equalsIgnoreCase(calculateType)){
+				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+			}else{
+				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		List<CalItem> inputItemList=new ArrayList<>();
+		try{
+			if("1".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
+			}else if("2".equalsIgnoreCase(calculateType)){
+				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -1160,6 +1182,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> acqItemsBitIndexList=new ArrayList<String>();
 		
 		List<String> itemsList=new ArrayList<String>();
+		List<String> itemsCodeList=new ArrayList<String>();
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsHistorySortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
@@ -1171,6 +1194,384 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> realtimeBgColorList=new ArrayList<String>();
 		List<String> historyColorList=new ArrayList<String>();
 		List<String> historyBgColorList=new ArrayList<String>();
+		
+		List<Boolean> realtimeDataList=new ArrayList<>();
+		
+		List<Boolean> realtimeOverviewList=new ArrayList<>();
+		List<String> realtimeOverviewSortList=new ArrayList<String>();
+		
+		List<Boolean> historyDataList=new ArrayList<>();
+		
+		List<Boolean> historyOverviewList=new ArrayList<>();
+		List<String> historyOverviewSortList=new ArrayList<String>();
+		
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		
+		
+		//calculate
+		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
+			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
+					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
+					+ " tbl_datamapping t6 "
+					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
+					+ " and t.itemname=t6.name and t.dailytotalcalculate=1 and t5.id="+unitId
+					+ " order by t.id";
+			List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
+			for(int i=0;i<unitDailyTotalItemsList.size();i++){
+				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
+				String itemName=obj[0]+"";
+				String name=obj[1]+"";
+				String totalCode=(obj[2]+"_TOTAL").toUpperCase();
+				String unit="";
+				if(protocolConfig!=null && protocolConfig.getItems()!=null){
+					for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
+						if(itemName.equalsIgnoreCase(item.getTitle())){
+							unit=item.getUnit();
+							break;
+						}
+					}
+				}
+				CalItem calItem=new CalItem(name,totalCode,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+				calItemList.add(calItem);
+			}
+		}
+		
+		if("2".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
+					+ " order by t.realtimeSort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
+				itemsHistorySortList.add(obj[3]+"");
+				
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+					realtimeCurveConf="\"\"";
+				}
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
+					historyCurveConf="\"\"";
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConf);
+				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
+				
+				
+				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
+				realtimeOverviewSortList.add(obj[12]+"");
+				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
+				
+				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+				historyOverviewSortList.add(obj[15]+"");
+				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+			}
+		}
+		
+		int index=1;
+		for(CalItem calItem:calItemList){
+			boolean checked=false;
+			String realtimeSort="";
+			String historySort="";
+			String showLevel="";
+			String realtimeCurveConf="\"\"";
+			String realtimeCurveConfShowValue="";
+			String historyCurveConf="\"\"";
+			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
+			
+			boolean realtimeOverview=false;
+			String  realtimeOverviewSort="";
+			boolean realtimeData=false;
+			
+			boolean historyOverview=false;
+			String  historyOverviewSort="";
+			boolean historyData=false;
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						realtimeCurveConf=realtimeCurveConfList.get(k);
+						historyCurveConf=historyCurveConfList.get(k);
+						
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
+						
+						CurveConf realtimeCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+						}
+						
+						CurveConf historyCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+						}
+						
+						if(realtimeCurveConfObj!=null){
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+						}
+						if(historyCurveConfObj!=null){
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+						}
+						
+						realtimeOverview=realtimeOverviewList.get(k);
+						realtimeOverviewSort=realtimeOverviewSortList.get(k);
+						realtimeData=realtimeDataList.get(k);
+						
+						historyOverview=historyOverviewList.get(k);
+						historyOverviewSort=historyOverviewSortList.get(k);
+						historyData=historyDataList.get(k);
+						
+						break;
+					}
+				}
+			}
+			result_json.append("{\"checked\":"+checked+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
+					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					+ "\"historyCurveConf\":"+historyCurveConf+","
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"code\":\""+calItem.getCode()+"\","
+//					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
+					+ "\"type\":1,"
+					+ "\"dataSource\":\""+languageResourceMap.get("calculate")+"\","
+					+ "\"realtimeOverview\":"+realtimeOverview+","
+					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+					+ "\"realtimeData\":"+realtimeData+","
+					+ "\"historyOverview\":"+historyOverview+","
+					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+					+ "\"historyData\":"+historyData+""
+					+ "},");
+			index++;
+		
+		}
+		
+		//input
+		acqItemsList=new ArrayList<String>();
+		acqItemsBitIndexList=new ArrayList<String>();
+		
+		itemsList=new ArrayList<String>();
+		itemsCodeList=new ArrayList<String>();
+		itemsRealtimeSortList=new ArrayList<String>();
+		itemsHistorySortList=new ArrayList<String>();
+		itemsBitIndexList=new ArrayList<String>();
+		itemsShowLevelList=new ArrayList<String>();
+		realtimeCurveConfList=new ArrayList<String>();
+		historyCurveConfList=new ArrayList<String>();
+		
+		realtimeColorList=new ArrayList<String>();
+		realtimeBgColorList=new ArrayList<String>();
+		historyColorList=new ArrayList<String>();
+		historyBgColorList=new ArrayList<String>();
+		
+		realtimeDataList=new ArrayList<>();
+		realtimeOverviewList=new ArrayList<>();
+		realtimeOverviewSortList=new ArrayList<String>();
+		
+		historyDataList=new ArrayList<>();
+		historyOverviewList=new ArrayList<>();
+		historyOverviewSortList=new ArrayList<String>();
+		
+		if("2".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
+					+ " order by t.realtimeSort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
+				itemsHistorySortList.add(obj[3]+"");
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+					realtimeCurveConf="\"\"";
+				}
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
+					historyCurveConf="\"\"";
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConf);
+				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
+				
+				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
+				realtimeOverviewSortList.add(obj[12]+"");
+				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
+				
+				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+				historyOverviewSortList.add(obj[15]+"");
+				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+			}
+		}
+
+		for(CalItem calItem:inputItemList){
+			boolean checked=false;
+			String realtimeSort="";
+			String historySort="";
+			String showLevel="";
+			String realtimeCurveConf="\"\"";
+			String realtimeCurveConfShowValue="";
+			String historyCurveConf="\"\"";
+			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
+			
+			boolean realtimeOverview=false;
+			String  realtimeOverviewSort="";
+			boolean realtimeData=false;
+			
+			boolean historyOverview=false;
+			String  historyOverviewSort="";
+			boolean historyData=false;
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						realtimeCurveConf=realtimeCurveConfList.get(k);
+						historyCurveConf=historyCurveConfList.get(k);
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
+						
+						CurveConf realtimeCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+						}
+						
+						CurveConf historyCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+						}
+						
+						if(realtimeCurveConfObj!=null){
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+						}
+						if(historyCurveConfObj!=null){
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+						}
+						
+						realtimeOverview=realtimeOverviewList.get(k);
+						realtimeOverviewSort=realtimeOverviewSortList.get(k);
+						realtimeData=realtimeDataList.get(k);
+						
+						historyOverview=historyOverviewList.get(k);
+						historyOverviewSort=historyOverviewSortList.get(k);
+						historyData=historyDataList.get(k);
+						break;
+					}
+				}
+			}
+			result_json.append("{\"checked\":"+checked+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
+					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					+ "\"historyCurveConf\":"+historyCurveConf+","
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"code\":\""+calItem.getCode()+"\","
+					+ "\"type\":3,"
+					+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
+					+ "\"realtimeOverview\":"+realtimeOverview+","
+					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+					+ "\"realtimeData\":"+realtimeData+","
+					+ "\"historyOverview\":"+historyOverview+","
+					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+					+ "\"historyData\":"+historyData+""
+					+ "},");
+			index++;
+		
+		}
+		
+		//acquisition
+		acqItemsList=new ArrayList<String>();
+		acqItemsBitIndexList=new ArrayList<String>();
+		
+		itemsList=new ArrayList<String>();
+		itemsCodeList=new ArrayList<String>();
+		itemsRealtimeSortList=new ArrayList<String>();
+		itemsHistorySortList=new ArrayList<String>();
+		itemsBitIndexList=new ArrayList<String>();
+		itemsShowLevelList=new ArrayList<String>();
+		realtimeCurveConfList=new ArrayList<String>();
+		historyCurveConfList=new ArrayList<String>();
+		
+		realtimeColorList=new ArrayList<String>();
+		realtimeBgColorList=new ArrayList<String>();
+		historyColorList=new ArrayList<String>();
+		historyBgColorList=new ArrayList<String>();
+		
+		realtimeDataList=new ArrayList<>();
+		realtimeOverviewList=new ArrayList<>();
+		realtimeOverviewSortList=new ArrayList<String>();
+		
+		historyDataList=new ArrayList<>();
+		historyOverviewList=new ArrayList<>();
+		historyOverviewSortList=new ArrayList<String>();
+		
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
@@ -1178,7 +1579,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.historySort,"
 					+ " t.showlevel,t.realtimeCurveConf,historyCurveConf,"
-					+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
+					+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
 					+ " order by t.realtimeSort";
@@ -1214,13 +1617,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				realtimeBgColorList.add(obj[8]+"");
 				historyColorList.add(obj[9]+"");
 				historyBgColorList.add(obj[10]+"");
+				
+				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
+				realtimeOverviewSortList.add(obj[12]+"");
+				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
+				
+				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+				historyOverviewSortList.add(obj[15]+"");
+				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
 			}
 		}
-
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
-			int index=1;
 			for(int j=0;j<protocolConfig.getItems().size();j++){
 				if(!"w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
 					boolean sign=false;
@@ -1246,7 +1655,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String historyColor="";
 						String historyBgColor="";
 						
+						boolean realtimeOverview=false;
+						String  realtimeOverviewSort="";
+						boolean realtimeData=false;
 						
+						boolean historyOverview=false;
+						String  historyOverviewSort="";
+						boolean historyData=false;
 						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
 							resolutionMode=languageResourceMap.get("switchingValue");
@@ -1282,6 +1697,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										realtimeBgColor="";
 										historyColor="";
 										historyBgColor="";
+										
+										realtimeOverview=false;
+										realtimeOverviewSort="";
+										realtimeData=false;
+										
+										historyOverview=false;
+										historyOverviewSort="";
+										historyData=false;
 										
 										for(int m=0;m<itemsList.size();m++){
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
@@ -1319,6 +1742,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 												}
 												
+												realtimeOverview=realtimeOverviewList.get(k);
+												realtimeOverviewSort=realtimeOverviewSortList.get(k);
+												realtimeData=realtimeDataList.get(k);
+												
+												historyOverview=historyOverviewList.get(k);
+												historyOverviewSort=historyOverviewSortList.get(k);
+												historyData=historyDataList.get(k);
 												break;
 											}
 										}
@@ -1342,7 +1772,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 												+ "\"historyCurveConf\":"+historyCurveConf+","
-												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+												+ "\"type\":0,"
+												+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+												+ "\"realtimeOverview\":"+realtimeOverview+","
+												+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+												+ "\"realtimeData\":"+realtimeData+","
+												+ "\"historyOverview\":"+historyOverview+","
+												+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+												+ "\"historyData\":"+historyData+""
 												+ "},");
 										index++;
 										break;
@@ -1365,6 +1803,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										realtimeBgColor=realtimeBgColorList.get(k);
 										historyColor=historyColorList.get(k);
 										historyBgColor=historyBgColorList.get(k);
+										
+										realtimeOverview=realtimeOverviewList.get(k);
+										realtimeOverviewSort=realtimeOverviewSortList.get(k);
+										realtimeData=realtimeDataList.get(k);
+										
+										historyOverview=historyOverviewList.get(k);
+										historyOverviewSort=historyOverviewSortList.get(k);
+										historyData=historyDataList.get(k);
 										
 										CurveConf realtimeCurveConfObj=null;
 										if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1406,7 +1852,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
 									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 									+ "\"historyCurveConf\":"+historyCurveConf+","
-									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+									+ "\"type\":0,"
+									+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+									+ "\"realtimeOverview\":"+realtimeOverview+","
+									+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+									+ "\"realtimeData\":"+realtimeData+","
+									+ "\"historyOverview\":"+historyOverview+","
+									+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+									+ "\"historyData\":"+historyData+""
 									+ "},");
 							index++;
 						}

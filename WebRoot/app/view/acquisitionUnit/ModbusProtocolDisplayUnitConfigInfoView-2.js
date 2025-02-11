@@ -115,7 +115,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitPropertiesHandsontableHelper!=null && protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
-//                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -132,18 +131,41 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     }]
                 },{
                 	border: true,
-            		region: 'center',
-            		layout: "border",
-            		items: [{
-                		region: 'center',
-                		title:loginUserLanguageResource.acquisitionItemConfig,
+                	region: 'center',
+                	
+                	
+//                	layout: 'fit',
+//            		autoScroll: true,
+//            		border: false,
+//            		html: '<div id="displayUnitItemsConfigContainer" class="hbox" style="width:100%;height:100%;"><div id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id" style="flex:auto;"></div><div id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div><div id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div><div id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id" style="width:100%;height:auto;"></div></div>',
+//            		listeners: {
+//                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+//                        	
+//                        }
+//                    }
+                	
+                	
+                	
+                	
+                	
+                	
+                	
+                	autoScroll: true,
+                	layout: {
+                        type: 'vbox',
+                        pack: 'start',
+                        align: 'stretch'
+                    },
+                    items: [{
+//                    	flex: 1,
+                    	height:800,
+                    	title:loginUserLanguageResource.acquisitionItemConfig,
                 		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
-//                            		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -157,9 +179,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             	}
                             }
                         }
-                	},{
-                		region: 'south',
-                    	height:'50%',
+                    },{
+//                    	flex: 1,
+                    	height:800,
                     	title:loginUserLanguageResource.controlItemConfig,
                 		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
@@ -182,7 +204,162 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             	}
                             }
                         }
-                	}]
+                    },{
+//                    	flex: 1,
+                    	height:800,
+                    	title:loginUserLanguageResource.inputItemConfig,
+                		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
+                        html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null && protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                            }
+                        }
+                    },{
+//                    	flex: 1,
+                    	height:800,
+                    	title:loginUserLanguageResource.calculateItemConfig,
+                    	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
+                        html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                            }
+                        }
+                    }]
+                	
+                	
+                
+//            	layout: "border",
+//                	items: [{
+//                		region: 'center',
+//                		layout: "border",
+//                		items: [{
+//                    		region: 'center',
+//                    		title:loginUserLanguageResource.acquisitionItemConfig,
+//                    		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
+//                            layout: 'fit',
+//                            html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                	}
+//                                }
+//                            }
+//                    	},{
+//                    		region: 'south',
+//                        	height:'50%',
+//                        	title:loginUserLanguageResource.controlItemConfig,
+//                    		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
+//                            layout: 'fit',
+//                            collapsible: true,
+//                            split: true,
+//                            html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                	}
+//                                }
+//                            }
+//                    	}]
+//                	},{
+//                		region: 'east',
+//                		width:'50%',
+//                		layout: "border",
+//                		header: false,
+//                		split: true,
+//                        collapsible: true,
+//                    	items: [{
+//                    		region: 'center',
+//                        	layout: 'fit',
+//                        	title:loginUserLanguageResource.inputItemConfig,
+//                    		id:"ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id",
+//                            html:'<div class="ModbusProtocolDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if(protocolDisplayUnitInputItemsConfigHandsontableHelper!=null && protocolDisplayUnitInputItemsConfigHandsontableHelper.hot!=undefined){
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                	}
+//                                }
+//                            }
+//                    	},{
+//                    		region: 'south',
+//                        	height:'50%',
+//                        	layout: 'fit',
+//                            collapsible: true,
+//                            split: true,
+//                        	title:loginUserLanguageResource.calculateItemConfig,
+//                        	id:"ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id",
+//                            html:'<div class="ModbusProtocolDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	if(protocolDisplayUnitCalItemsConfigHandsontableHelper!=null && protocolDisplayUnitCalItemsConfigHandsontableHelper.hot!=undefined){
+//                                		var newWidth=width;
+//                                		var newHeight=height;
+//                                		var header=thisPanel.getHeader();
+//                                		if(header){
+//                                			newHeight=newHeight-header.lastBox.height-2;
+//                                		}
+//                                		protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.updateSettings({
+//                                			width:newWidth,
+//                                			height:newHeight
+//                                		});
+//                                	}
+//                                }
+//                            }
+//                    	}]
+//                	}] 
                 }]
             }]
     	});
@@ -190,65 +367,48 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
     }
 });
 
-function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName,calculateType) {
-    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName) {
+//    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
         success: function (response) {
-            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+//            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 2) {
-                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
+//                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
             } else {
-                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
+//                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.acquisitionItemConfig);
             }
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
                 var colHeaders = "[" 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','']," 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','']," 
-                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-                	
-                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
-                	+"'"+loginUserLanguageResource.dynamicData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
-                	
-                	
-                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
-                	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
-                	+"'','','','','','','']"
+                	+"['','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 4},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 4},'','','','','']," 
+                	+"['','','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.historyData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"','','','','','']," 
+                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	+"'','','','','']"
                 	+"]";
                 var columns = "[" 
                     +"{data:'checked',type:'checkbox'}," 
                     +"{data:'id'}," 
                     +"{data:'title'}," 
-                    +"{data:'dataSource'}," 
                     +"{data:'unit'}," 
                     +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-                    
-                    +"{data:'realtimeOverview',type:'checkbox'}," 
-                    +"{data:'realtimeOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-                    
-                    +"{data:'realtimeData',type:'checkbox'}," 
                     +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
                     +"{data:'realtimeColor'}," 
                     +"{data:'realtimeBgColor'}," 
-                    +"{data:'realtimeCurveConfShowValue'}," //12
-                    
-                    +"{data:'historyOverview',type:'checkbox'}," 
-                    +"{data:'historyOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-                    +"{data:'historyData',type:'checkbox'}," 
+                    +"{data:'realtimeCurveConfShowValue'}," 
                     +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
                     +"{data:'historyColor'}," 
                     +"{data:'historyBgColor'}," 
-                    +"{data:'historyCurveConfShowValue'}," //19
+                    +"{data:'historyCurveConfShowValue'}," 
                     +"{data:'realtimeCurveConf'}," 
                     +"{data:'historyCurveConf'}," 
                     +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
                     +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-                    +"{data:'bitIndex'}," 
-                    +"{data:'type'}," 
-                    +"{data:'code'}" 
+                    +"{data:'bitIndex'}" 
                     +"]";
 
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
@@ -259,7 +419,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             }
         },
         failure: function () {
-            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+//            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
             Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
@@ -267,8 +427,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             classes: classes,
             code: code,
             unitId: unitId,
-            acqUnitId: acqUnitId,
-            calculateType: calculateType
+            acqUnitId: acqUnitId
         }
     });
 };
@@ -286,7 +445,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
         protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value!=null && value!="") {
-                var arr = (value+"").split(';');
+                var arr = value.split(';');
                 if (arr.length == 3) {
                     td.style.backgroundColor = '#' + arr[2];
                 }
@@ -300,7 +459,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             var bg='rgb(245, 245, 245)';
             if (value!=null && value!="") {
-                var arr = (value+"").split(';');
+                var arr = value.split(';');
                 if (arr.length == 3) {
                 	bg = '#' + arr[2];
                 }
@@ -378,11 +537,11 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
                 hiddenColumns: {
-                    columns: [20, 21, 22, 23, 24, 25, 26],
+                    columns: [13, 14, 15, 16, 17],
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [25, 50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100],
+                colWidths: [25, 50, 140, 80, 60, 80, 80, 80, 100, 80, 80, 80, 100],
                 columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -409,12 +568,12 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 cellProperties.readOnly = true;
                                 cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
                             } else {
-                                if (visualColIndex >= 1 && visualColIndex <= 4) {
+                                if (visualColIndex >= 1 && visualColIndex <= 3) {
                                     cellProperties.readOnly = true;
                                     cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
-                                }else if (visualColIndex == 12 || visualColIndex == 19) {
+                                }else if (visualColIndex == 8 || visualColIndex == 12) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-                                } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
+                                } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
                                 } else {
                                     if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
@@ -426,9 +585,9 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                         }
                     } else {
                         cellProperties.readOnly = true;
-                        if (visualColIndex == 12 || visualColIndex == 19) {
+                        if (visualColIndex == 8 || visualColIndex == 12) {
                             cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyCurveBg;
-                        } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
+                        } else if (visualColIndex == 6 || visualColIndex == 7 || visualColIndex == 10 || visualColIndex == 11) {
                             cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyCellBgColor;
                         } else {
                         	cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
@@ -439,7 +598,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 },
                 afterBeginEditing: function (row, column) {
                     var row1 = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-                    if (row1[0] && (column == 12 || column == 19)) {
+                    if (row1[0] && (column == 8 || column == 12)) {
                         var ScadaDriverModbusConfigSelectRow = Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue();
                         if (ScadaDriverModbusConfigSelectRow != '') {
                             var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -453,10 +612,10 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 CurveConfigWindow.show();
 
                                 var curveConfig = null;
-                                if (column == 12 && isNotVal(row1[20])) {
-                                    curveConfig = row1[20];
-                                } else if (column == 19 && isNotVal(row1[21])) {
-                                    curveConfig = row1[21];
+                                if (column == 8 && isNotVal(row1[13])) {
+                                    curveConfig = row1[13];
+                                } else if (column == 12 && isNotVal(row1[14])) {
+                                    curveConfig = row1[14];
                                 }
                                 var value = 'ff0000';
 
@@ -480,7 +639,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 }
                             }
                         }
-                    } else if (row1[0] && (column == 10 || column == 11 || column == 17 || column == 18)) {
+                    } else if (row1[0] && (column == 6 || column == 7 || column == 10 || column == 11)) {
                         var CellColorSelectWindow = Ext.create("AP.view.acquisitionUnit.CellColorSelectWindow");
 
                         Ext.getCmp("cellColorSelectedTableType_Id").setValue(231); //采集项表
@@ -554,18 +713,18 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 
 
 function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+//	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCalItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.calculateItemConfig);
-			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
-			}
+//			if(classes==2){
+//				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.calculateItemConfig);
+//			}else{
+//				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItemConfig);
+//			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
@@ -603,7 +762,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -905,18 +1064,18 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
-	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+//	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCtrlItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
-			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
-			}
+//			if(classes==2){
+//				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
+//			}else{
+//				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.controlItemConfig);
+//			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
@@ -940,7 +1099,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1112,18 +1271,18 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,unitId,unitName,calculateType){
-	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+//	Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitInputItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(classes==2){
-				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.inputItemConfig);
-			}else{
-				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
-			}
+//			if(classes==2){
+//				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.inputItemConfig);
+//			}else{
+//				Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItemConfig);
+//			}
 			if(protocolDisplayUnitInputItemsConfigHandsontableHelper==null || protocolDisplayUnitInputItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitInputItemsConfigHandsontableHelper = ProtocolDisplayUnitInputItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitInputItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
@@ -1160,7 +1319,7 @@ function CreateProtocolDisplayUnitInputItemsConfigInfoTable(deviceType,classes,u
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
+//			Ext.getCmp("ModbusProtocolDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1677,8 +1836,8 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitSaveData.updatelist.push(displayUnitProperties);
 			saveDisplayUnitConfigData(displayUnitSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.deviceType);
 			grantDisplayAcqItemsPermission();
-//			grantDisplayCalItemsPermission();
-//			grantDisplayInputItemsPermission();
+			grantDisplayCalItemsPermission();
+			grantDisplayInputItemsPermission();
 			grantDisplayCtrlItemsPermission();
 		}
 	}
@@ -1759,71 +1918,51 @@ var grantDisplayAcqItemsPermission = function () {
     }
 
     Ext.Array.each(acqItemsData, function (name, index, countriesItSelf) {
-        if ((acqItemsData[index][6]+'')==='true' || (acqItemsData[index][8]+'')==='true' || (acqItemsData[index][13]+'')==='true' || (acqItemsData[index][15]+'')==='true') {
+        if ((acqItemsData[index][0]+'')==='true') {
         	var itemName = acqItemsData[index][2];
         	
         	var itemShowLevel = acqItemsData[index][4];
         	
-        	var realtimeOverview=(acqItemsData[index][6]+'')==='true'?1:0;
-        	var realtimeOverviewSort=acqItemsData[index][7];
-        	var realtimeData=(acqItemsData[index][8]+'')==='true'?1:0;
-        	
-        	var itemRealtimeSort = acqItemsData[index][9];
-        	var realtimeColor= acqItemsData[index][10];
-        	var realtimeBgColor= acqItemsData[index][11];
+        	var itemRealtimeSort = acqItemsData[index][5];
+        	var realtimeColor= acqItemsData[index][6];
+        	var realtimeBgColor= acqItemsData[index][7];
         	var realtimeCurveConfigStr="";
         	var realtimeCurveConfig=null;
-			if(isNotVal(acqItemsData[index][12]) && isNotVal(acqItemsData[index][20])){
-				realtimeCurveConfig=acqItemsData[index][20];
+			if(isNotVal(acqItemsData[index][8]) && isNotVal(acqItemsData[index][13])){
+				realtimeCurveConfig=acqItemsData[index][13];
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
-			
-			var historyOverview=(acqItemsData[index][13]+'')==='true'?1:0;
-        	var historyOverviewSort=acqItemsData[index][14];
-        	var historyData=(acqItemsData[index][15]+'')==='true'?1:0;
         	
-        	var itemHistorySort = acqItemsData[index][16];
-        	var historyColor= acqItemsData[index][17];
-        	var historyBgColor= acqItemsData[index][18];
+        	var itemHistorySort = acqItemsData[index][9];
+        	var historyColor= acqItemsData[index][10];
+        	var historyBgColor= acqItemsData[index][11];
         	var historyCurveConfigStr="";
 			var historyCurveConfig=null;
-			if(isNotVal(acqItemsData[index][19]) && isNotVal(acqItemsData[index][21])){
-				historyCurveConfig=acqItemsData[index][21];
+			if(isNotVal(acqItemsData[index][12]) && isNotVal(acqItemsData[index][14])){
+				historyCurveConfig=acqItemsData[index][14];
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var resolutionMode = acqItemsData[index][22];
-        	var itemAddr = acqItemsData[index][23];
-        	var bitIndex=acqItemsData[index][24];
-        	
-        	var type=acqItemsData[index][25];
-        	
-        	var itemCode = acqItemsData[index][26];
+        	var resolutionMode = acqItemsData[index][15];
+        	var itemAddr = acqItemsData[index][16];
+        	var bitIndex=acqItemsData[index][17];
         	
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
             matrixData += itemName + "##"
-            + realtimeOverview+ "##"
-            + realtimeOverviewSort+ "##"
-            + realtimeData+ "##"
             + itemRealtimeSort+ "##"
             + realtimeColor+ "##"
-            + realtimeBgColor+ "##" //6
-            + historyOverview+ "##"
-            + historyOverviewSort+ "##"
-            + historyData+ "##"
+            + realtimeBgColor+ "##"
             + itemHistorySort+ "##"
             + historyColor+ "##"
-            + historyBgColor+ "##" //12
+            + historyBgColor+ "##"
             + itemShowLevel+ "##" 
             + realtimeCurveConfigStr+ "##" 
             + historyCurveConfigStr + "##" 
             + resolutionMode+ "##"
             + itemAddr + "##" 
             + bitIndex +"##"
-            + type +"##"
-            + itemCode +"##" //20
             + matrix_value+ "|";
         }
     });

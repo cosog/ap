@@ -165,10 +165,10 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.dashStyle=dashStyle;
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
-                			if(parseInt(col)==8){
-                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),13,curveConfig);
-                			}else if(parseInt(col)==12){
-                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
+                			if(parseInt(col)==12){
+                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),20,curveConfig);
+                			}else if(parseInt(col)==19){
+                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),21,curveConfig);
                 			}
                 		}else if(tableType==1){
                 			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);

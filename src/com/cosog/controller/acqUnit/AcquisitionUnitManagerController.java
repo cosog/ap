@@ -775,12 +775,20 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
 			String protocolName = ParamUtils.getParameter(request, "protocol");
-			String itemType = ParamUtils.getParameter(request, "itemType");
+//			String itemType = ParamUtils.getParameter(request, "itemType");
 			
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 			
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			String language="";
+			if(user!=null){
+				language=user.getLanguageName();
+			}
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
-				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
+				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId);
 				
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
@@ -788,58 +796,122 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("##");
 						String itemName=module_[0];
 						
-						String resolutionMode=module_[10];
-						int itemAddr=StringManagerUtils.stringToInteger(module_[11]);
-						String bitIndexStr=module_[12];
-						int bitIndex=-99;
-						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
-							for(int j=0;j<protocol.getItems().size();j++){
-								if(itemAddr==protocol.getItems().get(j).getAddr()){
-									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
-										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
-												&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
-											itemName=protocol.getItems().get(j).getTitle();
-											bitIndex=protocol.getItems().get(j).getMeaning().get(k).getValue();
-											break;
-										}
-									}
-									break;
-								}
-							}
-						}
-						String itemCode="";
-						if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
-							itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
-							if(!StringManagerUtils.isNotNull(itemCode)){
-								MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-								loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-								if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
-									itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
-								}
-							}
-						}
+						String resolutionMode=module_[16];
+						int itemAddr=StringManagerUtils.stringToInteger(module_[17]);
+						String bitIndexStr=module_[18];
+						int type=StringManagerUtils.stringToInteger(module_[19]);
+						String itemCode=module_[20];
 						
-						displayUnitItem = new DisplayUnitItem();
-						displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
-						displayUnitItem.setItemName(itemName);
-						displayUnitItem.setItemCode(itemCode);
-						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
-						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
-						displayUnitItem.setRealtimeColor(module_[2]);
-						displayUnitItem.setRealtimeBgColor(module_[3]);
-						displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
-						displayUnitItem.setHistoryColor(module_[5]);
-						displayUnitItem.setHistoryBgColor(module_[6]);
-						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[7])?StringManagerUtils.stringToInteger(module_[7]):null);
-						displayUnitItem.setRealtimeCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[8]:"");
-						displayUnitItem.setHistoryCurveConf(!"开关量".equalsIgnoreCase(resolutionMode)?module_[9]:"");
-						displayUnitItem.setMatrix(module_[13]);
-						if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
+						if(type==0){
+							int bitIndex=-99;
+							if(languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)){//如果是开关量
+								for(int j=0;j<protocol.getItems().size();j++){
+									if(itemAddr==protocol.getItems().get(j).getAddr()){
+										for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
+											if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
+													&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
+												itemName=protocol.getItems().get(j).getTitle();
+												bitIndex=protocol.getItems().get(j).getMeaning().get(k).getValue();
+												break;
+											}
+										}
+										break;
+									}
+								}
+							}
+							if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
+								itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+								if(!StringManagerUtils.isNotNull(itemCode)){
+									MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+									loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+									if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
+										itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
+									}
+								}
+							}
+							
+							displayUnitItem = new DisplayUnitItem();
+							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+							displayUnitItem.setItemName(itemName);
+							displayUnitItem.setItemCode(itemCode);
+							displayUnitItem.setType(type);
+							displayUnitItem.setRealtimeOverview(StringManagerUtils.stringToInteger(module_[1]));
+							displayUnitItem.setRealtimeOverviewSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
+							displayUnitItem.setRealtimeData(StringManagerUtils.stringToInteger(module_[3]));
+							displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
+							displayUnitItem.setRealtimeColor(module_[5]);
+							displayUnitItem.setRealtimeBgColor(module_[6]);
+							
+							displayUnitItem.setHistoryOverview(StringManagerUtils.stringToInteger(module_[7]));
+							displayUnitItem.setHistoryOverviewSort(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
+							displayUnitItem.setHistoryData(StringManagerUtils.stringToInteger(module_[9]));
+							displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[10])?StringManagerUtils.stringToInteger(module_[10]):null);
+							displayUnitItem.setHistoryColor(module_[11]);
+							displayUnitItem.setHistoryBgColor(module_[12]);
+							displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
+							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
+							
+							
+							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
+							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
+							displayUnitItem.setMatrix(module_[21]);
+							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
+								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+							}
+						}else if(type==1){
+							displayUnitItem = new DisplayUnitItem();
+							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+							displayUnitItem.setItemName(itemName);
+							displayUnitItem.setItemCode(itemCode);
+							displayUnitItem.setType(type);
+							
+							displayUnitItem.setRealtimeOverview(StringManagerUtils.stringToInteger(module_[1]));
+							displayUnitItem.setRealtimeOverviewSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
+							displayUnitItem.setRealtimeData(StringManagerUtils.stringToInteger(module_[3]));
+							displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
+							displayUnitItem.setRealtimeColor(module_[5]);
+							displayUnitItem.setRealtimeBgColor(module_[6]);
+							
+							displayUnitItem.setHistoryOverview(StringManagerUtils.stringToInteger(module_[7]));
+							displayUnitItem.setHistoryOverviewSort(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
+							displayUnitItem.setHistoryData(StringManagerUtils.stringToInteger(module_[9]));
+							displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[10])?StringManagerUtils.stringToInteger(module_[10]):null);
+							displayUnitItem.setHistoryColor(module_[11]);
+							displayUnitItem.setHistoryBgColor(module_[12]);
+							
+							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
+							displayUnitItem.setRealtimeCurveConf(module_[14]);
+							displayUnitItem.setHistoryCurveConf(module_[15]);
+							displayUnitItem.setMatrix(module_[21]);
+							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+						}else if(type==3){
+							displayUnitItem = new DisplayUnitItem();
+							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+							displayUnitItem.setItemName(itemName);
+							displayUnitItem.setItemCode(itemCode);
+							displayUnitItem.setType(type);
+							
+							displayUnitItem.setRealtimeOverview(StringManagerUtils.stringToInteger(module_[1]));
+							displayUnitItem.setRealtimeOverviewSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
+							displayUnitItem.setRealtimeData(StringManagerUtils.stringToInteger(module_[3]));
+							displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
+							displayUnitItem.setRealtimeColor(module_[5]);
+							displayUnitItem.setRealtimeBgColor(module_[6]);
+							
+							displayUnitItem.setHistoryOverview(StringManagerUtils.stringToInteger(module_[7]));
+							displayUnitItem.setHistoryOverviewSort(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
+							displayUnitItem.setHistoryData(StringManagerUtils.stringToInteger(module_[9]));
+							displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[10])?StringManagerUtils.stringToInteger(module_[10]):null);
+							displayUnitItem.setHistoryColor(module_[11]);
+							displayUnitItem.setHistoryBgColor(module_[12]);
+							
+							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
+							displayUnitItem.setRealtimeCurveConf(module_[14]);
+							displayUnitItem.setHistoryCurveConf(module_[15]);
+							displayUnitItem.setMatrix(module_[21]);
 							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 						}
 					}
-					
 				}
 			}
 			result = "{success:true,msg:true}";
@@ -1522,6 +1594,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String code = ParamUtils.getParameter(request, "code");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String acqUnitId = ParamUtils.getParameter(request, "acqUnitId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1529,7 +1602,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolName,classes,code,unitId,acqUnitId,language);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolName,classes,code,unitId,acqUnitId,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1565,7 +1638,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getProtocolDisplayUnitCalItemsConfigData")
 	public String getProtocolDisplayUnitCalItemsConfigData() throws Exception {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");

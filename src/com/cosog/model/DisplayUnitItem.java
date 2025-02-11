@@ -32,6 +32,14 @@ public class DisplayUnitItem implements java.io.Serializable {
 	private String historyBgColor;
 	
 	private Integer type;
+	
+	private Integer realtimeOverview;
+	private Integer  realtimeOverviewSort;
+	private Integer realtimeData;
+	
+	private Integer historyOverview;
+	private Integer  historyOverviewSort;
+	private Integer historyData;
 
 	public DisplayUnitItem() {
 		super();
@@ -45,7 +53,9 @@ public class DisplayUnitItem implements java.io.Serializable {
 			Integer bitIndex,  
 			String realtimeCurveConf, String historyCurveConf,
 			String realtimeColor, String realtimeBgColor,
-			String historyColor, String historyBgColor
+			String historyColor, String historyBgColor,
+			Integer realtimeOverview,Integer  realtimeOverviewSort,Integer realtimeData,
+			Integer historyOverview,Integer  historyOverviewSort,Integer historyData
 			) {
 		super();
 		this.id = id;
@@ -64,6 +74,13 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.realtimeBgColor = realtimeBgColor;
 		this.historyColor = historyColor;
 		this.historyBgColor = historyBgColor;
+		
+		this.realtimeOverview = realtimeOverview;
+		this.realtimeOverviewSort = realtimeOverviewSort;
+		this.realtimeData = realtimeData;
+		this.historyOverview = historyOverview;
+		this.historyOverviewSort = historyOverviewSort;
+		this.historyData = historyData;
 	}
 
 	@Id
@@ -219,5 +236,57 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.historyBgColor = historyBgColor;
 	}
 
-	
+	@Column(name = "realtimeOverview")
+	public Integer getRealtimeOverview() {
+		return realtimeOverview;
+	}
+
+	public void setRealtimeOverview(Integer realtimeOverview) {
+		this.realtimeOverview = realtimeOverview;
+	}
+
+	@Column(name = "realtimeOverviewSort")
+	public Integer getRealtimeOverviewSort() {
+		return realtimeOverviewSort;
+	}
+
+	public void setRealtimeOverviewSort(Integer realtimeOverviewSort) {
+		this.realtimeOverviewSort = realtimeOverviewSort;
+	}
+
+	@Column(name = "realtimeData")
+	public Integer getRealtimeData() {
+		return realtimeData;
+	}
+
+	public void setRealtimeData(Integer realtimeData) {
+		this.realtimeData = realtimeData;
+	}
+
+	@Column(name = "historyOverview")
+	public Integer getHistoryOverview() {
+		return historyOverview;
+	}
+
+	public void setHistoryOverview(Integer historyOverview) {
+		this.historyOverview = historyOverview;
+	}
+
+	@Column(name = "historyOverviewSort")
+	public Integer getHistoryOverviewSort() {
+		return historyOverviewSort;
+	}
+
+	public void setHistoryOverviewSort(Integer historyOverviewSort) {
+		this.historyOverviewSort = historyOverviewSort;
+	}
+
+	@Column(name = "historyData")
+	public Integer getHistoryData() {
+		return historyData;
+	}
+
+	public void setHistoryData(Integer historyData) {
+		this.historyData = historyData;
+	}
 }

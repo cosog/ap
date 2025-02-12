@@ -96,14 +96,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore'
                 					protocolDisplayInstanceInputItemsHandsontableHelper=null;
                 				}
                         	}else if(record.data.classes==2){//选中显示单元
-                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
-                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
-                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
+                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
+//                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
+//                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
                         		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
                         	}else{
-                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes);
-                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
-                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
+                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
+//                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
+//                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
                         		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.data.id,record.data.text,record.data.classes);
                         	}
                         	

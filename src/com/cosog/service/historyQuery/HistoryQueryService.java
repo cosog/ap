@@ -907,6 +907,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type<>2"
+						+ " and t.historyData=1"
 						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 				displayItemSql+=" order by t.historySort,t.type,t.id";
 				List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -935,6 +936,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							&& (StringManagerUtils.existDisplayItem(displayInstanceOwnItem.getItemList(), protocol.getItems().get(j).getTitle(), false))){
 						for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 							if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
+									&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 									&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 									&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
 									){
@@ -951,6 +953,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayCalItemList.add(calItem);
@@ -967,6 +970,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
@@ -985,6 +989,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==3
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayInputItemList.add(calItem);
@@ -1718,6 +1723,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							&& (StringManagerUtils.existDisplayItem(displayInstanceOwnItem.getItemList(), protocol.getItems().get(j).getTitle(), false))){
 						for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 							if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
+									&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 									&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 									&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
 									){
@@ -1734,6 +1740,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayCalItemList.add(calItem);
@@ -1750,6 +1757,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
@@ -1768,6 +1776,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==3
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayInputItemList.add(calItem);
@@ -2427,6 +2436,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								&& (StringManagerUtils.existDisplayItem(displayInstanceOwnItem.getItemList(), protocol.getItems().get(j).getTitle(), false))){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
+										&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
 										
@@ -2444,6 +2454,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayCalItemList.add(calItem);
@@ -2461,6 +2472,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
@@ -2480,6 +2492,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==3
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayInputItemList.add(calItem);

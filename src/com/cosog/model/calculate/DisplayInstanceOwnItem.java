@@ -35,6 +35,15 @@ public class DisplayInstanceOwnItem implements Serializable {
 		public int type;
 		public String itemSourceName;
 		public String itemSourceCode;
+		
+		private int realtimeOverview;
+		private int  realtimeOverviewSort;
+		private int realtimeData;
+		
+		private int historyOverview;
+		private int  historyOverviewSort;
+		private int historyData;
+		
 		public int getItemId() {
 			return itemId;
 		}
@@ -142,6 +151,42 @@ public class DisplayInstanceOwnItem implements Serializable {
 		}
 		public void setHistoryBgColor(String historyBgColor) {
 			this.historyBgColor = historyBgColor;
+		}
+		public int getRealtimeOverview() {
+			return realtimeOverview;
+		}
+		public void setRealtimeOverview(int realtimeOverview) {
+			this.realtimeOverview = realtimeOverview;
+		}
+		public int getRealtimeOverviewSort() {
+			return realtimeOverviewSort;
+		}
+		public void setRealtimeOverviewSort(int realtimeOverviewSort) {
+			this.realtimeOverviewSort = realtimeOverviewSort;
+		}
+		public int getRealtimeData() {
+			return realtimeData;
+		}
+		public void setRealtimeData(int realtimeData) {
+			this.realtimeData = realtimeData;
+		}
+		public int getHistoryOverview() {
+			return historyOverview;
+		}
+		public void setHistoryOverview(int historyOverview) {
+			this.historyOverview = historyOverview;
+		}
+		public int getHistoryOverviewSort() {
+			return historyOverviewSort;
+		}
+		public void setHistoryOverviewSort(int historyOverviewSort) {
+			this.historyOverviewSort = historyOverviewSort;
+		}
+		public int getHistoryData() {
+			return historyData;
+		}
+		public void setHistoryData(int historyData) {
+			this.historyData = historyData;
 		}
 	}
 	

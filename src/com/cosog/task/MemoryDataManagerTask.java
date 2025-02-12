@@ -1862,7 +1862,9 @@ public class MemoryDataManagerTask {
 					+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
 					+ "t.realtimecurveconf,t.historycurveconf,"
 					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.type "
+					+ "t.type,"
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
 					+ " where t.unitid=t2.id and t2.id=t3.displayunitid";
 			if(StringManagerUtils.isNotNull(instanceId)){
@@ -1931,6 +1933,16 @@ public class MemoryDataManagerTask {
     				displayItem.setHistoryColor(rs.getString(15)+"");
     				displayItem.setHistoryBgColor(rs.getString(16)+"");
     				displayItem.setType(rs.getInt(17));
+    				
+    				
+    				displayItem.setRealtimeOverview(rs.getInt(18));
+    				displayItem.setRealtimeOverviewSort(rs.getInt(19));
+    				displayItem.setRealtimeData(rs.getInt(20));
+    				
+    				displayItem.setHistoryOverview(rs.getInt(21));
+    				displayItem.setHistoryOverviewSort(rs.getInt(22));
+    				displayItem.setHistoryData(rs.getInt(23));
+    				
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){
     					if(displayItem.getItemCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(i).getItemCode()) 

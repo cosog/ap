@@ -132,115 +132,56 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     }]
                 },{
                 	border: true,
-                	region: 'center',
-                	layout: "border",
-                	items: [{
+            		region: 'center',
+            		layout: "border",
+            		items: [{
                 		region: 'center',
-                		layout: "border",
-                		items: [{
-                    		region: 'center',
-                    		title:loginUserLanguageResource.acquisitionItem,
-                    		id:"ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            html:'<div class="ProtocolDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayInstanceAcqItemsHandsontableHelper!=null && protocolDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayInstanceAcqItemsHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
+                		title:loginUserLanguageResource.acquisitionItem,
+                		id:"ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
+                        layout: 'fit',
+                        html:'<div class="ProtocolDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolDisplayInstanceAcqItemsHandsontableHelper!=null && protocolDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayInstanceAcqItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
                             }
-                    	},{
-                    		region: 'south',
-                        	height:'50%',
-                        	title:loginUserLanguageResource.controlItem,
-                    		id:"ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            collapsible: true,
-                            split: true,
-                            html:'<div class="ProtocolDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null && protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
-//                                		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.refreshDimensions();
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
-                            }
-                    	}]
+                        }
                 	},{
-                		region: 'east',
-                		width:'50%',
-                		layout: "border",
-                		header: false,
-                		split: true,
+                		region: 'south',
+                    	height:'50%',
+                    	title:loginUserLanguageResource.controlItem,
+                		id:"ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
+                        layout: 'fit',
                         collapsible: true,
-                		items: [{
-                			region: 'center',
-                			layout: 'fit',
-                			title:loginUserLanguageResource.inputItem,
-                    		id:"ProtocolDisplayInstanceInputItemsConfigTableInfoPanel_Id",
-                            html:'<div class="ProtocolDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayInstanceInputItemsHandsontableHelper!=null && protocolDisplayInstanceInputItemsHandsontableHelper.hot!=undefined){
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayInstanceInputItemsHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
+                        split: true,
+                        html:'<div class="ProtocolDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null && protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
+//                            		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
                             }
-                		},{
-                    		region: 'south',
-                        	height:'50%',
-                        	layout: 'fit',
-                            collapsible: true,
-                            split: true,
-                			title:loginUserLanguageResource.calculateItem,
-                        	id:"ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id",
-                            html:'<div class="ProtocolDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolDisplayInstanceCalItemsHandsontableHelper!=null && protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		protocolDisplayInstanceCalItemsHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                	}
-                                }
-                            }
-                    	}]
+                        }
                 	}]
                 }]
             }]
@@ -474,7 +415,7 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 	});
 }
 
-function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes){
+function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes,calculateType){
 	Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -491,26 +432,42 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 			if(protocolDisplayInstanceAcqItemsHandsontableHelper==null || protocolDisplayInstanceAcqItemsHandsontableHelper.hot==undefined){
 				protocolDisplayInstanceAcqItemsHandsontableHelper = ProtocolDisplayInstanceAcqItemsHandsontableHelper.createNew("ProtocolDisplayInstanceAcqItemsConfigTableInfoDiv_id");
 				var colHeaders = "[" 
-                	+"['','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 4},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 4}]," 
-                	+"['','','','',{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.historyData+"', colspan: 3},'"+loginUserLanguageResource.trendCurve+"']," 
-                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
-                	+"'"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"']"
+                	+"['','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7}]," 
+                	+"['','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"']," 
+                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+                	
+                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
+                	+"'"+loginUserLanguageResource.dynamicData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	
+                	
+                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
+                	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'" 
+                	+"]"
                 	+"]";
 				
 				var columns="["
-						+"{data:'id'}," 
-						+"{data:'title'},"
-						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'realtimeColor'}," 
-	                    +"{data:'realtimeBgColor'}," 
-						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'historyColor'}," 
-	                    +"{data:'historyBgColor'}," 
-						+"{data:'historyCurveConfShowValue'}"
+					+"{data:'id'}," 
+                    +"{data:'title'}," 
+                    +"{data:'dataSource'}," 
+                    +"{data:'unit'}," 
+                    +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    
+                    +"{data:'realtimeOverview',type:'checkbox'}," 
+                    +"{data:'realtimeOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    
+                    +"{data:'realtimeData',type:'checkbox'}," 
+                    +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'realtimeColor'}," 
+                    +"{data:'realtimeBgColor'}," 
+                    +"{data:'realtimeCurveConfShowValue'},"
+                    
+                    +"{data:'historyOverview',type:'checkbox'}," 
+                    +"{data:'historyOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'historyData',type:'checkbox'}," 
+                    +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'historyColor'}," 
+                    +"{data:'historyBgColor'}," 
+                    +"{data:'historyCurveConfShowValue'}"
 						+"]";
 				protocolDisplayInstanceAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolDisplayInstanceAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -525,7 +482,8 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 		},
 		params: {
 			id:id,
-			classes:classes
+			classes:classes,
+			calculateType:calculateType
         }
 	});
 };
@@ -543,7 +501,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(value!=null && value!=""){
-	            	var arr=value.split(';');
+	            	var arr=(value+"").split(';');
 	            	if(arr.length==3){
 	            		td.style.backgroundColor = '#'+arr[2];
 	            	}
@@ -611,7 +569,7 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	        	protocolDisplayInstanceAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,80,80,80,100,80,80,80,100],
+	        		colWidths: [50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100],
 	                columns:protocolDisplayInstanceAcqItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -631,9 +589,9 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
 	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==7||visualColIndex==11){
+	                    if(visualColIndex == 11 || visualColIndex == 18){
 		                	cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addCurveBg;
-		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
+		                }else if (visualColIndex == 9 || visualColIndex == 10 || visualColIndex == 16 || visualColIndex == 17) {
                             cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addCellBgColor;
                         }else{
 		                	cellProperties.renderer = protocolDisplayInstanceAcqItemsHandsontableHelper.addReadOnlyBg;

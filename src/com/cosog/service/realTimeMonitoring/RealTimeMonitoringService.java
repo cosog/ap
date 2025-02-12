@@ -980,6 +980,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								&& (StringManagerUtils.existDisplayItem(displayInstanceOwnItem.getItemList(), protocol.getItems().get(j).getTitle(), false))){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
+										&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
 										){
@@ -996,6 +997,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayCalItemList.add(calItem);
@@ -1012,6 +1014,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
@@ -1030,6 +1033,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==3
+											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 										displayInputItemList.add(calItem);

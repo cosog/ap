@@ -1823,6 +1823,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
 		String classes = ParamUtils.getParameter(request, "classes");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1830,7 +1831,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceAcqItemsConfigData(id,classes,language);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceAcqItemsConfigData(id,classes,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

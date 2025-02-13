@@ -1351,6 +1351,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			String dataSource=languageResourceMap.get("calculate");
+			if("RunStatus".equalsIgnoreCase(calItem.getCode())){
+				dataSource=languageResourceMap.get("acquisition");
+			}
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(index)+","
 					+ "\"title\":\""+calItem.getName()+"\","
@@ -1369,7 +1373,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+calItem.getCode()+"\","
 //					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
 					+ "\"type\":1,"
-					+ "\"dataSource\":\""+languageResourceMap.get("calculate")+"\","
+					+ "\"dataSource\":\""+dataSource+"\","
 					+ "\"realtimeOverview\":"+realtimeOverview+","
 					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 					+ "\"realtimeData\":"+realtimeData+","
@@ -3712,6 +3716,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						boolean historyOverview=false;
 						String  historyOverviewSort="";
 						boolean historyData=false;
+						
+						String dataSource=languageResourceMap.get("calculate");
+						if("RunStatus".equalsIgnoreCase(calItem.getCode())){
+							dataSource=languageResourceMap.get("acquisition");
+						}
 
 						for(int k=0;k<itemsList.size();k++){
 							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
@@ -3749,7 +3758,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 								+ "\"type\":1,"
-								+ "\"dataSource\":\""+languageResourceMap.get("calculate")+"\","
+								+ "\"dataSource\":\""+dataSource+"\","
 								+ "\"realtimeOverview\":"+realtimeOverview+","
 								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 								+ "\"realtimeData\":"+realtimeData+","

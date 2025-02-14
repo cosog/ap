@@ -476,7 +476,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		split: true,
             		collapsible: true,
             		header:false,
-            		hidden:onlyMonitor,
+//            		hidden:onlyMonitor,
             		tbar:[{
                         xtype: 'radiogroup',
                         fieldLabel: loginUserLanguageResource.calculateType,

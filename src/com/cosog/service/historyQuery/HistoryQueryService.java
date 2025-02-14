@@ -528,7 +528,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2333,7 +2333,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -4001,7 +4001,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -4622,7 +4622,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

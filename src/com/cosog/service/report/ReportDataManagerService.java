@@ -840,7 +840,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1286,7 +1286,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -2139,7 +2139,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -2625,7 +2625,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3460,7 +3460,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3941,7 +3941,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
 			if(user!=null){
-				saveSystemLog(user,4,"导出文件:"+fileName);
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

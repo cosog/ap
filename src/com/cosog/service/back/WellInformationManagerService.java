@@ -1516,7 +1516,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1640,6 +1640,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public boolean exportSMSDeviceInfoData(User user,HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
 		try{
 			StringBuffer result_json = new StringBuffer();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_smsdevice";
 			String wellInformationName = (String) map.get("wellInformationName");
@@ -1694,7 +1695,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1926,7 +1927,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -106,6 +106,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
@@ -177,7 +178,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"导出文件:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

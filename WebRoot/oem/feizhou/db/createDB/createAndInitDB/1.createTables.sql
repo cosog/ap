@@ -254,15 +254,15 @@ create table TBL_DIST_ITEM
   dataitemid VARCHAR2(32) not null,
   tenantid   VARCHAR2(50),
   sysdataid  VARCHAR2(50),
-  name_zh_CN      VARCHAR2(50),
-  name_en      VARCHAR2(50),
-  name_ru      VARCHAR2(50),
+  name_zh_CN      VARCHAR2(200),
+  name_en      VARCHAR2(200),
+  name_ru      VARCHAR2(200),
   code      VARCHAR2(200),
   datavalue  VARCHAR2(200),
   sorts      NUMBER,
   status     NUMBER,
-  creator    VARCHAR2(50),
-  updateuser VARCHAR2(50),
+  creator    VARCHAR2(200),
+  updateuser VARCHAR2(200),
   updatetime DATE default sysdate,
   createdate DATE default sysdate
 )
@@ -560,6 +560,12 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
   realtimecurveconf VARCHAR2(4000),
   historycurveconf  VARCHAR2(4000),
   type              NUMBER(1) default 0,
+  realtimeoverview     NUMBER(1),
+  realtimedata         NUMBER(1),
+  historyoverview      NUMBER(1),
+  historydata          NUMBER(1),
+  realtimeoverviewsort NUMBER(10),
+  historyoverviewsort  NUMBER(10),
   matrix            VARCHAR2(8)
 )
 tablespace AP_DATA
@@ -619,7 +625,7 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
   prec            NUMBER(2),
   totaltype       NUMBER(2),
   datasource      VARCHAR2(8),
-  matrix          VARCHAR2(8)
+  matrix          VARCHAR2(100)
 )
 tablespace AP_DATA
   storage

@@ -67,7 +67,7 @@
           	<article class='markdown-body'>
 <h1 id="-1-">第1章 系统介绍</h1>
 <h2 id="1-1-">1.1 系统登录</h2>
-<p>访问地址：<a href="http://IP:端口/项目名称，如[http://127.0.0.1/ap](http://127.0.0.1:8080/ap)\_fb">http://IP:端口/项目名称，如[http://127.0.0.1/ap](http://127.0.0.1:8080/ap)\_fb</a></p>
+<p>访问地址：<a href="http://IP:端口/">http://IP:端口/</a>项目名称，如<a href="http://127.0.0.1:8080/ap">http://127.0.0.1/ap</a>_fb</p>
 <p>默认管理员账号：admin</p>
 <p>初始密码：Admin201#</p>
 <h2 id="1-2-">1.2 页面布局</h2>
@@ -261,16 +261,16 @@ Menu\Programs\StartUp”下，如此则系统启动后，自动执行startup.bat
 <p><img src="media/139f1ad8d71b33f6d47638c693149a67.png" alt=""></p>
 <h3 id="2-1-3-">2.1.3 添加显示单元</h3>
 <p>在协议下面创建显示单元，并设置单元下包含的项及曲线。</p>
-<p><img src="media/c58f5e937df4bdfa5bb5ee6a668fce3f.png" alt=""></p>
+<p><img src="media/59baab7f8795b90963b9e5a546d3cdd1.png" alt=""></p>
 <p>1、采集项、计算项和录入项</p>
 <p>显示级别：采集项显示级别，用户只能查看显示级别小于自身数据显示级别的数据（见角色管理模块和用户管理模块，数字越大代表等级越小）；</p>
-<p>实时监控/动态数据/字段顺序：对应实时监控模块中实时数据表和历史查询模块中详细数据表中项的显示顺序（左到右、上到下顺序），未设置顺序的项将放在最后面显示；</p>
+<p>实时监控/动态数据/动态数据、字段顺序：对应实时监控模块中实时数据表和历史查询模块中详细数据表中项的显示内容和顺序（左到右、上到下顺序），未设置顺序的项将放在最后面显示；</p>
 <p>实时监控/动态数据/前景色：对应实时监控模块中实时数据表相应单元格的字体颜色,
 双击单元格进行配置；</p>
 <p>实时监控/动态数据/背景色：对应实时监控模块中实时数据表相应单元格的背景色,
 双击单元格进行配置；</p>
 <p>实时监控/动态数据/趋势曲线：实时曲线显示顺序、颜色、样式等，未设置则不显示曲线，双击单元格进行配置；</p>
-<p>历史查询/历史数据/字段顺序：对应历史查询模块中历史数据表显示顺序，未设置顺序的项将放在最后面显示；</p>
+<p>历史查询/历史数据/历史数据、字段顺序：对应历史查询模块中历史数据表显示内容和顺序，未设置顺序的项将放在最后面显示；</p>
 <p>历史查询/历史数据/前景色：对应历史查询模块中详细数据表相应单元格的字体颜色,
 双击单元格进行配置；</p>
 <p>历史查询/历史数据/背景色：对应历史查询模块中详细数据表相应单元格的背景色,
@@ -462,7 +462,31 @@ scope=spfile;”修改spfile文件，关闭审计功能。</p>
 <p>4）重启数据库：执行“shutdown
 immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p><img src="media/8c876091da0da46ad25a67612aea9868.png" alt=""></p>
-<p>3、oracle12以上版本插拔数据库自启动</p>
+<p>3、SYSAUX表空间过大</p>
+<p>SYSAUX表空间是SYSTEM的辅助表空间，存放着AWR快照、统计信息、审计信息等。随着数据库的使用，这些信息可能会快速增长</p>
+<p>解决方案：AWR快照是SYSAUX表空间增长的主要原因之一。可以通过删除旧的快照来回收空间</p>
+<p>1）查看AWR快照ID范围</p>
+<p>SELECT MIN(SNAP_ID), MAX(SNAP_ID) FROM DBA_HIST_SNAPSHOT;</p>
+<p>2）删除指定范围内的AWR快照（谨慎操作，确保不会丢失重要性能数据）</p>
+<p>EXECUTE DBMS_WORKLOAD_REPOSITORY.DROP_SNAPSHOT_RANGE(MIN_SNAP_ID, MAX_SNAP_ID);</p>
+<p>4、UNDOTBS01表空间过大</p>
+<p>UNDOTBS01.dbf是oracle系统undo_tablespace使用的，其作用为：回退事务、读一致性、事务恢复、倒叙查询(FlashBack
+Query)</p>
+<p>1）先查看在使用UNDOTBS01.dbf的undo_tablespace表名：</p>
+<p>使用sqlplus连接数据库，输入命令</p>
+<p>show parameter undo;</p>
+<p><img src="media/7e0acd679a5490cebe73fb63d2802407.png" alt="https://i-blog.csdnimg.cn/blog_migrate/c37024a5a76cdb2e060329b3d042606a.png"></p>
+<p>2）建立一张新的undo_tablespace：</p>
+<p>create undo tablespace undotbs02 datafile
+&#39;D:\Oracle\oradata\orcl\UNDOTBS02.dbf&#39; size 100m autoextend on next 100m;</p>
+<p>3）将系统undo_tablespace指向新的表空间：</p>
+<p>alter system set undo_tablespace=undotbs02;</p>
+<p>4）删除原来的表空间及数据文件：</p>
+<p>drop tablespace undotbs1 including contents and datafiles;</p>
+<p>5）若要禁止undo_tablespace自动增长</p>
+<p>alter database datafile &#39;D:\Oracle\oradata\orcl\UNDOTBS02.dbf&#39; autoextend
+off;</p>
+<p>5、oracle12以上版本插拔数据库自启动</p>
 <p>每次重启数据库后，创建的插拔数据库默认不自动打开。可创建触发器，在服务启动后自动打开插拔数据库。</p>
 <p>centOS系统下，先切换oracle用户</p>
 <p>su – oracle</p>
@@ -474,7 +498,7 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。</p>
 <p>EXECUTE IMMEDIATE &#39;ALTER PLUGGABLE DATABASE ALL OPEN&#39;;</p>
 <p>END open_pdbs;</p>
 <p>/</p>
-<p>4、表空间扩容</p>
+<p>6、表空间扩容</p>
 <p>oracle的表空间与数据文件是成对出现的，每一个数据文件对应一个表空间，一个表空间可以包含多个数据文件。单个数据文件最大为32G，可以通过增加数据文件的方式来为表空间扩容：</p>
 <p>alter tablespace 表空间名称 add datafile 数据文件 size 350M autoextend on next
 50M Maxsize UNLIMITED;</p>

@@ -514,6 +514,144 @@ values ('134394', null, '7f13446d19b4497986980fa16a750f95', '运行时率(小数)', 'r
 insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('134395', null, '7f13446d19b4497986980fa16a750f95', '运行区间', 'runRange', null, 12, 1, null, null, to_date('07-06-2022 17:38:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-06-2022 17:38:09', 'dd-mm-yyyy hh24:mi:ss'));
 
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151666', null, '7f13446d19b4497986980fa16a750f95', '原油密度(g/cm^3)', 'crudeoilDensity', null, 13, 0, 'system', 'system', to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), 'Crudeoil Density(g/cm^3)', '原油密度(g/cm^3)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151667', null, '7f13446d19b4497986980fa16a750f95', '水密度(g/cm^3)', 'waterDensity', null, 14, 0, 'system', 'system', to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), 'Water Density(g/cm^3)', '水密度(g/cm^3)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151668', null, '7f13446d19b4497986980fa16a750f95', '天然气相对密度', 'naturalGasRelativeDensity', null, 15, 0, 'system', 'system', to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), 'Natural Gas Relative Density', '天然气相对密度');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151669', null, '7f13446d19b4497986980fa16a750f95', '饱和压力(MPa)', 'saturationPressure', null, 16, 0, 'system', 'system', to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), 'Saturation Pressure(MPa)', '饱和压力(MPa)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151670', null, '7f13446d19b4497986980fa16a750f95', '油层中部深度(m)', 'reservoirDepth', null, 17, 0, 'system', 'system', to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:26:46', 'dd-mm-yyyy hh24:mi:ss'), 'Reservoir Depth(m)', '油层中部深度(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151671', null, '7f13446d19b4497986980fa16a750f95', '油层中部温度(℃)', 'reservoirTemperature', null, 18, 0, 'system', 'system', to_date('14-05-2020 16:17:59', 'dd-mm-yyyy hh24:mi:ss'), to_date('14-05-2020 16:17:59', 'dd-mm-yyyy hh24:mi:ss'), 'Reservoir Temperature(℃)', '油层中部温度(℃)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151672', null, '7f13446d19b4497986980fa16a750f95', '油压(MPa)', 'tubingPressure', null, 19, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Tubing Pressure(MPa)', '油压(MPa)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151673', null, '7f13446d19b4497986980fa16a750f95', '套压(MPa)', 'casingPressure', null, 20, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Casing Pressure(MPa)', '套压(MPa)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151674', null, '7f13446d19b4497986980fa16a750f95', '井口温度(℃)', 'wellHeadFluidTemperature', null, 21, 0, 'system', 'system', to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), 'Well Head Temperature(℃)', '井口油温(℃)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151675', null, '7f13446d19b4497986980fa16a750f95', '含水率(%)', 'weightWaterCut', null, 22, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Water Cut(%)', '含水率(%)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151676', null, '7f13446d19b4497986980fa16a750f95', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 23, 0, 'system', 'system', to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), 'Production Gas Oil Ratio(m^3/t)', '生产气油比(m^3/t)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151677', null, '7f13446d19b4497986980fa16a750f95', '动液面(m)', 'producingFluidLevel', null, 24, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Producing Fluid Level(m)', '动液面(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151678', null, '7f13446d19b4497986980fa16a750f95', '泵挂(m)', 'pumpSettingDepth', null, 25, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Pump Setting Depth(m)', '泵挂(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151679', null, '7f13446d19b4497986980fa16a750f95', '泵筒类型', 'barrelTypeName', null, 26, 0, 'system', 'system', to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), 'Barrel Type', '泵筒类型');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151680', null, '7f13446d19b4497986980fa16a750f95', '泵级别', 'pumpGrade', null, 27, 0, 'system', 'system', to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'), 'Pump Grade', '泵级别');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151681', null, '7f13446d19b4497986980fa16a750f95', '泵径(mm)', 'pumpboreDiameter', null, 28, 0, 'system', 'system', to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), 'Pumpbore Diameter(mm)', '泵径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151682', null, '7f13446d19b4497986980fa16a750f95', '柱塞长(m)', 'plungerLength', null, 29, 0, 'system', 'system', to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), 'Plunger Length(m)', '柱塞长(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151710', null, '7f13446d19b4497986980fa16a750f95', '泵级数', 'barrelSeries', null, 30, 0, 'system', 'system', to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), 'Barrel Series', '泵级数');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151711', null, '7f13446d19b4497986980fa16a750f95', '转子直径(mm)', 'rotorDiameter', null, 31, 0, 'system', 'system', to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), 'Rotor Diameter(mm)', '转子直径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151712', null, '7f13446d19b4497986980fa16a750f95', '公称排量(ml/转)', 'qpr', null, 32, 0, 'system', 'system', to_date('16-10-2018 15:18:27', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-10-2018 15:18:27', 'dd-mm-yyyy hh24:mi:ss'), 'qpr(ml/r)', '公称排量(ml/转)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151683', null, '7f13446d19b4497986980fa16a750f95', '油管内径(mm)', 'tubingStringInsideDiameter', null, 33, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Tubing String Inside Diameter(mm)', '油管内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151684', null, '7f13446d19b4497986980fa16a750f95', '套管内径(mm)', 'casingStringInsideDiameter', 'width:120', 34, 0, 'system', 'system', to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'), 'Casing String Inside Diameter(mm)', '套管内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151685', null, '7f13446d19b4497986980fa16a750f95', '一级杆类型', 'rodTypeName1', null, 35, 0, 'system', 'system', to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Type of First Rod', '一级杆类型');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151686', null, '7f13446d19b4497986980fa16a750f95', '一级杆级别', 'rodGrade1', null, 36, 0, 'system', 'system', to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'), 'Grade of First Rod', '一级杆级别');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151687', null, '7f13446d19b4497986980fa16a750f95', '一级杆外径(mm)', 'rodOutsideDiameter1', null, 37, 0, 'system', 'system', to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'), 'Outside Diameter of First Rod(mm)', '一级杆外径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151688', null, '7f13446d19b4497986980fa16a750f95', '一级杆内径(mm)', 'rodInsideDiameter1', null, 38, 0, 'system', 'system', to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), 'Inside Diameter of First Rod(mm)', '一级杆内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151689', null, '7f13446d19b4497986980fa16a750f95', '一级杆长度(m)', 'rodLength1', null, 39, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Length of First Rod(m)', '一级杆长度(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151690', null, '7f13446d19b4497986980fa16a750f95', '二级杆类型', 'rodTypeName2', null, 40, 0, 'system', 'system', to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Type of Second Rod', '二级杆类型');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151691', null, '7f13446d19b4497986980fa16a750f95', '二级杆级别', 'rodGrade2', null, 41, 0, 'system', 'system', to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'), 'Grade of Second Rod', '二级杆级别');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151692', null, '7f13446d19b4497986980fa16a750f95', '二级杆外径(mm)', 'rodOutsideDiameter2', null, 42, 0, 'system', 'system', to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'), 'Outside Diameter of Second Rod(mm)', '二级杆外径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151693', null, '7f13446d19b4497986980fa16a750f95', '二级杆内径(mm)', 'rodInsideDiameter2', null, 43, 0, 'system', 'system', to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), 'Inside Diameter of Second Rod(mm)', '二级杆内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151694', null, '7f13446d19b4497986980fa16a750f95', '二级杆长度(m)', 'rodLength2', null, 44, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Length of Second Rod(m)', '二级杆长度(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151695', null, '7f13446d19b4497986980fa16a750f95', '三级杆类型', 'rodTypeName3', null, 45, 0, 'system', 'system', to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Type of Third Rod', '三级杆类型');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151696', null, '7f13446d19b4497986980fa16a750f95', '三级杆级别', 'rodGrade3', null, 46, 0, 'system', 'system', to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'), 'Grade of Third Rod', '三级杆级别');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151697', null, '7f13446d19b4497986980fa16a750f95', '三级杆外径(mm)', 'rodOutsideDiameter3', null, 47, 0, 'system', 'system', to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'), 'Outside Diameter of Third Rod(mm)', '三级杆外径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151698', null, '7f13446d19b4497986980fa16a750f95', '三级杆内径(mm)', 'rodInsideDiameter3', null, 48, 0, 'system', 'system', to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), 'Inside Diameter of Third Rod(mm)', '三级杆内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151699', null, '7f13446d19b4497986980fa16a750f95', '三级杆长度(m)', 'rodLength3', null, 49, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Length of Third Rod(m)', '三级杆长度(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151700', null, '7f13446d19b4497986980fa16a750f95', '四级杆类型', 'rodTypeName4', null, 50, 0, 'system', 'system', to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-03-2024 13:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Type of Fourth Rod', '四级杆类型');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151701', null, '7f13446d19b4497986980fa16a750f95', '四级杆级别', 'rodGrade4', null, 51, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Grade of Fourth Rod', '四级杆级别');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151702', null, '7f13446d19b4497986980fa16a750f95', '四级杆外径(mm)', 'rodOutsideDiameter4', null, 52, 0, 'system', 'system', to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'), 'Outside Diameter of Fourth Rod(mm)', '四级杆外径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151703', null, '7f13446d19b4497986980fa16a750f95', '四级杆内径(mm)', 'rodInsideDiameter4', null, 53, 0, 'system', 'system', to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), 'Inside Diameter of Fourth Rod(mm)', '四级杆内径(mm)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151704', null, '7f13446d19b4497986980fa16a750f95', '四级杆长度(m)', 'rodLength4', null, 54, 0, 'system', 'system', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), 'Length of Fourth Rod(m)', '四级杆长度(m)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151706', null, '7f13446d19b4497986980fa16a750f95', '工况干预', 'manualInterventionResult', null, 55, 0, 'system', 'system', to_date('11-10-2022 15:47:27', 'dd-mm-yyyy hh24:mi:ss'), to_date('11-10-2022 15:47:27', 'dd-mm-yyyy hh24:mi:ss'), 'Manual Intervention Result', '工况干预');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151707', null, '7f13446d19b4497986980fa16a750f95', '净毛比(小数)', 'netGrossRatio', null, 56, 0, 'system', 'system', to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), 'Net Gross Ratio(dec)', '净毛比(小数)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151708', null, '7f13446d19b4497986980fa16a750f95', '净毛值(m^3/d)', 'netGrossValue', null, 57, 0, 'system', 'system', to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), 'Net Gross Value(m^3/d)', '净毛值(m^3/d)');
+
+insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
+values ('151709', null, '7f13446d19b4497986980fa16a750f95', '反演液面校正值(MPa)', 'levelCorrectValue', null, 58, 0, 'system', 'system', to_date('05-05-2023 16:25:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-05-2023 16:25:10', 'dd-mm-yyyy hh24:mi:ss'), 'Level Correct Value(MPa)', '反演液面校正值(MPa)');
+
 insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('139314', null, '8122b170c0ca4deb87159c931ab251f3', '序号', 'id', 'width:50', 1, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 

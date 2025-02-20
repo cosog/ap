@@ -12,6 +12,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.task.CalculateDataManagerTask;
+import com.cosog.task.DatabaseMaintenanceTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.StringManagerUtils;
 
@@ -26,6 +27,7 @@ public class DataDictInitializeListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent event) { 
 		ServletContext context = event.getServletContext();
 		CalculateDataManagerTask.scheduledDestory();
+		DatabaseMaintenanceTask.scheduledDestory();
         
 		StringManagerUtils.printLog("context game over ");
 		context.log("context game over ", new Throwable());

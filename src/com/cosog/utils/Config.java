@@ -41,6 +41,7 @@ public class Config {
 					configFile.getAp().setReport(oemConfigFile.getReport());
 					configFile.getAp().setEmail(oemConfigFile.getEmail());
 					configFile.getAp().setOthers(oemConfigFile.getOthers());
+					configFile.getAp().setDatabaseMaintenance(oemConfigFile.getDatabaseMaintenance());
 				}
 				
 				if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){

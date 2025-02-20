@@ -256,6 +256,8 @@ public class ConfigFile {
 	    private OEMConfigFile.Oem oem;
 	    
 	    private OEMConfigFile.Report report;
+	    
+	    private OEMConfigFile.DatabaseMaintenance databaseMaintenance;
 
 	    private OEMConfigFile.Email email;
 	    
@@ -308,6 +310,12 @@ public class ConfigFile {
 		}
 		public void setOemConfigFile(String oemConfigFile) {
 			this.oemConfigFile = oemConfigFile;
+		}
+		public OEMConfigFile.DatabaseMaintenance getDatabaseMaintenance() {
+			return databaseMaintenance;
+		}
+		public void setDatabaseMaintenance(OEMConfigFile.DatabaseMaintenance databaseMaintenance) {
+			this.databaseMaintenance = databaseMaintenance;
 		}
 	}
 	

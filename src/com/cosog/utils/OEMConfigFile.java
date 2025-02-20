@@ -7,6 +7,8 @@ public class OEMConfigFile {
 	
 	private Report report;
 	
+	private DatabaseMaintenance databaseMaintenance;
+	
 	private Email email;
 	
 	private Others others;
@@ -25,6 +27,14 @@ public class OEMConfigFile {
 	
 	public void setReport(Report report) {
 		this.report = report;
+	}
+
+	public DatabaseMaintenance getDatabaseMaintenance() {
+		return databaseMaintenance;
+	}
+
+	public void setDatabaseMaintenance(DatabaseMaintenance databaseMaintenance) {
+		this.databaseMaintenance = databaseMaintenance;
 	}
 	
 	public Email getEmail() {
@@ -453,6 +463,39 @@ public class OEMConfigFile {
 
 		public void setTemplate(String template) {
 			this.template = template;
+		}
+	}
+	
+	public static class DatabaseMaintenance{
+		
+		private int cycle;
+		
+		private String startTime;
+		
+		private int retentionTime;
+		
+		public int getCycle() {
+			return cycle;
+		}
+		
+		public void setCycle(int cycle) {
+			this.cycle = cycle;
+		}
+		
+		public String getStartTime() {
+			return startTime;
+		}
+		
+		public void setStartTime(String startTime) {
+			this.startTime = startTime;
+		}
+		
+		public int getRetentionTime() {
+			return retentionTime;
+		}
+		
+		public void setRetentionTime(int retentionTime) {
+			this.retentionTime = retentionTime;
 		}
 	}
 }

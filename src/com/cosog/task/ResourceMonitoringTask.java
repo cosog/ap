@@ -84,7 +84,7 @@ public class ResourceMonitoringTask {
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
 		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
 		
-		if(!Config.getInstance().configFile.getAp().getOthers().isIot() ){
+		if(!Config.getInstance().configFile.getAp().getOthers().getIot() ){
 			probeMemUrl=Config.getInstance().configFile.getAc().getProbe().getMem();
 			probeCPUUrl=Config.getInstance().configFile.getAc().getProbe().getCpu();
 		}
@@ -152,7 +152,7 @@ public class ResourceMonitoringTask {
 		adRunStatus=0;
 		adVersion="";
 		adLicense=0;
-		if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
+		if(Config.getInstance().configFile.getAp().getOthers().getIot() ){
 			try{
 				String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",10,0);
 				type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
@@ -175,8 +175,8 @@ public class ResourceMonitoringTask {
 		memUsedPercent="";
 		memUsedPercentValue="";
 		memUsedPercentAlarmLevel=0;
-		if( ((!Config.getInstance().configFile.getAp().getOthers().isIot()) && acRunStatus==1)
-				|| (Config.getInstance().configFile.getAp().getOthers().isIot() && adRunStatus==1) 
+		if( ((!Config.getInstance().configFile.getAp().getOthers().getIot()) && acRunStatus==1)
+				|| (Config.getInstance().configFile.getAp().getOthers().getIot() && adRunStatus==1) 
 				){
 			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",10,0);
 			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",10,0);

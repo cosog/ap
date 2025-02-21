@@ -1224,7 +1224,7 @@ public class WellInformationManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
-		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
+		if((!Config.getInstance().configFile.getAp().getOthers().getIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
 			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(deviceType);
 			String[] instanceNameArr=instanceNames.split(";");
 			if(instanceNameArr.length==4){
@@ -1402,7 +1402,7 @@ public class WellInformationManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
-		if((!Config.getInstance().configFile.getAp().getOthers().isIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
+		if((!Config.getInstance().configFile.getAp().getOthers().getIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
 			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(deviceType).split(";");
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
@@ -1780,7 +1780,7 @@ public class WellInformationManagerController extends BaseController {
 				license=acStatusProbeResonanceData.getLicenseNumber();
 			}
 			if(deviceAmount<license){
-				if(!Config.getInstance().configFile.getAp().getOthers().isIot()){//如果不是物联网
+				if(!Config.getInstance().configFile.getAp().getOthers().getIot()){//如果不是物联网
 					String[] instanceCodeArr=this.srpDeviceManagerService.getDefaultInstanceCode(0).split(";");
 					if(instanceCodeArr.length==4){
 						deviceInformation.setInstanceCode(instanceCodeArr[0]);

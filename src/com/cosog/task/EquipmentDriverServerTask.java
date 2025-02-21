@@ -45,7 +45,7 @@ public class EquipmentDriverServerTask {
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
 	private static boolean initSwitch=false;
-	private static boolean initEnable=initSwitch && Config.getInstance().configFile.getAp().getOthers().isIot();
+	private static boolean initEnable=initSwitch && Config.getInstance().configFile.getAp().getOthers().getIot();
 	
 	public static boolean initFinished=false;
 	public static EquipmentDriverServerTask getInstance(){
@@ -64,7 +64,7 @@ public class EquipmentDriverServerTask {
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		
 		initWellCommStatus();
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
 		}
 		initWellDaliyData();
@@ -80,7 +80,7 @@ public class EquipmentDriverServerTask {
 			e.printStackTrace();
 		}
 		
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			boolean sendMsg=false;
 			exampleDataManage();
 			do{
@@ -207,7 +207,7 @@ public class EquipmentDriverServerTask {
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		
 		initWellCommStatus();
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
 		}
 		initWellDaliyData();
@@ -222,7 +222,7 @@ public class EquipmentDriverServerTask {
 			e.printStackTrace();
 		}
 		
-		if(Config.getInstance().configFile.getAp().getOthers().isIot()){
+		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			boolean sendMsg=false;
 			do{
 				DriverProbeResponse driverProbeResponse=adInitProbe();
@@ -289,7 +289,7 @@ public class EquipmentDriverServerTask {
 	public static ThreadPool adInit() throws MalformedURLException, InterruptedException{
 		ThreadPool executor=null;
 		try{
-			if(Config.getInstance().configFile.getAp().getOthers().isIot() ){
+			if(Config.getInstance().configFile.getAp().getOthers().getIot() ){
 				Gson gson = new Gson();
 				java.lang.reflect.Type type=null;
 				String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();

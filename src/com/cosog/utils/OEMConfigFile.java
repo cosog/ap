@@ -367,7 +367,7 @@ public class OEMConfigFile {
 		public void setModule(String module) {
 			this.module = module;
 		}
-		public boolean isIot() {
+		public boolean getIot() {
 			return iot;
 		}
 		public void setIot(boolean iot) {
@@ -385,7 +385,7 @@ public class OEMConfigFile {
 		public void setShowVideo(boolean showVideo) {
 			this.showVideo = showVideo;
 		}
-		public boolean isExportAdInitData() {
+		public boolean getExportAdInitData() {
 			return exportAdInitData;
 		}
 		public void setExportAdInitData(boolean exportAdInitData) {
@@ -466,6 +466,130 @@ public class OEMConfigFile {
 		}
 	}
 	
+	public static class TableConfig{
+		
+		private boolean acqdata_hist;
+		
+		private boolean acqrawdata;
+		
+		private boolean alarminfo_hist;
+		
+		private boolean dailytotalcalculate_hist;
+		
+		private boolean dailycalculationdata;
+		
+		private boolean timingcalculationdata;
+		
+		private boolean srpacqdata_hist;
+		
+		private boolean srpdailycalculationdata;
+		
+		private boolean srptimingcalculationdata;
+		
+		private boolean pcpacqdata_hist;
+		
+		private boolean pcpdailycalculationdata;
+		
+		private boolean pcptimingcalculationdata;
+
+		public boolean getAcqdata_hist() {
+			return acqdata_hist;
+		}
+
+		public void setAcqdata_hist(boolean acqdata_hist) {
+			this.acqdata_hist = acqdata_hist;
+		}
+
+		public boolean getAcqrawdata() {
+			return acqrawdata;
+		}
+
+		public void setAcqrawdata(boolean acqrawdata) {
+			this.acqrawdata = acqrawdata;
+		}
+
+		public boolean getAlarminfo_hist() {
+			return alarminfo_hist;
+		}
+
+		public void setAlarminfo_hist(boolean alarminfo_hist) {
+			this.alarminfo_hist = alarminfo_hist;
+		}
+
+		public boolean getDailytotalcalculate_hist() {
+			return dailytotalcalculate_hist;
+		}
+
+		public void setDailytotalcalculate_hist(boolean dailytotalcalculate_hist) {
+			this.dailytotalcalculate_hist = dailytotalcalculate_hist;
+		}
+
+		public boolean getDailycalculationdata() {
+			return dailycalculationdata;
+		}
+
+		public void setDailycalculationdata(boolean dailycalculationdata) {
+			this.dailycalculationdata = dailycalculationdata;
+		}
+
+		public boolean getTimingcalculationdata() {
+			return timingcalculationdata;
+		}
+
+		public void setTimingcalculationdata(boolean timingcalculationdata) {
+			this.timingcalculationdata = timingcalculationdata;
+		}
+
+		public boolean getSrpacqdata_hist() {
+			return srpacqdata_hist;
+		}
+
+		public void setSrpacqdata_hist(boolean srpacqdata_hist) {
+			this.srpacqdata_hist = srpacqdata_hist;
+		}
+
+		public boolean getSrpdailycalculationdata() {
+			return srpdailycalculationdata;
+		}
+
+		public void setSrpdailycalculationdata(boolean srpdailycalculationdata) {
+			this.srpdailycalculationdata = srpdailycalculationdata;
+		}
+
+		public boolean getSrptimingcalculationdata() {
+			return srptimingcalculationdata;
+		}
+
+		public void setSrptimingcalculationdata(boolean srptimingcalculationdata) {
+			this.srptimingcalculationdata = srptimingcalculationdata;
+		}
+
+		public boolean getPcpacqdata_hist() {
+			return pcpacqdata_hist;
+		}
+
+		public void setPcpacqdata_hist(boolean pcpacqdata_hist) {
+			this.pcpacqdata_hist = pcpacqdata_hist;
+		}
+
+		public boolean getPcpdailycalculationdata() {
+			return pcpdailycalculationdata;
+		}
+
+		public void setPcpdailycalculationdata(boolean pcpdailycalculationdata) {
+			this.pcpdailycalculationdata = pcpdailycalculationdata;
+		}
+
+		public boolean getPcptimingcalculationdata() {
+			return pcptimingcalculationdata;
+		}
+
+		public void setPcptimingcalculationdata(boolean pcptimingcalculationdata) {
+			this.pcptimingcalculationdata = pcptimingcalculationdata;
+		}
+		
+	}
+	
 	public static class DatabaseMaintenance{
 		
 		private int cycle;
@@ -473,6 +597,10 @@ public class OEMConfigFile {
 		private String startTime;
 		
 		private int retentionTime;
+		
+		private int singleDeleteTime;
+		
+		private TableConfig tableConfig;
 		
 		public int getCycle() {
 			return cycle;
@@ -496,6 +624,22 @@ public class OEMConfigFile {
 		
 		public void setRetentionTime(int retentionTime) {
 			this.retentionTime = retentionTime;
+		}
+
+		public int getSingleDeleteTime() {
+			return singleDeleteTime;
+		}
+
+		public void setSingleDeleteTime(int singleDeleteTime) {
+			this.singleDeleteTime = singleDeleteTime;
+		}
+
+		public TableConfig getTableConfig() {
+			return tableConfig;
+		}
+
+		public void setTableConfig(TableConfig tableConfig) {
+			this.tableConfig = tableConfig;
 		}
 	}
 }

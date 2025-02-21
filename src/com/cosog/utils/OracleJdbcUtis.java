@@ -102,8 +102,7 @@ public class OracleJdbcUtis {
 	
 	
 	public static Connection getConnection(){  
-        try{  
-            
+        try{
         	String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
             String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
             String username = Config.getInstance().configFile.getAp().getDatasource().getUser();

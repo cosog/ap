@@ -47,6 +47,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -359,6 +362,14 @@ public class StringManagerUtils {
         long between_days = (time2 - time1) / (1000 * 3600 * 24);
 
         return Integer.parseInt(String.valueOf(between_days));
+    }
+    
+    public static int daysBetween(String startDateStr,String endDateStr,String format) throws ParseException {
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+    	LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+    	LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+    	long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+    	return Integer.parseInt(String.valueOf(daysBetween));
     }
 
     /**

@@ -30,6 +30,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DataWriteBackConfig;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.KeyValue;
 import com.cosog.model.Org;
 import com.cosog.model.ProtocolRunStatusConfig;
@@ -63,6 +64,7 @@ import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.service.mobile.MobileService;
+import com.cosog.service.right.RoleManagerService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.task.EquipmentDriverServerTask;
@@ -79,6 +81,7 @@ import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.DeviceAlarmInfo;
 import com.cosog.utils.DeviceAlarmInfoMap;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
@@ -111,6 +114,8 @@ public class DriverAPIController extends BaseController{
 	private CommonDataService commonDataService;
 	@Autowired
 	private MobileService<?> mobileService;
+	@Autowired
+	private RoleManagerService<DeviceTypeInfo> roleTabInfoService;
 	@Autowired
 	private UserManagerService<User> userManagerService;
 	private static boolean printInfo=false;
@@ -4188,6 +4193,10 @@ public class DriverAPIController extends BaseController{
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		
+		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
 //		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -4209,15 +4218,20 @@ public class DriverAPIController extends BaseController{
 		String msg="";
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		if(userCheckSign==-1) {
-			msg="用户名不能为空";
+			msg=languageResourceMap.get("userNameEmpty");
 		}else if (userCheckSign==-2) {
-			msg="用户密码不能为空";
+			msg=languageResourceMap.get("passwordEmpty");
 		}else if (userCheckSign==-3) {
-			msg="账号或密码错误";
+			msg=languageResourceMap.get("accountOrPasswordError");
 		}else if (userCheckSign==-4) {
-			msg="用户" + user + "已被禁用 !";
+			msg=languageResourceMap.get("disabledUser");
 		}else if (userCheckSign==1) {
-			msg="登录成功";
+			User u=this.userManagerService.getUser(user, password);
+			if(u!=null){
+				language=u.getLanguageName();
+				languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			}
+			msg=languageResourceMap.get("loginSuccessfully");
 		}
 		result="{\"ResultStatus\":"+userCheckSign+",\"Msg\":\""+msg+"\"}";
 		response.setContentType("application/json;charset=utf-8");
@@ -4280,9 +4294,11 @@ public class DriverAPIController extends BaseController{
 		}
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		if(userCheckSign==1){
+			User u=this.userManagerService.getUser(user, password);
+			
 			List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, user);
 			StringBuffer strBuf = new StringBuffer();
-			Recursion r = new Recursion(language);// 递归类，将org集合构建成一棵树形菜单的json
+			Recursion r = new Recursion(u!=null?u.getLanguageName():language);// 递归类，将org集合构建成一棵树形菜单的json
 			for (Org org : list) {
 				if (!r.hasParent(list, org)) {
 					orgListStr = r.recursionMobileOrgTree(list, org);
@@ -4308,17 +4324,83 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/read/getDeviceTypeData")
+	public String getDeviceTypeData() throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String deviceTypeListStr = "";
+		String user = "";
+		String password = "";
+		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+		
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+//		data="{\"User\": \"admin\",\"Password\": \"123456\"}";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			try{
+				user=jsonObject.getString("User");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				password=jsonObject.getString("Password");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		int userCheckSign=this.userManagerService.userCheck(user, password);
+		if(userCheckSign==1){
+			User u=this.userManagerService.getUser(user, password);
+			List<DeviceTypeInfo> list = this.roleTabInfoService.queryRightTabs(DeviceTypeInfo.class,u);
+			StringBuffer strBuf = new StringBuffer();
+			DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+			for (DeviceTypeInfo deviceTypeInfo : list) {
+				if (!r.hasParent(list, deviceTypeInfo)) {
+					deviceTypeListStr = r.recursionMobileDeviceTypeTree(list, deviceTypeInfo,u!=null?u.getLanguageName():language);
+				}
+			}
+			deviceTypeListStr = deviceTypeListStr.replaceAll(",]", "]");
+			strBuf.append(deviceTypeListStr);
+			if(strBuf.toString().endsWith(",")){
+				strBuf.deleteCharAt(strBuf.length() - 1);
+			}
+			deviceTypeListStr = strBuf.toString();
+		}else{
+			deviceTypeListStr="{}";
+		}
+		result_json.append("{\"ResultStatus\":"+userCheckSign+",\"DeviceType\":"+deviceTypeListStr+"}");
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result_json.toString());
+		pw.flush();
+		pw.close();
+
+		return null;
+	}
+	
 	/******
 	 * 获取设备信息
 	 * ***/
-	@RequestMapping("/read/oilWell/wellInformation")
-	public String getOilWellInformation() throws Exception {
+	@RequestMapping("/read/deviceInformation")
+	public String getDeviceInformation() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"srp01\"]}";
 		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getOilWellInformation(data,pager);
+		String json = mobileService.getDeviceInformation(data,pager);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -4343,51 +4425,15 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	/******
-	 * 获取设备信息
-	 * ***/
-	@RequestMapping("/read/oilWell/pumpingModelInformation")
-	public String getPumpingModelInformation() throws Exception {
-		ServletInputStream ss=null;
-		try {
-			ss = request.getInputStream();
-			String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-//			data="{}";
-//			data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
-			this.pager = new Page("pagerForm", request);
-			String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-			String json = mobileService.getPumpingModelInformation(data,pager,language);
-			response.setContentType("application/json;charset=utf-8");
-			response.setHeader("Cache-Control", "no-cache");
-			PrintWriter pw;
-			pw = response.getWriter();
-			pw.print(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			if(ss!=null){
-				try {
-					ss.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
-	
-	/******
 	 * 统计饼图及柱状图需要的data信息
 	 * ***/
-	@RequestMapping("/read/oilWell/realtime/statisticsData")
-	public String getPumpingRealtimeStatisticsData() throws Exception {
+	@RequestMapping("/read/realtime/statisticsData")
+	public String getRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
-		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
+		String json = mobileService.getRealtimeStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4400,8 +4446,8 @@ public class DriverAPIController extends BaseController{
 	/******
 	 * 查询处于某种统计值下的实时井列表及数据
 	 * ***/
-	@RequestMapping("/read/oilWell/realtime/wellListData")
-	public String getOilWellRealtimeWellListData() throws Exception {
+	@RequestMapping("/read/getDeviceRealtimeData")
+	public String getDeviceRealtimeData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
@@ -4426,8 +4472,8 @@ public class DriverAPIController extends BaseController{
 	/******
 	 * 查询处于某种统计值下的井历史数据
 	 * ***/
-	@RequestMapping("/read/oilWell/realtime/wellHistoryData")
-	public String getOilWellHistoryData() throws Exception {
+	@RequestMapping("/read/getDeviceHistoryData")
+	public String getDeviceHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{}";
@@ -4465,12 +4511,12 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/read/oilWell/realtime/singleFESDiagramData")
-	public String singleFESDiagramData() throws Exception {
+	@RequestMapping("/read/getRealTimeFESDiagramData")
+	public String getRealTimeFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
-		String json = this.mobileService.singleFESDiagramData(data);
+		String json = this.mobileService.getRealTimeFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4480,12 +4526,12 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/read/oilWell/realtime/historyFESDiagramData")
-	public String historyFESDiagramData() throws Exception {
+	@RequestMapping("/read/getHistoryFESDiagramData")
+	public String getHistoryFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
-		String json = this.mobileService.historyFESDiagramData(data);
+		String json = this.mobileService.getHistoryFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4496,110 +4542,14 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	/******
-	 * 全天统计饼图及柱状图需要的data信息
+	 * 设备控制
 	 * ***/
-	@RequestMapping("/read/oilWell/total/statisticsData")
-	public String getOilWellTotalStatisticsData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-//		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":3,\"WellList\":[\"srp01\",\"srp02\"]}";
-		String json = mobileService.getOilWellTotalStatisticsData(data);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	/******
-	 * 查询某天处于某种统计值下的全天井列表及数据
-	 * ***/
-	@RequestMapping("/read/oilWell/total/wellListData")
-	public String getOilWellTotalWellListData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-//		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"Date\":\"2023-08-02\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
-		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getOilWellTotalWellListData(data,pager);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.print(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/******
-	 * 查询处于某种统计值下的井全天历史数据
-	 * ***/
-	@RequestMapping("/read/oilWell/total/wellHistoryData")
-	public String getOilWellTotalHistoryData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-//		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\": 1,\"WellName\":\"srp01\",\"StartDate\": \"2023-08-02\",\"EndDate\": \"2023-08-02\",\"StatType\": 1,\"StatValue\": \"正常\"}";
-//		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
-		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getOilWellTotalHistoryData(data,pager);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.print(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/******
-	 * 生产数据写入
-	 * ***/
-	@RequestMapping("/write/production")
-	public String writeOilWellProductionData() throws Exception {
+	@RequestMapping("/write/deviceControl")
+	public String deviceControl() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		this.pager = new Page("pagerForm", request);
-		String json = "{\"Msg\":\"此接口位预留\"}";
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.print(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/******
-	 * 功图数据写入
-	 * ***/
-	@RequestMapping("/write/FESDiagram")
-	public String writeOilWellFESDiagramData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-		this.pager = new Page("pagerForm", request);
-		String json = "{\"Msg\":\"此接口位预留\"}";
+		String json = "{\"Msg\":\"此接口为预留\"}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

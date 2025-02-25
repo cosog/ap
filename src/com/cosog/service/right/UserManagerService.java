@@ -82,6 +82,16 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 		return result;
 	}
+	
+	public User getUser(String userName,String password){
+		User user=null;
+		try {
+			user = (User) this.doLogin(userName, StringManagerUtils.stringToMD5(password));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
 
 	public List<T> queryUsers(String uname, Class<T> clazz) {
 		if (uname == null || "".equals(uname))

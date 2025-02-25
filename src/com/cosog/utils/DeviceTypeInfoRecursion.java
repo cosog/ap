@@ -122,6 +122,36 @@ public class DeviceTypeInfoRecursion {
 		data = returnStr.toString();
 		return data;
 	}
+	
+	public String recursionMobileDeviceTypeTree(List list, DeviceTypeInfo tabInfo,String language) {
+		String data = "";
+		String text="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=tabInfo.getName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=tabInfo.getName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=tabInfo.getName_ru();
+		}
+		if (hasChild(list, tabInfo)) {
+			returnStr.append("{\"text\":\"" + text + "\",");
+			returnStr.append("\"deviceTypeId\":\"" + tabInfo.getId() + "\",");
+			returnStr.append("\"children\":[");
+			List childList = getChildList(list, tabInfo);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
+				recursionProtocolConfigTabTreeFn(list, n,language);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"text\":\""+text+"\",");;
+			returnStr.append("\"deviceTypeId\":\""+tabInfo.getId()+"\"},");
+			
+		}
+		data = returnStr.toString();
+		return data;
+	}
 
 	public boolean hasChild(List list, Object[] node) { // 判断是否有子节点
 		return getChildList(list, node).size() > 0 ? true : false;

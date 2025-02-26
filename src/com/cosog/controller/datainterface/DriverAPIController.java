@@ -4453,7 +4453,7 @@ public class DriverAPIController extends BaseController{
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"srp01\",\"srp02\"]}";
 		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
+		String json = mobileService.getDeviceRealTimeOverview(data,pager);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -4495,28 +4495,12 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/read/oilWell/realtime/wellAnalysisData")
-	public String getOilWellAnalysisData()throws Exception{
-		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-//		data="{}";
-//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
-		String json = this.mobileService.getOilWellAnalysisData(data);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/read/getRealTimeFESDiagramData")
-	public String getRealTimeFESDiagramData() throws Exception {
+	@RequestMapping("/read/getLastestFESDiagramData")
+	public String getLastestFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"AcqTime\":\"2023-08-02 02:00:00\"}";
-		String json = this.mobileService.getRealTimeFESDiagramData(data);
+		String json = this.mobileService.getLastestFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

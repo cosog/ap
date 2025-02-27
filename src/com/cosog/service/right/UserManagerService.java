@@ -87,6 +87,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		User user=null;
 		try {
 			user = (User) this.doLogin(userName, StringManagerUtils.stringToMD5(password));
+			setUserLanguage(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

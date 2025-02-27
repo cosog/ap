@@ -4427,7 +4427,7 @@ public class DriverAPIController extends BaseController{
 	/******
 	 * 统计饼图及柱状图需要的data信息
 	 * ***/
-	@RequestMapping("/read/realtime/statisticsData")
+	@RequestMapping("/read/getRealtimeStatisticsData")
 	public String getRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
@@ -4479,7 +4479,7 @@ public class DriverAPIController extends BaseController{
 //		data="{}";
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2023-08-01 00:00:00\",\"EndDate\":\"2023-08-04 23:59:59\",\"WellName\":\"srp01\"}";
 		this.pager = new Page("pagerForm", request);
-		String json = mobileService.getOilWellHistoryData(data,pager);
+		String json = mobileService.getDeviceHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -4516,6 +4516,21 @@ public class DriverAPIController extends BaseController{
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
 		String json = this.mobileService.getHistoryFESDiagramData(data);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/read/getHistoryCurveData")
+	public String getHistoryCurveData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"WellName\":\"srp01\",\"StartDate\":\"2023-08-02 02:00:00\",\"EndDate\":\"2023-08-02 02:00:00\"}";
+		String json = this.mobileService.getHistoryCurveData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

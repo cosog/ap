@@ -134,19 +134,19 @@ public class DeviceTypeInfoRecursion {
 			text=tabInfo.getName_ru();
 		}
 		if (hasChild(list, tabInfo)) {
-			returnStr.append("{\"text\":\"" + text + "\",");
-			returnStr.append("\"deviceTypeId\":\"" + tabInfo.getId() + "\",");
-			returnStr.append("\"children\":[");
+			returnStr.append("{\"Text\":\"" + text + "\",");
+			returnStr.append("\"DeviceTypeId\":\"" + tabInfo.getId() + "\",");
+			returnStr.append("\"Children\":[");
 			List childList = getChildList(list, tabInfo);
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
-				recursionProtocolConfigTabTreeFn(list, n,language);
+				recursionMobileDeviceTypeTree(list, n,language);
 			}
 			returnStr.append("]},");
 		} else {
-			returnStr.append("{\"text\":\""+text+"\",");;
-			returnStr.append("\"deviceTypeId\":\""+tabInfo.getId()+"\"},");
+			returnStr.append("{\"Text\":\""+text+"\",");;
+			returnStr.append("\"DeviceTypeId\":\""+tabInfo.getId()+"\"},");
 			
 		}
 		data = returnStr.toString();

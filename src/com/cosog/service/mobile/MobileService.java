@@ -108,7 +108,6 @@ public class MobileService<T> extends BaseService<T> {
 	}
 	
 	public String getRealtimeStatisticsData(String data){
-		StringBuffer devices= new StringBuffer();
 		List<String> deviceNameList=new ArrayList<>();
 		String json="";
 		int type=1;
@@ -138,11 +137,7 @@ public class MobileService<T> extends BaseService<T> {
 				try{
 					JSONArray jsonArray = jsonObject.getJSONArray("DeviceList");
 					for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-						devices.append(""+jsonArray.getString(i)+",");
 						deviceNameList.add(jsonArray.getString(i));
-					}
-					if(devices.toString().endsWith(",")){
-						devices.deleteCharAt(devices.length() - 1);
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -154,9 +149,9 @@ public class MobileService<T> extends BaseService<T> {
 		
 		try{
 			if(type==1){
-				json=this.getRealTimeMonitoringCommStatusStatData(user,password,devices.toString());
+				json=this.getRealTimeMonitoringCommStatusStatData(user,password,deviceNameList);
 			}else if(type==2){
-				json=this.getRealTimeMonitoringRunStatusStatData(user,password,devices.toString());
+				json=this.getRealTimeMonitoringRunStatusStatData(user,password,deviceNameList);
 			}else if(type==3){
 				json=this.getRealTimeMonitoringFESDiagramResultStatData(user,password,deviceNameList);
 			}
@@ -252,7 +247,7 @@ public class MobileService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getRealTimeMonitoringCommStatusStatData(String user,String password,String devices) throws IOException, SQLException{
+	public String getRealTimeMonitoringCommStatusStatData(String user,String password,List<String> deviceNameList) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int online=0,goOnline=0,offline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
@@ -261,18 +256,15 @@ public class MobileService<T> extends BaseService<T> {
 			User userInfo=this.userManagerService.getUser(user, password);
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
 			
-			String [] deviceList=null;
-			if(StringManagerUtils.isNotNull(devices)){
-				deviceList=devices.split(",");
-			}
+			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="viw_device";
 			
 			String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 					+ " where t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent) ";
-			if(deviceList!=null){
-				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(deviceList, ",")+" )";
+			if(deviceNameList.size()>0){
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(deviceNameList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus";
 			List<?> list = this.findCallSql(sql);
@@ -300,7 +292,7 @@ public class MobileService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getRealTimeMonitoringRunStatusStatData(String user,String password,String devices) throws IOException, SQLException{
+	public String getRealTimeMonitoringRunStatusStatData(String user,String password,List<String> deviceNameList) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int run=0,stop=0,noData=0,offline=0,goOnline=0;
 		int userCheckSign=this.userManagerService.userCheck(user, password);
@@ -308,17 +300,14 @@ public class MobileService<T> extends BaseService<T> {
 		if(userCheckSign==1){
 			User userInfo=this.userManagerService.getUser(user, password);
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
-			String [] deviceList=null;
-			if(StringManagerUtils.isNotNull(devices)){
-				deviceList=devices.split(",");
-			}
+			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="viw_device";
 			String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on  t2.deviceId=t.id "
 					+ " where 1=1 ";
-			if(deviceList!=null){
-				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(deviceList, ",")+" )";
+			if(deviceNameList.size()>0){
+				sql+=" and t.deviceName in ( "+StringManagerUtils.joinStringArr2(deviceNameList, ",")+" )";
 			}
 			sql+=" group by t2.commstatus,t2.runstatus";
 			List<?> list = this.findCallSql(sql);
@@ -350,7 +339,7 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getDeviceRealTimeOverview(String data,Page pager)throws Exception {
 		String json = "";
-		StringBuffer devices= new StringBuffer();
+		List<String> deviceList= new ArrayList<>();
 		int statType=1;
 		String statValue="";
 		String user="";
@@ -383,12 +372,9 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+					JSONArray jsonArray = jsonObject.getJSONArray("DeviceList");
 					for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-						devices.append(""+jsonArray.getString(i)+",");
-					}
-					if(devices.toString().endsWith(",")){
-						devices.deleteCharAt(devices.length() - 1);
+						deviceList.add(jsonArray.getString(i));
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -398,13 +384,13 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		
-		json=getDeviceRealTimeOverview(user,password,devices.toString(), statType, statValue);
+		json=getDeviceRealTimeOverview(user,password,deviceList, statType, statValue);
 		
 		return json;
 	}
 	
 	
-	public String getDeviceRealTimeOverview(String user,String password,String devices,int statType,String statValue) throws IOException, SQLException{
+	public String getDeviceRealTimeOverview(String user,String password,List<String> deviceList,int statType,String statValue) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -424,7 +410,7 @@ public class MobileService<T> extends BaseService<T> {
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 			List<CalItem> calItemList=null;
 			List<CalItem> inputItemList=null;
-			UserInfo userInfo=null;
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(u!=null?(u.getUserNo()+""):"");
 			
 			ModbusProtocolConfig.Protocol protocol=null;
 			
@@ -439,17 +425,13 @@ public class MobileService<T> extends BaseService<T> {
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			
-			
-			
-			
-			
 			String realtimeTableName="tbl_acqdata_latest";
 			String deviceTableName="VIW_DEVICE";
 			
 			String calAndInputTableName="tbl_srpacqdata_latest";
 			
 			
-			String sql="select t2.id,t.devicename,"//0~1
+			String sql="select t.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
@@ -461,8 +443,8 @@ public class MobileService<T> extends BaseService<T> {
 					+ " left outer join "+realtimeTableName+" t2 on t2.deviceId=t.id"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			
-			if(StringManagerUtils.isNotNull(devices)){
-				sql+= " and t.devicename= in("+devices+")";
+			if(deviceList.size()>0){
+				sql+= " and t.devicename in("+StringManagerUtils.joinStringArr2(deviceList, ",")+")";
 			}
 			
 			if(StringManagerUtils.isNotNull(statValue)){
@@ -522,6 +504,21 @@ public class MobileService<T> extends BaseService<T> {
 				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
+				if(displayInstanceOwnItem!=null){
+					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				}
+				
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
+				}else{
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+					inputItemList=new ArrayList<>();
+				}
+				
 				
 				
 				int commAlarmLevel=0,runAlarmLevel=0;
@@ -537,7 +534,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":"+deviceId+",");
 				result_json.append("\"DeviceName\":\""+deviceObj[1]+"\",");
-				result_json.append("\"DeviceType\":\""+deviceObj[14]+"\",");
+				result_json.append("\"DeviceType\":\""+deviceObj[13]+"\",");
 				result_json.append("\"AcqTime\":\""+deviceObj[2]+"\",");
 				result_json.append("\"CommStatus\":\""+commStatusName+"\",");
 				result_json.append("\"CommTime\":\""+deviceObj[5]+"\",");
@@ -770,7 +767,7 @@ public class MobileService<T> extends BaseService<T> {
 					
 					
 					if(displayInputItemList.size()>0){
-						String productionData=(realtimeDataObj[realtimeDataObj.length-2]+"").replaceAll("null", "");
+						String productionData=(realtimeDataObj[realtimeDataObj.length-1]+"").replaceAll("null", "");
 						if(StringManagerUtils.stringToInteger(calculateType)==1){
 							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
@@ -1057,7 +1054,7 @@ public class MobileService<T> extends BaseService<T> {
 					
 					//获取日汇总计算数据
 					if(dailyTotalCalItemMap.size()>0){
-						for(int k=0;j<dailyTotalDatasList.size();k++){
+						for(int k=0;k<dailyTotalDatasList.size();k++){
 							Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(k);
 							if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() ) ){
 								DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
@@ -1110,7 +1107,7 @@ public class MobileService<T> extends BaseService<T> {
 	}
 	
 	
-	public String getOilWellHistoryData(String data,Page pager)throws Exception {
+	public String getDeviceHistoryData(String data,Page pager)throws Exception {
 		String json="";;
 		String user="";
 		String password="";
@@ -1134,7 +1131,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					deviceName=jsonObject.getString("deviceName");
+					deviceName=jsonObject.getString("DeviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -1161,13 +1158,13 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		
-		json=getOilWellHistoryData(user,password,deviceName,limit,startDate,endDate);
+		json=getDeviceHistoryData(user,password,deviceName,limit,startDate,endDate);
 		
 		return json;
 	}
 	
 	
-	public String getOilWellHistoryData(String user,String password,String deviceName,int limit,String startDate,String endDate) throws IOException, SQLException{
+	public String getDeviceHistoryData(String user,String password,String deviceName,int limit,String startDate,String endDate) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -1187,7 +1184,7 @@ public class MobileService<T> extends BaseService<T> {
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 			List<CalItem> calItemList=null;
 			List<CalItem> inputItemList=null;
-			UserInfo userInfo=null;
+			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(u!=null?(u.getUserNo()+""):"");
 			
 			ModbusProtocolConfig.Protocol protocol=null;
 			
@@ -1208,7 +1205,7 @@ public class MobileService<T> extends BaseService<T> {
 			String calAndInputTableName="tbl_srpacqdata_hist";
 			
 			
-			String sql="select t2.id,t.devicename,"//0~1
+			String sql="select t.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"//5~7
@@ -1221,7 +1218,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+= " and t.devicename= ='"+deviceName+"'";
+				sql+= " and t.devicename='"+deviceName+"'";
 			}
 			sql+=" order by t.sortnum,t.devicename";
 			
@@ -1267,7 +1264,20 @@ public class MobileService<T> extends BaseService<T> {
 				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
+				if(displayInstanceOwnItem!=null){
+					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				}
 				
+				if(StringManagerUtils.stringToInteger(calculateType)==1){
+					calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
+				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
+				}else{
+					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+					inputItemList=new ArrayList<>();
+				}
 				
 				int commAlarmLevel=0,runAlarmLevel=0;
 				if(alarmInstanceOwnItem!=null){
@@ -1282,7 +1292,7 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("{\"Id\":"+deviceId+",");
 				result_json.append("\"DeviceName\":\""+deviceObj[1]+"\",");
-				result_json.append("\"DeviceType\":\""+deviceObj[14]+"\",");
+				result_json.append("\"DeviceType\":\""+deviceObj[13]+"\",");
 				result_json.append("\"AcqTime\":\""+deviceObj[2]+"\",");
 				result_json.append("\"CommStatus\":\""+commStatusName+"\",");
 				result_json.append("\"CommTime\":\""+deviceObj[5]+"\",");
@@ -1503,7 +1513,7 @@ public class MobileService<T> extends BaseService<T> {
 				sql+= " order by t2.acqtime desc";
 				
 				if(limit>0){
-					sql="select v.* from ("+limit+") v where rownum <="+limit;
+					sql="select v.* from ("+sql+") v where rownum <="+limit;
 				}
 				
 				
@@ -1533,7 +1543,7 @@ public class MobileService<T> extends BaseService<T> {
 					String acqTime=realtimeDataObj[2]+"";
 					
 					if(displayInputItemList.size()>0){
-						String productionData=(realtimeDataObj[realtimeDataObj.length-2]+"").replaceAll("null", "");
+						String productionData=(realtimeDataObj[realtimeDataObj.length-1]+"").replaceAll("null", "");
 						if(StringManagerUtils.stringToInteger(calculateType)==1){
 							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
@@ -1820,7 +1830,7 @@ public class MobileService<T> extends BaseService<T> {
 					
 					//获取日汇总计算数据
 					if(dailyTotalCalItemMap.size()>0){
-						for(int k=0;j<dailyTotalDatasList.size();k++){
+						for(int k=0;k<dailyTotalDatasList.size();k++){
 							Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(k);
 							if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() )  && acqTime.equalsIgnoreCase(dailyTotalDataObj[0]+"")  ){
 								DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
@@ -1893,7 +1903,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					deviceName=jsonObject.getString("deviceName");
+					deviceName=jsonObject.getString("DeviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -1968,7 +1978,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 		        
 				result_json.append("{ \"Id\":\"" + obj[0] + "\",");
-				result_json.append("\"deviceName\":\"" + obj[1] + "\",");
+				result_json.append("\"DeviceName\":\"" + obj[1] + "\",");
 				result_json.append("\"AcqTime\":\"" + obj[2] + "\",");
 				result_json.append("\"UpperLoadLine\":\"" + obj[3] + "\",");
 				result_json.append("\"LowerLoadLine\":\"" + obj[4] + "\",");
@@ -1999,18 +2009,18 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("\"Submergence\":\""+obj[20]+"\",");
 				
-				result_json.append("downStrokeIMax:\""+obj[21]+"\",");
-				result_json.append("upStrokeIMax:\""+obj[22]+"\",");
-				result_json.append("iDegreeBalance:\""+obj[23]+"\",");
-				result_json.append("downStrokeWattMax:\""+obj[24]+"\",");
-				result_json.append("upStrokeWattMax:\""+obj[25]+"\",");     
-				result_json.append("wattDegreeBalance:\""+obj[26]+"\",");
-				result_json.append("deltaRadius:\""+obj[27]+"\",");
+				result_json.append("\"DownStrokeIMax\":\""+obj[21]+"\",");
+				result_json.append("\"UpStrokeIMax\":\""+obj[22]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[23]+"\",");
+				result_json.append("\"DownStrokeWattMax\":\""+obj[24]+"\",");
+				result_json.append("\"UpStrokeWattMax\":\""+obj[25]+"\",");     
+				result_json.append("\"WattDegreeBalance\":\""+obj[26]+"\",");
+				result_json.append("\"DeltaRadius\":\""+obj[27]+"\",");
 				
-				result_json.append("WellDownSystemEfficiency:\""+obj[28]+"\",");
-				result_json.append("SurfaceSystemEfficiency:\""+obj[29]+"\",");
-				result_json.append("SystemEfficiency:\""+obj[30]+"\",");
-				result_json.append("EnergyPer100mLift:\""+obj[31]+"\",");
+				result_json.append("\"WellDownSystemEfficiency\":\""+obj[28]+"\",");
+				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[29]+"\",");
+				result_json.append("\"SystemEfficiency\":\""+obj[30]+"\",");
+				result_json.append("\"EnergyPer100mLift\":\""+obj[31]+"\",");
 				result_json.append("\"PointCount\":\""+pointCount+"\","); 
 				result_json.append("\"S\":["+sStr+"],"); 
 				result_json.append("\"F\":["+fStr+"],"); 
@@ -2049,7 +2059,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					deviceName=jsonObject.getString("deviceName");
+					deviceName=jsonObject.getString("DeviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -2084,7 +2094,7 @@ public class MobileService<T> extends BaseService<T> {
 			String language=userInfo!=null?userInfo.getLanguageName():"";
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			String sql="";
-			String hisTableName="tbl_srpacqdata_latest";
+			String hisTableName="tbl_srpacqdata_hist";
 			String deviceTableName="tbl_device";
 			
 			sql="select t.id, t2.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, " //0~2
@@ -2103,7 +2113,7 @@ public class MobileService<T> extends BaseService<T> {
 					+ " where t.deviceId=t2.id "
 					+ " and t2.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 			if(limit<=0){
-				sql+=" and t.acqTime between to_date("+startDate+",'yyyy-mm-dd hh24:mi:ss') and to_date("+endDate+",'yyyy-mm-dd hh24:mi:ss')";
+				sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 			}
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t2.deviceName='" + deviceName + "' ";
@@ -2150,7 +2160,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 		        
 				result_json.append("{ \"Id\":\"" + obj[0] + "\",");
-				result_json.append("\"deviceName\":\"" + obj[1] + "\",");
+				result_json.append("\"DeviceName\":\"" + obj[1] + "\",");
 				result_json.append("\"AcqTime\":\"" + obj[2] + "\",");
 				result_json.append("\"UpperLoadLine\":\"" + obj[3] + "\",");
 				result_json.append("\"LowerLoadLine\":\"" + obj[4] + "\",");
@@ -2181,18 +2191,19 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("\"Submergence\":\""+obj[20]+"\",");
 				
-				result_json.append("downStrokeIMax:\""+obj[21]+"\",");
-				result_json.append("upStrokeIMax:\""+obj[22]+"\",");
-				result_json.append("iDegreeBalance:\""+obj[23]+"\",");
-				result_json.append("downStrokeWattMax:\""+obj[24]+"\",");
-				result_json.append("upStrokeWattMax:\""+obj[25]+"\",");     
-				result_json.append("wattDegreeBalance:\""+obj[26]+"\",");
-				result_json.append("deltaRadius:\""+obj[27]+"\",");
+				result_json.append("\"DownStrokeIMax\":\""+obj[21]+"\",");
+				result_json.append("\"UpStrokeIMax\":\""+obj[22]+"\",");
+				result_json.append("\"IDegreeBalance\":\""+obj[23]+"\",");
+				result_json.append("\"DownStrokeWattMax\":\""+obj[24]+"\",");
+				result_json.append("\"UpStrokeWattMax\":\""+obj[25]+"\",");     
+				result_json.append("\"WattDegreeBalance\":\""+obj[26]+"\",");
+				result_json.append("\"DeltaRadius\":\""+obj[27]+"\",");
 				
-				result_json.append("WellDownSystemEfficiency:\""+obj[28]+"\",");
-				result_json.append("SurfaceSystemEfficiency:\""+obj[29]+"\",");
-				result_json.append("SystemEfficiency:\""+obj[30]+"\",");
-				result_json.append("EnergyPer100mLift:\""+obj[31]+"\",");
+				result_json.append("\"WellDownSystemEfficiency\":\""+obj[28]+"\",");
+				result_json.append("\"SurfaceSystemEfficiency\":\""+obj[29]+"\",");
+				result_json.append("\"SystemEfficiency\":\""+obj[30]+"\",");
+				result_json.append("\"EnergyPer100mLift\":\""+obj[31]+"\",");
+				
 				result_json.append("\"PointCount\":\""+pointCount+"\","); 
 				result_json.append("\"S\":["+sStr+"],"); 
 				result_json.append("\"F\":["+fStr+"],"); 
@@ -2200,6 +2211,364 @@ public class MobileService<T> extends BaseService<T> {
 				result_json.append("\"A\":["+aStr+"]},");
 			}
 		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getHistoryCurveData(String data) throws SQLException, IOException {
+		StringBuffer result_json = new StringBuffer();
+		String user="";
+		String password="";
+		String deviceName="";
+		String item="";
+		String code="";
+		String startDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String endDate=startDate;
+		int limit=0;
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				try{
+					user=jsonObject.getString("User");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					password=jsonObject.getString("Password");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					deviceName=jsonObject.getString("DeviceName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					item=jsonObject.getString("ItemName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					startDate=jsonObject.getString("StartDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					endDate=jsonObject.getString("EndDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					limit=jsonObject.getInt("Limit");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		int userCheckSign=this.userManagerService.userCheck(user, password);
+		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
+		result_json.append("\"DataList\":[");
+		try{
+			if(userCheckSign==1 && StringManagerUtils.isNotNull(deviceName) && StringManagerUtils.isNotNull(item)){
+				User u=this.userManagerService.getUser(user, password);
+				String language=u!=null?u.getLanguageName():"";
+				Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+				
+				Gson gson = new Gson();
+				java.lang.reflect.Type type=null;
+				
+				
+				AlarmShowStyle alarmShowStyle=null;
+				AcqInstanceOwnItem acqInstanceOwnItem=null;
+				DisplayInstanceOwnItem displayInstanceOwnItem=null;
+				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+				List<CalItem> calItemList=null;
+				List<CalItem> inputItemList=null;
+				UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(u!=null?(u.getUserNo()+""):"");
+				
+				ModbusProtocolConfig.Protocol protocol=null;
+				
+				String acqInstanceCode="";
+				String displayInstanceCode="";
+				String alarmInstanceCode="";
+				
+				DeviceInfo deviceInfo=null;
+				String deviceInfoKey="DeviceInfo";
+				
+				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+				Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+				
+				String realtimeTableName="tbl_acqdata_latest";
+				String deviceTableName="VIW_DEVICE";
+				
+				String historyTableName="tbl_acqdata_hist";
+				
+				
+				String sql="select t.id,t.devicename,"//0~1
+						+ "t.calculateType";//2
+				sql+= " from "+deviceTableName+" t "
+						+ " left outer join "+realtimeTableName+" t2 on t2.deviceId=t.id"
+						+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
+				
+				if(StringManagerUtils.isNotNull(deviceName)){
+					sql+= " and t.devicename='"+deviceName+"'";
+				}
+				sql+=" order by t.id";
+				
+				List<?> list = this.findCallSql(sql);
+				if(list.size()>0){
+					Object[] deviceObj=(Object[]) list.get(0);
+					
+					List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
+					List<CalItem> displayCalItemList=new ArrayList<CalItem>();
+					List<CalItem> displayInputItemList=new ArrayList<CalItem>();
+					Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new LinkedHashMap<>();
+					
+					
+					
+					String deviceId=deviceObj[0]+"";
+					String calculateType=deviceObj[2]+"";
+					
+					if(StringManagerUtils.stringToInteger(calculateType)==1){
+						historyTableName="tbl_srpacqdata_hist";
+					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+						historyTableName="tbl_pcpacqdata_hist";
+					}
+					
+					deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+					if(deviceInfo!=null){
+						displayInstanceCode=deviceInfo.getDisplayInstanceCode();
+						alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
+						acqInstanceCode=deviceInfo.getInstanceCode();
+					}
+					
+					alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+					acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
+					displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
+					alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
+					
+					if(displayInstanceOwnItem!=null){
+						protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+					}
+					
+					if(StringManagerUtils.stringToInteger(calculateType)==1){
+						calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+						inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
+					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+						calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+						inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
+					}else{
+						calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+						inputItemList=new ArrayList<>();
+					}
+					
+					int itemType=0;
+					CalItem c=MemoryDataManagerTask.getSingleCalItem(item, calItemList);
+					if(c!=null){
+						itemType=1;
+						code=c.getCode();
+					}else{
+						c=MemoryDataManagerTask.getSingleCalItem(item, inputItemList);
+						if(c!=null){
+							itemType=2;
+							code=c.getCode();
+						}
+					}
+					if(c==null){
+						itemType=0;
+						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item);
+						if(dataMapping!=null){
+							code=dataMapping.getMappingColumn();
+						}
+						historyTableName="tbl_acqdata_hist";
+					}
+					if(StringManagerUtils.isNotNull(code)){
+						List<DisplayInstanceOwnItem.DisplayItem> displayItemList=new ArrayList<>();
+						if(displayInstanceOwnItem!=null && userInfo!=null && protocol!=null){
+							String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
+									+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
+									+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
+									+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
+									+ "t.realtimecurveconf,t.historycurveconf,"
+									+ "t.type "
+									+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+									+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
+									+ " and t.itemcode='"+code+"'"
+									+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
+							List<?> displayItemQueryList = this.findCallSql(displayItemSql);
+							for(int i=0;i<displayItemQueryList.size();i++){
+								Object[] displayItemObj=(Object[]) displayItemQueryList.get(i);
+								DisplayInstanceOwnItem.DisplayItem displayItem=new DisplayInstanceOwnItem.DisplayItem();
+								displayItem.setUnitId(StringManagerUtils.stringToInteger(displayItemObj[0]+""));
+			    				displayItem.setItemId(StringManagerUtils.stringToInteger(displayItemObj[1]+""));
+			    				displayItem.setItemName(displayItemObj[2]+"");
+			    				displayItem.setItemCode(displayItemObj[3]+"");
+			    				displayItem.setBitIndex(StringManagerUtils.stringToInteger(displayItemObj[4]+""));
+			    				displayItem.setShowLevel(StringManagerUtils.stringToInteger(displayItemObj[5]+""));
+			    				displayItem.setRealtimeSort(StringManagerUtils.stringToInteger(displayItemObj[6]+""));
+			    				displayItem.setHistorySort(StringManagerUtils.stringToInteger(displayItemObj[7]+""));
+			    				displayItem.setRealtimeCurveConf(displayItemObj[8]+"");
+			    				displayItem.setHistoryCurveConf(displayItemObj[9]+"");
+			    				displayItem.setType(StringManagerUtils.stringToInteger(displayItemObj[10]+""));
+			    				displayItemList.add(displayItem);
+							}
+						}
+						if(displayItemList.size()>0){
+							if(itemType==0){
+								sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.acqdata from "+historyTableName+" t "
+										+ " where t.deviceid= "+deviceId;
+								if(limit<=0){
+									sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+								}
+								sql+= " order by t.acqtime";
+								
+								if(limit>0){
+									sql="select v.* from ("+sql+") v where rownum <="+limit;
+								}
+								List<?> curveDataList = this.findCallSql(sql);
+								for(int i=0;i<curveDataList.size();i++){
+									Object[] curveDataObj=(Object[]) curveDataList.get(i);
+									String acqTime=curveDataObj[0]+"";
+									String acqData=StringManagerUtils.CLOBObjectToString(curveDataObj[1]);
+									String value="";
+									type = new TypeToken<List<KeyValue>>() {}.getType();
+									List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+									if(acqDataList!=null){
+										for(KeyValue keyValue:acqDataList){
+											if(code.equalsIgnoreCase(keyValue.getKey())){
+												value=keyValue.getValue();
+												break;
+											}
+										}
+									}
+									
+									result_json.append("{\"AcqTime\":\""+acqTime+"\",\"Value\":\""+value+"\"},");
+								}
+							}else if(itemType==1){
+								sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t."+code+" from "+historyTableName+" t "
+										+ " where t.deviceid= "+deviceId;
+								if(limit<=0){
+									sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+								}
+								sql+= " order by t.acqtime";
+								
+								if(limit>0){
+									sql="select v.* from ("+sql+") v where rownum <="+limit;
+								}
+								List<?> curveDataList = this.findCallSql(sql);
+								for(int i=0;i<curveDataList.size();i++){
+									Object[] curveDataObj=(Object[]) curveDataList.get(i);
+									result_json.append("{\"AcqTime\":\""+curveDataObj[0]+"\",\"Value\":\""+curveDataObj[1]+"\"},");
+								}
+							}else if(itemType==2){
+								sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.productiondata from "+historyTableName+" t "
+										+ " where t.deviceid= "+deviceId;
+								if(limit<=0){
+									sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+								}
+								sql+= " order by t.acqtime";
+								
+								if(limit>0){
+									sql="select v.* from ("+sql+") v where rownum <="+limit;
+								}
+								List<?> curveDataList = this.findCallSql(sql);
+								for(int i=0;i<curveDataList.size();i++){
+									Object[] curveDataObj=(Object[]) curveDataList.get(i);
+									String acqTime=curveDataObj[0]+"";
+									String productionData=(curveDataObj[1]+"").replaceAll("null", "");
+									String value="";
+									if(StringManagerUtils.stringToInteger(calculateType)==1){
+										type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+										SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+										if(srpProductionData!=null){
+											if("CrudeOilDensity".equalsIgnoreCase(code) && srpProductionData.getFluidPVT()!=null ){
+												value=srpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+											}else if("WaterDensity".equalsIgnoreCase(code) && srpProductionData.getFluidPVT()!=null ){
+												value=srpProductionData.getFluidPVT().getWaterDensity()+"";
+											}else if("NaturalGasRelativeDensity".equalsIgnoreCase(code) && srpProductionData.getFluidPVT()!=null ){
+												value=srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+											}else if("SaturationPressure".equalsIgnoreCase(code) && srpProductionData.getFluidPVT()!=null ){
+												value=srpProductionData.getFluidPVT().getSaturationPressure()+"";
+											}else if("ReservoirDepth".equalsIgnoreCase(code) && srpProductionData.getReservoir()!=null ){
+												value=srpProductionData.getReservoir().getDepth()+"";
+											}else if("ReservoirTemperature".equalsIgnoreCase(code) && srpProductionData.getReservoir()!=null ){
+												value=srpProductionData.getReservoir().getTemperature()+"";
+											}else if("TubingPressure".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getTubingPressure()+"";
+											}else if("CasingPressure".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getCasingPressure()+"";
+											}else if("WellHeadTemperature".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getWellHeadTemperature()+"";
+											}else if("WaterCut".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getWaterCut()+"";
+											}else if("ProductionGasOilRatio".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getProductionGasOilRatio()+"";
+											}else if("ProducingfluidLevel".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getProducingfluidLevel()+"";
+											}else if("PumpSettingDepth".equalsIgnoreCase(code) && srpProductionData.getProduction()!=null ){
+												value=srpProductionData.getProduction().getPumpSettingDepth()+"";
+											}else if("PumpBoreDiameter".equalsIgnoreCase(code) && srpProductionData.getPump()!=null ){
+												value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+											}else if("LevelCorrectValue".equalsIgnoreCase(code) && srpProductionData.getManualIntervention()!=null ){
+												value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
+											}
+										}
+									}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+										type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+										PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
+										if(pcpProductionData!=null){
+											if("CrudeOilDensity".equalsIgnoreCase(code) && pcpProductionData.getFluidPVT()!=null ){
+												value=pcpProductionData.getFluidPVT().getCrudeOilDensity()+"";
+											}else if("WaterDensity".equalsIgnoreCase(code) && pcpProductionData.getFluidPVT()!=null ){
+												value=pcpProductionData.getFluidPVT().getWaterDensity()+"";
+											}else if("NaturalGasRelativeDensity".equalsIgnoreCase(code) && pcpProductionData.getFluidPVT()!=null ){
+												value=pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"";
+											}else if("SaturationPressure".equalsIgnoreCase(code) && pcpProductionData.getFluidPVT()!=null ){
+												value=pcpProductionData.getFluidPVT().getSaturationPressure()+"";
+											}else if("ReservoirDepth".equalsIgnoreCase(code) && pcpProductionData.getReservoir()!=null ){
+												value=pcpProductionData.getReservoir().getDepth()+"";
+											}else if("ReservoirTemperature".equalsIgnoreCase(code) && pcpProductionData.getReservoir()!=null ){
+												value=pcpProductionData.getReservoir().getTemperature()+"";
+											}else if("TubingPressure".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getTubingPressure()+"";
+											}else if("CasingPressure".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getCasingPressure()+"";
+											}else if("WellHeadTemperature".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getWellHeadTemperature()+"";
+											}else if("WaterCut".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getWaterCut()+"";
+											}else if("ProductionGasOilRatio".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getProductionGasOilRatio()+"";
+											}else if("ProducingfluidLevel".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getProducingfluidLevel()+"";
+											}else if("PumpSettingDepth".equalsIgnoreCase(code) && pcpProductionData.getProduction()!=null ){
+												value=pcpProductionData.getProduction().getPumpSettingDepth()+"";
+											}
+										}
+									}
+									result_json.append("{\"AcqTime\":\""+acqTime+"\",\"Value\":\""+value+"\"},");
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -2233,7 +2602,7 @@ public class MobileService<T> extends BaseService<T> {
 				}
 				
 				try{
-					deviceName=jsonObject.getString("deviceName");
+					deviceName=jsonObject.getString("DeviceName");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -2986,7 +3355,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			try{
-				deviceName=jsonObject.getString("deviceName");
+				deviceName=jsonObject.getString("DeviceName");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -3284,8 +3653,7 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getDeviceInformation(String data,Page pager)throws Exception {
 		String json = "";
-		StringBuffer devices= new StringBuffer();
-		int liftingType=1;
+		List<String> deviceList= new ArrayList<>();
 		String user="";
 		String password="";
 		if(StringManagerUtils.isNotNull(data)){
@@ -3306,10 +3674,7 @@ public class MobileService<T> extends BaseService<T> {
 				try{
 					JSONArray jsonArray = jsonObject.getJSONArray("DeviceList");
 					for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-						devices.append(""+jsonArray.getString(i)+",");
-					}
-					if(devices.toString().endsWith(",")){
-						devices.deleteCharAt(devices.length() - 1);
+						deviceList.add(jsonArray.getString(i));
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -3318,13 +3683,13 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 		}
-		json=this.getDeviceInfoList(user,password,devices.toString());
+		json=this.getDeviceInfoList(user,password,deviceList);
 		return json;
 	}
 	
 	
 	@SuppressWarnings("rawtypes")
-	public String getDeviceInfoList(String user,String password,String devices) {
+	public String getDeviceInfoList(String user,String password,List<String> deviceList) {
 		StringBuffer result_json = new StringBuffer();
 		int userCheckSign=this.userManagerService.userCheck(user, password);
 		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
@@ -3348,8 +3713,8 @@ public class MobileService<T> extends BaseService<T> {
 					+ " left outer join tbl_role t4 on t4.role_id=(select u.user_type from tbl_user u where u.user_id='"+user+"')"
 					+ " where  t.orgid in( select org.org_id from tbl_org org start with org.org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent)  ";
 
-			if (StringManagerUtils.isNotNull(devices)) {
-				sql += " and t.devicename in (" + devices+ ")";
+			if (deviceList.size()>0) {
+				sql += " and t.devicename in (" + StringManagerUtils.joinStringArr2(deviceList, ",")+ ")";
 			};
 			sql+= " order by t.sortnum,t.devicename ";
 			

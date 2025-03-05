@@ -25,7 +25,7 @@ Ext.Ajax.on("requestexception", function(conn, response, options, eOpts) {
 		case 888 :
 			Ext.MessageBox.show({
 				title : loginUserLanguageResource.tip,
-				msg : "[<font color='red' font-weight=bold;>"+loginUserLanguageResource.unauthorized+"</font>]"+loginUserLanguageResource.contactSupplier,
+				msg : "[<font color='red' font-weight=bold;>"+loginUserLanguageResource.unauthorized+"</font>],"+loginUserLanguageResource.contactSupplier+".",
 				icon : Ext.MessageBox.WARNING,
 				buttons : Ext.Msg.OK,
 				fn : function() {

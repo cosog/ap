@@ -31,7 +31,7 @@ public class CalculateManagerHandsontableChangedData {
 	
 	public static class Updatelist
 	{
-		private String id;
+		private String recordId;
 
 	    private String wellName;
 
@@ -136,14 +136,6 @@ public class CalculateManagerHandsontableChangedData {
 	    private String resultStatus;
 	    
 	    private String levelCorrectValue="0";
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
 
 		public String getWellName() {
 			return wellName;
@@ -567,6 +559,14 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setRodTypeName4(String rodTypeName4) {
 			this.rodTypeName4 = rodTypeName4;
+		}
+
+		public String getRecordId() {
+			return recordId;
+		}
+
+		public void setRecordId(String recordId) {
+			this.recordId = recordId;
 		}
 	}
 }

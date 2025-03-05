@@ -73,6 +73,7 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
         	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
             
             var calculateSign=Ext.getCmp('SRPCalculateMaintainingCalculateSignComBox_Id').getValue();
+            var resultCode=Ext.getCmp('SRPCalculateMaintainingResultNameComBox_Id').getValue();
             var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
@@ -83,6 +84,7 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
             		startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
                     calculateSign:calculateSign,
+                    resultCode:resultCode,
                     deviceType:deviceType,
                     calculateType:calculateType
             };

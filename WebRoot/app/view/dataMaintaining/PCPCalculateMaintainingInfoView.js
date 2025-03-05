@@ -175,460 +175,506 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         Ext.apply(me, {
         	layout: 'border',
             border: false,
-            tbar:[{
-                id: 'PCPCalculateMaintainingDeviceListSelectRow_Id',
-                xtype: 'textfield',
-                value: -1,
-                hidden: true
-            },{
-                xtype: 'button',
-                text: loginUserLanguageResource.refresh,
-                iconCls: 'note-refresh',
-                hidden:false,
-                handler: function (v, o) {
-                	refreshPCPCalculateMaintainingData();
-                }
-    		},'-',wellListComb
-    			,"-",{
-                xtype: 'datefield',
-                anchor: '100%',
-                fieldLabel: '',
-                labelWidth: 0,
-                width: 90,
-                format: 'Y-m-d ',
-                id: 'PCPCalculateMaintainingStartDate_Id',
-                value: '',
-                listeners: {
-                	select: function (combo, record, index) {
-                		calculateSignComb.clearValue();
-                		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
-            			if(activeId=="PCPCalculateMaintainingPanel"){
-            				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
-            				if (isNotVal(bbar)) {
-            					if(bbar.getStore().isEmptyStore){
-            						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-            						bbar.setStore(PCPCalculateMaintainingDataStore);
-            					}else{
-            						bbar.getStore().loadPage(1);
-            					}
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-            				}
-            			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
-            				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-            	            if (isNotVal(gridPanel)) {
-            	            	gridPanel.getStore().loadPage(1);
-            	            }else{
-            	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-            	            }
-            			}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingStartTime_Hour_Id',
-            	fieldLabel: loginUserLanguageResource.hour,
-                labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
-                width: getStringLength(loginUserLanguageResource.hour)*8+45,
-                minValue: 0,
-                maxValue: 23,
-                value:'',
-                msgTarget: 'none',
-                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingStartTime_Minute_Id',
-            	fieldLabel: loginUserLanguageResource.minute,
-                labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
-                width: getStringLength(loginUserLanguageResource.minute)*8+45,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingStartTime_Second_Id',
-            	fieldLabel: loginUserLanguageResource.second,
-                labelWidth: getStringLength(loginUserLanguageResource.second)*8,
-                width: getStringLength(loginUserLanguageResource.second)*8+45,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-                xtype: 'datefield',
-                anchor: '100%',
-                fieldLabel: loginUserLanguageResource.timeTo,
-                labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
-                width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
-                format: 'Y-m-d ',
-                id: 'PCPCalculateMaintainingEndDate_Id',
-                value: '',
-                listeners: {
-                	select: function (combo, record, index) {
-                		calculateSignComb.clearValue();
-                		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
-            			if(activeId=="PCPCalculateMaintainingPanel"){
-            				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
-            				if (isNotVal(bbar)) {
-            					if(bbar.getStore().isEmptyStore){
-            						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-            						bbar.setStore(PCPCalculateMaintainingDataStore);
-            					}else{
-            						bbar.getStore().loadPage(1);
-            					}
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-            				}
-            			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
-            				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-            	            if (isNotVal(gridPanel)) {
-            	            	gridPanel.getStore().loadPage(1);
-            	            }else{
-            	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-            	            }
-            			}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingEndTime_Hour_Id',
-            	fieldLabel: loginUserLanguageResource.hour,
-                labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
-                width: getStringLength(loginUserLanguageResource.hour)*8+45,
-                minValue: 0,
-                maxValue: 23,
-                value:'',
-                msgTarget: 'none',
-                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingEndTime_Minute_Id',
-            	fieldLabel: loginUserLanguageResource.minute,
-                labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
-                width: getStringLength(loginUserLanguageResource.minute)*8+45,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },{
-            	xtype: 'numberfield',
-            	id: 'PCPCalculateMaintainingEndTime_Second_Id',
-            	fieldLabel: loginUserLanguageResource.second,
-                labelWidth: getStringLength(loginUserLanguageResource.second)*8,
-                width: getStringLength(loginUserLanguageResource.second)*8+45,
-                minValue: 0,
-                maxValue: 59,
-                value:'',
-                msgTarget: 'none',
-                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                listeners: {
-                	blur: function (field, event, eOpts) {
-                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                		var flag=r.test(field.value);
-                		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                			field.focus(true, 100);
-                		}
-                    }
-                }
-            },"-",calculateSignComb,'-',{
-                xtype: 'button',
-                text: loginUserLanguageResource.search,
-                iconCls: 'search',
-                pressed: false,
-                hidden:false,
-                handler: function (v, o) {
-                	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
-        			if(activeId=="PCPCalculateMaintainingPanel"){
-        				var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                    	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                    	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
-                    	if(!r.test(startTime_Hour)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
-                    		return;
-                    	}
-                    	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
-                    	if(!r2.test(startTime_Minute)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
-                    		return;
-                    	}
-                    	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
-                    	if(!r2.test(startTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
-                    	
-                    	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
-                    	if(!r.test(endTime_Hour)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
-                    		return;
-                    	}
-                    	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
-                    	if(!r2.test(endTime_Minute)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
-                    		return;
-                    	}
-                    	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
-                    	if(!r2.test(endTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
-        				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
-        				if (isNotVal(bbar)) {
-        					if(bbar.getStore().isEmptyStore){
-        						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-        						bbar.setStore(PCPCalculateMaintainingDataStore);
-        					}else{
-        						bbar.getStore().loadPage(1);
-        					}
-        				}else{
-        					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-        				}
-        			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
-        				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-        	            if (isNotVal(gridPanel)) {
-        	            	gridPanel.getStore().loadPage(1);
-        	            }else{
-        	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-        	            }
-        			}
-                }
-            
-    		},'->',{
-                xtype: 'button',
-                text: loginUserLanguageResource.editHistoryDataCalculate,
-                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
-                id:'PCPCalculateMaintainingUpdateDataBtn',
-                pressed: false,
-                iconCls: 'edit',
-                handler: function (v, o) {
-                	pcpRPMCalculateMaintainingHandsontableHelper.saveData();
-                }
-            },"-",{
-                xtype: 'button',
-                text: loginUserLanguageResource.linkProductionDataCalculate,
-                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
-                pressed: false,
-                iconCls: 'save',
-                id:'PCPCalculateMaintainingLinkedDataBtn',
-                handler: function (v, o) {
-                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
-                	if(!r.test(startTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
-                	if(!r2.test(startTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
-                	if(!r2.test(startTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	
-                	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
-                	if(!r.test(endTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
-                	if(!r2.test(endTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
-                		return;
-                	}
-                	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
-                	if(!r2.test(endTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
-                		return;
-                	}
-                	
-                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
-                    var startDate=Ext.getCmp('PCPCalculateMaintainingStartDate_Id').rawValue;
-                    var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
-                	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
-                	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
-                    var endDate=Ext.getCmp('PCPCalculateMaintainingEndDate_Id').rawValue;
-                    var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
-                	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
-                	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
-                    var calculateSign=Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').getValue();
-                    var deviceType=1;
-                    var calculateType=2;
-                    var showDeviceName=deviceName;
-                    if(deviceName == '' || deviceName == null){
-                		if(calculateType==1){
-                			showDeviceName=loginUserLanguageResource.allSRPCalculateWell;
-                		}else if(calculateType==2){
-                			showDeviceName=loginUserLanguageResource.allPCPCalculateWell;
-                		}
-                	}else{
-//                		showDeviceName+='井';
-                	}
-                	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
-                	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
-                        if (btn == "yes") {
-                        	Ext.Ajax.request({
-        	            		method:'POST',
-        	            		url:context + '/calculateManagerController/recalculateByProductionData',
-        	            		success:function(response) {
-        	            			var rdata=Ext.JSON.decode(response.responseText);
-        	            			if (rdata.success) {
-        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
-        	                            //保存以后重置全局容器
-        	                            pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
-        	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
-        	                        } else {
-        	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailure);
+            tbar:{
+            	xtype:"container",
+            	border:false,
+            	items:[{
+            	     //tbar第一行工具栏
+            	     xtype:"toolbar",
+            	     items : [{
+                         id: 'PCPCalculateMaintainingDeviceListSelectRow_Id',
+                         xtype: 'textfield',
+                         value: -1,
+                         hidden: true
+                     },{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.refresh,
+                         iconCls: 'note-refresh',
+                         hidden:false,
+                         handler: function (v, o) {
+                         	refreshPCPCalculateMaintainingData();
+                         }
+             		},'-',wellListComb
+             			,"-",{
+                         xtype: 'datefield',
+                         anchor: '100%',
+                         fieldLabel: '',
+                         labelWidth: 0,
+                         width: 90,
+                         format: 'Y-m-d ',
+                         id: 'PCPCalculateMaintainingStartDate_Id',
+                         value: '',
+                         listeners: {
+                         	select: function (combo, record, index) {
+                         		calculateSignComb.clearValue();
+                         		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+                     			if(activeId=="PCPCalculateMaintainingPanel"){
+                     				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+                     				if (isNotVal(bbar)) {
+                     					if(bbar.getStore().isEmptyStore){
+                     						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                     						bbar.setStore(PCPCalculateMaintainingDataStore);
+                     					}else{
+                     						bbar.getStore().loadPage(1);
+                     					}
+                     				}else{
+                     					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                     				}
+                     			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
+                     				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+                     	            if (isNotVal(gridPanel)) {
+                     	            	gridPanel.getStore().loadPage(1);
+                     	            }else{
+                     	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+                     	            }
+                     			}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingStartTime_Hour_Id',
+                     	fieldLabel: loginUserLanguageResource.hour,
+                         labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                         width: getStringLength(loginUserLanguageResource.hour)*8+45,
+                         minValue: 0,
+                         maxValue: 23,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingStartTime_Minute_Id',
+                     	fieldLabel: loginUserLanguageResource.minute,
+                         labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                         width: getStringLength(loginUserLanguageResource.minute)*8+45,
+                         minValue: 0,
+                         maxValue: 59,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingStartTime_Second_Id',
+                     	fieldLabel: loginUserLanguageResource.second,
+                         labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                         width: getStringLength(loginUserLanguageResource.second)*8+45,
+                         minValue: 0,
+                         maxValue: 59,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },{
+                         xtype: 'datefield',
+                         anchor: '100%',
+                         fieldLabel: loginUserLanguageResource.timeTo,
+                         labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+                         width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
+                         format: 'Y-m-d ',
+                         id: 'PCPCalculateMaintainingEndDate_Id',
+                         value: '',
+                         listeners: {
+                         	select: function (combo, record, index) {
+                         		calculateSignComb.clearValue();
+                         		var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+                     			if(activeId=="PCPCalculateMaintainingPanel"){
+                     				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+                     				if (isNotVal(bbar)) {
+                     					if(bbar.getStore().isEmptyStore){
+                     						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                     						bbar.setStore(PCPCalculateMaintainingDataStore);
+                     					}else{
+                     						bbar.getStore().loadPage(1);
+                     					}
+                     				}else{
+                     					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                     				}
+                     			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
+                     				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+                     	            if (isNotVal(gridPanel)) {
+                     	            	gridPanel.getStore().loadPage(1);
+                     	            }else{
+                     	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+                     	            }
+                     			}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingEndTime_Hour_Id',
+                     	fieldLabel: loginUserLanguageResource.hour,
+                         labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+                         width: getStringLength(loginUserLanguageResource.hour)*8+45,
+                         minValue: 0,
+                         maxValue: 23,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingEndTime_Minute_Id',
+                     	fieldLabel: loginUserLanguageResource.minute,
+                         labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+                         width: getStringLength(loginUserLanguageResource.minute)*8+45,
+                         minValue: 0,
+                         maxValue: 59,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },{
+                     	xtype: 'numberfield',
+                     	id: 'PCPCalculateMaintainingEndTime_Second_Id',
+                     	fieldLabel: loginUserLanguageResource.second,
+                         labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+                         width: getStringLength(loginUserLanguageResource.second)*8+45,
+                         minValue: 0,
+                         maxValue: 59,
+                         value:'',
+                         msgTarget: 'none',
+                         regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                         listeners: {
+                         	blur: function (field, event, eOpts) {
+                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                         		var flag=r.test(field.value);
+                         		if(!flag){
+                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			field.focus(true, 100);
+                         		}
+                             }
+                         }
+                     },"-",calculateSignComb,'-',{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.search,
+                         iconCls: 'search',
+                         pressed: false,
+                         hidden:false,
+                         handler: function (v, o) {
+                         	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+                 			if(activeId=="PCPCalculateMaintainingPanel"){
+                 				var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                             	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                             	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                             	if(!r.test(startTime_Hour)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
+                             		return;
+                             	}
+                             	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                             	if(!r2.test(startTime_Minute)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
+                             		return;
+                             	}
+                             	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
+                             	if(!r2.test(startTime_Second)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
+                             		return;
+                             	}
+                             	
+                             	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                             	if(!r.test(endTime_Hour)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
+                             		return;
+                             	}
+                             	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                             	if(!r2.test(endTime_Minute)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
+                             		return;
+                             	}
+                             	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
+                             	if(!r2.test(endTime_Second)){
+                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                             		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
+                             		return;
+                             	}
+                 				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+                 				if (isNotVal(bbar)) {
+                 					if(bbar.getStore().isEmptyStore){
+                 						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                 						bbar.setStore(PCPCalculateMaintainingDataStore);
+                 					}else{
+                 						bbar.getStore().loadPage(1);
+                 					}
+                 				}else{
+                 					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+                 				}
+                 			}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
+                 				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+                 	            if (isNotVal(gridPanel)) {
+                 	            	gridPanel.getStore().loadPage(1);
+                 	            }else{
+                 	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+                 	            }
+                 			}
+                         }
+                     
+             		}]
+            	},{
+            	     //tbar第二行工具栏
+            	     xtype:"toolbar",
+            	     items : ['->',{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.editHistoryDataCalculate,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                         id:'PCPCalculateMaintainingUpdateDataBtn',
+                         pressed: false,
+                         iconCls: 'edit',
+                         handler: function (v, o) {
+                         	pcpRPMCalculateMaintainingHandsontableHelper.saveData();
+                         }
+                     },"-",{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.linkProductionDataCalculate,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                         pressed: false,
+                         iconCls: 'save',
+                         id:'PCPCalculateMaintainingLinkedDataBtn',
+                         handler: function (v, o) {
+                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                         	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                         	if(!r.test(startTime_Hour)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                         	if(!r2.test(startTime_Minute)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
+                         	if(!r2.test(startTime_Second)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	
+                         	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                         	if(!r.test(endTime_Hour)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                         	if(!r2.test(endTime_Minute)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
+                         	if(!r2.test(endTime_Second)){
+                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
+                         		return;
+                         	}
+                         	
+                         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                             var deviceName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
+                             var startDate=Ext.getCmp('PCPCalculateMaintainingStartDate_Id').rawValue;
+                             var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                         	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                         	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
+                             var endDate=Ext.getCmp('PCPCalculateMaintainingEndDate_Id').rawValue;
+                             var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                         	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                         	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
+                             var calculateSign=Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').getValue();
+                             var deviceType=1;
+                             var calculateType=2;
+                             var showDeviceName=deviceName;
+                             if(deviceName == '' || deviceName == null){
+                         		if(calculateType==1){
+                         			showDeviceName=loginUserLanguageResource.allSRPCalculateWell;
+                         		}else if(calculateType==2){
+                         			showDeviceName=loginUserLanguageResource.allPCPCalculateWell;
+                         		}
+                         	}else{
+//                         		showDeviceName+='井';
+                         	}
+                         	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
+                         	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
+                                 if (btn == "yes") {
+                                 	Ext.Ajax.request({
+                 	            		method:'POST',
+                 	            		url:context + '/calculateManagerController/recalculateByProductionData',
+                 	            		success:function(response) {
+                 	            			var rdata=Ext.JSON.decode(response.responseText);
+                 	            			if (rdata.success) {
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
+                 	                            //保存以后重置全局容器
+                 	                            pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
+                 	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
+                 	                        } else {
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailure);
 
-        	                        }
-        	            		},
-        	            		failure:function(){
-        	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
-        	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
-        	            		},
-        	            		params: {
-        	            			orgId: orgId,
-        	            			deviceName: deviceName,
-        	                        startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
-        	                        endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
-        	                        calculateSign:calculateSign,
-        	                        calculateType:calculateType,
-        	                        deviceType:deviceType
-        	                    }
-        	            	}); 
-                        }
-                    });
-                }
-            },"-",{
-                xtype: 'button',
-                text: loginUserLanguageResource.exportRequestData,
-                pressed: false,
-                hidden: false,
-                iconCls: 'export',
-                id:'PCPCalculateMaintainingExportDataBtn',
-                handler: function (v, o) {
-                	if(pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()){
-                		var row=pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
-                		var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[0];
-                		var deviceName=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[1];
-                		var acqTime=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[2];
-                		var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
-                		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
-                    	document.location.href = url;
-                	}else{
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
-                	}
-                }
-            },{
-                xtype: 'button',
-                text: loginUserLanguageResource.reTotalCalculate,
-                disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
-                id:'PCPCalculateMaintainingReTotalBtn',
-                pressed: false,
-                hidden:true,
-                iconCls: 'edit',
-                handler: function (v, o) {
-                	ReTotalRPMData();
-                }
-            },"-",{
-                xtype: 'button',
-                text: loginUserLanguageResource.exportRequestData,
-                pressed: false,
-                hidden: true,
-                iconCls: 'export',
-                id:'PCPTotalCalculateMaintainingExportDataBtn',
-                handler: function (v, o) {
-                	var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-                    var selectionModel = gridPanel.getSelectionModel();
-                    var _record = selectionModel.getSelection();
-                    if (_record.length>0) {
-                    	var recordId=_record[0].data.id;
-                    	var wellId=_record[0].data.wellId;
-                    	var deviceName=_record[0].data.deviceName;
-                    	var calDate=_record[0].data.calDate;
-                		var deviceType=1;
-                		var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
-                		+'&wellId='+wellId
-                		+'&deviceName='+URLencode(URLencode(deviceName))
-                		+'&calDate='+calDate
-                		+'&deviceType='+deviceType;
-                    	document.location.href = url;
-                    }else{
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
-                    }
-                }
-            }],
+                 	                        }
+                 	            		},
+                 	            		failure:function(){
+                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+                 	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
+                 	            		},
+                 	            		params: {
+                 	            			orgId: orgId,
+                 	            			deviceName: deviceName,
+                 	                        startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+                 	                        endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+                 	                        calculateSign:calculateSign,
+                 	                        calculateType:calculateType,
+                 	                        deviceType:deviceType
+                 	                    }
+                 	            	}); 
+                                 }
+                             });
+                         }
+                     },"-",{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.exportRequestData,
+                         pressed: false,
+                         hidden: false,
+                         iconCls: 'export',
+                         id:'PCPCalculateMaintainingExportDataBtn',
+                         handler: function (v, o) {
+                         	if(pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()){
+                         		var row=pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
+                         		
+                         		var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'recordId');
+                          		var deviceName=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'deviceName');
+                          		var acqTime=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'acqTime');
+                         		
+                         		
+                         		var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
+                         		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
+                             	document.location.href = url;
+                         	}else{
+                         		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                         	}
+                         }
+                     },"-",{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.deleteData,
+                         pressed: false,
+                         hidden: false,
+                         iconCls: 'delete',
+                         id:'PCPCalculateMaintainingDeleteDataBtn',
+                         handler: function (v, o) {
+                        	 var checkedStatus=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
+                        	 var deleteRecordList=[];
+                        	 
+                        	 var deviceId=0;
+                        	 var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
+                        	 if(selectRow>=0){
+                         		deviceId=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                         	 }
+                        	 
+                        	 if(checkedStatus.length>0){
+                        		 for(var i=0;i<checkedStatus.length;i++){
+                        			 if(checkedStatus[i]){
+                        				 var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i,'recordId'); 
+                        				 deleteRecordList.push(recordId);
+                        			 }
+                        		 }
+                        	 }
+                        	 if(deleteRecordList.length>0){
+                        		 deleteCalculateData(deviceId,deleteRecordList,2);
+                        	 }else{
+                        		 Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                        	 }
+                         }
+                     },{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.reTotalCalculate,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                         id:'PCPCalculateMaintainingReTotalBtn',
+                         pressed: false,
+                         hidden:true,
+                         iconCls: 'edit',
+                         handler: function (v, o) {
+                         	ReTotalRPMData();
+                         }
+                     },"-",{
+                         xtype: 'button',
+                         text: loginUserLanguageResource.exportRequestData,
+                         pressed: false,
+                         hidden: true,
+                         iconCls: 'export',
+                         id:'PCPTotalCalculateMaintainingExportDataBtn',
+                         handler: function (v, o) {
+                         	var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+                             var selectionModel = gridPanel.getSelectionModel();
+                             var _record = selectionModel.getSelection();
+                             if (_record.length>0) {
+                             	var recordId=_record[0].data.id;
+                             	var wellId=_record[0].data.wellId;
+                             	var deviceName=_record[0].data.deviceName;
+                             	var calDate=_record[0].data.calDate;
+                         		var deviceType=1;
+                         		var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
+                         		+'&wellId='+wellId
+                         		+'&deviceName='+URLencode(URLencode(deviceName))
+                         		+'&calDate='+calDate
+                         		+'&deviceType='+deviceType;
+                             	document.location.href = url;
+                             }else{
+                             	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                             }
+                         }
+                     }]
+            	}]
+            },
         	items: [{
         		region: 'west',
             	width: '30%',
@@ -693,6 +739,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     						Ext.getCmp("PCPCalculateMaintainingUpdateDataBtn").show();
     						Ext.getCmp("PCPCalculateMaintainingLinkedDataBtn").show();
     						Ext.getCmp("PCPCalculateMaintainingExportDataBtn").show();
+    						Ext.getCmp("PCPCalculateMaintainingDeleteDataBtn").show();
     						Ext.getCmp("PCPCalculateMaintainingCalculateSignComBox_Id").show();
     						Ext.getCmp("PCPCalculateMaintainingReTotalBtn").hide();
     						Ext.getCmp("PCPTotalCalculateMaintainingExportDataBtn").hide();
@@ -707,6 +754,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     						Ext.getCmp("PCPCalculateMaintainingUpdateDataBtn").hide();
     						Ext.getCmp("PCPCalculateMaintainingLinkedDataBtn").hide();
     						Ext.getCmp("PCPCalculateMaintainingExportDataBtn").hide();
+    						Ext.getCmp("PCPCalculateMaintainingDeleteDataBtn").hide();
     						Ext.getCmp("PCPCalculateMaintainingCalculateSignComBox_Id").hide();
     						Ext.getCmp("PCPCalculateMaintainingReTotalBtn").show();
     						Ext.getCmp("PCPTotalCalculateMaintainingExportDataBtn").show();
@@ -739,8 +787,8 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
 	var applicationScenarios=result.applicationScenarios;
 	if(pcpRPMCalculateMaintainingHandsontableHelper==null){
 		pcpRPMCalculateMaintainingHandsontableHelper = PCPRPMCalculateMaintainingHandsontableHelper.createNew(divid);
-		var colHeaders="[";
-        var columns="[";
+		var colHeaders="['',";
+        var columns="[{data:'checked',type:'checkbox'},";
         for(var i=0;i<result.columns.length;i++){
         	var colHeader="'" + result.columns[i].header + "'";
             var dataIndex=result.columns[i].dataIndex;
@@ -762,7 +810,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
             colHeaders += colHeader;
         	columns+="{data:'"+dataIndex+"'";
         	if(dataIndex.toUpperCase()=="id".toUpperCase()){
-        		columns+=",type: 'checkbox'";
+//        		columns+=",type: 'checkbox'";
         	}else if(dataIndex.toUpperCase()==="deviceName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
     		}else if(dataIndex==="anchoringStateName"){
@@ -786,32 +834,25 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
             	columns+=",";
         	}
         }
+        colHeaders+=",'recordId'";
+        columns+=",{data: 'recordId'}";
         colHeaders+="]";
     	columns+="]";
     	pcpRPMCalculateMaintainingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
     	pcpRPMCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
     		pcpRPMCalculateMaintainingHandsontableHelper.createTable([{}]);
         }else{
-        	pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
         	pcpRPMCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
 			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
     	}else{
-    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
     		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
-	if(pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows.length>0){
-    	const plugin = pcpRPMCalculateMaintainingHandsontableHelper.hot.getPlugin('hiddenRows');
-    	plugin.hideRows(pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows);
-    	pcpRPMCalculateMaintainingHandsontableHelper.hot.render();
-    }
 };
 
 
@@ -831,13 +872,23 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        pcpRPMCalculateMaintainingHandsontableHelper.insertlist=[];
 	        
 	        pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(col>=1 && col<=7){
+	        	if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type=='checkbox'){
+	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type=='dropdown'){
+	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+	        	}else{
+	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	}
+	        	
+	            if(col<=8 && col>=1){
 	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
-            	td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+            	
+            	if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type!='checkbox'){
+            		td.style.whiteSpace='nowrap'; //文本不换行
+                	td.style.overflow='hidden';//超出部分隐藏
+                	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        	}
 	        }
 	        
 	        
@@ -849,7 +900,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        		data: data,
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
-	                    columns: [0],
+	                    columns: [pcpRPMCalculateMaintainingHandsontableHelper.columns.length-1],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -896,8 +947,8 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    //封装id成array传入后台
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
-	                            var rowdata = pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
+	                            var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i,'recordId');
+	                            ids.push(rowdata[recordId]);
 	                        }
 	                        pcpRPMCalculateMaintainingHandsontableHelper.delExpressCount(ids);
 	                        pcpRPMCalculateMaintainingHandsontableHelper.screening();
@@ -909,7 +960,8 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    		var params = [];
 	                    		var index = changes[i][0]; //行号码
 		                        var rowdata = pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
+		                        var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(index,'recordId');
+		                        params.push(recordId);
 		                        params.push(changes[i][1]);
 		                        params.push(changes[i][2]);
 		                        params.push(changes[i][3]);

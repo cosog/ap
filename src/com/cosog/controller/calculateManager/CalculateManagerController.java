@@ -72,6 +72,7 @@ public class CalculateManagerController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -107,7 +108,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,calculateType,language);
+		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,resultCode,calculateType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -212,6 +213,7 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/getCalculateStatusList")
 	public String getCalculateStatusList() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
@@ -248,6 +250,68 @@ public class CalculateManagerController extends BaseController {
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
 		String json = this.calculateManagerService.getCalculateStatusList(orgId,deviceName,calculateType,startDate,endDate,language);
+//		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+//		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	/**
+	 * <p>
+	 * 描述：计算维护模块模块计算标志下拉框
+	 * </p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/getResultNameList")
+	public String getResultNameList() throws Exception {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgid();
+			}
+		}
+		String tableName="tbl_srpacqdata_hist";
+		if(StringManagerUtils.stringToInteger(calculateType)==2){
+			tableName="tbl_pcpacqdata_hist";
+		}
+		if(!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+=" and t.deviceId="+deviceId;
+			}
+			List<?> list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		String json = this.calculateManagerService.getResultNameList(orgId,deviceId,calculateType,startDate,endDate,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -424,6 +488,27 @@ public class CalculateManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String reCalculateDate = ParamUtils.getParameter(request, "reCalculateDate");
 		String json = calculateManagerService.reTotalCalculate(deviceType,reCalculateDate);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/deleteCalculateData")
+	public String deleteCalculateData() throws Exception {
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String recordIds = ParamUtils.getParameter(request, "recordIds");
+		String json = calculateManagerService.deleteCalculateData(deviceId,calculateType,recordIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

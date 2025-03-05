@@ -79,11 +79,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType,String language)
+	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCode,String calculateType,String language)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
+			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, resultCode, calculateType,language);
 		}else if("2".equals(calculateType)){
 			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
@@ -105,7 +105,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType,String language)
+	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCodeStr,String calculateType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -145,6 +145,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					sql+=" and  t.resultstatus = " + calculateSign + " ";
 				}
 			}
+			
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and t.resultcode="+resultCodeStr;
+			}
+			
 			int totals=this.getTotalCountRows(sql);
 			
 			sql+=" order by t.fesdiagramacqtime desc";
@@ -176,7 +181,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 				SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 				
-				result_json.append("{\"id\":\""+obj[0]+"\",");
+				result_json.append("{\"recordId\":\""+obj[0]+"\",");
+				result_json.append("\"id\":"+(i+1)+",");
+				result_json.append("\"checked\":false,");
 				result_json.append("\"deviceId\":\""+obj[1]+"\",");
 				result_json.append("\"deviceName\":\""+obj[2]+"\",");
 				result_json.append("\"acqTime\":\""+obj[3]+"\",");
@@ -348,7 +355,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 			PCPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			
-			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("{\"recordId\":\""+obj[0]+"\",");
+			result_json.append("\"id\":"+(i+1)+",");
+			result_json.append("\"checked\":false,");
 			result_json.append("\"deviceId\":\""+obj[1]+"\",");
 			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"acqTime\":\""+obj[3]+"\",");
@@ -522,7 +531,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 					StringBuffer productionDataBuff = new StringBuffer();
 					
-					String productionSql="select t.productiondata from tbl_srpacqdata_hist t where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+					String productionSql="select t.productiondata from tbl_srpacqdata_hist t where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRecordId();
 					List<?> list = this.findCallSql(productionSql);
 					String productionData="";
 					if(list.size()>0){
@@ -702,7 +711,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					productionDataBuff.append("\"ManualIntervention\":"+(manualIntervention!=null?gson.toJson(manualIntervention):"{}"));
 					productionDataBuff.append("}");
 					
-					String updateSql="update tbl_srpacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+					String updateSql="update tbl_srpacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRecordId();
 					
 					this.getBaseDao().updateOrDeleteBySql(updateSql);
 				}
@@ -866,7 +875,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				productionDataBuff.append("\"ManualIntervention\":"+(manualIntervention!=null?gson.toJson(manualIntervention):"{}"));
 				productionDataBuff.append("}");
 				
-				String updateSql="update tbl_pcpacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+				String updateSql="update tbl_pcpacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRecordId();
 				
 				this.getBaseDao().updateOrDeleteBySql(updateSql);
 			}
@@ -887,6 +896,30 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		result_json.append("]}");
 		
 		return result_json.toString();
+	}
+	
+	public String getResultNameList(String orgId, String deviceId, String calculateType,String startDate,String endDate,String language)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		List<WorkType> workTypeList=new ArrayList<>();
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			String sql="select distinct(t.resultcode) as resultcode "
+					+ " from TBL_SRPACQDATA_HIST t "
+					+ " where t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.deviceid="+deviceId;
+			List<?> list = this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				workTypeList.add(workTypeMap.get(list.get(i)+""));
+			}
+		}
+		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");		
+		for(WorkType w:workTypeList){
+			result_json.append(",{boxkey:\"" + w.getResultCode() + "\",");
+			result_json.append("boxval:\"" + w.getResultName() + "\"}");
+		}
+		result_json.append("]}");
+		return result_json.toString();
+		
 	}
 	
 	public int recalculateByProductionData(String orgId, String deviceName, String deviceType,String startDate,String endDate,String calculateSign,String calculateType)throws Exception {
@@ -1105,7 +1138,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " select t2.deviceName,decode(t2.applicationscenarios,0,'cbm','oil') as applicationscenarios,"
 				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.rpm,t.productiondata"
-				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2"
+				+ " from tbl_pcpacqdata_hist t,tbl_device t2"
 				+ " where t.deviceId=t2.id  "
 				+ " and t.id="+recordId;
 		List<?> list = this.findCallSql(sql);
@@ -1400,6 +1433,47 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public String deleteCalculateData(String deviceId,String calculateType,String recordIds) {
+		String json="";
+		int result=0;
+		boolean success=true;
+		try {
+			boolean updateRealtimeData=false;
+			String calHistoryDataTable="tbl_srpacqdata_hist";
+			String calRealtimeDataTable="tbl_srpacqdata_latest";
+			String timeColumn="fesdiagramacqtime";
+			if("1".equals(calculateType)){
+				
+			}else if("2".equals(calculateType)){
+				calHistoryDataTable="tbl_pcpacqdata_hist";
+				calRealtimeDataTable="tbl_pcpacqdata_latest";
+				timeColumn="acqtime";
+			}
+			String sql="select t.deviceid "
+					+ " from "+calRealtimeDataTable+" t "
+					+ " where t.deviceid="+deviceId
+					+ " and t."+timeColumn+" in ( select t2."+timeColumn+" from "+calHistoryDataTable+" t2 where t2.id in("+recordIds+") )";
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				updateRealtimeData=true;
+			}
+			String deleteHistorySql="delete from "+calHistoryDataTable+" t where t.id in("+recordIds+")";
+			result=this.getBaseDao().updateOrDeleteBySql(deleteHistorySql);
+			
+			if(updateRealtimeData){
+				if("1".equals(calculateType)){
+					this.getBaseDao().uodateSRPRealtimeDiagramData(StringManagerUtils.stringToInteger(deviceId));
+				}else if("2".equals(calculateType)){
+					this.getBaseDao().uodatePCPRealtimeRPMData(StringManagerUtils.stringToInteger(deviceId));
+				}
+			}
+		}catch (Exception e) {
+			success=false;
+		}
+		json="{\"success\":"+success+",\"count\":"+result+"}";
+		return json;
+	}
+	
 	public String reTotalCalculate(String deviceType,String reCalculateDate)throws Exception {
 		String json="";
 		if("0".equals(deviceType)){
@@ -1686,7 +1760,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		StringBuffer dataSbf= new StringBuffer();
 		String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
+				+ " from tbl_pcpdailycalculationdata t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t.id="+recordId;
 		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"

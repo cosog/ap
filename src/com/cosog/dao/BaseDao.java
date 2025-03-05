@@ -4037,4 +4037,38 @@ public class BaseDao extends HibernateDaoSupport {
 			conn.close();
 		}
 	}
+	
+	public void uodateSRPRealtimeDiagramData(int deviceId) throws SQLException{
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		try {
+			cs = conn.prepareCall("{call prd_update_srp_diagram_latest(?)}");
+			cs.setInt(1, deviceId);
+			cs.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+	}
+	
+	public void uodatePCPRealtimeRPMData(int deviceId) throws SQLException{
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		try {
+			cs = conn.prepareCall("{call prd_update_pcp_rpm_latest(?)}");
+			cs.setInt(1, deviceId);
+			cs.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+	}
 }

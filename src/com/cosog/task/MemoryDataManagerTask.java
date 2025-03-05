@@ -4980,8 +4980,8 @@ public class MemoryDataManagerTask {
 			    	JSONArray arr = entry.getValue();
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
-						String item=obj.getString("ITEM");
-						String value=obj.getString("VALUE");
+						String item=obj.getString("FIELD");
+						String value=obj.getString("LANGUAGE");
 						if(StringManagerUtils.isNotNull(item)){
 							languageMap.put(item, value);
 						}

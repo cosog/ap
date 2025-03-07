@@ -407,6 +407,91 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     }
                 });
         
+        var resultNameStore = new Ext.data.JsonStore({
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/calculateManagerController/getResultNameList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: false,
+            listeners: {
+                beforeload: function (store, options) {
+                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                	var deviceName='';
+                	var deviceId=0;
+                	var calculateType=0;
+                	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
+                	if(selectRow>=0){
+                		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                		calculateType=Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+                	}
+                	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+                	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+                	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+
+                    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+                    var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+                	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+                    
+                    var new_params = {
+                    		orgId: orgId,
+                    		deviceId: deviceId,
+                    		deviceName: deviceName,
+                    		startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+                            endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+                            calculateType:calculateType
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+        var resultNameComb = Ext.create(
+                'Ext.form.field.ComboBox', {
+                	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
+                    labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
+                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
+                    id: 'HistoryQueryResultNameComBox_Id',
+                    store: resultNameStore,
+                    queryMode: 'remote',
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
+                    typeAhead: false,
+                    autoSelect: false,
+                    allowBlank: true,
+                    hidden: true,
+                    triggerAction: 'all',
+                    editable: false,
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    minChars: 0,
+                    listeners: {
+                    	expand: function (sm, selections) {
+                    		resultNameComb.clearValue();
+                    		resultNameComb.getStore().load();
+                        },
+                        select: function (combo, record, index) {
+                        	
+                        }
+                    }
+        });
+        
         Ext.applyIf(me, {
             items: [{
                 border: false,
@@ -690,7 +775,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         		}
                             }
                         }
-                    },'-',{
+                    },'-',resultNameComb,{
                         xtype: 'button',
                         text: loginUserLanguageResource.search,
                         iconCls: 'search',
@@ -815,11 +900,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
+                            var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+                            
                        	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                        	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
                        	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
                        	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
-                       	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+                       	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }
                     }, {
                         xtype: 'button',
@@ -881,10 +968,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
                             
+                            var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+                            
                        	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                        	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
                        	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
-                       	 	exportHistoryQueryDiagramTiledDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title);
+                       	 	exportHistoryQueryDiagramTiledDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title);
                         }
                     }, {
                         xtype: 'button',
@@ -975,6 +1064,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         					if(newCard.id=="HistoryDataTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
@@ -985,11 +1075,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 }
         					}else if(newCard.id=="HistoryDiagramTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						loadHistoryDiagramTiledList(1);
         					}else if(newCard.id=="HistoryDiagramOverlayTabPanel"){
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").show();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();

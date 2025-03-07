@@ -2116,6 +2116,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getDeviceProductionDataInfo(String deviceId,String deviceType,String deviceCalculateDataType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer resultNameBuff = new StringBuffer();
+		StringBuffer FESdiagramSrcBuff = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		Gson gson = new Gson();
@@ -2134,6 +2135,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			List<?> list = this.findCallSql(sql);
 			result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
 			resultNameBuff.append("[");
+			FESdiagramSrcBuff.append("[");
 			String applicationScenarios="";
 			if(list.size()>0){
 				Object[] obj = (Object[]) list.get(0);
@@ -2160,6 +2162,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 					resultNameBuff.append("\""+languageResourceMap.get("noIntervention")+"\"");
+					
+					FESdiagramSrcBuff.append("\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "0", language)+"\",\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "1", language)+"\"");
+					
 //					List<?> resultList = this.findCallSql(resultSql);
 					
 					Iterator<Map.Entry<String, WorkType>> it = workTypeMap.entrySet().iterator();
@@ -2172,6 +2177,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					type = new TypeToken<SRPProductionData>() {}.getType();
 					SRPProductionData srpProductionData=gson.fromJson(productionData, type);
 					if(srpProductionData!=null){
+						int FESDiagramSrc=srpProductionData.getFESDiagram()!=null?srpProductionData.getFESDiagram().getSrc():0;
+						
 						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
 						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
@@ -2306,7 +2313,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\""+manualInterventionName+"\"},");
 						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
 						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
-						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"}");
+						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"},");
+						
+						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemValue\":\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", FESDiagramSrc+"", language)+"\"}");
+						
 					}else{
 						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2359,7 +2369,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\"\"}");
+						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\"\"},");
+						
+						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemValue\":\"\"}");
 					}
 				}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
 					type = new TypeToken<PCPProductionData>() {}.getType();
@@ -2537,7 +2549,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			result_json.append("]");
 			resultNameBuff.append("]");
+			FESdiagramSrcBuff.append("]");
 			result_json.append(",\"resultNameList\":"+resultNameBuff);
+			result_json.append(",\"FESdiagramSrcList\":"+FESdiagramSrcBuff);
 			result_json.append(",\"applicationScenarios\":\""+applicationScenarios+"\"");
 			result_json.append("}");
 		}catch(Exception e){

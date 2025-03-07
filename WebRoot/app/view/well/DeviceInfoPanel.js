@@ -1255,6 +1255,7 @@ var DeviceInfoHandsontableHelper = {
             			//生产数据
                         var deviceProductionData={};
                         var manualInterventionResultName=loginUserLanguageResource.noIntervention;
+                        var FESDiagramSrcName='';
                         if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
                     		var productionHandsontableData=productionHandsontableHelper.hot.getData();
                     		deviceProductionData.FluidPVT={};
@@ -1479,6 +1480,11 @@ var DeviceInfoHandsontableHelper = {
                     		if(isNumber(parseFloat(productionHandsontableData[42][2]))){
                     			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[42][2]);
                     		}
+                    		deviceProductionData.ManualIntervention={}
+                    		
+                    		deviceProductionData.FESDiagram={};
+                    		deviceProductionData.FESDiagram.Src=0;
+                    		FESDiagramSrcName=productionHandsontableData[43][2];
                     	}
                         
                         //获取抽油机型号配置数据
@@ -1509,6 +1515,7 @@ var DeviceInfoHandsontableHelper = {
                 		productionInfoList.push(JSON.stringify(balanceInfo));
                 		productionInfoList.push(manualInterventionResultName);
                 		productionInfoList.push(applicationScenarios);
+                		productionInfoList.push(FESDiagramSrcName);
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}else if(deviceCalculateDataType==2){//指定为转速计产
             			var deviceProductionData={};
@@ -1896,6 +1903,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
+					productionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
 					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
@@ -1911,6 +1919,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 					}
 				}else{
 					productionHandsontableHelper.resultList = result.resultNameList;
+					productionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
 					if(result.totalRoot.length==0){
 						productionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 					}else{
@@ -1963,6 +1972,7 @@ var ProductionHandsontableHelper = {
 	        productionHandsontableHelper.colHeaders = [];
 	        productionHandsontableHelper.columns = [];
 	        productionHandsontableHelper.resultList = [];
+	        productionHandsontableHelper.FESdiagramSrcList = [];
 	        productionHandsontableHelper.pumpGrade = '';
 	        
 	        productionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -2063,6 +2073,13 @@ var ProductionHandsontableHelper = {
 		                    if (visualColIndex === 2 && visualRowIndex===39 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = productionHandsontableHelper.resultList;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex===43 && deviceCalculateDataType==1) {
+		                    	this.type = 'dropdown';
+		                    	this.source = productionHandsontableHelper.FESdiagramSrcList;
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

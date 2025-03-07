@@ -393,7 +393,7 @@ cache 20;
 create sequence SEQ_USER
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 123
+start with 5
 increment by 1
 cache 20;
 

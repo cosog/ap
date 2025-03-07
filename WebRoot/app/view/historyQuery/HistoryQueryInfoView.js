@@ -397,7 +397,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,startDate,endDate,fileName,title,columnStr) {
+function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,startDate,endDate,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	
@@ -442,6 +442,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     + "&deviceType=" + deviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&resultCode=" + resultCode 
     + "&calculateType=" + calculateType 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
@@ -452,7 +453,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     openExcelWindow(url + '?flag=true' + param);
 };
 
-exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title) {
+exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title) {
 	var tabPanel = Ext.getCmp("HistoryDiagramTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
 	var diagramType="FSDiagram";
@@ -468,11 +469,11 @@ exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,de
 		fileName=deviceName+'-'+loginUserLanguageResource.ISDiagramData;
 	}
 	var title=fileName;
-	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,diagramType);
+	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title,diagramType);
 }
 
 
-function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,diagramType) {
+function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title,diagramType) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	var maskPanelId='HistoryDiagramTabPanel';
@@ -485,6 +486,7 @@ function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceN
     + "&deviceType=" + deviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&resultCode=" + resultCode 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
     + "&diagramType=" + diagramType
@@ -1393,6 +1395,7 @@ loadSurfaceCardList = function (page) {
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
     Ext.Ajax.request({
         url: context + '/historyQueryController/querySurfaceCard',
         method: "POST",
@@ -1401,6 +1404,7 @@ loadSurfaceCardList = function (page) {
     		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
     		deviceId:deviceId,
             deviceName:deviceName,
+            resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
             limit: defaultGraghSize,
@@ -1416,9 +1420,10 @@ loadSurfaceCardList = function (page) {
             var diagramList = get_rawData.list; // 获取功图数据
             
             var totals = get_rawData.totals; // 总记录数
+            var totalShow=get_rawData.totalShow;
             var totalPages = get_rawData.totalPages; // 总页数
             Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
-            updateTotalRecords(totals,"SurfaceCardTotalCount_Id");
+            updateTotalRecords(totalShow,"SurfaceCardTotalCount_Id");
             
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
@@ -1497,6 +1502,8 @@ loadPSDiagramTiledList = function (page) {
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	
+	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
     Ext.Ajax.request({
         url: context + '/historyQueryController/getPSDiagramTiledData',
         method: "POST",
@@ -1505,6 +1512,7 @@ loadPSDiagramTiledList = function (page) {
     		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
     		deviceId:deviceId,
             deviceName:deviceName,
+            resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
             limit: defaultGraghSize,
@@ -1520,9 +1528,10 @@ loadPSDiagramTiledList = function (page) {
             var diagramList = get_rawData.list; // 获取功图数据
             
             var totals = get_rawData.totals; // 总记录数
+            var totalShow=get_rawData.totalShow;
             var totalPages = get_rawData.totalPages; // 总页数
             Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
-            updateTotalRecords(totals,"SurfaceCardTotalCount_Id");
+            updateTotalRecords(totalShow,"SurfaceCardTotalCount_Id");
             
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
@@ -1600,6 +1609,8 @@ loadISDiagramTiledList = function (page) {
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	
+	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
     Ext.Ajax.request({
         url: context + '/historyQueryController/getISDiagramTiledData',
         method: "POST",
@@ -1608,6 +1619,7 @@ loadISDiagramTiledList = function (page) {
     		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
     		deviceId:deviceId,
             deviceName:deviceName,
+            resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
             limit: defaultGraghSize,
@@ -1623,9 +1635,10 @@ loadISDiagramTiledList = function (page) {
             var diagramList = get_rawData.list; // 获取功图数据
             
             var totals = get_rawData.totals; // 总记录数
+            var totalShow=get_rawData.totalShow;
             var totalPages = get_rawData.totalPages; // 总页数
             Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
-            updateTotalRecords(totals,"SurfaceCardTotalCount_Id");
+            updateTotalRecords(totalShow,"SurfaceCardTotalCount_Id");
             
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){

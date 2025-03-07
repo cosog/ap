@@ -45,7 +45,7 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
                     forceFit: false,
                     selModel:{
                     	selType:(loginUserCalculateMaintainingModuleRight.editFlag==1?'checkboxmodel':''),
-                    	showHeaderCheckbox:false,
+                    	showHeaderCheckbox:true,
                     	mode:'MULTI'//"SINGLE" / "SIMPLE" / "MULTI" 
                     },
                     viewConfig: {

@@ -3533,7 +3533,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result;
 	}
 	
-	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
+	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3558,14 +3558,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and t.resultcode="+resultCodeStr;
+			totalSql+=" and t.resultcode="+resultCodeStr;
+		}
+		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
+		String totalShow=totals+"";
 		
 		int rarefy=totals/vacuateThreshold+1;
 		if(rarefy>1){
 			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 			totals = getTotalCountRows(totalSql);
-			
 		}
+		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
@@ -3575,7 +3581,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
-		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
@@ -3630,7 +3636,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportHistoryQueryFESDiagramDataExcel(User user,HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportHistoryQueryFESDiagramDataExcel(User user,HttpServletResponse response,String fileName,String resultCodeStr,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,Page pager){
 		try{
 			StringBuffer result_json = new StringBuffer();
@@ -3663,8 +3669,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId+" "
-					+ " order by t.fesdiagramacqtime";
+					+ " and t.deviceId="+deviceId+" ";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and t.resultcode="+resultCodeStr;
+			}
+			sql+= " order by t.fesdiagramacqtime";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			int totals = getTotalCountRows(sql);//获取总记录数
 			int rarefy=0;
@@ -3754,7 +3763,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
+	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3777,14 +3786,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and t.resultcode="+resultCodeStr;
+			totalSql+=" and t.resultcode="+resultCodeStr;
+		}
+		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
+		String totalShow=totals+"";
 		
 		int rarefy=totals/vacuateThreshold+1;
 		if(rarefy>1){
 			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 			totals = getTotalCountRows(totalSql);
-			
 		}
+		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
@@ -3794,7 +3809,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
-		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
@@ -3838,7 +3853,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language) throws SQLException, IOException {
+	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3860,15 +3875,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
-		
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and t.resultcode="+resultCodeStr;
+			totalSql+=" and t.resultcode="+resultCodeStr;
+		}
 		int totals = getTotalCountRows(totalSql);//获取总记录数
-		
+		String totalShow=totals+"";
 		int rarefy=totals/vacuateThreshold+1;
 		if(rarefy>1){
 			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 			totals = getTotalCountRows(totalSql);
-			
 		}
+		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
@@ -3878,7 +3896,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
-		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
@@ -3923,7 +3941,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,Page pager,String language){
+	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language){
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
@@ -3989,14 +4007,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId+" "
-					+ " order by t.fesdiagramacqtime desc";
+					+ " and t.deviceId="+deviceId+" ";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and t.resultcode="+resultCodeStr;
+			}
+			sql+= " order by t.fesdiagramacqtime desc";
 			
 			String countSql="select count(1) from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId;
+			
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				countSql+=" and t.resultcode="+resultCodeStr;
+			}
+			
 			int total=this.getTotalCountRows(countSql);
 			int rarefy=total/vacuateThreshold+1;
 			String finalSql=sql;
@@ -4013,7 +4039,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String[] ddicColumns=ddic.getSql().split(",");
 			dynSbf.append("{\"success\":true,"
-					+ "\"totalCount\":" + list.size() + ","
+					+ "\"totalCount\":\"" + list.size()+ "\","
+					+ "\"totalShow\":\"" + list.size()+"/"+total + "\","
 					+ "\"deviceName\":\""+deviceName+"\","
 					+ "\"start_date\":\""+pager.getStart_date()+"\","
 					+ "\"end_date\":\""+pager.getEnd_date()+"\","
@@ -4184,7 +4211,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportFESDiagramOverlayData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportFESDiagramOverlayData(User user,HttpServletResponse response,String fileName,String resultCodeStr,String title,String head,String field,
 			String orgId,String deviceId,String deviceName,Page pager,String language){
 		try{
 			StringBuffer dataBuff = new StringBuffer();
@@ -4254,6 +4281,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " where  1=1 "
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" ";
+			
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and t.resultcode="+resultCodeStr;
+			}
+			
 			int total=this.getTotalCountRows(sql);
 			int rarefy=total/vacuateThreshold+1;
 			sql+= " order by t.fesdiagramacqtime desc";

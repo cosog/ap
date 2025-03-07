@@ -21,6 +21,8 @@ public class SRPProductionData {
     private SRPCalculateRequestData.Production Production;
 
     private SRPCalculateRequestData.ManualIntervention ManualIntervention;
+    
+    private SRPCalculateRequestData.FESDiagram FESDiagram;
 
     public void setWellName(String WellName){
         this.WellName = WellName;
@@ -83,5 +85,11 @@ public class SRPProductionData {
     public SRPCalculateRequestData.ManualIntervention getManualIntervention(){
         return this.ManualIntervention;
     }
+	public SRPCalculateRequestData.FESDiagram getFESDiagram() {
+		return FESDiagram;
+	}
+	public void setFESDiagram(SRPCalculateRequestData.FESDiagram fESDiagram) {
+		FESDiagram = fESDiagram;
+	}
 
 }

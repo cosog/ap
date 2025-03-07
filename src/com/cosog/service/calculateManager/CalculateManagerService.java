@@ -901,21 +901,29 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public String getResultNameList(String orgId, String deviceId, String calculateType,String startDate,String endDate,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		List<WorkType> workTypeList=new ArrayList<>();
+		List<Integer> workTypeCount=new ArrayList<>();
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
-			String sql="select distinct(t.resultcode) as resultcode "
+			String sql="select t.deviceid,t.resultcode,count(1) "
 					+ " from TBL_SRPACQDATA_HIST t "
-					+ " where t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceid="+deviceId;
+					+ " where t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.resultstatus=1 "
+					+ " and t.deviceid= "+deviceId
+					+ " group by t.deviceid,t.resultcode"
+					+ " order by t.deviceid,t.resultcode";
 			List<?> list = this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
-				workTypeList.add(workTypeMap.get(list.get(i)+""));
+				Object[] obj = (Object[]) list.get(i);
+				
+				workTypeList.add(workTypeMap.get(obj[1]+""));
+				workTypeCount.add(StringManagerUtils.stringToInteger(obj[2]+""));
 			}
 		}
 		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");		
-		for(WorkType w:workTypeList){
-			result_json.append(",{boxkey:\"" + w.getResultCode() + "\",");
-			result_json.append("boxval:\"" + w.getResultName() + "\"}");
+		for(int i=0;i<workTypeList.size();i++){
+			result_json.append(",{boxkey:\"" + workTypeList.get(i).getResultCode() + "\",");
+			result_json.append("boxval:\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"}");
 		}
 		result_json.append("]}");
 		return result_json.toString();

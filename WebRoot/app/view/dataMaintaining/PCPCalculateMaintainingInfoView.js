@@ -583,6 +583,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.exportRequestData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: false,
                          iconCls: 'export',
@@ -606,6 +607,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.deleteData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: false,
                          iconCls: 'delete',
@@ -648,6 +650,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.exportRequestData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: true,
                          iconCls: 'export',
@@ -891,6 +894,24 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        	}
 	        }
 	        
+	        pcpRPMCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type=='checkbox'){
+	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type=='dropdown'){
+	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+	        	}else{
+	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	}
+	        	
+	        	td.style.backgroundColor = 'rgb(245, 245, 245)';
+            	
+            	if(pcpRPMCalculateMaintainingHandsontableHelper.columns[col].type!='checkbox'){
+            		td.style.whiteSpace='nowrap'; //文本不换行
+                	td.style.overflow='hidden';//超出部分隐藏
+                	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        	}
+	        }
+	        
 	        
 	        pcpRPMCalculateMaintainingHandsontableHelper.createTable = function (data) {
 	        	$('#'+pcpRPMCalculateMaintainingHandsontableHelper.divid).empty();
@@ -912,7 +933,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                columns:pcpRPMCalculateMaintainingHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true,//显示行头
+	                rowHeaders: false,//显示行头
 	                colHeaders:pcpRPMCalculateMaintainingHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
@@ -931,13 +952,11 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
 								cellProperties.readOnly = true;
 			                }
+	                    	cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
 							cellProperties.readOnly = true;
+							cellProperties.renderer=pcpRPMCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle;
 		                }
-	                    
-	                    if(pcpRPMCalculateMaintainingHandsontableHelper.columns[visualColIndex].type == undefined || pcpRPMCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-                    		cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle;
-                    	}
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {

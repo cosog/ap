@@ -77,6 +77,9 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		Ext.getCmp('HistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('HistoryQueryEndDate_Id').setRawValue('');
                     		
+                    		Ext.getCmp('HistoryQueryResultNameComBox_Id').setValue('');
+                    		Ext.getCmp('HistoryQueryResultNameComBox_Id').setRawValue('');
+                    		
                     		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
                     		
                     		var getTabId1 = tabPanel.getComponent("HistoryDiagramTabPanel");

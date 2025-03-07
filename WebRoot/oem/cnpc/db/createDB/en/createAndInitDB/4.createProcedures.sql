@@ -1984,3 +1984,151 @@ Exception
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_smsdevice;
 /
+
+CREATE OR REPLACE PROCEDURE prd_update_srp_diagram_latest (v_deviceId in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_srpacqdata_latest t set (fesdiagramacqtime,fesdiagramsrc,
+  productiondata,balanceinfo,
+  stroke,spm,
+  position_curve,load_curve,power_curve,current_curve,
+  resultstatus,
+  fmax,fmin,
+  upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,
+  deltaradius,
+  resultcode,
+  fullnesscoefficient,
+  noliquidfullnesscoefficient,
+  plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
+  upperloadline,upperloadlineofexact,lowerloadline,
+  smaxindex,sminindex,
+  pumpfsdiagram,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  availableplungerstrokeprod_v,pumpclearanceleakprod_v,
+  tvleakvolumetricproduction,svleakvolumetricproduction,gasinfluenceprod_v,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  availableplungerstrokeprod_w,pumpclearanceleakprod_w,
+  tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
+  LevelDifferenceValue,CalcProducingfluidLevel,
+  submergence,
+  averagewatt,polishrodpower,waterpower,
+  surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
+  energyper100mlift,area,
+  rodflexlength,tubingflexlength,inertialength,
+  pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  crankangle,polishrodv,polishroda,pr,tf,
+  loadtorque,cranktorque,currentbalancetorque,currentnettorque,
+  expectedbalancetorque,expectednettorque,
+  wellboreslice,
+  rpm,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction)=
+  (select fesdiagramacqtime,fesdiagramsrc,
+  productiondata,balanceinfo,
+  stroke,spm,
+  position_curve,load_curve,power_curve,current_curve,
+  resultstatus,
+  fmax,fmin,
+  upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,
+  deltaradius,
+  resultcode,
+  fullnesscoefficient,
+  noliquidfullnesscoefficient,
+  plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
+  upperloadline,upperloadlineofexact,lowerloadline,
+  smaxindex,sminindex,
+  pumpfsdiagram,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  availableplungerstrokeprod_v,pumpclearanceleakprod_v,
+  tvleakvolumetricproduction,svleakvolumetricproduction,gasinfluenceprod_v,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  availableplungerstrokeprod_w,pumpclearanceleakprod_w,
+  tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
+  LevelDifferenceValue,CalcProducingfluidLevel,
+  submergence,
+  averagewatt,polishrodpower,waterpower,
+  surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
+  energyper100mlift,area,
+  rodflexlength,tubingflexlength,inertialength,
+  pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  crankangle,polishrodv,polishroda,pr,tf,
+  loadtorque,cranktorque,currentbalancetorque,currentnettorque,
+  expectedbalancetorque,expectednettorque,
+  wellboreslice,
+  rpm,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction
+  from tbl_srpacqdata_hist t3 where t3.id=
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.fesdiagramacqtime desc) v where rownum=1) )
+  where t.deviceid=v_deviceId;
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_srp_diagram_latest;
+/
+
+CREATE OR REPLACE PROCEDURE prd_update_pcp_rpm_latest (v_deviceId in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_pcpacqdata_latest t set (acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction)=
+  (select acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction
+  from tbl_pcpacqdata_hist t3 where t3.id=
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.acqtime desc) v where rownum=1) )
+  where t.deviceid=v_deviceId;
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_pcp_rpm_latest;
+/

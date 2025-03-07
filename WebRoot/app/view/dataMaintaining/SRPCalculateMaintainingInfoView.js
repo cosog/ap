@@ -199,7 +199,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                     totalProperty: 'totals'
                 }
             },
-            autoLoad: true,
+            autoLoad: false,
             listeners: {
                 beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -238,7 +238,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 'Ext.form.field.ComboBox', {
                 	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
                     labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
-                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+100),
+                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
                     id: 'SRPCalculateMaintainingResultNameComBox_Id',
                     store: resultNameStore,
                     queryMode: 'remote',
@@ -690,6 +690,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.exportRequestData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: false,
                          iconCls: 'export',
@@ -712,6 +713,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.deleteData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: false,
                          iconCls: 'delete',
@@ -754,6 +756,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                      },"-",{
                          xtype: 'button',
                          text: loginUserLanguageResource.exportRequestData,
+                         disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          hidden: true,
                          iconCls: 'export',
@@ -803,6 +806,37 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
     				id:'SRPCalculateMaintainingPanel',
     				iconCls: 'check3',
     				border: false,
+    				tbar:[{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.selectAll,
+                        disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	var rowCount = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.countRows();
+                        	var updateData=[];
+                        	var selected=true;
+                            for(var i=0;i<rowCount;i++){
+                            	var data=[i,'checked',selected];
+                            	updateData.push(data);
+                            }
+                            srpFESDiagramCalculateMaintainingHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        }
+                    },{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.deselectAll,
+                        disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	var rowCount = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.countRows();
+                        	var updateData=[];
+                        	var selected=false;
+                            for(var i=0;i<rowCount;i++){
+                            	var data=[i,'checked',selected];
+                            	updateData.push(data);
+                            }
+                            srpFESDiagramCalculateMaintainingHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        }
+                    }],
     				bbar: bbar,
     				html:'<div class=SRPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="SRPCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
@@ -876,6 +910,73 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
     }
 });
 
+////数据行渲染器
+//function checkboxRenderer(instance, td, row, col, prop, value) {
+//  const checkbox = document.createElement('input');
+//  checkbox.type = 'checkbox';
+//  checkbox.checked = value;
+//  checkbox.className = 'row-checkbox';
+//  checkbox.addEventListener('click', (e) => e.stopPropagation());
+//  td.innerHTML = '';
+//  td.appendChild(checkbox);
+//  td.classList.add('htCenter');
+//  return td;
+//}
+//
+//// 表头渲染器
+//function headerCheckboxRenderer(instance, td) {
+//  const checkbox = document.createElement('input');
+//  checkbox.type = 'checkbox';
+//  checkbox.className = 'header-checkbox';
+//  
+//  const data = instance.getSourceData();
+//  const allChecked = data.every(row => row.checked);
+//  const someChecked = data.some(row => row.checked);
+//  checkbox.checked = allChecked;
+//  checkbox.indeterminate = !allChecked && someChecked;
+//
+//  checkbox.addEventListener('click', (e) => {
+//    e.stopPropagation();
+//    const isChecked = checkbox.checked;
+//    const newData = data.map(row => ({ row, checked: isChecked }));
+//    instance.loadData(newData);
+//  });
+//
+//  td.innerHTML = '';
+//  td.appendChild(checkbox);
+//  td.classList.add('htCenter');
+//  return td;
+//}
+//
+//
+//
+//function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
+//	const data = [
+//        { id: 1, checked: false, name: 'Alice' },
+//        { id: 2, checked: false, name: 'Bob' },
+//        { id: 3, checked: false, name: 'Charlie' }
+//      ];
+//	const container = document.getElementById(divid);
+//    const hot = new Handsontable(container, {
+//      data: data,
+//      colHeaders: ['Select', 'ID', 'Name'],
+//      columns: [
+//        {
+//          data: 'checked',
+//          renderer: checkboxRenderer,
+//          headerRenderer: headerCheckboxRenderer // 应用表头渲染器
+//        },
+//        { data: 'id' },
+//        { data: 'name' }
+//      ],
+//      afterChange: function(changes) {
+//        if (changes && changes[0][1] === 'checked') {
+//          this.render(); // 刷新表头
+//        }
+//      }
+//    });
+//}
+
 function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
 	if(isNew&&srpFESDiagramCalculateMaintainingHandsontableHelper!=null){
         srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
@@ -887,11 +988,18 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
 	
 	if(srpFESDiagramCalculateMaintainingHandsontableHelper==null){
 		srpFESDiagramCalculateMaintainingHandsontableHelper = SRPFESDiagramCalculateMaintainingHandsontableHelper.createNew(divid);
-		var colHeaders="['',";
-        var columns="[{data:'checked',type:'checkbox'},";
+		var colHeaders=[];
+        var columns=[];
+        var singleColumn={
+        	      data: 'checked',
+        	      type: 'checkbox', // 基础复选框列类型
+        	      className: 'htCenter'
+        	    };
         
+        columns.push(singleColumn);
+        colHeaders.push('');
         for(var i=0;i<result.columns.length;i++){
-        	var colHeader="'" + result.columns[i].header + "'";
+        	var colHeader=result.columns[i].header;
             var dataIndex=result.columns[i].dataIndex;
             
             if(applicationScenarios==0){
@@ -908,53 +1016,68 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
             		colHeader=colHeader.replace(loginUserLanguageResource.tubingPressure,loginUserLanguageResource.tubingPressure_cbm);
             	}
             }
-        	
-        	
-            colHeaders += colHeader;
-        	
-        	columns+="{data:'"+dataIndex+"'";
+            
+            singleColumn={};
+            singleColumn.data=dataIndex;
         	if(dataIndex.toUpperCase()=="id".toUpperCase()){
-//        		columns+=",type: 'checkbox'";
+        		
         	}else if(dataIndex.toUpperCase()==="deviceName".toUpperCase()||dataIndex.toUpperCase()==="acqTime".toUpperCase()||dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
     		}else if(dataIndex==="anchoringStateName"){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=['锚定', '未锚定'];
         	}else if(dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=[loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
         	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=['杆式泵', '管式泵'];
         	}else if(dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=['1', '2','3', '4','5'];
         	}else if (dataIndex.toUpperCase() === "manualInterventionResult".toUpperCase()) {
-                var source = "[";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=[];
+        		
                 for (var j = 0; j < result.resultNameList.length; j++) {
-                    source += "\'" + result.resultNameList[j] + "\'";
-                    if (j < result.resultNameList.length - 1) {
-                        source += ",";
-                    }
+                    singleColumn.source.push(result.resultNameList[j]);
                 }
-                source += "]";
-                columns+=",type:'dropdown',strict:true,allowInvalid:false,source:" + source + "";
             }else if(dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','A','B','C','D','K','KD','HL','HY'], validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);}";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=['','A','B','C','D','K','KD','HL','HY'];
+        		singleColumn.validator=function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);};
         	}else if(dataIndex.toUpperCase()==="rodTypeName1".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName2".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName3".toUpperCase() || dataIndex.toUpperCase()==="rodTypeName4".toUpperCase()){
-        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','"+loginUserLanguageResource.rodStringTypeValue1+"','"+loginUserLanguageResource.rodStringTypeValue2+"','"+loginUserLanguageResource.rodStringTypeValue3+"'], validator: function(val, callback){return handsontableDataCheck_RodType(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);}";
+        		singleColumn.type='dropdown';
+        		singleColumn.strict=true;
+        		singleColumn.allowInvalid=false;
+        		singleColumn.source=['',loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
+        		singleColumn.validator=function(val, callback){return handsontableDataCheck_RodType(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);};
         	}else{
-    			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);}";
+    			singleColumn.type='text';
+        		singleColumn.allowInvalid=true;
+        		singleColumn.validator=function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,srpFESDiagramCalculateMaintainingHandsontableHelper);};
     		}
-        	columns+="}";
-        	if(i<result.columns.length-1){
-        		colHeaders+=",";
-            	columns+=",";
-        	}
+        	colHeaders.push(colHeader);
+        	columns.push(singleColumn);
         }
-        colHeaders+=",'recordId'";
-        columns+=",{data: 'recordId'}";
+        colHeaders.push('recordId');
+        singleColumn={data: 'recordId'};
+        columns.push(singleColumn);
         
-        colHeaders+="]";
-    	columns+="]";
-    	srpFESDiagramCalculateMaintainingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-    	srpFESDiagramCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
+    	srpFESDiagramCalculateMaintainingHandsontableHelper.colHeaders=colHeaders;
+    	srpFESDiagramCalculateMaintainingHandsontableHelper.columns=columns;
     	
     	if(result.totalRoot.length==0){
         	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable([{}]);
@@ -1006,6 +1129,24 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	        	}
 	        }
 	        
+	        srpFESDiagramCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[col].type=='checkbox'){
+	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[col].type=='dropdown'){
+	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+	        	}else{
+	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	}
+	        	
+	        	td.style.backgroundColor = 'rgb(245, 245, 245)';
+            	
+            	if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[col].type!='checkbox'){
+            		td.style.whiteSpace='nowrap'; //文本不换行
+                	td.style.overflow='hidden';//超出部分隐藏
+                	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        	}
+	        }
+	        
 	        srpFESDiagramCalculateMaintainingHandsontableHelper.createTable = function (data) {
 	        	$('#'+srpFESDiagramCalculateMaintainingHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+srpFESDiagramCalculateMaintainingHandsontableHelper.divid);
@@ -1028,7 +1169,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
 	                colHeaders:srpFESDiagramCalculateMaintainingHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
+	                columnSorting: false,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -1067,15 +1208,17 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 		                        	}
 		                        }
 			                }
+	                    	cellProperties.renderer = srpFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
 	                    	cellProperties.readOnly = true;
+	                    	cellProperties.renderer=srpFESDiagramCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle;
 	                    }
-	                    if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type == undefined 
-	                    		|| 
-	                    		(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='dropdown' || srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='checkbox')
-	                    			){
-                    		cellProperties.renderer = srpFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle;
-                    	}
+//	                    if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type == undefined 
+//	                    		|| 
+//	                    		(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='dropdown' || srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='checkbox')
+//	                    			){
+//                    		cellProperties.renderer = srpFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle;
+//                    	}
 	                    
 	                    return cellProperties;
 	                },

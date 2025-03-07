@@ -1322,6 +1322,7 @@ public class WellInformationManagerController extends BaseController {
 						String balanceInfo = droductionDataInfoList.get(4);
 						String manualInterventionResultName = droductionDataInfoList.get(5);
 						String applicationScenarios=droductionDataInfoList.get(6);
+						String FESDiagramSrcName=droductionDataInfoList.get(7);
 						
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
@@ -1338,6 +1339,9 @@ public class WellInformationManagerController extends BaseController {
 									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode();
 								}
 								srpProductionData.getManualIntervention().setCode(manualInterventionResultCode);
+							}
+							if(srpProductionData.getFESDiagram()!=null){
+								srpProductionData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FESDIAGRAMSRC", FESDiagramSrcName, language)));
 							}
 							deviceProductionDataSaveStr=gson.toJson(srpProductionData);
 						}

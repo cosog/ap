@@ -453,6 +453,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -484,7 +485,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,pager,language);
+			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -500,6 +501,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -531,7 +533,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getPSDiagramTiledData(orgId,deviceId,deviceName,deviceType,pager,language);
+			json = this.historyQueryService.getPSDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -547,6 +549,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -578,7 +581,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getISDiagramTiledData(orgId,deviceId,deviceName,deviceType,pager,language);
+			json = this.historyQueryService.getISDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -595,6 +598,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -627,11 +631,11 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if("FSDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
 		}else if("PSDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
 		}else if("ISDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
 		}
 		
 		if(session!=null){
@@ -646,6 +650,7 @@ public class HistoryQueryController extends BaseController  {
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
 		
@@ -659,7 +664,6 @@ public class HistoryQueryController extends BaseController  {
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		String calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		this.pager = new Page("pagerForm", request);
 		String tableName="tbl_srpacqdata_hist";
 		String json = "";
@@ -679,7 +683,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,pager,language);
+			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -696,6 +700,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -748,7 +753,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager,language);
+		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,language);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

@@ -1062,6 +1062,10 @@ public class MemoryDataManagerTask {
 							
 							deviceInfo.getSrpCalculateRequestData().setManualIntervention(srpProductionData.getManualIntervention());
 							
+							if(srpProductionData.getFESDiagram()!=null){
+								deviceInfo.getSrpCalculateRequestData().getFESDiagram().setSrc(srpProductionData.getFESDiagram().getSrc());
+							}
+							
 							if(thisAuxiliaryDeviceAddInfoList.size()>0){
 								deviceInfo.getSrpCalculateRequestData().setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
 								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){

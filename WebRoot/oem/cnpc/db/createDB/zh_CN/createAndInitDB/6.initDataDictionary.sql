@@ -284,7 +284,7 @@ insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DA
 values ('133335', null, '0d4297cb4db44bb3a9a3d5d983007039', '序号', 'id', 'width:50', 1, 1, 'system', 'system', to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'ID', '序号');
 
 insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
-values ('133336', null, '0d4297cb4db44bb3a9a3d5d983007039', '采集时间', 'acqTime', 'width:150', 2, 1, 'system', 'system', to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Acquisition Time', '采集时间');
+values ('133336', null, '0d4297cb4db44bb3a9a3d5d983007039', '功图采集时间', 'acqTime', 'width:150', 2, 1, 'system', 'system', to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), 'Acquisition Time', '采集时间');
 
 insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, NAME_ZH_CN, CODE, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE, NAME_EN, NAME_RU)
 values ('138735', null, '0d4297cb4db44bb3a9a3d5d983007039', '通信状态', 'commStatusName', null, 3, 1, 'system', 'system', to_date('25-08-2021 18:29:42', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-08-2021 18:29:42', 'dd-mm-yyyy hh24:mi:ss'), 'Comm Status', '通信状态');

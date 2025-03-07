@@ -2675,14 +2675,12 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					
-					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
-						srpCalculateRequestData.getFESDiagram().setSrc(1);
-					}else{
-						srpCalculateRequestData.getFESDiagram().setSrc(0);
-					}
+//					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
+//						srpCalculateRequestData.getFESDiagram().setSrc(1);
+//					}else{
+//						srpCalculateRequestData.getFESDiagram().setSrc(0);
+//					}
 					updateRequestData(srpCalculateRequestData,deviceInfo);
-					
-					
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=null;
 					TotalAnalysisRequestData totalAnalysisRequestData=null;
@@ -4165,6 +4163,7 @@ public class DriverAPIController extends BaseController{
 		calculateRequestData.setPumpingUnit(deviceInfo.getSrpCalculateRequestData().getPumpingUnit());
 		calculateRequestData.setProduction(deviceInfo.getSrpCalculateRequestData().getProduction());
 		calculateRequestData.setManualIntervention(deviceInfo.getSrpCalculateRequestData().getManualIntervention());
+		calculateRequestData.getFESDiagram().setSrc(deviceInfo.getSrpCalculateRequestData().getFESDiagram()!=null?deviceInfo.getSrpCalculateRequestData().getFESDiagram().getSrc():0);
 		
 	}
 	

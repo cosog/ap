@@ -45,7 +45,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
                     	mode:'MULTI',
                     	checkOnly:true,
                     	onHdMouseDown:function(e,t){
-                    		alert("全选/全不选");
+                    		
                     	}
                     },
                     viewConfig: {
@@ -140,7 +140,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
             
-            updateTotalRecords(get_rawData.totalCount,"SurfaceCardTotalCount_Id");
+            updateTotalRecords(get_rawData.totalShow,"SurfaceCardTotalCount_Id");
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -162,12 +162,15 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
         	
+        	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+        	
         	Ext.getCmp("HistoryDiagramOverlayTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,
             		deviceId:deviceId,
                     deviceName:deviceName,
+                    resultCode:resultCode,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
                 };

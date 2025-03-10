@@ -149,6 +149,52 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                             	}
                         	}
                         	CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);
+                        	
+                        	if(loginUserProtocolConfigModuleRight.editFlag==1){
+                        		if(record.data.classes==3){
+                        			Ext.getCmp('alarmUnitNumItemsConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitNumItemsConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitCalculateItemsConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitCalculateItemsConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitSwitchItemsConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitSwitchItemsConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitEnumItemsConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitEnumItemsConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitRunStatusConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitRunStatusConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('alarmUnitCommStatusConfigSelectAllBtn').enable();
+                        			Ext.getCmp('alarmUnitCommStatusConfigDeselectAllBtn').enable();
+                        		}else{
+                        			Ext.getCmp('alarmUnitNumItemsConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitNumItemsConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitCalculateItemsConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitCalculateItemsConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitSwitchItemsConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitSwitchItemsConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitEnumItemsConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitEnumItemsConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitRunStatusConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitRunStatusConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('alarmUnitCommStatusConfigSelectAllBtn').disable();
+                        			Ext.getCmp('alarmUnitCommStatusConfigDeselectAllBtn').disable();
+                        		}
+                        	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

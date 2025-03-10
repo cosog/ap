@@ -589,17 +589,18 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          iconCls: 'export',
                          id:'PCPCalculateMaintainingExportDataBtn',
                          handler: function (v, o) {
-                         	if(pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()){
-                         		var row=pcpRPMCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
-                         		
-                         		var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'recordId');
-                          		var deviceName=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'deviceName');
-                          		var acqTime=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'acqTime');
-                         		
-                         		
-                         		var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
-                         		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
-                             	document.location.href = url;
+                        	 if(checkedList.length>0){
+                         		for(var i=0;i<checkedList.length;i++){
+                         			var row=checkedList[i];
+                             		
+                             		var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'recordId');
+                             		var deviceName=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'deviceName');
+                             		var acqTime=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'acqTime');
+                             		
+                             		var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
+                             		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
+                                 	downloadFile(url);
+                         		}
                          	}else{
                          		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                          	}
@@ -660,17 +661,19 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                              var selectionModel = gridPanel.getSelectionModel();
                              var _record = selectionModel.getSelection();
                              if (_record.length>0) {
-                             	var recordId=_record[0].data.id;
-                             	var wellId=_record[0].data.wellId;
-                             	var deviceName=_record[0].data.deviceName;
-                             	var calDate=_record[0].data.calDate;
-                         		var deviceType=1;
-                         		var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
-                         		+'&wellId='+wellId
-                         		+'&deviceName='+URLencode(URLencode(deviceName))
-                         		+'&calDate='+calDate
-                         		+'&deviceType='+deviceType;
-                             	document.location.href = url;
+                            	 for(var i=0;i<_record.length;i++){
+                            		 var recordId=_record[i].data.id;
+                                  	 var deviceId=_record[i].data.deviceId;
+                                  	 var deviceName=_record[i].data.deviceName;
+                                  	 var calDate=_record[i].data.calDate;
+                              		 var calculeteType=1;
+                              		 var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
+                              		 +'&deviceId='+deviceId
+                              		 +'&deviceName='+URLencode(URLencode(deviceName))
+                              		 +'&calDate='+calDate
+                              		 +'&calculeteType='+calculeteType;
+                              		 downloadFile(url);
+                            	 }
                              }else{
                              	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                              }
@@ -700,6 +703,37 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     				id:'PCPCalculateMaintainingPanel',
     				iconCls: 'check3',
     				border: false,
+    				tbar:[{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.selectAll,
+                        disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	var rowCount = pcpRPMCalculateMaintainingHandsontableHelper.hot.countRows();
+                        	var updateData=[];
+                        	var selected=true;
+                            for(var i=0;i<rowCount;i++){
+                            	var data=[i,'checked',selected];
+                            	updateData.push(data);
+                            }
+                            pcpRPMCalculateMaintainingHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        }
+                    },{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.deselectAll,
+                        disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	var rowCount = pcpRPMCalculateMaintainingHandsontableHelper.hot.countRows();
+                        	var updateData=[];
+                        	var selected=false;
+                            for(var i=0;i<rowCount;i++){
+                            	var data=[i,'checked',selected];
+                            	updateData.push(data);
+                            }
+                            pcpRPMCalculateMaintainingHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        }
+                    }],
     				bbar: bbar,
     				html:'<div class=PCPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="PCPCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
@@ -1184,7 +1218,7 @@ function ReTotalRPMData(){
     if (_record.length>0) {
     	var reCalculateData='';
     	Ext.Array.each(_record, function (name, index, countriesItSelf) {
-    		reCalculateData+=_record[index].data.id+","+_record[index].data.wellId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
+    		reCalculateData+=_record[index].data.id+","+_record[index].data.deviceId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
     	Ext.getCmp("PCPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();

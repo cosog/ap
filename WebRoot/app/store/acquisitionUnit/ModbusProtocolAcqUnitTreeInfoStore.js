@@ -77,15 +77,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                 					}
                 					protocolAcqUnitConfigItemsHandsontableHelper=null;
                 				}
-                        		
-                        		
-//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                        			CreateProtocolAcqUnitItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-//                        		}
                         	}
-//                        	else if(record.data.classes==1){
-//                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-//                        	}
                         	
                         	else if(record.data.classes==2){
                         		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
@@ -93,6 +85,16 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
                         	}
                         	CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                        	
+                        	if(loginUserProtocolConfigModuleRight.editFlag==1){
+                        		if(record.data.classes==3){
+                        			Ext.getCmp('acqUnitConfigSelectAllBtn').enable();
+                        			Ext.getCmp('acqUnitConfigDeselectAllBtn').enable();
+                        		}else{
+                        			Ext.getCmp('acqUnitConfigSelectAllBtn').disable();
+                        			Ext.getCmp('acqUnitConfigDeselectAllBtn').disable();
+                        		}
+                        	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

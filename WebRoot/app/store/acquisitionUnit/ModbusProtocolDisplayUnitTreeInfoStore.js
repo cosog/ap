@@ -102,15 +102,27 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         	}else if(record.data.classes==1){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-//                        		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.parentNode.data.deviceType,record.data.classes);
-//                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.parentNode.data.deviceType,record.data.classes);
                         	}else if(record.data.classes==2){
                         		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
                         		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
-//                        		CreateProtocolDisplayUnitCalItemsConfigInfoTable(record.parentNode.parentNode.data.deviceType,record.data.classes,record.data.id,record.data.text,record.data.calculateType);
-//                        		CreateProtocolDisplayUnitInputItemsConfigInfoTable(record.parentNode.parentNode.data.deviceType,record.data.classes,record.data.id,record.data.text,record.data.calculateType);
                         	}
                         	CreateProtocolDisplayUnitConfigPropertiesInfoTable(record.data);
+                        	
+                        	if(loginUserProtocolConfigModuleRight.editFlag==1){
+                        		if(record.data.classes==2){
+                        			Ext.getCmp('displayUnitAcqItemConfigSelectAllBtn').enable();
+                        			Ext.getCmp('displayUnitAcqItemConfigDeselectAllBtn').enable();
+                        			
+                        			Ext.getCmp('displayUnitCtrlItemConfigSelectAllBtn').enable();
+                        			Ext.getCmp('displayUnitCtrlItemConfigDeselectAllBtn').enable();
+                        		}else{
+                        			Ext.getCmp('displayUnitAcqItemConfigSelectAllBtn').disable();
+                        			Ext.getCmp('displayUnitAcqItemConfigDeselectAllBtn').disable();
+                        			
+                        			Ext.getCmp('displayUnitCtrlItemConfigSelectAllBtn').disable();
+                        			Ext.getCmp('displayUnitCtrlItemConfigDeselectAllBtn').disable();
+                        		}
+                        	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

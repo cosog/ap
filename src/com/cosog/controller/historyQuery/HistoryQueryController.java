@@ -694,6 +694,53 @@ public class HistoryQueryController extends BaseController  {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceResultStatusStatData")
+	public String getDeviceResultStatusStatData() throws Exception {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgid();
+			}
+		}
+		String tableName="tbl_srpacqdata_hist";
+		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
+			List list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			}
+			
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=endDate.split(" ")[0]+" 00:00:00";
+		}
+		String json = this.historyQueryService.getDeviceResultStatusStatData(orgId,deviceId,startDate,endDate,language);
+//		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+//		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/exportHistoryQueryFESDiagramOverlayDataExcel")
 	public String exportHistoryQueryFESDiagramOverlayDataExcel() throws Exception {
 		boolean bool=false;

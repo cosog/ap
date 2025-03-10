@@ -137,7 +137,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " from viw_srp_calculatemain t "
 				+ " where t.deviceid="+deviceId
 				+ " and t.resultStatus<>-1"
-				+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+				+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(calculateSign)){
 				if("0".equals(calculateSign)){
 					sql+=" and  t.resultstatus in(0,2) ";
@@ -152,7 +152,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			
 			int totals=this.getTotalCountRows(sql);
 			
-			sql+=" order by t.fesdiagramacqtime desc";
+			sql+=" order by t.acqtime desc";
 			int maxvalue=pager.getLimit()+pager.getStart();
 			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
@@ -906,7 +906,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
 			String sql="select t.deviceid,t.resultcode,count(1) "
 					+ " from TBL_SRPACQDATA_HIST t "
-					+ " where t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.resultstatus=1 "
 					+ " and t.deviceid= "+deviceId
@@ -933,7 +933,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public int recalculateByProductionData(String orgId, String deviceName, String deviceType,String startDate,String endDate,String calculateSign,String calculateType)throws Exception {
 		String tableName="tbl_srpacqdata_hist";
 		String deviceTableName="tbl_device";
-		String acqTimeColumn="fesdiagramacqtime";
+		String acqTimeColumn="acqtime";
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 			acqTimeColumn="acqtime";
@@ -1546,11 +1546,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String exportTotalCalculateRequestData(String deviceType,String recordId,String deviceId,String deviceName,String calDate)throws Exception {
+	public String exportTotalCalculateRequestData(String calculeteType,String recordId,String deviceId,String deviceName,String calDate)throws Exception {
 		String json="";
-		if("0".equals(deviceType)){
+		if("0".equals(calculeteType)){
 			json=this.exportFESDiagramTotalCalculateRequestData(recordId,deviceId,deviceName,calDate);
-		}else if("1".equals(deviceType)){
+		}else if("1".equals(calculeteType)){
 			json=this.exportRPMTotalCalculateRequestData(recordId,deviceId,deviceName,calDate);
 		}
 		
@@ -1578,9 +1578,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.rpm "
 				+ " from tbl_srpacqdata_hist t "
 				+ " where t.deviceId="+deviceId+" "
-				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+				+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 "
-				+ " order by t.fesdiagramacqtime";
+				+ " order by t.acqtime";
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] totalObj=(Object[])list.get(0);

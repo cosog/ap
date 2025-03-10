@@ -128,12 +128,21 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             						Ext.getCmp("HistoryDataExportBtn_Id").hide();
             						Ext.getCmp("SurfaceCardTotalCount_Id").show();
             						
-            						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-                                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-                                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
+//            						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+//                                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
+//                                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
+//                                    }else{
+//                                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+//                                    }
+                                    
+                                    
+                                    var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
+                                    if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
+                                    	HistoryQueryFSdiagramOverlayStatGrid.getStore().load();
                                     }else{
-                                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+                                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore");
                                     }
+                                    
             					}
                     		}
                     	}

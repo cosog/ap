@@ -696,16 +696,31 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          iconCls: 'export',
                          id:'SRPCalculateMaintainingExportDataBtn',
                          handler: function (v, o) {
-                         	if(srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getSelected()){
-                         		var row=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
-                         		
-                         		var recordId=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'recordId');
-                         		var deviceName=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'deviceName');
-                         		var acqTime=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'acqTime');
-                         		
-                         		var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
-                         		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
-                             	document.location.href = url;
+                        	 var checkedStatus=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
+                        	 var checkedList=[];
+                        	 if(checkedStatus.length>0){
+                        		 for(var i=0;i<checkedStatus.length;i++){
+                        			 if(checkedStatus[i]){
+                        				 checkedList.push(i);
+                        			 }
+                        		 }
+                        	 }
+                        	 
+                         	if(checkedList.length>0){
+//                         		var row=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getSelected()[0][0];
+                         		for(var i=0;i<checkedList.length;i++){
+                         			var row=checkedList[i];
+                             		
+                             		var recordId=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'recordId');
+                             		var deviceName=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'deviceName');
+                             		var acqTime=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(row,'acqTime');
+                             		
+                             		var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
+                             		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&deviceName='+URLencode(URLencode(deviceName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
+//                                 	document.location.href = url;
+                                 	
+                                 	downloadFile(url);
+                         		}
                          	}else{
                          		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                          	}
@@ -766,17 +781,19 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                              var selectionModel = gridPanel.getSelectionModel();
                              var _record = selectionModel.getSelection();
                              if (_record.length>0) {
-                             	var recordId=_record[0].data.id;
-                             	var wellId=_record[0].data.wellId;
-                             	var deviceName=_record[0].data.deviceName;
-                             	var calDate=_record[0].data.calDate;
-                         		var deviceType=0;
-                         		var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
-                         		+'&wellId='+wellId
-                         		+'&deviceName='+URLencode(URLencode(deviceName))
-                         		+'&calDate='+calDate
-                         		+'&deviceType='+deviceType;
-                             	document.location.href = url;
+                            	 for(var i=0;i<_record.length;i++){
+                            		 var recordId=_record[i].data.id;
+                                 	 var deviceId=_record[i].data.deviceId;
+                                 	 var deviceName=_record[i].data.deviceName;
+                                 	 var calDate=_record[i].data.calDate;
+                             		 var calculeteType=0;
+                             		 var url=context + '/calculateManagerController/exportTotalCalculateRequestData?recordId='+recordId
+                             		 +'&deviceId='+deviceId
+                             		 +'&deviceName='+URLencode(URLencode(deviceName))
+                             		 +'&calDate='+calDate
+                             		 +'&calculeteType='+calculeteType;
+                             		 downloadFile(url);
+                            	 }
                              }else{
                              	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
                              }
@@ -1447,7 +1464,7 @@ function ReTotalFESDiagramData(){
     if (_record.length>0) {
     	var reCalculateData='';
     	Ext.Array.each(_record, function (name, index, countriesItSelf) {
-    		reCalculateData+=_record[index].data.id+","+_record[index].data.wellId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
+    		reCalculateData+=_record[index].data.id+","+_record[index].data.deviceId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
     	Ext.getCmp("SRPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();

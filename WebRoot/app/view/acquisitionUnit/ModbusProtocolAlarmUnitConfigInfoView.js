@@ -175,6 +175,45 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                 		items: [{
                     		region: 'center',
                     		title:loginUserLanguageResource.acquisitionItemConfig,
+                    		
+                    		tbar:[{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.selectAll,
+                                id: 'alarmUnitNumItemsConfigSelectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=true;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            },{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.deselectAll,
+                                id: 'alarmUnitNumItemsConfigDeselectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=false;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            }],
+                    		
                             layout: 'fit',
                             id:'ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
@@ -198,6 +237,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     		region: 'south',
                         	height:'50%',
                         	title:loginUserLanguageResource.calculateItemConfig,
+                        	tbar:[{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.selectAll,
+                                id: 'alarmUnitCalculateItemsConfigSelectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=true;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            },{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.deselectAll,
+                                id: 'alarmUnitCalculateItemsConfigDeselectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=false;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            }],
                         	collapsible: true,
                             split: true,
                         	layout: 'fit',
@@ -236,6 +312,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         },{
                         	region: 'center',
                             title:loginUserLanguageResource.alarmItemConfig,
+                            tbar:[{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.selectAll,
+                                id: 'alarmUnitSwitchItemsConfigSelectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=true;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            },{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.deselectAll,
+                                id: 'alarmUnitSwitchItemsConfigDeselectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=false;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            }],
                             layout: 'fit',
                             id:'ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
@@ -272,6 +385,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         },{
                         	region: 'center',
                             title:loginUserLanguageResource.alarmItemConfig,
+                            tbar:[{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.selectAll,
+                                id: 'alarmUnitEnumItemsConfigSelectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=true;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            },{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.deselectAll,
+                                id: 'alarmUnitEnumItemsConfigDeselectAllBtn',
+                                disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                                pressed: false,
+                                handler: function (v, o) {
+                                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+                                		var rowCount = protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.countRows();
+                                    	var updateData=[];
+                                    	var selected=false;
+                                        for(var i=0;i<rowCount;i++){
+                                        	var data=[i,'checked',selected];
+                                        	updateData.push(data);
+                                        }
+                                        protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                                	}
+                                }
+                            }],
                             layout: 'fit',
                             id:'ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
@@ -296,6 +446,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     },{
                     	title:loginUserLanguageResource.workType,
                     	id:"ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            id: 'alarmUnitFESDiagramConditionsConfigSelectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=true;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            id: 'alarmUnitFESDiagramConditionsConfigDeselectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=false;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        }],
                         layout: 'fit',
                         hidden: onlyMonitor,
                         html:'<div class="ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
@@ -319,6 +506,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     },{
                     	title:loginUserLanguageResource.runStatus,
                     	id:"ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id",
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            id: 'alarmUnitRunStatusConfigSelectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=true;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            id: 'alarmUnitRunStatusConfigDeselectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=false;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        }],
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
@@ -341,6 +565,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     },{
                     	title:loginUserLanguageResource.commStatus,
                     	id:"ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id",
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            id: 'alarmUnitCommStatusConfigSelectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=true;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            id: 'alarmUnitCommStatusConfigDeselectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=undefined && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+                            		var rowCount = protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.countRows();
+                                	var updateData=[];
+                                	var selected=false;
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'checked',selected];
+                                    	updateData.push(data);
+                                    }
+                                    protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            	}
+                            }
+                        }],
                         layout: 'fit',
                         html:'<div class="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {

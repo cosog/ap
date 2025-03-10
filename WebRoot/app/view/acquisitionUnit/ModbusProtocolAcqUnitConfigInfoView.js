@@ -135,8 +135,44 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     }]
                 },{
                 	border: true,
-//                    flex: 4,
                 	region: 'center',
+                	tbar:[{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.selectAll,
+                        id: 'acqUnitConfigSelectAllBtn',
+                        disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                        		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=true;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        	}
+                        }
+                    },{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.deselectAll,
+                        id: 'acqUnitConfigDeselectAllBtn',
+                        disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                        		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=false;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        	}
+                        }
+                    }],
                     title:loginUserLanguageResource.acqAndCtrlItemConfig,
                     id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
                     layout: 'fit',

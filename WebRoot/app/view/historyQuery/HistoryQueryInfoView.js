@@ -1699,6 +1699,8 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
         var width_ = "";
         var lock_ = "";
         var hidden_ = "";
+        
+        var flex_ = "";
         if (attr.hidden == true) {
             hidden_ = ",hidden:true";
         }
@@ -1708,7 +1710,11 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
         if (isNotVal(attr.width)) {
             width_ = ",width:" + attr.width;
         }
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (isNotVal(attr.flex)) {
+        	flex_ = ",flex:" + attr.flex;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
+        
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
         }

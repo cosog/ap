@@ -115,21 +115,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
                 });
                 var HistoryQueryFSdiagramOverlayTable = Ext.getCmp("HistoryQueryFSdiagramOverlayTable_Id");
                 HistoryQueryFSdiagramOverlayTable.add(HistoryQueryFSdiagramOverlayGrid);
-                
-            }
-            var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
-            if(startDate.rawValue==''||null==startDate.rawValue){
-            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
-            	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
-            }
-            var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
-            if(endDate.rawValue==''||null==endDate.rawValue){
-            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
-            	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             
             var slectModel=HistoryQueryFSdiagramOverlayGrid.getSelectionModel();
@@ -162,6 +147,12 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
         	
+        	var selectedResult=[];
+        	var statSelection = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id").getSelectionModel().getSelection();
+        	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+        		selectedResult.push(statSelection[index].data.resultCode);
+        	});
+        	
         	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
         	
         	Ext.getCmp("HistoryDiagramOverlayTabPanel").el.mask(loginUserLanguageResource.loading).show();
@@ -170,7 +161,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             		deviceType:deviceType,
             		deviceId:deviceId,
                     deviceName:deviceName,
-                    resultCode:resultCode,
+                    resultCode:selectedResult.join(","),
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
                 };

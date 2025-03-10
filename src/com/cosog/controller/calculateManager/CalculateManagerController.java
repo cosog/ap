@@ -530,9 +530,9 @@ public class CalculateManagerController extends BaseController {
 		
 		String recordId=ParamUtils.getParameter(request, "recordId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
-		String wellId=ParamUtils.getParameter(request, "wellId");
+		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		String calDate=ParamUtils.getParameter(request, "calDate");
-		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String calculeteType=ParamUtils.getParameter(request, "calculeteType");
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -543,7 +543,7 @@ public class CalculateManagerController extends BaseController {
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
-		String json=calculateManagerService.exportTotalCalculateRequestData(deviceType,recordId,wellId,deviceName,calDate);
+		String json=calculateManagerService.exportTotalCalculateRequestData(calculeteType,recordId,deviceId,deviceName,calDate);
 		
 		String fileName=languageResourceMap.get("totalCalculateRequestData")+"-"+deviceName+"-"+calDate+".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");

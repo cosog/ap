@@ -137,13 +137,45 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
             		items: [{
                 		region: 'center',
                 		title:loginUserLanguageResource.acquisitionItemConfig,
+                		tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            id: 'displayUnitAcqItemConfigSelectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	var rowCount = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=true;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            id: 'displayUnitAcqItemConfigDeselectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	var rowCount = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=false;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            }
+                        }],
                 		id:"ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
-//                            		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -161,6 +193,39 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 		region: 'south',
                     	height:'50%',
                     	title:loginUserLanguageResource.controlItemConfig,
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            id: 'displayUnitCtrlItemConfigSelectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	var rowCount = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=true;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            id: 'displayUnitCtrlItemConfigDeselectAllBtn',
+                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	var rowCount = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=false;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
+                            }
+                        }],
                 		id:"ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id",
                         layout: 'fit',
                         collapsible: true,

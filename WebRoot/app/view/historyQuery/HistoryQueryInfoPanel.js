@@ -324,14 +324,27 @@ var historyQueryCenterTabPanelItems=[{
          }]
      },{
     	 region: 'center',
-    	 border: false,
-    	 header: false,
-         flex: 1,
-         autoScroll: true,
-         scrollable: true,
-         split: true,
-         layout: 'fit',
-         id: 'HistoryQueryFSdiagramOverlayTable_Id'
+    	 layout: 'border',
+    	 items: [{
+    		 region: 'south',
+    		 height: '50%',
+    		 border: false,
+        	 title: loginUserLanguageResource.Statistics,
+        	 split: true,
+             collapsible: true,
+        	 layout: 'fit',
+             id: 'HistoryQueryFSdiagramOverlayStatTable_Id'
+    	 },{
+    		 region: 'center',
+    		 border: false,
+        	 header: false,
+             flex: 1,
+             autoScroll: true,
+             scrollable: true,
+             split: true,
+             layout: 'fit',
+             id: 'HistoryQueryFSdiagramOverlayTable_Id'
+    	 }]
      }]
 }];
 Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
@@ -621,6 +634,453 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		border: false,
             		header:false,
             		tabPosition: 'top',
+            		
+//            		tbar:{
+//            			xtype:"container",
+//                    	border:false,
+//                    	items:[{
+//                    		xtype:"toolbar",
+//                    		items:[{
+//                                xtype: 'datefield',
+//                                anchor: '100%',
+//                                fieldLabel: loginUserLanguageResource.range,
+//                                labelWidth: getStringLength(loginUserLanguageResource.range)*8,
+//                                width: getStringLength(loginUserLanguageResource.range)*8+100,
+//                                format: 'Y-m-d ',
+//                                value: '',
+//                                id: 'HistoryQueryStartDate_Id',
+//                                listeners: {
+//                                	select: function (combo, record, index) {
+////                                		Ext.getCmp("HistoryQueryDataGridPanel_Id").getStore().loadPage(1);
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryStartTime_Hour_Id',
+//                                fieldLabel: loginUserLanguageResource.hour,
+//                                labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+//                                width: getStringLength(loginUserLanguageResource.hour)*8+45,
+//                                minValue: 0,
+//                                maxValue: 23,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryStartTime_Minute_Id',
+//                            	fieldLabel: loginUserLanguageResource.minute,
+//                                labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+//                                width: getStringLength(loginUserLanguageResource.minute)*8+45,
+//                                minValue: 0,
+//                                maxValue: 59,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryStartTime_Second_Id',
+//                                fieldLabel: loginUserLanguageResource.second,
+//                                labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+//                                width: getStringLength(loginUserLanguageResource.second)*8+45,
+//                                minValue: 0,
+//                                maxValue: 59,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            },{
+//                                xtype: 'datefield',
+//                                anchor: '100%',
+//                                fieldLabel: loginUserLanguageResource.timeTo,
+//                                labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
+//                                width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
+//                                format: 'Y-m-d ',
+//                                value: '',
+//                                id: 'HistoryQueryEndDate_Id',
+//                                listeners: {
+//                                	select: function (combo, record, index) {
+////                                		Ext.getCmp("HistoryQueryDataGridPanel_Id").getStore().loadPage(1);
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryEndTime_Hour_Id',
+//                            	fieldLabel: loginUserLanguageResource.hour,
+//                                labelWidth: getStringLength(loginUserLanguageResource.hour)*8,
+//                                width: getStringLength(loginUserLanguageResource.hour)*8+45,
+//                                minValue: 0,
+//                                maxValue: 23,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryEndTime_Minute_Id',
+//                                fieldLabel: loginUserLanguageResource.minute,
+//                                labelWidth: getStringLength(loginUserLanguageResource.minute)*8,
+//                                width: getStringLength(loginUserLanguageResource.minute)*8+45,
+//                                minValue: 0,
+//                                maxValue: 59,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            },{
+//                            	xtype: 'numberfield',
+//                            	id: 'HistoryQueryEndTime_Second_Id',
+//                            	fieldLabel: loginUserLanguageResource.second,
+//                                labelWidth: getStringLength(loginUserLanguageResource.second)*8,
+//                                width: getStringLength(loginUserLanguageResource.second)*8+45,
+//                                minValue: 0,
+//                                maxValue: 59,
+//                                value:'',
+//                                msgTarget: 'none',
+//                                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+//                                listeners: {
+//                                	blur: function (field, event, eOpts) {
+//                                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                		var flag=r.test(field.value);
+//                                		if(!flag){
+//                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                			field.focus(true, 100);
+//                                		}
+//                                    }
+//                                }
+//                            }]
+//                    	},{
+//                    		xtype:"toolbar",
+//                    		items:['->',resultNameComb,{
+//                                xtype: 'button',
+//                                text: loginUserLanguageResource.search,
+//                                iconCls: 'search',
+//                                handler: function () {
+//                                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+//                                	if(!r.test(startTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+//                                	if(!r2.test(startTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//                                	if(!r2.test(startTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+//                                	if(!r.test(endTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+//                                	if(!r2.test(endTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+//                                	if(!r2.test(endTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+//                    				var activeId = tabPanel.getActiveTab().id;
+//                    				if(activeId=="HistoryDataTabPanel"){
+//                						var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
+//                                        if (isNotVal(gridPanel)) {
+//                                        	gridPanel.getStore().loadPage(1);
+//                                        }else{
+//                                        	Ext.create("AP.store.historyQuery.HistoryDataStore");
+//                                        }
+//                					}else if(activeId=="HistoryDiagramTabPanel"){
+//                						loadHistoryDiagramTiledList(1);
+//                					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
+//                						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+//                                        if (isNotVal(gridPanel)) {
+//                                        	gridPanel.getStore().load();
+//                                        }else{
+//                                        	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+//                                        }
+//                					}
+//                                }
+//                            }, {
+//                                xtype: 'button',
+//                                text: loginUserLanguageResource.exportData,
+//                                iconCls: 'export',
+//                                id:'HistoryDiagramOverlayExportBtn_Id',
+//                                hidden:true,
+//                                handler: function (v, o) {
+//                                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+//                                	if(!r.test(startTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+//                                	if(!r2.test(startTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//                                	if(!r2.test(startTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+//                                	if(!r.test(endTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+//                                	if(!r2.test(endTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+//                                	if(!r2.test(endTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//                                	var deviceName='';
+//                                	var deviceId=0;
+//                                	var calculateType=0;
+//                                	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
+//                                	if(selectRow>=0){
+//                                		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.deviceName;
+//                                		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.id;
+//                                		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.calculateType;
+//                                	}
+//                                	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+//                                    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+//                                    
+//                                    var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+//                                    
+//                               	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+//                               	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
+//                               	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
+//                               	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
+//                               	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+//                                }
+//                            }, {
+//                                xtype: 'button',
+//                                text: loginUserLanguageResource.exportData,
+//                                iconCls: 'export',
+//                                id:'HistoryFESDiagramDataExportBtn_Id',
+//                                hidden:true,
+//                                handler: function (v, o) {
+//                                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+//                                	if(!r.test(startTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+//                                	if(!r2.test(startTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//                                	if(!r2.test(startTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+//                                	if(!r.test(endTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+//                                	if(!r2.test(endTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+//                                	if(!r2.test(endTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//                                	var deviceName='';
+//                                	var deviceId=0;
+//                                	var calculateType=0;
+//                                	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
+//                                	if(selectRow>=0){
+//                                		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.deviceName;
+//                                		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.id;
+//                                		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getStore().getAt(selectRow).data.calculateType;
+//                                	}
+//                                	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+//                                    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+//                                    
+//                                    var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+//                                    
+//                               	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+//                               	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
+//                               	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
+//                               	 	exportHistoryQueryDiagramTiledDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title);
+//                                }
+//                            }, {
+//                                xtype: 'button',
+//                                text: loginUserLanguageResource.exportData,
+//                                iconCls: 'export',
+//                                id:'HistoryDataExportBtn_Id',
+//                                hidden:false,
+//                                handler: function (v, o) {
+//                                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+//                                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+//                                	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+//                                	if(!r.test(startTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+//                                	if(!r2.test(startTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//                                	if(!r2.test(startTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryStartTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+//                                	if(!r.test(endTime_Hour)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+//                                	if(!r2.test(endTime_Minute)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+//                                	if(!r2.test(endTime_Second)){
+//                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                                		Ext.getCmp('HistoryQueryEndTime_Second_Id').focus(true, 100);
+//                                		return;
+//                                	}
+//                                	
+//                                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//                                	var deviceName='';
+//                                	var deviceId=0;
+//                                	var calculateType=0;
+//                                	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
+//                                	if(selectRow>=0){
+//                                		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+//                                		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+//                                		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+//                                		
+//                                	}
+//                                	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+//                                    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+//                                    
+//                                    var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+//                               	 	var fileName=deviceName+loginUserLanguageResource.historyData;
+//                               	 	var title=deviceName+loginUserLanguageResource.historyData;
+//                               	 	var columnStr=Ext.getCmp("HistoryQueryDataColumnStr_Id").getValue();
+//                               	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+//                                }
+//                            },{
+//                                id: 'SurfaceCardTotalCount_Id',
+//                                xtype: 'component',
+//                                tpl: loginUserLanguageResource.totalCount + ': {count}', // 总记录数
+//                                hidden:true,
+//                                style: 'margin-right:15px'
+//                            }, {
+//                                id: 'SurfaceCardTotalPages_Id', // 记录总页数
+//                                xtype: 'textfield',
+//                                value: '',
+//                                hidden: true
+//                            }]
+//                    	}]
+//            		},
+            		
+            		
+            		
             		tbar:[{
                         xtype: 'datefield',
                         anchor: '100%',
@@ -832,11 +1292,18 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         					}else if(activeId=="HistoryDiagramTabPanel"){
         						loadHistoryDiagramTiledList(1);
         					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
-        						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-                                if (isNotVal(gridPanel)) {
-                                	gridPanel.getStore().load();
+//        						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+//                                if (isNotVal(gridPanel)) {
+//                                	gridPanel.getStore().load();
+//                                }else{
+//                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+//                                }
+                                
+                                var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
+                                if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
+                                	HistoryQueryFSdiagramOverlayStatGrid.getStore().load();
                                 }else{
-                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore");
                                 }
         					}
                         }
@@ -1064,7 +1531,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         					if(newCard.id=="HistoryDataTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
-        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
+//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
@@ -1075,23 +1542,30 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 }
         					}else if(newCard.id=="HistoryDiagramTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
-        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
+//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						loadHistoryDiagramTiledList(1);
         					}else if(newCard.id=="HistoryDiagramOverlayTabPanel"){
-        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
+//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").show();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						
-        						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-                                if (isNotVal(gridPanel)) {
-                                	gridPanel.getStore().load();
+//        						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+//                                if (isNotVal(gridPanel)) {
+//                                	gridPanel.getStore().load();
+//                                }else{
+//                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+//                                }
+                                
+                                var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
+                                if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
+                                	HistoryQueryFSdiagramOverlayStatGrid.getStore().load();
                                 }else{
-                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
+                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore");
                                 }
         					}
         				}

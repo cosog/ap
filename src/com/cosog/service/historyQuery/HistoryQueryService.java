@@ -3550,17 +3550,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			allsql+=" and t.resultcode="+resultCodeStr;
-			totalSql+=" and t.resultcode="+resultCodeStr;
+			allsql+=" and t.resultcode in ("+resultCodeStr+")";
+			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
 		}
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
@@ -3572,7 +3572,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.fesdiagramacqtime desc";
+		allsql+= " order by t.acqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -3668,12 +3668,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				sql+=" and t.resultcode="+resultCodeStr;
+				sql+=" and t.resultcode in ("+resultCodeStr+")";
 			}
-			sql+= " order by t.fesdiagramacqtime";
+			sql+= " order by t.acqtime";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			int totals = getTotalCountRows(sql);//获取总记录数
 			int rarefy=0;
@@ -3778,17 +3778,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			allsql+=" and t.resultcode="+resultCodeStr;
-			totalSql+=" and t.resultcode="+resultCodeStr;
+			allsql+=" and t.resultcode in ("+resultCodeStr+")";
+			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
 		}
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
@@ -3800,7 +3800,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.fesdiagramacqtime desc";
+		allsql+= " order by t.acqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -3868,16 +3868,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			allsql+=" and t.resultcode="+resultCodeStr;
-			totalSql+=" and t.resultcode="+resultCodeStr;
+			allsql+=" and t.resultcode in ("+resultCodeStr+")";
+			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
 		}
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
@@ -3887,7 +3887,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.fesdiagramacqtime desc";
+		allsql+= " order by t.acqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -4006,22 +4006,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" ";
-			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				sql+=" and t.resultcode="+resultCodeStr;
-			}
-			sql+= " order by t.fesdiagramacqtime desc";
-			
 			String countSql="select count(1) from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId;
-			
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				countSql+=" and t.resultcode="+resultCodeStr;
+				sql+=" and t.resultcode in ("+resultCodeStr+")";
+				countSql+=" and t.resultcode in ("+resultCodeStr+")";
+			}else{
+				sql+=" and 1=2";
+				countSql+=" and 1=2";
 			}
+			sql+= " order by t.acqtime desc";
 			
 			int total=this.getTotalCountRows(countSql);
 			int rarefy=total/vacuateThreshold+1;
@@ -4279,16 +4278,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.deviceId="+deviceId+" ";
 			
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				sql+=" and t.resultcode="+resultCodeStr;
+				sql+=" and t.resultcode in ("+resultCodeStr+")";
+			}else{
+				sql+=" and 1=2";
 			}
 			
 			int total=this.getTotalCountRows(sql);
 			int rarefy=total/vacuateThreshold+1;
-			sql+= " order by t.fesdiagramacqtime desc";
+			sql+= " order by t.acqtime desc";
 			
 			String finalSql=sql;
 			if(rarefy>1){
@@ -4405,5 +4406,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			return false;
 		}
 		return true;
+	}
+	
+	public String getDeviceResultStatusStatData(String orgId, String deviceId,String startDate,String endDate,String language)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer data_json = new StringBuffer();
+		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		int count=0;
+		
+		data_json.append("[");
+
+		String sql="select t.deviceid,t.resultcode,count(1) "
+				+ " from TBL_SRPACQDATA_HIST t "
+				+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.resultstatus=1 "
+				+ " and t.deviceid= "+deviceId
+				+ " group by t.deviceid,t.resultcode"
+				+ " order by t.deviceid,t.resultcode";
+		List<?> list = this.findCallSql(sql);
+		count=list.size();
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String resultCode=obj[1]+"";
+			WorkType w=workTypeMap.get(resultCode);
+			data_json.append("{\"id\":"+(i+1)+",\"resultCode\":"+resultCode+",\"resultName\":\""+(w!=null?w.getResultName():languageResourceMap.get("emptyMsg"))+"\",\"count\":\""+obj[2]+"\"},");
+		}
+		
+		if(data_json.toString().endsWith(",")){
+			data_json.deleteCharAt(data_json.length() - 1);
+		}
+		data_json.append("]");
+		
+		result_json.append("{\"success\":true,"
+				+ "\"totalCount\":\"" + count+ "\","
+				+ "\"start_date\":\"" + startDate+ "\","
+				+ "\"end_date\":\"" + endDate+ "\","
+				+ "\"columns\":[{\"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\": []},{\"header\":\""+languageResourceMap.get("FSDiagramWorkType")+"\",\"dataIndex\":\"resultName\",\"flex\":1,\"children\": []},{\"header\":\""+languageResourceMap.get("totalCount")+"\",\"dataIndex\":\"count\",\"flex\":1,\"children\": []}],"
+				+ "\"totalRoot\":"+data_json.toString()+"}");
+		return result_json.toString();
+		
 	}
 }

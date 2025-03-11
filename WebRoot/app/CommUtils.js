@@ -2681,14 +2681,21 @@ showSurfaceCard = function(result, divId) {
 	var data = "["; // 功图data
 	var yAxisMin=0;
 	var minLoadValue=0;
-	for (var i=0; i <= positionCurveData.length; i++) {
-		if(i<positionCurveData.length){
-			data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
-			if(changeTwoDecimal(loadCurveData[i])<minLoadValue){
-				minLoadValue=changeTwoDecimal(loadCurveData[i]);
+	var gtcount=positionCurveData.length;
+	if(gtcount>loadCurveData.length){
+		gtcount=loadCurveData.length;
+	}
+	
+	if(result.positionCurveData!="" && positionCurveData.length>0 && result.loadCurveData!="" && loadCurveData.length>0){
+		for (var i=0; i <= gtcount; i++) {
+			if(i<gtcount){
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
+				if(changeTwoDecimal(loadCurveData[i])<minLoadValue){
+					minLoadValue=changeTwoDecimal(loadCurveData[i]);
+				}
+			}else{
+				data += "[" + changeTwoDecimal(positionCurveData[1]) + ","+changeTwoDecimal(loadCurveData[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
-		}else{
-			data += "[" + changeTwoDecimal(positionCurveData[1]) + ","+changeTwoDecimal(loadCurveData[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 		}
 	}
 	data+="]";
@@ -3351,10 +3358,13 @@ showPSDiagram = function(result, divId,title) {
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
 	var gtcount=positionCurveData.length; // 功图点数
+	if(gtcount>powerCurveData.length){
+		gtcount=powerCurveData.length;
+	}
 	var yAxisMin=0;
-	if(positionCurveData.length>0 && result.powerCurveData!="" && powerCurveData.length>1){
-		for (var i=0; i <= positionCurveData.length; i++) {
-			if(i<positionCurveData.length){
+	if(result.positionCurveData!="" && positionCurveData.length>0 && result.powerCurveData!="" && powerCurveData.length>0){
+		for (var i=0; i <= gtcount; i++) {
+			if(i<gtcount){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"],";
 				if(changeTwoDecimal(powerCurveData[i])<yAxisMin){
 					yAxisMin=changeTwoDecimal(powerCurveData[i]);
@@ -3549,9 +3559,12 @@ showASDiagram = function(result, divId,title) {
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
 	var gtcount=positionCurveData.length; // 功图点数
-	if(positionCurveData.length>0 && result.currentCurveData!="" && currentCurveData.length>1){
-		for (var i=0; i <= positionCurveData.length; i++) {
-			if(i<positionCurveData.length){
+	if(gtcount>currentCurveData.length){
+		gtcount=currentCurveData.length;
+	}
+	if(result.positionCurveData!="" && positionCurveData.length>0 && result.currentCurveData!="" && currentCurveData.length>0){
+		for (var i=0; i <= gtcount; i++) {
+			if(i<gtcount){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(currentCurveData[i])+"],";
 			}else{
 				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(currentCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
@@ -4227,7 +4240,11 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var fmax=null;
 	var fmin=null;
 	var yAxisMin=0;
-	var minLoadValue=0;
+	var minYValue=0;
+    var xAxisMin=0;
+    var minXValue=0;
+    
+    
 	var strokeMax=0;
 	var visiblestr='';
 	if(!visible){
@@ -4273,34 +4290,44 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 		if(parseFloat(list[i].stroke)>strokeMax){
 			strokeMax=parseFloat(list[i].stroke);
 		}
-		var xData = list[i].positionCurveData.split(",");
+		var xData = list[i].positionCurveData;
+		var xDataArr=xData.split(",");
 		var yData;
-		var diagramPoint=xData.length;
+		var yDataArr=[];
+		var diagramPoint=xDataArr.length;
 		if(diagramType===0){//如果是功图
-			yData = list[i].loadCurveData.split(",");
+			yData = list[i].loadCurveData;
 			color=new Array("#000000","#00ff00");
 			minValue=0;
 		}else if(diagramType===1){//电功图
-			yData = list[i].powerCurveData.split(",");
+			yData = list[i].powerCurveData;
 			color=new Array("#000000","#CC0000");
 		}else if(diagramType===2){//电流图
-			yData = list[i].currentCurveData.split(",");
+			yData = list[i].currentCurveData;
 			color=new Array("#000000","#0033FF");
 		}
-		if(diagramPoint>yData.length){
-			diagramPoint=yData.length;
+		yDataArr=yData.split(",");
+		if(diagramPoint>yDataArr.length){
+			diagramPoint=yDataArr.length;
 		}
 		var data = "[";
-		for (var j=0; j <= diagramPoint; j++) {
-			if(j<diagramPoint){
-				data += "[" + changeTwoDecimal(xData[j]) + ","+changeTwoDecimal(yData[j])+"],";
-				if(changeTwoDecimal(yData[j])<minLoadValue){
-					minLoadValue=changeTwoDecimal(yData[j]);
+		
+		if(xData!="" && yData!="" && diagramPoint>0){
+			for (var j=0; j <= diagramPoint; j++) {
+				if(j<diagramPoint){
+					data += "[" + changeTwoDecimal(xDataArr[j]) + ","+changeTwoDecimal(yDataArr[j])+"],";
+					if(changeTwoDecimal(yDataArr[j])<minYValue){
+						minYValue=changeTwoDecimal(yDataArr[j]);
+					}
+                    if(changeTwoDecimal(xDataArr[j])<minXValue){
+						minXValue=changeTwoDecimal(xDataArr[j]);
+					}
+				}else{
+					data += "[" + changeTwoDecimal(xDataArr[0]) + ","+changeTwoDecimal(yDataArr[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 				}
-			}else{
-				data += "[" + changeTwoDecimal(xData[0]) + ","+changeTwoDecimal(yData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
+		
 		data+="]";
 		if(list.length==1){
 			    series+="{name: '"+list[i].id+"',visible:"+visible + ",color: '" + color[1] + " ' , " + "lineWidth:2," + "data:" + data + "}";
@@ -4316,8 +4343,8 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	}
 	
 	if(strokeMax>0 && diagramType===0){//如果是功图
-		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '理论上载荷线',data: [[0," +parseFloat(upperLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(upperLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
-		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '理论下载荷线',data: [[0," +parseFloat(lowerLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(lowerLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
+		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '"+loginUserLanguageResource.upperLoadLine+"',data: [[0," +parseFloat(upperLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(upperLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
+		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '"+loginUserLanguageResource.lowerLoadLine+"',data: [[0," +parseFloat(lowerLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(lowerLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
 	}
 	
 	series+="]";
@@ -4343,20 +4370,24 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
     if(isNaN(upperlimit)){
     	upperlimit=null;
     }
-	if(minLoadValue<0){
+	if(minYValue<0){
 		yAxisMin=null;
 	}
     
+    if(minXValue<0){
+		xAxisMin=null;
+	}
+    
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,yAxisMin);
+    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin);
 	}else {
-		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId);
+		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,xAxisMin,yAxisMin);
 	}
 	
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,yAxisMin) {
+function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -4388,8 +4419,8 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 		            startOnTick: false,      //是否强制轴线在标线处开始
 		            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
 		            showLastLabel: true,
-		            minorTickInterval: ''    // 最小刻度间隔
-		            //min:0                                                            
+		            minorTickInterval: '',    // 最小刻度间隔
+		            min:xAxisMin                                                            
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
@@ -4445,7 +4476,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	});
 }
 
-function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId) {
+function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,xAxisMin,yAxisMin) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -4475,8 +4506,8 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 		            startOnTick: false,      //是否强制轴线在标线处开始
 		            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
 		            showLastLabel: true,
-		            minorTickInterval: ''    // 最小刻度间隔
-		            //min:0                                                            
+		            minorTickInterval: '',    // 最小刻度间隔
+		            min:xAxisMin                                                            
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         

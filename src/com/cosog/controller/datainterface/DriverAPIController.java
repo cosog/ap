@@ -847,7 +847,7 @@ public class DriverAPIController extends BaseController{
 					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(acqGroup.getID(), acqGroup.getSlave());
 					if(deviceInfo!=null){
 						long t1=System.nanoTime();
-						this.DataProcessing(deviceInfo,acqGroup);
+						this.DataProcessing(deviceInfo,acqGroup,data);
 						long t2=System.nanoTime();
 						printDenugInfo(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+deviceInfo.getDeviceName()+"采集组数据处理耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else{
@@ -898,7 +898,7 @@ public class DriverAPIController extends BaseController{
 					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfoByIPPort(acqGroup.getIPPort(), acqGroup.getSlave());
 					if(deviceInfo!=null){
 						long t1=System.nanoTime();
-						this.DataProcessing(deviceInfo,acqGroup);
+						this.DataProcessing(deviceInfo,acqGroup,data);
 						long t2=System.nanoTime();
 						printDenugInfo(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+deviceInfo.getDeviceName()+"采集组数据处理耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else{
@@ -2083,7 +2083,7 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup){
+	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,String data){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2125,8 +2125,10 @@ public class DriverAPIController extends BaseController{
 				String protocolName="";
 				List<KeyValue> acqDataList=new ArrayList<>();
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
+				String acqProtocolType="";
 				if(acqInstanceOwnItem!=null){
 					protocolName=acqInstanceOwnItem.getProtocol();
+					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
 				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
 				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
@@ -2424,10 +2426,25 @@ public class DriverAPIController extends BaseController{
 					
 					//如果满足单组入库间隔或者有报警，保存历史数据
 					if(save || alarm){
-						String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,rawdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
+						if(Config.getInstance().configFile.getAp().getOthers().getSaveAcqRawData()){
+							String rawData=acqGroup.getRawData();
+							if(StringManagerUtils.isNotNull(rawData)){
+								if(rawData.length()>4000){
+									rawData=rawData.substring(0,4000);
+								}
+								String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,rawdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+rawData+"' )";
+								commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
+							}else{
+								rawData=data.replaceAll(" ", "").replaceAll("\r\n", "\n").replaceAll("\n", "");
+								String saveRawDataSql="insert into "+rawDataTable+"(deviceid,acqtime,acqgroupdata)values("+deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),? )";
+								clobCont=new ArrayList<String>();
+								clobCont.add(rawData);
+								commonDataService.getBaseDao().executeSqlUpdateClob(saveRawDataSql,clobCont);
+							}
+						}
+						
 						deviceInfo.setSaveTime(acqTime);
 						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-						commonDataService.getBaseDao().updateOrDeleteBySql(saveRawDataSql);
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
 						
 						//更新历史clob数据

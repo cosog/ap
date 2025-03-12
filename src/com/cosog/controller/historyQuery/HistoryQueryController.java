@@ -227,6 +227,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		this.pager = new Page("pagerForm", request);
 		
 		HttpSession session=request.getSession();
@@ -245,7 +246,7 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -259,7 +260,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,calculateType,pager,user.getUserNo(),language);
+		json = historyQueryService.getDeviceHistoryData(orgId,deviceId,deviceName,deviceType,calculateType,pager,hours,user.getUserNo(),language);
 		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -281,6 +282,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		
 //		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 //		String fields = ParamUtils.getParameter(request, "fields");
@@ -310,7 +312,7 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -325,7 +327,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title,orgId,deviceId,deviceName,deviceType,calculateType,pager,user.getUserNo(),language);
+		bool = historyQueryService.exportDeviceHistoryData(user,response,fileName,title,orgId,deviceId,deviceName,deviceType,calculateType,pager,hours,user.getUserNo(),language);
 		if(!bool){
 			json="{\"success\":true,\"flag\":false}";
 		}
@@ -375,11 +377,12 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		String deviceTableName="tbl_device";
 		String tableName="tbl_acqdata_hist";
 		if(user!=null){
 			if(!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -394,7 +397,7 @@ public class HistoryQueryController extends BaseController  {
 			
 			
 			this.pager = new Page("pagerForm", request);
-			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,calculateType,startDate,endDate,user.getUserNo(),user.getLanguageName());
+			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,calculateType,startDate,endDate,hours,user.getUserNo(),user.getLanguageName());
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -457,6 +460,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -471,7 +475,7 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -485,7 +489,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
+			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -505,6 +509,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -519,7 +524,7 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -533,7 +538,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getPSDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
+			json = this.historyQueryService.getPSDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -553,6 +558,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -567,7 +573,7 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -581,7 +587,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getISDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
+			json = this.historyQueryService.getISDiagramTiledData(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -602,6 +608,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
 		String fields = ParamUtils.getParameter(request, "fields");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String diagramType = ParamUtils.getParameter(request, "diagramType");
@@ -617,7 +624,8 @@ public class HistoryQueryController extends BaseController  {
 		this.pager = new Page("pagerForm", request);
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.deviceId= "+deviceId;
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -631,11 +639,11 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if("FSDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,hours);
 		}else if("PSDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,hours);
 		}else if("ISDiagram".equalsIgnoreCase(diagramType)){
-			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager);
+			this.historyQueryService.exportHistoryQueryFESDiagramDataExcel(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,hours);
 		}
 		
 		if(session!=null){
@@ -653,7 +661,7 @@ public class HistoryQueryController extends BaseController  {
 		String resultCode = ParamUtils.getParameter(request, "resultCode");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
-		
+		String hours = ParamUtils.getParameter(request, "hours");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -669,7 +677,7 @@ public class HistoryQueryController extends BaseController  {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-				String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -683,7 +691,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,resultCode,pager,language);
+			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -700,7 +708,7 @@ public class HistoryQueryController extends BaseController  {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		
+		String hours = ParamUtils.getParameter(request, "hours");
 		User user = null;
 		HttpSession session=request.getSession();
 		user = (User) session.getAttribute("userLogin");
@@ -716,7 +724,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -729,7 +737,7 @@ public class HistoryQueryController extends BaseController  {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=endDate.split(" ")[0]+" 00:00:00";
 		}
-		String json = this.historyQueryService.getDeviceResultStatusStatData(orgId,deviceId,startDate,endDate,language);
+		String json = this.historyQueryService.getDeviceResultStatusStatData(orgId,deviceId,startDate,endDate,hours,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -751,7 +759,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
-		
+		String hours = ParamUtils.getParameter(request, "hours");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
@@ -785,7 +793,7 @@ public class HistoryQueryController extends BaseController  {
 		
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -800,7 +808,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,language);
+		bool = historyQueryService.exportFESDiagramOverlayData(user,response,fileName,title, heads, fields,orgId,deviceId,deviceName,resultCode,pager,hours,language);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

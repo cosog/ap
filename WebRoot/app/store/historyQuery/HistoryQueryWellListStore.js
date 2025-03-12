@@ -80,6 +80,9 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		Ext.getCmp('HistoryQueryResultNameComBox_Id').setValue('');
                     		Ext.getCmp('HistoryQueryResultNameComBox_Id').setRawValue('');
                     		
+                    		
+//                    		Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(true);
+                    		
                     		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
                     		
                     		var getTabId1 = tabPanel.getComponent("HistoryDiagramTabPanel");
@@ -127,15 +130,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
             						Ext.getCmp("HistoryDataExportBtn_Id").hide();
             						Ext.getCmp("SurfaceCardTotalCount_Id").show();
-            						
-//            						var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-//                                    if (isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-//                                    	HistoryQueryFSdiagramOverlayGrid.getStore().load();
-//                                    }else{
-//                                    	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
-//                                    }
-                                    
-                                    
                                     var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
                                     if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
                                     	HistoryQueryFSdiagramOverlayStatGrid.getStore().load();

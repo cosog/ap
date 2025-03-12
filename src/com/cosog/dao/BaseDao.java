@@ -803,7 +803,13 @@ public class BaseDao extends HibernateDaoSupport {
 			values[i] = values[i].toString().replace("@", ",");
 			query.setParameter(i, values[i]);
 		}
-		rows= Integer.parseInt(query.uniqueResult() + "");
+		try{
+			rows= Integer.parseInt(query.uniqueResult() + "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+allsql);
+		}
+		
 		return rows;
 	}
 

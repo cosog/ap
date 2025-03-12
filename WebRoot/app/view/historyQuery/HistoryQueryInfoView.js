@@ -343,7 +343,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,startDate,endDate,fileName,title,columnStr) {
+function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,startDate,endDate,hours,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+deviceType+'_'+timestamp;
 	
@@ -390,6 +390,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     + "&calculateType=" + calculateType 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
+    + "&hours=" + hours
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
@@ -397,7 +398,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,startDate,endDate,fileName,title,columnStr) {
+function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,startDate,endDate,hours,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	
@@ -446,6 +447,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     + "&calculateType=" + calculateType 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
+    + "&hours=" + hours
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
@@ -453,7 +455,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     openExcelWindow(url + '?flag=true' + param);
 };
 
-exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title) {
+exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,hours,fileName,title) {
 	var tabPanel = Ext.getCmp("HistoryDiagramTabPanel");
 	var activeId = tabPanel.getActiveTab().id;
 	var diagramType="FSDiagram";
@@ -469,11 +471,11 @@ exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,de
 		fileName=deviceName+'-'+loginUserLanguageResource.ISDiagramData;
 	}
 	var title=fileName;
-	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title,diagramType);
+	exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,hours,fileName,title,diagramType);
 }
 
 
-function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,fileName,title,diagramType) {
+function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,hours,fileName,title,diagramType) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	var maskPanelId='HistoryDiagramTabPanel';
@@ -489,6 +491,7 @@ function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceN
     + "&resultCode=" + resultCode 
     + "&startDate=" + startDate
     + "&endDate=" + endDate
+    + "&hours=" + hours
     + "&diagramType=" + diagramType
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
@@ -527,11 +530,14 @@ function deviceHistoryQueryCurve(deviceType){
 	var startDate=Ext.getCmp(startDateId).rawValue;
 	var startTime_Hour=Ext.getCmp(startHourId).getValue();
 	var startTime_Minute=Ext.getCmp(startMinuteId).getValue();
-	var startTime_Second=Ext.getCmp(startSecondId).getValue();
+//	var startTime_Second=Ext.getCmp(startSecondId).getValue();
+	var startTime_Second=0;
     var endDate=Ext.getCmp(endDateId).rawValue;
     var endTime_Hour=Ext.getCmp(endHourId).getValue();
 	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
-	var endTime_Second=Ext.getCmp(endSecondId).getValue();
+//	var endTime_Second=Ext.getCmp(endSecondId).getValue();
+	var endTime_Second=0;
+	var hours=getHistoryQueryHours();
 	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -697,6 +703,7 @@ function deviceHistoryQueryCurve(deviceType){
 			deviceId:deviceId,
 			startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
 			deviceType:deviceType,
 			calculateType:calculateType
         }
@@ -1389,13 +1396,16 @@ loadSurfaceCardList = function (page) {
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+	var startTime_Second=0;
 
     var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+//	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	var endTime_Second=0;
 	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+	var hours=getHistoryQueryHours();
     Ext.Ajax.request({
         url: context + '/historyQueryController/querySurfaceCard',
         method: "POST",
@@ -1407,6 +1417,7 @@ loadSurfaceCardList = function (page) {
             resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
             limit: defaultGraghSize,
             start: start,
             page: page
@@ -1430,14 +1441,14 @@ loadSurfaceCardList = function (page) {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             
             
@@ -1496,13 +1507,15 @@ loadPSDiagramTiledList = function (page) {
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+	var startTime_Second=0;
 
     var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
-	
+//	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	var endTime_Second=0;
+	var hours=getHistoryQueryHours();
 	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
     Ext.Ajax.request({
         url: context + '/historyQueryController/getPSDiagramTiledData',
@@ -1515,6 +1528,7 @@ loadPSDiagramTiledList = function (page) {
             resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
             limit: defaultGraghSize,
             start: start,
             page: page
@@ -1538,14 +1552,14 @@ loadPSDiagramTiledList = function (page) {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             
             
@@ -1603,13 +1617,15 @@ loadISDiagramTiledList = function (page) {
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+	var startTime_Second=0;
 
     var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
     var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
-	
+//	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+	var endTime_Second=0;
+	var hours=getHistoryQueryHours();
 	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
     Ext.Ajax.request({
         url: context + '/historyQueryController/getISDiagramTiledData',
@@ -1622,6 +1638,7 @@ loadISDiagramTiledList = function (page) {
             resultCode:resultCode,
             startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
             limit: defaultGraghSize,
             start: start,
             page: page
@@ -1645,14 +1662,14 @@ loadISDiagramTiledList = function (page) {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             
             var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
@@ -1743,4 +1760,60 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
     }
     myColumns += "]";
     return myColumns;
+}
+
+function refreshDeviceHistoryData(){
+	var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=="HistoryDataTabPanel"){
+		var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
+        if (isNotVal(gridPanel)) {
+        	gridPanel.getStore().loadPage(1);
+        }else{
+        	Ext.create("AP.store.historyQuery.HistoryDataStore");
+        }
+	}else if(activeId=="HistoryDiagramTabPanel"){
+		loadHistoryDiagramTiledList(1);
+	}else if(activeId=="HistoryDiagramOverlayTabPanel"){
+        var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
+        if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
+        	HistoryQueryFSdiagramOverlayStatGrid.getStore().load();
+        }else{
+        	Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore");
+        }
+	}
+}
+
+function getHistoryQueryHours(){
+	var hours='';
+	var hourList=[];
+	var timeRangeCheckAllStatus=Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').getValue();
+	if(timeRangeCheckAllStatus){
+		hours='all';
+	}else{
+		var timeRangeCheckStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
+    	var timeRangeCheckStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
+    	var timeRangeCheckStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
+    	
+    	if(timeRangeCheckStatus1 && timeRangeCheckStatus2 && timeRangeCheckStatus3){
+    		hours='all';
+    	}else{
+    		if(timeRangeCheckStatus1){
+        		hourList.push(Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getName());
+        	}
+        	
+        	if(timeRangeCheckStatus2){
+        		hourList.push(Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getName());
+        	}
+        	
+        	if(timeRangeCheckStatus3){
+        		hourList.push(Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getName());
+        	}
+        	
+        	if(hourList.length>0){
+        		hours=hourList.join(",");
+        	}
+    	}
+	}
+	return hours;
 }

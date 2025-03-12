@@ -252,6 +252,8 @@ public class OEMConfigFile {
 	    
 	    private boolean exportAdInitData;
 	    
+	    private boolean saveAcqRawData;
+	    
 	    private int rangeLimit;
 	    
 	    private int exportLimit;
@@ -420,6 +422,12 @@ public class OEMConfigFile {
 		}
 		public void setTimeEfficiencyUnit(int timeEfficiencyUnit) {
 			this.timeEfficiencyUnit = timeEfficiencyUnit;
+		}
+		public boolean getSaveAcqRawData() {
+			return saveAcqRawData;
+		}
+		public void setSaveAcqRawData(boolean saveAcqRawData) {
+			this.saveAcqRawData = saveAcqRawData;
 		}
 	}
 	

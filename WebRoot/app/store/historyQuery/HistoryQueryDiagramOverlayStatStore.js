@@ -26,14 +26,14 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             
             
@@ -112,13 +112,15 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+//        	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+        	var startTime_Second=0;
 
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
-        	
+//        	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+        	var endTime_Second=0;
+        	var hours=getHistoryQueryHours();
         	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
         	
         	Ext.getCmp("HistoryQueryFSdiagramOverlayStatTable_Id").el.mask(loginUserLanguageResource.loading).show();
@@ -129,7 +131,8 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
                     deviceName:deviceName,
                     resultCode:resultCode,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
-                    endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
+                    endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+                    hours:hours
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

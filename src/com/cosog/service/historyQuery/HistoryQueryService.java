@@ -543,6 +543,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,
 			String deviceType,String calculateType,
 			Page pager,
+			String hours,
 			int userNo,
 			String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
@@ -835,13 +836,42 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime ";
 			}
 			
-			sql+= " where t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.id="+deviceId+""
+			sql+= " where t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t2.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							sql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				sql+=" and 1=2";
+			}
+			
+			
+			sql+= " and t.id="+deviceId+""
 				+ " order by t2.acqtime desc";
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
 			List<?> list = this.findCallSql(finalSql);
+			int totals=this.getTotalCountRows(sql);
 			String startTime=pager.getStart_date();
 			String endTime=pager.getEnd_date();
 			if(list!=null && list.size()>0){
@@ -854,11 +884,35 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t.totalvalue,t.todayvalue "
 					+ " from TBL_DAILYTOTALCALCULATE_HIST t,"+hisTableName+" t2 "
 					+ " where t.deviceId=t2.deviceId and t.acqTime=t2.acqTime"
-					+ " and t.acqTime between to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endTime+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId
-					+ " order by t.acqTime desc";
+					+ " and t.acqTime between to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endTime+"','yyyy-mm-dd hh24:mi:ss') ";
 			
-			int totals=this.getTotalCountRows(sql);
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							dailyTotalDatasql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				dailyTotalDatasql+=" and 1=2";
+			}
+			dailyTotalDatasql+= " and t.deviceId="+deviceId
+					+ " order by t.acqTime desc";
 			
 			List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
 			
@@ -1365,7 +1419,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportDeviceHistoryData(User user,HttpServletResponse response,String fileName,String title,
-			String orgId,String deviceId,String deviceName,String deviceType,String calculateType,Page pager,int userNo,String language){
+			String orgId,String deviceId,String deviceName,String deviceType,String calculateType,Page pager,String hours,int userNo,String language){
 		ConfigFile configFile=Config.getInstance().configFile;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1621,8 +1675,34 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				sql+=" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime ";
 			}
 			
-			sql+= " where t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.id="+deviceId+""
+			sql+= " where t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t2.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							sql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				sql+=" and 1=2";
+			}
+			sql+= " and t.id="+deviceId+""
 				+ "  order by t2.acqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			
@@ -1639,8 +1719,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t.totalvalue,t.todayvalue "
 					+ " from TBL_DAILYTOTALCALCULATE_HIST t,"+hisTableName+" t2 "
 					+ " where t.deviceId=t2.deviceId and t.acqTime=t2.acqTime"
-					+ " and t.acqTime between to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endTime+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId
+					+ " and t.acqTime between to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endTime+"','yyyy-mm-dd hh24:mi:ss') ";
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t2.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							dailyTotalDatasql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				dailyTotalDatasql+=" and 1=2";
+			}
+			dailyTotalDatasql+= " and t.deviceId="+deviceId
 					+ " order by t.acqTime desc";
 			List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
 			
@@ -2832,7 +2937,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,int userNo,String language)throws Exception {
+	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,String hours,int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -3184,8 +3289,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(StringManagerUtils.stringToInteger(calculateType)>0){
 					sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
 				}	
-				sql+= " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
-						+ " and t2.id="+deviceId;
+				sql+= " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+				if(StringManagerUtils.isNotNull(hours)){
+					if(!"all".equalsIgnoreCase(hours)){
+						String[] hourArr=hours.split(",");
+						if(hourArr.length>0){
+							StringBuffer hourBuff = new StringBuffer();
+							hourBuff.append("(");
+							for(int i=0;i<hourArr.length;i++){
+								String[] singleHourRange=hourArr[i].split("~");
+								if(singleHourRange.length==2){
+									if(i>0){
+										hourBuff.append(" or ");
+									}
+									hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+								}
+							}
+							hourBuff.append(")");
+							
+							if(!"()".equalsIgnoreCase(hourBuff.toString())){
+								sql+="and "+hourBuff.toString();
+							}
+						}
+					}
+				}else{
+					sql+=" and 1=2";
+				}
+				sql+= " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
 				int rarefy=total/vacuateThreshold+1;
 				sql+= " order by t.acqtime";
@@ -3533,7 +3663,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result;
 	}
 	
-	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
+	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3541,7 +3671,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int limit = pager.getLimit();
 		int start = pager.getStart();
 		int maxvalue = limit + start;
-		String allsql="",sql="",totalSql="";
+		String allsql="",totalSql="";
 		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
@@ -3550,14 +3680,44 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+		
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		
+		if(StringManagerUtils.isNotNull(hours)){
+			if(!"all".equalsIgnoreCase(hours)){
+				String[] hourArr=hours.split(",");
+				if(hourArr.length>0){
+					StringBuffer hourBuff = new StringBuffer();
+					hourBuff.append("(");
+					for(int i=0;i<hourArr.length;i++){
+						String[] singleHourRange=hourArr[i].split("~");
+						if(singleHourRange.length==2){
+							if(i>0){
+								hourBuff.append(" or ");
+							}
+							hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+						}
+					}
+					hourBuff.append(")");
+					
+					if(!"()".equalsIgnoreCase(hourBuff.toString())){
+						allsql+="and "+hourBuff.toString();
+						totalSql+="and "+hourBuff.toString();
+					}
+				}
+			}
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}	
+		
+				
+		allsql+= " and t.deviceId="+deviceId+" ";
+		totalSql+= " and t.deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			allsql+=" and t.resultcode in ("+resultCodeStr+")";
 			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
@@ -3576,7 +3736,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
-		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
@@ -3636,8 +3796,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportHistoryQueryFESDiagramDataExcel(User user,HttpServletResponse response,String fileName,String resultCodeStr,String title,String head,String field,
-			String orgId,String deviceId,String deviceName,Page pager){
+	public boolean exportHistoryQueryFESDiagramDataExcel(User user,HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceId,String deviceName,String resultCodeStr,Page pager,String hours){
 		try{
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
@@ -3646,13 +3806,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
-			String[] heads={languageResourceMap.get("deviceName"),languageResourceMap.get("acqTime"),
+			String[] heads={languageResourceMap.get("idx"),languageResourceMap.get("deviceName"),languageResourceMap.get("acqTime"),
 					languageResourceMap.get("stroke")+"(m)",languageResourceMap.get("SPM")+"(1/min)",
 					languageResourceMap.get("fMax")+"(kN)",languageResourceMap.get("fMin")+"(kN)",
 					languageResourceMap.get("pointCount"),
 					languageResourceMap.get("displacement"),languageResourceMap.get("load"),
 					languageResourceMap.get("activePower"),languageResourceMap.get("electricity")};
-			String[] columns={"deviceName","acqTime","stroke","spm","fmax","fmin","pointCount","positionCurveData","loadCurveData","powerCurveData","currentCurveData"};
+			String[] columns={"id","deviceName","acqTime","stroke","spm","fmax","fmin","pointCount","positionCurveData","loadCurveData","powerCurveData","currentCurveData"};
 			
 			List<Object> headRow = new ArrayList<>();
 			for(int i=0;i<heads.length;i++){
@@ -3668,8 +3828,34 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId+" ";
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							sql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				sql+=" and 1=2";
+			}
+			sql+= " and t.deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				sql+=" and t.resultcode in ("+resultCodeStr+")";
 			}
@@ -3725,7 +3911,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					currentCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				
-		        result_json.append("{ \"id\":\"" + obj[0] + "\",");
+		        result_json.append("{ \"id\":\"" + (i+1) + "\",");
 		        result_json.append("\"deviceName\":\"" + obj[1] + "\",");
 		        result_json.append("\"acqTime\":\"" + obj[2] + "\",");
 		        result_json.append("\"stroke\":\""+obj[3]+"\",");
@@ -3763,7 +3949,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
+	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3771,21 +3957,48 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int limit = pager.getLimit();
 		int start = pager.getStart();
 		int maxvalue = limit + start;
-		String allsql="",sql="",totalSql="";
+		String allsql="",totalSql="";
 		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.upStrokeWattMax,t.downStrokeWattMax,t.wattDegreeBalance,t.deltaRadius,"
 				+ " t.position_curve,t.power_curve"
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+				
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
-		
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+		if(StringManagerUtils.isNotNull(hours)){
+			if(!"all".equalsIgnoreCase(hours)){
+				String[] hourArr=hours.split(",");
+				if(hourArr.length>0){
+					StringBuffer hourBuff = new StringBuffer();
+					hourBuff.append("(");
+					for(int i=0;i<hourArr.length;i++){
+						String[] singleHourRange=hourArr[i].split("~");
+						if(singleHourRange.length==2){
+							if(i>0){
+								hourBuff.append(" or ");
+							}
+							hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+						}
+					}
+					hourBuff.append(")");
+					
+					if(!"()".equalsIgnoreCase(hourBuff.toString())){
+						allsql+="and "+hourBuff.toString();
+						totalSql+="and "+hourBuff.toString();
+					}
+				}
+			}
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}
+		allsql+= " and t.deviceId="+deviceId+" ";
+		totalSql+= " and t.deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			allsql+=" and t.resultcode in ("+resultCodeStr+")";
 			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
@@ -3804,7 +4017,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
-		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
@@ -3853,7 +4066,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language) throws SQLException, IOException {
+	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
@@ -3861,20 +4074,47 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int limit = pager.getLimit();
 		int start = pager.getStart();
 		int maxvalue = limit + start;
-		String allsql="",sql="",totalSql="";
+		String allsql="",totalSql="";
 		allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.upStrokeIMax,t.downStrokeIMax,t.iDegreeBalance,t.deltaRadius,"
 				+ " t.position_curve,t.current_curve"
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		totalSql="select count(1) from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device well on well.id=t.deviceId"
 				+ " where  1=1 "
-				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.deviceId="+deviceId+" ";
+				+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+		if(StringManagerUtils.isNotNull(hours)){
+			if(!"all".equalsIgnoreCase(hours)){
+				String[] hourArr=hours.split(",");
+				if(hourArr.length>0){
+					StringBuffer hourBuff = new StringBuffer();
+					hourBuff.append("(");
+					for(int i=0;i<hourArr.length;i++){
+						String[] singleHourRange=hourArr[i].split("~");
+						if(singleHourRange.length==2){
+							if(i>0){
+								hourBuff.append(" or ");
+							}
+							hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+						}
+					}
+					hourBuff.append(")");
+					
+					if(!"()".equalsIgnoreCase(hourBuff.toString())){
+						allsql+="and "+hourBuff.toString();
+						totalSql+="and "+hourBuff.toString();
+					}
+				}
+			}
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}
+		allsql+= " and t.deviceId="+deviceId+" ";
+		totalSql+= " and t.deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			allsql+=" and t.resultcode in ("+resultCodeStr+")";
 			totalSql+=" and t.resultcode in ("+resultCodeStr+")";
@@ -3891,7 +4131,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
-		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
@@ -3941,7 +4181,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String language){
+	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language){
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
@@ -4006,13 +4246,42 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId+" ";
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			String countSql="select count(1) from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId;
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							sql+="and "+hourBuff.toString();
+							countSql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				sql+=" and 1=2";
+				countSql+=" and 1=2";
+			}
+			sql+= " and t.deviceId="+deviceId+" ";
+			countSql+= " and t.deviceId="+deviceId+" ";
+			
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				sql+=" and t.resultcode in ("+resultCodeStr+")";
 				countSql+=" and t.resultcode in ("+resultCodeStr+")";
@@ -4210,8 +4479,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportFESDiagramOverlayData(User user,HttpServletResponse response,String fileName,String resultCodeStr,String title,String head,String field,
-			String orgId,String deviceId,String deviceName,Page pager,String language){
+	public boolean exportFESDiagramOverlayData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceId,String deviceName,String resultCodeStr,Page pager,String hours,String language){
 		try{
 			StringBuffer dataBuff = new StringBuffer();
 			Gson gson = new Gson();
@@ -4278,8 +4547,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t"
 					+ " left outer join tbl_device well on well.id=t.deviceId"
 					+ " where  1=1 "
-					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " and t.deviceId="+deviceId+" ";
+					+ " and t.acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			if(StringManagerUtils.isNotNull(hours)){
+				if(!"all".equalsIgnoreCase(hours)){
+					String[] hourArr=hours.split(",");
+					if(hourArr.length>0){
+						StringBuffer hourBuff = new StringBuffer();
+						hourBuff.append("(");
+						for(int i=0;i<hourArr.length;i++){
+							String[] singleHourRange=hourArr[i].split("~");
+							if(singleHourRange.length==2){
+								if(i>0){
+									hourBuff.append(" or ");
+								}
+								hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							}
+						}
+						hourBuff.append(")");
+						
+						if(!"()".equalsIgnoreCase(hourBuff.toString())){
+							sql+="and "+hourBuff.toString();
+						}
+					}
+				}
+			}else{
+				sql+=" and 1=2";
+			}
+			sql+= " and t.deviceId="+deviceId+" ";
 			
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				sql+=" and t.resultcode in ("+resultCodeStr+")";
@@ -4305,8 +4599,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
 				obj = (Object[]) list.get(i);
-				StringBuffer alarmInfo = new StringBuffer();
-				String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
+				record = new ArrayList<>();
+				dataBuff = new StringBuffer();
 				String commStatusName=(obj[4]+"").replaceAll("null", "");
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
@@ -4408,7 +4702,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getDeviceResultStatusStatData(String orgId, String deviceId,String startDate,String endDate,String language)throws Exception {
+	public String getDeviceResultStatusStatData(String orgId, String deviceId,String startDate,String endDate,String hours,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer data_json = new StringBuffer();
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
@@ -4419,9 +4713,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 
 		String sql="select t.deviceid,t.resultcode,count(1) "
 				+ " from TBL_SRPACQDATA_HIST t "
-				+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.resultstatus=1 "
+				+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+		if(StringManagerUtils.isNotNull(hours)){
+			if(!"all".equalsIgnoreCase(hours)){
+				String[] hourArr=hours.split(",");
+				if(hourArr.length>0){
+					StringBuffer hourBuff = new StringBuffer();
+					hourBuff.append("(");
+					for(int i=0;i<hourArr.length;i++){
+						String[] singleHourRange=hourArr[i].split("~");
+						if(singleHourRange.length==2){
+							if(i>0){
+								hourBuff.append(" or ");
+							}
+							hourBuff.append("to_date(to_char(t.acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+						}
+					}
+					hourBuff.append(")");
+					
+					if(!"()".equalsIgnoreCase(hourBuff.toString())){
+						sql+="and "+hourBuff.toString();
+					}
+				}
+			}
+		}else{
+			sql+=" and 1=2";
+		}
+		sql+= " and t.resultstatus=1 "
 				+ " and t.deviceid= "+deviceId
 				+ " group by t.deviceid,t.resultcode"
 				+ " order by t.deviceid,t.resultcode";

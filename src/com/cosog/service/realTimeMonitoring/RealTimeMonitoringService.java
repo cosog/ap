@@ -2769,14 +2769,20 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> itemNameList=new ArrayList<String>();
 			List<String> itemColumnList=new ArrayList<String>();
 			List<String> curveConfList=new ArrayList<String>();
+			List<Integer> curveSortConfList=new ArrayList<>();
+			List<List<String>> curveDataList=new ArrayList<>();
 			
 			List<String> calItemNameList=new ArrayList<String>();
 			List<String> calItemColumnList=new ArrayList<String>();
 			List<String> calItemCurveConfList=new ArrayList<String>();
+			List<Integer> calItemCurveSortConfList=new ArrayList<>();
+			List<List<String>> calItemCurveDataList=new ArrayList<>();
 			
 			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
 			List<String> inputItemCurveConfList=new ArrayList<String>();
+			List<Integer> inputItemCurveSortConfList=new ArrayList<>();
+			List<List<String>> inputItemCurveDataList=new ArrayList<>();
 			
 			if(displayInstanceOwnItem!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
@@ -2825,7 +2831,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
 									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
 									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
-									
+									int sort=curveConfObj.getSort();
 									if("0".equalsIgnoreCase(type)){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
@@ -2840,6 +2846,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 												}
 												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
+												curveSortConfList.add(sort);
+												curveDataList.add(new ArrayList<>());
 												break;
 											}
 										}
@@ -2860,6 +2868,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										
 										calItemNameList.add(itemName);
 										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
+										calItemCurveSortConfList.add(sort);
+										calItemCurveDataList.add(new ArrayList<>());
 									}else if("3".equalsIgnoreCase(type)){
 										inputItemColumnList.add(itemcode);
 										String itemName=itemname;
@@ -2878,8 +2888,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										
 										inputItemNameList.add(itemName);
 										inputItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
+										inputItemCurveSortConfList.add(sort);
+										inputItemCurveDataList.add(new ArrayList<>());
 									}
-								
 								}
 							}
 							break;

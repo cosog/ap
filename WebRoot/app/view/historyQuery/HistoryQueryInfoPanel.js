@@ -429,7 +429,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                 type: "string"
             }],
             proxy: {
-                url: context + '/calculateManagerController/getResultNameList',
+                url: context + '/historyQueryController/getResultNameList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -496,6 +496,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     displayField: "boxval",
                     valueField: "boxkey",
                     minChars: 0,
+                    multiSelect: false,    // 启用多选
                     listeners: {
                     	expand: function (sm, selections) {
                     		resultNameComb.clearValue();
@@ -506,6 +507,39 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                         }
                     }
         });
+        
+        
+        
+//        var resultNameComb = Ext.create(
+//                'AP.view.CheckboxComboBox', {
+//                	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
+//                    labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
+//                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
+//                    id: 'HistoryQueryResultNameComBox_Id',
+//                    store: resultNameStore,
+//                    queryMode: 'remote',
+//                    emptyText: '--'+loginUserLanguageResource.all+'--',
+//                    blankText: '--'+loginUserLanguageResource.all+'--',
+//                    typeAhead: false,
+//                    autoSelect: false,
+//                    allowBlank: true,
+//                    hidden: true,
+//                    triggerAction: 'all',
+//                    editable: false,
+//                    displayField: "boxval",
+//                    valueField: "boxkey",
+//                    minChars: 0,
+//                    multiSelect: true,    // 启用多选
+//                    listeners: {
+//                    	expand: function (sm, selections) {
+//                    		resultNameComb.clearValue();
+//                    		resultNameComb.getStore().load();
+//                        },
+//                        select: function (combo, record, index) {
+//                        	
+//                        }
+//                    }
+//        });
         
         Ext.applyIf(me, {
             items: [{
@@ -1148,6 +1182,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                     	Ext.getCmp('HistoryDataTimeRangeCheck1_Id').setValue(true);
                                     	Ext.getCmp('HistoryDataTimeRangeCheck2_Id').setValue(true);
                                     	Ext.getCmp('HistoryDataTimeRangeCheck3_Id').setValue(true);
+                                    	Ext.getCmp('HistoryDataTimeRangeCheck4_Id').setValue(true);
                                     } else {
                                     	
                                     }
@@ -1155,41 +1190,58 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 }
                             },'-',{
                             	xtype: 'checkbox',
-                                boxLabel: '0~8h',
+                                boxLabel: '0~6h',
                                 inputValue: '1',
                                 id:'HistoryDataTimeRangeCheck1_Id',
                                 checked:true,
-                                name:'00:00:00~08:00:00',
+                                name:'00:00:00~06:00:00',
                                 handler: function(checkbox, checked) {
                                 	var checkStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
                                 	var checkStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
-                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus2 && checkStatus3);
+                                	var checkStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue();
+                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus2 && checkStatus3 && checkStatus4);
                                 	refreshDeviceHistoryData();
                                 }
                             },'-',{
                             	xtype: 'checkbox',
-                                boxLabel: '8~16h',
+                                boxLabel: '6~12h',
                                 inputValue: '1',
                                 id:'HistoryDataTimeRangeCheck2_Id',
                                 checked:true,
-                                name:'08:00:00~16:00:00',
+                                name:'06:00:00~12:00:00',
                                 handler: function(checkbox, checked) {
                                 	var checkStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
                                 	var checkStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
-                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus1 && checkStatus3);
+                                	var checkStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue();
+                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus1 && checkStatus3 && checkStatus4);
                                 	refreshDeviceHistoryData();
                                 }
                             },'-',{
                             	xtype: 'checkbox',
-                                boxLabel: '16~24h',
+                                boxLabel: '12~18h',
                                 inputValue: '1',
                                 id:'HistoryDataTimeRangeCheck3_Id',
                                 checked:true,
-                                name:'16:00:00~23:59:59',
+                                name:'12:00:00~18:00:00',
                                 handler: function(checkbox, checked) {
                                 	var checkStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
                                 	var checkStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
-                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus1 && checkStatus2);
+                                	var checkStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue();
+                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus1 && checkStatus2 && checkStatus4);
+                                	refreshDeviceHistoryData();
+                                }
+                            },'-',{
+                            	xtype: 'checkbox',
+                                boxLabel: '18~24h',
+                                inputValue: '1',
+                                id:'HistoryDataTimeRangeCheck4_Id',
+                                checked:true,
+                                name:'18:00:00~23:59:59',
+                                handler: function(checkbox, checked) {
+                                	var checkStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
+                                	var checkStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
+                                	var checkStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
+                                	Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').setValue(checked && checkStatus1 && checkStatus2 && checkStatus3);
                                 	refreshDeviceHistoryData();
                                 }
                             }]
@@ -1207,7 +1259,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         					if(newCard.id=="HistoryDataTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
-//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
@@ -1218,13 +1270,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 }
         					}else if(newCard.id=="HistoryDiagramTabPanel"){
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
-//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						loadHistoryDiagramTiledList(1);
         					}else if(newCard.id=="HistoryDiagramOverlayTabPanel"){
-//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
+        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").show();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryDataExportBtn_Id").hide();

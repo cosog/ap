@@ -121,7 +121,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
 //        	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
-        	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
         	
         	Ext.getCmp("HistoryQueryFSdiagramOverlayStatTable_Id").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
@@ -129,7 +128,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
             		deviceType:deviceType,
             		deviceId:deviceId,
                     deviceName:deviceName,
-                    resultCode:resultCode,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
                     hours:hours

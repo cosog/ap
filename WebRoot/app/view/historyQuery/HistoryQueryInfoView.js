@@ -1405,6 +1405,9 @@ loadSurfaceCardList = function (page) {
 //	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
 	var endTime_Second=0;
 	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+	
+	
+	
 	var hours=getHistoryQueryHours();
     Ext.Ajax.request({
         url: context + '/historyQueryController/querySurfaceCard',
@@ -1794,8 +1797,9 @@ function getHistoryQueryHours(){
 		var timeRangeCheckStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
     	var timeRangeCheckStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
     	var timeRangeCheckStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
+    	var timeRangeCheckStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue();
     	
-    	if(timeRangeCheckStatus1 && timeRangeCheckStatus2 && timeRangeCheckStatus3){
+    	if(timeRangeCheckStatus1 && timeRangeCheckStatus2 && timeRangeCheckStatus3 && timeRangeCheckStatus4){
     		hours='all';
     	}else{
     		if(timeRangeCheckStatus1){
@@ -1808,6 +1812,10 @@ function getHistoryQueryHours(){
         	
         	if(timeRangeCheckStatus3){
         		hourList.push(Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getName());
+        	}
+        	
+        	if(timeRangeCheckStatus4){
+        		hourList.push(Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getName());
         	}
         	
         	if(hourList.length>0){

@@ -1480,7 +1480,6 @@ var DeviceInfoHandsontableHelper = {
                     		if(isNumber(parseFloat(productionHandsontableData[42][2]))){
                     			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[42][2]);
                     		}
-                    		deviceProductionData.ManualIntervention={}
                     		
                     		deviceProductionData.FESDiagram={};
                     		deviceProductionData.FESDiagram.Src=0;

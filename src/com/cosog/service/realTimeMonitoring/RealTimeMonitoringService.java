@@ -44,9 +44,11 @@ import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
+import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
 import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.base.BaseService;
@@ -2766,23 +2768,30 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-			List<String> itemNameList=new ArrayList<String>();
-			List<String> itemColumnList=new ArrayList<String>();
-			List<String> curveConfList=new ArrayList<String>();
-			List<Integer> curveSortConfList=new ArrayList<>();
-			List<List<String>> curveDataList=new ArrayList<>();
-			
-			List<String> calItemNameList=new ArrayList<String>();
+//			List<String> itemNameList=new ArrayList<String>();
+			List<String> acqItemColumnList=new ArrayList<String>();
+//			List<String> curveConfList=new ArrayList<String>();
+//			List<Integer> curveSortConfList=new ArrayList<>();
+//			List<List<String>> curveDataList=new ArrayList<>();
+//			
+//			List<String> calItemNameList=new ArrayList<String>();
 			List<String> calItemColumnList=new ArrayList<String>();
-			List<String> calItemCurveConfList=new ArrayList<String>();
-			List<Integer> calItemCurveSortConfList=new ArrayList<>();
-			List<List<String>> calItemCurveDataList=new ArrayList<>();
-			
-			List<String> inputItemNameList=new ArrayList<String>();
+//			List<String> calItemCurveConfList=new ArrayList<String>();
+//			List<Integer> calItemCurveSortConfList=new ArrayList<>();
+//			List<List<String>> calItemCurveDataList=new ArrayList<>();
+//			
+//			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
-			List<String> inputItemCurveConfList=new ArrayList<String>();
-			List<Integer> inputItemCurveSortConfList=new ArrayList<>();
-			List<List<String>> inputItemCurveDataList=new ArrayList<>();
+//			List<String> inputItemCurveConfList=new ArrayList<String>();
+//			List<Integer> inputItemCurveSortConfList=new ArrayList<>();
+//			List<List<String>> inputItemCurveDataList=new ArrayList<>();
+			
+			
+			List<String> acqTimeList=new ArrayList<>();
+			Map<Integer,String> itemNameMap=new TreeMap<>();
+			Map<String,Integer> itemCodeSortMap=new HashMap<>();
+			Map<Integer,String> curveConfMap=new TreeMap<>();
+			Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 			
 			if(displayInstanceOwnItem!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
@@ -2816,166 +2825,123 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				});
 				String protocolName=displayInstanceOwnItem.getProtocol();
-				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								Gson gson = new Gson();
-								java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
-								CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf(), reflectType);
-								
-								if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
-									String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
-									String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
-									String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
-									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
-									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
-									int sort=curveConfObj.getSort();
-									if("0".equalsIgnoreCase(type)){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
-												}
-												itemColumnList.add(col);
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-												}else{
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-												}
-												curveConfList.add(realtimecurveconf.replaceAll("null", ""));
-												curveSortConfList.add(sort);
-												curveDataList.add(new ArrayList<>());
-												break;
-											}
+				Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				if(protocol!=null){
+					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
+						Gson gson = new Gson();
+						java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
+						CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf(), reflectType);
+						if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+							String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
+							String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
+							String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
+							String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
+							int sort=curveConfObj.getSort();
+							if(itemNameMap.containsKey(sort)){
+								sort+=1;
+							}
+							if("0".equalsIgnoreCase(type)){
+								for(int k=0;k<protocol.getItems().size();k++){
+									if(protocol.getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
+										String col="";
+										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+											col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
 										}
-									}else if("1".equalsIgnoreCase(type)){
-										calItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(calItemList!=null && calItemList.size()>0){
-											for(CalItem calItem:calItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													itemName=calItem.getName();
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-											}
+										if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle()+"("+protocol.getItems().get(k).getUnit()+")");
+										}else{
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle());
 										}
-										
-										calItemNameList.add(itemName);
-										calItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-										calItemCurveSortConfList.add(sort);
-										calItemCurveDataList.add(new ArrayList<>());
-									}else if("3".equalsIgnoreCase(type)){
-										inputItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(inputItemList!=null && inputItemList.size()>0){
-											for(CalItem calItem:inputItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													itemName=calItem.getName();
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										inputItemNameList.add(itemName);
-										inputItemCurveConfList.add(realtimecurveconf.replaceAll("null", ""));
-										inputItemCurveSortConfList.add(sort);
-										inputItemCurveDataList.add(new ArrayList<>());
+										itemCodeSortMap.put(col, sort);
+										acqItemColumnList.add(col);
+										curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
+										curveDataMap.put(sort, new ArrayList<>());
+										break;
 									}
 								}
+							}else if("1".equalsIgnoreCase(type)){
+								String itemName=itemname;
+								if(calItemList!=null && calItemList.size()>0){
+									for(CalItem calItem:calItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											itemName=calItem.getName();
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+									}
+								}
+								calItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
+							}else if("3".equalsIgnoreCase(type)){
+								String itemName=itemname;
+								if(inputItemList!=null && inputItemList.size()>0){
+									for(CalItem calItem:inputItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											itemName=calItem.getName();
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+										
+									}
+								}
+								
+								inputItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
 							}
-							break;
 						}
 					}
 				}
 			}
 			
 			itemsBuff.append("[");
-			for(int i=0;i<itemNameList.size();i++){
-				itemsBuff.append("\""+itemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<calItemNameList.size();i++){
-				itemsBuff.append("\""+calItemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<inputItemNameList.size();i++){
-				itemsBuff.append("\""+inputItemNameList.get(i)+"\",");
-			}
+			for (Integer key : itemNameMap.keySet()) {
+	            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
+	        }
 			if (itemsBuff.toString().endsWith(",")) {
 				itemsBuff.deleteCharAt(itemsBuff.length() - 1);
 			}
 			itemsBuff.append("]");
 			
 			curveConfBuff.append("[");
-			for(int i=0;i<curveConfList.size();i++){
-				curveConfBuff.append(""+curveConfList.get(i)+",");
-			}
-			for(int i=0;i<calItemCurveConfList.size();i++){
-				curveConfBuff.append(""+calItemCurveConfList.get(i)+",");
-			}
-			for(int i=0;i<inputItemCurveConfList.size();i++){
-				curveConfBuff.append(""+inputItemCurveConfList.get(i)+",");
-			}
+			for (Integer key : curveConfMap.keySet()) {
+	            curveConfBuff.append(""+curveConfMap.get(key)+",");
+	        }
 			if (curveConfBuff.toString().endsWith(",")) {
 				curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 			}
 			curveConfBuff.append("]");
 			
-			result_json.append("{\"deviceName\":\""+deviceName+"\","
-					+ "\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+","
-					+ "\"curveItems\":"+itemsBuff+","
-					+ "\"curveConf\":"+curveConfBuff+","
-					+ "\"list\":[");
-			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
+			
+			if(itemCodeSortMap.size()>0){
 				Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"",language);
-				//排序
-//				Map<String,Map<String,String>> realtimeDataTimeSortedMap = new TreeMap<>(realtimeDataTimeMap);
 				if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
 					Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
 					while(realtimeDataTimeMapIterator.hasNext()){
 						Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
 					    String key = entry.getKey();
 					    Map<String,String> everyDataMap = entry.getValue();
-					    result_json.append("{\"acqTime\":\"" + key + "\",\"data\":[");
-					    for(int j=0;j<itemColumnList.size();j++){
-							String value=null;
-							if(everyDataMap.containsKey(itemColumnList.get(j).toUpperCase())){
-								value=everyDataMap.get(itemColumnList.get(j).toUpperCase());
-							}
-					    	result_json.append(value+",");
-						}
-					    for(int j=0;j<calItemColumnList.size();j++){
-							String value=null;
-							if(everyDataMap.containsKey(calItemColumnList.get(j).toUpperCase())){
-								value=everyDataMap.get(calItemColumnList.get(j).toUpperCase());
-							}
-					    	result_json.append(value+",");
-						}
-					    for(int j=0;j<inputItemColumnList.size();j++){
-							String value=null;
-							if(everyDataMap.containsKey(inputItemColumnList.get(j).toUpperCase())){
-								value=everyDataMap.get(inputItemColumnList.get(j).toUpperCase());
-							}
-					    	result_json.append(value+",");
-						}
+					    acqTimeList.add(key);
 					    
-					    
-					    
-						if (result_json.toString().endsWith(",")) {
-							result_json.deleteCharAt(result_json.length() - 1);
-						}
-						result_json.append("]},");
-					}
-					if (result_json.toString().endsWith(",")) {
-						result_json.deleteCharAt(result_json.length() - 1);
+					    for (String itemCode : itemCodeSortMap.keySet()) {
+					    	String value=null;
+							if(everyDataMap.containsKey(itemCode.toUpperCase())){
+								value=everyDataMap.get(itemCode.toUpperCase());
+							}
+					    	if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+					    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+					    	}
+					    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
+					    }
 					}
 				}else{
 					String columns="";
@@ -2986,7 +2952,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 						calAndInputDataTable="tbl_pcpacqdata_hist";
 					}
-					if(itemColumnList.size()>0){
+					if(acqItemColumnList.size()>0){
 						columns+=",t.acqdata";
 					}
 					if(StringManagerUtils.stringToInteger(calculateType)>0){
@@ -3021,10 +2987,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					List<?> list = this.findCallSql(finalSql);
 					for(int i=0;i<list.size();i++){
 						Object[] obj=(Object[]) list.get(i);
-						result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
+						acqTimeList.add(obj[0]+"");
 						
 						int startIndex=1;
-						if(itemColumnList.size()>0){
+						if(acqItemColumnList.size()>0){
 							startIndex=2;
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
@@ -3032,7 +2998,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							type = new TypeToken<List<KeyValue>>() {}.getType();
 							List<KeyValue> acqDataList=gson.fromJson(acqData, type);
 							
-							for(String itemColumn:itemColumnList){
+							for(String itemColumn:acqItemColumnList){
 								String value="";
 								if(acqDataList!=null){
 									for(KeyValue keyValue:acqDataList){
@@ -3042,14 +3008,21 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}
 									}
 								}
-								
-								result_json.append(value+",");
+								if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
+						    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
+						    	}
+						    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(value);
 							}
 						}
 						
 						
 						for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
-							result_json.append(obj[j]+",");
+							String value=obj[j]+"";
+							String itemCode=calItemColumnList.get(j-startIndex);
+							if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+					    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+					    	}
+					    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 						}
 						if(inputItemColumnList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
@@ -3098,7 +3071,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 										}
 									}
-									result_json.append(inputItemValue+",");
+									if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
+							    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());
+							    	}
+							    	curveDataMap.get(itemCodeSortMap.get(column)).add(inputItemValue);
 								}
 							}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
@@ -3135,20 +3111,35 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
 										}
 									}
-									result_json.append(inputItemValue+",");
+									if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
+							    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());
+							    	}
+							    	curveDataMap.get(itemCodeSortMap.get(column)).add(inputItemValue);
 								}
 							}
 						}
-						
-						if (result_json.toString().endsWith(",")) {
-							result_json.deleteCharAt(result_json.length() - 1);
-						}
-						result_json.append("]},");
-					}
-					if (result_json.toString().endsWith(",")) {
-						result_json.deleteCharAt(result_json.length() - 1);
 					}
 				}
+			}
+			
+			result_json.append("{\"deviceName\":\""+deviceName+"\","
+					+ "\"curveCount\":"+itemCodeSortMap.size()+","
+					+ "\"curveItems\":"+itemsBuff+","
+					+ "\"curveConf\":"+curveConfBuff+","
+					+ "\"list\":[");
+			
+			for(int i=0;i<acqTimeList.size();i++){
+				result_json.append("{\"acqTime\":\"" + acqTimeList.get(i) + "\",\"data\":[");
+				for (Integer key : itemNameMap.keySet()) {
+					result_json.append(""+curveDataMap.get(key).get(i)+",");
+		        }
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
 			}
 			result_json.append("]}");
 		}catch(Exception e){

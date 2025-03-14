@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,6 +40,7 @@ import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
 import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.base.BaseService;
@@ -2952,6 +2954,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
+		Gson gson = new Gson();
+		java.lang.reflect.Type reflectType=null;
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		try{
 			try{
@@ -2981,17 +2985,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			List<String> itemNameList=new ArrayList<String>();
-			List<String> itemColumnList=new ArrayList<String>();
-			List<String> curveConfList=new ArrayList<String>();
+			List<String> acqTimeList=new ArrayList<>();
+			Map<Integer,String> itemNameMap=new TreeMap<>();
+			Map<String,Integer> itemCodeSortMap=new HashMap<>();
+			Map<Integer,String> itemCodeMap=new TreeMap<>();
+			Map<Integer,String> curveConfMap=new TreeMap<>();
+			Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 			
-			List<String> calItemNameList=new ArrayList<String>();
+			List<String> acqItemColumnList=new ArrayList<String>();
 			List<String> calItemColumnList=new ArrayList<String>();
-			List<String> calItemCurveConfList=new ArrayList<String>();
-			
-			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
-			List<String> inputItemCurveConfList=new ArrayList<String>();
 			
 			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
@@ -3033,79 +3036,85 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				});
 				
 				String protocolName=displayInstanceOwnItem.getProtocol();
-				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-							for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-								Gson gson = new Gson();
-								java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
-								CurveConf historyCurveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf(), reflectType);
-								
-								if(historyCurveConfObj!=null && historyCurveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
-									String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
-									String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
-									String historycurveconf=displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf();
-									String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
-									String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
-									if("0".equalsIgnoreCase(type)){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
-												}
-												itemColumnList.add(col);
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-												}else{
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-												}
-												curveConfList.add(historycurveconf.replaceAll("null", ""));
-												break;
-											}
-										}
-									}else if("1".equalsIgnoreCase(type)){
-										calItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(calItemList!=null && calItemList.size()>0){
-											for(CalItem calItem:calItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													itemName=calItem.getName();
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										calItemNameList.add(itemName);
-										calItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
-									}else if("3".equalsIgnoreCase(type)){
-										inputItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(inputItemList!=null && inputItemList.size()>0){
-											for(CalItem calItem:inputItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													itemName=calItem.getName();
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
-										}
-										
-										inputItemNameList.add(itemName);
-										inputItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
-									}
-								
-								}
+				Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				if(protocol!=null){
+					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
+						gson = new Gson();
+						reflectType=new TypeToken<CurveConf>() {}.getType();
+						CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf(), reflectType);
+						
+						if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+							String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
+							String bitindex=displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"";
+							String curveConfStr=displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf();
+							String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
+							String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
+							int sort=curveConfObj.getSort();
+							if(itemNameMap.containsKey(sort)){
+								sort+=1;
 							}
-							break;
+							if("0".equalsIgnoreCase(type)){
+								for(int k=0;k<protocol.getItems().size();k++){
+									if(protocol.getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
+										String col="";
+										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+											col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+										}
+										if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle()+"("+protocol.getItems().get(k).getUnit()+")");
+										}else{
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle());
+										}
+										itemCodeSortMap.put(col, sort);
+										itemCodeMap.put(sort, col);
+										acqItemColumnList.add(col);
+										curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+										curveDataMap.put(sort, new ArrayList<>());
+										break;
+									}
+								}
+							}else if("1".equalsIgnoreCase(type)){
+								String itemName=itemname;
+								if(calItemList!=null && calItemList.size()>0){
+									for(CalItem calItem:calItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											itemName=calItem.getName();
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+									}
+								}
+								calItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								itemCodeMap.put(sort, itemcode);
+								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
+							}else if("3".equalsIgnoreCase(type)){
+								inputItemColumnList.add(itemcode);
+								String itemName=itemname;
+								if(inputItemList!=null && inputItemList.size()>0){
+									for(CalItem calItem:inputItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											itemName=calItem.getName();
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+										
+									}
+								}
+								
+								inputItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								itemCodeMap.put(sort, itemcode);
+								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
+							}
 						}
 					}
 				}
@@ -3124,71 +3133,85 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String protocolName="";
 				if(protocolList.size()>0){
 					protocolName=protocolList.get(0)+"";
-					ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-					if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-								for(int j=0;j<curveItemList.size();j++){
-									Object[] itemObj=(Object[]) curveItemList.get(j);
-									String itemname=itemObj[0]+"";
-									String bitindex=itemObj[1]+"";
-									String historycurveconf=itemObj[2]+"";
-									String itemcode=itemObj[3]+"";
-									String type=itemObj[4]+"";
-									if("0".equalsIgnoreCase(type)){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
-												String col="";
-												if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-													col=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()).getMappingColumn();
-												}
-												itemColumnList.add(col);
-												if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-												}else{
-													itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-												}
-												curveConfList.add(historycurveconf.replaceAll("null", ""));
-												break;
-											}
-										}
-									}else if("1".equalsIgnoreCase(type)){
-										calItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(calItemList!=null && calItemList.size()>0){
-											for(CalItem calItem:calItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
+					Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null){
+						for(int j=0;j<curveItemList.size();j++){
+							Object[] itemObj=(Object[]) curveItemList.get(j);
+							String itemname=itemObj[0]+"";
+							String bitindex=itemObj[1]+"";
+							String curveConfStr=itemObj[2]+"";
+							String itemcode=itemObj[3]+"";
+							String type=itemObj[4]+"";
+							
+							reflectType=new TypeToken<CurveConf>() {}.getType();
+							CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf(), reflectType);
+							
+							int sort=curveConfObj.getSort();
+							if(itemNameMap.containsKey(sort)){
+								sort+=1;
+							}
+							
+							if("0".equalsIgnoreCase(type)){
+								for(int k=0;k<protocol.getItems().size();k++){
+									if(protocol.getItems().get(k).getTitle().equalsIgnoreCase(itemname)){
+										String col="";
+										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+											col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
 										}
 										
-										calItemNameList.add(itemName);
-										calItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
-									}else if("3".equalsIgnoreCase(type)){
-										inputItemColumnList.add(itemcode);
-										String itemName=itemname;
-										if(inputItemList!=null && inputItemList.size()>0){
-											for(CalItem calItem:inputItemList){
-												if(itemcode.equalsIgnoreCase(calItem.getCode())){
-													if(StringManagerUtils.isNotNull(calItem.getUnit())){
-														itemName=itemName+"("+calItem.getUnit()+")";
-													}
-													break;
-												}
-												
-											}
+										if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle()+"("+protocol.getItems().get(k).getUnit()+")");
+										}else{
+											itemNameMap.put(sort, protocol.getItems().get(k).getTitle());
 										}
-										
-										inputItemNameList.add(itemName);
-										inputItemCurveConfList.add(historycurveconf.replaceAll("null", ""));
+										itemCodeSortMap.put(col, sort);
+										itemCodeMap.put(sort, col);
+										acqItemColumnList.add(col);
+										curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+										curveDataMap.put(sort, new ArrayList<>());
+										break;
 									}
 								}
-								break;
+							}else if("1".equalsIgnoreCase(type)){
+								String itemName=itemname;
+								if(calItemList!=null && calItemList.size()>0){
+									for(CalItem calItem:calItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+										
+									}
+								}
+								
+								calItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								itemCodeMap.put(sort, itemcode);
+								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
+							}else if("3".equalsIgnoreCase(type)){
+								String itemName=itemname;
+								if(inputItemList!=null && inputItemList.size()>0){
+									for(CalItem calItem:inputItemList){
+										if(itemcode.equalsIgnoreCase(calItem.getCode())){
+											if(StringManagerUtils.isNotNull(calItem.getUnit())){
+												itemName=itemName+"("+calItem.getUnit()+")";
+											}
+											break;
+										}
+										
+									}
+								}
+								
+								inputItemColumnList.add(itemcode);
+								itemCodeSortMap.put(itemcode, sort);
+								itemNameMap.put(sort, itemName);
+								itemCodeMap.put(sort, itemcode);
+								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+								curveDataMap.put(sort, new ArrayList<>());
 							}
 						}
 					}
@@ -3202,62 +3225,34 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			itemsBuff.append("[");
-			for(int i=0;i<itemNameList.size();i++){
-				itemsBuff.append("\""+itemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<calItemNameList.size();i++){
-				itemsBuff.append("\""+calItemNameList.get(i)+"\",");
-			}
-			for(int i=0;i<inputItemNameList.size();i++){
-				itemsBuff.append("\""+inputItemNameList.get(i)+"\",");
-			}
+			for (Integer key : itemNameMap.keySet()) {
+	            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
+	        }
 			if (itemsBuff.toString().endsWith(",")) {
 				itemsBuff.deleteCharAt(itemsBuff.length() - 1);
 			}
 			itemsBuff.append("]");
 			
 			itemsCodeBuff.append("[");
-			for(int i=0;i<itemColumnList.size();i++){
-				itemsCodeBuff.append("\""+itemColumnList.get(i)+"\",");
-			}
-			for(int i=0;i<calItemColumnList.size();i++){
-				itemsCodeBuff.append("\""+calItemColumnList.get(i)+"\",");
-			}
-			for(int i=0;i<inputItemColumnList.size();i++){
-				itemsCodeBuff.append("\""+inputItemColumnList.get(i)+"\",");
-			}
+			for (Integer key : itemCodeMap.keySet()) {
+				itemsCodeBuff.append("\""+itemCodeMap.get(key)+"\",");
+	        }
 			if (itemsCodeBuff.toString().endsWith(",")) {
 				itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
 			}
 			itemsCodeBuff.append("]");
 			
 			curveConfBuff.append("[");
-			for(int i=0;i<curveConfList.size();i++){
-				curveConfBuff.append(""+curveConfList.get(i)+",");
-			}
-			for(int i=0;i<calItemCurveConfList.size();i++){
-				curveConfBuff.append(""+calItemCurveConfList.get(i)+",");
-			}
-			for(int i=0;i<inputItemCurveConfList.size();i++){
-				curveConfBuff.append(""+inputItemCurveConfList.get(i)+",");
-			}
+			for (Integer key : curveConfMap.keySet()) {
+	            curveConfBuff.append(""+curveConfMap.get(key)+",");
+	        }
 			if (curveConfBuff.toString().endsWith(",")) {
 				curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
 			}
 			curveConfBuff.append("]");
 			
-			String minAcqTime="";
-			String maxAcqTime="";
-			result_json.append("{\"deviceName\":\""+deviceName+"\","
-					+ "\"startDate\":\""+startDate+"\","
-					+ "\"endDate\":\""+endDate+"\","
-					+ "\"curveCount\":"+(itemNameList.size()+calItemNameList.size()+inputItemNameList.size())+","
-					+ "\"curveItems\":"+itemsBuff+","
-					+ "\"curveItemCodes\":"+itemsCodeBuff+","
-					+ "\"curveConf\":"+curveConfBuff+","
-					+ "\"graphicSet\":"+graphicSet+","
-					+ "\"list\":[");
-			if(itemColumnList.size()>0 || calItemColumnList.size()>0 || inputItemColumnList.size()>0){
+			
+			if(itemCodeSortMap.size()>0){
 				String columns="";
 				String calAndInputColumn="";
 				String calAndInputDataTable="";
@@ -3266,7 +3261,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 				}
-				if(itemColumnList.size()>0){
+				if(acqItemColumnList.size()>0){
 					columns+=",t.acqdata";
 				}
 				
@@ -3327,18 +3322,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				List<?> list = this.findCallSql(finalSql);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
-					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
+					acqTimeList.add(obj[0]+"");
 					
 					int startIndex=1;
-					if(itemColumnList.size()>0){
+					if(acqItemColumnList.size()>0){
 						startIndex=2;
-						Gson gson = new Gson();
-						java.lang.reflect.Type type=null;
 						String acqData=StringManagerUtils.CLOBObjectToString(obj[1]);
-						type = new TypeToken<List<KeyValue>>() {}.getType();
-						List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> acqDataList=gson.fromJson(acqData, reflectType);
 						
-						for(String itemColumn:itemColumnList){
+						for(String itemColumn:acqItemColumnList){
 							String value="";
 							if(acqDataList!=null){
 								for(KeyValue keyValue:acqDataList){
@@ -3348,13 +3341,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}
 								}
 							}
-							
-							result_json.append(value+",");
+							if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
+					    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
+					    	}
+					    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(value);
 						}
 					}
 					
 					for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
-						result_json.append(obj[j]+",");
+						String value=obj[j]+"";
+						String itemCode=calItemColumnList.get(j-startIndex);
+						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+				    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+				    	}
+				    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 					}
 					
 					if(inputItemColumnList.size()>0){
@@ -3362,11 +3362,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if(rarefy>1){
 							productionData=(obj[obj.length-2]+"").replaceAll("null", "");
 						}
-						Gson gson = new Gson();
-						java.lang.reflect.Type type=null;
 						if(StringManagerUtils.stringToInteger(calculateType)==1){
-							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
-							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+							reflectType = new TypeToken<SRPCalculateRequestData>() {}.getType();
+							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, reflectType);
 							for(int j=0;j<inputItemColumnList.size();j++){
 								String inputItemValue="";
 								String column=inputItemColumnList.get(j);
@@ -3403,11 +3401,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}
 								}
-								result_json.append(inputItemValue+",");
+								if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
+						    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());
+						    	}
+						    	curveDataMap.get(itemCodeSortMap.get(column)).add(inputItemValue);
 							}
 						}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
+							reflectType = new TypeToken<PCPCalculateRequestData>() {}.getType();
+							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, reflectType);
 							for(int j=0;j<inputItemColumnList.size();j++){
 								String inputItemValue="";
 								String column=inputItemColumnList.get(j);
@@ -3440,26 +3441,42 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
 									}
 								}
-								result_json.append(inputItemValue+",");
+								if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
+						    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());
+						    	}
+						    	curveDataMap.get(itemCodeSortMap.get(column)).add(inputItemValue);
 							}
 						}
 					}
-					
-					if (result_json.toString().endsWith(",")) {
-						result_json.deleteCharAt(result_json.length() - 1);
-					}
-					result_json.append("]},");
-					if(i==0){
-						minAcqTime=obj[0]+"";
-					}
-					if(i==list.size()-1){
-						maxAcqTime=obj[0]+"";
-					}
 				}
+			}
+			
+			String minAcqTime=acqTimeList.size()>0?acqTimeList.get(0):"";
+			String maxAcqTime=acqTimeList.size()>0?acqTimeList.get(acqTimeList.size()-1):"";
+			result_json.append("{\"deviceName\":\""+deviceName+"\","
+					+ "\"startDate\":\""+startDate+"\","
+					+ "\"endDate\":\""+endDate+"\","
+					+ "\"curveCount\":"+itemCodeSortMap.size()+","
+					+ "\"curveItems\":"+itemsBuff+","
+					+ "\"curveItemCodes\":"+itemsCodeBuff+","
+					+ "\"curveConf\":"+curveConfBuff+","
+					+ "\"graphicSet\":"+graphicSet+","
+					+ "\"list\":[");
+			
+			for(int i=0;i<acqTimeList.size();i++){
+				result_json.append("{\"acqTime\":\"" + acqTimeList.get(i) + "\",\"data\":[");
+				for (Integer key : itemNameMap.keySet()) {
+					result_json.append(""+curveDataMap.get(key).get(i)+",");
+		        }
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
+				result_json.append("]},");
 			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			
 			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -4779,10 +4796,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				workTypeCount.add(StringManagerUtils.stringToInteger(obj[2]+""));
 			}
 		}
-		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");		
+		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[");		
 		for(int i=0;i<workTypeList.size();i++){
-			result_json.append(",{boxkey:\"" + workTypeList.get(i).getResultCode() + "\",");
-			result_json.append("boxval:\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"}");
+			result_json.append("{boxkey:\"" + workTypeList.get(i).getResultCode() + "\",");
+			result_json.append("boxval:\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		return result_json.toString();

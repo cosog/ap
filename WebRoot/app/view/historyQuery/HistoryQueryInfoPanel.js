@@ -474,44 +474,14 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             calculateType:calculateType
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
+                },
+                load: function (store, record, f, op, o) {
+                	
                 }
             }
         });
-        var resultNameComb = Ext.create(
-                'Ext.form.field.ComboBox', {
-                	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
-                    labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
-                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
-                    id: 'HistoryQueryResultNameComBox_Id',
-                    store: resultNameStore,
-                    queryMode: 'remote',
-                    emptyText: '--'+loginUserLanguageResource.all+'--',
-                    blankText: '--'+loginUserLanguageResource.all+'--',
-                    typeAhead: false,
-                    autoSelect: false,
-                    allowBlank: true,
-                    hidden: true,
-                    triggerAction: 'all',
-                    editable: false,
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    minChars: 0,
-                    multiSelect: false,    // 启用多选
-                    listeners: {
-                    	expand: function (sm, selections) {
-                    		resultNameComb.clearValue();
-                    		resultNameComb.getStore().load();
-                        },
-                        select: function (combo, record, index) {
-                        	
-                        }
-                    }
-        });
-        
-        
-        
 //        var resultNameComb = Ext.create(
-//                'AP.view.CheckboxComboBox', {
+//                'Ext.form.field.ComboBox', {
 //                	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
 //                    labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
 //                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
@@ -529,7 +499,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
 //                    displayField: "boxval",
 //                    valueField: "boxkey",
 //                    minChars: 0,
-//                    multiSelect: true,    // 启用多选
+//                    multiSelect: false,    // 启用多选
 //                    listeners: {
 //                    	expand: function (sm, selections) {
 //                    		resultNameComb.clearValue();
@@ -540,6 +510,41 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
 //                        }
 //                    }
 //        });
+        
+        
+        
+        var resultNameComb = Ext.create(
+                'AP.ux.CheckboxComboBox', {
+                	fieldLabel: loginUserLanguageResource.FSDiagramWorkType,
+                    labelWidth: getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8,
+                    width: (getStringLength(loginUserLanguageResource.FSDiagramWorkType)*8+150),
+                    id: 'HistoryQueryResultNameComBox_Id',
+                    store: resultNameStore,
+                    queryMode: 'remote',
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
+                    typeAhead: false,
+                    autoSelect: false,
+                    allowBlank: true,
+                    hidden: true,
+                    triggerAction: 'all',
+                    editable: false,
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    minChars: 0,
+                    multiSelect: true,    // 启用多选
+                    listeners: {
+                    	expand: function (sm, selections) {
+                    		if(resultNameComb.getValue()==''){
+                    			resultNameComb.clearValue();
+                        		resultNameComb.getStore().load();
+                    		}
+                        },
+                        select: function (combo, record, index) {
+                        	
+                        }
+                    }
+        });
         
         Ext.applyIf(me, {
             items: [{

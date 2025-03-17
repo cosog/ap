@@ -84,14 +84,12 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-//            	Ext.getCmp('HistoryQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-//            	Ext.getCmp('HistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
             deviceHistoryQueryCurve(deviceType);
@@ -112,13 +110,11 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-//        	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
         	var startTime_Second=0;
 
             var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-//        	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
         	var endTime_Second=0;
         	
         	Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();

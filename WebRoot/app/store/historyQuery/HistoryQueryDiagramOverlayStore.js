@@ -125,7 +125,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
             
-            updateTotalRecords(get_rawData.totalShow,"SurfaceCardTotalCount_Id");
+            updateTotalRecords(get_rawData.totalShow,"HistoryFESDiagramTotalCount_Id");
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -137,16 +137,14 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}
-        	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
-        	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
-        	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
-//        	var startTime_Second=Ext.getCmp('HistoryQueryStartTime_Second_Id').getValue();
+        	var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id').rawValue;
+        	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
+        	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
         	var startTime_Second=0;
 
-            var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
-            var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
-        	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
-//        	var endTime_Second=Ext.getCmp('HistoryQueryEndTime_Second_Id').getValue();
+            var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').rawValue;
+            var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
+        	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
         	var selectedResult=[];

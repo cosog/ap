@@ -3690,7 +3690,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int maxvalue = limit + start;
 		
 		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-				+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
 				String[] hourArr=hours.split(",");
@@ -3703,7 +3703,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(i>0){
 								hourBuff.append(" or ");
 							}
-							hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 						}
 					}
 					hourBuff.append(")");
@@ -3716,7 +3716,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and deviceId="+deviceId+" ";
+		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
 		}
@@ -3742,7 +3742,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.acqtime desc";
+		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -3833,7 +3833,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    
 		    
 		    String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
 					String[] hourArr=hours.split(",");
@@ -3846,7 +3846,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(i>0){
 									hourBuff.append(" or ");
 								}
-								hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+								hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 							}
 						}
 						hourBuff.append(")");
@@ -3859,7 +3859,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " and deviceId="+deviceId+" ";
+			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
 			}
@@ -3871,7 +3871,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) "
-					+ " order by t.acqTime";
+					+ " order by t.fesdiagramacqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			int totals = getTotalCountRows(sql);//获取总记录数
 			int rarefy=0;
@@ -3972,7 +3972,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		
 		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-				+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
 				String[] hourArr=hours.split(",");
@@ -3985,7 +3985,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(i>0){
 								hourBuff.append(" or ");
 							}
-							hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 						}
 					}
 					hourBuff.append(")");
@@ -3998,7 +3998,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and deviceId="+deviceId+" ";
+		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
 		}
@@ -4022,7 +4022,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.acqtime desc";
+		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -4085,7 +4085,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int maxvalue = limit + start;
 		
 		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-				+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
 				String[] hourArr=hours.split(",");
@@ -4098,7 +4098,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(i>0){
 								hourBuff.append(" or ");
 							}
-							hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 						}
 					}
 					hourBuff.append(")");
@@ -4111,7 +4111,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and deviceId="+deviceId+" ";
+		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
 		}
@@ -4134,7 +4134,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			totals = getTotalCountRows(totalSql);
 		}
 		totalShow=totals+"/"+totalShow;
-		allsql+= " order by t.acqtime desc";
+		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
 			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
@@ -4229,7 +4229,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			
 			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
 					String[] hourArr=hours.split(",");
@@ -4242,7 +4242,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(i>0){
 									hourBuff.append(" or ");
 								}
-								hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+								hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 							}
 						}
 						hourBuff.append(")");
@@ -4255,7 +4255,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " and deviceId="+deviceId+" ";
+			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
 			}else{
@@ -4291,7 +4291,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String countSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-			sql+= " order by t.acqtime desc";
+			sql+= " order by t.fesdiagramacqtime desc";
 			
 			int total=this.getTotalCountRows(countSql);
 			int rarefy=total/vacuateThreshold+1;
@@ -4525,7 +4525,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
 					String[] hourArr=hours.split(",");
@@ -4538,7 +4538,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(i>0){
 									hourBuff.append(" or ");
 								}
-								hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+								hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 							}
 						}
 						hourBuff.append(")");
@@ -4551,7 +4551,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " and deviceId="+deviceId+" ";
+			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
 			}else{
@@ -4586,7 +4586,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String countSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-			sql+= " order by t.acqtime desc";
+			sql+= " order by t.fesdiagramacqtime desc";
 			
 			int total=this.getTotalCountRows(countSql);
 			int rarefy=total/vacuateThreshold+1;
@@ -4714,7 +4714,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		
 		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-				+ " where acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
 				String[] hourArr=hours.split(",");
@@ -4727,7 +4727,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							if(i>0){
 								hourBuff.append(" or ");
 							}
-							hourBuff.append("to_date(to_char(acqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
+							hourBuff.append("to_date(to_char(fesdiagramacqtime,'hh24:mi:ss'),'hh24:mi:ss') between to_date('"+singleHourRange[0]+"','hh24:mi:ss') and to_date('"+singleHourRange[1]+"','hh24:mi:ss')");
 						}
 					}
 					hourBuff.append(")");
@@ -4780,7 +4780,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
 			
 			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and deviceId="+deviceId+" and resultstatus=1"
 					+ " group by deviceid,fesdiagramacqtime";
 			

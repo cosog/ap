@@ -60,14 +60,14 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('DeviceOperationLogQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
             Ext.getCmp("DeviceOperationLogRootTabPanel").getEl().unmask();
         },
@@ -79,11 +79,13 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
         	var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
+//        	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
+        	var startTime_Second=0;
             var endDate=Ext.getCmp('DeviceOperationLogQueryEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
+//        	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
+        	var endTime_Second=0;
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,

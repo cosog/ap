@@ -61,14 +61,14 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('AlarmQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
         },
         beforeload: function (store, options) {
@@ -87,11 +87,13 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
         	var startDate=Ext.getCmp('AlarmQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('AlarmQueryStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('AlarmQueryStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
+//        	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
+        	var startTime_Second=0;
             var endDate=Ext.getCmp('AlarmQueryEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('AlarmQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('AlarmQueryEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
+//        	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
+        	var endTime_Second=0;
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,

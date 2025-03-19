@@ -2284,7 +2284,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(4,srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit()!=null&&srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit().getBalance()!=null?gson.toJson(srpDeviceInfo.getSrpCalculateRequestData().getPumpingUnit().getBalance()):"{}");
 			cs.setString(5,"");
 			
-			cs.setString(6,calculateRequestData.getFESDiagram().getAcqTime());
+			cs.setString(6,StringManagerUtils.dateTimeValidation(calculateRequestData.getFESDiagram().getAcqTime(), "yyyy-MM-dd HH:mm:ss")?calculateRequestData.getFESDiagram().getAcqTime():"");
 			cs.setInt(7, calculateRequestData.getFESDiagram().getSrc());
 			
 			if(calculateResponseData!=null

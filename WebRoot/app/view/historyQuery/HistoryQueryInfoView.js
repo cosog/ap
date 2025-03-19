@@ -478,7 +478,7 @@ exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,de
 function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,hours,fileName,title,diagramType) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
-	var maskPanelId='HistoryDiagramTabPanel';
+	var maskPanelId='HistoryQueryTiledDiagramPanel';
 	
 	var url = context + '/historyQueryController/exportHistoryQueryDiagramTiledDataExcel';
     var fields = "";
@@ -1398,7 +1398,12 @@ loadSurfaceCardList = function (page) {
     var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
 	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=0;
-	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+	var selectedResult=[];
+	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+		selectedResult.push(statSelection[index].data.resultCode);
+	});
+    var resultCode=selectedResult.join(",");
 	
 	var hours=getHistoryQueryHours();
     Ext.Ajax.request({
@@ -1450,12 +1455,12 @@ loadSurfaceCardList = function (page) {
             var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
-            var gtWidth = (panelWidth - scrollWidth) / columnCount; // 有滚动条时图形宽度
+            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
-            gtWidth2 = (100/columnCount) + '%';
-            gtHeight2 = 50 + '%';
+//            gtWidth2 = (100/columnCount) + '%';
+//            gtHeight2 = 50 + '%';
             var htmlResult = '';
             var divId = '';
 
@@ -1464,7 +1469,7 @@ loadSurfaceCardList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left;"';
                 htmlResult += '></div>';
             });
             $("#surfaceCardContainer").append(htmlResult);
@@ -1507,7 +1512,12 @@ loadPSDiagramTiledList = function (page) {
 	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=0;
 	var hours=getHistoryQueryHours();
-	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+	var selectedResult=[];
+	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+		selectedResult.push(statSelection[index].data.resultCode);
+	});
+    var resultCode=selectedResult.join(",");
     Ext.Ajax.request({
         url: context + '/historyQueryController/getPSDiagramTiledData',
         method: "POST",
@@ -1557,12 +1567,12 @@ loadPSDiagramTiledList = function (page) {
             var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
-            var gtWidth = (panelWidth - scrollWidth) / columnCount; // 有滚动条时图形宽度
+            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
-            gtWidth2 = (100/columnCount) + '%';
-            gtHeight2 = 50 + '%';
+//            gtWidth2 = (100/columnCount) + '%';
+//            gtHeight2 = 50 + '%';
             var htmlResult = '';
             var divId = '';
 
@@ -1571,7 +1581,7 @@ loadPSDiagramTiledList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_PSDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left;"';
                 htmlResult += '></div>';
             });
             $("#PSDiagramTiledContainer").append(htmlResult);
@@ -1613,7 +1623,12 @@ loadISDiagramTiledList = function (page) {
 	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
 	var endTime_Second=0;
 	var hours=getHistoryQueryHours();
-	var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+	var selectedResult=[];
+	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+		selectedResult.push(statSelection[index].data.resultCode);
+	});
+    var resultCode=selectedResult.join(",");
     Ext.Ajax.request({
         url: context + '/historyQueryController/getISDiagramTiledData',
         method: "POST",
@@ -1662,12 +1677,12 @@ loadISDiagramTiledList = function (page) {
             var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
-            var gtWidth = (panelWidth - scrollWidth) / columnCount; // 有滚动条时图形宽度
+            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
-            gtWidth2 = (100/columnCount) + '%';
-            gtHeight2 = 50 + '%';
+//            gtWidth2 = (100/columnCount) + '%';
+//            gtHeight2 = 50 + '%';
             var htmlResult = '';
             var divId = '';
 
@@ -1676,7 +1691,7 @@ loadISDiagramTiledList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left"';
                 htmlResult += '></div>';
             });
             $("#ISDiagramTiledContainer").append(htmlResult);
@@ -1757,8 +1772,13 @@ function refreshDeviceHistoryData(){
         }else{
         	Ext.create("AP.store.historyQuery.HistoryDataStore");
         }
-	}else if(activeId=="HistoryDiagramTabPanel"){
-		loadHistoryDiagramTiledList(1);
+	}else if(activeId=="HistoryQueryTiledDiagramPanel"){
+		var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
+        if (isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
+        	HistoryQueryFSdiagramTiledStatGrid.getStore().load();
+        }else{
+        	Ext.create("AP.store.historyQuery.HistoryQueryDiagramTiledStatStore");
+        }
 	}else if(activeId=="HistoryDiagramOverlayTabPanel"){
         var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
         if (isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {

@@ -48,7 +48,9 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -370,6 +372,18 @@ public class StringManagerUtils {
     	LocalDate endDate = LocalDate.parse(endDateStr, formatter);
     	long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
     	return Integer.parseInt(String.valueOf(daysBetween));
+    }
+    
+    public static boolean dateTimeValidation(String dateTimeStr,String format){
+    	boolean r=false;
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
+            r=true;
+        } catch (DateTimeParseException e) {
+        	r=false;
+        }
+        return r;
     }
 
     /**

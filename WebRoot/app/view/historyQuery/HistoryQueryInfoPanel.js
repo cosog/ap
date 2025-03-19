@@ -123,142 +123,219 @@ var historyQueryCenterTabPanelItems=[{
     }]
 },{
 	title: loginUserLanguageResource.tiledDiagram,
-	id:"HistoryDiagramTabPanel",
 	hidden:onlyMonitor,
-	xtype: 'tabpanel',
-	activeTab: 0,
+	id:"HistoryQueryTiledDiagramPanel",
+	layout: 'border',
     border: false,
-    tabPosition: 'left',
     items: [{
-    	title:loginUserLanguageResource.FSDiagram,
-    	id:'FSDiagramTiledTabPanel_Id',
-    	layout: "fit",
-        autoScroll: true,
-        iconCls: 'check3',
-        html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
-        listeners: {
-        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-            	var container=$('#surfaceCardContainer');
-    			if(container!=undefined && container.length>0){
-    				var containerChildren=container[0].children;
-    				if(containerChildren!=undefined && containerChildren.length>0){
-    					for(var i=0;i<containerChildren.length;i++){
-    						var chart = $("#"+containerChildren[i].id).highcharts(); 
-    						if(isNotVal(chart)){
-    							highchartsResize(containerChildren[i].id);
-    						}
-    					}
-    				}
-    			}
-            },
-            render: function (p, o, i, c) {
-                p.body.on('scroll', function () {
-                    var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                    if (diagramPage < totalPages) {
-                        var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id");
-                        var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                        if (hRatio > 0.5) {
-                            diagramPage++;
-                            loadHistoryDiagramTiledList(diagramPage);
-                        }
-                    }
-                }, this);
-            }
-        }
+    	region: 'west',
+    	width: '25%',
+    	id: "HistoryQueryTiledDiagramStatPanel",
+    	title: loginUserLanguageResource.WellFSDiagramWorkType,
+    	layout: 'fit',
+    	border: true,
+    	split: true,
+        collapsible: true,
+        collapsed:true
     },{
-    	title:loginUserLanguageResource.PSDiagram,
-    	id:'PSDiagramTiledTabPanel_Id',
-    	layout: "fit",
-        autoScroll: true,
-        html: '<div id="PSDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
-        listeners: {
-        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-            	var container=$('#PSDiagramTiledContainer');
-    			if(container!=undefined && container.length>0){
-    				var containerChildren=container[0].children;
-    				if(containerChildren!=undefined && containerChildren.length>0){
-    					for(var i=0;i<containerChildren.length;i++){
-    						var chart = $("#"+containerChildren[i].id).highcharts(); 
-    						if(isNotVal(chart)){
-    							highchartsResize(containerChildren[i].id);
-    						}
-    					}
-    				}
-    			}
-            },
-            render: function (p, o, i, c) {
-                p.body.on('scroll', function () {
-                    var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                    if (diagramPage < totalPages) {
-                        var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id");
-                        var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("PSDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                        if (hRatio > 0.5) {
-                            diagramPage++;
-                            loadHistoryDiagramTiledList(diagramPage);
+    	region: 'center',
+    	id:"HistoryDiagramTabPanel",
+    	xtype: 'tabpanel',
+    	activeTab: 0,
+        border: false,
+        header: false,
+        tabPosition: 'left',
+        items: [{
+        	title:loginUserLanguageResource.FSDiagram,
+        	id:'FSDiagramTiledTabPanel_Id',
+        	layout: "fit",
+            autoScroll: true,
+            iconCls: 'check3',
+            html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            listeners: {
+            	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	var container=$('#surfaceCardContainer');
+        			if(container!=undefined && container.length>0){
+        				var containerChildren=container[0].children;
+        				if(containerChildren!=undefined && containerChildren.length>0){
+        					var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+        		            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+        		            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+        		            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+        		            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+        		            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+        		            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+        		            var gtWidth2 = gtWidth + 'px';
+        		            var gtHeight2 = gtHeight + 'px';
+        					
+        					
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var divElement = document.getElementById(containerChildren[i].id);
+        						divElement.style.width = gtWidth2;
+        						divElement.style.height = gtHeight2;
+        					}
+        					
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+        						if(isNotVal(chart)){
+        							highchartsResize(containerChildren[i].id);
+        						}
+        					}
+        				}
+        			}
+                },
+                render: function (p, o, i, c) {
+                    p.body.on('scroll', function () {
+                        var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+                        if (diagramPage < totalPages) {
+                            var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id");
+                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.5) {
+                                diagramPage++;
+                                loadHistoryDiagramTiledList(diagramPage);
+                            }
                         }
-                    }
-                }, this);
+                    }, this);
+                }
             }
-        }
-    },{
-    	title:loginUserLanguageResource.ISDiagram,
-    	id:'ISDiagramTiledTabPanel_Id',
-    	layout: "fit",
-        autoScroll: true,
-        html: '<div id="ISDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
-        listeners: {
-        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-            	var container=$('#ISDiagramTiledContainer');
-    			if(container!=undefined && container.length>0){
-    				var containerChildren=container[0].children;
-    				if(containerChildren!=undefined && containerChildren.length>0){
-    					for(var i=0;i<containerChildren.length;i++){
-    						var chart = $("#"+containerChildren[i].id).highcharts(); 
-    						if(isNotVal(chart)){
-    							highchartsResize(containerChildren[i].id);
-    						}
-    					}
-    				}
-    			}
-            },
-            render: function (p, o, i, c) {
-                p.body.on('scroll', function () {
-                    var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                    if (diagramPage < totalPages) {
-                        var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id");
-                        var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("ISDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                        if (hRatio > 0.5) {
-                            diagramPage++;
-                            loadHistoryDiagramTiledList(diagramPage);
+        },{
+        	title:loginUserLanguageResource.PSDiagram,
+        	id:'PSDiagramTiledTabPanel_Id',
+        	layout: "fit",
+            autoScroll: true,
+            html: '<div id="PSDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            listeners: {
+            	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	var container=$('#PSDiagramTiledContainer');
+        			if(container!=undefined && container.length>0){
+        				var containerChildren=container[0].children;
+        				if(containerChildren!=undefined && containerChildren.length>0){
+        					
+        					var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+        		            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+        		            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+        		            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+        		            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+        		            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+        		            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+        		            var gtWidth2 = gtWidth + 'px';
+        		            var gtHeight2 = gtHeight + 'px';
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var divElement = document.getElementById(containerChildren[i].id);
+        						divElement.style.width = gtWidth2;
+        						divElement.style.height = gtHeight2;
+        					}
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+        						if(isNotVal(chart)){
+        							highchartsResize(containerChildren[i].id);
+        						}
+        					}
+        				}
+        			}
+                },
+                render: function (p, o, i, c) {
+                    p.body.on('scroll', function () {
+                        var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+                        if (diagramPage < totalPages) {
+                            var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id");
+                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("PSDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.5) {
+                                diagramPage++;
+                                loadHistoryDiagramTiledList(diagramPage);
+                            }
                         }
-                    }
-                }, this);
+                    }, this);
+                }
             }
+        },{
+        	title:loginUserLanguageResource.ISDiagram,
+        	id:'ISDiagramTiledTabPanel_Id',
+        	layout: "fit",
+            autoScroll: true,
+            html: '<div id="ISDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            listeners: {
+            	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                	var container=$('#ISDiagramTiledContainer');
+        			if(container!=undefined && container.length>0){
+        				var containerChildren=container[0].children;
+        				if(containerChildren!=undefined && containerChildren.length>0){
+        					var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+        		            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+        		            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+        		            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+        		            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+        		            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+        		            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+        		            var gtWidth2 = gtWidth + 'px';
+        		            var gtHeight2 = gtHeight + 'px';
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var divElement = document.getElementById(containerChildren[i].id);
+        						divElement.style.width = gtWidth2;
+        						divElement.style.height = gtHeight2;
+        					}
+        					
+        					for(var i=0;i<containerChildren.length;i++){
+        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+        						if(isNotVal(chart)){
+        							highchartsResize(containerChildren[i].id);
+        						}
+        					}
+        				}
+        			}
+                },
+                render: function (p, o, i, c) {
+                    p.body.on('scroll', function () {
+                        var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+                        if (diagramPage < totalPages) {
+                            var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id");
+                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("ISDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.5) {
+                                diagramPage++;
+                                loadHistoryDiagramTiledList(diagramPage);
+                            }
+                        }
+                    }, this);
+                }
+            }
+        }],
+        listeners: {
+        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+    			oldCard.setIconCls(null);
+    			newCard.setIconCls('check3');
+    		},
+    		tabchange: function (tabPanel, newCard,oldCard, obj) {
+        		loadHistoryDiagramTiledList(1);
+        	}
         }
-    }],
-    listeners: {
-    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-			oldCard.setIconCls(null);
-			newCard.setIconCls('check3');
-		},
-		tabchange: function (tabPanel, newCard,oldCard, obj) {
-    		if(newCard.id=="FSDiagramTiledTabPanel_Id"){
-    			
-    		}else if(newCard.id=="PSDiagramTiledTabPanel_Id"){
-    			
-    		}else if(newCard.id=="ISDiagramTiledTabPanel_Id"){
-    			
-    		}
-    		loadHistoryDiagramTiledList(1);
-    	}
-    }
+    }]
 },{
 	title: loginUserLanguageResource.diagramOverlay,
 	id:"HistoryDiagramOverlayTabPanel",
 	hidden:onlyMonitor,
 	layout: 'border',
-    items: [
-        {
+    items: [{
+    	region: 'west',
+    	width: '25%',
+    	id: "HistoryQueryFSdiagramOverlayStatPanel",
+    	title: loginUserLanguageResource.WellFSDiagramWorkType,
+    	layout: 'fit',
+    	border: true,
+    	split: true,
+        collapsible: true,
+        collapsed:true
+    },{
+    	region: 'center',
+    	layout: 'border',
+    	border: false,
+        header: false,
+        id:'HistoryQueryFESDiagramOverlayCenterPanel',
+        items: [{
         	region: 'west',
         	width:'50%',
         	border: false,
@@ -291,7 +368,7 @@ var historyQueryCenterTabPanelItems=[{
                         }
                     }
                 }
-         }, {
+            }, {
                 border: false,
                 margin: '0 0 1 0',
                 height: 300,
@@ -306,7 +383,7 @@ var historyQueryCenterTabPanelItems=[{
                         }
                     }
                 }
-         }, {
+            }, {
                 border: false,
                 margin: '0 0 0 0',
                 height: 300,
@@ -321,31 +398,19 @@ var historyQueryCenterTabPanelItems=[{
                         }
                     }
                 }
-         }]
-     },{
-    	 region: 'center',
-    	 layout: 'border',
-    	 items: [{
-    		 region: 'south',
-    		 height: '30%',
-    		 border: false,
-        	 title: loginUserLanguageResource.Statistics,
-        	 split: true,
-             collapsible: true,
-        	 layout: 'fit',
-             id: 'HistoryQueryFSdiagramOverlayStatTable_Id'
-    	 },{
-    		 region: 'center',
-    		 border: false,
-        	 header: false,
-             flex: 1,
-             autoScroll: true,
-             scrollable: true,
-             split: true,
-             layout: 'fit',
-             id: 'HistoryQueryFSdiagramOverlayTable_Id'
-    	 }]
-     }]
+            }]
+        },{
+        	region: 'center',
+    		border: false,
+    		header: false,
+    		flex: 1,
+    		autoScroll: true,
+    		scrollable: true,
+    		split: true,
+    		layout: 'fit',
+    		id: 'HistoryQueryFSdiagramOverlayTable_Id'
+        }]
+    }]
 }];
 Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
     extend: 'Ext.panel.Panel',
@@ -909,9 +974,6 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 listeners: {
                                 	select: function (combo, record, index) {
                                 		
-                                	},
-                                	change: function (combo, newValue, oldValue, eOpts) {
-                                		Ext.getCmp("HistoryQueryResultNameComBox_Id").clearValue();
                                 	}
                                 }
                             },{
@@ -1012,7 +1074,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		}
                                     }
                                 }
-                            },'-',resultNameComb,{
+                            },{
                                 xtype: 'button',
                                 text: loginUserLanguageResource.search,
                                 iconCls: 'search',
@@ -1162,7 +1224,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id').rawValue;
                                     var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').rawValue;
                                     var hours=getHistoryQueryHours();
-                                    var resultCode=Ext.getCmp('HistoryQueryResultNameComBox_Id').getValue();
+                                    
+                                    var selectedResult=[];
+                                	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+                                	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+                                		selectedResult.push(statSelection[index].data.resultCode);
+                                	});
+                                    var resultCode=selectedResult.join(",");
                                     
                                	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                                	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
@@ -1325,20 +1393,25 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 }else{
                                 	Ext.create("AP.store.historyQuery.HistoryDataStore");
                                 }
-        					}else if(newCard.id=="HistoryDiagramTabPanel"){
+        					}else if(newCard.id=="HistoryQueryTiledDiagramPanel"){
         						Ext.getCmp("HistoryQueryCenterToolbar1_id").hide();
         						Ext.getCmp("HistoryQueryCenterToolbar2_id").show();
         						
-        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
+//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						
-        						loadHistoryDiagramTiledList(1);
+        						var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
+                                if (isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
+                                	HistoryQueryFSdiagramTiledStatGrid.getStore().load();
+                                }else{
+                                	Ext.create("AP.store.historyQuery.HistoryQueryDiagramTiledStatStore");
+                                }
         					}else if(newCard.id=="HistoryDiagramOverlayTabPanel"){
         						Ext.getCmp("HistoryQueryCenterToolbar1_id").hide();
         						Ext.getCmp("HistoryQueryCenterToolbar2_id").show();
         						
-        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
+//        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").show();
                                 

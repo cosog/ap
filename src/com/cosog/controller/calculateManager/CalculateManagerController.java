@@ -91,7 +91,7 @@ public class CalculateManagerController extends BaseController {
 			tableName="tbl_pcpacqdata_hist";
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -296,20 +296,18 @@ public class CalculateManagerController extends BaseController {
 			tableName="tbl_pcpacqdata_hist";
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from "+tableName+" t where 1=1";
-			if(StringManagerUtils.isNotNull(deviceId)){
-				sql+=" and t.deviceId="+deviceId;
-			}
-			List<?> list = this.service.reportDateJssj(sql);
+			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
+			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
 			} else {
-				endDate = StringManagerUtils.getCurrentTime();
+				endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			}
 		}
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			startDate=endDate.split(" ")[0]+" 00:00:00";
 		}
 		String json = this.calculateManagerService.getResultNameList(orgId,deviceId,calculateType,startDate,endDate,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();

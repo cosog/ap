@@ -3719,7 +3719,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+		}else{
+			distinctSql+=" and 1=2";
 		}
+		
+		
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
@@ -3862,6 +3866,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
+			}else{
+				distinctSql+=" and 1=2";
 			}
 			distinctSql+=" group by deviceid,fesdiagramacqtime";
 			
@@ -4001,6 +4007,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+		}else{
+			distinctSql+=" and 1=2";
 		}
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		
@@ -4114,6 +4122,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
 			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+		}else{
+			distinctSql+=" and 1=2";
 		}
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		

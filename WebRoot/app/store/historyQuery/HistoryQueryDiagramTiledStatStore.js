@@ -1,6 +1,6 @@
-Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
+Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.historyQueryDiagramOverlayStatStore',
+    alias: 'widget.historyQueryDiagramTiledStatStore',
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
@@ -18,7 +18,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").getEl().unmask();
+        	Ext.getCmp("HistoryQueryTiledDiagramStatPanel").getEl().unmask();
             var get_rawData = store.proxy.reader.rawData;
             
             var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
@@ -35,13 +35,13 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
             }
             
             
-            var HistoryQueryFSdiagramOverlayStatGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayStatGrid_Id");
-            if (!isNotVal(HistoryQueryFSdiagramOverlayStatGrid)) {
+            var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
+            if (!isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
             	var arrColumns = get_rawData.columns;
                 var column = createHistoryQueryDiagramOverlayTableColumn(arrColumns)
                 var newColumns = Ext.JSON.decode(column);
-                HistoryQueryFSdiagramOverlayStatGrid = Ext.create('Ext.grid.Panel', {
-                    id: "HistoryQueryFSdiagramOverlayStatGrid_Id",
+                HistoryQueryFSdiagramTiledStatGrid = Ext.create('Ext.grid.Panel', {
+                    id: "HistoryQueryFSdiagramTiledStatGrid_Id",
                     border: false,
                     forceFit: false,
                     autoScroll: true,
@@ -66,12 +66,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
                     	itemclick:function( view , record , item , index , e , eOpts ) {
                     	},
                     	selectionchange:function(grid, record , eOpts) {
-    						var gridPanel = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-    						if (isNotVal(gridPanel)) {
-    							gridPanel.getStore().load();
-    						}else{
-    							Ext.create("AP.store.historyQuery.HistoryQueryDiagramOverlayStore");
-    						}
+                    		loadHistoryDiagramTiledList(1);
                     	},
                     	afterlayout: function (t, o) {
                         },
@@ -83,11 +78,11 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
                         }
                     }
                 });
-                var HistoryQueryFSdiagramOverlayStatTable = Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel");
-                HistoryQueryFSdiagramOverlayStatTable.add(HistoryQueryFSdiagramOverlayStatGrid);
+                var HistoryQueryTiledDiagramStatPanel = Ext.getCmp("HistoryQueryTiledDiagramStatPanel");
+                HistoryQueryTiledDiagramStatPanel.add(HistoryQueryFSdiagramTiledStatGrid);
             }
             
-            var slectModel=HistoryQueryFSdiagramOverlayStatGrid.getSelectionModel();
+            var slectModel=HistoryQueryFSdiagramTiledStatGrid.getSelectionModel();
             var selected=[];
             for(var i=0;i<store.data.items.length;i++){
     			if(1232!=store.data.items[i].data.resultCode){
@@ -118,7 +113,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
         	
-        	Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").el.mask(loginUserLanguageResource.loading).show();
+        	Ext.getCmp("HistoryQueryTiledDiagramStatPanel").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

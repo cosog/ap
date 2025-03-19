@@ -512,7 +512,15 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
                           	}
                         }
-                    }],
+                    },'->',{
+            			xtype: 'button',
+            			text:loginUserLanguageResource.downlink,
+            			iconCls: 'down',
+            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				deviceProductionDataDownlink();
+            			}
+            		}],
             		items: [{
                       	region: 'center',
                 		title:loginUserLanguageResource.productionData,
@@ -2928,3 +2936,529 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	        return deviceAuxiliaryDeviceInfoHandsontableHelper;
 	    }
 };
+
+function deviceProductionDataDownlink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
+    });
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}
+		
+		var deviceProductionData={};
+		var pumpingUnitInfo={};
+		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+		if(deviceCalculateDataType==1){
+            var manualInterventionResultName=loginUserLanguageResource.noIntervention;
+            var FESDiagramSrcName='';
+            if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
+        		var productionHandsontableData=productionHandsontableHelper.hot.getData();
+        		deviceProductionData.FluidPVT={};
+        		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
+        			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
+        			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
+        			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
+        		}
+        		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
+        			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
+        		}
+        		
+        		deviceProductionData.Reservoir={};
+        		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
+        			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
+        			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
+        		}
+        		
+        		deviceProductionData.Production={};
+        		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
+        			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
+        			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
+        			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
+        		}
+        		
+        		if(applicationScenarios==0){
+        			deviceProductionData.Production.WaterCut=100;
+        		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+        			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+        		}
+        		
+        		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
+        			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
+        			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
+        			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
+        		}
+        		
+        		deviceProductionData.Pump={};
+        		deviceProductionData.Pump.PumpType='T';
+        		
+        		var BarrelType=productionHandsontableData[13][2];
+        		if(productionHandsontableData[13][2]==loginUserLanguageResource.barrelType_L){
+        			BarrelType='L';
+        		}else if(productionHandsontableData[13][2]==loginUserLanguageResource.barrelType_H){
+        			BarrelType='H';
+        		}
+        		if(isNotVal(BarrelType)){
+        			deviceProductionData.Pump.BarrelType=BarrelType;
+        		}
+        		if(isNumber(parseInt(productionHandsontableData[14][2]))){
+        			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
+        		}
+        		if(isNumber(parseInt(productionHandsontableData[15][2]))){
+        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+        			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
+        		}
+        		
+        		deviceProductionData.TubingString={};
+        		deviceProductionData.TubingString.EveryTubing=[];
+        		var EveryTubing={};
+        		if(isNumber(parseInt(productionHandsontableData[17][2]))){
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        		}
+        		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
+        		
+        		deviceProductionData.CasingString={};
+        		deviceProductionData.CasingString.EveryCasing=[];
+        		var EveryCasing={};
+        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        		}
+        		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
+        		
+        		deviceProductionData.RodString={};
+        		deviceProductionData.RodString.EveryRod=[];
+        		
+        		if(isNotVal(productionHandsontableData[19][2]) 
+        				&& isNotVal(productionHandsontableData[20][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[21][2])) 
+        				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[23][2]))){
+        			var Rod1={};
+        			if(isNotVal(productionHandsontableData[19][2])){
+            			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod1.Type=1;
+            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod1.Type=2;
+            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod1.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[20][2])){
+            			Rod1.Grade=productionHandsontableData[20][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[21][2]))){
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[22][2]))){
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[23][2]))){
+            			Rod1.Length=parseInt(productionHandsontableData[23][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod1);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[24][2]) 
+        				&& isNotVal(productionHandsontableData[25][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[26][2])) 
+        				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[28][2]))){
+        			var Rod2={};
+        			if(isNotVal(productionHandsontableData[24][2])){
+        				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
+        					Rod2.Type=1;
+            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod2.Type=2;
+            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod2.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[25][2])){
+            			Rod2.Grade=productionHandsontableData[25][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[26][2]))){
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[27][2]))){
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+            			Rod2.Length=parseInt(productionHandsontableData[28][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod2);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[29][2]) 
+        				&& isNotVal(productionHandsontableData[30][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[31][2])) 
+        				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[33][2]))){
+        			var Rod3={};
+            		if(isNotVal(productionHandsontableData[29][2])){
+            			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod3.Type=1;
+            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod3.Type=2;
+            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod3.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[30][2])){
+            			Rod3.Grade=productionHandsontableData[30][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[31][2]))){
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+            			Rod3.Length=parseInt(productionHandsontableData[33][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod3);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[34][2]) 
+        				&& isNotVal(productionHandsontableData[35][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[36][2])) 
+        				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[38][2]))){
+        			var Rod4={};
+            		if(isNotVal(productionHandsontableData[34][2])){
+            			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod4.Type=1;
+            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod4.Type=2;
+            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod4.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[35][2])){
+            			Rod4.Grade=productionHandsontableData[35][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[36][2]))){
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[37][2]))){
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[38][2]))){
+            			Rod4.Length=parseInt(productionHandsontableData[38][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod4);
+        		}
+        		
+        		
+        		deviceProductionData.ManualIntervention={};
+        		manualInterventionResultName=productionHandsontableData[39][2];
+        		if(isNumber(parseFloat(productionHandsontableData[40][2]))){
+        			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[40][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[41][2]))){
+        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[41][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[42][2]))){
+        			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[42][2]);
+        		}
+        	}
+            
+            pumpingUnitInfo.Balance={};
+            pumpingUnitInfo.Stroke="";
+            if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
+            	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
+            	pumpingUnitInfo.Stroke=pumpingInfoHandsontableData[3][2];
+            	pumpingUnitInfo.Balance.EveryBalance=[];
+            	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
+            		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
+                		var EveryBalance={};
+                		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
+                		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
+                		pumpingUnitInfo.Balance.EveryBalance.push(EveryBalance);
+                	}
+            	}
+            }
+		}else if(deviceCalculateDataType==2){
+			var deviceProductionData={};
+            if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
+        		var productionHandsontableData=productionHandsontableHelper.hot.getData();
+        		deviceProductionData.FluidPVT={};
+        		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
+        			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
+        			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
+        			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
+        		}
+        		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[3][2]))){
+        			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
+        		}
+        		
+        		deviceProductionData.Reservoir={};
+        		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
+        			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
+        			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
+        		}
+        		
+        		deviceProductionData.Production={};
+        		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
+        			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
+        			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
+        			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
+        		}
+        		if(applicationScenarios==0){
+        			deviceProductionData.Production.WaterCut=100;
+        		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+        			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+        		}
+        		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
+        			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
+        			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
+        			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
+        		}
+        		
+        		deviceProductionData.Pump={};
+        		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
+        			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
+        		}
+        		if(isNumber(parseInt(productionHandsontableData[14][2]))){
+        			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
+        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+        			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2])*0.001*0.001;
+        		}
+        		
+        		
+        		
+        		deviceProductionData.TubingString={};
+        		deviceProductionData.TubingString.EveryTubing=[];
+        		var EveryTubing={};
+        		if(isNumber(parseInt(productionHandsontableData[17][2]))){
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        		}
+        		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
+        		
+        		deviceProductionData.CasingString={};
+        		deviceProductionData.CasingString.EveryCasing=[];
+        		var EveryCasing={};
+        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        		}
+        		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
+        		
+        		deviceProductionData.RodString={};
+        		deviceProductionData.RodString.EveryRod=[];
+        		
+        		if(isNotVal(productionHandsontableData[19][2]) 
+        				&& isNotVal(productionHandsontableData[20][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[21][2])) 
+        				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[23][2]))){
+        			var Rod1={};
+        			if(isNotVal(productionHandsontableData[19][2])){
+            			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod1.Type=1;
+            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod1.Type=2;
+            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod1.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[20][2])){
+            			Rod1.Grade=productionHandsontableData[20][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[21][2]))){
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[22][2]))){
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[23][2]))){
+            			Rod1.Length=parseInt(productionHandsontableData[23][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod1);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[24][2]) 
+        				&& isNotVal(productionHandsontableData[25][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[26][2])) 
+        				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[28][2]))){
+        			var Rod2={};
+        			if(isNotVal(productionHandsontableData[24][2])){
+        				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
+        					Rod2.Type=1;
+            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod2.Type=2;
+            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod2.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[25][2])){
+            			Rod2.Grade=productionHandsontableData[25][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[26][2]))){
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[27][2]))){
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+            			Rod2.Length=parseInt(productionHandsontableData[28][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod2);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[29][2]) 
+        				&& isNotVal(productionHandsontableData[30][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[31][2])) 
+        				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[33][2]))){
+        			var Rod3={};
+            		if(isNotVal(productionHandsontableData[29][2])){
+            			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod3.Type=1;
+            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod3.Type=2;
+            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod3.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[30][2])){
+            			Rod3.Grade=productionHandsontableData[30][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[31][2]))){
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+            			Rod3.Length=parseInt(productionHandsontableData[33][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod3);
+        		}
+        		
+        		if(isNotVal(productionHandsontableData[34][2]) 
+        				&& isNotVal(productionHandsontableData[35][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[36][2])) 
+        				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[38][2]))){
+        			var Rod4={};
+            		if(isNotVal(productionHandsontableData[34][2])){
+            			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
+            				Rod4.Type=1;
+            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue2){
+            				Rod4.Type=2;
+            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue3){
+            				Rod4.Type=3;
+            			}
+            		}
+            		if(isNotVal(productionHandsontableData[35][2])){
+            			Rod4.Grade=productionHandsontableData[35][2];
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[36][2]))){
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[37][2]))){
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[38][2]))){
+            			Rod4.Length=parseInt(productionHandsontableData[38][2]);
+            		}
+            		deviceProductionData.RodString.EveryRod.push(Rod4);
+        		}
+        		deviceProductionData.ManualIntervention={};
+        		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
+        			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[39][2]);
+        		}
+        		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[40][2]))))){
+        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[40][2]);
+        		}
+        	}
+		}
+		
+		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
+//			alert(JSON.stringify(deviceProductionData));
+//			alert(JSON.stringify(pumpingUnitInfo));
+			
+			all_loading.show();
+			Ext.Ajax.request({
+	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
+	            method: "POST",
+	            params: {
+	            	deviceId: deviceId,
+	            	deviceName: deviceName,
+	            	deviceCalculateDataType: deviceCalculateDataType,
+	            	productionData:JSON.stringify(deviceProductionData),
+	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo)
+	            },
+	            success: function (response, action) {
+	            	all_loading.hide();
+	            	var result =  Ext.JSON.decode(response.responseText);
+	            	
+	            	if (result.flag == false) {
+	                    Ext.MessageBox.show({
+	                        title: loginUserLanguageResource.tip,
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        icon: Ext.MessageBox.INFO,
+	                        buttons: Ext.Msg.OK,
+	                        fn: function () {
+	                            window.location.href = context + "/login";
+	                        }
+	                    });
+	                } else if (result.flag == true && result.error == false) {
+	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                }  else if (result.flag == true && result.error == true) {
+	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                } 
+	            },
+	            failure: function () {
+	            	all_loading.hide();
+	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	            }
+	        });
+		}else{
+			
+		}
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}

@@ -19,7 +19,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryDiagramOverlayTabPanel").getEl().unmask();
+        	Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").getEl().unmask();
         	allCheck=false;
         	allNotCheck=false;
             var get_rawData = store.proxy.reader.rawData;
@@ -153,7 +153,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         		selectedResult.push(statSelection[index].data.resultCode);
         	});
         	
-        	Ext.getCmp("HistoryDiagramOverlayTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

@@ -327,51 +327,55 @@ function websocketOnMessage(evt) {
                         }
                     } else if (activeId == "RealTimeMonitoringFSDiagramAnalysisTabPanel_Id") {
                         //井筒分析
-                    	if(isNotVal(data.wellBoreChartsData.pumpFSDiagramData)){
-                    		showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
-                    	}else{
-                    		showSurfaceCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
+                    	if(data.wellBoreChartsData!=undefined && data.wellBoreChartsData.resultStatus==1){
+                    		if(isNotVal(data.wellBoreChartsData.pumpFSDiagramData)){
+                        		showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
+                        	}else{
+                        		showSurfaceCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
+                        	}
+                            showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id"); // 调用画杆柱应力的函数
+                            showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
+                            showPumpEfficiency(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id"); // 调用画泵效组成的函数
                     	}
-                        showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id"); // 调用画杆柱应力的函数
-                        showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
-                        showPumpEfficiency(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id"); // 调用画泵效组成的函数
                     } else if (activeId == "RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id") {
                         //地面分析
-                        var deltaRadius = parseFloat(data.surfaceChartsData.deltaRadius);
-                        var expectedTorqueChartTitle = "扭矩曲线";
-                        if (Math.abs(deltaRadius) > 0) {
-                            if (deltaRadius > 0) {
-                                expectedTorqueChartTitle = "外移" + deltaRadius + "cm" + expectedTorqueChartTitle;
+                    	if(data.surfaceChartsData!=undefined && data.surfaceChartsData.resultStatus==1){
+                    		var deltaRadius = parseFloat(data.surfaceChartsData.deltaRadius);
+                            var expectedTorqueChartTitle = "扭矩曲线";
+                            if (Math.abs(deltaRadius) > 0) {
+                                if (deltaRadius > 0) {
+                                    expectedTorqueChartTitle = "外移" + deltaRadius + "cm" + expectedTorqueChartTitle;
+                                } else {
+                                    expectedTorqueChartTitle = "內移" + Math.abs(deltaRadius) + "cm" + expectedTorqueChartTitle;
+                                }
                             } else {
-                                expectedTorqueChartTitle = "內移" + Math.abs(deltaRadius) + "cm" + expectedTorqueChartTitle;
+                                expectedTorqueChartTitle = "预期扭矩曲线";
                             }
-                        } else {
-                            expectedTorqueChartTitle = "预期扭矩曲线";
-                        }
-                        showPSDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
-                        showASDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-                        showBalanceAnalysisCurveChart(
-                        		data.surfaceChartsData.crankAngle, 
-                        		data.surfaceChartsData.loadRorque, 
-                        		data.surfaceChartsData.crankTorque, 
-                        		data.surfaceChartsData.currentBalanceTorque, 
-                        		data.surfaceChartsData.currentNetTorque,
-                        		"目前扭矩曲线", 
-                        		data.surfaceChartsData.deviceName ,
-                        		data.surfaceChartsData.acqTime, 
-                        		"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"
-                            );
-                        showBalanceAnalysisCurveChart(
-                        		data.surfaceChartsData.crankAngle, 
-                        		data.surfaceChartsData.loadRorque, 
-                        		data.surfaceChartsData.crankTorque, 
-                        		data.surfaceChartsData.expectedBalanceTorque, 
-                        		data.surfaceChartsData.expectedNetTorque,
-                        		expectedTorqueChartTitle, 
-                        		data.surfaceChartsData.deviceName,
-                        		data.surfaceChartsData.acqTime, 
-                        		"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id"
-                        	);
+                            showPSDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+                            showASDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+                            showBalanceAnalysisCurveChart(
+                            		data.surfaceChartsData.crankAngle, 
+                            		data.surfaceChartsData.loadRorque, 
+                            		data.surfaceChartsData.crankTorque, 
+                            		data.surfaceChartsData.currentBalanceTorque, 
+                            		data.surfaceChartsData.currentNetTorque,
+                            		"目前扭矩曲线", 
+                            		data.surfaceChartsData.deviceName ,
+                            		data.surfaceChartsData.acqTime, 
+                            		"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"
+                                );
+                            showBalanceAnalysisCurveChart(
+                            		data.surfaceChartsData.crankAngle, 
+                            		data.surfaceChartsData.loadRorque, 
+                            		data.surfaceChartsData.crankTorque, 
+                            		data.surfaceChartsData.expectedBalanceTorque, 
+                            		data.surfaceChartsData.expectedNetTorque,
+                            		expectedTorqueChartTitle, 
+                            		data.surfaceChartsData.deviceName,
+                            		data.surfaceChartsData.acqTime, 
+                            		"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id"
+                            	);
+                    	}
                     }
                     if (commStatusChange) {
                     	if(!Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){

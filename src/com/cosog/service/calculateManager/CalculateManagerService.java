@@ -942,7 +942,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String updateSql="update "+tableName+" t "
 				+ " set (productiondata,resultstatus)"
 				+ "=(select t2.productiondata,2 from "+deviceTableName+" t2 where t2.id=t.deviceId) "
-				+ " where t."+acqTimeColumn+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+				+ " where t."+acqTimeColumn+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')+1/(24*60)";
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			updateSql+=" and t.resultstatus in ("+calculateSign+")";
 		}

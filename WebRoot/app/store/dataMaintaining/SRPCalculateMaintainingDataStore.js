@@ -37,14 +37,14 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
         },
         beforeload: function (store, options) {
@@ -65,12 +65,14 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
             var startDate=Ext.getCmp('SRPCalculateMaintainingStartDate_Id').rawValue;
             var startTime_Hour=Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').getValue();
+//        	var startTime_Second=Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').getValue();
+        	var startTime_Second=0;
         	
             var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
+//        	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
+        	var endTime_Second=0;
             
             var calculateSign=Ext.getCmp('SRPCalculateMaintainingCalculateSignComBox_Id').getValue();
             var resultCode=Ext.getCmp('SRPCalculateMaintainingResultNameComBox_Id').getValue();

@@ -151,12 +151,12 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 	Ext.getCmp('SystemLogQueryStartDate_Id').setRawValue('');
                 	Ext.getCmp('SystemLogQueryStartTime_Hour_Id').setValue('');
                 	Ext.getCmp('SystemLogQueryStartTime_Minute_Id').setValue('');
-                	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue('');
+//                	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue('');
                     Ext.getCmp('SystemLogQueryEndDate_Id').setValue('');
                     Ext.getCmp('SystemLogQueryEndDate_Id').setRawValue('');
                     Ext.getCmp('SystemLogQueryEndTime_Hour_Id').setValue('');
                 	Ext.getCmp('SystemLogQueryEndTime_Minute_Id').setValue('');
-                	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue('');
+//                	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue('');
                 	
                 	Ext.getCmp('systemLogUserListComb_Id').setValue("");
         			Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
@@ -227,6 +227,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
             },{
             	xtype: 'numberfield',
             	id: 'SystemLogQueryStartTime_Second_Id',
+            	hidden: true,
             	fieldLabel: loginUserLanguageResource.second,
                 labelWidth: getStringLength(loginUserLanguageResource.second)*8,
                 width: getStringLength(loginUserLanguageResource.second)*8+45,
@@ -303,6 +304,7 @@ Ext.define('AP.view.log.SystemLogInfoView', {
             },{
             	xtype: 'numberfield',
             	id: 'SystemLogQueryEndTime_Second_Id',
+            	hidden: true,
             	fieldLabel: loginUserLanguageResource.second,
                 labelWidth: getStringLength(loginUserLanguageResource.second)*8,
                 width: getStringLength(loginUserLanguageResource.second)*8+45,
@@ -340,12 +342,13 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 		Ext.getCmp('SystemLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
-                	if(!r2.test(startTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('SystemLogQueryStartTime_Second_Id').focus(true, 100);
-                		return;
-                	}
+//                	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
+//                	if(!r2.test(startTime_Second)){
+//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                		Ext.getCmp('SystemLogQueryStartTime_Second_Id').focus(true, 100);
+//                		return;
+//                	}
+                	var startTime_Second=0;
                 	
                 	var endTime_Hour=Ext.getCmp('SystemLogQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
@@ -359,12 +362,13 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 		Ext.getCmp('SystemLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
-                	if(!r2.test(endTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('SystemLogQueryEndTime_Second_Id').focus(true, 100);
-                		return;
-                	}
+//                	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
+//                	if(!r2.test(endTime_Second)){
+//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                		Ext.getCmp('SystemLogQueryEndTime_Second_Id').focus(true, 100);
+//                		return;
+//                	}
+                	var endTime_Second=0;
                 	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
                 	if (isNotVal(gridPanel)) {
                 		gridPanel.getStore().loadPage(1);
@@ -390,12 +394,13 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 		Ext.getCmp('SystemLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
-                	if(!r2.test(startTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('SystemLogQueryStartTime_Second_Id').focus(true, 100);
-                		return;
-                	}
+//                	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
+//                	if(!r2.test(startTime_Second)){
+//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                		Ext.getCmp('SystemLogQueryStartTime_Second_Id').focus(true, 100);
+//                		return;
+//                	}
+                	var startTime_Second=0;
                 	
                 	var endTime_Hour=Ext.getCmp('SystemLogQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
@@ -409,12 +414,14 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 		Ext.getCmp('SystemLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-                	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
-                	if(!r2.test(endTime_Second)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                		Ext.getCmp('SystemLogQueryEndTime_Second_Id').focus(true, 100);
-                		return;
-                	}
+//                	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
+//                	if(!r2.test(endTime_Second)){
+//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                		Ext.getCmp('SystemLogQueryEndTime_Second_Id').focus(true, 100);
+//                		return;
+//                	}
+                	var endTime_Second=0;
+                	
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var startDate=Ext.getCmp('SystemLogQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('SystemLogQueryEndDate_Id').rawValue;

@@ -2350,6 +2350,70 @@ public class WellInformationManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/deviceProductionDataDownlink")
+	public String deviceProductionDataDownlink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
+		String deviceCalculateDataType = request.getParameter("deviceCalculateDataType");
+		String productionData = request.getParameter("productionData");
+		String pumpingUnitInfo = request.getParameter("productionData");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+						+ " and t.id="+deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocol=obj[0]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String realDeviceType=obj[5]+"";
+					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+						if(StringManagerUtils.isNotNull(slave)){
+//							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=1;
+							if(reslut==1){
+								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
+							}else if(reslut==0){
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandExecutedFailure")+"</font>'}";
+							}else if(reslut==-1){
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>'}";
+							}else{
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendException")+"</font>'}";
+							}
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public String getLimit() {
 		return limit;

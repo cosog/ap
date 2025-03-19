@@ -1801,8 +1801,13 @@ public class DriverAPIController extends BaseController{
 		wellBoreChartsData.append("{");
 		surfaceChartsData.append("{");
 		
+		int resultStatus=0;
+		if(srpCalculateResponseData!=null && srpCalculateResponseData.getCalculationStatus()!=null){
+			resultStatus=srpCalculateResponseData.getCalculationStatus().getResultStatus();
+		}
 		if(deviceInfo.getCalculateType()==1){
 			wellBoreChartsData.append("\"success\":true,");
+			wellBoreChartsData.append("\"resultStatus\":"+resultStatus+",");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
 			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
@@ -1851,6 +1856,7 @@ public class DriverAPIController extends BaseController{
 			
 			//地面分析图形数据
 			surfaceChartsData.append("\"success\":true,");
+			surfaceChartsData.append("\"resultStatus\":"+resultStatus+",");
 			surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
 			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			

@@ -76,9 +76,17 @@ public class AlarmQueryController extends BaseController{
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.deviceId="+deviceId+") ";
-			List list = this.service.reportDateJssj(sql);
+			String maxIdSql="select max(t2.id) from "+tableName+" t2 where t2.deviceId="+deviceId;
+			if(StringManagerUtils.isNotNull(alarmType)){
+				if(StringManagerUtils.stringToInteger(alarmType)==2){
+					maxIdSql+=" and t2.alarmType in(2,5)";
+				}else {
+					maxIdSql+=" and t2.alarmType="+alarmType;
+				}
+			}
+			String sql = " select to_char(t.alarmtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id= ("+maxIdSql+") ";
+			List<?> list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
 			} else {
@@ -134,9 +142,17 @@ public class AlarmQueryController extends BaseController{
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.alarmType= "+alarmType+" and t2.deviceId="+deviceId+") ";
-			List list = this.service.reportDateJssj(sql);
+			String maxIdSql="select max(t2.id) from "+tableName+" t2 where t2.deviceId="+deviceId;
+			if(StringManagerUtils.isNotNull(alarmType)){
+				if(StringManagerUtils.stringToInteger(alarmType)==2){
+					maxIdSql+=" and t2.alarmType in(2,5)";
+				}else {
+					maxIdSql+=" and t2.alarmType="+alarmType;
+				}
+			}
+			String sql = " select to_char(t.alarmtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id= ("+maxIdSql+") ";
+			List<?> list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
 			} else {

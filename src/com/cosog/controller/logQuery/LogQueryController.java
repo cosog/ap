@@ -68,7 +68,7 @@ public class LogQueryController extends BaseController{
 		}
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
+			String sql = " select to_char(max(t.createtime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
 			if(StringManagerUtils.isNotNull(deviceType)){
 				if(StringManagerUtils.isNum(deviceType)){
 					sql+= " and t.devicetype="+deviceType;
@@ -137,7 +137,7 @@ public class LogQueryController extends BaseController{
 		
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
+			String sql = " select to_char(max(t.createtime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from viw_deviceoperationlog t  where t.orgid in ("+orgId+")";
 			if(StringManagerUtils.isNotNull(deviceType)){
 				if(StringManagerUtils.isNum(deviceType)){
 					sql+= " and t.devicetype="+deviceType;
@@ -196,7 +196,7 @@ public class LogQueryController extends BaseController{
 		}
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from tbl_systemlog t ";
+			String sql = " select to_char(max(t.createtime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from tbl_systemlog t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -250,7 +250,7 @@ public class LogQueryController extends BaseController{
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.createtime),'yyyy-mm-dd hh24:mi:ss') from tbl_systemlog t ";
+			String sql = " select to_char(max(t.createtime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from tbl_systemlog t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

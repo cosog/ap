@@ -61,11 +61,11 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                     		Ext.getCmp('AlarmQueryStartDate_Id').setValue('');
                         	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue('');
                         	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue('');
-                        	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue('');
+//                        	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue('');
                         	Ext.getCmp('AlarmQueryEndDate_Id').setValue('');
                         	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue('');
                         	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue('');
-                        	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue('');
+//                        	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue('');
                     		var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
             				if (isNotVal(gridPanel)) {
             					gridPanel.getStore().loadPage(1);

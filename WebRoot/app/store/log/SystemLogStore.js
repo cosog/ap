@@ -59,14 +59,14 @@ Ext.define('AP.store.log.SystemLogStore', {
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
             	Ext.getCmp('SystemLogQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('SystemLogQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
             }
             var endDate=Ext.getCmp('SystemLogQueryEndDate_Id');
             if(endDate.rawValue==''||null==endDate.rawValue){
             	endDate.setValue(get_rawData.end_date.split(' ')[0]);
             	Ext.getCmp('SystemLogQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('SystemLogQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+//            	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
         },
         beforeload: function (store, options) {
@@ -81,11 +81,13 @@ Ext.define('AP.store.log.SystemLogStore', {
         	var startDate=Ext.getCmp('SystemLogQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('SystemLogQueryStartTime_Hour_Id').getValue();
         	var startTime_Minute=Ext.getCmp('SystemLogQueryStartTime_Minute_Id').getValue();
-        	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
+//        	var startTime_Second=Ext.getCmp('SystemLogQueryStartTime_Second_Id').getValue();
+        	var startTime_Second=0;
             var endDate=Ext.getCmp('SystemLogQueryEndDate_Id').rawValue;
             var endTime_Hour=Ext.getCmp('SystemLogQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('SystemLogQueryEndTime_Minute_Id').getValue();
-        	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
+//        	var endTime_Second=Ext.getCmp('SystemLogQueryEndTime_Second_Id').getValue();
+        	var endTime_Second=0;
         	
         	var selectUserId=Ext.getCmp('systemLogUserListComb_Id').getValue();
         	var operationType=Ext.getCmp('systemLogActionListComb_Id').getValue();

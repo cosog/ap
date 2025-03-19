@@ -355,6 +355,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'AlarmQueryStartTime_Second_Id',
+                	hidden: true,
                 	fieldLabel: loginUserLanguageResource.second,
                     labelWidth: getStringLength(loginUserLanguageResource.second)*8,
                     width: getStringLength(loginUserLanguageResource.second)*8+45,
@@ -431,6 +432,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                 },{
                 	xtype: 'numberfield',
                 	id: 'AlarmQueryEndTime_Second_Id',
+                	hidden: true,
                 	fieldLabel: loginUserLanguageResource.second,
                     labelWidth: getStringLength(loginUserLanguageResource.second)*8,
                     width: getStringLength(loginUserLanguageResource.second)*8+45,
@@ -468,12 +470,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		Ext.getCmp('AlarmQueryStartTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
-                    	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
-                    	if(!r2.test(startTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('AlarmQueryStartTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
+//                    	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
+//                    	if(!r2.test(startTime_Second)){
+//                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                    		Ext.getCmp('AlarmQueryStartTime_Second_Id').focus(true, 100);
+//                    		return;
+//                    	}
+                    	var startTime_Second=0;
                     	
                     	var endTime_Hour=Ext.getCmp('AlarmQueryEndTime_Hour_Id').getValue();
                     	if(!r.test(endTime_Hour)){
@@ -487,12 +490,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		Ext.getCmp('AlarmQueryEndTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
-                    	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
-                    	if(!r2.test(endTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('AlarmQueryEndTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
+//                    	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
+//                    	if(!r2.test(endTime_Second)){
+//                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                    		Ext.getCmp('AlarmQueryEndTime_Second_Id').focus(true, 100);
+//                    		return;
+//                    	}
+                    	var endTime_Second=0;
                     	var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
                     	if (isNotVal(gridPanel)) {
                     		gridPanel.getStore().loadPage(1);
@@ -538,12 +542,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		Ext.getCmp('AlarmQueryStartTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
-                    	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
-                    	if(!r2.test(startTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('AlarmQueryStartTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
+//                    	var startTime_Second=Ext.getCmp('AlarmQueryStartTime_Second_Id').getValue();
+//                    	if(!r2.test(startTime_Second)){
+//                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                    		Ext.getCmp('AlarmQueryStartTime_Second_Id').focus(true, 100);
+//                    		return;
+//                    	}
+                    	var startTime_Second=0;
                     	
                     	var endTime_Hour=Ext.getCmp('AlarmQueryEndTime_Hour_Id').getValue();
                     	if(!r.test(endTime_Hour)){
@@ -557,12 +562,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		Ext.getCmp('AlarmQueryEndTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
-                    	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
-                    	if(!r2.test(endTime_Second)){
-                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                    		Ext.getCmp('AlarmQueryEndTime_Second_Id').focus(true, 100);
-                    		return;
-                    	}
+//                    	var endTime_Second=Ext.getCmp('AlarmQueryEndTime_Second_Id').getValue();
+//                    	if(!r2.test(endTime_Second)){
+//                    		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                    		Ext.getCmp('AlarmQueryEndTime_Second_Id').focus(true, 100);
+//                    		return;
+//                    	}
+                    	var endTime_Second=0;
                     	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                     	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
                     	var deviceTypeName=getTabPanelActiveName("AlarmQueryRootTabPanel");

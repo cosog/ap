@@ -13,9 +13,10 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1400,
+    width: '90%',
     minWidth: 1200,
-    height: 700,
+    height: '90%',
+    minHeight: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {

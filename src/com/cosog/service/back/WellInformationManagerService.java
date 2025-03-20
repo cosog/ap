@@ -2179,21 +2179,21 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(srpProductionData!=null){
 						int FESDiagramSrc=srpProductionData.getFESDiagram()!=null?srpProductionData.getFESDiagram().getSrc():0;
 						
-						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
-						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
-						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
-						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
+						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemCode\":\"crudeOilDensity\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemCode\":\"waterDensity\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
+						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemCode\":\"naturalGasRelativeDensity\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
+						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemCode\":\"saturationPressure\",\"itemValue\":\""+(srpProductionData.getFluidPVT()!=null?srpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getDepth():"")+"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getTemperature():"")+"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemCode\":\"reservoirDepth\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getDepth():"")+"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemCode\":\"reservoirTemperature\",\"itemValue\":\""+(srpProductionData.getReservoir()!=null?srpProductionData.getReservoir().getTemperature():"")+"\"},");
 						
-						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getTubingPressure():"")+"\"},");
-						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getCasingPressure():"")+"\"},");
-						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
-						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWaterCut():"")+"\"},");
-						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
-						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
-						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
+						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemCode\":\"tubingPressure\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getTubingPressure():"")+"\"},");
+						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemCode\":\"casingPressure\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getCasingPressure():"")+"\"},");
+						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemCode\":\"wellHeadTemperature\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
+						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemCode\":\"waterCut\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getWaterCut():"")+"\"},");
+						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
+						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemCode\":\"producingfluidLevel\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
+						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
 						
 						String barrelType="";
 						if(srpProductionData.getPump()!=null&&srpProductionData.getPump().getBarrelType()!=null){
@@ -2203,14 +2203,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								barrelType=languageResourceMap.get("barrelType_H");
 							}
 						}
-//						result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
-						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemValue\":\""+barrelType+"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemCode\":\"barrelType\",\"itemValue\":\""+barrelType+"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemCode\":\"pumpGrade\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"itemValue\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemCode\":\"plungerLength\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2278,29 +2277,29 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								rodLength4=srpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
-						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemValue\":\""+rodType1+"\"},");
-						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemValue\":\""+rodGrade1+"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemValue\":\""+rodLength1+"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemCode\":\"rodStringType1\",\"itemValue\":\""+rodType1+"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemCode\":\"rodGrade1\",\"itemValue\":\""+rodGrade1+"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter1\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter1\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemCode\":\"rodStringLength1\",\"itemValue\":\""+rodLength1+"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemValue\":\""+rodType2+"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemValue\":\""+rodGrade2+"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
-						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemValue\":\""+rodLength2+"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemCode\":\"rodStringType2\",\"itemValue\":\""+rodType2+"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemCode\":\"rodGrade2\",\"itemValue\":\""+rodGrade2+"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter2\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter2\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
+						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemCode\":\"rodStringLength2\",\"itemValue\":\""+rodLength2+"\"},");
 						
-						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemValue\":\""+rodType3+"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemValue\":\""+rodGrade3+"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
-						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemValue\":\""+rodLength3+"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemCode\":\"rodStringType3\",\"itemValue\":\""+rodType3+"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemCode\":\"rodGrade3\",\"itemValue\":\""+rodGrade3+"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter3\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter3\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemCode\":\"rodStringLength3\",\"itemValue\":\""+rodLength3+"\"},");
 						
-						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemValue\":\""+rodType4+"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemValue\":\""+rodGrade4+"\"},");
-						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemValue\":\""+rodLength4+"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemCode\":\"rodStringType4\",\"itemValue\":\""+rodType4+"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemCode\":\"rodGrade4\",\"itemValue\":\""+rodGrade4+"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter4\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\""+rodLength4+"\"},");
 						
 						
 						String manualInterventionName=languageResourceMap.get("noIntervention");
@@ -2310,96 +2309,96 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								manualInterventionName=workType.getResultName();
 							}
 						}
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\""+manualInterventionName+"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
-						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"},");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemCode\":\"manualInterventionCode\",\"itemValue\":\""+manualInterventionName+"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemCode\":\"levelCorrectValue\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"},");
 						
-						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemValue\":\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", FESDiagramSrc+"", language)+"\"}");
+						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemCode\":\"FESDiagramSrc\",\"itemValue\":\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", FESDiagramSrc+"", language)+"\"}");
 						
 					}else{
-						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemCode\":\"crudeOilDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemCode\":\"waterDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemCode\":\"naturalGasRelativeDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemCode\":\"saturationPressure\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemCode\":\"reservoirDepth\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemCode\":\"reservoirTemperature\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemCode\":\"tubingPressure\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemCode\":\"casingPressure\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemCode\":\"wellHeadTemperature\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemCode\":\"waterCut\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemCode\":\"producingfluidLevel\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemCode\":\"barrelType\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemCode\":\"pumpGrade\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemCode\":\"plungerLength\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemCode\":\"rodStringType1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemCode\":\"rodGrade1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemCode\":\"rodStringLength1\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemCode\":\"rodStringType2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemCode\":\"rodGrade2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemCode\":\"rodStringLength2\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemCode\":\"rodStringType3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemCode\":\"rodGrade3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemCode\":\"rodStringLength3\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemCode\":\"rodStringType4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemCode\":\"rodGrade4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemCode\":\"manualInterventionCode\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemCode\":\"levelCorrectValue\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemValue\":\"\"}");
+						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemCode\":\"FESDiagramSrc\",\"itemValue\":\"\"}");
 					}
 				}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
 					type = new TypeToken<PCPProductionData>() {}.getType();
 					PCPProductionData pcpProductionData=gson.fromJson(productionData, type);
 					if(pcpProductionData!=null){
-						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
-						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
-						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
-						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
+						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemCode\":\"crudeOilDensity\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemCode\":\"waterDensity\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getWaterDensity():"")+"\"},");
+						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemCode\":\"naturalGasRelativeDensity\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
+						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemCode\":\"saturationPressure\",\"itemValue\":\""+(pcpProductionData.getFluidPVT()!=null?pcpProductionData.getFluidPVT().getSaturationPressure():"")+"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getDepth():"")+"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getTemperature():"")+"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemCode\":\"reservoirDepth\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getDepth():"")+"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemCode\":\"reservoirTemperature\",\"itemValue\":\""+(pcpProductionData.getReservoir()!=null?pcpProductionData.getReservoir().getTemperature():"")+"\"},");
 						
-						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getTubingPressure():"")+"\"},");
-						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getCasingPressure():"")+"\"},");
-						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
-						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getWaterCut():"")+"\"},");
-						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
-						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
-						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
+						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemCode\":\"tubingPressure\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getTubingPressure():"")+"\"},");
+						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemCode\":\"casingPressure\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getCasingPressure():"")+"\"},");
+						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemCode\":\"wellHeadTemperature\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getWellHeadTemperature():"")+"\"},");
+						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemCode\":\"waterCut\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getWaterCut():"")+"\"},");
+						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getProductionGasOilRatio():"")+"\"},");
+						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemCode\":\"producingfluidLevel\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getProducingfluidLevel():"")+"\"},");
+						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getPumpSettingDepth():"")+"\"},");
 						
-						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelLength():"")+"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemCode\":\"BarrelLength\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelLength():"")+"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemCode\":\"BarrelSeries\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemCode\":\"QPR\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2467,83 +2466,83 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 								rodLength4=pcpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
-						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemValue\":\""+rodType1+"\"},");
-						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemValue\":\""+rodGrade1+"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemValue\":\""+rodLength1+"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemCode\":\"rodStringType1\",\"itemValue\":\""+rodType1+"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemCode\":\"rodGrade1\",\"itemValue\":\""+rodGrade1+"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter1\",\"itemValue\":\""+rodOutsideDiameter1+"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter1\",\"itemValue\":\""+rodInsideDiameter1+"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemCode\":\"rodStringLength1\",\"itemValue\":\""+rodLength1+"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemValue\":\""+rodType2+"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemValue\":\""+rodGrade2+"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
-						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemValue\":\""+rodLength2+"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemCode\":\"rodStringType2\",\"itemValue\":\""+rodType2+"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemCode\":\"rodGrade2\",\"itemValue\":\""+rodGrade2+"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter2\",\"itemValue\":\""+rodOutsideDiameter2+"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter2\",\"itemValue\":\""+rodInsideDiameter2+"\"},");
+						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemCode\":\"rodStringLength2\",\"itemValue\":\""+rodLength2+"\"},");
 						
-						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemValue\":\""+rodType3+"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemValue\":\""+rodGrade3+"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
-						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemValue\":\""+rodLength3+"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemCode\":\"rodStringType3\",\"itemValue\":\""+rodType3+"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemCode\":\"rodGrade3\",\"itemValue\":\""+rodGrade3+"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter3\",\"itemValue\":\""+rodOutsideDiameter3+"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter3\",\"itemValue\":\""+rodInsideDiameter3+"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemCode\":\"rodStringLength3\",\"itemValue\":\""+rodLength3+"\"},");
 						
-						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemValue\":\""+rodType4+"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemValue\":\""+rodGrade4+"\"},");
-						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemValue\":\""+rodLength4+"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemCode\":\"rodStringType4\",\"itemValue\":\""+rodType4+"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemCode\":\"rodGrade4\",\"itemValue\":\""+rodGrade4+"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter4\",\"itemValue\":\""+rodOutsideDiameter4+"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\""+rodLength4+"\"},");
 						
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossValue():"")+"\"}");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossValue():"")+"\"}");
 					}else{
-						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemCode\":\"crudeOilDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemCode\":\"waterDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"itemCode\":\"naturalGasRelativeDensity\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("saturationPressure")+"(MPa)\",\"itemCode\":\"saturationPressure\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get(reservoirDepthKey)+"(m)\",\"itemCode\":\"reservoirDepth\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get(reservoirTemperatureKey)+"(℃)\",\"itemCode\":\"reservoirTemperature\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get(tubingPressurekey)+"(MPa)\",\"itemCode\":\"tubingPressure\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("casingPressure")+"(MPa)\",\"itemCode\":\"casingPressure\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("wellHeadTemperature")+"(℃)\",\"itemCode\":\"wellHeadTemperature\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("waterCut")+"(%)\",\"itemCode\":\"waterCut\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("productionGasOilRatio")+"(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("producingfluidLevel")+"(m)\",\"itemCode\":\"producingfluidLevel\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemCode\":\"BarrelSeries\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemCode\":\"QPR\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringOutsideDiameter")+"(mm)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("rodStringType1")+"\",\"itemCode\":\"rodStringType1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":21,\"itemName\":\""+languageResourceMap.get("rodGrade1")+"\",\"itemCode\":\"rodGrade1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":22,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":23,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter1")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter1\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":24,\"itemName\":\""+languageResourceMap.get("rodStringLength1")+"(m)\",\"itemCode\":\"rodStringLength1\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":25,\"itemName\":\""+languageResourceMap.get("rodStringType2")+"\",\"itemCode\":\"rodStringType2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":26,\"itemName\":\""+languageResourceMap.get("rodGrade2")+"\",\"itemCode\":\"rodGrade2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":27,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":28,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter2")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter2\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":29,\"itemName\":\""+languageResourceMap.get("rodStringLength2")+"(m)\",\"itemCode\":\"rodStringLength2\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":30,\"itemName\":\""+languageResourceMap.get("rodStringType3")+"\",\"itemCode\":\"rodStringType3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":31,\"itemName\":\""+languageResourceMap.get("rodGrade3")+"\",\"itemCode\":\"rodGrade3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":32,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":33,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter3")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter3\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":34,\"itemName\":\""+languageResourceMap.get("rodStringLength3")+"(m)\",\"itemCode\":\"rodStringLength3\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":35,\"itemName\":\""+languageResourceMap.get("rodStringType4")+"\",\"itemCode\":\"rodStringType4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":36,\"itemName\":\""+languageResourceMap.get("rodGrade4")+"\",\"itemCode\":\"rodGrade4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":37,\"itemName\":\""+languageResourceMap.get("rodStringOutsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringOutsideDiameter4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemValue\":\"\"}");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"\"}");
 					}
 				}
 			}

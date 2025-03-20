@@ -1911,10 +1911,12 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
 					productionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
-						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}" 
+						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}," 
+						+"{data:'itemCode'}," 
+						+"{data:'downlinkStatus'}" 
 						+"]";
 					productionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 					productionHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -2002,7 +2004,7 @@ var ProductionHandsontableHelper = {
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
-	                    columns: [0],
+	                    columns: [0,3,4],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -3026,7 +3028,7 @@ function deviceProductionDataDownlink(){
         			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
         		}
         		if(isNumber(parseInt(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
+        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
         			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
@@ -3036,7 +3038,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
         		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2]);
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
@@ -3044,7 +3046,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
         		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2]);
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -3070,10 +3072,10 @@ function deviceProductionDataDownlink(){
             			Rod1.Grade=productionHandsontableData[20][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[23][2]))){
             			Rod1.Length=parseInt(productionHandsontableData[23][2]);
@@ -3100,10 +3102,10 @@ function deviceProductionDataDownlink(){
             			Rod2.Grade=productionHandsontableData[25][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[28][2]))){
             			Rod2.Length=parseInt(productionHandsontableData[28][2]);
@@ -3130,10 +3132,10 @@ function deviceProductionDataDownlink(){
             			Rod3.Grade=productionHandsontableData[30][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[33][2]))){
             			Rod3.Length=parseInt(productionHandsontableData[33][2]);
@@ -3160,10 +3162,10 @@ function deviceProductionDataDownlink(){
             			Rod4.Grade=productionHandsontableData[35][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[38][2]))){
             			Rod4.Length=parseInt(productionHandsontableData[38][2]);
@@ -3259,10 +3261,10 @@ function deviceProductionDataDownlink(){
         			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
+        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
-        			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2])*0.001*0.001;
+        			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2]);
         		}
         		
         		
@@ -3271,7 +3273,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
         		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2]);
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
@@ -3279,7 +3281,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
         		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2]);
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -3305,10 +3307,10 @@ function deviceProductionDataDownlink(){
             			Rod1.Grade=productionHandsontableData[20][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[23][2]))){
             			Rod1.Length=parseInt(productionHandsontableData[23][2]);
@@ -3335,10 +3337,10 @@ function deviceProductionDataDownlink(){
             			Rod2.Grade=productionHandsontableData[25][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[28][2]))){
             			Rod2.Length=parseInt(productionHandsontableData[28][2]);
@@ -3365,10 +3367,10 @@ function deviceProductionDataDownlink(){
             			Rod3.Grade=productionHandsontableData[30][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[33][2]))){
             			Rod3.Length=parseInt(productionHandsontableData[33][2]);
@@ -3395,10 +3397,10 @@ function deviceProductionDataDownlink(){
             			Rod4.Grade=productionHandsontableData[35][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2]);
             		}
             		if(isNumber(parseInt(productionHandsontableData[38][2]))){
             			Rod4.Length=parseInt(productionHandsontableData[38][2]);
@@ -3428,7 +3430,8 @@ function deviceProductionDataDownlink(){
 	            	deviceName: deviceName,
 	            	deviceCalculateDataType: deviceCalculateDataType,
 	            	productionData:JSON.stringify(deviceProductionData),
-	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo)
+	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
+	            	manualInterventionResultName:manualInterventionResultName
 	            },
 	            success: function (response, action) {
 	            	all_loading.hide();
@@ -3447,7 +3450,22 @@ function deviceProductionDataDownlink(){
 	                } else if (result.flag == true && result.error == false) {
 	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
 	                }  else if (result.flag == true && result.error == true) {
-	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                    
+	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                    	plugin.showColumns([4]);
+                    	productionHandsontableHelper.hot.render();
+                    	
+                    	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
+                    	for(var i=0;i<codeColumnValue.length;i++){
+                    		for(var j=0;j<result.downStatusList.length;j++){
+                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                    				productionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                    				break;
+                    			}
+                    		}
+                    	}
+	                	
+//	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
 	                } 
 	            },
 	            failure: function () {

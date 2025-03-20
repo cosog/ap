@@ -447,7 +447,7 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String deviceName,String deviceType,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
+	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String deviceName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
 		int result=-1;
 		try {
 			Gson gson = new Gson();
@@ -579,7 +579,7 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){
@@ -643,7 +643,7 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){

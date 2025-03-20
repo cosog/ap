@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -35,6 +36,7 @@ import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.AuxiliaryDeviceDetailsSaveData;
 import com.cosog.model.AuxiliaryDeviceInformation;
+import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
@@ -48,7 +50,10 @@ import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.PCPProductionData;
+import com.cosog.model.calculate.ResultStatusData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPProductionData;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.SRPInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AdditionalInformationSaveData;
@@ -2358,6 +2363,7 @@ public class WellInformationManagerController extends BaseController {
 		String deviceCalculateDataType = request.getParameter("deviceCalculateDataType");
 		String productionData = request.getParameter("productionData");
 		String pumpingUnitInfo = request.getParameter("productionData");
+		String manualInterventionResultName=request.getParameter("productionData");
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -2373,25 +2379,79 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocol=obj[0]+"";
+					String protocolName=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
-					String realDeviceType=obj[5]+"";
-					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					String deviceType=obj[5]+"";
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-//							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
-							int reslut=1;
-							if(reslut==1){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
-							}else if(reslut==0){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandExecutedFailure")+"</font>'}";
-							}else if(reslut==-1){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>'}";
-							}else{
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendException")+"</font>'}";
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
+								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+								if(srpProductionData!=null){
+									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",srpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",srpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SaturationPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",srpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("ReservoirDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("TubingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",srpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",srpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterCut", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",srpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",srpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",srpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",srpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
+									
+									
+									downStatusMap.put("BarrelType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BarrelType","L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())?"2":"1",userInfo.getLanguageName()));
+									downStatusMap.put("PumpGrade", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PlungerLength", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
+									
+									
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()+"",userInfo.getLanguageName()));
+									
+									for(int i=0;i<srpProductionData.getRodString().getEveryRod().size();i++){
+										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getGrade()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+									}
+									
+									WorkType w=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, userInfo.getLanguageName());
+									downStatusMap.put("ManualInterventionCode", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",(w!=null?w.getResultCode():0)+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",srpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",srpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+									downStatusMap.put("LevelCorrectValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",srpProductionData.getManualIntervention().getLevelCorrectValue()+"",userInfo.getLanguageName()));
+								}
+							}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
+								
 							}
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : downStatusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+downStatusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -2406,6 +2466,7 @@ public class WellInformationManagerController extends BaseController {
 		} else {
 			jsonLogin = "{success:true,flag:false}";
 		}
+		System.out.println(jsonLogin);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2413,6 +2474,118 @@ public class WellInformationManagerController extends BaseController {
 		pw.flush();
 		pw.close();
 		return null;
+	}
+	
+	public String dataDownlink(String protocolName,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
+		String status=languageResourceMap.get("noDownlink");
+		int reslut=0;
+		if(dataMapping!=null){
+			reslut=deviceControlOperation_Mdubus(protocolName,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
+			if(reslut==1){
+				status=languageResourceMap.get("downlinkSuccessfully");
+			}else{
+				status=languageResourceMap.get("downlinkFailure");
+			}
+		}
+		return status;
+	}
+	
+	public int deviceControlOperation_Mdubus(String protocolName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
+		int result=-1;
+		try {
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
+			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
+			
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			int addr=-99;
+			String dataType="";
+			String title="";
+			float ratio=1;
+			int quantity=1;
+			for(int i=0;i<protocol.getItems().size();i++){
+				String col="";
+				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
+					col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
+				}
+				if(itemCode.equalsIgnoreCase(col)){
+					addr=protocol.getItems().get(i).getAddr();
+					dataType=protocol.getItems().get(i).getIFDataType();
+					title=protocol.getItems().get(i).getTitle();
+					ratio=protocol.getItems().get(i).getRatio();
+					quantity=protocol.getItems().get(i).getQuantity();
+					break;
+				}
+			}
+			String IDOrIPPortKey="ID";
+			String IDOrIPPort=ID;
+			if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
+				IDOrIPPortKey="IPPort";
+				IDOrIPPort=ipPort;
+				url=Config.getInstance().configFile.getAd().getRw().getWriteAddr_ipPort();
+				readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr_ipPort();
+			}
+			String writeValue="";
+			
+			if(dataType.equalsIgnoreCase("bcd") || dataType.equalsIgnoreCase("string") ){
+				if(quantity==1){
+					writeValue="\""+controlValue+"\"";
+				}else if(quantity>1){
+					String [] writeValueArr=controlValue.split(",");
+					for(int i=0;i<writeValueArr.length;i++){
+						writeValue+="\""+writeValueArr[i]+"\"";
+						if(i!=writeValueArr.length-1){
+							writeValue+=",";
+						}
+					}
+				}
+			}else{
+				if(quantity==1){
+					writeValue=StringManagerUtils.objectToString(controlValue, dataType)+"";
+				}else if(quantity>1){
+					String [] writeValueArr=controlValue.split(",");
+					for(int i=0;i<writeValueArr.length;i++){
+						writeValue+=StringManagerUtils.objectToString(writeValueArr[i], dataType)+"";
+						if(i!=writeValueArr.length-1){
+							writeValue+=",";
+						}
+					}
+				}
+			}
+			
+			if(StringManagerUtils.isNotNull(title) && addr!=-99){
+				String ctrlJson="{"
+						+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
+						+ "\"Slave\":"+Slave+","
+						+ "\"Addr\":"+addr+","
+						+ "\"Value\":["+writeValue+"]"
+						+ "}";
+				String readJson="{"
+						+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
+						+ "\"Slave\":"+Slave+","
+						+ "\"Addr\":"+addr+""
+						+ "}";
+				System.out.println(ctrlJson);
+				String responseStr="";
+				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+				if(StringManagerUtils.isNotNull(responseStr)){
+					type = new TypeToken<ResultStatusData>() {}.getType();
+					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+					result=resultStatusData.getResultStatus();
+				}
+//				realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public String getLimit() {

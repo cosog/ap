@@ -2779,12 +2779,10 @@ public class DriverAPIController extends BaseController{
 								int alarmLevel=0;
 								int sort=9999;
 								
-								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
-									
+								if(dataMappingColumn.getCalculateEnable()==1 && StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
 										
 									}
-									
 									
 									String saveValue=rawValue;
 									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
@@ -3511,7 +3509,7 @@ public class DriverAPIController extends BaseController{
 								int alarmLevel=0;
 								int sort=9999;
 								
-								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
+								if(dataMappingColumn.getCalculateEnable()==1 && StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									String saveValue=rawValue;
 									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
 										saveValue=rawValue.substring(0, 50);

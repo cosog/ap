@@ -1,5 +1,6 @@
 var auxiliaryDeviceInfoHandsontableHelper = null;
 var auxiliaryDeviceDetailsHandsontableHelper=null;
+var pumpingUnitPTFHandsontableHelper=null;
 Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.auxiliaryDeviceInfoPanel',
@@ -192,49 +193,124 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
             	collapsible: true,
             	title:loginUserLanguageResource.detailedInformation,
         		id:'AuxiliaryDeviceDetailsPanel_Id',
-        		html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
-        		tbar:onlyMonitor?null:[{
-                    xtype: 'radiogroup',
-                    fieldLabel: loginUserLanguageResource.specificType,
-                    hidden: onlyMonitor,
-                    labelWidth: getStringLength(loginUserLanguageResource.specificType)*8,
-                    id: 'AuxiliaryDeviceSpecificType_Id',
-                    cls: 'x-check-group-alt',
-                    items: [
-                        {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*10, inputValue: 1},
-                        {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
-                    ],
+        		layout: 'border',
+        		items: [{
+        			region: 'center',
+        			border:false,
+        			html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
+            		tbar:onlyMonitor?null:[{
+                        xtype: 'radiogroup',
+                        fieldLabel: loginUserLanguageResource.specificType,
+                        hidden: onlyMonitor,
+                        labelWidth: getStringLength(loginUserLanguageResource.specificType)*8,
+                        id: 'AuxiliaryDeviceSpecificType_Id',
+                        cls: 'x-check-group-alt',
+                        items: [
+                            {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*10, inputValue: 1},
+                            {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
+                        ],
+                        listeners: {
+                        	change: function (radiogroup, newValue, oldValue, eOpts) {
+                				var deviceId=0;
+                				var specificType=0;
+                				var name='';
+                				var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
+                				if(isNotVal(DeviceSelectRow)){
+                					deviceId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+                	            	specificType=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'specificType');
+                	            	name=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'name');
+                				}
+                				CreateAuxiliaryDeviceDetailsTable(deviceId,name);
+                				
+                				
+                				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue('');
+                    			Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
+                				CreateAndLoadPumpingUnitPTFTable(deviceId,name);
+                          	}
+                        }
+                    }],
                     listeners: {
-                    	change: function (radiogroup, newValue, oldValue, eOpts) {
-            				var deviceId=0;
-            				var specificType=0;
-            				var name='';
-            				var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
-            				if(isNotVal(DeviceSelectRow)){
-            					deviceId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
-            	            	specificType=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'specificType');
-            	            	name=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'name');
-            				}
-            				CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name);
-                      	}
-                    }
-                }],
-                listeners: {
-                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if (auxiliaryDeviceDetailsHandsontableHelper != null && auxiliaryDeviceDetailsHandsontableHelper.hot != null && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
-                    		var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		auxiliaryDeviceDetailsHandsontableHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (auxiliaryDeviceDetailsHandsontableHelper != null && auxiliaryDeviceDetailsHandsontableHelper.hot != null && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		auxiliaryDeviceDetailsHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
                         }
                     }
-                }
+        		},{
+        			region: 'south',
+        			height: '55%',
+        			title: loginUserLanguageResource.pumpingUnitPRTF,
+        			split: true,
+                	collapsible: true,
+                	id:'AuxiliaryDevicePumpingUnitPRTFPanel_Id',
+                	hidden: true,
+                	html: '<div class="AuxiliaryDevicePumpingUnitPRTFContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDevicePumpingUnitPRTFTableDiv_id"></div></div>',
+                	tbar: [{
+                        xtype: "combobox",
+                        fieldLabel: loginUserLanguageResource.stroke,
+                        id: 'AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id',
+                        labelWidth: 30,
+                        width: 140,
+                        labelAlign: 'left',
+                        triggerAction: 'all',
+                        displayField: "boxval",
+                        valueField: "boxkey",
+                        selectOnFocus: true,
+                        forceSelection: true,
+                        value: '',
+                        allowBlank: true,
+                        editable: false,
+                        emptyText: cosog.string.all,
+                        blankText: cosog.string.all,
+                        store: new Ext.data.SimpleStore({
+                            fields: ['boxkey', 'boxval'],
+                            data: [['','']]
+                        }),
+                        queryMode: 'local',
+                        listeners: {
+                            select: function (v, o) {
+                            	var deviceId=0;
+                				var name='';
+                				var DeviceSelectRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
+                				if(isNotVal(DeviceSelectRow)){
+                					deviceId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+                	            	name=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'name');
+                				}
+                				
+                				CreateAndLoadPumpingUnitPTFTable(deviceId,name);
+                            }
+                        }
+                    },'->', {
+                        xtype: 'button',
+                        id: 'saveAuxiliaryDevicePumpingUnitPRTFDataBtn_Id',
+                        disabled: false,
+                        hidden: false,
+                        text: loginUserLanguageResource.save,
+                        iconCls: 'save',
+                        handler: function (v, o) {
+                        	pumpingUnitPTFHandsontableHelper.saveData();
+                        }
+                    }],
+                	listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	
+                        }
+                    }
+        		}]
+        		
+        		
+        		
+        		
+        		
     		}],
             listeners: {
                 beforeclose: function (panel, eOpts) {
@@ -281,6 +357,8 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue('');
             	auxiliaryDeviceInfoHandsontableHelper.hot.selectCell(0,'name');
             	CreateAndLoadAuxiliaryDeviceDetailsTable(0,0,'');
+            	
+            	
             }else{
             	Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(0);
             	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(0);
@@ -394,6 +472,9 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	var name=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'name');
                         	
                         	CreateAndLoadAuxiliaryDeviceDetailsTable(recordId,specificType,name);
+                        	
+                        	
+                        	
                     	}else{
                     		Ext.getCmp("AuxiliaryDeviceSelectRow_Id").setValue(startRow);
                         	Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").setValue(endRow);
@@ -702,11 +783,15 @@ function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
 			Ext.getCmp('AuxiliaryDeviceSpecificType_Id').setValue({auxiliaryDeviceSpecificType:specificType});
 		}
 	}else{
-		CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name);
+		CreateAuxiliaryDeviceDetailsTable(deviceId,name);
+		
+		Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue('');
+		Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
+		CreateAndLoadPumpingUnitPTFTable(deviceId,name);
 	}
 }
 
-function CreateAuxiliaryDeviceDetailsTable(deviceId,specificType,name){
+function CreateAuxiliaryDeviceDetailsTable(deviceId,name){
 	if(auxiliaryDeviceDetailsHandsontableHelper!=null){
 		if(auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined){
 			auxiliaryDeviceDetailsHandsontableHelper.hot.destroy();
@@ -868,3 +953,173 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	        return auxiliaryDeviceDetailsHandsontableHelper;
 	    }
 	};
+
+function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
+	if(pumpingUnitPTFHandsontableHelper!=null){
+		if(pumpingUnitPTFHandsontableHelper.hot!=undefined){
+			pumpingUnitPTFHandsontableHelper.hot.destroy();
+		}
+		pumpingUnitPTFHandsontableHelper=null;
+	}
+	
+	var auxiliaryDeviceSpecificType=0;
+	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
+		auxiliaryDeviceSpecificType=Ext.getCmp("AuxiliaryDeviceSpecificType_Id").getValue().auxiliaryDeviceSpecificType;
+	}
+	
+	if(auxiliaryDeviceSpecificType==0){
+		Ext.getCmp('AuxiliaryDevicePumpingUnitPRTFPanel_Id').hide();
+		return;
+	}else if(auxiliaryDeviceSpecificType==1){
+		Ext.getCmp('AuxiliaryDevicePumpingUnitPRTFPanel_Id').show();
+	}
+	
+	var showInfo=loginUserLanguageResource.pumpingUnitPRTF;
+	if(isNotVal(deviceName)){
+		showInfo="【<font color=red>"+deviceName+"</font>】"+showInfo;
+	}
+	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").setTitle(showInfo);
+	
+	var stroke=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").rawValue;
+	
+	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
+	Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/wellInformationManagerController/getPumpingPRTFData',
+        success: function (response) {
+        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	var result = Ext.JSON.decode(response.responseText);
+        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getStore().loadData(result.strokeList);
+			if(result.strokeList.length>0){
+				var pumpingModelPRTFStrokeCombValeu=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getValue();
+				if(!isNotVal(pumpingModelPRTFStrokeCombValeu)){
+					Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue(result.strokeList[0][0]);
+					Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue(result.strokeList[0][0]);
+				}
+			}else{
+				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue('');
+				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
+			}
+            
+            if (pumpingUnitPTFHandsontableHelper == null || pumpingUnitPTFHandsontableHelper.hot == null || pumpingUnitPTFHandsontableHelper.hot == undefined) {
+            	pumpingUnitPTFHandsontableHelper = PumpingUnitPTFHandsontableHelper.createNew("AuxiliaryDevicePumpingUnitPRTFTableDiv_id");
+            	var colHeaders="['曲柄转角(°)','光杆位置因数(%)','扭矩因数(m)']";
+        		var columns="[" 
+        			+"{data:'CrankAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
+        			+"{data:'PR',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
+        			+"{data:'TF',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}" 
+        			+"]";
+        		pumpingUnitPTFHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
+        		pumpingUnitPTFHandsontableHelper.columns = Ext.JSON.decode(columns);
+        		if(result.totalRoot==0){
+        			pumpingUnitPTFHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+        		}else{
+        			pumpingUnitPTFHandsontableHelper.createTable(result.totalRoot);
+        		}
+        		
+            }else {
+                if(result.totalRoot==0){
+                	pumpingUnitPTFHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+        		}else{
+        			pumpingUnitPTFHandsontableHelper.hot.loadData(result.totalRoot);
+        		}
+            }
+        },
+        failure: function () {
+        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        },
+        params: {
+        	deviceId: deviceId,
+        	stroke:stroke
+        }
+    });
+};
+
+var PumpingUnitPTFHandsontableHelper = {
+	    createNew: function (divid) {
+	        var pumpingUnitPTFHandsontableHelper = {};
+	        pumpingUnitPTFHandsontableHelper.hot1 = '';
+	        pumpingUnitPTFHandsontableHelper.divid = divid;
+	        pumpingUnitPTFHandsontableHelper.validresult=true;//数据校验
+	        pumpingUnitPTFHandsontableHelper.colHeaders=[];
+	        pumpingUnitPTFHandsontableHelper.columns=[];
+	        pumpingUnitPTFHandsontableHelper.AllData=[];
+	        
+	        pumpingUnitPTFHandsontableHelper.createTable = function (data) {
+	        	$('#'+pumpingUnitPTFHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+pumpingUnitPTFHandsontableHelper.divid);
+	        	pumpingUnitPTFHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		data: data,
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+//	                hiddenColumns: {
+//	                    columns: [0],
+//	                    indicators: false,
+//                    	copyPasteEnabled: false
+//	                },
+	                columns:pumpingUnitPTFHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: true,//显示行头
+	                colHeaders:pumpingUnitPTFHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true
+	        	});
+	        }
+	        //保存数据
+	        pumpingUnitPTFHandsontableHelper.saveData = function () {
+	            var selectedDeviceId=0;
+	            var stroke=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").rawValue;
+	            var row=parseInt(Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue());
+	            if(Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue()!=''){
+	            	selectedDeviceId=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'id');
+	            }
+	            var strokePRTFData={};
+	            strokePRTFData.Stroke=stroke;
+	            strokePRTFData.PRTF=[];
+	            var PRTFData=pumpingUnitPTFHandsontableHelper.hot.getData();
+	            for(var i=0;i<PRTFData.length;i++){
+	            	var CrankAngle=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'CrankAngle');
+	            	var PR=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'PR');
+	            	var TF=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'TF');
+	            	if(isNumber(CrankAngle) && isNumber(PR) && isNumber(TF)){
+	            		var PRTF={};
+		            	PRTF.CrankAngle=parseFloat(CrankAngle);
+		            	PRTF.PR=parseFloat(PR);
+		            	PRTF.TF=parseFloat(TF);
+		            	strokePRTFData.PRTF.push(PRTF);
+	            	}
+	            }
+	            
+                Ext.Ajax.request({
+                    method: 'POST',
+                    url: context + '/wellInformationManagerController/savePumpingPRTFData',
+                    success: function (response) {
+                    	rdata = Ext.JSON.decode(response.responseText);
+                        if (rdata.success) {
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+                        } else {
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailure);
+                        }
+                    },
+                    failure: function () {
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+                        pumpingUnitPTFHandsontableHelper.clearContainer();
+                    },
+                    params: {
+                        data: JSON.stringify(strokePRTFData),
+                        deviceId:selectedDeviceId
+                    }
+                });
+	        }
+	        pumpingUnitPTFHandsontableHelper.clearContainer = function () {
+	        	pumpingUnitPTFHandsontableHelper.AllData = [];
+	        }
+	        return pumpingUnitPTFHandsontableHelper;
+	    }
+};

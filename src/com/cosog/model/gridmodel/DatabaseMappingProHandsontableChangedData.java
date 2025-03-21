@@ -40,6 +40,8 @@ public class DatabaseMappingProHandsontableChangedData {
 	    private String calColumn;
 	    
 	    private String calColumnName;
+	    
+	    private boolean calculateEnable;
 
 		public String getId() {
 			return id;
@@ -79,6 +81,14 @@ public class DatabaseMappingProHandsontableChangedData {
 
 		public void setCalColumnName(String calColumnName) {
 			this.calColumnName = calColumnName;
+		}
+
+		public boolean getCalculateEnable() {
+			return calculateEnable;
+		}
+
+		public void setCalculateEnable(boolean calculateEnable) {
+			this.calculateEnable = calculateEnable;
 		}
 	}
 }

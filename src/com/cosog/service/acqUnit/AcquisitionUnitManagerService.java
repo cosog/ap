@@ -6681,7 +6681,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer calColumnNameBuff = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1";
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.calculateEnable from tbl_datamapping t where 1=1";
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
@@ -6700,16 +6700,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					sql+=" and 1=2";
 				}
 			}
-		
-		}
-				
+		}	
 				
 		sql+=" order by t.id";
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",children:[] }"
 				+ "]";
 		
 		calColumnNameBuff.append("[''");
@@ -6734,7 +6733,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
 			result_json.append("\"itemColumn\":\""+obj[2]+"\",");
-			result_json.append("\"calColumnName\":\""+calColumnName+"\"},");
+			result_json.append("\"calColumnName\":\""+calColumnName+"\",");
+			result_json.append("\"calculateEnable\":"+(StringManagerUtils.stringToInteger(obj[4]+"")==1?true:false)+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -7061,9 +7061,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<databaseMappingProHandsontableChangedData.getUpdatelist().size();i++){
 				String calColumn=MemoryDataManagerTask.getCalculateColumnFromName(StringManagerUtils.stringToInteger(protocolType), 
 						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName(),language);
-				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
+				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"',"
+						+ " t.calculateEnable="+(databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalculateEnable()?1:0)
 						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName().replaceAll("&nbsp;", "").replaceAll("null", "")+"' "
 						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn().replaceAll("&nbsp;", "").replaceAll("null", "")+"' ";
+						
 				getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}

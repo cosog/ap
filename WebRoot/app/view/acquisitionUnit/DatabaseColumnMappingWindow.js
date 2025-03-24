@@ -142,12 +142,13 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemColumn'},"
-						+"{data:'calColumnName'}"
+						+"{data:'calColumnName'},"
+						+"{data:'calculateEnable',type:'checkbox'}"
 						+"]";
 				databaseColumnMappingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				databaseColumnMappingHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -282,7 +283,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(databaseColumnMappingHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if( (databaseColumnMappingHandsontableHelper.columns[coords.col].type ==undefined || databaseColumnMappingHandsontableHelper.columns[coords.col].type!='checkbox' )
 	                		&& databaseColumnMappingHandsontableHelper!=null
 	                		&& databaseColumnMappingHandsontableHelper.hot!=''
 	                		&& databaseColumnMappingHandsontableHelper.hot!=undefined 

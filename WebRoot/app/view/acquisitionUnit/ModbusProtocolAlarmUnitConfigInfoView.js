@@ -221,7 +221,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=null && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
                                 		var newWidth=width;
-                                		var newHeight=height;
+                                		var newHeight=height-22-1;//减去tbar
                                 		var header=thisPanel.getHeader();
                                 		if(header){
                                 			newHeight=newHeight-header.lastBox.height-2;
@@ -284,7 +284,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                                 	if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
 //                                		protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
-                                		var newHeight=height;
+                                		var newHeight=height-22-1;//减去tbar
                                 		var header=thisPanel.getHeader();
                                 		if(header){
                                 			newHeight=newHeight-header.lastBox.height-2;
@@ -356,7 +356,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                                 	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
 //                                		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
-                                		var newWidth=width;
+                                		var newHeight=height-22-1;//减去tbar
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
                                 		if(header){
@@ -430,7 +430,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                                 	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
 //                                		protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
-                                		var newHeight=height;
+                                		var newHeight=height-22-1;//减去tbar
                                 		var header=thisPanel.getHeader();
                                 		if(header){
                                 			newHeight=newHeight-header.lastBox.height-2;
@@ -491,7 +491,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
 //                            		protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
-                            		var newHeight=height;
+                            		var newHeight=height-22-1;//减去tbar
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
@@ -550,7 +550,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
 //                            		protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
-                            		var newHeight=height;
+                            		var newHeight=height-22-1;//减去tbar
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
@@ -609,7 +609,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                             	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
 //                            		protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
-                            		var newHeight=height;
+                            		var newHeight=height-22-1;//减去tbar
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;

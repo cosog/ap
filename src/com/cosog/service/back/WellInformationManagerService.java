@@ -1160,7 +1160,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String savePumpingPRTFData(String recordId,String data) throws Exception {
+	public String savePumpingPRTFData(String deviceId,String data) throws Exception {
 		String result = "{success:true,msg:true}";
 		try{
 			Gson gson = new Gson();
@@ -1168,7 +1168,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			type = new TypeToken<PumpingPRTFData.EveryStroke>() {}.getType();
 			PumpingPRTFData.EveryStroke everyStroke=gson.fromJson(data, type);
 			if(everyStroke!=null){
-				String sql = "select t.prtf from tbl_pumpingmodel t where t.id="+recordId;
+				String sql = "select t.prtf from tbl_auxiliarydevice t where t.id="+deviceId;
 				PumpingPRTFData pumpingPRTFData=null;
 				List<String> clobCont=new ArrayList<String>();
 				List<?> list = this.findCallSql(sql);
@@ -1200,7 +1200,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						pumpingPRTFData.getList().add(everyStroke);
 					}
 					clobCont.add(gson.toJson(pumpingPRTFData));
-					String updatePRTFClobSql="update tbl_pumpingmodel t set t.prtf=? where t.id="+recordId;
+					String updatePRTFClobSql="update tbl_auxiliarydevice t set t.prtf=? where t.id="+deviceId;
 					getBaseDao().executeSqlUpdateClob(updatePRTFClobSql,clobCont);
 				}
 			}
@@ -1708,10 +1708,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getPumpingPRTFData(String recordId,String stroke) throws SQLException, IOException {
+	public String getPumpingPRTFData(String deviceId,String stroke) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer strokeListBuff = new StringBuffer();
-		String sql = "select t.stroke,t.prtf from tbl_pumpingmodel t where t.id="+recordId;
+		String sql = "select t2.itemvalue,t.prtf from tbl_auxiliarydevice t left outer join tbl_auxiliarydeviceaddinfo t2 on  t.id=t2.deviceid and lower(t2.itemcode)='stroke' where t.id="+deviceId;
 		String json = "";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1742,7 +1742,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			type = new TypeToken<PumpingPRTFData>() {}.getType();
 			PumpingPRTFData pumpingPRTFData=gson.fromJson(prtf, type);
-			if(pumpingPRTFData!=null&&pumpingPRTFData.getList()!=null&&pumpingPRTFData.getList().size()>0){
+			if(pumpingPRTFData!=null && pumpingPRTFData.getList()!=null && pumpingPRTFData.getList().size()>0){
 				for(int i=0;i<pumpingPRTFData.getList().size();i++){
 					if(StringManagerUtils.isNotNull(stroke)){
 						if(pumpingPRTFData.getList().get(i).getStroke()==StringManagerUtils.stringToFloat(stroke)){

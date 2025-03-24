@@ -2599,6 +2599,7 @@ public class DriverAPIController extends BaseController{
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
+//								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
 						}
@@ -2779,12 +2780,10 @@ public class DriverAPIController extends BaseController{
 								int alarmLevel=0;
 								int sort=9999;
 								
-								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
-									
+								if(dataMappingColumn.getCalculateEnable()==1 && StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
 										
 									}
-									
 									
 									String saveValue=rawValue;
 									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
@@ -3226,6 +3225,7 @@ public class DriverAPIController extends BaseController{
 						
 						if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+							
 							SRPCalculateResponseData responseResultData =new SRPCalculateResponseData(); 
 							responseResultData.init();
 							
@@ -3511,7 +3511,7 @@ public class DriverAPIController extends BaseController{
 								int alarmLevel=0;
 								int sort=9999;
 								
-								if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
+								if(dataMappingColumn.getCalculateEnable()==1 && StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									String saveValue=rawValue;
 									if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
 										saveValue=rawValue.substring(0, 50);

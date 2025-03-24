@@ -5,6 +5,9 @@ var videoInfoHandsontableHelper = null;
 
 var deviceAuxiliaryDeviceInfoHandsontableHelper=null;
 var deviceAdditionalInfoHandsontableHelper=null;
+
+var fsDiagramConstructionHandsontableHelper = null;
+
 Ext.define('AP.view.well.DeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deviceInfoPanel',
@@ -471,113 +474,131 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     }
             	},{
             		title:loginUserLanguageResource.calculateDataConfig,
-            		id:'DeviceCalculateDataInfoPanel_Id',
-            		layout: 'border',
-            		split: true,
-            		collapsible: true,
-            		header:false,
+            		xtype: 'tabpanel',
+                	id:'DeviceCalculateDataInfoPanel_Id',
+                	activeTab: 0,
 //            		hidden:onlyMonitor,
-            		tbar:[{
-                        xtype: 'radiogroup',
-                        fieldLabel: loginUserLanguageResource.calculateType,
-                        labelWidth: getStringLength(loginUserLanguageResource.calculateType)*8,
-                        id: 'DeviceCalculateDataType_Id',
-                        cls: 'x-check-group-alt',
-                        items: [
-                            {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.SRPCalculate)*10, inputValue: 1},
-                            {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*10, inputValue: 2},
-                            {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
-                        ],
-                        listeners: {
-                        	change: function (radiogroup, newValue, oldValue, eOpts) {
-                				var deviceId=0;
-                				var deviceName='';
-                				var applicationScenarios=0;
-                				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
-                				if(isNotVal(DeviceSelectRow)){
-                					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-                    	        	if(deviceInfoHandsontableData.length>0){
-                    	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
-                    	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
-                    	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
-                    	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
-                	        				applicationScenarios=1;
-                	        			}
-                    	        	}
-                				}
-                				
-                				
-                				
-                				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,true);
-                				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
-                          	}
-                        }
-                    },'->',{
-            			xtype: 'button',
-            			text:loginUserLanguageResource.downlink,
-            			iconCls: 'down',
-            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
-            			handler: function (v, o) {
-            				deviceProductionDataDownlink();
-            			}
-            		}],
-            		items: [{
-                      	region: 'center',
-                		title:loginUserLanguageResource.productionData,
-                    	id:'ProductionDataInfoPanel_Id',
-                    	split: true,
-                    	collapsible: false,
-                    	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		productionHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                                }
+                	items: [{
+                		title:'功图/转速计算',
+                		id:'DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id',
+                		layout: 'border',
+                		split: true,
+                		collapsible: true,
+                		header:false,
+                		tbar:[{
+                            xtype: 'radiogroup',
+                            fieldLabel: loginUserLanguageResource.calculateType,
+                            labelWidth: getStringLength(loginUserLanguageResource.calculateType)*8,
+                            id: 'DeviceCalculateDataType_Id',
+                            cls: 'x-check-group-alt',
+                            items: [
+                                {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.SRPCalculate)*10, inputValue: 1},
+                                {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*10, inputValue: 2},
+                                {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
+                            ],
+                            listeners: {
+                            	change: function (radiogroup, newValue, oldValue, eOpts) {
+                    				var deviceId=0;
+                    				var deviceName='';
+                    				var applicationScenarios=0;
+                    				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+                    				if(isNotVal(DeviceSelectRow)){
+                    					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+                        	        	if(deviceInfoHandsontableData.length>0){
+                        	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+                        	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+                        	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+                        	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+                    	        				applicationScenarios=1;
+                    	        			}
+                        	        	}
+                    				}
+                    				
+                    				
+                    				
+                    				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,true);
+                    				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
+                              	}
                             }
-                        }
-                	},{
-                		region: 'east',
-                        width: '40%',
-                        id:'PumpingModelConfigInfoPanel_Id',
-                        layout: 'border',
-                        split: true,
-                        collapsible: true,
-                        header:false,
-                        items: [{
-                        	region: 'center',
+                        },'->',{
+                			xtype: 'button',
+                			text:loginUserLanguageResource.downlink,
+                			iconCls: 'down',
+                			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+                			handler: function (v, o) {
+                				deviceProductionDataDownlink();
+                			}
+                		}],
+                		items: [{
+                          	region: 'center',
+                    		title:loginUserLanguageResource.productionData,
+                        	id:'ProductionDataInfoPanel_Id',
                         	split: true,
-                            collapsible: true,
-                        	title:loginUserLanguageResource.pumpingInfo,
-                        	id:'PumpingInfoPanel_Id',
-                            split: true,
-                            collapsible: true,
-                            html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
+                        	collapsible: false,
+                        	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
+                                	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
                                 		if(header){
                                 			newHeight=newHeight-header.lastBox.height-2;
                                 		}
-                                		pumpingInfoHandsontableHelper.hot.updateSettings({
+                                		productionHandsontableHelper.hot.updateSettings({
                                 			width:newWidth,
                                 			height:newHeight
                                 		});
                                     }
                                 }
                             }
-                        }]
+                    	},{
+                    		region: 'east',
+                            width: '40%',
+                            id:'PumpingModelConfigInfoPanel_Id',
+                            layout: 'border',
+                            split: true,
+                            collapsible: true,
+                            header:false,
+                            items: [{
+                            	region: 'center',
+                            	split: true,
+                                collapsible: true,
+                            	title:loginUserLanguageResource.pumpingInfo,
+                            	id:'PumpingInfoPanel_Id',
+                                split: true,
+                                collapsible: true,
+                                html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
+                                listeners: {
+                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                    	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
+                                    		var newWidth=width;
+                                    		var newHeight=height;
+                                    		var header=thisPanel.getHeader();
+                                    		if(header){
+                                    			newHeight=newHeight-header.lastBox.height-2;
+                                    		}
+                                    		pumpingInfoHandsontableHelper.hot.updateSettings({
+                                    			width:newWidth,
+                                    			height:newHeight
+                                    		});
+                                        }
+                                    }
+                                }
+                            }]
+                    	}]
+                	},{
+                		title:'功图构建',
+                		id:'DeviceFSDiagramConstructionInfoPanel_Id'
+                	},{
+                		title:'智能变频',
+                		id:'DeviceIntelligentFrequencyConversionInfoPanel_Id'
+                	},{
+                		title:'智能间抽',
+                		id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'
+                	},{
+                		title:'设备配置',
+                		id:'DeviceParameterConfigurationInfoPanel_Id'
                 	}]
             	}],
             	listeners: {
@@ -3480,3 +3501,266 @@ function deviceProductionDataDownlink(){
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	}
 }
+
+function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew){
+	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+	
+	if(fsDiagramConstructionHandsontableHelper!=null){
+		if(fsDiagramConstructionHandsontableHelper.hot!=undefined){
+			fsDiagramConstructionHandsontableHelper.hot.destroy();
+		}
+		fsDiagramConstructionHandsontableHelper=null;
+	}
+	if(deviceCalculateDataType!=0){
+		Ext.getCmp("ProductionDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
+			success:function(response) {
+				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
+				var result =  Ext.JSON.decode(response.responseText);
+				
+				var panelTitle=loginUserLanguageResource.productionData;
+				if(isNotVal(deviceName)){
+					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
+				}
+				Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
+				if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
+					fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
+					fsDiagramConstructionHandsontableHelper.resultList = result.resultNameList;
+					fsDiagramConstructionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
+					var columns="[{data:'id'}," 
+						+"{data:'itemName'}," 
+						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
+						+"{data:'itemCode'}," 
+						+"{data:'downlinkStatus'}" 
+						+"]";
+					fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+					fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
+					if(result.totalRoot.length==0){
+						fsDiagramConstructionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						fsDiagramConstructionHandsontableHelper.pumpGrade=result.totalRoot[13].itemValue;
+						fsDiagramConstructionHandsontableHelper.createTable(result.totalRoot);
+					}
+				}else{
+					fsDiagramConstructionHandsontableHelper.resultList = result.resultNameList;
+					fsDiagramConstructionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
+					if(result.totalRoot.length==0){
+						fsDiagramConstructionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						fsDiagramConstructionHandsontableHelper.hot.loadData(result.totalRoot);
+					}
+				}
+				
+				var hiddenRows=[0,3,9,10];
+				const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenRows');
+				if(applicationScenarios==0){
+					
+				}
+				if(applicationScenarios==0){
+            		plugin.hideRows(hiddenRows);
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
+            	}else if(applicationScenarios==1){
+            		plugin.showRows(hiddenRows);
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth+'(m)');
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature+'(℃)');
+            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure+'(MPa)');
+            	}
+	        	fsDiagramConstructionHandsontableHelper.hot.render();
+			},
+			failure:function(){
+				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			},
+			params: {
+				deviceId:deviceId,
+				deviceCalculateDataType:deviceCalculateDataType,
+				deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
+	        }
+		});
+	}else{
+		var panelTitle=loginUserLanguageResource.productionData;
+		if(isNotVal(deviceName)){
+			panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
+		}
+		Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
+	}
+};
+
+var FSDiagramConstructionHandsontableHelper = {
+	    createNew: function (divid) {
+	        var fsDiagramConstructionHandsontableHelper = {};
+	        fsDiagramConstructionHandsontableHelper.hot = '';
+	        fsDiagramConstructionHandsontableHelper.divid = divid;
+	        fsDiagramConstructionHandsontableHelper.colHeaders = [];
+	        fsDiagramConstructionHandsontableHelper.columns = [];
+	        fsDiagramConstructionHandsontableHelper.resultList = [];
+	        fsDiagramConstructionHandsontableHelper.FESdiagramSrcList = [];
+	        fsDiagramConstructionHandsontableHelper.pumpGrade = '';
+	        
+	        fsDiagramConstructionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        fsDiagramConstructionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
+	        fsDiagramConstructionHandsontableHelper.createTable = function (data) {
+	            $('#' + fsDiagramConstructionHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + fsDiagramConstructionHandsontableHelper.divid);
+	            fsDiagramConstructionHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	            	colWidths: [50,100,100],
+	                hiddenColumns: {
+	                    columns: [0,3,4],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: fsDiagramConstructionHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false, //显示行头
+	                colHeaders: fsDiagramConstructionHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+	                    
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if (visualColIndex !=2) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
+			                }else if(visualRowIndex==39 && visualColIndex==2){
+//		                    	cellProperties.readOnly = true;
+		                    	cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
+		                    	this.type = 'dropdown';
+		                    	this.source = [loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex===14 && deviceCalculateDataType==1) {
+		                    	var barrelType='';
+		                    	if(isNotVal(fsDiagramConstructionHandsontableHelper.hot)){
+		                    		barrelType=fsDiagramConstructionHandsontableHelper.hot.getDataAtCell(13,2);
+		                    	}else{
+		                    		barrelType=fsDiagramConstructionHandsontableHelper.pumpGrade;
+		                    	}
+		                    	var pumpGradeList=['1','2','3','4','5'];
+		                    	if(barrelType===loginUserLanguageResource.barrelType_L){
+		                    		pumpGradeList=['1','2','3'];
+		                    	}
+		                    	this.type = 'dropdown';
+		                    	this.source = pumpGradeList;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===24||visualRowIndex===29||visualRowIndex===32)) {
+		                    	this.type = 'dropdown';
+		                    	this.source = [loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===25||visualRowIndex===30||visualRowIndex===33)) {
+		                    	this.type = 'dropdown';
+		                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex===39 && deviceCalculateDataType==1) {
+		                    	this.type = 'dropdown';
+		                    	this.source = fsDiagramConstructionHandsontableHelper.resultList;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex===43 && deviceCalculateDataType==1) {
+		                    	this.type = 'dropdown';
+		                    	this.source = fsDiagramConstructionHandsontableHelper.FESdiagramSrcList;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    	if (visualColIndex !=2) {
+	                    		cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(fsDiagramConstructionHandsontableHelper!=null&&fsDiagramConstructionHandsontableHelper.hot!=''&&fsDiagramConstructionHandsontableHelper.hot!=undefined && fsDiagramConstructionHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	            });
+	        }
+	        return fsDiagramConstructionHandsontableHelper;
+	    }
+	};

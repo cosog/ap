@@ -639,7 +639,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,t.calculateType,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runStatusCalValue,t.calculateType,"
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
 				String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
@@ -804,7 +804,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							header+="("+unit+")";
 						}
 						
-						columns.append("{ \"header\":\""+header+"\",\"dataIndex\":\""+dataIndex+"\"},");
+						columns.append("{ \"header\":\""+header+"\",\"dataIndex\":\""+(dataIndex.equalsIgnoreCase("runStatus")?"RunStatusName":dataIndex)+"\"},");
 					}
 				}
 			}
@@ -816,6 +816,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						column="resultCode";
 					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}else if("runstatusName".equalsIgnoreCase(column)){
+						column="runstatus";
 					}
 					sql+=",t3."+column;
 				}
@@ -970,7 +972,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
 				result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 				result_json.append("\"runStatus\":"+runStatus+",");
-				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+				result_json.append("\"RunStatusName\":\""+runStatusName+"\",");
 				result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 				result_json.append("\"calculateType\":"+obj[6]+",");
 				result_json.append("\"details\":\""+languageResourceMap.get("details")+"\",");
@@ -1131,27 +1133,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String bitIndex="";
 						String unit=displayCalItemList.get(j).getUnit();
 						int sort=9999;
-						for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-							if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-								sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-								//如果是工况
-								if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-									if(workType!=null){
-										value=workType.getResultName();
-										for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
-											if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-												resultAlarmLevel=alarmItem.getAlarmLevel();
+						
+						if(!("runStatus".equalsIgnoreCase(column) || "runStatusName".equalsIgnoreCase(column))){
+							for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+								if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+									sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+									//如果是工况
+									if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+										if(workType!=null){
+											value=workType.getResultName();
+											for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+												if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+													resultAlarmLevel=alarmItem.getAlarmLevel();
+												}
 											}
+											
 										}
-										
 									}
+									break;
 								}
-								break;
 							}
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
-						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}
 				}
 				
@@ -1510,7 +1515,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,t.calculateType,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runStatusCalValue,t.calculateType,"
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList());
@@ -1642,7 +1647,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							header+="("+unit+")";
 						}
 						
-						field+=","+dataIndex;
+						field+=","+(dataIndex.equalsIgnoreCase("runStatus")?"RunStatusName":dataIndex);
 						head+=","+header;
 					}
 				}
@@ -1655,6 +1660,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						column="resultCode";
 					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}else if("runstatusName".equalsIgnoreCase(column)){
+						column="runstatus";
 					}
 					sql+=",t3."+column;
 				}
@@ -1797,7 +1804,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("\"commStatus\":"+obj[3]+",");
 				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
 				result_json.append("\"runStatus\":"+runStatus+",");
-				result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+				result_json.append("\"RunStatusName\":\""+runStatusName+"\",");
 				result_json.append("\"calculateType\":"+obj[6]+",");
 				
 				
@@ -1957,21 +1964,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String bitIndex="";
 						String unit=displayCalItemList.get(j).getUnit();
 						int sort=9999;
-						for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-							if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-								sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-								//如果是工况
-								if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-									if(workType!=null){
-										value=workType.getResultName();
+						if(!("runStatus".equalsIgnoreCase(column) || "runStatusName".equalsIgnoreCase(column))){
+							for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+								if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+									sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+									//如果是工况
+									if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+										if(workType!=null){
+											value=workType.getResultName();
+										}
 									}
+									break;
 								}
-								break;
 							}
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
-						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
-						protocolItemResolutionDataList.add(protocolItemResolutionData);
 					}
 				}
 				
@@ -2353,7 +2362,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "//0~2
 							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"//3~5
-							+ "t2.acqdata ";//6
+							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
+							+ "t2.acqdata ";//9
 					
 					for(int i=0;i<displayCalItemList.size();i++){
 						String column=displayCalItemList.get(i).getCode();
@@ -2362,6 +2372,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								column="resultCode";
 							}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}else if("runstatusName".equalsIgnoreCase(column)){
+								column="runstatus";
 							}
 							sql+=",t3."+column;
 						}else{
@@ -2389,7 +2401,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						int row=1;
 						Object[] obj=(Object[]) list.get(0);
 						String acqTime=obj[2]+"";
-						String acqData=StringManagerUtils.CLOBObjectToString(obj[6]);
+						String runStatus=obj[6]+"";
+						String runStatusName=obj[7]+"";
+						String acqData=StringManagerUtils.CLOBObjectToString(obj[9]);
 						
 						if(displayInputItemList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
@@ -2536,7 +2550,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 						
 						for(int i=0;i<displayCalItemList.size();i++){
-							int index=i+7;
+							int index=i+10;
 							if(index<obj.length){
 								String columnName=displayCalItemList.get(i).getName();
 								String rawColumnName=columnName;
@@ -2561,6 +2575,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											if(workType!=null){
 												value=workType.getResultName();
 											}
+										}else if("runStatus".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"runStatusName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+											value=runStatusName;
+											rawValue=runStatus;
 										}
 										break;
 									}

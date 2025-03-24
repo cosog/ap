@@ -925,10 +925,10 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getPumpingPRTFData")
 	public String getPumpingPRTFData() throws IOException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String recordId= ParamUtils.getParameter(request, "recordId");
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		String stroke= ParamUtils.getParameter(request, "stroke");
 		
-		String json = this.wellInformationManagerService.getPumpingPRTFData(recordId,stroke);
+		String json = this.wellInformationManagerService.getPumpingPRTFData(deviceId,stroke);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1736,8 +1736,8 @@ public class WellInformationManagerController extends BaseController {
 	public String savePumpingPRTFData() throws Exception {
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
-		String recordId = ParamUtils.getParameter(request, "recordId");
-		String json=this.wellInformationManagerService.savePumpingPRTFData(recordId,data);
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String json=this.wellInformationManagerService.savePumpingPRTFData(deviceId,data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2481,7 +2481,7 @@ public class WellInformationManagerController extends BaseController {
 		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
 		String status=languageResourceMap.get("noDownlink");
 		int reslut=0;
-		if(dataMapping!=null){
+		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
 			reslut=deviceControlOperation_Mdubus(protocolName,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
 			if(reslut==1){
 				status=languageResourceMap.get("downlinkSuccessfully");

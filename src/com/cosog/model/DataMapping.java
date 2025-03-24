@@ -11,8 +11,9 @@ public class DataMapping  implements Serializable{
 	public Integer mappingMode;
 	public Integer repetitionTimes;
 	public String calColumn;
+	public Integer calculateEnable;
 	public DataMapping(Integer id, String name, String mappingColumn, Integer protocolType, Integer mappingMode,
-			Integer repetitionTimes, String calColumn) {
+			Integer repetitionTimes, String calColumn, Integer calculateEnable) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -21,6 +22,7 @@ public class DataMapping  implements Serializable{
 		this.mappingMode = mappingMode;
 		this.repetitionTimes = repetitionTimes;
 		this.calColumn = calColumn;
+		this.calculateEnable = calculateEnable;
 	}
 	public DataMapping() {
 		super();
@@ -66,5 +68,11 @@ public class DataMapping  implements Serializable{
 	}
 	public void setCalColumn(String calColumn) {
 		this.calColumn = calColumn;
+	}
+	public Integer getCalculateEnable() {
+		return calculateEnable;
+	}
+	public void setCalculateEnable(Integer calculateEnable) {
+		this.calculateEnable = calculateEnable;
 	}
 }

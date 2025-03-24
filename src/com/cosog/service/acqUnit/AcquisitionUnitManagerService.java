@@ -1206,376 +1206,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> historyOverviewSortList=new ArrayList<String>();
 		
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
-		
-		
-		//calculate
-		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
-			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-					+ " tbl_datamapping t6 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
-					+ " and t.itemname=t6.name and t.dailytotalcalculate=1 and t5.id="+unitId
-					+ " order by t.id";
-			List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-			for(int i=0;i<unitDailyTotalItemsList.size();i++){
-				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-				String itemName=obj[0]+"";
-				String name=obj[1]+"";
-				String totalCode=(obj[2]+"_TOTAL").toUpperCase();
-				String unit="";
-				if(protocolConfig!=null && protocolConfig.getItems()!=null){
-					for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
-						if(itemName.equalsIgnoreCase(item.getTitle())){
-							unit=item.getUnit();
-							break;
-						}
-					}
-				}
-				CalItem calItem=new CalItem(name,totalCode,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
-				calItemList.add(calItem);
-			}
-		}
-		
-		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
-					+ " order by t.realtimeSort";
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsHistorySortList.add(obj[3]+"");
-				
-				itemsShowLevelList.add(obj[4]+"");
-				String realtimeCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
-					realtimeCurveConf="\"\"";
-				}
-				String historyCurveConf=obj[6]+"";
-				if(!StringManagerUtils.isNotNull(obj[6]+"")){
-					historyCurveConf="\"\"";
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConf);
-				historyCurveConfList.add(historyCurveConf);
-				
-				realtimeColorList.add(obj[7]+"");
-				realtimeBgColorList.add(obj[8]+"");
-				historyColorList.add(obj[9]+"");
-				historyBgColorList.add(obj[10]+"");
-				
-				
-				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
-				realtimeOverviewSortList.add(obj[12]+"");
-				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
-				
-				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-				historyOverviewSortList.add(obj[15]+"");
-				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
-			}
-		}
-		
 		int index=1;
-		for(CalItem calItem:calItemList){
-			boolean checked=false;
-			String realtimeSort="";
-			String historySort="";
-			String showLevel="";
-			String realtimeCurveConf="\"\"";
-			String realtimeCurveConfShowValue="";
-			String historyCurveConf="\"\"";
-			String historyCurveConfShowValue="";
-			String realtimeColor=""; 
-			String realtimeBgColor="";
-			String historyColor="";
-			String historyBgColor="";
-			
-			boolean realtimeOverview=false;
-			String  realtimeOverviewSort="";
-			boolean realtimeData=false;
-			
-			boolean historyOverview=false;
-			String  historyOverviewSort="";
-			boolean historyData=false;
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
-				for(int k=0;k<itemsList.size();k++){
-					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-						realtimeSort=itemsRealtimeSortList.get(k);
-						historySort=itemsHistorySortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						realtimeCurveConf=realtimeCurveConfList.get(k);
-						historyCurveConf=historyCurveConfList.get(k);
-						
-						realtimeColor=realtimeColorList.get(k);
-						realtimeBgColor=realtimeBgColorList.get(k);
-						historyColor=historyColorList.get(k);
-						historyBgColor=historyBgColorList.get(k);
-						
-						CurveConf realtimeCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
-						}
-						
-						CurveConf historyCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-						}
-						
-						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-						}
-						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-						}
-						
-						realtimeOverview=realtimeOverviewList.get(k);
-						realtimeOverviewSort=realtimeOverviewSortList.get(k);
-						realtimeData=realtimeDataList.get(k);
-						
-						historyOverview=historyOverviewList.get(k);
-						historyOverviewSort=historyOverviewSortList.get(k);
-						historyData=historyDataList.get(k);
-						
-						break;
-					}
-				}
-			}
-			String dataSource=languageResourceMap.get("calculate");
-			if("RunStatus".equalsIgnoreCase(calItem.getCode())){
-				dataSource=languageResourceMap.get("acquisition");
-			}
-			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(index)+","
-					+ "\"title\":\""+calItem.getName()+"\","
-					+ "\"unit\":\""+calItem.getUnit()+"\","
-					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"realtimeSort\":\""+realtimeSort+"\","
-					+ "\"realtimeColor\":\""+realtimeColor+"\","
-					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-					+ "\"historySort\":\""+historySort+"\","
-					+ "\"historyColor\":\""+historyColor+"\","
-					+ "\"historyBgColor\":\""+historyBgColor+"\","
-					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-					+ "\"historyCurveConf\":"+historyCurveConf+","
-					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-					+ "\"code\":\""+calItem.getCode()+"\","
-//					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
-					+ "\"type\":1,"
-					+ "\"dataSource\":\""+dataSource+"\","
-					+ "\"realtimeOverview\":"+realtimeOverview+","
-					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-					+ "\"realtimeData\":"+realtimeData+","
-					+ "\"historyOverview\":"+historyOverview+","
-					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-					+ "\"historyData\":"+historyData+""
-					+ "},");
-			index++;
-		
-		}
-		
-		//input
-		acqItemsList=new ArrayList<String>();
-		acqItemsBitIndexList=new ArrayList<String>();
-		
-		itemsList=new ArrayList<String>();
-		itemsCodeList=new ArrayList<String>();
-		itemsRealtimeSortList=new ArrayList<String>();
-		itemsHistorySortList=new ArrayList<String>();
-		itemsBitIndexList=new ArrayList<String>();
-		itemsShowLevelList=new ArrayList<String>();
-		realtimeCurveConfList=new ArrayList<String>();
-		historyCurveConfList=new ArrayList<String>();
-		
-		realtimeColorList=new ArrayList<String>();
-		realtimeBgColorList=new ArrayList<String>();
-		historyColorList=new ArrayList<String>();
-		historyBgColorList=new ArrayList<String>();
-		
-		realtimeDataList=new ArrayList<>();
-		realtimeOverviewList=new ArrayList<>();
-		realtimeOverviewSortList=new ArrayList<String>();
-		
-		historyDataList=new ArrayList<>();
-		historyOverviewList=new ArrayList<>();
-		historyOverviewSortList=new ArrayList<String>();
-		
-		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
-					+ " order by t.realtimeSort";
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsHistorySortList.add(obj[3]+"");
-				itemsShowLevelList.add(obj[4]+"");
-				String realtimeCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
-					realtimeCurveConf="\"\"";
-				}
-				String historyCurveConf=obj[6]+"";
-				if(!StringManagerUtils.isNotNull(obj[6]+"")){
-					historyCurveConf="\"\"";
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConf);
-				historyCurveConfList.add(historyCurveConf);
-				
-				realtimeColorList.add(obj[7]+"");
-				realtimeBgColorList.add(obj[8]+"");
-				historyColorList.add(obj[9]+"");
-				historyBgColorList.add(obj[10]+"");
-				
-				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
-				realtimeOverviewSortList.add(obj[12]+"");
-				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
-				
-				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-				historyOverviewSortList.add(obj[15]+"");
-				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
-			}
-		}
-
-		for(CalItem calItem:inputItemList){
-			boolean checked=false;
-			String realtimeSort="";
-			String historySort="";
-			String showLevel="";
-			String realtimeCurveConf="\"\"";
-			String realtimeCurveConfShowValue="";
-			String historyCurveConf="\"\"";
-			String historyCurveConfShowValue="";
-			String realtimeColor=""; 
-			String realtimeBgColor="";
-			String historyColor="";
-			String historyBgColor="";
-			
-			boolean realtimeOverview=false;
-			String  realtimeOverviewSort="";
-			boolean realtimeData=false;
-			
-			boolean historyOverview=false;
-			String  historyOverviewSort="";
-			boolean historyData=false;
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
-				for(int k=0;k<itemsList.size();k++){
-					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-						realtimeSort=itemsRealtimeSortList.get(k);
-						historySort=itemsHistorySortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						realtimeCurveConf=realtimeCurveConfList.get(k);
-						historyCurveConf=historyCurveConfList.get(k);
-						realtimeColor=realtimeColorList.get(k);
-						realtimeBgColor=realtimeBgColorList.get(k);
-						historyColor=historyColorList.get(k);
-						historyBgColor=historyBgColorList.get(k);
-						
-						CurveConf realtimeCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
-						}
-						
-						CurveConf historyCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-						}
-						
-						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-						}
-						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-						}
-						
-						realtimeOverview=realtimeOverviewList.get(k);
-						realtimeOverviewSort=realtimeOverviewSortList.get(k);
-						realtimeData=realtimeDataList.get(k);
-						
-						historyOverview=historyOverviewList.get(k);
-						historyOverviewSort=historyOverviewSortList.get(k);
-						historyData=historyDataList.get(k);
-						break;
-					}
-				}
-			}
-			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(index)+","
-					+ "\"title\":\""+calItem.getName()+"\","
-					+ "\"unit\":\""+calItem.getUnit()+"\","
-					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"realtimeSort\":\""+realtimeSort+"\","
-					+ "\"realtimeColor\":\""+realtimeColor+"\","
-					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-					+ "\"historySort\":\""+historySort+"\","
-					+ "\"historyColor\":\""+historyColor+"\","
-					+ "\"historyBgColor\":\""+historyBgColor+"\","
-					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-					+ "\"historyCurveConf\":"+historyCurveConf+","
-					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-					+ "\"code\":\""+calItem.getCode()+"\","
-					+ "\"type\":3,"
-					+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
-					+ "\"realtimeOverview\":"+realtimeOverview+","
-					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-					+ "\"realtimeData\":"+realtimeData+","
-					+ "\"historyOverview\":"+historyOverview+","
-					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-					+ "\"historyData\":"+historyData+""
-					+ "},");
-			index++;
-		
-		}
 		
 		//acquisition
-		acqItemsList=new ArrayList<String>();
-		acqItemsBitIndexList=new ArrayList<String>();
-		
-		itemsList=new ArrayList<String>();
-		itemsCodeList=new ArrayList<String>();
-		itemsRealtimeSortList=new ArrayList<String>();
-		itemsHistorySortList=new ArrayList<String>();
-		itemsBitIndexList=new ArrayList<String>();
-		itemsShowLevelList=new ArrayList<String>();
-		realtimeCurveConfList=new ArrayList<String>();
-		historyCurveConfList=new ArrayList<String>();
-		
-		realtimeColorList=new ArrayList<String>();
-		realtimeBgColorList=new ArrayList<String>();
-		historyColorList=new ArrayList<String>();
-		historyBgColorList=new ArrayList<String>();
-		
-		realtimeDataList=new ArrayList<>();
-		realtimeOverviewList=new ArrayList<>();
-		realtimeOverviewSortList=new ArrayList<String>();
-		
-		historyDataList=new ArrayList<>();
-		historyOverviewList=new ArrayList<>();
-		historyOverviewSortList=new ArrayList<String>();
-		
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
@@ -1871,6 +1504,368 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+		}
+		
+		//calculate
+		acqItemsList=new ArrayList<String>();
+		acqItemsBitIndexList=new ArrayList<String>();
+		
+		itemsList=new ArrayList<String>();
+		itemsCodeList=new ArrayList<String>();
+		itemsRealtimeSortList=new ArrayList<String>();
+		itemsHistorySortList=new ArrayList<String>();
+		itemsBitIndexList=new ArrayList<String>();
+		itemsShowLevelList=new ArrayList<String>();
+		realtimeCurveConfList=new ArrayList<String>();
+		historyCurveConfList=new ArrayList<String>();
+		
+		realtimeColorList=new ArrayList<String>();
+		realtimeBgColorList=new ArrayList<String>();
+		historyColorList=new ArrayList<String>();
+		historyBgColorList=new ArrayList<String>();
+		
+		realtimeDataList=new ArrayList<>();
+		realtimeOverviewList=new ArrayList<>();
+		realtimeOverviewSortList=new ArrayList<String>();
+		
+		historyDataList=new ArrayList<>();
+		historyOverviewList=new ArrayList<>();
+		historyOverviewSortList=new ArrayList<String>();
+		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
+			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
+					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
+					+ " tbl_datamapping t6 "
+					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
+					+ " and t.itemname=t6.name and t.dailytotalcalculate=1 and t5.id="+unitId
+					+ " order by t.id";
+			List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
+			for(int i=0;i<unitDailyTotalItemsList.size();i++){
+				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
+				String itemName=obj[0]+"";
+				String name=obj[1]+"";
+				String totalCode=(obj[2]+"_TOTAL").toUpperCase();
+				String unit="";
+				if(protocolConfig!=null && protocolConfig.getItems()!=null){
+					for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
+						if(itemName.equalsIgnoreCase(item.getTitle())){
+							unit=item.getUnit();
+							break;
+						}
+					}
+				}
+				CalItem calItem=new CalItem(name,totalCode,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+				calItemList.add(calItem);
+			}
+		}
+		
+		if("2".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
+					+ " order by t.realtimeSort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
+				itemsHistorySortList.add(obj[3]+"");
+				
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+					realtimeCurveConf="\"\"";
+				}
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
+					historyCurveConf="\"\"";
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConf);
+				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
+				
+				
+				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
+				realtimeOverviewSortList.add(obj[12]+"");
+				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
+				
+				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+				historyOverviewSortList.add(obj[15]+"");
+				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+			}
+		}
+		
+		
+		for(CalItem calItem:calItemList){
+			boolean checked=false;
+			String realtimeSort="";
+			String historySort="";
+			String showLevel="";
+			String realtimeCurveConf="\"\"";
+			String realtimeCurveConfShowValue="";
+			String historyCurveConf="\"\"";
+			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
+			
+			boolean realtimeOverview=false;
+			String  realtimeOverviewSort="";
+			boolean realtimeData=false;
+			
+			boolean historyOverview=false;
+			String  historyOverviewSort="";
+			boolean historyData=false;
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						realtimeCurveConf=realtimeCurveConfList.get(k);
+						historyCurveConf=historyCurveConfList.get(k);
+						
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
+						
+						CurveConf realtimeCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+						}
+						
+						CurveConf historyCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+						}
+						
+						if(realtimeCurveConfObj!=null){
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+						}
+						if(historyCurveConfObj!=null){
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+						}
+						
+						realtimeOverview=realtimeOverviewList.get(k);
+						realtimeOverviewSort=realtimeOverviewSortList.get(k);
+						realtimeData=realtimeDataList.get(k);
+						
+						historyOverview=historyOverviewList.get(k);
+						historyOverviewSort=historyOverviewSortList.get(k);
+						historyData=historyDataList.get(k);
+						
+						break;
+					}
+				}
+			}
+			String dataSource=languageResourceMap.get("calculate");
+			result_json.append("{\"checked\":"+checked+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
+					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					+ "\"historyCurveConf\":"+historyCurveConf+","
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"code\":\""+calItem.getCode()+"\","
+//					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
+					+ "\"type\":1,"
+					+ "\"dataSource\":\""+dataSource+"\","
+					+ "\"realtimeOverview\":"+realtimeOverview+","
+					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+					+ "\"realtimeData\":"+realtimeData+","
+					+ "\"historyOverview\":"+historyOverview+","
+					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+					+ "\"historyData\":"+historyData+""
+					+ "},");
+			index++;
+		
+		}
+		
+		//input
+		acqItemsList=new ArrayList<String>();
+		acqItemsBitIndexList=new ArrayList<String>();
+		
+		itemsList=new ArrayList<String>();
+		itemsCodeList=new ArrayList<String>();
+		itemsRealtimeSortList=new ArrayList<String>();
+		itemsHistorySortList=new ArrayList<String>();
+		itemsBitIndexList=new ArrayList<String>();
+		itemsShowLevelList=new ArrayList<String>();
+		realtimeCurveConfList=new ArrayList<String>();
+		historyCurveConfList=new ArrayList<String>();
+		
+		realtimeColorList=new ArrayList<String>();
+		realtimeBgColorList=new ArrayList<String>();
+		historyColorList=new ArrayList<String>();
+		historyBgColorList=new ArrayList<String>();
+		
+		realtimeDataList=new ArrayList<>();
+		realtimeOverviewList=new ArrayList<>();
+		realtimeOverviewSortList=new ArrayList<String>();
+		
+		historyDataList=new ArrayList<>();
+		historyOverviewList=new ArrayList<>();
+		historyOverviewSortList=new ArrayList<String>();
+		
+		if("2".equalsIgnoreCase(classes)){
+			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
+					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
+					+ " order by t.realtimeSort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				itemsList.add(obj[0]+"");
+				itemsCodeList.add(obj[1]+"");
+				itemsRealtimeSortList.add(obj[2]+"");
+				itemsHistorySortList.add(obj[3]+"");
+				itemsShowLevelList.add(obj[4]+"");
+				String realtimeCurveConf=obj[5]+"";
+				if(!StringManagerUtils.isNotNull(obj[5]+"")){
+					realtimeCurveConf="\"\"";
+				}
+				String historyCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(obj[6]+"")){
+					historyCurveConf="\"\"";
+				}
+				
+				realtimeCurveConfList.add(realtimeCurveConf);
+				historyCurveConfList.add(historyCurveConf);
+				
+				realtimeColorList.add(obj[7]+"");
+				realtimeBgColorList.add(obj[8]+"");
+				historyColorList.add(obj[9]+"");
+				historyBgColorList.add(obj[10]+"");
+				
+				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
+				realtimeOverviewSortList.add(obj[12]+"");
+				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
+				
+				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+				historyOverviewSortList.add(obj[15]+"");
+				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+			}
+		}
+
+		for(CalItem calItem:inputItemList){
+			boolean checked=false;
+			String realtimeSort="";
+			String historySort="";
+			String showLevel="";
+			String realtimeCurveConf="\"\"";
+			String realtimeCurveConfShowValue="";
+			String historyCurveConf="\"\"";
+			String historyCurveConfShowValue="";
+			String realtimeColor=""; 
+			String realtimeBgColor="";
+			String historyColor="";
+			String historyBgColor="";
+			
+			boolean realtimeOverview=false;
+			String  realtimeOverviewSort="";
+			boolean realtimeData=false;
+			
+			boolean historyOverview=false;
+			String  historyOverviewSort="";
+			boolean historyData=false;
+
+			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
+			if(checked){
+				for(int k=0;k<itemsList.size();k++){
+					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						realtimeSort=itemsRealtimeSortList.get(k);
+						historySort=itemsHistorySortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						realtimeCurveConf=realtimeCurveConfList.get(k);
+						historyCurveConf=historyCurveConfList.get(k);
+						realtimeColor=realtimeColorList.get(k);
+						realtimeBgColor=realtimeBgColorList.get(k);
+						historyColor=historyColorList.get(k);
+						historyBgColor=historyBgColorList.get(k);
+						
+						CurveConf realtimeCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
+						}
+						
+						CurveConf historyCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
+						}
+						
+						if(realtimeCurveConfObj!=null){
+							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+						}
+						if(historyCurveConfObj!=null){
+							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+						}
+						
+						realtimeOverview=realtimeOverviewList.get(k);
+						realtimeOverviewSort=realtimeOverviewSortList.get(k);
+						realtimeData=realtimeDataList.get(k);
+						
+						historyOverview=historyOverviewList.get(k);
+						historyOverviewSort=historyOverviewSortList.get(k);
+						historyData=historyDataList.get(k);
+						break;
+					}
+				}
+			}
+			result_json.append("{\"checked\":"+checked+","
+					+ "\"id\":"+(index)+","
+					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"showLevel\":\""+showLevel+"\","
+					+ "\"realtimeSort\":\""+realtimeSort+"\","
+					+ "\"realtimeColor\":\""+realtimeColor+"\","
+					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+					+ "\"historySort\":\""+historySort+"\","
+					+ "\"historyColor\":\""+historyColor+"\","
+					+ "\"historyBgColor\":\""+historyBgColor+"\","
+					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
+					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					+ "\"historyCurveConf\":"+historyCurveConf+","
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"code\":\""+calItem.getCode()+"\","
+					+ "\"type\":3,"
+					+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
+					+ "\"realtimeOverview\":"+realtimeOverview+","
+					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+					+ "\"realtimeData\":"+realtimeData+","
+					+ "\"historyOverview\":"+historyOverview+","
+					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+					+ "\"historyData\":"+historyData+""
+					+ "},");
+			index++;
 		}
 	
 		if(result_json.toString().endsWith(",")){
@@ -3607,344 +3602,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String protocolName=protocolList.get(0)+"";
 			ModbusProtocolConfig.Protocol protocolConfig =MemoryDataManagerTask.getProtocolByName(protocolName);
 			
-
 			int index=1;
-			
-			//calculate
-			if(StringManagerUtils.isNotNull(id)){
-				String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-						+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-						+ " tbl_datamapping t6,tbl_protocoldisplayinstance t7 "
-						+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid and t5.id=t7.displayunitid "
-						+ " and t.itemname=t6.name "
-						+ " and t.dailytotalcalculate=1 and t7.id= "+id
-						+ " order by t.id";
-				List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-				for(int i=0;i<unitDailyTotalItemsList.size();i++){
-					Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-					String itemName=obj[0]+"";
-					String name=obj[1]+"";
-					String code=(obj[2]+"_TOTAL").toUpperCase();
-					String unit="";
-					if(protocolConfig!=null && protocolConfig.getItems()!=null){
-						for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
-							if(itemName.equalsIgnoreCase(item.getTitle())){
-								unit=item.getUnit();
-								break;
-							}
-						}
-					}
-					CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
-					calItemList.add(calItem);
-				}
-			}
-			
-			String sql="select t.itemname,t.itemcode,t.bitindex,"
-					+ "t.realtimeSort,t.historySort,"
-					+ "t.showlevel,"
-					+ "t.realtimeCurveConf,historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
-					+ " order by t.id";
-			if(calItemList!=null && calItemList.size()>0){
-				List<?> list=this.findCallSql(sql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
-					itemsBitIndexList.add(obj[2]+"");
-					itemsRealtimeSortList.add(obj[3]+"");
-					itemsHistorySortList.add(obj[4]+"");
-					itemsShowLevelList.add(obj[5]+"");
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					
-					CurveConf realtimeCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-					}
-					
-					CurveConf historyCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-					}
-					
-					if(realtimeCurveConfObj!=null){
-						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-					}
-					if(historyCurveConfObj!=null){
-						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-					}
-					
-					realtimeCurveConfList.add(realtimeCurveConfShowValue);
-					historyCurveConfList.add(historyCurveConfShowValue);
-					
-					realtimeColorList.add(obj[8]+"");
-					realtimeBgColorList.add(obj[9]+"");
-					historyColorList.add(obj[10]+"");
-					historyBgColorList.add(obj[11]+"");
-					
-					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
-					realtimeOverviewSortList.add(obj[13]+"");
-					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-					
-					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
-					historyOverviewSortList.add(obj[16]+"");
-					historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
-				}
-				for(CalItem calItem:calItemList){
-					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-						String realtimeSort="";
-						String historySort="";
-						String showLevel="";
-						String realtimeCurveConfShowValue="";
-						String historyCurveConfShowValue="";
-						String realtimeColor=""; 
-						String realtimeBgColor="";
-						String historyColor="";
-						String historyBgColor="";
-						
-						boolean realtimeOverview=false;
-						String  realtimeOverviewSort="";
-						boolean realtimeData=false;
-						
-						boolean historyOverview=false;
-						String  historyOverviewSort="";
-						boolean historyData=false;
-						
-						String dataSource=languageResourceMap.get("calculate");
-						if("RunStatus".equalsIgnoreCase(calItem.getCode())){
-							dataSource=languageResourceMap.get("acquisition");
-						}
-
-						for(int k=0;k<itemsList.size();k++){
-							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-								realtimeSort=itemsRealtimeSortList.get(k);
-								historySort=itemsHistorySortList.get(k);
-								showLevel=itemsShowLevelList.get(k);
-								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-								historyCurveConfShowValue=historyCurveConfList.get(k);
-								realtimeColor=realtimeColorList.get(k);
-								realtimeBgColor=realtimeBgColorList.get(k);
-								historyColor=historyColorList.get(k);
-								historyBgColor=historyBgColorList.get(k);
-								
-								realtimeOverview=realtimeOverviewList.get(k);
-								realtimeOverviewSort=realtimeOverviewSortList.get(k);
-								realtimeData=realtimeDataList.get(k);
-								
-								historyOverview=historyOverviewList.get(k);
-								historyOverviewSort=historyOverviewSortList.get(k);
-								historyData=historyDataList.get(k);
-								break;
-							}
-						}
-						result_json.append("{"
-								+ "\"id\":"+index+","
-								+ "\"title\":\""+calItem.getName()+"\","
-								+ "\"unit\":\""+calItem.getUnit()+"\","
-								+ "\"showLevel\":\""+showLevel+"\","
-								+ "\"realtimeSort\":\""+realtimeSort+"\","
-								+ "\"realtimeColor\":\""+realtimeColor+"\","
-								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-								+ "\"historySort\":\""+historySort+"\","
-								+ "\"historyColor\":\""+historyColor+"\","
-								+ "\"historyBgColor\":\""+historyBgColor+"\","
-								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-								+ "\"type\":1,"
-								+ "\"dataSource\":\""+dataSource+"\","
-								+ "\"realtimeOverview\":"+realtimeOverview+","
-								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-								+ "\"realtimeData\":"+realtimeData+","
-								+ "\"historyOverview\":"+historyOverview+","
-								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-								+ "\"historyData\":"+historyData+""
-								+ "},");
-						index++;
-					}
-				}
-			}
-			
-			//input
-			itemsList=new ArrayList<String>();
-			itemsCodeList=new ArrayList<String>();
-			itemsRealtimeSortList=new ArrayList<String>();
-			itemsHistorySortList=new ArrayList<String>();
-			itemsBitIndexList=new ArrayList<String>();
-			itemsShowLevelList=new ArrayList<String>();
-			realtimeCurveConfList=new ArrayList<String>();
-			historyCurveConfList=new ArrayList<String>();
-			
-			realtimeColorList=new ArrayList<String>();
-			realtimeBgColorList=new ArrayList<String>();
-			historyColorList=new ArrayList<String>();
-			historyBgColorList=new ArrayList<String>();
-			
-			realtimeDataList=new ArrayList<>();
-			realtimeOverviewList=new ArrayList<>();
-			realtimeOverviewSortList=new ArrayList<String>();
-			
-			historyDataList=new ArrayList<>();
-			historyOverviewList=new ArrayList<>();
-			historyOverviewSortList=new ArrayList<String>();
-			sql="select t.itemname,t.itemcode,t.bitindex,"
-					+ "t.realtimeSort,t.historySort,"
-					+ "t.showlevel,"
-					+ "t.realtimeCurveConf,historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
-					+ " and t3.id= "+id
-					+ " order by t.id";
-			if(inputItemList!=null){
-				List<?> list=this.findCallSql(sql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
-					itemsBitIndexList.add(obj[2]+"");
-					itemsRealtimeSortList.add(obj[3]+"");
-					itemsHistorySortList.add(obj[4]+"");
-					itemsShowLevelList.add(obj[5]+"");
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					
-					CurveConf realtimeCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-					}
-					
-					CurveConf historyCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-					}
-					
-					if(realtimeCurveConfObj!=null){
-						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-					}
-					if(historyCurveConfObj!=null){
-						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-					}
-					
-					realtimeCurveConfList.add(realtimeCurveConfShowValue);
-					historyCurveConfList.add(historyCurveConfShowValue);
-					
-					realtimeColorList.add(obj[8]+"");
-					realtimeBgColorList.add(obj[9]+"");
-					historyColorList.add(obj[10]+"");
-					historyBgColorList.add(obj[11]+"");
-					
-					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
-					realtimeOverviewSortList.add(obj[13]+"");
-					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-					
-					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
-					historyOverviewSortList.add(obj[15]+"");
-					historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
-				}
-				for(CalItem calItem:inputItemList){
-					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-						String realtimeSort="";
-						String historySort="";
-						String showLevel="";
-						String realtimeCurveConfShowValue="";
-						String historyCurveConfShowValue="";
-						String realtimeColor=""; 
-						String realtimeBgColor="";
-						String historyColor="";
-						String historyBgColor="";
-						
-						boolean realtimeOverview=false;
-						String  realtimeOverviewSort="";
-						boolean realtimeData=false;
-						
-						boolean historyOverview=false;
-						String  historyOverviewSort="";
-						boolean historyData=false;
-
-						for(int k=0;k<itemsList.size();k++){
-							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-								realtimeSort=itemsRealtimeSortList.get(k);
-								historySort=itemsHistorySortList.get(k);
-								showLevel=itemsShowLevelList.get(k);
-								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-								historyCurveConfShowValue=historyCurveConfList.get(k);
-								realtimeColor=realtimeColorList.get(k);
-								realtimeBgColor=realtimeBgColorList.get(k);
-								historyColor=historyColorList.get(k);
-								historyBgColor=historyBgColorList.get(k);
-								
-								realtimeOverview=realtimeOverviewList.get(k);
-								realtimeOverviewSort=realtimeOverviewSortList.get(k);
-								realtimeData=realtimeDataList.get(k);
-								
-								historyOverview=historyOverviewList.get(k);
-								historyOverviewSort=historyOverviewSortList.get(k);
-								historyData=historyDataList.get(k);
-								break;
-							}
-						}
-						result_json.append("{"
-								+ "\"id\":"+index+","
-								+ "\"title\":\""+calItem.getName()+"\","
-								+ "\"unit\":\""+calItem.getUnit()+"\","
-								+ "\"showLevel\":\""+showLevel+"\","
-								+ "\"realtimeSort\":\""+realtimeSort+"\","
-								+ "\"realtimeColor\":\""+realtimeColor+"\","
-								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-								+ "\"historySort\":\""+historySort+"\","
-								+ "\"historyColor\":\""+historyColor+"\","
-								+ "\"historyBgColor\":\""+historyBgColor+"\","
-								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-								+ "\"type\":3,"
-								+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
-								+ "\"realtimeOverview\":"+realtimeOverview+","
-								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-								+ "\"realtimeData\":"+realtimeData+","
-								+ "\"historyOverview\":"+historyOverview+","
-								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-								+ "\"historyData\":"+historyData+""
-								+ "},");
-						index++;
-					}
-				}
-			}
-			
 			//acquisition
-			itemsList=new ArrayList<String>();
-			itemsCodeList=new ArrayList<String>();
-			itemsRealtimeSortList=new ArrayList<String>();
-			itemsHistorySortList=new ArrayList<String>();
-			itemsBitIndexList=new ArrayList<String>();
-			itemsShowLevelList=new ArrayList<String>();
-			realtimeCurveConfList=new ArrayList<String>();
-			historyCurveConfList=new ArrayList<String>();
-			
-			realtimeColorList=new ArrayList<String>();
-			realtimeBgColorList=new ArrayList<String>();
-			historyColorList=new ArrayList<String>();
-			historyBgColorList=new ArrayList<String>();
-			
-			realtimeDataList=new ArrayList<>();
-			realtimeOverviewList=new ArrayList<>();
-			realtimeOverviewSortList=new ArrayList<String>();
-			
-			historyDataList=new ArrayList<>();
-			historyOverviewList=new ArrayList<>();
-			historyOverviewSortList=new ArrayList<String>();
-			
-			sql="select t.itemname,t.bitindex,"
+			String sql="select t.itemname,t.bitindex,"
 					+ "t.realtimeSort,t.historySort,"
 					+ "t.showlevel,"
 					+ "t.realtimeCurveConf,historyCurveConf,"
@@ -4146,6 +3806,339 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			
+			//calculate
+			itemsList=new ArrayList<String>();
+			itemsCodeList=new ArrayList<String>();
+			itemsRealtimeSortList=new ArrayList<String>();
+			itemsHistorySortList=new ArrayList<String>();
+			itemsBitIndexList=new ArrayList<String>();
+			itemsShowLevelList=new ArrayList<String>();
+			realtimeCurveConfList=new ArrayList<String>();
+			historyCurveConfList=new ArrayList<String>();
+			
+			realtimeColorList=new ArrayList<String>();
+			realtimeBgColorList=new ArrayList<String>();
+			historyColorList=new ArrayList<String>();
+			historyBgColorList=new ArrayList<String>();
+			
+			realtimeDataList=new ArrayList<>();
+			realtimeOverviewList=new ArrayList<>();
+			realtimeOverviewSortList=new ArrayList<String>();
+			
+			historyDataList=new ArrayList<>();
+			historyOverviewList=new ArrayList<>();
+			historyOverviewSortList=new ArrayList<String>();
+			if(StringManagerUtils.isNotNull(id)){
+				String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
+						+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
+						+ " tbl_datamapping t6,tbl_protocoldisplayinstance t7 "
+						+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid and t5.id=t7.displayunitid "
+						+ " and t.itemname=t6.name "
+						+ " and t.dailytotalcalculate=1 and t7.id= "+id
+						+ " order by t.id";
+				List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
+				for(int i=0;i<unitDailyTotalItemsList.size();i++){
+					Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
+					String itemName=obj[0]+"";
+					String name=obj[1]+"";
+					String code=(obj[2]+"_TOTAL").toUpperCase();
+					String unit="";
+					if(protocolConfig!=null && protocolConfig.getItems()!=null){
+						for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
+							if(itemName.equalsIgnoreCase(item.getTitle())){
+								unit=item.getUnit();
+								break;
+							}
+						}
+					}
+					CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+					calItemList.add(calItem);
+				}
+			}
+			
+			sql="select t.itemname,t.itemcode,t.bitindex,"
+					+ "t.realtimeSort,t.historySort,"
+					+ "t.showlevel,"
+					+ "t.realtimeCurveConf,historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
+					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
+					+ " order by t.id";
+			if(calItemList!=null && calItemList.size()>0){
+				list=this.findCallSql(sql);
+				for(int i=0;i<list.size();i++){
+					Object[] obj=(Object[])list.get(i);
+					itemsList.add(obj[0]+"");
+					itemsCodeList.add(obj[1]+"");
+					itemsBitIndexList.add(obj[2]+"");
+					itemsRealtimeSortList.add(obj[3]+"");
+					itemsHistorySortList.add(obj[4]+"");
+					itemsShowLevelList.add(obj[5]+"");
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
+					
+					CurveConf realtimeCurveConfObj=null;
+					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+						type = new TypeToken<CurveConf>() {}.getType();
+						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
+					}
+					
+					CurveConf historyCurveConfObj=null;
+					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
+						type = new TypeToken<CurveConf>() {}.getType();
+						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
+					}
+					
+					if(realtimeCurveConfObj!=null){
+						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+					}
+					if(historyCurveConfObj!=null){
+						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+					}
+					
+					realtimeCurveConfList.add(realtimeCurveConfShowValue);
+					historyCurveConfList.add(historyCurveConfShowValue);
+					
+					realtimeColorList.add(obj[8]+"");
+					realtimeBgColorList.add(obj[9]+"");
+					historyColorList.add(obj[10]+"");
+					historyBgColorList.add(obj[11]+"");
+					
+					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
+					realtimeOverviewSortList.add(obj[13]+"");
+					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+					
+					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
+					historyOverviewSortList.add(obj[16]+"");
+					historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
+				}
+				for(CalItem calItem:calItemList){
+					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+						String realtimeSort="";
+						String historySort="";
+						String showLevel="";
+						String realtimeCurveConfShowValue="";
+						String historyCurveConfShowValue="";
+						String realtimeColor=""; 
+						String realtimeBgColor="";
+						String historyColor="";
+						String historyBgColor="";
+						
+						boolean realtimeOverview=false;
+						String  realtimeOverviewSort="";
+						boolean realtimeData=false;
+						
+						boolean historyOverview=false;
+						String  historyOverviewSort="";
+						boolean historyData=false;
+						
+						String dataSource=languageResourceMap.get("calculate");
+						
+
+						for(int k=0;k<itemsList.size();k++){
+							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+								realtimeSort=itemsRealtimeSortList.get(k);
+								historySort=itemsHistorySortList.get(k);
+								showLevel=itemsShowLevelList.get(k);
+								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+								historyCurveConfShowValue=historyCurveConfList.get(k);
+								realtimeColor=realtimeColorList.get(k);
+								realtimeBgColor=realtimeBgColorList.get(k);
+								historyColor=historyColorList.get(k);
+								historyBgColor=historyBgColorList.get(k);
+								
+								realtimeOverview=realtimeOverviewList.get(k);
+								realtimeOverviewSort=realtimeOverviewSortList.get(k);
+								realtimeData=realtimeDataList.get(k);
+								
+								historyOverview=historyOverviewList.get(k);
+								historyOverviewSort=historyOverviewSortList.get(k);
+								historyData=historyDataList.get(k);
+								break;
+							}
+						}
+						result_json.append("{"
+								+ "\"id\":"+index+","
+								+ "\"title\":\""+calItem.getName()+"\","
+								+ "\"unit\":\""+calItem.getUnit()+"\","
+								+ "\"showLevel\":\""+showLevel+"\","
+								+ "\"realtimeSort\":\""+realtimeSort+"\","
+								+ "\"realtimeColor\":\""+realtimeColor+"\","
+								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+								+ "\"historySort\":\""+historySort+"\","
+								+ "\"historyColor\":\""+historyColor+"\","
+								+ "\"historyBgColor\":\""+historyBgColor+"\","
+								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+								+ "\"type\":1,"
+								+ "\"dataSource\":\""+dataSource+"\","
+								+ "\"realtimeOverview\":"+realtimeOverview+","
+								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+								+ "\"realtimeData\":"+realtimeData+","
+								+ "\"historyOverview\":"+historyOverview+","
+								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+								+ "\"historyData\":"+historyData+""
+								+ "},");
+						index++;
+					}
+				}
+			}
+			
+			//input
+			itemsList=new ArrayList<String>();
+			itemsCodeList=new ArrayList<String>();
+			itemsRealtimeSortList=new ArrayList<String>();
+			itemsHistorySortList=new ArrayList<String>();
+			itemsBitIndexList=new ArrayList<String>();
+			itemsShowLevelList=new ArrayList<String>();
+			realtimeCurveConfList=new ArrayList<String>();
+			historyCurveConfList=new ArrayList<String>();
+			
+			realtimeColorList=new ArrayList<String>();
+			realtimeBgColorList=new ArrayList<String>();
+			historyColorList=new ArrayList<String>();
+			historyBgColorList=new ArrayList<String>();
+			
+			realtimeDataList=new ArrayList<>();
+			realtimeOverviewList=new ArrayList<>();
+			realtimeOverviewSortList=new ArrayList<String>();
+			
+			historyDataList=new ArrayList<>();
+			historyOverviewList=new ArrayList<>();
+			historyOverviewSortList=new ArrayList<String>();
+			sql="select t.itemname,t.itemcode,t.bitindex,"
+					+ "t.realtimeSort,t.historySort,"
+					+ "t.showlevel,"
+					+ "t.realtimeCurveConf,historyCurveConf,"
+					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
+					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
+					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
+					+ " and t3.id= "+id
+					+ " order by t.id";
+			if(inputItemList!=null){
+				list=this.findCallSql(sql);
+				for(int i=0;i<list.size();i++){
+					Object[] obj=(Object[])list.get(i);
+					itemsList.add(obj[0]+"");
+					itemsCodeList.add(obj[1]+"");
+					itemsBitIndexList.add(obj[2]+"");
+					itemsRealtimeSortList.add(obj[3]+"");
+					itemsHistorySortList.add(obj[4]+"");
+					itemsShowLevelList.add(obj[5]+"");
+					String realtimeCurveConfShowValue="";
+					String historyCurveConfShowValue="";
+					
+					CurveConf realtimeCurveConfObj=null;
+					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
+						type = new TypeToken<CurveConf>() {}.getType();
+						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
+					}
+					
+					CurveConf historyCurveConfObj=null;
+					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
+						type = new TypeToken<CurveConf>() {}.getType();
+						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
+					}
+					
+					if(realtimeCurveConfObj!=null){
+						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+					}
+					if(historyCurveConfObj!=null){
+						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+					}
+					
+					realtimeCurveConfList.add(realtimeCurveConfShowValue);
+					historyCurveConfList.add(historyCurveConfShowValue);
+					
+					realtimeColorList.add(obj[8]+"");
+					realtimeBgColorList.add(obj[9]+"");
+					historyColorList.add(obj[10]+"");
+					historyBgColorList.add(obj[11]+"");
+					
+					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
+					realtimeOverviewSortList.add(obj[13]+"");
+					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
+					
+					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
+					historyOverviewSortList.add(obj[15]+"");
+					historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+				}
+				for(CalItem calItem:inputItemList){
+					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
+						String realtimeSort="";
+						String historySort="";
+						String showLevel="";
+						String realtimeCurveConfShowValue="";
+						String historyCurveConfShowValue="";
+						String realtimeColor=""; 
+						String realtimeBgColor="";
+						String historyColor="";
+						String historyBgColor="";
+						
+						boolean realtimeOverview=false;
+						String  realtimeOverviewSort="";
+						boolean realtimeData=false;
+						
+						boolean historyOverview=false;
+						String  historyOverviewSort="";
+						boolean historyData=false;
+
+						for(int k=0;k<itemsList.size();k++){
+							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+								realtimeSort=itemsRealtimeSortList.get(k);
+								historySort=itemsHistorySortList.get(k);
+								showLevel=itemsShowLevelList.get(k);
+								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
+								historyCurveConfShowValue=historyCurveConfList.get(k);
+								realtimeColor=realtimeColorList.get(k);
+								realtimeBgColor=realtimeBgColorList.get(k);
+								historyColor=historyColorList.get(k);
+								historyBgColor=historyBgColorList.get(k);
+								
+								realtimeOverview=realtimeOverviewList.get(k);
+								realtimeOverviewSort=realtimeOverviewSortList.get(k);
+								realtimeData=realtimeDataList.get(k);
+								
+								historyOverview=historyOverviewList.get(k);
+								historyOverviewSort=historyOverviewSortList.get(k);
+								historyData=historyDataList.get(k);
+								break;
+							}
+						}
+						result_json.append("{"
+								+ "\"id\":"+index+","
+								+ "\"title\":\""+calItem.getName()+"\","
+								+ "\"unit\":\""+calItem.getUnit()+"\","
+								+ "\"showLevel\":\""+showLevel+"\","
+								+ "\"realtimeSort\":\""+realtimeSort+"\","
+								+ "\"realtimeColor\":\""+realtimeColor+"\","
+								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
+								+ "\"historySort\":\""+historySort+"\","
+								+ "\"historyColor\":\""+historyColor+"\","
+								+ "\"historyBgColor\":\""+historyBgColor+"\","
+								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+								+ "\"type\":3,"
+								+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
+								+ "\"realtimeOverview\":"+realtimeOverview+","
+								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
+								+ "\"realtimeData\":"+realtimeData+","
+								+ "\"historyOverview\":"+historyOverview+","
+								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
+								+ "\"historyData\":"+historyData+""
+								+ "},");
+						index++;
+					}
+				}
+			}
+			
+			//acquisition
+			
 		}
 		
 		
@@ -6681,7 +6674,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer calColumnNameBuff = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1";
+		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.calculateEnable from tbl_datamapping t where 1=1";
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
@@ -6700,16 +6693,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					sql+=" and 1=2";
 				}
 			}
-		
-		}
-				
+		}	
 				
 		sql+=" order by t.id";
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",children:[] }"
 				+ "]";
 		
 		calColumnNameBuff.append("[''");
@@ -6734,7 +6726,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
 			result_json.append("\"itemColumn\":\""+obj[2]+"\",");
-			result_json.append("\"calColumnName\":\""+calColumnName+"\"},");
+			result_json.append("\"calColumnName\":\""+calColumnName+"\",");
+			result_json.append("\"calculateEnable\":"+(StringManagerUtils.stringToInteger(obj[4]+"")==1?true:false)+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -7061,9 +7054,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<databaseMappingProHandsontableChangedData.getUpdatelist().size();i++){
 				String calColumn=MemoryDataManagerTask.getCalculateColumnFromName(StringManagerUtils.stringToInteger(protocolType), 
 						databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalColumnName(),language);
-				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"'"
+				updateSql="update tbl_datamapping t set t.calcolumn='"+calColumn+"',"
+						+ " t.calculateEnable="+(databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getCalculateEnable()?1:0)
 						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName().replaceAll("&nbsp;", "").replaceAll("null", "")+"' "
 						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn().replaceAll("&nbsp;", "").replaceAll("null", "")+"' ";
+						
 				getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}

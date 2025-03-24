@@ -871,12 +871,13 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
 //                        		srpFESDiagramCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
                         		var newWidth=width;
                         		var newHeight=height;
+                        		var newHeight=height-22-1;//减去tbar
+                        		var newHeight=newHeight-28-1;//减去bbar
                         		var header=thisPanel.getHeader();
                         		var thisPanelBbar=thisPanel.bbar; 	
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;
                         		}
-                        		newHeight-=29;
                         		srpFESDiagramCalculateMaintainingHandsontableHelper.hot.updateSettings({
                         			width:newWidth,
                         			height:newHeight

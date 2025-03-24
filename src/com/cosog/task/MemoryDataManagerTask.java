@@ -1327,6 +1327,8 @@ public class MemoryDataManagerTask {
 				String columnCode=calItem.getCode();
 				if("resultName".equalsIgnoreCase(columnCode)){
 					columnCode="resultCode";
+				}else if("runstatusName".equalsIgnoreCase(columnCode)){
+					columnCode="runstatus";
 				}
 				sql+=",t."+columnCode;
 			}	
@@ -2489,7 +2491,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,languageResourceMap.get("custom"),languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatusName","",2,languageResourceMap.get("custom"),languageResourceMap.get("runStatus"))));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,languageResourceMap.get("custom"),languageResourceMap.get("runTime"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,languageResourceMap.get("custom"),languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,languageResourceMap.get("custom"),languageResourceMap.get("runRange"))));

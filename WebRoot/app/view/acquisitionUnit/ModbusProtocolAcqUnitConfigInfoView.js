@@ -182,7 +182,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                         	if(protocolAcqUnitConfigItemsHandsontableHelper!=null && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
 //                        		protocolAcqUnitConfigItemsHandsontableHelper.hot.refreshDimensions();
                         		var newWidth=width;
-                        		var newHeight=height;
+                        		var newHeight=height-22-1;//减去tbar
                         		var header=thisPanel.getHeader();
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;

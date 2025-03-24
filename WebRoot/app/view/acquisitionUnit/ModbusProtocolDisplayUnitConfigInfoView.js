@@ -115,7 +115,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitPropertiesHandsontableHelper!=null && protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
-//                            		protocolDisplayUnitPropertiesHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -148,8 +147,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             	var updateData=[];
                             	var selected=true;
                                 for(var i=0;i<rowCount;i++){
-                                	var data=[i,'checked',selected];
-                                	updateData.push(data);
+                                	updateData.push([i,'realtimeData',selected]);
+                                	updateData.push([i,'historyData',selected]);
                                 }
                                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
                             }
@@ -164,8 +163,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             	var updateData=[];
                             	var selected=false;
                                 for(var i=0;i<rowCount;i++){
-                                	var data=[i,'checked',selected];
-                                	updateData.push(data);
+                                	updateData.push([i,'realtimeData',selected]);
+                                	updateData.push([i,'historyData',selected]);
                                 }
                                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(updateData);
                             }
@@ -177,7 +176,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
                             		var newWidth=width;
-                            		var newHeight=height;
+                            		var newHeight=height-22-1;//减去tbar
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
@@ -235,7 +234,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                             	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
                             		var newWidth=width;
-                            		var newHeight=height;
+                            		var newHeight=height-22-1;//减去tbar
                             		var header=thisPanel.getHeader();
                             		if(header){
                             			newHeight=newHeight-header.lastBox.height-2;
@@ -443,7 +442,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
                 hiddenColumns: {
-                    columns: [6,7,13,14,20, 21, 22, 23, 24, 25, 26],
+                    columns: [0,6,7,13,14,20, 21, 22, 23, 24, 25, 26],
                     indicators: false,
                     copyPasteEnabled: false
                 },
@@ -1807,7 +1806,8 @@ var grantDisplayAcqItemsPermission = function () {
         return false;
     }
 	var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(DisplayUnitConfigTreeSelectRow);
-    var acqItemsData = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getData();
+//    var acqItemsData = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getData();
+    var rowCount = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.countRows();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcqItemsToDisplayUnitPermission'
     // 添加条件
     var addjson = [];
@@ -1823,47 +1823,86 @@ var grantDisplayAcqItemsPermission = function () {
         return false
     }
 
-    Ext.Array.each(acqItemsData, function (name, index, countriesItSelf) {
-        if ((acqItemsData[index][6]+'')==='true' || (acqItemsData[index][8]+'')==='true' || (acqItemsData[index][13]+'')==='true' || (acqItemsData[index][15]+'')==='true') {
-        	var itemName = acqItemsData[index][2];
+    
+    var columns = "[" 
+        +"{data:'checked',type:'checkbox'}," 
+        +"{data:'id'}," 
+        +"{data:'title'}," 
+        +"{data:'dataSource'}," 
+        +"{data:'unit'}," 
+        +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        
+        +"{data:'realtimeOverview',type:'checkbox'}," 
+        +"{data:'realtimeOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        
+        +"{data:'realtimeData',type:'checkbox'}," 
+        +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        +"{data:'realtimeColor'}," 
+        +"{data:'realtimeBgColor'}," 
+        +"{data:'realtimeCurveConfShowValue'}," //12
+        
+        +"{data:'historyOverview',type:'checkbox'}," 
+        +"{data:'historyOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        +"{data:'historyData',type:'checkbox'}," 
+        +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        +"{data:'historyColor'}," 
+        +"{data:'historyBgColor'}," 
+        +"{data:'historyCurveConfShowValue'}," //19
+        +"{data:'realtimeCurveConf'}," 
+        +"{data:'historyCurveConf'}," 
+        +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
+        +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+        +"{data:'bitIndex'}," 
+        +"{data:'type'}," 
+        +"{data:'code'}" 
+        +"]";
+    
+    for(var i=0;i<rowCount;i++) {
+    	
+    	var realtimeDataSign=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeData');
+    	var historyDataSign=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyData');
+    	
+        if (realtimeDataSign || historyDataSign) {
+        	var itemName = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
         	
-        	var itemShowLevel = acqItemsData[index][4];
+        	var itemShowLevel = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'showLevel');
         	
-        	var realtimeOverview=(acqItemsData[index][6]+'')==='true'?1:0;
-        	var realtimeOverviewSort=acqItemsData[index][7];
-        	var realtimeData=(acqItemsData[index][8]+'')==='true'?1:0;
+        	var realtimeOverview=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeOverview')?1:0;
+        	var realtimeOverviewSort=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeOverviewSort');
+        	var realtimeData=realtimeDataSign?1:0;
         	
-        	var itemRealtimeSort = acqItemsData[index][9];
-        	var realtimeColor= acqItemsData[index][10];
-        	var realtimeBgColor= acqItemsData[index][11];
+        	var itemRealtimeSort = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeSort');
+        	var realtimeColor= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeColor');
+        	var realtimeBgColor= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeBgColor');
+        	
         	var realtimeCurveConfigStr="";
         	var realtimeCurveConfig=null;
-			if(isNotVal(acqItemsData[index][12]) && isNotVal(acqItemsData[index][20])){
-				realtimeCurveConfig=acqItemsData[index][20];
+			if(isNotVal(protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeCurveConfShowValue')) && isNotVal(protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeCurveConf'))){
+				realtimeCurveConfig=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeCurveConf');
 				realtimeCurveConfigStr=JSON.stringify(realtimeCurveConfig);
 			}
 			
-			var historyOverview=(acqItemsData[index][13]+'')==='true'?1:0;
-        	var historyOverviewSort=acqItemsData[index][14];
-        	var historyData=(acqItemsData[index][15]+'')==='true'?1:0;
+			var historyOverview=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyOverview')?1:0;
+        	var historyOverviewSort=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyOverviewSort');
+        	var historyData=historyDataSign?1:0;
         	
-        	var itemHistorySort = acqItemsData[index][16];
-        	var historyColor= acqItemsData[index][17];
-        	var historyBgColor= acqItemsData[index][18];
+        	var itemHistorySort = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historySort');
+        	var historyColor= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyColor');
+        	var historyBgColor= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyBgColor');
         	var historyCurveConfigStr="";
 			var historyCurveConfig=null;
-			if(isNotVal(acqItemsData[index][19]) && isNotVal(acqItemsData[index][21])){
-				historyCurveConfig=acqItemsData[index][21];
+			if(isNotVal(protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyCurveConfShowValue')) && isNotVal(protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyCurveConf'))){
+				historyCurveConfig=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyCurveConf');
 				historyCurveConfigStr=JSON.stringify(historyCurveConfig);
 			}
         	
-        	var resolutionMode = acqItemsData[index][22];
-        	var itemAddr = acqItemsData[index][23];
-        	var bitIndex=acqItemsData[index][24];
+        	var resolutionMode = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
+        	var itemAddr = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr');
+        	var bitIndex = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'bitIndex');
         	
-        	var type=acqItemsData[index][25];
+        	var type = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'type');
         	
-        	var itemCode = acqItemsData[index][26];
+        	var itemCode = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'code');
         	
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);
@@ -1891,7 +1930,7 @@ var grantDisplayAcqItemsPermission = function () {
             + itemCode +"##" //20
             + matrix_value+ "|";
         }
-    });
+    }
 
     matrixData = matrixData.substring(0, matrixData.length - 1);
     var addparams = "" + addjson.join(",");

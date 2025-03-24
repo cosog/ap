@@ -2599,6 +2599,7 @@ public class DriverAPIController extends BaseController{
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle);
+//								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
 						}
@@ -3224,6 +3225,7 @@ public class DriverAPIController extends BaseController{
 						
 						if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+							
 							SRPCalculateResponseData responseResultData =new SRPCalculateResponseData(); 
 							responseResultData.init();
 							

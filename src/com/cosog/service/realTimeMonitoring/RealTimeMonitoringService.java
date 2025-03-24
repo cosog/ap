@@ -1597,8 +1597,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "
 							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
+							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
 							+ "t2.acqdata ";
-
+					
 					for(int i=0;i<displayCalItemList.size();i++){
 						String column=displayCalItemList.get(i).getCode();
 						if(StringManagerUtils.stringToInteger(calculateType)>0){
@@ -1606,6 +1607,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								column="resultCode";
 							}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}else if("runstatusName".equalsIgnoreCase(column)){
+								column="runstatus";
 							}
 							sql+=",t3."+column;
 						}else{
@@ -1633,7 +1636,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					if(list.size()>0){
 						int row=1;
 						Object[] obj=(Object[]) list.get(0);
-						String acqData=StringManagerUtils.CLOBObjectToString(obj[6]);
+						String runStatus=obj[6]+"";
+						String runStatusName=obj[7]+"";
+						String acqData=StringManagerUtils.CLOBObjectToString(obj[9]);
 						if(displayInputItemList.size()>0){
 							String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
 							Gson gson = new Gson();
@@ -1776,7 +1781,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 						
 						for(int i=0;i<displayCalItemList.size();i++){
-							int index=i+7;
+							int index=i+10;
 							if(index<obj.length){
 								String columnName=displayCalItemList.get(i).getName();
 								String rawColumnName=columnName;
@@ -1801,6 +1806,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											if(workType!=null){
 												value=workType.getResultName();
 											}
+										}else if("runStatus".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"runStatusName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
+											value=runStatusName;
+											rawValue=runStatus;
 										}
 										break;
 									}

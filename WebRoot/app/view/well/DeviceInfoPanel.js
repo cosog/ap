@@ -460,7 +460,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if (videoInfoHandsontableHelper != null && videoInfoHandsontableHelper.hot != null && videoInfoHandsontableHelper.hot != undefined) {
                         		var newWidth=width;
-                        		var newHeight=height;
+                        		var newHeight=height-22-1;//减去工具条高度
                         		var header=thisPanel.getHeader();
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;
@@ -479,12 +479,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	activeTab: 0,
 //            		hidden:onlyMonitor,
                 	items: [{
-                		title:'功图/转速计算',
+                		title:loginUserLanguageResource.wellboreData,
                 		id:'DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id',
-                		layout: 'border',
-                		split: true,
-                		collapsible: true,
-                		header:false,
+                		iconCls: 'check3',
                 		tbar:[{
                             xtype: 'radiogroup',
                             fieldLabel: loginUserLanguageResource.calculateType,
@@ -513,11 +510,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     	        			}
                         	        	}
                     				}
-                    				
-                    				
-                    				
                     				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,true);
-                    				CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,true);
                               	}
                             }
                         },'->',{
@@ -529,77 +522,112 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 				deviceProductionDataDownlink();
                 			}
                 		}],
-                		items: [{
-                          	region: 'center',
-                    		title:loginUserLanguageResource.productionData,
-                        	id:'ProductionDataInfoPanel_Id',
-                        	split: true,
-                        	collapsible: false,
-                        	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
-                                		var newWidth=width;
-                                		var newHeight=height;
-                                		var header=thisPanel.getHeader();
-                                		if(header){
-                                			newHeight=newHeight-header.lastBox.height-2;
-                                		}
-                                		productionHandsontableHelper.hot.updateSettings({
-                                			width:newWidth,
-                                			height:newHeight
-                                		});
-                                    }
+                    	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
+                            		var newWidth=width;
+                            		var newHeight=height-23-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		productionHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                                 }
                             }
-                    	},{
-                    		region: 'east',
-                            width: '40%',
-                            id:'PumpingModelConfigInfoPanel_Id',
-                            layout: 'border',
-                            split: true,
-                            collapsible: true,
-                            header:false,
-                            items: [{
-                            	region: 'center',
-                            	split: true,
-                                collapsible: true,
-                            	title:loginUserLanguageResource.pumpingInfo,
-                            	id:'PumpingInfoPanel_Id',
-                                split: true,
-                                collapsible: true,
-                                html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
-                                    		var newWidth=width;
-                                    		var newHeight=height;
-                                    		var header=thisPanel.getHeader();
-                                    		if(header){
-                                    			newHeight=newHeight-header.lastBox.height-2;
-                                    		}
-                                    		pumpingInfoHandsontableHelper.hot.updateSettings({
-                                    			width:newWidth,
-                                    			height:newHeight
-                                    		});
-                                        }
-                                    }
+                        }
+                	},{
+                		title:loginUserLanguageResource.pumpingInfo,
+                    	id:'PumpingInfoPanel_Id',
+                        split: true,
+                        collapsible: true,
+                        html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		pumpingInfoHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
                                 }
-                            }]
-                    	}]
+                            }
+                        }
                 	},{
-                		title:'功图构建',
-                		id:'DeviceFSDiagramConstructionInfoPanel_Id'
+                		title:loginUserLanguageResource.fsDiagramConstruction,
+                		id:'DeviceFSDiagramConstructionInfoPanel_Id',
+                		tbar:['->',{
+                			xtype: 'button',
+                			text:loginUserLanguageResource.downlink,
+                			iconCls: 'down',
+                			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+                			handler: function (v, o) {
+                				deviceFSDiagramConstructionDataDownlink();
+                			}
+                		}],
+                		html: '<div class="DeviceFSDiagramConstructionInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceFSDiagramConstructionInfoTableDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if (fsDiagramConstructionHandsontableHelper != null && fsDiagramConstructionHandsontableHelper.hot != null && fsDiagramConstructionHandsontableHelper.hot != undefined) {
+                            		var newWidth=width;
+                            		var newHeight=height-23-1;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		fsDiagramConstructionHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                                }
+                            }
+                        }
                 	},{
-                		title:'智能变频',
+                		title:loginUserLanguageResource.intelligentFrequencyConversion,
                 		id:'DeviceIntelligentFrequencyConversionInfoPanel_Id'
                 	},{
-                		title:'智能间抽',
+                		title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
                 		id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'
                 	},{
-                		title:'设备配置',
-                		id:'DeviceParameterConfigurationInfoPanel_Id'
-                	}]
+                		title:loginUserLanguageResource.systemParameterConfiguration,
+                		id:'DeviceSystemParameterConfigurationInfoPanel_Id'
+                	}],
+                	listeners: {
+            			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				oldCard.setIconCls(null);
+            				newCard.setIconCls('check3');
+            			},
+            			tabchange: function (tabPanel, newCard,oldCard, obj) {
+            				var deviceId=0;
+            				var deviceName='';
+            				var applicationScenarios=0;
+            				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+            				if(isNotVal(DeviceSelectRow)){
+            					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+                	        	if(deviceInfoHandsontableData.length>0){
+                	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+                	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+                	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+                	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+            	        				applicationScenarios=1;
+            	        			}
+                	        	}
+            				}
+            				
+            				CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios);
+            			},
+            			afterrender: function (panel, eOpts) {
+            				
+            			}
+            		}
             	}],
             	listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -660,14 +688,27 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig+"&nbsp;"
 		}
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
-		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-		var calculateType=getDeviceCalculateType(deviceId);
-		if(calculateType!=deviceCalculateDataType){
-			Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
-		}else{
-			CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew);
+		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
+		if(calculateDataActiveId=='DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id'){
+			var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+			var calculateType=getDeviceCalculateType(deviceId);
+			if(calculateType!=deviceCalculateDataType){
+				Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
+			}else{
+				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew);
+			}
+		}else if(calculateDataActiveId=='PumpingInfoPanel_Id'){
 			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
+		}else if(calculateDataActiveId=='DeviceFSDiagramConstructionInfoPanel_Id'){
+			CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew);
+		}else if(calculateDataActiveId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
+			
+		}else if(calculateDataActiveId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+			
+		}else if(calculateDataActiveId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
+			
 		}
+		
 		if(isNotVal(deviceName)){
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.calculateDataConfig+"&nbsp;"
 		}
@@ -723,7 +764,20 @@ function getDeviceAdditionalInformationType(){
 	}else if(activeId=='DeviceVideoInfoPanel_Id'){
 		type=2;
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
-		type=3;
+		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
+		if(calculateDataActiveId=='DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id'){
+			type=31;
+		}else if(calculateDataActiveId=='PumpingInfoPanel_Id'){
+			type=32;
+		}else if(calculateDataActiveId=='DeviceFSDiagramConstructionInfoPanel_Id'){
+			type=33;
+		}else if(calculateDataActiveId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
+			type=34;
+		}else if(calculateDataActiveId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+			type=35;
+		}else if(calculateDataActiveId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
+			type=36;
+		}
 	}
 	return type;
 }
@@ -1222,7 +1276,6 @@ var DeviceInfoHandsontableHelper = {
     				applicationScenarios=1;
     			}
             	
-            	
             	var deviceAdditionalInformationData={};
             	deviceAdditionalInformationData.deviceId=deviceId;
             	deviceAdditionalInformationData.type=additionalInformationType;
@@ -1278,7 +1331,7 @@ var DeviceInfoHandsontableHelper = {
                     videoInfoList.push(videoKeyName1);
                     videoInfoList.push(videoKeyName2);
                     deviceAdditionalInformationData.data=JSON.stringify(videoInfoList);
-            	}else if(additionalInformationType==3){
+            	}else if(additionalInformationType==31){
             		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
             		if(deviceCalculateDataType==1){//指定为功图计算
             			//生产数据
@@ -1515,32 +1568,11 @@ var DeviceInfoHandsontableHelper = {
                     		FESDiagramSrcName=productionHandsontableData[43][2];
                     	}
                         
-                        //获取抽油机型号配置数据
-                        var pumpingModelId=0;
                         
-                        //抽油机详情
-                        var balanceInfo={};
-                        var stroke="";
-                        if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
-                        	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-                        	stroke=pumpingInfoHandsontableData[3][2];
-                        	balanceInfo.EveryBalance=[];
-                        	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
-                        		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
-                            		var EveryBalance={};
-                            		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
-                            		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
-                            		balanceInfo.EveryBalance.push(EveryBalance);
-                            	}
-                        	}
-                        }
                         
                         var productionInfoList=[];
                         productionInfoList.push(deviceCalculateDataType);
                 		productionInfoList.push(JSON.stringify(deviceProductionData));
-                		productionInfoList.push(pumpingModelId);
-                		productionInfoList.push(stroke);
-                		productionInfoList.push(JSON.stringify(balanceInfo));
                 		productionInfoList.push(manualInterventionResultName);
                 		productionInfoList.push(applicationScenarios);
                 		productionInfoList.push(FESDiagramSrcName);
@@ -1754,7 +1786,7 @@ var DeviceInfoHandsontableHelper = {
                     		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
                     			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[39][2]);
                     		}
-                    		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[40][2]))))){
+                    		if(isNumber(parseFloat(productionHandsontableData[40][2]))){
                     			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[40][2]);
                     		}
                     	}
@@ -1769,6 +1801,87 @@ var DeviceInfoHandsontableHelper = {
                         productionInfoList.push(applicationScenarios);
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}
+            	}else if(additionalInformationType==32){
+            		//获取抽油机型号配置数据
+                    var pumpingModelId=0;
+                    
+                    //抽油机详情
+                    var balanceInfo={};
+                    var stroke="";
+                    if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
+                    	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
+                    	stroke=pumpingInfoHandsontableData[3][2];
+                    	balanceInfo.EveryBalance=[];
+                    	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
+                    		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
+                        		var EveryBalance={};
+                        		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
+                        		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
+                        		balanceInfo.EveryBalance.push(EveryBalance);
+                        	}
+                    	}
+                    }
+                    
+                    var productionInfoList=[];
+            		productionInfoList.push(pumpingModelId);
+            		productionInfoList.push(stroke);
+            		productionInfoList.push(JSON.stringify(balanceInfo));
+                    deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
+            	}else if(additionalInformationType==33){
+            		var FSDiagramConstructionData={};
+            		if(fsDiagramConstructionHandsontableHelper!=null && fsDiagramConstructionHandsontableHelper.hot!=undefined){
+            			var fsDiagramConstructionHandsontableData=fsDiagramConstructionHandsontableHelper.hot.getData();
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[0][2]))){
+            				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(fsDiagramConstructionHandsontableData[0][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[1][2]))){
+            				FSDiagramConstructionData.InterpolationCNT=parseFloat(fsDiagramConstructionHandsontableData[1][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[2][2]))){
+            				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(fsDiagramConstructionHandsontableData[2][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[3][2]))){
+            				FSDiagramConstructionData.WattTimes=parseFloat(fsDiagramConstructionHandsontableData[3][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[4][2]))){
+            				FSDiagramConstructionData.ITimes=parseFloat(fsDiagramConstructionHandsontableData[4][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[5][2]))){
+            				FSDiagramConstructionData.FSDiagramTimes=parseFloat(fsDiagramConstructionHandsontableData[5][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[6][2]))){
+            				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(fsDiagramConstructionHandsontableData[6][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[7][2]))){
+            				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(fsDiagramConstructionHandsontableData[7][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[8][2]))){
+            				FSDiagramConstructionData.LeftPercent=parseFloat(fsDiagramConstructionHandsontableData[8][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[9][2]))){
+            				FSDiagramConstructionData.RightPercent=parseFloat(fsDiagramConstructionHandsontableData[9][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[10][2]))){
+            				FSDiagramConstructionData.PositiveXWatt=parseFloat(fsDiagramConstructionHandsontableData[10][2]);
+                		}
+            			
+            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[11][2]))){
+            				FSDiagramConstructionData.NegativeXWatt=parseFloat(fsDiagramConstructionHandsontableData[11][2]);
+                		}
+            		}
+            		
+            		deviceAdditionalInformationData.data=JSON.stringify(FSDiagramConstructionData);
             	}
             	
             	Ext.Ajax.request({
@@ -1914,20 +2027,15 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 		productionHandsontableHelper=null;
 	}
 	if(deviceCalculateDataType!=0){
-		Ext.getCmp("ProductionDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 		
 		Ext.Ajax.request({
 			method:'POST',
 			url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
 			success:function(response) {
-				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
+				Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
 				var result =  Ext.JSON.decode(response.responseText);
 				
-				var panelTitle=loginUserLanguageResource.productionData;
-				if(isNotVal(deviceName)){
-					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
-				}
-				Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
 				if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
@@ -1976,7 +2084,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 	        	productionHandsontableHelper.hot.render();
 			},
 			failure:function(){
-				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
+				Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
 				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
@@ -1986,11 +2094,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 	        }
 		});
 	}else{
-		var panelTitle=loginUserLanguageResource.productionData;
-		if(isNotVal(deviceName)){
-			panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
-		}
-		Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
+		
 	}
 };
 
@@ -2012,6 +2116,9 @@ var ProductionHandsontableHelper = {
 	        
 	        productionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -2057,10 +2164,7 @@ var ProductionHandsontableHelper = {
 	                    	if (visualColIndex !=2) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = productionHandsontableHelper.addCellStyle;
-			                }else if(visualRowIndex==39 && visualColIndex==2){
-//		                    	cellProperties.readOnly = true;
-		                    	cellProperties.renderer = productionHandsontableHelper.addCellStyle;
-		                    }
+			                }
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
@@ -2168,70 +2272,55 @@ var ProductionHandsontableHelper = {
 	};
 
 function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew){
-	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	if(pumpingInfoHandsontableHelper!=null){
 		if(pumpingInfoHandsontableHelper.hot!=undefined){
 			pumpingInfoHandsontableHelper.hot.destroy();
 		}
 		pumpingInfoHandsontableHelper=null;
 	}
-	
-	if(deviceCalculateDataType==2){
-		Ext.getCmp("PumpingModelConfigInfoPanel_Id").hide();;
-	}else{
-		Ext.getCmp("PumpingModelConfigInfoPanel_Id").show();;
-	}
-	
-	if(deviceCalculateDataType==1){
-		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
-		Ext.Ajax.request({
-			method:'POST',
-			url:context + '/wellInformationManagerController/getDevicePumpingInfo',
-			success:function(response) {
-				Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
-				var result =  Ext.JSON.decode(response.responseText);
-				var panelTitle=loginUserLanguageResource.pumpingInfo;
-				if(isNotVal(deviceName)){
-					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.pumpingInfo;
-				}
-				Ext.getCmp("PumpingInfoPanel_Id").setTitle(panelTitle);
-				if(pumpingInfoHandsontableHelper==null || pumpingInfoHandsontableHelper.hot==undefined){
-					pumpingInfoHandsontableHelper = PumpingInfoHandsontableHelper.createNew("PumpingInfoTableDiv_id");
-					
-					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
-	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
-					
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','']";
-					var columns="[{data:'id'}," 
-						+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
-						+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}" 
-						+"]";
-					pumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-					pumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
-					if(result.totalRoot.length==0){
-						pumpingInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{}]);
-					}else{
-						pumpingInfoHandsontableHelper.createTable(result.totalRoot);
-					}
+	Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDevicePumpingInfo',
+		success:function(response) {
+			Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(pumpingInfoHandsontableHelper==null || pumpingInfoHandsontableHelper.hot==undefined){
+				pumpingInfoHandsontableHelper = PumpingInfoHandsontableHelper.createNew("PumpingInfoTableDiv_id");
+				
+				pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
+    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
+				
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','']";
+				var columns="[{data:'id'}," 
+					+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
+					+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}" 
+					+"]";
+				pumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				pumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					pumpingInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{}]);
 				}else{
-					pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
-	    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
-					if(result.totalRoot.length==0){
-						pumpingInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{}]);
-					}else{
-						pumpingInfoHandsontableHelper.hot.loadData(result.totalRoot);
-					}
+					pumpingInfoHandsontableHelper.createTable(result.totalRoot);
 				}
-			},
-			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-			},
-			params: {
-				deviceId:deviceId,
-				deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
-	        }
-		});
-	}
+			}else{
+				pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
+    	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
+				if(result.totalRoot.length==0){
+					pumpingInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{}]);
+				}else{
+					pumpingInfoHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			deviceId:deviceId,
+			deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
+        }
+	});
 };
 
 var PumpingInfoHandsontableHelper = {
@@ -3439,9 +3528,6 @@ function deviceProductionDataDownlink(){
 		}
 		
 		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-//			alert(JSON.stringify(deviceProductionData));
-//			alert(JSON.stringify(pumpingUnitInfo));
-			
 			all_loading.show();
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
@@ -3502,94 +3588,174 @@ function deviceProductionDataDownlink(){
 	}
 }
 
+function deviceFSDiagramConstructionDataDownlink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
+    });
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}
+		
+
+		var FSDiagramConstructionData={};
+		if(fsDiagramConstructionHandsontableHelper!=null && fsDiagramConstructionHandsontableHelper.hot!=undefined){
+			var fsDiagramConstructionHandsontableData=fsDiagramConstructionHandsontableHelper.hot.getData();
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[0][2]))){
+				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(fsDiagramConstructionHandsontableData[0][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[1][2]))){
+				FSDiagramConstructionData.InterpolationCNT=parseFloat(fsDiagramConstructionHandsontableData[1][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[2][2]))){
+				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(fsDiagramConstructionHandsontableData[2][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[3][2]))){
+				FSDiagramConstructionData.WattTimes=parseFloat(fsDiagramConstructionHandsontableData[3][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[4][2]))){
+				FSDiagramConstructionData.ITimes=parseFloat(fsDiagramConstructionHandsontableData[4][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[5][2]))){
+				FSDiagramConstructionData.FSDiagramTimes=parseFloat(fsDiagramConstructionHandsontableData[5][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[6][2]))){
+				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(fsDiagramConstructionHandsontableData[6][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[7][2]))){
+				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(fsDiagramConstructionHandsontableData[7][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[8][2]))){
+				FSDiagramConstructionData.LeftPercent=parseFloat(fsDiagramConstructionHandsontableData[8][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[9][2]))){
+				FSDiagramConstructionData.RightPercent=parseFloat(fsDiagramConstructionHandsontableData[9][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[10][2]))){
+				FSDiagramConstructionData.PositiveXWatt=parseFloat(fsDiagramConstructionHandsontableData[10][2]);
+    		}
+			
+			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[11][2]))){
+				FSDiagramConstructionData.NegativeXWatt=parseFloat(fsDiagramConstructionHandsontableData[11][2]);
+    		}
+		}
+
+		all_loading.show();
+		Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataDownlink',
+            method: "POST",
+            params: {
+            	deviceId: deviceId,
+            	data: JSON.stringify(FSDiagramConstructionData)
+            },
+            success: function (response, action) {
+            	all_loading.hide();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+                    
+                	const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	plugin.showColumns([4]);
+                	fsDiagramConstructionHandsontableHelper.hot.render();
+                	
+                	var codeColumnValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtProp('itemCode');
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				fsDiagramConstructionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                } 
+            },
+            failure: function () {
+            	all_loading.hide();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+
 function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew){
-	var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-	
 	if(fsDiagramConstructionHandsontableHelper!=null){
 		if(fsDiagramConstructionHandsontableHelper.hot!=undefined){
 			fsDiagramConstructionHandsontableHelper.hot.destroy();
 		}
 		fsDiagramConstructionHandsontableHelper=null;
 	}
-	if(deviceCalculateDataType!=0){
-		Ext.getCmp("ProductionDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
-		
-		Ext.Ajax.request({
-			method:'POST',
-			url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
-			success:function(response) {
-				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
-				var result =  Ext.JSON.decode(response.responseText);
-				
-				var panelTitle=loginUserLanguageResource.productionData;
-				if(isNotVal(deviceName)){
-					panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
-				}
-				Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
-				if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
-					fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
-					fsDiagramConstructionHandsontableHelper.resultList = result.resultNameList;
-					fsDiagramConstructionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
-					var columns="[{data:'id'}," 
-						+"{data:'itemName'}," 
-						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
-						+"{data:'itemCode'}," 
-						+"{data:'downlinkStatus'}" 
-						+"]";
-					fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-					fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
-					if(result.totalRoot.length==0){
-						fsDiagramConstructionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-					}else{
-						fsDiagramConstructionHandsontableHelper.pumpGrade=result.totalRoot[13].itemValue;
-						fsDiagramConstructionHandsontableHelper.createTable(result.totalRoot);
-					}
+	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getFSDiagramConstructionDataInfo',
+		success:function(response) {
+			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
+				fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("DeviceFSDiagramConstructionInfoTableDiv_id");;
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
+				var columns="[{data:'id'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
+					+"{data:'itemCode'}," 
+					+"{data:'downlinkStatus'}" 
+					+"]";
+				fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					fsDiagramConstructionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
-					fsDiagramConstructionHandsontableHelper.resultList = result.resultNameList;
-					fsDiagramConstructionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
-					if(result.totalRoot.length==0){
-						fsDiagramConstructionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-					}else{
-						fsDiagramConstructionHandsontableHelper.hot.loadData(result.totalRoot);
-					}
+					fsDiagramConstructionHandsontableHelper.createTable(result.totalRoot);
 				}
-				
-				var hiddenRows=[0,3,9,10];
-				const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenRows');
-				if(applicationScenarios==0){
-					
+			}else{
+				if(result.totalRoot.length==0){
+					fsDiagramConstructionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					fsDiagramConstructionHandsontableHelper.hot.loadData(result.totalRoot);
 				}
-				if(applicationScenarios==0){
-            		plugin.hideRows(hiddenRows);
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
-            	}else if(applicationScenarios==1){
-            		plugin.showRows(hiddenRows);
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth+'(m)');
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature+'(℃)');
-            		fsDiagramConstructionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure+'(MPa)');
-            	}
-	        	fsDiagramConstructionHandsontableHelper.hot.render();
-			},
-			failure:function(){
-				Ext.getCmp("ProductionDataInfoPanel_Id").getEl().unmask();
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-			},
-			params: {
-				deviceId:deviceId,
-				deviceCalculateDataType:deviceCalculateDataType,
-				deviceType:getDeviceTypeFromTabId("DeviceManagerTabPanel")
-	        }
-		});
-	}else{
-		var panelTitle=loginUserLanguageResource.productionData;
-		if(isNotVal(deviceName)){
-			panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.productionData;
-		}
-		Ext.getCmp("ProductionDataInfoPanel_Id").setTitle(panelTitle);
-	}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			deviceId:deviceId
+        }
+	});
 };
 
 var FSDiagramConstructionHandsontableHelper = {
@@ -3599,9 +3765,6 @@ var FSDiagramConstructionHandsontableHelper = {
 	        fsDiagramConstructionHandsontableHelper.divid = divid;
 	        fsDiagramConstructionHandsontableHelper.colHeaders = [];
 	        fsDiagramConstructionHandsontableHelper.columns = [];
-	        fsDiagramConstructionHandsontableHelper.resultList = [];
-	        fsDiagramConstructionHandsontableHelper.FESdiagramSrcList = [];
-	        fsDiagramConstructionHandsontableHelper.pumpGrade = '';
 	        
 	        fsDiagramConstructionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -3610,6 +3773,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	        
 	        fsDiagramConstructionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
@@ -3655,62 +3819,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	                    	if (visualColIndex !=2) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
-			                }else if(visualRowIndex==39 && visualColIndex==2){
-//		                    	cellProperties.readOnly = true;
-		                    	cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && visualRowIndex===14 && deviceCalculateDataType==1) {
-		                    	var barrelType='';
-		                    	if(isNotVal(fsDiagramConstructionHandsontableHelper.hot)){
-		                    		barrelType=fsDiagramConstructionHandsontableHelper.hot.getDataAtCell(13,2);
-		                    	}else{
-		                    		barrelType=fsDiagramConstructionHandsontableHelper.pumpGrade;
-		                    	}
-		                    	var pumpGradeList=['1','2','3','4','5'];
-		                    	if(barrelType===loginUserLanguageResource.barrelType_L){
-		                    		pumpGradeList=['1','2','3'];
-		                    	}
-		                    	this.type = 'dropdown';
-		                    	this.source = pumpGradeList;
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===24||visualRowIndex===29||visualRowIndex===32)) {
-		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===25||visualRowIndex===30||visualRowIndex===33)) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && visualRowIndex===39 && deviceCalculateDataType==1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = fsDiagramConstructionHandsontableHelper.resultList;
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-		                    
-		                    if (visualColIndex === 2 && visualRowIndex===43 && deviceCalculateDataType==1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = fsDiagramConstructionHandsontableHelper.FESdiagramSrcList;
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
+			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    	if (visualColIndex !=2) {

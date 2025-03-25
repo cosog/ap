@@ -2,6 +2,7 @@ package com.cosog.controller.back;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -49,7 +51,10 @@ import com.cosog.model.User;
 import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
+import com.cosog.model.calculate.FSDiagramConstructionRequestData;
+import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPProductionData;
+import com.cosog.model.calculate.PumpingPRTFData;
 import com.cosog.model.calculate.ResultStatusData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPProductionData;
@@ -92,6 +97,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import oracle.sql.CLOB;
 import redis.clients.jedis.Jedis;
 
 @Controller
@@ -1038,6 +1044,29 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getFSDiagramConstructionDataInfo")
+	public String getFSDiagramConstructionDataInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String deviceCalculateDataType=ParamUtils.getParameter(request, "deviceCalculateDataType");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getFSDiagramConstructionDataInfo(deviceId,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceVideoInfo")
 	public String getDeviceVideoInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1314,20 +1343,17 @@ public class WellInformationManagerController extends BaseController {
 					videoKeyName2=videoInfoList.get(3);
 				}
 				this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl1,videoKeyName1,videoUrl2,videoKeyName2);
-			}else if(additionalInformationSaveData.getType()==3){
+			}else if(additionalInformationSaveData.getType()==31){
 				type = new TypeToken<List<String>>() {}.getType();
-				List<String> droductionDataInfoList=gson.fromJson(additionalInformationSaveData.getData(), type);
+				List<String> productionDataInfoList=gson.fromJson(additionalInformationSaveData.getData(), type);
 				
-				if(droductionDataInfoList!=null && droductionDataInfoList.size()>=1){
-					String deviceCalculateDataType=droductionDataInfoList.get(0);
+				if(productionDataInfoList!=null && productionDataInfoList.size()>=1){
+					String deviceCalculateDataType=productionDataInfoList.get(0);
 					if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
-						String deviceProductionData = droductionDataInfoList.get(1);
-						String pumpingModelId = droductionDataInfoList.get(2);
-						String stroke = droductionDataInfoList.get(3);
-						String balanceInfo = droductionDataInfoList.get(4);
-						String manualInterventionResultName = droductionDataInfoList.get(5);
-						String applicationScenarios=droductionDataInfoList.get(6);
-						String FESDiagramSrcName=droductionDataInfoList.get(7);
+						String deviceProductionData = productionDataInfoList.get(1);
+						String manualInterventionResultName = productionDataInfoList.get(2);
+						String applicationScenarios=productionDataInfoList.get(3);
+						String FESDiagramSrcName=productionDataInfoList.get(4);
 						
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
@@ -1351,15 +1377,9 @@ public class WellInformationManagerController extends BaseController {
 							deviceProductionDataSaveStr=gson.toJson(srpProductionData);
 						}
 						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
-						
-						//处理抽油机数据
-						//处理抽油机型号
-						this.wellInformationManagerService.saveSRPPumpingModel(deviceId,pumpingModelId);
-						//处理抽油机详情
-						this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
 					}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
-						String deviceProductionData = droductionDataInfoList.get(1);
-						String applicationScenarios=droductionDataInfoList.get(2);
+						String deviceProductionData = productionDataInfoList.get(1);
+						String applicationScenarios=productionDataInfoList.get(2);
 						//处理生产数据
 						String deviceProductionDataSaveStr=deviceProductionData;
 						
@@ -1376,12 +1396,28 @@ public class WellInformationManagerController extends BaseController {
 							this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 						}
 					}else{
-						String applicationScenarios=droductionDataInfoList.get(1);
+						String applicationScenarios=productionDataInfoList.get(1);
 						this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,"",StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
-						this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
-						this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 					}
 				}
+			}else if(additionalInformationSaveData.getType()==32){
+				type = new TypeToken<List<String>>() {}.getType();
+				List<String> productionDataInfoList=gson.fromJson(additionalInformationSaveData.getData(), type);
+				if(productionDataInfoList!=null && productionDataInfoList.size()>=3){
+					String pumpingModelId = productionDataInfoList.get(0);
+					String stroke = productionDataInfoList.get(1);
+					String balanceInfo = productionDataInfoList.get(2);
+					//处理抽油机数据
+					//处理抽油机型号
+					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,pumpingModelId);
+					//处理抽油机详情
+					this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
+				}else{
+					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
+					this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
+				}
+			}else if(additionalInformationSaveData.getType()==33){
+				this.wellInformationManagerService.saveFSDiagramConstructionData(deviceId,additionalInformationSaveData.getData());
 			}
 		}
 		
@@ -2395,6 +2431,65 @@ public class WellInformationManagerController extends BaseController {
 								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 								if(srpProductionData!=null){
+									
+									String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
+											+ " t.stroke,t.balanceinfo "
+											+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+											+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+											+ " and t3.specifictype=1"
+											+ " and t.id="+deviceId;
+									List<?> auxiliaryDeviceList = this.service.findCallSql(auxiliaryDeviceSql);
+									List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+									String balanceInfo="";
+									float stroke=0;
+									
+									for(int i=0;i<auxiliaryDeviceList.size();i++){
+										Object[] auxiliaryDeviceObj=(Object[]) auxiliaryDeviceList.get(0);
+										AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+										auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[0]+""));
+										auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[1]+""));
+										auxiliaryDeviceAddInfo.setManufacturer(auxiliaryDeviceObj[2]+"");
+										auxiliaryDeviceAddInfo.setModel(auxiliaryDeviceObj[3]+"");
+										auxiliaryDeviceAddInfo.setItemCode(auxiliaryDeviceObj[4]+"");
+										auxiliaryDeviceAddInfo.setItemValue(auxiliaryDeviceObj[5]+"");
+										auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+										
+										stroke=StringManagerUtils.stringToFloat(auxiliaryDeviceObj[6]+"");
+										balanceInfo=auxiliaryDeviceObj[7]+"";
+									}
+									
+									if(auxiliaryDeviceAddInfoList.size()>0){
+										srpProductionData.setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
+										String manufacturer="";
+										String model="";
+										for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
+											manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
+											model=auxiliaryDeviceAddInfoList.get(i).getModel();
+											if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
+											}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}else if("crankGravityRadius".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}else if("singleCrankWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}else if("singleCrankPinWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}else if("structuralUnbalance".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}
+										}
+										srpProductionData.getPumpingUnit().setManufacturer(manufacturer);
+										srpProductionData.getPumpingUnit().setModel(model);
+										srpProductionData.getPumpingUnit().setStroke(stroke);
+										
+										type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+										SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+										if(balance!=null){
+											srpProductionData.getPumpingUnit().setBalance(balance);
+										}
+									}
+									
 									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",srpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
 									downStatusMap.put("WaterDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",srpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
 									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
@@ -2437,9 +2532,56 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("NetGrossRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",srpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
 									downStatusMap.put("NetGrossValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",srpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
 									downStatusMap.put("LevelCorrectValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",srpProductionData.getManualIntervention().getLevelCorrectValue()+"",userInfo.getLanguageName()));
+									
+									
+									if(srpProductionData.getPumpingUnit()!=null){
+										downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",srpProductionData.getPumpingUnit().getCrankRotationDirection()+"",userInfo.getLanguageName()));
+										downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",srpProductionData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+										
+										if(srpProductionData.getPumpingUnit().getBalance()!=null && srpProductionData.getPumpingUnit().getBalance().getEveryBalance()!=null){
+											for(int i=0;i<srpProductionData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
+												downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),srpProductionData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
+											}
+										}
+									}
 								}
 							}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
-								
+								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
+								if(pcpProductionData!=null){
+									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",pcpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",pcpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SaturationPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",pcpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("ReservoirDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("TubingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",pcpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",pcpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterCut", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",pcpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",pcpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",pcpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",pcpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()+"",userInfo.getLanguageName()));
+									
+									for(int i=0;i<pcpProductionData.getRodString().getEveryRod().size();i++){
+										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getGrade()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+									}
+									
+									downStatusMap.put("NetGrossRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",pcpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",pcpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+								}
 							}
 							
 							StringBuffer result_json = new StringBuffer();
@@ -2466,7 +2608,203 @@ public class WellInformationManagerController extends BaseController {
 		} else {
 			jsonLogin = "{success:true,flag:false}";
 		}
-		System.out.println(jsonLogin);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/deviceFSDiagramConstructionDataDownlink")
+	public String deviceFSDiagramConstructionDataDownlink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String data = request.getParameter("data");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+						+ " and t.id="+deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocolName=obj[0]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String deviceType=obj[5]+"";
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+						if(StringManagerUtils.isNotNull(slave)){
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							type = new TypeToken<FSDiagramConstructionRequestData>() {}.getType();
+							FSDiagramConstructionRequestData requestData=gson.fromJson(data, type);
+							if(requestData!=null){
+								
+								String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
+										+ " t.stroke,t.balanceinfo,"
+										+ " t3.prtf "
+										+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+										+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+										+ " and t3.specifictype=1"
+										+ " and t.id="+deviceId;
+								List<?> auxiliaryDeviceList = this.service.findCallSql(auxiliaryDeviceSql);
+								List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+								String balanceInfo="";
+								float stroke=0;
+								String prtfStr="";
+								PumpingPRTFData pumpingPRTFData=null;
+								int PRTFPointCount=0;
+								List<String> crankAngleList=new ArrayList<>();
+								List<String> PRList=new ArrayList<>();
+								List<String> TFList=new ArrayList<>();
+								
+								
+								for(int i=0;i<auxiliaryDeviceList.size();i++){
+									Object[] auxiliaryDeviceObj=(Object[]) auxiliaryDeviceList.get(0);
+									AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+									auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[0]+""));
+									auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[1]+""));
+									auxiliaryDeviceAddInfo.setManufacturer(auxiliaryDeviceObj[2]+"");
+									auxiliaryDeviceAddInfo.setModel(auxiliaryDeviceObj[3]+"");
+									auxiliaryDeviceAddInfo.setItemCode(auxiliaryDeviceObj[4]+"");
+									auxiliaryDeviceAddInfo.setItemValue(auxiliaryDeviceObj[5]+"");
+									auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+									
+									stroke=StringManagerUtils.stringToFloat(auxiliaryDeviceObj[6]+"");
+									balanceInfo=auxiliaryDeviceObj[7]+"";
+									
+									if(auxiliaryDeviceObj[8]!=null){
+										SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(auxiliaryDeviceObj[8]);
+										CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+										prtfStr=StringManagerUtils.CLOBtoString(realClob);
+										type = new TypeToken<PumpingPRTFData>() {}.getType();
+										pumpingPRTFData=gson.fromJson(prtfStr, type);
+									}
+								}
+								
+								if(pumpingPRTFData!=null && pumpingPRTFData.getList()!=null){
+									for(int i=0;i<pumpingPRTFData.getList().size();i++){
+										if(stroke==pumpingPRTFData.getList().get(i).getStroke()){
+											if(pumpingPRTFData.getList().get(i).getPRTF()!=null){
+												PRTFPointCount=pumpingPRTFData.getList().get(i).getPRTF().size();
+												for(PumpingPRTFData.PRTF prtf:pumpingPRTFData.getList().get(i).getPRTF()){
+													crankAngleList.add(prtf.getCrankAngle()+"");
+													PRList.add(prtf.getPR()+"");
+													TFList.add(prtf.getTF()+"");
+												}
+											}
+											break;
+										}
+									}
+								}
+								
+								if(auxiliaryDeviceAddInfoList.size()>0){
+									requestData.setPumpingUnit(new FSDiagramConstructionRequestData.PumpingUnit());
+									String manufacturer="";
+									String model="";
+									for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
+										manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
+										model=auxiliaryDeviceAddInfoList.get(i).getModel();
+										if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
+										}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankGravityRadius".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankPinWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("structuralUnbalance".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}
+									}
+									requestData.getPumpingUnit().setManufacturer(manufacturer);
+									requestData.getPumpingUnit().setModel(model);
+									requestData.getPumpingUnit().setStroke(stroke);
+									
+									type = new TypeToken<FSDiagramConstructionRequestData.Balance>() {}.getType();
+									FSDiagramConstructionRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+									if(balance!=null){
+										requestData.getPumpingUnit().setBalance(balance);
+									}
+								}
+								
+								downStatusMap.put("crankDIInitAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",requestData.getCrankDIInitAngle()+"",userInfo.getLanguageName()));
+								downStatusMap.put("interpolationCNT", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",requestData.getInterpolationCNT()+"",userInfo.getLanguageName()));
+								downStatusMap.put("surfaceSystemEfficiency", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SurfaceSystemEfficiency",requestData.getSurfaceSystemEfficiency()+"",userInfo.getLanguageName()));
+								downStatusMap.put("wattTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WattTimes",requestData.getWattTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("iTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ITimes",requestData.getITimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramTimes",requestData.getFSDiagramTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramLeftTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramLeftTimes",requestData.getFSDiagramLeftTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramRightTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramRightTimes",requestData.getFSDiagramRightTimes()+"",userInfo.getLanguageName()));
+								
+								downStatusMap.put("leftPercent", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_LeftPercent",requestData.getLeftPercent()+"",userInfo.getLanguageName()));
+								downStatusMap.put("rightPercent", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RightPercent",requestData.getRightPercent()+"",userInfo.getLanguageName()));
+								downStatusMap.put("positiveXWatt", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",requestData.getPositiveXWatt()+"",userInfo.getLanguageName()));
+								downStatusMap.put("negativeXWatt", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",requestData.getNegativeXWatt()+"",userInfo.getLanguageName()));
+								
+								
+								if(requestData.getPumpingUnit()!=null){
+									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
+									
+									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
+										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
+											downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
+											downStatusMap.put("BalancePosition"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName()));
+										}
+									}
+									
+									downStatusMap.put("PRTFPointCount", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("CrankAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringManagerUtils.joinStringArr(crankAngleList, ",")+"",userInfo.getLanguageName()));
+									downStatusMap.put("PR", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",StringManagerUtils.joinStringArr(PRList, ",")+"",userInfo.getLanguageName()));
+									downStatusMap.put("TF", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",StringManagerUtils.joinStringArr(TFList, ",")+"",userInfo.getLanguageName()));
+								}
+								
+							}
+						
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : downStatusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+downStatusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

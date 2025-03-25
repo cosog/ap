@@ -8,7 +8,7 @@ public class FSDiagramConstructionRequestData {
 
     private String WellName;
 
-    private int CrankDIInitAngle;
+    private float CrankDIInitAngle;
 
     private int CrankDIStartTimestamp;
 
@@ -24,11 +24,11 @@ public class FSDiagramConstructionRequestData {
 
     private int InterpolationCNT;
 
-    private int SurfaceSystemEfficiency;
+    private float SurfaceSystemEfficiency;
 
-    private int PositiveXWatt;
+    private float PositiveXWatt;
 
-    private int NegativeXWatt;
+    private float NegativeXWatt;
 
     private int WattTimes;
 
@@ -40,131 +40,9 @@ public class FSDiagramConstructionRequestData {
 
     private int FSDiagramRightTimes;
 
-    private double LeftPercent;
+    private float LeftPercent;
 
-    private double RightPercent;
-
-    public void setAKString(String AKString){
-        this.AKString = AKString;
-    }
-    public String getAKString(){
-        return this.AKString;
-    }
-    public void setWellName(String WellName){
-        this.WellName = WellName;
-    }
-    public String getWellName(){
-        return this.WellName;
-    }
-    public void setCrankDIInitAngle(int CrankDIInitAngle){
-        this.CrankDIInitAngle = CrankDIInitAngle;
-    }
-    public int getCrankDIInitAngle(){
-        return this.CrankDIInitAngle;
-    }
-    public void setCrankDIStartTimestamp(int CrankDIStartTimestamp){
-        this.CrankDIStartTimestamp = CrankDIStartTimestamp;
-    }
-    public int getCrankDIStartTimestamp(){
-        return this.CrankDIStartTimestamp;
-    }
-    public void setCrankDIEndTimestamp(int CrankDIEndTimestamp){
-        this.CrankDIEndTimestamp = CrankDIEndTimestamp;
-    }
-    public int getCrankDIEndTimestamp(){
-        return this.CrankDIEndTimestamp;
-    }
-    public void setMotorDITimestamp(List<Integer> MotorDITimestamp){
-        this.MotorDITimestamp = MotorDITimestamp;
-    }
-    public List<Integer> getMotorDITimestamp(){
-        return this.MotorDITimestamp;
-    }
-    public void setWatt(List<Float> Watt){
-        this.Watt = Watt;
-    }
-    public List<Float> getWatt(){
-        return this.Watt;
-    }
-    public void setI(List<Float> I){
-        this.I = I;
-    }
-    public List<Float> getI(){
-        return this.I;
-    }
-    public void setPumpingUnit(PumpingUnit PumpingUnit){
-        this.PumpingUnit = PumpingUnit;
-    }
-    public PumpingUnit getPumpingUnit(){
-        return this.PumpingUnit;
-    }
-    public void setInterpolationCNT(int InterpolationCNT){
-        this.InterpolationCNT = InterpolationCNT;
-    }
-    public int getInterpolationCNT(){
-        return this.InterpolationCNT;
-    }
-    public void setSurfaceSystemEfficiency(int SurfaceSystemEfficiency){
-        this.SurfaceSystemEfficiency = SurfaceSystemEfficiency;
-    }
-    public int getSurfaceSystemEfficiency(){
-        return this.SurfaceSystemEfficiency;
-    }
-    public void setPositiveXWatt(int PositiveXWatt){
-        this.PositiveXWatt = PositiveXWatt;
-    }
-    public int getPositiveXWatt(){
-        return this.PositiveXWatt;
-    }
-    public void setNegativeXWatt(int NegativeXWatt){
-        this.NegativeXWatt = NegativeXWatt;
-    }
-    public int getNegativeXWatt(){
-        return this.NegativeXWatt;
-    }
-    public void setWattTimes(int WattTimes){
-        this.WattTimes = WattTimes;
-    }
-    public int getWattTimes(){
-        return this.WattTimes;
-    }
-    public void setITimes(int ITimes){
-        this.ITimes = ITimes;
-    }
-    public int getITimes(){
-        return this.ITimes;
-    }
-    public void setFSDiagramTimes(int FSDiagramTimes){
-        this.FSDiagramTimes = FSDiagramTimes;
-    }
-    public int getFSDiagramTimes(){
-        return this.FSDiagramTimes;
-    }
-    public void setFSDiagramLeftTimes(int FSDiagramLeftTimes){
-        this.FSDiagramLeftTimes = FSDiagramLeftTimes;
-    }
-    public int getFSDiagramLeftTimes(){
-        return this.FSDiagramLeftTimes;
-    }
-    public void setFSDiagramRightTimes(int FSDiagramRightTimes){
-        this.FSDiagramRightTimes = FSDiagramRightTimes;
-    }
-    public int getFSDiagramRightTimes(){
-        return this.FSDiagramRightTimes;
-    }
-    public void setLeftPercent(double LeftPercent){
-        this.LeftPercent = LeftPercent;
-    }
-    public double getLeftPercent(){
-        return this.LeftPercent;
-    }
-    public void setRightPercent(double RightPercent){
-        this.RightPercent = RightPercent;
-    }
-    public double getRightPercent(){
-        return this.RightPercent;
-    }
-	
+    private float RightPercent;
 	
 	public static class EveryBalance
 	{
@@ -236,7 +114,7 @@ public class FSDiagramConstructionRequestData {
 
 	    private String CrankRotationDirection;
 
-	    private int OffsetAngleOfCrank;
+	    private float OffsetAngleOfCrank;
 
 	    private float CrankGravityRadius;
 
@@ -276,10 +154,10 @@ public class FSDiagramConstructionRequestData {
 	    public String getCrankRotationDirection(){
 	        return this.CrankRotationDirection;
 	    }
-	    public void setOffsetAngleOfCrank(int OffsetAngleOfCrank){
+	    public void setOffsetAngleOfCrank(float OffsetAngleOfCrank){
 	        this.OffsetAngleOfCrank = OffsetAngleOfCrank;
 	    }
-	    public int getOffsetAngleOfCrank(){
+	    public float getOffsetAngleOfCrank(){
 	        return this.OffsetAngleOfCrank;
 	    }
 	    public void setCrankGravityRadius(float CrankGravityRadius){
@@ -324,6 +202,166 @@ public class FSDiagramConstructionRequestData {
 	    public int getCrankAngleInterval(){
 	        return this.CrankAngleInterval;
 	    }
+	}
+
+	public String getAKString() {
+		return AKString;
+	}
+
+	public void setAKString(String aKString) {
+		AKString = aKString;
+	}
+
+	public String getWellName() {
+		return WellName;
+	}
+
+	public void setWellName(String wellName) {
+		WellName = wellName;
+	}
+
+	public float getCrankDIInitAngle() {
+		return CrankDIInitAngle;
+	}
+
+	public void setCrankDIInitAngle(float crankDIInitAngle) {
+		CrankDIInitAngle = crankDIInitAngle;
+	}
+
+	public int getCrankDIStartTimestamp() {
+		return CrankDIStartTimestamp;
+	}
+
+	public void setCrankDIStartTimestamp(int crankDIStartTimestamp) {
+		CrankDIStartTimestamp = crankDIStartTimestamp;
+	}
+
+	public int getCrankDIEndTimestamp() {
+		return CrankDIEndTimestamp;
+	}
+
+	public void setCrankDIEndTimestamp(int crankDIEndTimestamp) {
+		CrankDIEndTimestamp = crankDIEndTimestamp;
+	}
+
+	public List<Integer> getMotorDITimestamp() {
+		return MotorDITimestamp;
+	}
+
+	public void setMotorDITimestamp(List<Integer> motorDITimestamp) {
+		MotorDITimestamp = motorDITimestamp;
+	}
+
+	public List<Float> getWatt() {
+		return Watt;
+	}
+
+	public void setWatt(List<Float> watt) {
+		Watt = watt;
+	}
+
+	public List<Float> getI() {
+		return I;
+	}
+
+	public void setI(List<Float> i) {
+		I = i;
+	}
+
+	public PumpingUnit getPumpingUnit() {
+		return PumpingUnit;
+	}
+
+	public void setPumpingUnit(PumpingUnit pumpingUnit) {
+		PumpingUnit = pumpingUnit;
+	}
+
+	public int getInterpolationCNT() {
+		return InterpolationCNT;
+	}
+
+	public void setInterpolationCNT(int interpolationCNT) {
+		InterpolationCNT = interpolationCNT;
+	}
+
+	public float getSurfaceSystemEfficiency() {
+		return SurfaceSystemEfficiency;
+	}
+
+	public void setSurfaceSystemEfficiency(float surfaceSystemEfficiency) {
+		SurfaceSystemEfficiency = surfaceSystemEfficiency;
+	}
+
+	public float getPositiveXWatt() {
+		return PositiveXWatt;
+	}
+
+	public void setPositiveXWatt(float positiveXWatt) {
+		PositiveXWatt = positiveXWatt;
+	}
+
+	public float getNegativeXWatt() {
+		return NegativeXWatt;
+	}
+
+	public void setNegativeXWatt(float negativeXWatt) {
+		NegativeXWatt = negativeXWatt;
+	}
+
+	public int getWattTimes() {
+		return WattTimes;
+	}
+
+	public void setWattTimes(int wattTimes) {
+		WattTimes = wattTimes;
+	}
+
+	public int getITimes() {
+		return ITimes;
+	}
+
+	public void setITimes(int iTimes) {
+		ITimes = iTimes;
+	}
+
+	public int getFSDiagramTimes() {
+		return FSDiagramTimes;
+	}
+
+	public void setFSDiagramTimes(int fSDiagramTimes) {
+		FSDiagramTimes = fSDiagramTimes;
+	}
+
+	public int getFSDiagramLeftTimes() {
+		return FSDiagramLeftTimes;
+	}
+
+	public void setFSDiagramLeftTimes(int fSDiagramLeftTimes) {
+		FSDiagramLeftTimes = fSDiagramLeftTimes;
+	}
+
+	public int getFSDiagramRightTimes() {
+		return FSDiagramRightTimes;
+	}
+
+	public void setFSDiagramRightTimes(int fSDiagramRightTimes) {
+		FSDiagramRightTimes = fSDiagramRightTimes;
+	}
+
+	public float getLeftPercent() {
+		return LeftPercent;
+	}
+
+	public void setLeftPercent(float leftPercent) {
+		LeftPercent = leftPercent;
+	}
+
+	public float getRightPercent() {
+		return RightPercent;
+	}
+
+	public void setRightPercent(float rightPercent) {
+		RightPercent = rightPercent;
 	}
 	
 	

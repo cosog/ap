@@ -346,7 +346,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,120],
+	        		colWidths: [50,200,80,90,90,80,80,90,80,80,80,120],
 	                columns:protocolItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -460,24 +460,6 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(startRow);
 	                    	}
 	                	}
-	                	
-	                	
-//	                	if(row==row2){
-//	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(row);
-//	                		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
-//	                		var protocolCode="";
-//	                		if(protocolTreeGridPanelSelectRow!=''){
-//	                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
-//	                    		if(selectedProtocol.data.classes==1){//选中的是协议
-//	                    			protocolCode=selectedProtocol.data.code;
-//	                    		}else if(selectedProtocol.data.classes==0 && isNotVal(selectedProtocol.data.children) && selectedProtocol.data.children.length>0){
-//	                    			protocolCode=selectedProtocol.data.children[0].code;
-//	                    		}
-//	                    		var row1=protocolItemsConfigHandsontableHelper.hot.getDataAtRow(row);
-//	                    		var itemAddr=row1[2];
-//	                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
-//	                		}
-//	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(protocolItemsConfigHandsontableHelper!=null&&protocolItemsConfigHandsontableHelper.hot!=''&&protocolItemsConfigHandsontableHelper.hot!=undefined && protocolItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -735,27 +717,36 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 					if(isNotVal(driverConfigItemsData[i][1])){
 						var item={};
 						
-						item.Title=driverConfigItemsData[i][1];
-						item.Addr=parseInt(driverConfigItemsData[i][2]);
-						item.StoreDataType=driverConfigItemsData[i][3];
-						item.Quantity=parseInt(driverConfigItemsData[i][4]);
-						item.RWType=driverConfigItemsData[i][5];
-						item.AcqMode=driverConfigItemsData[i][6];
-						item.IFDataType=driverConfigItemsData[i][7];
-						item.Prec=(item.IFDataType!=null && item.IFDataType.toLowerCase().indexOf('float')>=0)?(driverConfigItemsData[i][8]==''?0:driverConfigItemsData[i][8]):0;
-						item.Ratio=parseFloat(driverConfigItemsData[i][9]);
+						var columns="[{data:'id'},{data:'title'},"
+						 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
+						 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
+						 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
+						 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.writeOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
+						 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
+							+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
+							+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
+							+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
+							+"{data:'unit'}," 
+							+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
+							+"]";
 						
-//						if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.1){
-//							item.Prec=1;
-//						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.01){
-//							item.Prec=2;
-//						}else if(item.IFDataType.toLowerCase().indexOf('float')>=0 && item.Ratio==0.001){
-//							item.Prec=3;
-//						}
+						item.Title=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
+						item.Addr=parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr'));
+						item.StoreDataType=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'storeDataType');
+						item.Quantity=parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'quantity'));
+						item.RWType=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'RWType');
+						item.AcqMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'acqMode');
+						item.IFDataType=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'IFDataType');
+						
+						var Prec=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'prec')+"";
+						Prec=Prec!=''?Prec.replace(/\s/g, ""):Prec;
+						item.Prec=(item.IFDataType!=null && item.IFDataType.toLowerCase().indexOf('float')>=0)?(isNumber(parseFloat(Prec))?parseFloat(Prec):0):0;
+						
+						item.Ratio=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'ratio');
+						item.Unit=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit');
+						item.ResolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
 						
 						
-						item.Unit=driverConfigItemsData[i][10];
-						item.ResolutionMode=driverConfigItemsData[i][11];
 						if(i==AddrMappingItemsSelectRow){
 							item.Meaning=[];
 							var itemsMeaningData=protocolItemsMeaningConfigHandsontableHelper.hot.getData();
@@ -780,7 +771,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 };
 
 function saveModbusProtocolAddrMappingConfigData(configInfo){
-	Ext.getCmp("modbusProtocolConfigInfoViewId").el.mask("协议保存中...").show();
+	Ext.getCmp("modbusProtocolConfigInfoViewId").el.mask(loginUserLanguageResource.updateWait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveModbusProtocolAddrMappingConfigData',
@@ -798,10 +789,12 @@ function saveModbusProtocolAddrMappingConfigData(configInfo){
 				
             	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
             } else {
+            	Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
             	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
+			Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {

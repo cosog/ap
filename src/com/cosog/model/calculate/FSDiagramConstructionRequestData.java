@@ -43,6 +43,10 @@ public class FSDiagramConstructionRequestData {
     private float LeftPercent;
 
     private float RightPercent;
+    
+    private int boardDataSource;
+    
+    private int PRTFSrc;
 	
 	public static class EveryBalance
 	{
@@ -362,6 +366,22 @@ public class FSDiagramConstructionRequestData {
 
 	public void setRightPercent(float rightPercent) {
 		RightPercent = rightPercent;
+	}
+
+	public int getBoardDataSource() {
+		return boardDataSource;
+	}
+
+	public void setBoardDataSource(int boardDataSource) {
+		this.boardDataSource = boardDataSource;
+	}
+
+	public int getPRTFSrc() {
+		return PRTFSrc;
+	}
+
+	public void setPRTFSrc(int pRTFSrc) {
+		PRTFSrc = pRTFSrc;
 	}
 	
 	

@@ -2583,7 +2583,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ " from "+deviceTableName+" t "
 					+ " where t.id="+deviceId;
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+			result_json.append("{\"success\":true,\"totalCount\":13,\"columns\":"+columns+",\"totalRoot\":[");
 			if(list.size()>0){
 				String fsDiagramConstructionData=list.get(0)+"";
 				type = new TypeToken<FSDiagramConstructionRequestData>() {}.getType();
@@ -2600,7 +2600,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\""+requestData.getLeftPercent()+"\"},");
 					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\""+requestData.getRightPercent()+"\"},");
 					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\""+requestData.getPositiveXWatt()+"\"},");
-					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\""+requestData.getNegativeXWatt()+"\"}");
+					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\""+requestData.getNegativeXWatt()+"\"},");
+					
+					String boardDataSource="";
+					if(requestData.getBoardDataSource()==1){
+						boardDataSource=languageResourceMap.get("boardDataSource1");
+					}else if(requestData.getBoardDataSource()==2){
+						boardDataSource=languageResourceMap.get("boardDataSource2");
+					}else if(requestData.getBoardDataSource()==3){
+						boardDataSource=languageResourceMap.get("boardDataSource3");
+					}
+					
+					String PRTFSrc="";
+					if(requestData.getPRTFSrc()==1){
+						PRTFSrc=languageResourceMap.get("PRTFSrc1");
+					}else if(requestData.getPRTFSrc()==2){
+						PRTFSrc=languageResourceMap.get("PRTFSrc2");
+					}
+					
+					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\""+PRTFSrc+"\"},");
+					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\""+boardDataSource+"\"}");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crankDIInitAngle")+"(°)\",\"itemCode\":\"crankDIInitAngle\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("interpolationCNT")+"\",\"itemCode\":\"interpolationCNT\",\"itemValue\":\"\"},");
@@ -2613,9 +2632,36 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\"\"}");
+					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\"\"}");
 				}
 			}
+			result_json.append("]");
+			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getSystemParameterInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		try{
+			String columns = "["
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "]";
+			
+			result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
+			result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("systemDate")+"\",\"itemCode\":\"systemDate\",\"itemValue\":\""+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"\"},");
+			result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("systemTime")+"\",\"itemCode\":\"systemTime\",\"itemValue\":\""+StringManagerUtils.getCurrentTime("HH:mm:ss")+"\"}");
 			result_json.append("]");
 			result_json.append("}");
 		}catch(Exception e){

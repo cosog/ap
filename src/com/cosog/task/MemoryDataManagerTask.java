@@ -1089,7 +1089,9 @@ public class MemoryDataManagerTask {
 								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
 									manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
 									model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
-									if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+									if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+									}else if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
 									}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
 										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
@@ -5168,30 +5170,6 @@ public class MemoryDataManagerTask {
 		}
 		return code;
 	}
-	
-//	public static int getResultCodeByName(String resultName,String language){
-//		int resultCode=0;
-//		Jedis jedis=null;
-//		if(!existsKey("SRPWorkTypeByName")){
-//			MemoryDataManagerTask.loadSRPWorkType();
-//		}
-//		try {
-//			jedis = RedisUtil.jedisPool.getResource();
-//			if(jedis.hexists("SRPWorkTypeByName".getBytes(), (resultName).getBytes())){
-//				WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("SRPWorkTypeByName".getBytes(), (resultName).getBytes()));
-//				resultCode=workType.getResultCode();
-//			}
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		} finally{
-//			if(jedis!=null){
-//				jedis.close();
-//			}
-//		}
-//		return resultCode;
-//	}
-	
-	
 	
 	@SuppressWarnings("static-access")
 	public static void loadReportTemplateConfig(){

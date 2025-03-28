@@ -2589,19 +2589,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				type = new TypeToken<FSDiagramConstructionRequestData>() {}.getType();
 				FSDiagramConstructionRequestData requestData=gson.fromJson(fsDiagramConstructionData, type);
 				if(requestData!=null){
-					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crankDIInitAngle")+"(°)\",\"itemCode\":\"crankDIInitAngle\",\"itemValue\":\""+requestData.getCrankDIInitAngle()+"\"},");
-					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("interpolationCNT")+"\",\"itemCode\":\"interpolationCNT\",\"itemValue\":\""+requestData.getInterpolationCNT()+"\"},");
-					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("surfaceSystemEfficiency")+"("+languageResourceMap.get("decimals")+")\",\"itemCode\":\"surfaceSystemEfficiency\",\"itemValue\":\""+requestData.getSurfaceSystemEfficiency()+"\"},");
-					result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\""+requestData.getWattTimes()+"\"},");
-					result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\""+requestData.getITimes()+"\"},");
-					result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("fsDiagramTimes")+"\",\"itemCode\":\"fsDiagramTimes\",\"itemValue\":\""+requestData.getFSDiagramTimes()+"\"},");
-					result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("fsDiagramLeftTimes")+"\",\"itemCode\":\"fsDiagramLeftTimes\",\"itemValue\":\""+requestData.getFSDiagramLeftTimes()+"\"},");
-					result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("fsDiagramRightTimes")+"\",\"itemCode\":\"fsDiagramRightTimes\",\"itemValue\":\""+requestData.getFSDiagramRightTimes()+"\"},");
-					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\""+requestData.getLeftPercent()+"\"},");
-					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\""+requestData.getRightPercent()+"\"},");
-					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\""+requestData.getPositiveXWatt()+"\"},");
-					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\""+requestData.getNegativeXWatt()+"\"},");
-					
 					String boardDataSource="";
 					if(requestData.getBoardDataSource()==1){
 						boardDataSource=languageResourceMap.get("boardDataSource1");
@@ -2610,6 +2597,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					}else if(requestData.getBoardDataSource()==3){
 						boardDataSource=languageResourceMap.get("boardDataSource3");
 					}
+					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\""+boardDataSource+"\"},");
+					
+					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("crankDIInitAngle")+"(°)\",\"itemCode\":\"crankDIInitAngle\",\"itemValue\":\""+requestData.getCrankDIInitAngle()+"\"},");
+					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("interpolationCNT")+"\",\"itemCode\":\"interpolationCNT\",\"itemValue\":\""+requestData.getInterpolationCNT()+"\"},");
+					result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("surfaceSystemEfficiency")+"("+languageResourceMap.get("decimals")+")\",\"itemCode\":\"surfaceSystemEfficiency\",\"itemValue\":\""+requestData.getSurfaceSystemEfficiency()+"\"},");
+					result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\""+requestData.getWattTimes()+"\"},");
+					result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\""+requestData.getITimes()+"\"},");
+					result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("fsDiagramTimes")+"\",\"itemCode\":\"fsDiagramTimes\",\"itemValue\":\""+requestData.getFSDiagramTimes()+"\"},");
+					result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("fsDiagramLeftTimes")+"\",\"itemCode\":\"fsDiagramLeftTimes\",\"itemValue\":\""+requestData.getFSDiagramLeftTimes()+"\"},");
+					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("fsDiagramRightTimes")+"\",\"itemCode\":\"fsDiagramRightTimes\",\"itemValue\":\""+requestData.getFSDiagramRightTimes()+"\"},");
+					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\""+requestData.getLeftPercent()+"\"},");
+					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\""+requestData.getRightPercent()+"\"},");
+					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\""+requestData.getPositiveXWatt()+"\"},");
+					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\""+requestData.getNegativeXWatt()+"\"},");
+					
+					
 					
 					String PRTFSrc="";
 					if(requestData.getPRTFSrc()==1){
@@ -2618,23 +2621,24 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						PRTFSrc=languageResourceMap.get("PRTFSrc2");
 					}
 					
-					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\""+PRTFSrc+"\"},");
-					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\""+boardDataSource+"\"}");
+					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\""+PRTFSrc+"\"}");
+					
 				}else{
-					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crankDIInitAngle")+"(°)\",\"itemCode\":\"crankDIInitAngle\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("interpolationCNT")+"\",\"itemCode\":\"interpolationCNT\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("surfaceSystemEfficiency")+"("+languageResourceMap.get("decimals")+")\",\"itemCode\":\"surfaceSystemEfficiency\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("fsDiagramTimes")+"\",\"itemCode\":\"fsDiagramTimes\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("fsDiagramLeftTimes")+"\",\"itemCode\":\"fsDiagramLeftTimes\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("fsDiagramRightTimes")+"\",\"itemCode\":\"fsDiagramRightTimes\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\"\"}");
+					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("boardDataSource")+"\",\"itemCode\":\"boardDataSource\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("crankDIInitAngle")+"(°)\",\"itemCode\":\"crankDIInitAngle\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("interpolationCNT")+"\",\"itemCode\":\"interpolationCNT\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("surfaceSystemEfficiency")+"("+languageResourceMap.get("decimals")+")\",\"itemCode\":\"surfaceSystemEfficiency\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("fsDiagramTimes")+"\",\"itemCode\":\"fsDiagramTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("fsDiagramLeftTimes")+"\",\"itemCode\":\"fsDiagramLeftTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("fsDiagramRightTimes")+"\",\"itemCode\":\"fsDiagramRightTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":10,\"itemName\":\""+languageResourceMap.get("leftPercent")+"(%)\",\"itemCode\":\"leftPercent\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":11,\"itemName\":\""+languageResourceMap.get("rightPercent")+"(%)\",\"itemCode\":\"rightPercent\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\"\"}");
+					
 				}
 			}
 			result_json.append("]");
@@ -3391,7 +3395,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " order by t.id";
 		List<?> list = this.findCallSql(sql);
 		if(StringManagerUtils.stringToInteger(auxiliaryDeviceSpecificType)==1){
-			String stroke="",crankRotationDirection="",offsetAngleOfCrank="",crankGravityRadius="",singleCrankWeight="",singleCrankPinWeight="",structuralUnbalance="",balanceWeight="";
+			String structureType="",stroke="",crankRotationDirection="",offsetAngleOfCrank="",crankGravityRadius="",singleCrankWeight="",singleCrankPinWeight="",structuralUnbalance="",balanceWeight="";
 			if(list.size()>0){
 				for(int i=0;i<list.size();i++){
 					Object[] obj = (Object[]) list.get(i);
@@ -3399,7 +3403,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					String itemValue=obj[2]+"";
 					String itemCode=obj[3]+"";
 					String itemUnit=obj[4]+"";
-					if("stroke".equalsIgnoreCase(itemCode)){
+					if("structureType".equalsIgnoreCase(itemCode)){
+						if(StringManagerUtils.stringToInteger(itemValue)==1){
+							structureType=languageResourceMap.get("pumpingUnitStructureType1");
+						}else if(StringManagerUtils.stringToInteger(itemValue)==2){
+							structureType=languageResourceMap.get("pumpingUnitStructureType2");
+						}else if(StringManagerUtils.stringToInteger(itemValue)==3){
+							structureType=languageResourceMap.get("pumpingUnitStructureType3");
+						}
+					}else if("stroke".equalsIgnoreCase(itemCode)){
 						stroke=itemValue+"";
 					}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
 						if("Clockwise".equalsIgnoreCase(itemValue)){
@@ -3422,16 +3434,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\",\"itemCode\":\"stroke\"},");
-			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("crankRotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"crankRotationDirection\"},");
-			totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\",\"itemCode\":\"offsetAngleOfCrank\"},");
-			totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\",\"itemCode\":\"crankGravityRadius\"},");
-			totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankWeight\"},");
-			totalRootBuffer.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("singleCrankPinWeight")+"\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankPinWeight\"},");
-			totalRootBuffer.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("structuralUnbalance")+"\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\",\"itemCode\":\"structuralUnbalance\"},");
-			totalRootBuffer.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("balanceWeight")+"\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"balanceWeight\"}");
 			
-			totalCount=8;
+			totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("pumpingUnitStructure")+"\",\"itemValue\":\""+structureType+"\",\"itemUnit\":\"\",\"itemCode\":\"structureType\"},");
+			totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\",\"itemCode\":\"stroke\"},");
+			totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("crankRotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"crankRotationDirection\"},");
+			totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\",\"itemCode\":\"offsetAngleOfCrank\"},");
+			totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\",\"itemCode\":\"crankGravityRadius\"},");
+			totalRootBuffer.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankWeight\"},");
+			totalRootBuffer.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("singleCrankPinWeight")+"\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankPinWeight\"},");
+			totalRootBuffer.append("{\"id\":8,\"itemName\":\""+languageResourceMap.get("structuralUnbalance")+"\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\",\"itemCode\":\"structuralUnbalance\"},");
+			totalRootBuffer.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("balanceWeight")+"\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"balanceWeight\"}");
+			
+			totalCount=9;
 		}else{
 			totalCount=20;
 			for(int i=0;i<list.size();i++){

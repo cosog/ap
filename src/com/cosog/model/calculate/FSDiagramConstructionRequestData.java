@@ -113,6 +113,8 @@ public class FSDiagramConstructionRequestData {
 	    private String Manufacturer;
 
 	    private String Model;
+	    
+	    private int StructureType;
 
 	    private float Stroke;
 
@@ -206,6 +208,12 @@ public class FSDiagramConstructionRequestData {
 	    public int getCrankAngleInterval(){
 	        return this.CrankAngleInterval;
 	    }
+		public int getStructureType() {
+			return StructureType;
+		}
+		public void setStructureType(int structureType) {
+			StructureType = structureType;
+		}
 	}
 
 	public String getAKString() {

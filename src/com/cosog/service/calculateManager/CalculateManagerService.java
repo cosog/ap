@@ -976,29 +976,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " t.productiondata"
-//				+ " t.balanceinfo,"
-//				+ " t2.stroke as inputStroke"
 				+ " from tbl_srpacqdata_hist t"
 				+ " left outer join tbl_device t2 on t.deviceId=t2.id"
 				+ " where 1=1  "
 				+ " and t.id="+recordId;
 		
-//		String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue "
-//				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4,"
-//				+ " tbl_srpacqdata_hist t5"
-//				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid"
-//				+ " and t5.deviceId=t.id "
-//				+ " and t3.specifictype=1"
-//				+ " and t5.id="+recordId;
-		
 		List<?> list = this.findCallSql(sql);
-//		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
 		
 		
 		if(list.size()>0){
 			Object[] object=(Object[])list.get(0);
-//			requestData=calculateDataService.getObjectToSRPCalculateRequestData(obj);
-
 			String productionData=object[10].toString();
 			
 			type = new TypeToken<SRPCalculateRequestData>() {}.getType();
@@ -1024,9 +1011,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	        List<Float> I=new ArrayList<Float>();
 	        
 	        int count =Integer.MAX_VALUE;
-//	        if(StringManagerUtils.isNum(object[21]+"") || StringManagerUtils.isNumber(object[21]+"")){
-//	        	count=StringManagerUtils.stringToInteger(object[21]+"");
-//	        }
 	        
 	        SerializableClobProxy proxy=null;
 	        CLOB realClob =null;
@@ -1077,64 +1061,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	        calculateRequestData.getFESDiagram().setWatt(Watt);
 	        calculateRequestData.getFESDiagram().setI(I);
 	        
-	        
-//	        if(auxiliaryDeviceList.size()>0){
-//	        	List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
-//	        	for(int i=0;i<auxiliaryDeviceList.size();i++){
-//	        		Object[] obj=(Object[])auxiliaryDeviceList.get(i);
-//	        		
-//	        		AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
-//					auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(obj[0]+""));
-//					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
-//					auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
-//					auxiliaryDeviceAddInfo.setModel(obj[3]+"");
-//					auxiliaryDeviceAddInfo.setItemCode(obj[4]+"");
-//					auxiliaryDeviceAddInfo.setItemValue(obj[5]+"");
-//					auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
-//				}
-//	        	
-//	        	
-//	        	if(auxiliaryDeviceAddInfoList.size()>0){
-//	        		String balanceInfo=object[11]+"";
-//					String inputStroke=object[12]+"";
-//	        		calculateRequestData.setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
-//	        		String manufacturer="";
-//					String model="";
-//					for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
-//						manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
-//						model=auxiliaryDeviceAddInfoList.get(i).getModel();
-//						if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
-//						}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-//						}else if("crankGravityRadius".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-//						}else if("singleCrankWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-//						}else if("singleCrankPinWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-//						}else if("structuralUnbalance".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-//							calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-//						}
-//					}
-//					
-//					
-//					calculateRequestData.getPumpingUnit().setManufacturer(manufacturer);
-//					calculateRequestData.getPumpingUnit().setModel(model);
-//					calculateRequestData.getPumpingUnit().setStroke(StringManagerUtils.stringToFloat(inputStroke,2));
-//					
-//					
-//					type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
-//					SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
-//					if(balance!=null){
-//						calculateRequestData.getPumpingUnit().setBalance(balance);
-//					}
-//	        	}else{
-//	        		calculateRequestData.setPumpingUnit(null);
-//	        	}
-//	        }else{
-//        		calculateRequestData.setPumpingUnit(null);
-//        	}
 	        requestData=calculateRequestData.toString();
 		}
 		return requestData;

@@ -1544,7 +1544,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					//计算项
 					if(calItemList!=null){
 						for(CalItem calItem:calItemList){
-							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
+							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,1)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
@@ -1561,7 +1561,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					//日汇总计算项
 					if(acqInstanceOwnItem!=null){
 						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
-							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0)){
+							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0,1)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
 											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
@@ -1580,7 +1580,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					//录入项
 					if(inputItemList!=null){
 						for(CalItem calItem:inputItemList){
-							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0)){
+							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,1)){
 								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 									if(displayInstanceOwnItem.getItemList().get(k).getType()==3
 											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
@@ -2144,7 +2144,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									
 								}
 								
-								if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit)){
+								if(StringManagerUtils.isNotNull(columnName) && StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
 									result_json.append("\"name"+(k+1)+"\":\""+(columnName+"("+unit+")")+"\",");
 								}else{
 									result_json.append("\"name"+(k+1)+"\":\""+columnName+"\",");
@@ -2615,6 +2615,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				if("1".equalsIgnoreCase(specificType)){
 					if("stroke".equalsIgnoreCase(itemCode)){
 						itemName=languageResourceMap.get("stroke");
+					}else if("structureType".equalsIgnoreCase(itemCode)){
+						if(StringManagerUtils.stringToInteger(itemValue)==1){
+							itemValue=languageResourceMap.get("pumpingUnitStructureType1");
+						}else if(StringManagerUtils.stringToInteger(itemValue)==2){
+							itemValue=languageResourceMap.get("pumpingUnitStructureType2");
+						}else if(StringManagerUtils.stringToInteger(itemValue)==3){
+							itemValue=languageResourceMap.get("pumpingUnitStructureType3");
+						}
+						itemName=languageResourceMap.get("pumpingUnitStructureType");
 					}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
 						if("Clockwise".equalsIgnoreCase(itemValue)){
 							itemValue=languageResourceMap.get("clockwise");

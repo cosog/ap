@@ -503,6 +503,8 @@ public class SRPCalculateRequestData implements Serializable {
 	    private String Manufacturer;
 
 	    private String Model;
+	    
+	    private int StructureType;
 
 	    private float Stroke;
 
@@ -595,6 +597,12 @@ public class SRPCalculateRequestData implements Serializable {
 		}
 		public void setPRTF(PRTF pRTF) {
 			PRTF = pRTF;
+		}
+		public int getStructureType() {
+			return StructureType;
+		}
+		public void setStructureType(int structureType) {
+			StructureType = structureType;
 		}
 	}
 

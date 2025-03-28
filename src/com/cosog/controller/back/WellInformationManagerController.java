@@ -1440,7 +1440,7 @@ public class WellInformationManagerController extends BaseController {
 					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
 					this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 				}
-			}else if(additionalInformationSaveData.getType()==33){
+			}else if(additionalInformationSaveData.getType()==4){
 				this.wellInformationManagerService.saveFSDiagramConstructionData(deviceId,additionalInformationSaveData.getData());
 			}
 		}
@@ -2422,8 +2422,8 @@ public class WellInformationManagerController extends BaseController {
 		String deviceName = request.getParameter("deviceName");
 		String deviceCalculateDataType = request.getParameter("deviceCalculateDataType");
 		String productionData = request.getParameter("productionData");
-		String pumpingUnitInfo = request.getParameter("productionData");
-		String manualInterventionResultName=request.getParameter("productionData");
+		String pumpingUnitInfo = request.getParameter("pumpingUnitInfo");
+		String manualInterventionResultName=request.getParameter("manualInterventionResultName");
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -2489,7 +2489,9 @@ public class WellInformationManagerController extends BaseController {
 										for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
 											manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
 											model=auxiliaryDeviceAddInfoList.get(i).getModel();
-											if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+												srpProductionData.getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+											}else if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 												srpProductionData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
 											}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 												srpProductionData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
@@ -2533,8 +2535,14 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",srpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
 									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",srpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
 									
+									int barrelType=0;
+									if("L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
+										barrelType=2;
+									}else if("H".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
+										barrelType=1;
+									}
+									downStatusMap.put("BarrelType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BarrelType",barrelType+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("BarrelType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BarrelType","L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())?"2":"1",userInfo.getLanguageName()));
 									downStatusMap.put("PumpGrade", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
 									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()+"",userInfo.getLanguageName()));
 									downStatusMap.put("PlungerLength", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
@@ -2545,7 +2553,26 @@ public class WellInformationManagerController extends BaseController {
 									
 									for(int i=0;i<srpProductionData.getRodString().getEveryRod().size();i++){
 										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getGrade()+"",userInfo.getLanguageName()));
+										
+										int rodGrade=0;
+										if("A".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=1;
+										}if("B".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=2;
+										}if("C".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=3;
+										}if("K".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=4;
+										}if("D".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=5;
+										}if("KD".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=6;
+										}if("HL".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=7;
+										}if("HY".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=8;
+										}
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
@@ -2597,7 +2624,25 @@ public class WellInformationManagerController extends BaseController {
 									
 									for(int i=0;i<pcpProductionData.getRodString().getEveryRod().size();i++){
 										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getGrade()+"",userInfo.getLanguageName()));
+										int rodGrade=0;
+										if("A".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=1;
+										}if("B".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=2;
+										}if("C".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=3;
+										}if("K".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=4;
+										}if("D".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=5;
+										}if("KD".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=6;
+										}if("HL".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=7;
+										}if("HY".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
+											rodGrade=8;
+										}
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
@@ -2743,7 +2788,9 @@ public class WellInformationManagerController extends BaseController {
 									for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
 										manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
 										model=auxiliaryDeviceAddInfoList.get(i).getModel();
-										if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+										if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 											requestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
 										}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 											requestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
@@ -2786,7 +2833,7 @@ public class WellInformationManagerController extends BaseController {
 								if(requestData.getPumpingUnit()!=null){
 									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("PumpingUnitStructure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure","2",userInfo.getLanguageName()));
+									downStatusMap.put("PumpingUnitStructure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
 									
 									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
 									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
@@ -2944,10 +2991,12 @@ public class WellInformationManagerController extends BaseController {
 			String title="";
 			float ratio=1;
 			int quantity=1;
+			String itemName="";
 			for(int i=0;i<protocol.getItems().size();i++){
 				String col="";
 				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
 					col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
+					
 				}
 				if(itemCode.equalsIgnoreCase(col)){
 					addr=protocol.getItems().get(i).getAddr();
@@ -2955,6 +3004,9 @@ public class WellInformationManagerController extends BaseController {
 					title=protocol.getItems().get(i).getTitle();
 					ratio=protocol.getItems().get(i).getRatio();
 					quantity=protocol.getItems().get(i).getQuantity();
+					
+					itemName=protocol.getItems().get(i).getTitle();
+					
 					break;
 				}
 			}
@@ -3006,7 +3058,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				System.out.println(ctrlJson);
+				System.out.println(itemName+":"+ctrlJson);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){

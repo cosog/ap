@@ -627,7 +627,16 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	var itemValue=isNotVal(auxiliaryDeviceDetailsData[index][2])?auxiliaryDeviceDetailsData[index][2]:"";
                         	var itemUnit=isNotVal(auxiliaryDeviceDetailsData[index][3])?auxiliaryDeviceDetailsData[index][3]:"";
                         	var itemCode=isNotVal(auxiliaryDeviceDetailsData[index][4])?auxiliaryDeviceDetailsData[index][4]:"";
-                        	if(auxiliaryDeviceSpecificType==1 && itemName==loginUserLanguageResource.crankRotationDirection){
+                        	
+                        	if(auxiliaryDeviceSpecificType==1 && itemCode.toUpperCase()=='structureType'.toUpperCase()){
+                        		if(itemValue==loginUserLanguageResource.pumpingUnitStructureType1){
+                        			itemValue=1;
+                        		}else if(itemValue==loginUserLanguageResource.pumpingUnitStructureType2){
+                        			itemValue=2;
+                        		}else if(itemValue==loginUserLanguageResource.pumpingUnitStructureType3){
+                        			itemValue=3;
+                        		}
+                        	}else if(auxiliaryDeviceSpecificType==1 && itemCode.toUpperCase()=='crankRotationDirection'.toUpperCase()){
                         		if(itemValue==loginUserLanguageResource.clockwise){
                         			itemValue='Clockwise';
                         		}else if(itemValue==loginUserLanguageResource.anticlockwise){
@@ -938,7 +947,13 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    			cellProperties.renderer = auxiliaryDeviceDetailsHandsontableHelper.addBoldBg;
 	                    		}
 	                    		
-	                    		if (visualColIndex === 2 && visualRowIndex===1) {
+	                    		if (visualColIndex === 2 && visualRowIndex===0) {
+			                    	this.type = 'dropdown';
+			                    	this.source = [loginUserLanguageResource.pumpingUnitStructureType1,loginUserLanguageResource.pumpingUnitStructureType2,loginUserLanguageResource.pumpingUnitStructureType3];
+			                    	this.strict = true;
+			                    	this.allowInvalid = false;
+			                    }
+	                    		if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.type = 'dropdown';
 			                    	this.source = [loginUserLanguageResource.clockwise,loginUserLanguageResource.anticlockwise];
 			                    	this.strict = true;

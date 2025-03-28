@@ -717,19 +717,6 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 					if(isNotVal(driverConfigItemsData[i][1])){
 						var item={};
 						
-						var columns="[{data:'id'},{data:'title'},"
-						 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
-						 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
-						 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
-						 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.writeOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
-						 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
-							+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
-							+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
-							+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
-							+"{data:'unit'}," 
-							+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
-							+"]";
-						
 						item.Title=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
 						item.Addr=parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr'));
 						item.StoreDataType=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'storeDataType');
@@ -743,10 +730,12 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						item.Prec=(item.IFDataType!=null && item.IFDataType.toLowerCase().indexOf('float')>=0)?(isNumber(parseFloat(Prec))?parseFloat(Prec):0):0;
 						
 						item.Ratio=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'ratio');
-						item.Unit=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit');
+						
+						var Unit=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit')+"";
+						Unit=Unit!=''?Unit.replace(/\s/g, ""):Unit;
+						item.Unit=Unit;
+						
 						item.ResolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
-						
-						
 						if(i==AddrMappingItemsSelectRow){
 							item.Meaning=[];
 							var itemsMeaningData=protocolItemsMeaningConfigHandsontableHelper.hot.getData();

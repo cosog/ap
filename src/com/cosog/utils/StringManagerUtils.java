@@ -3764,18 +3764,24 @@ public class StringManagerUtils {
                 String value=list.get(i) + "";
                 if(value.toUpperCase().contains("E")){
                 	value=StringManagerUtils.scientificNotationToNormal(value);
+                }else{
+                	value=StringManagerUtils.dataFormat(value);
                 }
             	jsonBuffer.append(value + ",");
             } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
-            	 String value=list.get(i) + "";
-                 if(value.toUpperCase().contains("E")){
-                 	value=StringManagerUtils.scientificNotationToNormal(value);
-                 }
+            	String value=list.get(i) + "";
+                if(value.toUpperCase().contains("E")){
+                	value=StringManagerUtils.scientificNotationToNormal(value);
+                }else{
+                 	value=StringManagerUtils.dataFormat(value);
+                }
              	jsonBuffer.append(value + ",");
             } else if ("float64".equalsIgnoreCase(item.getIFDataType())) {
             	 String value=list.get(i) + "";
                  if(value.toUpperCase().contains("E")){
                  	value=StringManagerUtils.scientificNotationToNormal(value);
+                 }else{
+                  	value=StringManagerUtils.dataFormat(value);
                  }
              	 jsonBuffer.append(value + ",");
             } else if ("string".equalsIgnoreCase(item.getIFDataType())) {
@@ -4041,19 +4047,27 @@ public class StringManagerUtils {
         return flag;
     }
 
-    public static boolean existDisplayItemCode(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type) {
+    public static boolean existDisplayItemCode(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type,int realtimeOrHistory) {
         boolean flag = false;
         for (int i = 0; i < displayItemList.size(); i++) {
-            if ((type == 0 && displayItemList.get(i).getType() != 2) || (type == 1 && displayItemList.get(i).getType() == 2)) {
-                boolean match = false;
-                if (caseSensitive) {
-                    match = key.equals(displayItemList.get(i).getItemCode());
-                } else {
-                    match = key.equalsIgnoreCase(displayItemList.get(i).getItemCode());
-                }
-                if (match) {
-                    flag = true;
-                    break;
+            int show=0;
+            if(realtimeOrHistory==1){//实时
+            	show=displayItemList.get(i).getRealtimeData();
+            }if(realtimeOrHistory==2){//历史
+            	show=displayItemList.get(i).getHistoryData();
+            }
+            if(show==1){
+            	if ((type == 0 && displayItemList.get(i).getType() != 2) || (type == 1 && displayItemList.get(i).getType() == 2)) {
+                    boolean match = false;
+                    if (caseSensitive) {
+                        match = key.equals(displayItemList.get(i).getItemCode());
+                    } else {
+                        match = key.equalsIgnoreCase(displayItemList.get(i).getItemCode());
+                    }
+                    if (match) {
+                        flag = true;
+                        break;
+                    }
                 }
             }
         }
@@ -4493,5 +4507,16 @@ public class StringManagerUtils {
         BigDecimal bd = new BigDecimal(scientificNotation);
         String decimalString = bd.toPlainString();
         return decimalString;
+    }
+    
+    public static String dataFormat(String data){
+    	if(data.toUpperCase().contains("E")){
+    		data=StringManagerUtils.scientificNotationToNormal(data);
+        }
+    	String r=data;
+    	if(data.contains(".")){
+    		r = new BigDecimal(data).stripTrailingZeros().toPlainString();
+    	}
+    	return r;
     }
 }

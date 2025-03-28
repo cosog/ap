@@ -561,71 +561,6 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                                 }
                             }
                         }
-                	},{
-                		title:loginUserLanguageResource.fsDiagramConstruction,
-                		id:'DeviceFSDiagramConstructionInfoPanel_Id',
-                		tbar:['->',{
-                			xtype: 'button',
-                			text:loginUserLanguageResource.downlink,
-                			iconCls: 'down',
-                			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
-                			handler: function (v, o) {
-                				deviceFSDiagramConstructionDataDownlink();
-                			}
-                		}],
-                		html: '<div class="DeviceFSDiagramConstructionInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceFSDiagramConstructionInfoTableDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if (fsDiagramConstructionHandsontableHelper != null && fsDiagramConstructionHandsontableHelper.hot != null && fsDiagramConstructionHandsontableHelper.hot != undefined) {
-                            		var newWidth=width;
-                            		var newHeight=height-23-1;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		fsDiagramConstructionHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                                }
-                            }
-                        }
-                	},{
-                		title:loginUserLanguageResource.intelligentFrequencyConversion,
-                		id:'DeviceIntelligentFrequencyConversionInfoPanel_Id'
-                	},{
-                		title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
-                		id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'
-                	},{
-                		title:loginUserLanguageResource.systemParameterConfiguration,
-                		id:'DeviceSystemParameterConfigurationInfoPanel_Id',
-                		tbar:['->',{
-                			xtype: 'button',
-                			text:loginUserLanguageResource.downlink,
-                			iconCls: 'down',
-                			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
-                			handler: function (v, o) {
-                				deviceSystemParameterDataDownlink();
-                			}
-                		}],
-                		html: '<div class="DeviceSystemParameterConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceSystemParameterConfigurationInfoTableDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if (deviceSystemParameterHandsontableHelper != null && deviceSystemParameterHandsontableHelper.hot != null && deviceSystemParameterHandsontableHelper.hot != undefined) {
-                            		var newWidth=width;
-                            		var newHeight=height-23-1;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		deviceSystemParameterHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                                }
-                            }
-                        }
-                		
                 	}],
                 	listeners: {
             			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -655,6 +590,73 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             				
             			}
             		}
+            	},{
+            		title:loginUserLanguageResource.fsDiagramConstruction,
+            		id:'DeviceFSDiagramConstructionInfoPanel_Id',
+            		tbar:['->',{
+            			xtype: 'button',
+            			text:loginUserLanguageResource.downlink,
+            			iconCls: 'down',
+            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				deviceFSDiagramConstructionDataDownlink();
+            			}
+            		}],
+            		html: '<div class="DeviceFSDiagramConstructionInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceFSDiagramConstructionInfoTableDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (fsDiagramConstructionHandsontableHelper != null && fsDiagramConstructionHandsontableHelper.hot != null && fsDiagramConstructionHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height-23-1;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		fsDiagramConstructionHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
+                        }
+                    }
+            	},{
+            		title:loginUserLanguageResource.intelligentFrequencyConversion,
+            		id:'DeviceIntelligentFrequencyConversionInfoPanel_Id',
+            		hidden:true
+            	},{
+            		title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
+            		id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id',
+            		hidden:true
+            	},{
+            		title:loginUserLanguageResource.systemParameterConfiguration,
+            		id:'DeviceSystemParameterConfigurationInfoPanel_Id',
+            		tbar:['->',{
+            			xtype: 'button',
+            			text:loginUserLanguageResource.downlink,
+            			iconCls: 'down',
+            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				deviceSystemParameterDataDownlink();
+            			}
+            		}],
+            		html: '<div class="DeviceSystemParameterConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceSystemParameterConfigurationInfoTableDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if (deviceSystemParameterHandsontableHelper != null && deviceSystemParameterHandsontableHelper.hot != null && deviceSystemParameterHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height-23-1;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		deviceSystemParameterHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
+                        }
+                    }
+            		
             	}],
             	listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -703,16 +705,22 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.additionalInformation+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.additionalInformation;
 		}
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
 		CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.auxiliaryDevice+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.auxiliaryDevice;
 		}
 	}else if(activeId=='DeviceVideoInfoPanel_Id'){
 		CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew);
 		if(isNotVal(deviceName)){
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.videoConfig;
 		}
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
 		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
@@ -726,18 +734,38 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 			}
 		}else if(calculateDataActiveId=='PumpingInfoPanel_Id'){
 			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
-		}else if(calculateDataActiveId=='DeviceFSDiagramConstructionInfoPanel_Id'){
-			CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew);
-		}else if(calculateDataActiveId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
-			
-		}else if(calculateDataActiveId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
-			
-		}else if(calculateDataActiveId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
-			CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,applicationScenarios,isNew);
 		}
 		
 		if(isNotVal(deviceName)){
 			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.calculateDataConfig+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.calculateDataConfig;
+		}
+	}else if(activeId=='DeviceFSDiagramConstructionInfoPanel_Id'){
+		CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew);
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.fsDiagramConstruction+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.fsDiagramConstruction;
+		}
+	}else if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.intelligentFrequencyConversion+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.intelligentFrequencyConversion;
+		}
+	}else if(activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.intelligentIntermissiveOilDrawing+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.intelligentIntermissiveOilDrawing;
+		}
+	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
+		CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,applicationScenarios,isNew);
+		if(isNotVal(deviceName)){
+			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.systemParameterConfiguration+"&nbsp;"
+		}else{
+			showInfo=loginUserLanguageResource.systemParameterConfiguration;
 		}
 	}
 	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
@@ -796,15 +824,15 @@ function getDeviceAdditionalInformationType(){
 			type=31;
 		}else if(calculateDataActiveId=='PumpingInfoPanel_Id'){
 			type=32;
-		}else if(calculateDataActiveId=='DeviceFSDiagramConstructionInfoPanel_Id'){
-			type=33;
-		}else if(calculateDataActiveId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
-			type=34;
-		}else if(calculateDataActiveId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
-			type=35;
-		}else if(calculateDataActiveId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
-			type=36;
 		}
+	}else if(activeId=='DeviceFSDiagramConstructionInfoPanel_Id'){
+		type=4;
+	}else if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
+		type=5;
+	}else if(activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+		type=6;
+	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
+		type=7;
 	}
 	return type;
 }
@@ -1854,73 +1882,77 @@ var DeviceInfoHandsontableHelper = {
             		productionInfoList.push(stroke);
             		productionInfoList.push(JSON.stringify(balanceInfo));
                     deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
-            	}else if(additionalInformationType==33){
+            	}else if(additionalInformationType==4){
             		var FSDiagramConstructionData={};
             		if(fsDiagramConstructionHandsontableHelper!=null && fsDiagramConstructionHandsontableHelper.hot!=undefined){
-            			var fsDiagramConstructionHandsontableData=fsDiagramConstructionHandsontableHelper.hot.getData();
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[0][2]))){
-            				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(fsDiagramConstructionHandsontableData[0][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[1][2]))){
-            				FSDiagramConstructionData.InterpolationCNT=parseFloat(fsDiagramConstructionHandsontableData[1][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[2][2]))){
-            				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(fsDiagramConstructionHandsontableData[2][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[3][2]))){
-            				FSDiagramConstructionData.WattTimes=parseFloat(fsDiagramConstructionHandsontableData[3][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[4][2]))){
-            				FSDiagramConstructionData.ITimes=parseFloat(fsDiagramConstructionHandsontableData[4][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[5][2]))){
-            				FSDiagramConstructionData.FSDiagramTimes=parseFloat(fsDiagramConstructionHandsontableData[5][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[6][2]))){
-            				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(fsDiagramConstructionHandsontableData[6][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[7][2]))){
-            				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(fsDiagramConstructionHandsontableData[7][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[8][2]))){
-            				FSDiagramConstructionData.LeftPercent=parseFloat(fsDiagramConstructionHandsontableData[8][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[9][2]))){
-            				FSDiagramConstructionData.RightPercent=parseFloat(fsDiagramConstructionHandsontableData[9][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[10][2]))){
-            				FSDiagramConstructionData.PositiveXWatt=parseFloat(fsDiagramConstructionHandsontableData[10][2]);
-                		}
-            			
-            			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[11][2]))){
-            				FSDiagramConstructionData.NegativeXWatt=parseFloat(fsDiagramConstructionHandsontableData[11][2]);
-                		}
-            			
-            			if(fsDiagramConstructionHandsontableData[12][2]==loginUserLanguageResource.PRTFSrc1){
-            				FSDiagramConstructionData.PRTFSrc=1;
-        				}else if(fsDiagramConstructionHandsontableData[12][2]==loginUserLanguageResource.PRTFSrc2){
-            				FSDiagramConstructionData.PRTFSrc=2;
-        				}
-            			
-            			
-            			if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource1){
-            				FSDiagramConstructionData.boardDataSource=1;
-        				}else if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource2){
-            				FSDiagramConstructionData.boardDataSource=2;
-        				}else if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource3){
-            				FSDiagramConstructionData.boardDataSource=3;
-        				}
+            			var rowCount = fsDiagramConstructionHandsontableHelper.hot.countRows();
+            			for(var i=0;i<rowCount;i++){
+            				var itemCode=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(i,'itemCode');
+            				var itemValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(i,'itemValue');
+            				if(itemCode.toUpperCase()=="boardDataSource".toUpperCase()){
+            					if(itemValue==loginUserLanguageResource.boardDataSource1){
+                    				FSDiagramConstructionData.boardDataSource=1;
+                    			}else if(itemValue==loginUserLanguageResource.boardDataSource2){
+                    				FSDiagramConstructionData.boardDataSource=2;
+                    			}else if(itemValue==loginUserLanguageResource.boardDataSource3){
+                    				FSDiagramConstructionData.boardDataSource=3;
+                    			}
+            				}else if(itemCode.toUpperCase()=="crankDIInitAngle".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="interpolationCNT".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.InterpolationCNT=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="surfaceSystemEfficiency".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="wattTimes".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.WattTimes=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="iTimes".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.ITimes=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="fsDiagramTimes".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.FSDiagramTimes=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="fsDiagramLeftTimes".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="fsDiagramRightTimes".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="leftPercent".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.LeftPercent=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="rightPercent".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.RightPercent=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="positiveXWatt".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.PositiveXWatt=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="negativeXWatt".toUpperCase()){
+            					if(isNumber(parseFloat(itemValue))){
+                    				FSDiagramConstructionData.NegativeXWatt=parseFloat(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="PRTFSrc".toUpperCase()){
+            					if(itemValue==loginUserLanguageResource.PRTFSrc1){
+                    				FSDiagramConstructionData.PRTFSrc=1;
+                    			}else if(itemValue==loginUserLanguageResource.PRTFSrc2){
+                    				FSDiagramConstructionData.PRTFSrc=2;
+                    			}
+            				}
+            			}
             		}
             		
             		deviceAdditionalInformationData.data=JSON.stringify(FSDiagramConstructionData);
@@ -3634,7 +3666,7 @@ function deviceFSDiagramConstructionDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
 	var all_loading = new Ext.LoadMask({
         msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
+        target: Ext.getCmp('DeviceFSDiagramConstructionInfoPanel_Id')
     });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
@@ -3649,69 +3681,73 @@ function deviceFSDiagramConstructionDataDownlink(){
 
 		var FSDiagramConstructionData={};
 		if(fsDiagramConstructionHandsontableHelper!=null && fsDiagramConstructionHandsontableHelper.hot!=undefined){
-			var fsDiagramConstructionHandsontableData=fsDiagramConstructionHandsontableHelper.hot.getData();
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[0][2]))){
-				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(fsDiagramConstructionHandsontableData[0][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[1][2]))){
-				FSDiagramConstructionData.InterpolationCNT=parseFloat(fsDiagramConstructionHandsontableData[1][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[2][2]))){
-				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(fsDiagramConstructionHandsontableData[2][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[3][2]))){
-				FSDiagramConstructionData.WattTimes=parseFloat(fsDiagramConstructionHandsontableData[3][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[4][2]))){
-				FSDiagramConstructionData.ITimes=parseFloat(fsDiagramConstructionHandsontableData[4][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[5][2]))){
-				FSDiagramConstructionData.FSDiagramTimes=parseFloat(fsDiagramConstructionHandsontableData[5][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[6][2]))){
-				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(fsDiagramConstructionHandsontableData[6][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[7][2]))){
-				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(fsDiagramConstructionHandsontableData[7][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[8][2]))){
-				FSDiagramConstructionData.LeftPercent=parseFloat(fsDiagramConstructionHandsontableData[8][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[9][2]))){
-				FSDiagramConstructionData.RightPercent=parseFloat(fsDiagramConstructionHandsontableData[9][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[10][2]))){
-				FSDiagramConstructionData.PositiveXWatt=parseFloat(fsDiagramConstructionHandsontableData[10][2]);
-    		}
-			
-			if(isNumber(parseFloat(fsDiagramConstructionHandsontableData[11][2]))){
-				FSDiagramConstructionData.NegativeXWatt=parseFloat(fsDiagramConstructionHandsontableData[11][2]);
-    		}
-			
-			if(fsDiagramConstructionHandsontableData[12][2]==loginUserLanguageResource.PRTFSrc1){
-				FSDiagramConstructionData.PRTFSrc=1;
-			}else if(fsDiagramConstructionHandsontableData[12][2]==loginUserLanguageResource.PRTFSrc2){
-				FSDiagramConstructionData.PRTFSrc=2;
-			}
-			
-			
-			if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource1){
-				FSDiagramConstructionData.boardDataSource=1;
-			}else if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource2){
-				FSDiagramConstructionData.boardDataSource=2;
-			}else if(fsDiagramConstructionHandsontableData[13][2]==loginUserLanguageResource.boardDataSource3){
-				FSDiagramConstructionData.boardDataSource=3;
+			var rowCount = fsDiagramConstructionHandsontableHelper.hot.countRows();
+			for(var i=0;i<rowCount;i++){
+				var itemCode=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(i,'itemCode');
+				var itemValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(i,'itemValue');
+				if(itemCode.toUpperCase()=="boardDataSource".toUpperCase()){
+					if(itemValue==loginUserLanguageResource.boardDataSource1){
+        				FSDiagramConstructionData.boardDataSource=1;
+        			}else if(itemValue==loginUserLanguageResource.boardDataSource2){
+        				FSDiagramConstructionData.boardDataSource=2;
+        			}else if(itemValue==loginUserLanguageResource.boardDataSource3){
+        				FSDiagramConstructionData.boardDataSource=3;
+        			}
+				}else if(itemCode.toUpperCase()=="crankDIInitAngle".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.CrankDIInitAngle=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="interpolationCNT".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.InterpolationCNT=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="surfaceSystemEfficiency".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.SurfaceSystemEfficiency=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="wattTimes".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.WattTimes=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="iTimes".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.ITimes=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="fsDiagramTimes".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.FSDiagramTimes=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="fsDiagramLeftTimes".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.FSDiagramLeftTimes=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="fsDiagramRightTimes".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.FSDiagramRightTimes=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="leftPercent".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.LeftPercent=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="rightPercent".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.RightPercent=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="positiveXWatt".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.PositiveXWatt=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="negativeXWatt".toUpperCase()){
+					if(isNumber(parseFloat(itemValue))){
+        				FSDiagramConstructionData.NegativeXWatt=parseFloat(itemValue);
+            		}
+				}else if(itemCode.toUpperCase()=="PRTFSrc".toUpperCase()){
+					if(itemValue==loginUserLanguageResource.PRTFSrc1){
+        				FSDiagramConstructionData.PRTFSrc=1;
+        			}else if(itemValue==loginUserLanguageResource.PRTFSrc2){
+        				FSDiagramConstructionData.PRTFSrc=2;
+        			}
+				}
 			}
 		}
 
@@ -3771,7 +3807,7 @@ function deviceSystemParameterDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
 	var all_loading = new Ext.LoadMask({
         msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
+        target: Ext.getCmp('DeviceSystemParameterConfigurationInfoPanel_Id')
     });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
@@ -3942,15 +3978,15 @@ var FSDiagramConstructionHandsontableHelper = {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
 			                }
-	                    	if (visualColIndex === 2 && visualRowIndex===12) {
+	                    	if (visualColIndex === 2 && visualRowIndex===0) {
 		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.PRTFSrc1, loginUserLanguageResource.PRTFSrc2];
+		                    	this.source = [loginUserLanguageResource.boardDataSource1, loginUserLanguageResource.boardDataSource2, loginUserLanguageResource.boardDataSource3];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
 	                    	if (visualColIndex === 2 && visualRowIndex===13) {
 		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.boardDataSource1, loginUserLanguageResource.boardDataSource2, loginUserLanguageResource.boardDataSource3];
+		                    	this.source = [loginUserLanguageResource.PRTFSrc1, loginUserLanguageResource.PRTFSrc2];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

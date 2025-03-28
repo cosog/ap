@@ -1914,7 +1914,7 @@ public class DriverAPIController extends BaseController{
 		List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int j=0;j<acquisitionItemInfoList.size();j++){
 			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
-			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0)){
+			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0,1)){
 				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
 						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
@@ -2020,7 +2020,7 @@ public class DriverAPIController extends BaseController{
 					}
 				}
 				
-				if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit)){
+				if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
 					webSocketSendData.append("\"name"+(k+1)+"\":\""+(columnName+"("+unit+")")+"\",");
 				}else{
 					webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");

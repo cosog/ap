@@ -1077,7 +1077,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		getBaseDao().saveOrUpdateObject(r);
 	}
 	
-	public void saveProductionData(int deviceType,int deviceId,String deviceProductionData,int deviceCalculateDataType,int applicationScenarios) throws Exception {
+	public void saveProductionData(int deviceId,String deviceProductionData,int deviceCalculateDataType,int applicationScenarios) throws Exception {
 		String tableName="tbl_device";
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String sql = "update "+tableName+" t "

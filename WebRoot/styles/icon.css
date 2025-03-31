@@ -345,6 +345,15 @@
 .down {
 	background-image: url(../images/icon/down.png) !important;
 }
+
+.downlink {
+	background-image: url(../images/icon/downlink.png) !important;
+}
+
+.uplink {
+	background-image: url(../images/icon/uplink.png) !important;
+}
+
 .send {
 	background-image: url(../images/icon/send.png) !important;
 }

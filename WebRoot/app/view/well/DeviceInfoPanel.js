@@ -516,10 +516,18 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                         },'->',{
                 			xtype: 'button',
                 			text:loginUserLanguageResource.downlink,
-                			iconCls: 'down',
+                			iconCls: 'downlink',
                 			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 			handler: function (v, o) {
                 				deviceProductionDataDownlink();
+                			}
+                		},'-',{
+                			xtype: 'button',
+                			text:loginUserLanguageResource.uplink,
+                			iconCls: 'uplink',
+                			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+                			handler: function (v, o) {
+                				deviceProductionDataUplink();
                 			}
                 		}],
                     	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
@@ -596,10 +604,18 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		tbar:['->',{
             			xtype: 'button',
             			text:loginUserLanguageResource.downlink,
-            			iconCls: 'down',
+            			iconCls: 'downlink',
             			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
             			handler: function (v, o) {
             				deviceFSDiagramConstructionDataDownlink();
+            			}
+            		},'-',{
+            			xtype: 'button',
+            			text:loginUserLanguageResource.uplink,
+            			iconCls: 'uplink',
+            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				deviceFSDiagramConstructionDataUplink();
             			}
             		}],
             		html: '<div class="DeviceFSDiagramConstructionInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceFSDiagramConstructionInfoTableDiv_id"></div></div>',
@@ -633,10 +649,18 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		tbar:['->',{
             			xtype: 'button',
             			text:loginUserLanguageResource.downlink,
-            			iconCls: 'down',
+            			iconCls: 'downlink',
             			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
             			handler: function (v, o) {
             				deviceSystemParameterDataDownlink();
+            			}
+            		},'-',{
+            			xtype: 'button',
+            			text:loginUserLanguageResource.uplink,
+            			iconCls: 'uplink',
+            			disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				deviceSystemParameterDataUplink();
             			}
             		}],
             		html: '<div class="DeviceSystemParameterConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceSystemParameterConfigurationInfoTableDiv_id"></div></div>',
@@ -2114,12 +2138,13 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
 					productionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}," 
 						+"{data:'itemCode'}," 
-						+"{data:'downlinkStatus'}" 
+						+"{data:'downlinkStatus'}," 
+						+"{data:'uplinkStatus'}" 
 						+"]";
 					productionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 					productionHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -2190,8 +2215,38 @@ var ProductionHandsontableHelper = {
 	        
 	        productionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        productionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            var itemValue=productionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
+	            if(isNotVal(itemValue) && isNotVal(value)){
+	            	if(value!=loginUserLanguageResource.uplinkFailed){
+	            		if(isNumber(itemValue) && isNumber(value)){
+	            			if(parseFloat(itemValue)==parseFloat(value)){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}else{
+	            			if(itemValue==value){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}
+	            	}else{
+	            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            	}
+	            }else{
+	            	td.innerHTML='';
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            
 	            
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
@@ -2206,7 +2261,7 @@ var ProductionHandsontableHelper = {
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
-	                    columns: [0,3,4],
+	                    columns: [0,3,4,5],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -2235,9 +2290,12 @@ var ProductionHandsontableHelper = {
 	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if (visualColIndex !=2) {
+	                    	if (visualColIndex !=2 && visualColIndex !=5) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = productionHandsontableHelper.addCellStyle;
+			                }else if (visualColIndex ==5) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = productionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
@@ -3212,7 +3270,7 @@ function deviceProductionDataDownlink(){
         			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
         		}
         		if(isNumber(parseInt(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2]);
+        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
         		}
         		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
         			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
@@ -3222,7 +3280,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
         		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2]);
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
@@ -3230,7 +3288,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
         		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2]);
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -3256,10 +3314,10 @@ function deviceProductionDataDownlink(){
             			Rod1.Grade=productionHandsontableData[20][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2]);
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2]);
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[23][2]))){
             			Rod1.Length=parseInt(productionHandsontableData[23][2]);
@@ -3286,10 +3344,10 @@ function deviceProductionDataDownlink(){
             			Rod2.Grade=productionHandsontableData[25][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2]);
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2]);
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[28][2]))){
             			Rod2.Length=parseInt(productionHandsontableData[28][2]);
@@ -3316,10 +3374,10 @@ function deviceProductionDataDownlink(){
             			Rod3.Grade=productionHandsontableData[30][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2]);
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2]);
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[33][2]))){
             			Rod3.Length=parseInt(productionHandsontableData[33][2]);
@@ -3346,10 +3404,10 @@ function deviceProductionDataDownlink(){
             			Rod4.Grade=productionHandsontableData[35][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2]);
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2]);
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[38][2]))){
             			Rod4.Length=parseInt(productionHandsontableData[38][2]);
@@ -3445,7 +3503,7 @@ function deviceProductionDataDownlink(){
         			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2]);
+        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
         		}
         		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
         			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2]);
@@ -3457,7 +3515,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
         		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2]);
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
@@ -3465,7 +3523,7 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
         		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2]);
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -3491,10 +3549,10 @@ function deviceProductionDataDownlink(){
             			Rod1.Grade=productionHandsontableData[20][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2]);
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2]);
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[23][2]))){
             			Rod1.Length=parseInt(productionHandsontableData[23][2]);
@@ -3521,10 +3579,10 @@ function deviceProductionDataDownlink(){
             			Rod2.Grade=productionHandsontableData[25][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2]);
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2]);
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[28][2]))){
             			Rod2.Length=parseInt(productionHandsontableData[28][2]);
@@ -3551,10 +3609,10 @@ function deviceProductionDataDownlink(){
             			Rod3.Grade=productionHandsontableData[30][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2]);
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2]);
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[33][2]))){
             			Rod3.Length=parseInt(productionHandsontableData[33][2]);
@@ -3581,10 +3639,10 @@ function deviceProductionDataDownlink(){
             			Rod4.Grade=productionHandsontableData[35][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2]);
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2]);
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[38][2]))){
             			Rod4.Length=parseInt(productionHandsontableData[38][2]);
@@ -3612,7 +3670,8 @@ function deviceProductionDataDownlink(){
 	            	deviceCalculateDataType: deviceCalculateDataType,
 	            	productionData:JSON.stringify(deviceProductionData),
 	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
-	            	manualInterventionResultName:manualInterventionResultName
+	            	manualInterventionResultName:manualInterventionResultName,
+	            	applicationScenarios:applicationScenarios
 	            },
 	            success: function (response, action) {
 	            	all_loading.hide();
@@ -3634,6 +3693,7 @@ function deviceProductionDataDownlink(){
 	                    
 	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
                     	plugin.showColumns([4]);
+                    	plugin.hideColumns([5]);
                     	productionHandsontableHelper.hot.render();
                     	
                     	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
@@ -3645,7 +3705,6 @@ function deviceProductionDataDownlink(){
                     			}
                     		}
                     	}
-	                	
 //	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
 	                } 
 	            },
@@ -3779,6 +3838,7 @@ function deviceFSDiagramConstructionDataDownlink(){
                     
                 	const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenColumns');
                 	plugin.showColumns([4]);
+                	plugin.hideColumns([5]);
                 	fsDiagramConstructionHandsontableHelper.hot.render();
                 	
                 	var codeColumnValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtProp('itemCode');
@@ -3845,6 +3905,7 @@ function deviceSystemParameterDataDownlink(){
                 }  else if (result.flag == true && result.error == true) {
                 	const plugin = deviceSystemParameterHandsontableHelper.hot.getPlugin('hiddenColumns');
                 	plugin.showColumns([4]);
+                	plugin.hideColumns([5]);
                 	deviceSystemParameterHandsontableHelper.hot.render();
                 	
                 	var codeColumnValue=deviceSystemParameterHandsontableHelper.hot.getDataAtProp('itemCode');
@@ -3852,6 +3913,213 @@ function deviceSystemParameterDataDownlink(){
                 		for(var j=0;j<result.downStatusList.length;j++){
                 			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
                 				deviceSystemParameterHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                } 
+            },
+            failure: function () {
+            	all_loading.hide();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function deviceProductionDataUplink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
+    });
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}
+		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+		
+		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
+			all_loading.show();
+			Ext.Ajax.request({
+	            url: context + '/wellInformationManagerController/deviceProductionDataUplink',
+	            method: "POST",
+	            params: {
+	            	deviceId: deviceId,
+	            	deviceName: deviceName,
+	            	deviceCalculateDataType: deviceCalculateDataType
+	            },
+	            success: function (response, action) {
+	            	all_loading.hide();
+	            	var result =  Ext.JSON.decode(response.responseText);
+	            	
+	            	if (result.flag == false) {
+	                    Ext.MessageBox.show({
+	                        title: loginUserLanguageResource.tip,
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        icon: Ext.MessageBox.INFO,
+	                        buttons: Ext.Msg.OK,
+	                        fn: function () {
+	                            window.location.href = context + "/login";
+	                        }
+	                    });
+	                } else if (result.flag == true && result.error == false) {
+	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                }  else if (result.flag == true && result.error == true) {
+	                    
+	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                    	plugin.showColumns([5]);
+                    	plugin.hideColumns([4]);
+                    	productionHandsontableHelper.hot.render();
+                    	
+                    	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
+                    	for(var i=0;i<codeColumnValue.length;i++){
+                    		for(var j=0;j<result.downStatusList.length;j++){
+                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                    				productionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                    				break;
+                    			}
+                    		}
+                    	}
+	                } 
+	            },
+	            failure: function () {
+	            	all_loading.hide();
+	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	            }
+	        });
+		}else{
+			
+		}
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function deviceFSDiagramConstructionDataUplink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceFSDiagramConstructionInfoPanel_Id')
+    });
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}
+
+		all_loading.show();
+		Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataUplink',
+            method: "POST",
+            params: {
+            	deviceId: deviceId
+            },
+            success: function (response, action) {
+            	all_loading.hide();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+                    
+                	const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	plugin.showColumns([5]);
+                	plugin.hideColumns([4]);
+                	fsDiagramConstructionHandsontableHelper.hot.render();
+                	
+                	var codeColumnValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtProp('itemCode');
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				fsDiagramConstructionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                } 
+            },
+            failure: function () {
+            	all_loading.hide();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function deviceSystemParameterDataUplink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceSystemParameterConfigurationInfoPanel_Id')
+    });
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}
+
+		all_loading.show();
+		Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/deviceSystemParameterDataUplink',
+            method: "POST",
+            params: {
+            	deviceId: deviceId
+            },
+            success: function (response, action) {
+            	all_loading.hide();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+                	const plugin = deviceSystemParameterHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	plugin.showColumns([5]);
+                	plugin.hideColumns([4]);
+                	deviceSystemParameterHandsontableHelper.hot.render();
+                	
+                	var codeColumnValue=deviceSystemParameterHandsontableHelper.hot.getDataAtProp('itemCode');
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				deviceSystemParameterHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
                 				break;
                 			}
                 		}
@@ -3884,12 +4152,13 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 			var result =  Ext.JSON.decode(response.responseText);
 			if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
 				fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("DeviceFSDiagramConstructionInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemName'}," 
 					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
 					+"{data:'itemCode'}," 
-					+"{data:'downlinkStatus'}" 
+					+"{data:'downlinkStatus'}," 
+					+"{data:'uplinkStatus'}" 
 					+"]";
 				fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -3936,6 +4205,37 @@ var FSDiagramConstructionHandsontableHelper = {
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
+	        
+	        fsDiagramConstructionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            var itemValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
+	            if(isNotVal(itemValue) && isNotVal(value)){
+	            	if(value!=loginUserLanguageResource.uplinkFailed){
+	            		if(isNumber(itemValue) && isNumber(value)){
+	            			if(parseFloat(itemValue)==parseFloat(value)){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}else{
+	            			if(itemValue==value){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}
+	            	}else{
+	            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            	}
+	            }else{
+	            	td.innerHTML='';
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 
 	        fsDiagramConstructionHandsontableHelper.createTable = function (data) {
 	            $('#' + fsDiagramConstructionHandsontableHelper.divid).empty();
@@ -3945,7 +4245,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
-	                    columns: [0,3,4],
+	                    columns: [0,3,4,5],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -3974,9 +4274,12 @@ var FSDiagramConstructionHandsontableHelper = {
 	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if (visualColIndex !=2) {
+	                    	if (visualColIndex !=2 && visualColIndex !=5) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
+			                }else if (visualColIndex ==5) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 	                    	if (visualColIndex === 2 && visualRowIndex===0) {
 		                    	this.type = 'dropdown';
@@ -4060,12 +4363,13 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceSystemParameterHandsontableHelper==null || deviceSystemParameterHandsontableHelper.hot==undefined){
 				deviceSystemParameterHandsontableHelper = DeviceSystemParameterHandsontableHelper.createNew("DeviceSystemParameterConfigurationInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemName'}," 
 					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceSystemParameterHandsontableHelper);}}," 
 					+"{data:'itemCode'}," 
-					+"{data:'downlinkStatus'}" 
+					+"{data:'downlinkStatus'}," 
+					+"{data:'uplinkStatus'}" 
 					+"]";
 				deviceSystemParameterHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceSystemParameterHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -4112,6 +4416,38 @@ var DeviceSystemParameterHandsontableHelper = {
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
+	        
+	        deviceSystemParameterHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            var itemValue=deviceSystemParameterHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
+	            if(isNotVal(itemValue) && isNotVal(value)){
+	            	if(value!=loginUserLanguageResource.uplinkFailed){
+	            		if(isNumber(itemValue) && isNumber(value)){
+	            			if(parseFloat(itemValue)==parseFloat(value)){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}else{
+	            			if(itemValue==value){
+	            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            			}else{
+	            				td.style.backgroundColor = "#f09614";
+	            			}
+	            		}
+	            	}else{
+	            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            	}
+	            }else{
+	            	td.innerHTML='';
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 
 	        deviceSystemParameterHandsontableHelper.createTable = function (data) {
 	            $('#' + deviceSystemParameterHandsontableHelper.divid).empty();
@@ -4121,7 +4457,7 @@ var DeviceSystemParameterHandsontableHelper = {
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
-	                    columns: [0,2,3,4],
+	                    columns: [0,2,3,4,5],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -4156,8 +4492,10 @@ var DeviceSystemParameterHandsontableHelper = {
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-	                    	if (visualColIndex !=2) {
+	                    	if (visualColIndex !=2 && visualColIndex !=5) {
 	                    		cellProperties.renderer = deviceSystemParameterHandsontableHelper.addCellStyle;
+	                    	}else if (visualColIndex == 5) {
+	                    		cellProperties.renderer = deviceSystemParameterHandsontableHelper.addUplinkStatusCellStyle;
 	                    	}
 	                    }
 	                    return cellProperties;

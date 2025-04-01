@@ -696,6 +696,28 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getPumpingUnitDetailsInfo")
+	public String getPumpingUnitDetailsInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String auxiliaryDeviceSpecificType= ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getPumpingUnitDetailsInfo(deviceId,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getBatchAddAuxiliaryDeviceTableInfo")
 	public String getBatchAddAuxiliaryDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -946,6 +968,22 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDevicePumpingPRTFData")
+	public String getDevicePumpingPRTFData() throws IOException, SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String stroke= ParamUtils.getParameter(request, "stroke");
+		
+		String json = this.wellInformationManagerService.getDevicePumpingPRTFData(deviceId,stroke);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getBatchAddPumpingModelTableInfo")
 	public String getBatchAddPumpingModelTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1162,6 +1200,7 @@ public class WellInformationManagerController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String auxiliaryDeviceType= ParamUtils.getParameter(request, "auxiliaryDeviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1169,7 +1208,7 @@ public class WellInformationManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.wellInformationManagerService.getDevicePumpingInfo(deviceId,deviceType,language);
+		String json = this.wellInformationManagerService.getDevicePumpingInfo(deviceId,deviceType,auxiliaryDeviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2691,6 +2730,202 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/devicePumpingUnitDataDownlink")
+	public String devicePumpingUnitDataDownlink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String stroke = request.getParameter("stroke");
+		String balanceInfo = request.getParameter("balanceInfo");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+						+ " and t.id="+deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocolName=obj[0]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String deviceType=obj[5]+"";
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+						if(StringManagerUtils.isNotNull(slave)){
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							
+							FSDiagramConstructionRequestData requestData=new FSDiagramConstructionRequestData();
+							if(requestData!=null){
+								
+								String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
+										+ " t.stroke,t.balanceinfo,"
+										+ " t3.prtf "
+										+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+										+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+										+ " and t3.specifictype=1"
+										+ " and t.id="+deviceId;
+								List<?> auxiliaryDeviceList = this.service.findCallSql(auxiliaryDeviceSql);
+								List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+								String prtfStr="";
+								PumpingPRTFData pumpingPRTFData=null;
+								int PRTFPointCount=0;
+								List<String> crankAngleList=new ArrayList<>();
+								List<String> PRList=new ArrayList<>();
+								List<String> TFList=new ArrayList<>();
+								
+								
+								for(int i=0;i<auxiliaryDeviceList.size();i++){
+									Object[] auxiliaryDeviceObj=(Object[]) auxiliaryDeviceList.get(i);
+									AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+									auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[0]+""));
+									auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(auxiliaryDeviceObj[1]+""));
+									auxiliaryDeviceAddInfo.setManufacturer(auxiliaryDeviceObj[2]+"");
+									auxiliaryDeviceAddInfo.setModel(auxiliaryDeviceObj[3]+"");
+									auxiliaryDeviceAddInfo.setItemCode(auxiliaryDeviceObj[4]+"");
+									auxiliaryDeviceAddInfo.setItemValue(auxiliaryDeviceObj[5]+"");
+									auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+									
+									
+									if(auxiliaryDeviceObj[8]!=null){
+										SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(auxiliaryDeviceObj[8]);
+										CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+										prtfStr=StringManagerUtils.CLOBtoString(realClob);
+										
+									}
+								}
+								
+								type = new TypeToken<PumpingPRTFData>() {}.getType();
+								pumpingPRTFData=gson.fromJson(prtfStr, type);
+								
+								if(pumpingPRTFData!=null && pumpingPRTFData.getList()!=null){
+									for(int i=0;i<pumpingPRTFData.getList().size();i++){
+										if(StringManagerUtils.stringToFloat(stroke)==pumpingPRTFData.getList().get(i).getStroke()){
+											if(pumpingPRTFData.getList().get(i).getPRTF()!=null){
+												PRTFPointCount=pumpingPRTFData.getList().get(i).getPRTF().size();
+												for(PumpingPRTFData.PRTF prtf:pumpingPRTFData.getList().get(i).getPRTF()){
+													crankAngleList.add(prtf.getCrankAngle()+"");
+													PRList.add(prtf.getPR()+"");
+													TFList.add(prtf.getTF()+"");
+												}
+											}
+											break;
+										}
+									}
+								}
+								
+								if(auxiliaryDeviceAddInfoList.size()>0){
+									requestData.setPumpingUnit(new FSDiagramConstructionRequestData.PumpingUnit());
+									String manufacturer="";
+									String model="";
+									for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
+										manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
+										model=auxiliaryDeviceAddInfoList.get(i).getModel();
+										if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setCrankRotationDirection(auxiliaryDeviceAddInfoList.get(i).getItemValue());
+										}else if("offsetAngleOfCrank".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankGravityRadius".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankPinWeight".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("structuralUnbalance".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											requestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}
+									}
+									requestData.getPumpingUnit().setManufacturer(manufacturer);
+									requestData.getPumpingUnit().setModel(model);
+									requestData.getPumpingUnit().setStroke(StringManagerUtils.stringToFloat(stroke));
+									
+									type = new TypeToken<FSDiagramConstructionRequestData.Balance>() {}.getType();
+									FSDiagramConstructionRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+									if(balance!=null){
+										requestData.getPumpingUnit().setBalance(balance);
+									}
+								}
+								
+								
+								
+								if(requestData.getPumpingUnit()!=null){
+									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("structureType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
+									
+									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
+										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
+											downStatusMap.put("positionAndWeight"+(i+1), 
+													dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName())
+													+"/"
+													+dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName())
+													);
+										}
+									}
+									
+									downStatusMap.put("PRTFPointCount", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
+									
+									downStatusMap.put("CrankAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("PR", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("TF", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
+								}
+								
+								this.wellInformationManagerService.savePumpingInfo(StringManagerUtils.stringToInteger(deviceId),stroke,balanceInfo);
+
+							}
+						
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : downStatusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+downStatusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/deviceFSDiagramConstructionDataDownlink")
 	public String deviceFSDiagramConstructionDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
@@ -3163,13 +3398,6 @@ public class WellInformationManagerController extends BaseController {
 								statusMap.put("NetGrossRatio", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",userInfo.getLanguageName()));
 								statusMap.put("NetGrossValue", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",userInfo.getLanguageName()));
 								statusMap.put("LevelCorrectValue", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",userInfo.getLanguageName()));
-								
-								statusMap.put("CrankRotationDirection",dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",userInfo.getLanguageName()));
-								statusMap.put("OffsetAngleOfCrank", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",userInfo.getLanguageName()));
-								
-								for(int i=0;i<8;i++){
-									statusMap.put("BalanceWeight"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),userInfo.getLanguageName()));
-								}
 							}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
 								statusMap.put("CrudeOilDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
 								statusMap.put("WaterDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",userInfo.getLanguageName()));
@@ -3238,6 +3466,92 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/devicePumpingUnitDataUplink")
+	public String devicePumpingUnitDataUplink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+						+ " and t.id="+deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocolName=obj[0]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String deviceType=obj[5]+"";
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+						if(StringManagerUtils.isNotNull(slave)){
+							Map<String,String> statusMap=new LinkedHashMap<>();
+							statusMap.put("Stroke", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",userInfo.getLanguageName()));
+							statusMap.put("structureType", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",userInfo.getLanguageName()));
+							statusMap.put("CrankRotationDirection", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",userInfo.getLanguageName()));
+							statusMap.put("OffsetAngleOfCrank", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",userInfo.getLanguageName()));
+							
+							statusMap.put("CrankGravityRadius", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",userInfo.getLanguageName()));
+							statusMap.put("SingleCrankWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",userInfo.getLanguageName()));
+							statusMap.put("SingleCrankPinWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",userInfo.getLanguageName()));
+							statusMap.put("StructuralUnbalance", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",userInfo.getLanguageName()));
+							
+							for(int i=0;i<8;i++){
+								statusMap.put("positionAndWeight"+(i+1), 
+										dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),userInfo.getLanguageName())
+										+"/"
+										+dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),userInfo.getLanguageName()));
+							}
+							
+							statusMap.put("PRTFPointCount", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",userInfo.getLanguageName()));
+							
+							statusMap.put("CrankAngle", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",userInfo.getLanguageName()));
+							statusMap.put("PR", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",userInfo.getLanguageName()));
+							statusMap.put("TF", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",userInfo.getLanguageName()));
+							
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : statusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+statusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	
 	@RequestMapping("/deviceFSDiagramConstructionDataUplink")
 	public String deviceFSDiagramConstructionDataUplink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
@@ -3279,31 +3593,6 @@ public class WellInformationManagerController extends BaseController {
 							statusMap.put("rightPercent", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RightPercent",userInfo.getLanguageName()));
 							statusMap.put("positiveXWatt", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",userInfo.getLanguageName()));
 							statusMap.put("negativeXWatt", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",userInfo.getLanguageName()));
-							
-							
-
-							statusMap.put("Stroke", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",userInfo.getLanguageName()));
-							
-							statusMap.put("PumpingUnitStructure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",userInfo.getLanguageName()));
-							
-							statusMap.put("CrankRotationDirection", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",userInfo.getLanguageName()));
-							statusMap.put("OffsetAngleOfCrank", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",userInfo.getLanguageName()));
-							
-							statusMap.put("CrankGravityRadius", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",userInfo.getLanguageName()));
-							statusMap.put("SingleCrankWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",userInfo.getLanguageName()));
-							statusMap.put("SingleCrankPinWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",userInfo.getLanguageName()));
-							statusMap.put("StructuralUnbalance", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",userInfo.getLanguageName()));
-							
-							for(int i=0;i<8;i++){
-								statusMap.put("BalanceWeight"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),userInfo.getLanguageName()));
-								statusMap.put("BalancePosition"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),userInfo.getLanguageName()));
-							}
-							
-							statusMap.put("PRTFPointCount", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",userInfo.getLanguageName()));
-							
-							statusMap.put("CrankAngle", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",userInfo.getLanguageName()));
-							statusMap.put("PR", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",userInfo.getLanguageName()));
-							statusMap.put("TF", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",userInfo.getLanguageName()));
 						
 							statusMap.put("PRTFSrc", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFSrc",userInfo.getLanguageName()));
 							statusMap.put("BoardDataSource", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BoardDataSource",userInfo.getLanguageName()));

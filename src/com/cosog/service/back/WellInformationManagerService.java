@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -407,8 +408,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						orgName_en=obj[1]+"";
 						orgName_ru=obj[2]+"";
 					}
-					
-					
 					for(int i=0;i<deviceInfoList.size();i++){
 						DeviceInfo deviceInfo=deviceInfoList.get(i);
 						if(StringManagerUtils.existOrNot(selectedDeviceId.split(","), deviceInfo.getId()+"", false)){
@@ -1787,6 +1786,73 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	public String getDevicePumpingPRTFData(String deviceId,String stroke) throws SQLException, IOException {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer strokeListBuff = new StringBuffer();
+		String sql = "select t.stroke,t3.prtf from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
+				+ " and t.id="+deviceId;
+		String json = "";
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"totalRoot\":[");
+		strokeListBuff.append("[");
+		if(list.size()>0){
+			Object[] obj = (Object[]) list.get(0);
+			if(!StringManagerUtils.isNotNull(stroke)){
+				stroke=obj[0]+"";
+			}
+			String prtf="";
+			if(obj[1]!=null){
+				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[1]);
+				CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+				prtf=StringManagerUtils.CLOBtoString(realClob);
+			}
+			if(!StringManagerUtils.isNotNull(prtf)){
+				prtf="";
+			}
+			type = new TypeToken<PumpingPRTFData>() {}.getType();
+			PumpingPRTFData pumpingPRTFData=gson.fromJson(prtf, type);
+			if(pumpingPRTFData!=null && pumpingPRTFData.getList()!=null && pumpingPRTFData.getList().size()>0){
+				for(int i=0;i<pumpingPRTFData.getList().size();i++){
+					if(StringManagerUtils.isNotNull(stroke)){
+						if(pumpingPRTFData.getList().get(i).getStroke()==StringManagerUtils.stringToFloat(stroke)){
+							for(int j=0;j<pumpingPRTFData.getList().get(i).getPRTF().size();j++){
+								result_json.append("{\"CrankAngle\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getCrankAngle()+"\",");
+								result_json.append("\"PR\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getPR()+"\",");
+								result_json.append("\"TF\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getTF()+"\"},");
+							}
+							break;
+						}
+					}else{
+						if(i==0){
+							for(int j=0;j<pumpingPRTFData.getList().get(i).getPRTF().size();j++){
+								result_json.append("{\"CrankAngle\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getCrankAngle()+"\",");
+								result_json.append("\"PR\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getPR()+"\",");
+								result_json.append("\"TF\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getTF()+"\"},");
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(strokeListBuff.toString().endsWith(",")){
+			strokeListBuff.deleteCharAt(strokeListBuff.length() - 1);
+		}
+		strokeListBuff.append("]");
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],");
+		result_json.append("\"strokeList\":"+strokeListBuff.toString());
+		result_json.append("}");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	public String doPumpingModelShow(String manufacturer,String model,String language) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="pumpingDevice_PumpingModelManager";
@@ -1996,8 +2062,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDevicePumpingInfo(String deviceId,String deviceType,String language) {
+	@SuppressWarnings("unused")
+	public String getDevicePumpingInfo(String deviceId,String deviceType,String auxiliaryDeviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer allPumpingUnitBuff = new StringBuffer();
+		StringBuffer allPumpingUnitManufacturerBuff = new StringBuffer();
+		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -2020,10 +2090,59 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " and lower(t4.itemcode) in('stroke','balanceweight') "
 				+ " and t.id="+deviceId;
 		
+		String allPumpingUnitSql="select t.manufacturer,t.model,v.itemvalue as stroke,v2.itemvalue as balanceweight "
+				+ " from TBL_AUXILIARYDEVICE t "
+				+ " left outer join (select t2.deviceid,t2.itemvalue from tbl_auxiliarydeviceaddinfo t2 where lower(t2.itemcode)='stroke') v on v.deviceid=t.id"
+				+ " left outer join (select t3.deviceid,t3.itemvalue from tbl_auxiliarydeviceaddinfo t3 where lower(t3.itemcode)='balanceweight') v2 on v2.deviceid=t.id"
+				+ " where t.specifictype=1 "
+				+ " and t.type="+auxiliaryDeviceType
+				+ " order by t.manufacturer,t.sort,t.model";
+		Map<String,List<String>> allPumpingUnitMap=new LinkedHashMap<>();
 		String json = "";
 		List<?> list = this.findCallSql(sql);
 		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
 		List<?> auxiliaryDeviceDetailsList = this.findCallSql(auxiliaryDeviceDetailsSql);
+		List<?> allPumpingUnitList = this.findCallSql(allPumpingUnitSql);
+		
+		for(int i=0;i<allPumpingUnitList.size();i++){
+			Object[] obj = (Object[]) allPumpingUnitList.get(i);
+			String manufacturer=obj[0]+"";
+			String model=obj[1]+"";
+			String stroke=obj[2]+"";
+			String balanceWeight=obj[3]+"";
+			if(!allPumpingUnitMap.containsKey(manufacturer)){
+				allPumpingUnitMap.put(manufacturer, new ArrayList<>());
+			}
+			allPumpingUnitMap.get(manufacturer).add("{\"model\":\""+model+"\",\"stroke\":["+stroke+"],\"balanceWeight\":["+balanceWeight+"]}");
+		}
+		
+		allPumpingUnitBuff.append("[");
+		allPumpingUnitManufacturerBuff.append("[");
+		for (Map.Entry<String,List<String>> entry : allPumpingUnitMap.entrySet()) {
+		    String manufacturer = entry.getKey();
+		    List<String> modelList = entry.getValue();
+		    allPumpingUnitBuff.append("{\"manufacturer\":\""+manufacturer+"\",\"modelList\":[");
+		    allPumpingUnitManufacturerBuff.append("\""+manufacturer+"\",");
+		    for(String model:modelList){
+		    	allPumpingUnitBuff.append(""+model+",");
+		    }
+		    if (allPumpingUnitBuff.toString().endsWith(",")) {
+		    	allPumpingUnitBuff.deleteCharAt(allPumpingUnitBuff.length() - 1);
+			}
+		    allPumpingUnitBuff.append("]},");
+		}
+		if (allPumpingUnitBuff.toString().endsWith(",")) {
+	    	allPumpingUnitBuff.deleteCharAt(allPumpingUnitBuff.length() - 1);
+		}
+		if (allPumpingUnitManufacturerBuff.toString().endsWith(",")) {
+			allPumpingUnitManufacturerBuff.deleteCharAt(allPumpingUnitManufacturerBuff.length() - 1);
+		}
+		allPumpingUnitBuff.append("]");
+		allPumpingUnitManufacturerBuff.append("]");
+		
+		String pumpingUnitList=allPumpingUnitBuff.toString();
+		String manufacturerList=allPumpingUnitManufacturerBuff.toString();
+		
 		String auxiliaryDeviceName="";
 		String model="";
 		String manufacturer="";
@@ -2045,7 +2164,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		result_json.append("{\"success\":true,\"totalCount\":9,\"strokeArrStr\":["+strokeArrStr+"],\"balanceInfoArrStr\":["+balanceInfoArrStr+"],\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":9,\"strokeArrStr\":["+strokeArrStr+"],\"balanceInfoArrStr\":["+balanceInfoArrStr+"],\"pumpingUnitList\":"+pumpingUnitList+",\"columns\":"+columns+",\"totalRoot\":[");
 		
 		if(auxiliaryDeviceList.size()>0){
 			Object[] obj = (Object[]) auxiliaryDeviceList.get(0);
@@ -2096,23 +2215,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		result_json.append("{\"id\":1,\"itemValue1\":\""+languageResourceMap.get("name")+"\",\"itemValue2\":\""+auxiliaryDeviceName+"\"},");
-		result_json.append("{\"id\":2,\"itemValue1\":\""+languageResourceMap.get("manufacturer")+"\",\"itemValue2\":\""+manufacturer+"\"},");
-		result_json.append("{\"id\":3,\"itemValue1\":\""+languageResourceMap.get("model")+"\",\"itemValue2\":\""+model+"\"},");
+		result_json.append("{\"id\":1,\"itemValue1\":\""+languageResourceMap.get("name")+"\",\"itemValue2\":\""+auxiliaryDeviceName+"\",\"itemCode\":\"deviceName\"},");
+		result_json.append("{\"id\":2,\"itemValue1\":\""+languageResourceMap.get("manufacturer")+"\",\"itemValue2\":\""+manufacturer+"\",\"itemCode\":\"manufacturer\"},");
+		result_json.append("{\"id\":3,\"itemValue1\":\""+languageResourceMap.get("model")+"\",\"itemValue2\":\""+model+"\",\"itemCode\":\"model\"},");
 		
-		result_json.append("{\"id\":4,\"itemValue1\":\""+languageResourceMap.get("stroke")+"(m)\",\"itemValue2\":\""+stroke+"\"},");
-		result_json.append("{\"id\":5,\"itemValue1\":\""+languageResourceMap.get("balanceInfo")+"\",\"itemValue2\":\"\"},");
-		result_json.append("{\"id\":6,\"itemValue1\":\""+languageResourceMap.get("position")+"(m)\",\"itemValue2\":\""+languageResourceMap.get("weight")+"(kN)\"},");
+		result_json.append("{\"id\":4,\"itemValue1\":\""+languageResourceMap.get("stroke")+"(m)\",\"itemValue2\":\""+stroke+"\",\"itemCode\":\"stroke\"},");
+		result_json.append("{\"id\":5,\"itemValue1\":\""+languageResourceMap.get("balanceInfo")+"\",\"itemValue2\":\"\",\"itemCode\":\"balanceInfo\"},");
+		result_json.append("{\"id\":6,\"itemValue1\":\""+languageResourceMap.get("position")+"(m)\",\"itemValue2\":\""+languageResourceMap.get("weight")+"(kN)\",\"itemCode\":\"positionAndWeight\"},");
 		
 		
-		result_json.append("{\"id\":7,\"itemValue1\":\""+position1+"\",\"itemValue2\":\""+weight1+"\"},");
-		result_json.append("{\"id\":8,\"itemValue1\":\""+position2+"\",\"itemValue2\":\""+weight2+"\"},");
-		result_json.append("{\"id\":9,\"itemValue1\":\""+position3+"\",\"itemValue2\":\""+weight3+"\"},");
-		result_json.append("{\"id\":10,\"itemValue1\":\""+position4+"\",\"itemValue2\":\""+weight4+"\"},");
-		result_json.append("{\"id\":11,\"itemValue1\":\""+position5+"\",\"itemValue2\":\""+weight5+"\"},");
-		result_json.append("{\"id\":12,\"itemValue1\":\""+position6+"\",\"itemValue2\":\""+weight6+"\"},");
-		result_json.append("{\"id\":13,\"itemValue1\":\""+position7+"\",\"itemValue2\":\""+weight7+"\"},");
-		result_json.append("{\"id\":14,\"itemValue1\":\""+position8+"\",\"itemValue2\":\""+weight8+"\"}");
+		result_json.append("{\"id\":7,\"itemValue1\":\""+position1+"\",\"itemValue2\":\""+weight1+"\",\"itemCode\":\"positionAndWeight1\"},");
+		result_json.append("{\"id\":8,\"itemValue1\":\""+position2+"\",\"itemValue2\":\""+weight2+"\",\"itemCode\":\"positionAndWeight2\"},");
+		result_json.append("{\"id\":9,\"itemValue1\":\""+position3+"\",\"itemValue2\":\""+weight3+"\",\"itemCode\":\"positionAndWeight3\"},");
+		result_json.append("{\"id\":10,\"itemValue1\":\""+position4+"\",\"itemValue2\":\""+weight4+"\",\"itemCode\":\"positionAndWeight4\"},");
+		result_json.append("{\"id\":11,\"itemValue1\":\""+position5+"\",\"itemValue2\":\""+weight5+"\",\"itemCode\":\"positionAndWeight5\"},");
+		result_json.append("{\"id\":12,\"itemValue1\":\""+position6+"\",\"itemValue2\":\""+weight6+"\",\"itemCode\":\"positionAndWeight6\"},");
+		result_json.append("{\"id\":13,\"itemValue1\":\""+position7+"\",\"itemValue2\":\""+weight7+"\",\"itemCode\":\"positionAndWeight7\"},");
+		result_json.append("{\"id\":14,\"itemValue1\":\""+position8+"\",\"itemValue2\":\""+weight8+"\",\"itemCode\":\"positionAndWeight8\"}");
 		
 		result_json.append("]}");
 		json=result_json.toString().replaceAll("null", "");
@@ -3472,6 +3591,90 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				totalCount=list.size();
 			}
 		}
+		if(totalRootBuffer.toString().endsWith(",")){
+			totalRootBuffer.deleteCharAt(totalRootBuffer.length() - 1);
+		}
+		result_json.append("{\"success\":true,\"totalCount\":"+totalCount+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append(totalRootBuffer.toString());
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getPumpingUnitDetailsInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "]";
+		 
+		int totalCount=0;
+		StringBuffer totalRootBuffer = new StringBuffer();
+		String sql = "select t.id,t.itemname,t.itemvalue,t.itemcode,t.itemunit "
+				+ " from tbl_auxiliarydeviceaddinfo t,tbl_auxiliarydevice t2,tbl_auxiliary2master t3,tbl_device t4  "
+				+ " where t2.id=t3.auxiliaryid and t3.masterid=t4.id and t.deviceid=t2.id "
+				+  "and t4.id="+deviceId
+				+  "and t2.specifictype=1"
+				+ " order by t.id";
+		List<?> list = this.findCallSql(sql);
+
+		String structureType="",stroke="",crankRotationDirection="",offsetAngleOfCrank="",crankGravityRadius="",singleCrankWeight="",singleCrankPinWeight="",structuralUnbalance="",balanceWeight="";
+		if(list.size()>0){
+			for(int i=0;i<list.size();i++){
+				Object[] obj = (Object[]) list.get(i);
+				String itemName=obj[1]+"";
+				String itemValue=obj[2]+"";
+				String itemCode=obj[3]+"";
+				String itemUnit=obj[4]+"";
+				
+				itemName+=StringManagerUtils.isNotNull(itemUnit)?("("+itemUnit+")"):"";
+				
+				if("structureType".equalsIgnoreCase(itemCode)){
+					if(StringManagerUtils.stringToInteger(itemValue)==1){
+						structureType=languageResourceMap.get("pumpingUnitStructureType1");
+					}else if(StringManagerUtils.stringToInteger(itemValue)==2){
+						structureType=languageResourceMap.get("pumpingUnitStructureType2");
+					}else if(StringManagerUtils.stringToInteger(itemValue)==3){
+						structureType=languageResourceMap.get("pumpingUnitStructureType3");
+					}
+				}else if("stroke".equalsIgnoreCase(itemCode)){
+					stroke=itemValue+"";
+				}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
+					if("Clockwise".equalsIgnoreCase(itemValue)){
+						crankRotationDirection=languageResourceMap.get("clockwise");
+					}else if("Anticlockwise".equalsIgnoreCase(itemValue)){
+						crankRotationDirection=languageResourceMap.get("anticlockwise");
+					}
+				}else if("offsetAngleOfCrank".equalsIgnoreCase(itemCode)){
+					offsetAngleOfCrank=itemValue;
+				}else if("crankGravityRadius".equalsIgnoreCase(itemCode)){
+					crankGravityRadius=itemValue;
+				}else if("singleCrankWeight".equalsIgnoreCase(itemCode)){
+					singleCrankWeight=itemValue;
+				}else if("singleCrankPinWeight".equalsIgnoreCase(itemCode)){
+					singleCrankPinWeight=itemValue;
+				}else if("structuralUnbalance".equalsIgnoreCase(itemCode)){
+					structuralUnbalance=itemValue;
+				}else if("balanceWeight".equalsIgnoreCase(itemCode)){
+					balanceWeight=itemValue;
+				}
+			}
+		}
+		
+		totalRootBuffer.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("pumpingUnitStructure")+"\",\"itemValue\":\""+structureType+"\",\"itemUnit\":\"\",\"itemCode\":\"structureType\"},");
+//		totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("stroke")+"\",\"itemValue\":\""+stroke+"\",\"itemUnit\":\"m\",\"itemCode\":\"strokeAll\"},");
+		totalRootBuffer.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("crankRotationDirection")+"\",\"itemValue\":\""+crankRotationDirection+"\",\"itemUnit\":\"\",\"itemCode\":\"crankRotationDirection\"},");
+		totalRootBuffer.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("offsetAngleOfCrank")+"\",\"itemValue\":\""+offsetAngleOfCrank+"\",\"itemUnit\":\"°\",\"itemCode\":\"offsetAngleOfCrank\"},");
+		totalRootBuffer.append("{\"id\":4,\"itemName\":\""+languageResourceMap.get("crankGravityRadius")+"\",\"itemValue\":\""+crankGravityRadius+"\",\"itemUnit\":\"m\",\"itemCode\":\"crankGravityRadius\"},");
+		totalRootBuffer.append("{\"id\":5,\"itemName\":\""+languageResourceMap.get("singleCrankWeight")+"\",\"itemValue\":\""+singleCrankWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankWeight\"},");
+		totalRootBuffer.append("{\"id\":6,\"itemName\":\""+languageResourceMap.get("singleCrankPinWeight")+"\",\"itemValue\":\""+singleCrankPinWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"singleCrankPinWeight\"},");
+		totalRootBuffer.append("{\"id\":7,\"itemName\":\""+languageResourceMap.get("structuralUnbalance")+"\",\"itemValue\":\""+structuralUnbalance+"\",\"itemUnit\":\"kN\",\"itemCode\":\"structuralUnbalance\"},");
+//		totalRootBuffer.append("{\"id\":9,\"itemName\":\""+languageResourceMap.get("balanceWeight")+"\",\"itemValue\":\""+balanceWeight+"\",\"itemUnit\":\"kN\",\"itemCode\":\"balanceWeight\"}");
+		
+		totalCount=9;
+	
 		if(totalRootBuffer.toString().endsWith(",")){
 			totalRootBuffer.deleteCharAt(totalRootBuffer.length() - 1);
 		}

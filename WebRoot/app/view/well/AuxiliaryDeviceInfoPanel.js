@@ -1,6 +1,6 @@
 var auxiliaryDeviceInfoHandsontableHelper = null;
 var auxiliaryDeviceDetailsHandsontableHelper=null;
-var pumpingUnitPTFHandsontableHelper=null;
+var pumpingUnitPRTFHandsontableHelper=null;
 Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.auxiliaryDeviceInfoPanel',
@@ -233,7 +233,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if (auxiliaryDeviceDetailsHandsontableHelper != null && auxiliaryDeviceDetailsHandsontableHelper.hot != null && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
                         		var newWidth=width;
-                        		var newHeight=height;
+                        		var newHeight=height-22-1;
                         		var header=thisPanel.getHeader();
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;
@@ -297,20 +297,26 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         text: loginUserLanguageResource.save,
                         iconCls: 'save',
                         handler: function (v, o) {
-                        	pumpingUnitPTFHandsontableHelper.saveData();
+                        	pumpingUnitPRTFHandsontableHelper.saveData();
                         }
                     }],
                 	listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	
+                        	if (pumpingUnitPRTFHandsontableHelper != null && pumpingUnitPRTFHandsontableHelper.hot != null && pumpingUnitPRTFHandsontableHelper.hot != undefined) {
+                        		var newWidth=width;
+                        		var newHeight=height-22-1;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		pumpingUnitPRTFHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                            }
                         }
                     }
         		}]
-        		
-        		
-        		
-        		
-        		
     		}],
             listeners: {
                 beforeclose: function (panel, eOpts) {
@@ -970,11 +976,11 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	};
 
 function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
-	if(pumpingUnitPTFHandsontableHelper!=null){
-		if(pumpingUnitPTFHandsontableHelper.hot!=undefined){
-			pumpingUnitPTFHandsontableHelper.hot.destroy();
+	if(pumpingUnitPRTFHandsontableHelper!=null){
+		if(pumpingUnitPRTFHandsontableHelper.hot!=undefined){
+			pumpingUnitPRTFHandsontableHelper.hot.destroy();
 		}
-		pumpingUnitPTFHandsontableHelper=null;
+		pumpingUnitPRTFHandsontableHelper=null;
 	}
 	
 	var auxiliaryDeviceSpecificType=0;
@@ -1016,27 +1022,27 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
 				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
 			}
             
-            if (pumpingUnitPTFHandsontableHelper == null || pumpingUnitPTFHandsontableHelper.hot == null || pumpingUnitPTFHandsontableHelper.hot == undefined) {
-            	pumpingUnitPTFHandsontableHelper = PumpingUnitPTFHandsontableHelper.createNew("AuxiliaryDevicePumpingUnitPRTFTableDiv_id");
-            	var colHeaders="['曲柄转角(°)','光杆位置因数(%)','扭矩因数(m)']";
+            if (pumpingUnitPRTFHandsontableHelper == null || pumpingUnitPRTFHandsontableHelper.hot == null || pumpingUnitPRTFHandsontableHelper.hot == undefined) {
+            	pumpingUnitPRTFHandsontableHelper = PumpingUnitPRTFHandsontableHelper.createNew("AuxiliaryDevicePumpingUnitPRTFTableDiv_id");
+            	var colHeaders="['"+loginUserLanguageResource.crankAngle+"(°)','"+loginUserLanguageResource.pumpingUnitPR+"(%)','"+loginUserLanguageResource.pumpingUnitTF+"(m)']";
         		var columns="[" 
-        			+"{data:'CrankAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
-        			+"{data:'PR',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
-        			+"{data:'TF',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}" 
+        			+"{data:'CrankAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPRTFHandsontableHelper);}}," 
+        			+"{data:'PR',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPRTFHandsontableHelper);}}," 
+        			+"{data:'TF',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPRTFHandsontableHelper);}}" 
         			+"]";
-        		pumpingUnitPTFHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
-        		pumpingUnitPTFHandsontableHelper.columns = Ext.JSON.decode(columns);
+        		pumpingUnitPRTFHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
+        		pumpingUnitPRTFHandsontableHelper.columns = Ext.JSON.decode(columns);
         		if(result.totalRoot==0){
-        			pumpingUnitPTFHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+        			pumpingUnitPRTFHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
         		}else{
-        			pumpingUnitPTFHandsontableHelper.createTable(result.totalRoot);
+        			pumpingUnitPRTFHandsontableHelper.createTable(result.totalRoot);
         		}
         		
             }else {
                 if(result.totalRoot==0){
-                	pumpingUnitPTFHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+                	pumpingUnitPRTFHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
         		}else{
-        			pumpingUnitPTFHandsontableHelper.hot.loadData(result.totalRoot);
+        			pumpingUnitPRTFHandsontableHelper.hot.loadData(result.totalRoot);
         		}
             }
         },
@@ -1051,20 +1057,20 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
     });
 };
 
-var PumpingUnitPTFHandsontableHelper = {
+var PumpingUnitPRTFHandsontableHelper = {
 	    createNew: function (divid) {
-	        var pumpingUnitPTFHandsontableHelper = {};
-	        pumpingUnitPTFHandsontableHelper.hot1 = '';
-	        pumpingUnitPTFHandsontableHelper.divid = divid;
-	        pumpingUnitPTFHandsontableHelper.validresult=true;//数据校验
-	        pumpingUnitPTFHandsontableHelper.colHeaders=[];
-	        pumpingUnitPTFHandsontableHelper.columns=[];
-	        pumpingUnitPTFHandsontableHelper.AllData=[];
+	        var pumpingUnitPRTFHandsontableHelper = {};
+	        pumpingUnitPRTFHandsontableHelper.hot1 = '';
+	        pumpingUnitPRTFHandsontableHelper.divid = divid;
+	        pumpingUnitPRTFHandsontableHelper.validresult=true;//数据校验
+	        pumpingUnitPRTFHandsontableHelper.colHeaders=[];
+	        pumpingUnitPRTFHandsontableHelper.columns=[];
+	        pumpingUnitPRTFHandsontableHelper.AllData=[];
 	        
-	        pumpingUnitPTFHandsontableHelper.createTable = function (data) {
-	        	$('#'+pumpingUnitPTFHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+pumpingUnitPTFHandsontableHelper.divid);
-	        	pumpingUnitPTFHandsontableHelper.hot = new Handsontable(hotElement, {
+	        pumpingUnitPRTFHandsontableHelper.createTable = function (data) {
+	        	$('#'+pumpingUnitPRTFHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+pumpingUnitPRTFHandsontableHelper.divid);
+	        	pumpingUnitPRTFHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 //	                hiddenColumns: {
@@ -1072,11 +1078,11 @@ var PumpingUnitPTFHandsontableHelper = {
 //	                    indicators: false,
 //                    	copyPasteEnabled: false
 //	                },
-	                columns:pumpingUnitPTFHandsontableHelper.columns,
+	                columns:pumpingUnitPRTFHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: true,//显示行头
-	                colHeaders:pumpingUnitPTFHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:pumpingUnitPRTFHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -1087,7 +1093,7 @@ var PumpingUnitPTFHandsontableHelper = {
 	        	});
 	        }
 	        //保存数据
-	        pumpingUnitPTFHandsontableHelper.saveData = function () {
+	        pumpingUnitPRTFHandsontableHelper.saveData = function () {
 	            var selectedDeviceId=0;
 	            var stroke=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").rawValue;
 	            var row=parseInt(Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue());
@@ -1097,11 +1103,11 @@ var PumpingUnitPTFHandsontableHelper = {
 	            var strokePRTFData={};
 	            strokePRTFData.Stroke=stroke;
 	            strokePRTFData.PRTF=[];
-	            var PRTFData=pumpingUnitPTFHandsontableHelper.hot.getData();
+	            var PRTFData=pumpingUnitPRTFHandsontableHelper.hot.getData();
 	            for(var i=0;i<PRTFData.length;i++){
-	            	var CrankAngle=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'CrankAngle');
-	            	var PR=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'PR');
-	            	var TF=pumpingUnitPTFHandsontableHelper.hot.getDataAtRowProp(i,'TF');
+	            	var CrankAngle=pumpingUnitPRTFHandsontableHelper.hot.getDataAtRowProp(i,'CrankAngle');
+	            	var PR=pumpingUnitPRTFHandsontableHelper.hot.getDataAtRowProp(i,'PR');
+	            	var TF=pumpingUnitPRTFHandsontableHelper.hot.getDataAtRowProp(i,'TF');
 	            	if(isNumber(CrankAngle) && isNumber(PR) && isNumber(TF)){
 	            		var PRTF={};
 		            	PRTF.CrankAngle=parseFloat(CrankAngle);
@@ -1124,7 +1130,7 @@ var PumpingUnitPTFHandsontableHelper = {
                     },
                     failure: function () {
                     	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
-                        pumpingUnitPTFHandsontableHelper.clearContainer();
+                        pumpingUnitPRTFHandsontableHelper.clearContainer();
                     },
                     params: {
                         data: JSON.stringify(strokePRTFData),
@@ -1132,9 +1138,9 @@ var PumpingUnitPTFHandsontableHelper = {
                     }
                 });
 	        }
-	        pumpingUnitPTFHandsontableHelper.clearContainer = function () {
-	        	pumpingUnitPTFHandsontableHelper.AllData = [];
+	        pumpingUnitPRTFHandsontableHelper.clearContainer = function () {
+	        	pumpingUnitPRTFHandsontableHelper.AllData = [];
 	        }
-	        return pumpingUnitPTFHandsontableHelper;
+	        return pumpingUnitPRTFHandsontableHelper;
 	    }
 };

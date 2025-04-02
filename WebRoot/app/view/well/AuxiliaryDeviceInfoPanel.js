@@ -21,8 +21,15 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 hidden: true
             },{
                 xtype: 'button',
+                iconCls: 'note-refresh',
+                text: loginUserLanguageResource.refresh,
+                hidden: false,
+                handler: function (v, o) {
+                    CreateAndLoadAuxiliaryDeviceInfoTable();
+                }
+            }, '-', {
+                xtype: 'button',
                 text: loginUserLanguageResource.exportData,
-//                pressed: true,
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
@@ -53,16 +60,6 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     + "&title=" + URLencode(URLencode(title));
                     openExcelWindow(url + '?flag=true' + param);
                 }
-            }, '-', {
-                xtype: 'button',
-                iconCls: 'note-refresh',
-                text: loginUserLanguageResource.refresh,
-//                pressed: true,
-                hidden: false,
-                handler: function (v, o) {
-                    CreateAndLoadAuxiliaryDeviceInfoTable();
-                }
-
             },'-', {
                 id: 'AuxiliaryDeviceTotalCount_Id',
                 xtype: 'component',

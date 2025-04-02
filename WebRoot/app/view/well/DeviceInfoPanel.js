@@ -799,31 +799,22 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 });
 
 function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,isNew){
-	var showInfo='';
-	
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationRabpanel_Id");
 	var activeId=tabPanel.getActiveTab().id;
+	var showInfo=tabPanel.getActiveTab().title;
+	
+	if(isNotVal(deviceName)){
+		showInfo="【<font color=red>"+deviceName+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("DeviceAdditionalInformationLabel_Id").show();
+	
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.additionalInformation+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.additionalInformation;
-		}
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){
 		CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,isNew);
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.auxiliaryDevice+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.auxiliaryDevice;
-		}
 	}else if(activeId=='DeviceVideoInfoPanel_Id'){
 		CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew);
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.videoConfig;
-		}
 	}else if(activeId=='DeviceCalculateDataInfoPanel_Id'){
 		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
 		if(calculateDataActiveId=='DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id'){
@@ -836,44 +827,18 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 			}
 		}else if(calculateDataActiveId=='PumpingInfoPanel_Id'){
 			CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,isNew);
-			CreatePumpingUnitDetailedInformationTable(deviceId);
-			CreateAndLoadDevicePumpingUnitPTFTable(deviceId);
-		}
-		
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.calculateDataConfig+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.calculateDataConfig;
+			CreatePumpingUnitDetailedInformationTable();
+			CreateAndLoadDevicePumpingUnitPTFTable();
 		}
 	}else if(activeId=='DeviceFSDiagramConstructionInfoPanel_Id'){
 		CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew);
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.fsDiagramConstruction+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.fsDiagramConstruction;
-		}
 	}else if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.intelligentFrequencyConversion+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.intelligentFrequencyConversion;
-		}
+		
 	}else if(activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.intelligentIntermissiveOilDrawing+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.intelligentIntermissiveOilDrawing;
-		}
+		
 	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
 		CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,applicationScenarios,isNew);
-		if(isNotVal(deviceName)){
-			showInfo="【<font color=red>"+deviceName+"</font>】"+loginUserLanguageResource.systemParameterConfiguration+"&nbsp;"
-		}else{
-			showInfo=loginUserLanguageResource.systemParameterConfiguration;
-		}
 	}
-	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
-    Ext.getCmp("DeviceAdditionalInformationLabel_Id").show();
 }
 
 function getDeviceCalculateType(deviceId){
@@ -1961,28 +1926,37 @@ var DeviceInfoHandsontableHelper = {
                         deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
             		}
             	}else if(additionalInformationType==32){
-            		//获取抽油机型号配置数据
-                    var pumpingModelId=0;
-                    
                     //抽油机详情
                     var balanceInfo={};
-                    var stroke="";
+                    var manufacturer = '';
+                    var model = '';
+                    var stroke='';
+                    
                     if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
+                    	manufacturer = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1, 'itemValue2');
+                        model = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2, 'itemValue2');
+                        stroke = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(3, 'itemValue2');
                     	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-                    	stroke=pumpingInfoHandsontableData[3][2];
+                    	
+                    	
                     	balanceInfo.EveryBalance=[];
                     	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
                     		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
                         		var EveryBalance={};
-                        		EveryBalance.Position=pumpingInfoHandsontableData[i][1];
-                        		EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
+                        		if(isNotVal(pumpingInfoHandsontableData[i][1])){
+                        			EveryBalance.Position=pumpingInfoHandsontableData[i][1];
+                        		}
+                        		if(isNotVal(pumpingInfoHandsontableData[i][2])){
+                        			EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
+                        		}
                         		balanceInfo.EveryBalance.push(EveryBalance);
                         	}
                     	}
                     }
                     
                     var productionInfoList=[];
-            		productionInfoList.push(pumpingModelId);
+            		productionInfoList.push(manufacturer);
+            		productionInfoList.push(model);
             		productionInfoList.push(stroke);
             		productionInfoList.push(JSON.stringify(balanceInfo));
                     deviceAdditionalInformationData.data=JSON.stringify(productionInfoList);
@@ -2495,6 +2469,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 	Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
+		async :  false,
 		url:context + '/wellInformationManagerController/getDevicePumpingInfo',
 		success:function(response) {
 			Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
@@ -2504,6 +2479,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 				
 				pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
     	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
+    	        pumpingInfoHandsontableHelper.pumpingUnitList=result.pumpingUnitList;
 				
 				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
@@ -2513,8 +2489,6 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 					+"{data:'downlinkStatus'}," 
 					+"{data:'uplinkStatus'}" 
 					+"]";
-				
-				
 				pumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -2525,6 +2499,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 			}else{
 				pumpingInfoHandsontableHelper.strokeList = result.strokeArrStr;
     	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
+    	        pumpingInfoHandsontableHelper.pumpingUnitList=result.pumpingUnitList;
 				if(result.totalRoot.length==0){
 					pumpingInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{}]);
 				}else{
@@ -2552,6 +2527,7 @@ var PumpingInfoHandsontableHelper = {
 	        pumpingInfoHandsontableHelper.columns = [];
 	        pumpingInfoHandsontableHelper.strokeList = [];
 	        pumpingInfoHandsontableHelper.balanceWeightList = [];
+	        pumpingInfoHandsontableHelper.pumpingUnitList = [];
 	        
 	        pumpingInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -2639,6 +2615,11 @@ var PumpingInfoHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
+	                hiddenRows: {
+	                    rows: [0],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	                columns: pumpingInfoHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -2686,22 +2667,99 @@ var PumpingInfoHandsontableHelper = {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addCellStyle;
 			                }
+	                    	
+	                    	if( (visualRowIndex==3 || (row>=6 && row<=13) ) && prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
+		                    	cellProperties.readOnly = true;
+								cellProperties.renderer = pumpingInfoHandsontableHelper.addUplinkStatusCellStyle;
+		                    }
+	                    	
+	                    	if (visualColIndex === 2 && visualRowIndex===1) {
+	                    		cellProperties.readOnly = false;
+	                    		var listData=[];
+	                    		for(var i=0;i<pumpingInfoHandsontableHelper.pumpingUnitList.length;i++){
+	                    			listData.push(pumpingInfoHandsontableHelper.pumpingUnitList[i].manufacturer);
+	                    		}
+	                    		this.type = 'dropdown';
+		                    	this.source = listData;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+	                    	}
+	                    	
+	                    	
+	                    	if (visualColIndex === 2 && visualRowIndex===2) {
+	                    		cellProperties.readOnly = false;
+	                    		var listData=[];
+	                    		if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
+	                    			var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
+	                    			if(isNotVal(manufacturer)){
+	                    				for(var i=0;i<pumpingInfoHandsontableHelper.pumpingUnitList.length;i++){
+		                    				if(manufacturer==pumpingInfoHandsontableHelper.pumpingUnitList[i].manufacturer){
+		                    					for(var j=0;j<pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList.length;j++){
+		                    						listData.push(pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList[j].model);
+		                    					}
+		                    					break;
+		                    				}
+			                    		}
+	                    			}
+	                    		}
+	                    		this.type = 'dropdown';
+		                    	this.source = listData;
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+	                    	}
+	                    	
 		                    if (visualColIndex === 2 && visualRowIndex===3) {
+		                    	cellProperties.readOnly = false;
+		                    	var listData=[];
+		                    	if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
+		                    		var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
+		                    		var model=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2,'itemValue2');
+		                    		if(isNotVal(manufacturer) && isNotVal(model)){
+		                    			for(var i=0;i<pumpingInfoHandsontableHelper.pumpingUnitList.length;i++){
+		                    				if(manufacturer==pumpingInfoHandsontableHelper.pumpingUnitList[i].manufacturer){
+		                    					for(var j=0;j<pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList.length;j++){
+		                    						if(model==pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList[j].model){
+		                    							listData=pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList[j].stroke;
+		                    							break;
+		                    						}
+		                    					}
+		                    					break;
+		                    				}
+			                    		}
+		                    		}
+		                    	}
+		                    	
 		                    	this.type = 'dropdown';
-		                    	this.source = pumpingInfoHandsontableHelper.strokeList;
+		                    	this.source = listData;
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
-		                    if (visualColIndex === 2 && visualRowIndex>=6) {
+		                    
+		                    if (visualColIndex === 2 && visualRowIndex>=6 && visualRowIndex<=13) {
+		                    	cellProperties.readOnly = false;
+		                    	var listData=[];
+		                    	if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
+		                    		var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
+		                    		var model=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2,'itemValue2');
+		                    		if(isNotVal(manufacturer) && isNotVal(model)){
+		                    			for(var i=0;i<pumpingInfoHandsontableHelper.pumpingUnitList.length;i++){
+		                    				if(manufacturer==pumpingInfoHandsontableHelper.pumpingUnitList[i].manufacturer){
+		                    					for(var j=0;j<pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList.length;j++){
+		                    						if(model==pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList[j].model){
+		                    							listData=pumpingInfoHandsontableHelper.pumpingUnitList[i].modelList[j].balanceWeight;
+		                    							break;
+		                    						}
+		                    					}
+		                    					break;
+		                    				}
+			                    		}
+		                    		}
+		                    	}
+		                    	
 		                    	this.type = 'dropdown';
-		                    	this.source = pumpingInfoHandsontableHelper.balanceWeightList;
+		                    	this.source = listData;
 		                    	this.strict = true;
 		                    	this.allowInvalid = true;
-		                    }
-		                    
-		                    if( (visualRowIndex==3||(row>=6 && row<=13) ) && prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
-		                    	cellProperties.readOnly = true;
-								cellProperties.renderer = pumpingInfoHandsontableHelper.addUplinkStatusCellStyle;
 		                    }
 	                    }else{
 	                    	cellProperties.readOnly = true;
@@ -2754,7 +2812,7 @@ var PumpingInfoHandsontableHelper = {
 	                },
 	                afterChange: function (changes, source) {
 	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
-	                    if (changes != null) {
+	                    if (changes != null && source.toUpperCase()=='EDIT') {
 	                        for (var i = 0; i < changes.length; i++) {
 	                            var params = [];
 	                            var index = changes[i][0]; //行号码
@@ -2762,17 +2820,39 @@ var PumpingInfoHandsontableHelper = {
 	                            var oldValue=changes[i][2];
 	                            var newValue=changes[i][3];
 	                            
-	                            if(index==3 && prop.toUpperCase()=='itemValue2'.toUpperCase()){
-	                            	var deviceId=0;
-	                            	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	                            	if(deviceInfoHandsontableData.length>0){
-	                            		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
-	                            		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
-	                            	}
-	                            	CreateAndLoadDevicePumpingUnitPTFTable(deviceId,newValue);
+	                            if(oldValue!=newValue){
+	                            	if(index==1 && prop.toUpperCase()=='itemValue2'.toUpperCase()){//厂家改变
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(2,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(3,'itemValue2','');
+		                            	
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(6,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(7,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(8,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(9,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(10,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(11,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(12,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(13,'itemValue2','');
+		                            	
+		                            	CreatePumpingUnitDetailedInformationTable();
+		                            	CreateAndLoadDevicePumpingUnitPTFTable();
+		                            }else if(index==2 && prop.toUpperCase()=='itemValue2'.toUpperCase()){//型号改变
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(3,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(6,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(7,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(8,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(9,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(10,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(11,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(12,'itemValue2','');
+		                            	pumpingInfoHandsontableHelper.hot.setDataAtRowProp(13,'itemValue2','');
+		                            	
+		                            	CreatePumpingUnitDetailedInformationTable();
+		                            	CreateAndLoadDevicePumpingUnitPTFTable();
+		                            }else if(index==3 && prop.toUpperCase()=='itemValue2'.toUpperCase()){//冲程改变
+		                            	CreateAndLoadDevicePumpingUnitPTFTable();
+		                            }
 	                            }
-
-	                            
 	                        }
 	                    }
 	                }
@@ -2796,11 +2876,6 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			var panelTitle=loginUserLanguageResource.videoConfig;
-			if(isNotVal(deviceName)){
-				panelTitle="【<font color='red'>"+deviceName+"</font>】"+loginUserLanguageResource.videoConfig;
-			}
-//			Ext.getCmp("DeviceVideoInfoPanel_Id").setTitle(panelTitle);
 			if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
 				videoInfoHandsontableHelper = VideoInfoHandsontableHelper.createNew("VideoInfoTableDiv_id");
 				var colHeaders = "[";
@@ -3916,10 +3991,14 @@ function devicePumpingUnitDataDownlink(){
 		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
 		
 		var balanceInfo={};
+		var manufacturer = '';
+		var model = '';
         var stroke="";
         if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
+        	manufacturer = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1, 'itemValue2');
+            model = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2, 'itemValue2');
+            stroke = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(3, 'itemValue2');
         	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-        	stroke=pumpingInfoHandsontableData[3][2];
         	balanceInfo.EveryBalance=[];
         	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
         		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
@@ -3937,6 +4016,8 @@ function devicePumpingUnitDataDownlink(){
             method: "POST",
             params: {
             	deviceId: deviceId,
+            	manufacturer:manufacturer,
+            	model:model,
             	stroke:stroke,
             	balanceInfo:JSON.stringify(balanceInfo)
             },
@@ -5011,17 +5092,21 @@ var DeviceSystemParameterHandsontableHelper = {
 	    }
 	};
 
-function CreateAndLoadDevicePumpingUnitPTFTable(deviceId,deviceName){
+function CreateAndLoadDevicePumpingUnitPTFTable(){
 	if(devicePumpingUnitPRTFHandsontableHelper!=null){
 		if(devicePumpingUnitPRTFHandsontableHelper.hot!=undefined){
 			devicePumpingUnitPRTFHandsontableHelper.hot.destroy();
 		}
 		devicePumpingUnitPRTFHandsontableHelper=null;
 	}
-	var stroke="";
-    if(pumpingInfoHandsontableHelper!=null && pumpingInfoHandsontableHelper.hot!=undefined){
-    	var pumpingInfoHandsontableData=pumpingInfoHandsontableHelper.hot.getData();
-    	stroke=pumpingInfoHandsontableData[3][2];
+    
+    var manufacturer = '';
+    var model = '';
+    var stroke='';
+    if (isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)) {
+        manufacturer = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1, 'itemValue2');
+        model = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2, 'itemValue2');
+        stroke = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(3, 'itemValue2');
     }
 	
 	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
@@ -5074,7 +5159,8 @@ function CreateAndLoadDevicePumpingUnitPTFTable(deviceId,deviceName){
         	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
-        	deviceId: deviceId,
+        	manufacturer: manufacturer,
+        	model:model,
         	stroke:stroke
         }
     });
@@ -5185,13 +5271,21 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 	    }
 };
 
-function CreatePumpingUnitDetailedInformationTable(deviceId){
+function CreatePumpingUnitDetailedInformationTable(){
 	if(devicePumpingUnitDetailedInformationHandsontableHelper!=null){
 		if(devicePumpingUnitDetailedInformationHandsontableHelper.hot!=undefined){
 			devicePumpingUnitDetailedInformationHandsontableHelper.hot.destroy();
 		}
 		devicePumpingUnitDetailedInformationHandsontableHelper=null;
 	}
+	
+	var manufacturer='';
+	var model='';
+	if (isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)) {
+	    manufacturer = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1, 'itemValue2');
+	    model = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2, 'itemValue2');
+	}
+	
 	Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -5229,7 +5323,8 @@ function CreatePumpingUnitDetailedInformationTable(deviceId){
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			deviceId:deviceId
+			manufacturer:manufacturer,
+			model:model
         }
 	});
 };

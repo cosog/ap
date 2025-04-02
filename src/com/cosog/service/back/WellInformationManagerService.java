@@ -1112,12 +1112,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public void saveSRPPumpingModel(int deviceId,String pumpingModelId) throws Exception {
-		String sql = "update tbl_device t set t.pumpingmodelid="+pumpingModelId+" where t.id="+deviceId;
-		if(!StringManagerUtils.isNotNull(pumpingModelId)){
-			sql = "update tbl_device t set t.pumpingmodelid=null where t.id="+deviceId;
-		}
-		this.getBaseDao().updateOrDeleteBySql(sql);
+	public void saveSRPPumpingModel(int deviceId,String manufacturer,String model) throws Exception {
+		String delSql="delete from TBL_AUXILIARY2MASTER t "
+				+ " where t.masterid= "+deviceId
+				+ " and t.auxiliaryid in (  select t2.id from tbl_auxiliarydevice t2 where t2.specifictype=1 )";
+		String insertSql="insert into TBL_AUXILIARY2MASTER(MASTERID,AUXILIARYID,MATRIX) "
+				+ " select "+deviceId+" as MASTERID,t2.id as AUXILIARYID,'0,0,0' as MATRIX"
+				+ " from tbl_auxiliarydevice t2 "
+				+ " where t2.manufacturer='"+manufacturer+"' and t2.model='"+model+"' and rownum=1";
+		
+		int r=this.getBaseDao().updateOrDeleteBySql(delSql);
+		r=this.getBaseDao().updateOrDeleteBySql(insertSql);
+		r+=1;
 	}
 	
 	public void savePumpingInfo(int deviceId,String strokeStr,String balanceInfo) throws Exception {
@@ -1786,12 +1792,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getDevicePumpingPRTFData(String deviceId,String stroke) throws SQLException, IOException {
+	public String getDevicePumpingPRTFData(String manufacturer,String model,String stroke) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer strokeListBuff = new StringBuffer();
-		String sql = "select t.stroke,t3.prtf from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
-				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id "
-				+ " and t.id="+deviceId;
+		String sql = "select t.id,t.prtf "
+				+ " from tbl_auxiliarydevice t "
+				+ " where t.id=(select t3.id from tbl_auxiliarydevice t3 where t3.manufacturer='"+manufacturer+"' and t3.model='"+model+"' and rownum=1) ";
 		String json = "";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1800,9 +1806,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		strokeListBuff.append("[");
 		if(list.size()>0){
 			Object[] obj = (Object[]) list.get(0);
-			if(!StringManagerUtils.isNotNull(stroke)){
-				stroke=obj[0]+"";
-			}
+			
 			String prtf="";
 			if(obj[1]!=null){
 				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[1]);
@@ -1818,15 +1822,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				for(int i=0;i<pumpingPRTFData.getList().size();i++){
 					if(StringManagerUtils.isNotNull(stroke)){
 						if(pumpingPRTFData.getList().get(i).getStroke()==StringManagerUtils.stringToFloat(stroke)){
-							for(int j=0;j<pumpingPRTFData.getList().get(i).getPRTF().size();j++){
-								result_json.append("{\"CrankAngle\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getCrankAngle()+"\",");
-								result_json.append("\"PR\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getPR()+"\",");
-								result_json.append("\"TF\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getTF()+"\"},");
-							}
-							break;
-						}
-					}else{
-						if(i==0){
 							for(int j=0;j<pumpingPRTFData.getList().get(i).getPRTF().size();j++){
 								result_json.append("{\"CrankAngle\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getCrankAngle()+"\",");
 								result_json.append("\"PR\":\""+pumpingPRTFData.getList().get(i).getPRTF().get(j).getPR()+"\",");
@@ -2090,7 +2085,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " and lower(t4.itemcode) in('stroke','balanceweight') "
 				+ " and t.id="+deviceId;
 		
-		String allPumpingUnitSql="select t.manufacturer,t.model,v.itemvalue as stroke,v2.itemvalue as balanceweight "
+		String allPumpingUnitSql="select t.id,t.manufacturer,t.model,v.itemvalue as stroke,v2.itemvalue as balanceweight "
 				+ " from TBL_AUXILIARYDEVICE t "
 				+ " left outer join (select t2.deviceid,t2.itemvalue from tbl_auxiliarydeviceaddinfo t2 where lower(t2.itemcode)='stroke') v on v.deviceid=t.id"
 				+ " left outer join (select t3.deviceid,t3.itemvalue from tbl_auxiliarydeviceaddinfo t3 where lower(t3.itemcode)='balanceweight') v2 on v2.deviceid=t.id"
@@ -2106,14 +2101,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<allPumpingUnitList.size();i++){
 			Object[] obj = (Object[]) allPumpingUnitList.get(i);
-			String manufacturer=obj[0]+"";
-			String model=obj[1]+"";
-			String stroke=obj[2]+"";
-			String balanceWeight=obj[3]+"";
+			String pumpingUnitId=obj[0]+"";
+			String manufacturer=obj[1]+"";
+			String model=obj[2]+"";
+			String stroke=obj[3]+"";
+			String balanceWeight=obj[4]+"";
 			if(!allPumpingUnitMap.containsKey(manufacturer)){
 				allPumpingUnitMap.put(manufacturer, new ArrayList<>());
 			}
-			allPumpingUnitMap.get(manufacturer).add("{\"model\":\""+model+"\",\"stroke\":["+stroke+"],\"balanceWeight\":["+balanceWeight+"]}");
+			allPumpingUnitMap.get(manufacturer).add("{\"deviceId\":"+pumpingUnitId+",\"model\":\""+model+"\",\"stroke\":["+stroke+"],\"balanceWeight\":["+balanceWeight+"]}");
 		}
 		
 		allPumpingUnitBuff.append("[");
@@ -3074,7 +3070,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public boolean judgePumpingModelExistOrNot(String manufacturer,String model) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(manufacturer)&&StringManagerUtils.isNotNull(model)) {
-			String sql = "select t.id from tbl_pumpingmodel t where t.manufacturer='"+manufacturer+"' and upper(t.model)=upper('"+model+"')";
+			String sql = "select t.id from tbl_pumpingmodel t where t.manufacturer='"+manufacturer+"' and t.model='"+model+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -3600,7 +3596,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getPumpingUnitDetailsInfo(String deviceId,String language) {
+	public String getPumpingUnitDetailsInfo(String manufacturer,String model,String language) {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
@@ -3613,9 +3609,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int totalCount=0;
 		StringBuffer totalRootBuffer = new StringBuffer();
 		String sql = "select t.id,t.itemname,t.itemvalue,t.itemcode,t.itemunit "
-				+ " from tbl_auxiliarydeviceaddinfo t,tbl_auxiliarydevice t2,tbl_auxiliary2master t3,tbl_device t4  "
-				+ " where t2.id=t3.auxiliaryid and t3.masterid=t4.id and t.deviceid=t2.id "
-				+  "and t4.id="+deviceId
+				+ " from tbl_auxiliarydeviceaddinfo t,tbl_auxiliarydevice t2  "
+				+ " where t.deviceid=t2.id "
+				+ " and t2.id=( select t3.id from tbl_auxiliarydevice t3 where t3.manufacturer='"+manufacturer+"' and t3.model='"+model+"' and rownum=1 )"
 				+  "and t2.specifictype=1"
 				+ " order by t.id";
 		List<?> list = this.findCallSql(sql);

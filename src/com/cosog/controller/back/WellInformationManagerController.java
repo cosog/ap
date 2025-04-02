@@ -699,7 +699,8 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getPumpingUnitDetailsInfo")
 	public String getPumpingUnitDetailsInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String manufacturer= ParamUtils.getParameter(request, "manufacturer");
+		String model= ParamUtils.getParameter(request, "model");
 		String auxiliaryDeviceSpecificType= ParamUtils.getParameter(request, "auxiliaryDeviceSpecificType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -708,7 +709,7 @@ public class WellInformationManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.wellInformationManagerService.getPumpingUnitDetailsInfo(deviceId,language);
+		String json = this.wellInformationManagerService.getPumpingUnitDetailsInfo(manufacturer,model,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -971,10 +972,11 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getDevicePumpingPRTFData")
 	public String getDevicePumpingPRTFData() throws IOException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String manufacturer= ParamUtils.getParameter(request, "manufacturer");
+		String model= ParamUtils.getParameter(request, "model");
 		String stroke= ParamUtils.getParameter(request, "stroke");
 		
-		String json = this.wellInformationManagerService.getDevicePumpingPRTFData(deviceId,stroke);
+		String json = this.wellInformationManagerService.getDevicePumpingPRTFData(manufacturer,model,stroke);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1456,7 +1458,7 @@ public class WellInformationManagerController extends BaseController {
 							}
 							deviceProductionDataSaveStr=gson.toJson(productionData);
 							this.wellInformationManagerService.saveProductionData(deviceId,deviceProductionDataSaveStr,StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
-							this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
+							this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"","");
 							this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 						}
 					}else{
@@ -1467,17 +1469,17 @@ public class WellInformationManagerController extends BaseController {
 			}else if(additionalInformationSaveData.getType()==32){
 				type = new TypeToken<List<String>>() {}.getType();
 				List<String> productionDataInfoList=gson.fromJson(additionalInformationSaveData.getData(), type);
-				if(productionDataInfoList!=null && productionDataInfoList.size()>=3){
-					String pumpingModelId = productionDataInfoList.get(0);
-					String stroke = productionDataInfoList.get(1);
-					String balanceInfo = productionDataInfoList.get(2);
-					//处理抽油机数据
+				if(productionDataInfoList!=null && productionDataInfoList.size()==4){
+					String manufacturer = productionDataInfoList.get(0);
+					String model = productionDataInfoList.get(1);
+					String stroke = productionDataInfoList.get(2);
+					String balanceInfo = productionDataInfoList.get(3);
 					//处理抽油机型号
-					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,pumpingModelId);
+					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,manufacturer,model);
 					//处理抽油机详情
 					this.wellInformationManagerService.savePumpingInfo(deviceId,stroke,balanceInfo);
 				}else{
-					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"");
+					this.wellInformationManagerService.saveSRPPumpingModel(deviceId,"","");
 					this.wellInformationManagerService.savePumpingInfo(deviceId,"null","");
 				}
 			}else if(additionalInformationSaveData.getType()==4){
@@ -2467,15 +2469,16 @@ public class WellInformationManagerController extends BaseController {
 		String applicationScenarios=request.getParameter("applicationScenarios");
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus"
+						+ " from tbl_device t"
+						+ " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code"
+						+ " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id"
+						+ " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+						+ " where t.id="+deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -2485,9 +2488,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus=StringManagerUtils.stringToInteger(obj[6]+"");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  && StringManagerUtils.isNotNull(slave)  ){
+						if(commStatus>0){
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
@@ -2707,6 +2711,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						}else{
+							jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceOffline")+"</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -2733,20 +2739,25 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/devicePumpingUnitDataDownlink")
 	public String devicePumpingUnitDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
+		String manufacturer = request.getParameter("manufacturer");
+		String model = request.getParameter("model");
 		String stroke = request.getParameter("stroke");
 		String balanceInfo = request.getParameter("balanceInfo");
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				this.wellInformationManagerService.saveSRPPumpingModel(StringManagerUtils.stringToInteger(deviceId),manufacturer,model);
+				this.wellInformationManagerService.savePumpingInfo(StringManagerUtils.stringToInteger(deviceId),stroke,balanceInfo);
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -2756,16 +2767,16 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
 							
 							FSDiagramConstructionRequestData requestData=new FSDiagramConstructionRequestData();
 							if(requestData!=null){
-								
 								String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
 										+ " t.stroke,t.balanceinfo,"
 										+ " t3.prtf "
@@ -2824,11 +2835,11 @@ public class WellInformationManagerController extends BaseController {
 								
 								if(auxiliaryDeviceAddInfoList.size()>0){
 									requestData.setPumpingUnit(new FSDiagramConstructionRequestData.PumpingUnit());
-									String manufacturer="";
-									String model="";
+									String manufacturerStr="";
+									String modelStr="";
 									for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++ ){
-										manufacturer=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
-										model=auxiliaryDeviceAddInfoList.get(i).getModel();
+										manufacturerStr=auxiliaryDeviceAddInfoList.get(i).getManufacturer();
+										modelStr=auxiliaryDeviceAddInfoList.get(i).getModel();
 										if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
 											requestData.getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
 										}else if("crankRotationDirection".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
@@ -2845,8 +2856,8 @@ public class WellInformationManagerController extends BaseController {
 											requestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
 										}
 									}
-									requestData.getPumpingUnit().setManufacturer(manufacturer);
-									requestData.getPumpingUnit().setModel(model);
+									requestData.getPumpingUnit().setManufacturer(manufacturerStr);
+									requestData.getPumpingUnit().setModel(modelStr);
 									requestData.getPumpingUnit().setStroke(StringManagerUtils.stringToFloat(stroke));
 									
 									type = new TypeToken<FSDiagramConstructionRequestData.Balance>() {}.getType();
@@ -2855,8 +2866,6 @@ public class WellInformationManagerController extends BaseController {
 										requestData.getPumpingUnit().setBalance(balance);
 									}
 								}
-								
-								
 								
 								if(requestData.getPumpingUnit()!=null){
 									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
@@ -2887,9 +2896,6 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("PR", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
 									downStatusMap.put("TF", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
 								}
-								
-								this.wellInformationManagerService.savePumpingInfo(StringManagerUtils.stringToInteger(deviceId),stroke,balanceInfo);
-
 							}
 						
 							
@@ -2903,6 +2909,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -2933,15 +2941,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -2951,9 +2960,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
@@ -3101,9 +3111,7 @@ public class WellInformationManagerController extends BaseController {
 								downStatusMap.put("BoardDataSource", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BoardDataSource",requestData.getBoardDataSource()+"",userInfo.getLanguageName()));
 								
 								this.wellInformationManagerService.saveFSDiagramConstructionData(StringManagerUtils.stringToInteger(deviceId), data);
-
 							}
-						
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
@@ -3115,6 +3123,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -3144,15 +3154,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -3162,9 +3173,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
 							downStatusMap.put("systemDate", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemDate",StringManagerUtils.getCurrentTime("yyyy00MM00dd"),userInfo.getLanguageName()));
 							downStatusMap.put("systemTime", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemTime",StringManagerUtils.getCurrentTime("00HH00mm00ss"),userInfo.getLanguageName()));
@@ -3178,6 +3190,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -3325,14 +3339,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -3341,9 +3357,11 @@ public class WellInformationManagerController extends BaseController {
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
+
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 								statusMap.put("CrudeOilDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
@@ -3443,6 +3461,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -3472,15 +3492,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -3490,9 +3511,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							statusMap.put("Stroke", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",userInfo.getLanguageName()));
 							statusMap.put("structureType", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",userInfo.getLanguageName()));
@@ -3528,6 +3550,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -3558,15 +3582,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
-		
-		String deviceTableName="tbl_device";
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -3576,9 +3601,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							statusMap.put("crankDIInitAngle", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",userInfo.getLanguageName()));
 							statusMap.put("interpolationCNT", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",userInfo.getLanguageName()));
@@ -3608,6 +3634,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
@@ -3643,9 +3671,12 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
-						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.id="+deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
+					    " from tbl_device t" +
+					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
+					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
+					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
+					    " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
@@ -3655,9 +3686,10 @@ public class WellInformationManagerController extends BaseController {
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
 					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-						if(StringManagerUtils.isNotNull(slave)){
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							statusMap.put("systemDate", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemDate",userInfo.getLanguageName()));
 							statusMap.put("systemTime", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemTime",userInfo.getLanguageName()));
@@ -3671,6 +3703,8 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";

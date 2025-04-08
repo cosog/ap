@@ -43,10 +43,10 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         
         var srpDeviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: deviceShowName,
+                    fieldLabel: loginUserLanguageResource.deviceName,
                     id: "UpstreamAndDownstreamInteractionDeviceListComb_Id",
-                    labelWidth: 8*deviceShowNameLength,
-                    width: (8*deviceShowNameLength+110),
+                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
@@ -118,7 +118,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             			tbar:[{
                              xtype: 'radiogroup',
                              fieldLabel: loginUserLanguageResource.operation,
-                             labelWidth: getStringLength(loginUserLanguageResource.operation)*8,
+                             labelWidth: getLabelWidth(loginUserLanguageResource.operation,loginUserLanguage),
                              id: 'UpstreamAndDownstreamInteractionOperation_Id',
                              cls: 'x-check-group-alt',
                              name: 'operation',

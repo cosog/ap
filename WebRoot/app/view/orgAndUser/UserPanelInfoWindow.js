@@ -29,41 +29,40 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
         var me = this;
         
         
-        var labelWidth=getStringLength(loginUserLanguageResource.userName);
-        if(labelWidth<getStringLength(loginUserLanguageResource.userAccount)){
-        	labelWidth=getStringLength(loginUserLanguageResource.userAccount);
+        var labelWidth=getLabelWidth(loginUserLanguageResource.userName,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.userPassword)){
-        	labelWidth=getStringLength(loginUserLanguageResource.userPassword);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userPassword,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userPassword,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.enterPasswordAgain)){
-        	labelWidth=getStringLength(loginUserLanguageResource.enterPasswordAgain);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.enterPasswordAgain,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.enterPasswordAgain,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.role)){
-        	labelWidth=getStringLength(loginUserLanguageResource.role);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.role,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.role,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.phone)){
-        	labelWidth=getStringLength(loginUserLanguageResource.phone);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.phone,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.phone,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.email)){
-        	labelWidth=getStringLength(loginUserLanguageResource.email);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.email,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.email,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.userQuickLogin)){
-        	labelWidth=getStringLength(loginUserLanguageResource.userQuickLogin);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userQuickLogin,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userQuickLogin,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.receiveAlarmSMS)){
-        	labelWidth=getStringLength(loginUserLanguageResource.receiveAlarmSMS);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.receiveAlarmSMS,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.receiveAlarmSMS,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.receiveAlarmMail)){
-        	labelWidth=getStringLength(loginUserLanguageResource.receiveAlarmMail);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.receiveAlarmMail,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.receiveAlarmMail,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.language)){
-        	labelWidth=getStringLength(loginUserLanguageResource.language);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.language,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.language,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.status)){
-        	labelWidth=getStringLength(loginUserLanguageResource.status);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.status,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.status,loginUserLanguage);
         }
-        labelWidth=labelWidth*8;
         
         var roleComboxStore = new Ext.data.SimpleStore({
             fields: [{

@@ -53,7 +53,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 50,
+                        width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
                         xtype: 'rownumberer'
                     }, {
                         header: loginUserLanguageResource.userName,
@@ -147,7 +147,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 65,
+                        width: getLabelWidth(loginUserLanguageResource.userQuickLogin,loginUserLanguage)+'px',
                         dataIndex: 'userQuickLoginName',
                         editor: {
                         	xtype: 'checkbox',
@@ -169,7 +169,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         align: 'center',
                         sortable: true,
-                        width: 65,
+                        width: getLabelWidth(loginUserLanguageResource.receiveSMS,loginUserLanguage)+'px',
                         dataIndex: 'receiveSMSName',
                         editor: {
                         	xtype: 'checkbox',
@@ -191,7 +191,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 65,
+                        width: getLabelWidth(loginUserLanguageResource.receiveMail,loginUserLanguage)+'px',
                         dataIndex: 'receiveMailName',
                         editor: {
                         	xtype: 'checkbox',
@@ -234,7 +234,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userEnableName',
                         headerCheckbox: false,
-                        width: 40,
+                        width: getLabelWidth(loginUserLanguageResource.enable,loginUserLanguage)+'px',
                         editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
@@ -279,7 +279,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.save)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -300,7 +300,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,

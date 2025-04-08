@@ -116,7 +116,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	header: loginUserLanguageResource.enable,
                     	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     	dataIndex: 'status',
-                    	width: 65,
+                    	width: getLabelWidth(loginUserLanguageResource.enable,loginUserLanguage)+'px',
                     	editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
@@ -130,7 +130,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.save)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -148,7 +148,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,

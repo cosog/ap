@@ -70,7 +70,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 50,
+                        width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
                         xtype: 'rownumberer'
                     }, {
                         header: loginUserLanguageResource.roleName,
@@ -126,7 +126,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         align: 'center',
                         sortable: true,
                         disabled:loginUserRoleManagerModuleRight.editFlag!=1,
-                        width: 115,
+                        width: getLabelWidth(loginUserLanguageResource.roleVideoKeyEdit,loginUserLanguage)+'px',
                         dataIndex: 'roleVideoKeyEditName',
                         editor: {
                         	xtype: 'checkbox',
@@ -157,7 +157,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         align: 'center',
                         sortable: true,
                         disabled:loginUserRoleManagerModuleRight.editFlag!=1,
-                        width: 115,
+                        width: getLabelWidth(loginUserLanguageResource.roleLanguageEdit,loginUserLanguage)+'px',
                         dataIndex: 'roleLanguageEditName',
                         editor: {
                         	xtype: 'checkbox',
@@ -199,7 +199,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.save)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -217,7 +217,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,

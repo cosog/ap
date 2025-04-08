@@ -59,10 +59,10 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 
         var deviceListDeviceCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: deviceShowName,
+                fieldLabel: loginUserLanguageResource.deviceName,
                 id: "deviceListComb_Id",
-                labelWidth: 8*deviceShowNameLength,
-                width: (8*deviceShowNameLength+110),
+                labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
                 labelAlign: 'left',
                 queryMode: 'remote',
                 typeAhead: true,
@@ -487,13 +487,13 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 		tbar:[{
                             xtype: 'radiogroup',
                             fieldLabel: loginUserLanguageResource.calculateType,
-                            labelWidth: getStringLength(loginUserLanguageResource.calculateType)*8,
+                            labelWidth: getLabelWidth(loginUserLanguageResource.calculateType,loginUserLanguage),
                             id: 'DeviceCalculateDataType_Id',
                             cls: 'x-check-group-alt',
                             items: [
-                                {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.SRPCalculate)*10, inputValue: 1},
-                                {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.PCPCalculate)*10, inputValue: 2},
-                                {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
+                                {boxLabel: loginUserLanguageResource.SRPCalculate,name: 'deviceCalculateDataType',width: getLabelWidth(loginUserLanguageResource.SRPCalculate,loginUserLanguage)+20, inputValue: 1},
+                                {boxLabel: loginUserLanguageResource.PCPCalculate,name: 'deviceCalculateDataType',width: getLabelWidth(loginUserLanguageResource.PCPCalculate,loginUserLanguage)+20, inputValue: 2},
+                                {boxLabel: loginUserLanguageResource.nothing,name: 'deviceCalculateDataType',width: getLabelWidth(loginUserLanguageResource.nothing,loginUserLanguage)+20, inputValue: 0}
                             ],
                             listeners: {
                             	change: function (radiogroup, newValue, oldValue, eOpts) {

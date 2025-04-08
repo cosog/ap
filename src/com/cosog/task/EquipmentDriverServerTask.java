@@ -370,28 +370,28 @@ public class EquipmentDriverServerTask {
 				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
 				
-//				path=stringManagerUtils.getFilePath("test3.json","example/");
-//				String onlineData=stringManagerUtils.readFile(path,"utf-8");
-//				
-//				path=stringManagerUtils.getFilePath("test4.json","example/");
-//				String offlineData=stringManagerUtils.readFile(path,"utf-8");
-				
 				
 				int i=0;
 				while(true){
-					if(i%2==0){
-//						if(deviceName.equalsIgnoreCase("srp11")){
-//							StringManagerUtils.sendPostMethod(onlineUrl, offlineData,"utf-8",0,0);
-//							Thread.sleep(1000*5);
-//							StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8",0,0);
-//							Thread.sleep(1000*5);
-//						}
-						StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
-					}else{
-						StringManagerUtils.sendPostMethod(url, data2,"utf-8",0,0);
+					try {
+						if("srp01".equalsIgnoreCase(deviceName)){
+							int index=i%30+1;
+							String indexStr=index<10?("0"+index):(index+"");
+							path=stringManagerUtils.getFilePath(deviceName+"_"+indexStr+".json","example/");
+							data=stringManagerUtils.readFile(path,"utf-8");
+							StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
+						}else{
+							if(i%2==0){
+								StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
+							}else{
+								StringManagerUtils.sendPostMethod(url, data2,"utf-8",0,0);
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-					i++;
 					
+					i++;
 					Thread.sleep(1000*cycle);
 				}
 			} catch (InterruptedException e) {

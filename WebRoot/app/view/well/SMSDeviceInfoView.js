@@ -47,8 +47,8 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.deviceName,
                 id: "SMSDeviceListComb_Id",
-                labelWidth: getStringLength(loginUserLanguageResource.deviceName)*8,
-                width: getStringLength(loginUserLanguageResource.deviceName)*8+110,
+                labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                width: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110,
                 labelAlign: 'left',
                 queryMode: 'remote',
                 typeAhead: true,

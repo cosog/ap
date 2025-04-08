@@ -19,47 +19,46 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         var me = this;
         var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
         
-        var labelWidth=getStringLength(loginUserLanguageResource.deviceName);
-        if(labelWidth<getStringLength(loginUserLanguageResource.deviceType)){
-        	labelWidth=getStringLength(loginUserLanguageResource.deviceType);
+        var labelWidth=getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.deviceType,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.deviceType,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.applicationScenarios)){
-        	labelWidth=getStringLength(loginUserLanguageResource.applicationScenarios);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.applicationScenarios,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.applicationScenarios,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.acqInstance)){
-        	labelWidth=getStringLength(loginUserLanguageResource.acqInstance);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.acqInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.acqInstance,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.displayInstance)){
-        	labelWidth=getStringLength(loginUserLanguageResource.displayInstance);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.displayInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.displayInstance,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.reportInstance)){
-        	labelWidth=getStringLength(loginUserLanguageResource.reportInstance);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.reportInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.reportInstance,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.alarmInstance)){
-        	labelWidth=getStringLength(loginUserLanguageResource.alarmInstance);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.alarmInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.alarmInstance,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.deviceTcpType)){
-        	labelWidth=getStringLength(loginUserLanguageResource.deviceTcpType);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.deviceTcpType,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.deviceTcpType,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.signInId)){
-        	labelWidth=getStringLength(loginUserLanguageResource.signInId);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.ipPort)){
-        	labelWidth=getStringLength(loginUserLanguageResource.ipPort);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.ipPort,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.ipPort,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.slave)){
-        	labelWidth=getStringLength(loginUserLanguageResource.slave);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.slave,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.slave,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.peakDelay)){
-        	labelWidth=getStringLength(loginUserLanguageResource.peakDelay);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.peakDelay,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.peakDelay,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.status)){
-        	labelWidth=getStringLength(loginUserLanguageResource.status);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.status,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.status,loginUserLanguage);
         }
-        if(labelWidth<getStringLength(loginUserLanguageResource.sortNum)){
-        	labelWidth=getStringLength(loginUserLanguageResource.sortNum);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
         }
-        labelWidth=labelWidth*8;
         var deviceTypeStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",

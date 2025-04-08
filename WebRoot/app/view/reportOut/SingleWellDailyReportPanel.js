@@ -47,10 +47,10 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
         
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: deviceShowName,
+                    fieldLabel: loginUserLanguageResource.deviceName,
                     id: "SingleWellDailyReportPanelWellListCombo_Id",
-                    labelWidth: 8*deviceShowNameLength,
-                    width: (8*deviceShowNameLength+110),
+                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,
@@ -95,8 +95,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: loginUserLanguageResource.date,
-                labelWidth: getStringLength(loginUserLanguageResource.date)*8,
-                width: (getStringLength(loginUserLanguageResource.date)*8+100),
+                labelWidth: getLabelWidth(loginUserLanguageResource.date,loginUserLanguage),
+                width: (getLabelWidth(loginUserLanguageResource.date,loginUserLanguage)+100),
                 format: 'Y-m-d',
                 id: 'SingleWellDailyReportStartDate_Id',
                 listeners: {
@@ -119,8 +119,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 anchor: '100%',
                 hidden: false,
                 fieldLabel: loginUserLanguageResource.timeTo,
-                labelWidth: getStringLength(loginUserLanguageResource.timeTo)*8,
-                width: getStringLength(loginUserLanguageResource.timeTo)*8+95,
+                labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
+                width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
                 format: 'Y-m-d ',
                 id: 'SingleWellDailyReportEndDate_Id',
                 value: new Date(),
@@ -270,8 +270,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         },'-',{
                         	xtype : "combobox",
             				fieldLabel : loginUserLanguageResource.interval,
-                            labelWidth: getStringLength(loginUserLanguageResource.interval)*8,
-                            width: (getStringLength(loginUserLanguageResource.interval)*8+100),
+                            labelWidth: getLabelWidth(loginUserLanguageResource.interval,loginUserLanguage),
+                            width: (getLabelWidth(loginUserLanguageResource.interval,loginUserLanguage)+100),
             				id : 'SingleWellDailyReportIntervalComb_Id',
             				triggerAction : 'all',
             				selectOnFocus : true,

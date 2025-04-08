@@ -57,12 +57,8 @@
         var loginUserLanguage = "${userLogin.languageName}";
         
         var loginUserLanguageResource='${userLogin.languageResource}';
-        var deviceShowName="";
-		var deviceShowNameLength=4;
         if(isNotVal(loginUserLanguageResource)){
         	loginUserLanguageResource=JSON.parse(loginUserLanguageResource);
-        	deviceShowName=loginUserLanguageResource.deviceName;
-        	deviceShowNameLength=getStringLength(deviceShowName);
         }else{
         	loginUserLanguageResource={};
         }

@@ -133,7 +133,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.save)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -151,7 +151,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
-                    	width: getStringLength(loginUserLanguageResource.deleteData)*10,
+                    	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,

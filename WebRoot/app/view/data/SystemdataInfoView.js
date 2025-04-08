@@ -24,8 +24,8 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         			xtype : "combobox",
         			id : 'dataDictionaryItemSearchTypeComb_Id',
         			fieldLabel: loginUserLanguageResource.type,
-    	            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
-    	            width: getStringLength(loginUserLanguageResource.type)*8+120,
+    	            labelWidth: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage),
+    	            width: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage)+120,
     				triggerAction : 'all',
     				selectOnFocus : false,
     			    forceSelection : true,
@@ -45,8 +45,8 @@ Ext.define("AP.view.data.SystemdataInfoView", {
                 	xtype: 'textfield',
                     id: 'dataDictionaryItemSearchValue_Id',
                     fieldLabel: loginUserLanguageResource.name,
-                    labelWidth: getStringLength(loginUserLanguageResource.name)*8,
-                    width: getStringLength(loginUserLanguageResource.name)*8+120
+                    labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage),
+                    width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+120
                 },'-',{
                 	xtype: 'button',
                     text: loginUserLanguageResource.search,

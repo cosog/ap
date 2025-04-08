@@ -488,10 +488,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
         
         var deviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: deviceShowName,
+                    fieldLabel: loginUserLanguageResource.deviceName,
                     id: "RealTimeMonitoringDeviceListComb_Id",
-                    labelWidth: 8*deviceShowNameLength,
-                    width: (8*deviceShowNameLength+110),
+                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
                     labelAlign: 'left',
                     queryMode: 'remote',
                     typeAhead: true,

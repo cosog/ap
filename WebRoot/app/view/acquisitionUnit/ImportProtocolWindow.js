@@ -33,7 +33,7 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                 	id:'ProtocolImportFilefield_Id',
                     name: 'file',
                     fieldLabel: loginUserLanguageResource.uploadFile,
-                    labelWidth: getStringLength(loginUserLanguageResource.uploadFile)*8,
+                    labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
                     width:'100%',
                     msgTarget: 'side',
                     allowBlank: true,

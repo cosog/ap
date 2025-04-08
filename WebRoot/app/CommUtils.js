@@ -4931,14 +4931,28 @@ function getRoleModuleRight(moduleCode){
 	return moduleRight;
 }
 
+function getLabelWidth(str,language) {
+    var ratio=4;
+    if('zh_CN'.toUpperCase()==language.toUpperCase()){
+    	ratio=8;
+    }else if('en'.toUpperCase()==language.toUpperCase()){
+    	ratio=6;
+    }
+    return getStringLength(str)*ratio;
+}
+
 function getStringLength(str) {
-    var realLength = 0, len = str.length, charCode = -1;
-    for (var i = 0; i < len; i++) {
-      charCode = str.charCodeAt(i);
-      if (charCode >= 0 && charCode <= 128)
-        realLength += 1;
-      else
-        realLength += 2;
+    var realLength = 0;
+    if(isNotVal(str)){
+    	var len = str.length;
+        var charCode = -1;
+    	for (var i = 0; i < len; i++) {
+    		charCode = str.charCodeAt(i);
+    		if (charCode >= 0 && charCode <= 128)
+    			realLength += 1;
+    		else
+    			realLength += 2;
+    	}
     }
     return realLength;
-  }
+}

@@ -100,8 +100,8 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     id: 'UserName_Id',
                     fieldLabel: loginUserLanguageResource.userName,
                     emptyText: '',
-                    labelWidth: (getStringLength(loginUserLanguageResource.userName)*8),
-                    width: (getStringLength(loginUserLanguageResource.userName)*8+100),
+                    labelWidth: (getLabelWidth(loginUserLanguageResource.userName,loginUserLanguage)),
+                    width: (getLabelWidth(loginUserLanguageResource.userName,loginUserLanguage)+100),
                     labelAlign: 'right',
                     xtype: 'textfield'
         		},"-", {

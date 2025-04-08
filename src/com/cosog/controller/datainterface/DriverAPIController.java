@@ -2020,7 +2020,7 @@ public class DriverAPIController extends BaseController{
 					}
 				}
 				
-				if(StringManagerUtils.isNotNull(columnName)&&StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
+				if(StringManagerUtils.isNotNull(columnName) && StringManagerUtils.isNotNull(unit) && StringManagerUtils.isNotNull(unit.replaceAll(" ", "")) ){
 					webSocketSendData.append("\"name"+(k+1)+"\":\""+(columnName+"("+unit+")")+"\",");
 				}else{
 					webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");

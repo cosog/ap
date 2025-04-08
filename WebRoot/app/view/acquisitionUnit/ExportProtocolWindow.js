@@ -31,8 +31,8 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
                 name: 'type',
                 hidden: !exportAdInitData,
                 items: [
-                    {boxLabel: loginUserLanguageResource.exportProtocolFormat1,width: getStringLength(loginUserLanguageResource.exportProtocolFormat1)*8, inputValue: 1, checked: true},
-                    {boxLabel: loginUserLanguageResource.exportProtocolFormat2,width: getStringLength(loginUserLanguageResource.exportProtocolFormat2)*8, inputValue: 2}
+                    {boxLabel: loginUserLanguageResource.exportProtocolFormat1,width: getLabelWidth(loginUserLanguageResource.exportProtocolFormat1,loginUserLanguage)+20, inputValue: 1, checked: true},
+                    {boxLabel: loginUserLanguageResource.exportProtocolFormat2,width: getLabelWidth(loginUserLanguageResource.exportProtocolFormat2,loginUserLanguage)+20, inputValue: 2}
                 ],
                 listeners: {
                	 	change: function (radiogroup, newValue, oldValue, eOpts) {

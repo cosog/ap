@@ -18,8 +18,8 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
             allowBlank: false,
             triggerAction: 'all',
             store: sysdatastore,
-            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
-            width: getStringLength(loginUserLanguageResource.type)*8+120,
+            labelWidth: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage),
+            width: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage)+120,
             displayField: 'sysdataName',
             valueField: 'sysdataId',
             mode: 'local'
@@ -59,8 +59,8 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
     		},'-',sysdatacomboxsimp,'-', {
                 xtype: 'textfield',
                 fieldLabel: loginUserLanguageResource.name,
-                labelWidth: getStringLength(loginUserLanguageResource.name)*8,
-                width: getStringLength(loginUserLanguageResource.name)*8+120,
+                labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage),
+                width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+120,
                 id: 'sysname_Id',
                 name: 'sysdata_name',
                 action: "findsysdatatextaction"

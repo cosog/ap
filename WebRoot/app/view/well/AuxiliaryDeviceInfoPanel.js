@@ -199,12 +199,12 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                         xtype: 'radiogroup',
                         fieldLabel: loginUserLanguageResource.specificType,
                         hidden: onlyMonitor,
-                        labelWidth: getStringLength(loginUserLanguageResource.specificType)*8,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.specificType,loginUserLanguage),
                         id: 'AuxiliaryDeviceSpecificType_Id',
                         cls: 'x-check-group-alt',
                         items: [
-                            {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.pumping)*10, inputValue: 1},
-                            {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getStringLength(loginUserLanguageResource.nothing)*10, inputValue: 0}
+                            {boxLabel: loginUserLanguageResource.pumping,name: 'auxiliaryDeviceSpecificType',width: getLabelWidth(loginUserLanguageResource.pumping,loginUserLanguage)+20, inputValue: 1},
+                            {boxLabel: loginUserLanguageResource.nothing,name: 'auxiliaryDeviceSpecificType',width: getLabelWidth(loginUserLanguageResource.nothing,loginUserLanguage)+20, inputValue: 0}
                         ],
                         listeners: {
                         	change: function (radiogroup, newValue, oldValue, eOpts) {

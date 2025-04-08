@@ -4908,7 +4908,7 @@ public class MemoryDataManagerTask {
 		Map<String,String> languageMap=new LinkedHashMap<>();
 		String key="languageResource-"+language;
 		if(!dataModelMap.containsKey(key)){
-			loadLanguageResource(key);
+			loadLanguageResource(language);
 		}
 		if(dataModelMap.containsKey(key)){
 			languageMap=(Map<String, String>) dataModelMap.get(key);
@@ -4923,7 +4923,7 @@ public class MemoryDataManagerTask {
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
 		if(!dataModelMap.containsKey(key)){
-			loadLanguageResource(key);
+			loadLanguageResource(language);
 		}
 		if(dataModelMap.containsKey(key)){
 			codeMap=(Map<String,Map<String,Code>>) dataModelMap.get(key);
@@ -5007,8 +5007,9 @@ public class MemoryDataManagerTask {
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
 						String item=obj.getString("FIELD");
-						String value=obj.getString("LANGUAGE");
 						if(StringManagerUtils.isNotNull(item)){
+							String value=obj.getString("LANGUAGE");
+							value=StringManagerUtils.capitalizeFirstLetter(value);
 							languageMap.put(item, value);
 						}
 					}
@@ -5018,6 +5019,11 @@ public class MemoryDataManagerTask {
 						JSONObject obj=arr.getJSONObject(i);
 						String itemCode=obj.getString("ITEMCODE");
 						String itemName=obj.getString("ITEMNAME");
+						
+						if(!"LANGUAGE".equalsIgnoreCase(itemCode)){
+							itemName=StringManagerUtils.capitalizeFirstLetter(itemName);
+						}
+						
 						int itemValue=obj.getIntValue("ITEMVALUE");
 						String tableCode=obj.getString("TABLECODE");
 						String remark=obj.getString("REMARK");
@@ -5043,10 +5049,17 @@ public class MemoryDataManagerTask {
 			    		JSONObject obj=arr.getJSONObject(i);
 			    		WorkType workType=new WorkType();
 			    		int resultCode=obj.getIntValue("RESULTCODE"); 
-			    		String resultName=obj.getString("RESULTNAME"); 
-			    		String resultDescription=obj.getString("RESULTDESCRIPTION");
-			    		String optimizationSuggestion=obj.getString("OPTIMIZATIONSUGGESTION");
-			    		String remark=obj.getString("REMARK");
+			    		String resultName=StringManagerUtils.capitalizeFirstLetter(obj.getString("RESULTNAME")); 
+			    		String resultDescription=StringManagerUtils.capitalizeFirstLetter(obj.getString("RESULTDESCRIPTION"));
+			    		String optimizationSuggestion=StringManagerUtils.capitalizeFirstLetter(obj.getString("OPTIMIZATIONSUGGESTION"));
+			    		String remark=StringManagerUtils.capitalizeFirstLetter(obj.getString("REMARK"));
+			    		
+			    		
+//			    		String resultName=obj.getString("RESULTNAME"); 
+//			    		String resultDescription=obj.getString("RESULTDESCRIPTION");
+//			    		String optimizationSuggestion=obj.getString("OPTIMIZATIONSUGGESTION");
+//			    		String remark=obj.getString("REMARK");
+			    		
 			    		workType.setResultCode(resultCode);
 						workType.setResultName(resultName);
 						workType.setResultDescription(resultDescription);
@@ -5121,7 +5134,7 @@ public class MemoryDataManagerTask {
 		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
 		String key="workTypeLanguageResource-"+language;
 		if(!dataModelMap.containsKey(key)){
-			loadLanguageResource(key);
+			loadLanguageResource(language);
 		}
 		if(dataModelMap.containsKey(key)){
 			workTypeMap=(Map<String, WorkType>) dataModelMap.get(key);

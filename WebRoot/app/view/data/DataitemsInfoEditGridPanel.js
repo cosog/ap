@@ -23,8 +23,8 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
             allowBlank: false,
             triggerAction: 'all',
             store: findtatimsstore,
-            labelWidth: getStringLength(loginUserLanguageResource.type)*8,
-            width: getStringLength(loginUserLanguageResource.type)*8+120,
+            labelWidth: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage),
+            width: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage)+120,
             displayField: 'findtatName',
             valueField: 'findtatId'
         });
@@ -45,8 +45,8 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     xtype: 'textfield',
                     id: 'findtattxtnames_Id',
                     fieldLabel: loginUserLanguageResource.name,
-                    labelWidth: getStringLength(loginUserLanguageResource.name)*8,
-                    width: getStringLength(loginUserLanguageResource.name)*8+120,
+                    labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage),
+                    width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+120,
                     listeners: {
                         specialkey: function (field, e) {
                             RefreachEnter(e, "DataitemsInfoEditGridPanelId");

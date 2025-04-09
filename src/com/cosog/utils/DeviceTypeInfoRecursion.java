@@ -57,6 +57,7 @@ public class DeviceTypeInfoRecursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=tabInfo.getName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, tabInfo)) {
 			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"parentId\":\"" + tabInfo.getParentId() + "\"");
@@ -98,6 +99,7 @@ public class DeviceTypeInfoRecursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=tabInfo.getName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, tabInfo)) {
 			returnStr.append("{\"text\":\"" + text + "\",");
 			returnStr.append("\"parentId\":\"" + tabInfo.getParentId() + "\",");
@@ -133,6 +135,7 @@ public class DeviceTypeInfoRecursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=tabInfo.getName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, tabInfo)) {
 			returnStr.append("{\"Text\":\"" + text + "\",");
 			returnStr.append("\"DeviceTypeId\":\"" + tabInfo.getId() + "\",");

@@ -4954,7 +4954,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t4.itemname as alarmLevel,"
+				+ " t.itemname as alarmLevel,"
 				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
 				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
@@ -4979,9 +4979,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> list=this.findCallSql(itemsSql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
+			String code=obj[2]+"";
+			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(code, language);
+			
 			result_json.append("{\"id\":"+(i+1)+","
-					+ "\"title\":\""+obj[1]+"\","
-					+ "\"code\":\""+obj[2]+"\","
+					+ "\"title\":\""+(workType!=null?workType.getResultName():"")+"\","
+					+ "\"code\":\""+code+"\","
 					+ "\"delay\":\""+obj[3]+"\","
 					+ "\"retriggerTime\":\""+obj[4]+"\","
 					+ "\"alarmLevel\":\""+obj[5]+"\","

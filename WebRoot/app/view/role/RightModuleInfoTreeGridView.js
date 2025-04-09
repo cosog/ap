@@ -30,7 +30,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             columns: [{
             	xtype: 'treecolumn',
             	text: loginUserLanguageResource.moduleList,
-            	flex: 8,
+            	flex: getLabelWidth(loginUserLanguageResource.viewFlag,loginUserLanguage)*8,
             	align: 'left',
             	dataIndex: 'text'
             },{
@@ -43,7 +43,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 lockable: true,
                 align: 'center',
                 sortable: true,
-                flex: 1,
+                flex: getLabelWidth(loginUserLanguageResource.viewFlag,loginUserLanguage),
                 dataIndex: 'viewFlagName',
 //                disabled: true,
                 editor: {
@@ -79,7 +79,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 lockable: true,
                 align: 'center',
                 sortable: true,
-                flex: 1,
+                flex: getLabelWidth(loginUserLanguageResource.editFlag,loginUserLanguage),
                 dataIndex: 'editFlagName',
                 editor: {
                 	xtype: 'checkbox',
@@ -120,7 +120,7 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 lockable: true,
                 align: 'center',
                 sortable: true,
-                flex: 1,
+                flex: getLabelWidth(loginUserLanguageResource.controlFlag,loginUserLanguage),
                 dataIndex: 'controlFlagName',
                 editor: {
                 	xtype: 'checkbox',

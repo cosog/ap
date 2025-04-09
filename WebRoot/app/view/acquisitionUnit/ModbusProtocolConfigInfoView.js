@@ -346,7 +346,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [50,200,80,90,90,80,80,90,80,80,80,120],
+	        		colWidths: [50,200,80,90,90,80,80,90,80,80,80,160],
 	                columns:protocolItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

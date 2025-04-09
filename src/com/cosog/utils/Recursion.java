@@ -29,6 +29,7 @@ public class Recursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=node.getOrgName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {
 			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"expanded\" : true");
@@ -69,6 +70,7 @@ public class Recursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=node.getOrgName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {
 			returnStr.append("{\"text\":\"" + text + "\",");
 			returnStr.append("\"expanded\":true,");
@@ -105,6 +107,7 @@ public class Recursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=node.getOrgName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {
 			returnStr.append("{\"Text\":\"" + text + "\",");
 			returnStr.append("\"OrgId\":\"" + node.getOrgId() + "\",");
@@ -161,6 +164,7 @@ public class Recursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			text=node.getOrgName_ru();
 		}
+		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {
 			returnStr.append("{\"text\":\"" + text + "\"");
 			returnStr.append(",\"expanded\" : true");

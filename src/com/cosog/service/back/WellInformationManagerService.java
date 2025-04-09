@@ -2516,7 +2516,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemCode\":\"BarrelLength\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelLength():"")+"\"},");
 						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemCode\":\"BarrelSeries\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\"},");
 						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemCode\":\"QPR\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/r)\",\"itemCode\":\"QPR\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
 						
 						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
 						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
@@ -2633,7 +2633,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemCode\":\"pumpSettingDepth\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemCode\":\"BarrelSeries\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/转)\",\"itemCode\":\"QPR\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/r)\",\"itemCode\":\"QPR\",\"itemValue\":\"\"},");
 						
 						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\"\"},");
@@ -2831,8 +2831,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			videoUrl2=obj[2]+"";
 			videoKey2=obj[3]+"";
 		}
-		result_json.append("{\"id\":1,\"itemName\":\"视频1\",\"videoUrl\":\""+videoUrl1+"\",\"videoKey\":\""+videoKey1+"\"},");
-		result_json.append("{\"id\":2,\"itemName\":\"视频2\",\"videoUrl\":\""+videoUrl2+"\",\"videoKey\":\""+videoKey2+"\"},");
+		result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("video1")+"\",\"videoUrl\":\""+videoUrl1+"\",\"videoKey\":\""+videoKey1+"\"},");
+		result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("video2")+"\",\"videoUrl\":\""+videoUrl2+"\",\"videoKey\":\""+videoKey2+"\"},");
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -3737,13 +3737,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("model")+"\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
 		
 		String sql = "select t.id,t.name,t.type,t.manufacturer,t.model,"
 				+ " t.remark,t.sort,"
-				+ " decode(t.specificType,1,'抽油机','无') as specificTypeName,t.specificType"
+				+ " decode(t.specificType,1,'"+languageResourceMap.get("pumping")+"','无') as specificTypeName,t.specificType"
 				+ " from tbl_auxiliarydevice t where t.type="+deviceType;
 		String auxiliarySql="select t2.auxiliaryid from "+deviceTableName+" t,tbl_auxiliary2master t2 "
 				+ " where t.id=t2.masterid and t.id="+deviceId;

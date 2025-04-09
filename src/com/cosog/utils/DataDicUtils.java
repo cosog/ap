@@ -115,7 +115,7 @@ public class DataDicUtils {
 					}else if("RU".equalsIgnoreCase(language)){
 						header=d.getName_ru();
 					}
-					
+					header=StringManagerUtils.stringFormat(header);
 					
 					
 					if (sdataArr[0].equals(rootVal)) {

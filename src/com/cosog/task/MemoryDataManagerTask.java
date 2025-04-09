@@ -5009,7 +5009,7 @@ public class MemoryDataManagerTask {
 						String item=obj.getString("FIELD");
 						if(StringManagerUtils.isNotNull(item)){
 							String value=obj.getString("LANGUAGE");
-							value=StringManagerUtils.capitalizeFirstLetter(value);
+							value=StringManagerUtils.stringFormat(value);
 							languageMap.put(item, value);
 						}
 					}
@@ -5021,7 +5021,7 @@ public class MemoryDataManagerTask {
 						String itemName=obj.getString("ITEMNAME");
 						
 						if(!"LANGUAGE".equalsIgnoreCase(itemCode)){
-							itemName=StringManagerUtils.capitalizeFirstLetter(itemName);
+							itemName=StringManagerUtils.stringFormat(itemName);
 						}
 						
 						int itemValue=obj.getIntValue("ITEMVALUE");
@@ -5049,10 +5049,10 @@ public class MemoryDataManagerTask {
 			    		JSONObject obj=arr.getJSONObject(i);
 			    		WorkType workType=new WorkType();
 			    		int resultCode=obj.getIntValue("RESULTCODE"); 
-			    		String resultName=StringManagerUtils.capitalizeFirstLetter(obj.getString("RESULTNAME")); 
-			    		String resultDescription=StringManagerUtils.capitalizeFirstLetter(obj.getString("RESULTDESCRIPTION"));
-			    		String optimizationSuggestion=StringManagerUtils.capitalizeFirstLetter(obj.getString("OPTIMIZATIONSUGGESTION"));
-			    		String remark=StringManagerUtils.capitalizeFirstLetter(obj.getString("REMARK"));
+			    		String resultName=StringManagerUtils.stringFormat(obj.getString("RESULTNAME")); 
+			    		String resultDescription=StringManagerUtils.stringFormat(obj.getString("RESULTDESCRIPTION"));
+			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATIONSUGGESTION"));
+			    		String remark=StringManagerUtils.stringFormat(obj.getString("REMARK"));
 			    		
 			    		
 //			    		String resultName=obj.getString("RESULTNAME"); 

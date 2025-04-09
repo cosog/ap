@@ -4531,4 +4531,43 @@ public class StringManagerUtils {
         }
         return r;
     }
+    
+    public static String capitalizeFirstLower(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        String firstLetter =str.substring(0, 1);
+        String r=str;
+        if(CharacterUtils.isEnglish(firstLetter) || CharacterUtils.isRussian(firstLetter)){
+        	r=str.substring(0, 1).toLowerCase() + str.substring(1);
+        }
+        return r;
+    }
+    
+    public static String stringFormat(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        
+        StringBuffer result = new StringBuffer();
+        String[] words = str.split("\\s+");
+        for (int i=0;i<words.length;i++) {
+            if (!words[i].isEmpty()) {
+            	if(isUpper(words[i])){
+            		result.append(words[i]).append(" ");
+            	}else{
+            		if(i==0){
+                		result.append(capitalizeFirstLetter(words[i])).append(" ");
+                	}else{
+                		result.append(capitalizeFirstLower(words[i])).append(" ");
+                	} 
+            	}
+            }
+        }
+        return result.toString().trim();
+    }
+    
+    public static boolean isUpper(String str){
+    	return Pattern.matches("[A-Z]+", str);
+    }
 }

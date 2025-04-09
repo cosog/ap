@@ -28,6 +28,7 @@ public class MainModuleRecursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			mdName=module.getMdName_ru();
 		}
+		mdName=StringManagerUtils.stringFormat(mdName);
 		if (hasChild(list, module)) {
 			returnStr.append("{\"text\":\"" + mdName + "\"");
 			returnStr.append(",\"expanded\":true");
@@ -71,6 +72,7 @@ public class MainModuleRecursion {
 		}else if("ru".equalsIgnoreCase(language)){
 			mdName=module.getMdName_ru();
 		}
+		mdName=StringManagerUtils.stringFormat(mdName);
 		if (hasChild(list, module)) {
 			returnStr.append("{\"text\":\"" + mdName + "\"");
 			returnStr.append(",\"expanded\":true,");
@@ -139,6 +141,8 @@ public class MainModuleRecursion {
 			mdName=module.getMdName_ru();
 			showName=module.getMdShowname_ru();
 		}
+		mdName=StringManagerUtils.stringFormat(mdName);
+		showName=StringManagerUtils.stringFormat(showName);
 		if (hasChild(list, module)) {
 			returnStr.append("{\"text\":\"" + mdName + "\"");
 			returnStr.append(",\"mdShowname\":\"" + showName + "\"");

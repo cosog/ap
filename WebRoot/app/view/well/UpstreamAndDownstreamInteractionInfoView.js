@@ -708,19 +708,19 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
     		buttons: [{
     			count: 10,
     			type: 'minute',//minute hour week month all
-    			text: '10分钟'
+    			text: '10'+loginUserLanguageResource.minute
     		},{
     			count: 1,
     			type: 'hour',//minute hour week month all
-    			text: '1小时'
+    			text: '1'+loginUserLanguageResource.hour
     		}, {
     			count: 6,
     			type: 'hour',
-    			text: '6小时'
+    			text: '6'+loginUserLanguageResource.hour
     		}, {
     			count: 12,
     			type: 'hour',
-    			text: '12小时'
+    			text: '12'+loginUserLanguageResource.hour
     		}, {
     			type: 'all',
     			text: loginUserLanguageResource.all

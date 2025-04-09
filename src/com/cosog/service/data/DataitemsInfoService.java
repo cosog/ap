@@ -255,6 +255,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						}else if("RU".equalsIgnoreCase(language)){
 							header=dataInfo.getName_ru();
 						}
+						header=StringManagerUtils.stringFormat(header);
 						strBuf.append("{ ");
 						strBuf.append("\"header\":\"" + header + "\",");
 						strBuf.append("\"dataIndex\":\"" + dataInfo.getCode() + "\"");
@@ -316,6 +317,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					}else if("RU".equalsIgnoreCase(language)){
 						header=dataInfo.getName_ru();
 					}
+					
+					header=StringManagerUtils.stringFormat(header);
 					
 					String enameField = dataCode.trim();
 					String dataValueString = dataInfo.getDatavalue();

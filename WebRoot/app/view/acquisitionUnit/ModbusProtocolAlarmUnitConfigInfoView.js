@@ -732,7 +732,9 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 			if(protocolAlarmUnitConfigNumItemsHandsontableHelper==null || protocolAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigNumItemsHandsontableHelper = ProtocolAlarmUnitConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.address+"','"+loginUserLanguageResource.upperLimit+"','"+loginUserLanguageResource.lowerLimit+"','"+loginUserLanguageResource.hystersis+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
+				var columns="[{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
 						+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
 						+"{data:'lowerLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}}," 
@@ -827,7 +829,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,120,80,80,80,80,100,100,100,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -937,7 +939,10 @@ function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,co
 			if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper==null || protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCalNumItemsHandsontableHelper = ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.upperLimit+"','"+loginUserLanguageResource.lowerLimit+"','"+loginUserLanguageResource.hystersis+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','代码']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},{data:'unit'},"
+				var columns="[{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'title'}," 
+						+"{data:'unit'},"
 					 	+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}},"
 						+"{data:'lowerLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCalNumItemsHandsontableHelper);}}," 
 						
@@ -1038,7 +1043,7 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,120,80,80,80,80,100,100,100,80,90,90],
+	        		colWidths: [25,50,120,80,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1329,7 +1334,8 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
+				var columns="[{data:'checked',type:'checkbox'}," 
+					+"{data:'id'}," 
 					+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
 					+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
@@ -1414,7 +1420,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,100,100,100,80,90,90],
+	        		colWidths: [25,50,50,120,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1524,7 +1530,8 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper==null || protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper = ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.switchItemAlarmValue+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'}," 
+				var columns="[{data:'checked',type:'checkbox'}," 
+					+"{data:'id'}," 
 					+"{data:'bitIndex',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
 					+"{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:['开','关']},"
@@ -1618,7 +1625,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,80,100,100,100,80,90,90],
+	        		colWidths: [25,50,50,120,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1729,7 +1736,9 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 			if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCommStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
 				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"','编码','"+loginUserLanguageResource.value+"']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
+				var columns="[{data:'checked',type:'checkbox'}," 
+						+"{data:'id'}," 
+						+"{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}},"
 					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}}," 
 					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
@@ -1824,7 +1833,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,100,80,80,80],
+	        		colWidths: [25,50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -2030,7 +2039,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,100,80,80,80],
+	        		colWidths: [25,50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -2226,7 +2235,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [25,50,80,100,100,100,80,80,80],
+	        		colWidths: [25,50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

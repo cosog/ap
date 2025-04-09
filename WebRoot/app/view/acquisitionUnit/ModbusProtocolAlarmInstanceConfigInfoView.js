@@ -694,7 +694,7 @@ var ProtocolAlarmInstanceConfigNumItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [50,120,80,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -874,7 +874,7 @@ var ProtocolAlarmInstanceConfigCalNumItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [50,120,80,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1052,7 +1052,7 @@ var ProtocolAlarmInstanceConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [50,120,80,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1230,7 +1230,7 @@ var ProtocolAlarmInstanceConfigEnumItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,100,100,80,80,90,90],
+	        		colWidths: [50,120,80,80,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1405,7 +1405,7 @@ var ProtocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,100,100,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1579,7 +1579,7 @@ var ProtocolAlarmInstanceConfigRunStatusItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,100,100,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1754,7 +1754,7 @@ var ProtocolAlarmInstanceConfigCommStatusItemsHandsontableHelper = {
 	        	protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,100,100,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

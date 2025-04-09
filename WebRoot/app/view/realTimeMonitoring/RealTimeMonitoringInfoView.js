@@ -1436,15 +1436,15 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
     		buttons: [{
     			count: 1,
     			type: 'hour',//minute hour week month all
-    			text: '1小时'
+    			text: '1'+loginUserLanguageResource.hour
     		}, {
     			count: 6,
     			type: 'hour',
-    			text: '6小时'
+    			text: '6'+loginUserLanguageResource.hour
     		}, {
     			count: 12,
     			type: 'hour',
-    			text: '12小时'
+    			text: '12'+loginUserLanguageResource.hour
     		}, {
     			type: 'all',
     			text: loginUserLanguageResource.all

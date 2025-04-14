@@ -4984,6 +4984,9 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadLanguageResource(String language){
+		
+		language=language.toLowerCase().replace("zh_cn", "zh_CN");
+		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();
 		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();

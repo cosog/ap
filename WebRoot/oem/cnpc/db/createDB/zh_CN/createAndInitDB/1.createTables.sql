@@ -224,9 +224,9 @@ create table TBL_DIST_NAME
   sysdataid  VARCHAR2(32) not null,
   moduleid   NUMBER(10),
   tenantid   VARCHAR2(50),
-  name_zh_CN      VARCHAR2(50),
-  name_en      VARCHAR2(50),
-  name_ru      VARCHAR2(50),
+  name_zh_CN      VARCHAR2(200),
+  name_en      VARCHAR2(200),
+  name_ru      VARCHAR2(200),
   code      VARCHAR2(50),
   sorts      NUMBER,
   status     NUMBER,
@@ -318,7 +318,8 @@ create table TBL_DATAMAPPING
   protocoltype    NUMBER(1),
   calcolumn       VARCHAR2(128),
   repetitiontimes NUMBER(2),
-  mappingmode     NUMBER(1)
+  mappingmode     NUMBER(1) default 1,
+  calculateenable NUMBER(1) default 0
 )
 tablespace AP_DATA
   storage
@@ -790,7 +791,8 @@ create table TBL_DEVICE
   balanceinfo              VARCHAR2(400),
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999,
-  calculatetype            NUMBER(2) default 0
+  calculatetype            NUMBER(2) default 0,
+  constructiondata         VARCHAR2(4000) default '{}'
 )
 tablespace AP_DATA
   storage
@@ -861,7 +863,8 @@ create table TBL_AUXILIARYDEVICE
   sort         NUMBER(10) not null,
   remark       VARCHAR2(2000),
   manufacturer VARCHAR2(200),
-  specifictype NUMBER(2) default 0
+  specifictype NUMBER(2) default 0,
+  prtf         CLOB
 )
 tablespace AP_DATA
   storage
@@ -1009,7 +1012,8 @@ create table TBL_ACQRAWDATA
   id       NUMBER(10) not null,
   deviceid NUMBER(10) not null,
   acqtime  DATE not null,
-  rawdata  VARCHAR2(4000)
+  rawdata  VARCHAR2(4000),
+  acqgroupdata CLOB
 )
 tablespace AP_DATA
   storage

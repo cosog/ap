@@ -112,7 +112,8 @@
         var oemStaticResourceTimestamp = ${configFile}.ap.oem.staticResourceTimestamp;
         var otherStaticResourceTimestamp = ${configFile}.ap.others.otherStaticResourceTimestamp;
 
-        var helpDocumentUrl=oem.helpDocument;
+        //var helpDocumentUrl=oem.helpDocument;
+        var helpDocumentUrl="${helpDocumentUrl}";
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;
         helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
         

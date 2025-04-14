@@ -10,7 +10,7 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    zoomInButtonIcon: "./oem/feizhou/images/zoomin.svg"        #放大按钮图标
    zoomoutButtonIcon: "./oem/feizhou/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20250219135000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./oem/feizhou/readme/help.html"             #帮助文档
+   helpDocument: "./oem/feizhou/readme"             #帮助文档
    helpDocumentTimestamp: 20250219135000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
    template: oem/feizhou/reportTemplate/reportTemplate.json   #报表模板

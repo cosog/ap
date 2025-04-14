@@ -18,6 +18,7 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.OrgRecursion;
+import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 
@@ -75,9 +76,15 @@ public class PageTurnController extends BaseController {
 		
 		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
 		String viewProjectName="";
+		String helpDocumentUrl=configFile.getAp().getOem().getHelpDocument();
+		
+		if(!helpDocumentUrl.endsWith("/")){
+			helpDocumentUrl+="/";
+		}
 		if(user!=null){
 			loginLanguage=user.getLanguageName();
 		}
+		helpDocumentUrl+="help"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".html";
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
 		if(languageResourceMap.containsKey("projectName")){
@@ -114,6 +121,7 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		session.setAttribute("loadingUI", loadingUI);
+		session.setAttribute("helpDocumentUrl", helpDocumentUrl);
 		return "app/main";
 //		return "forward:/app/main.jsp";
 //		return "redirect:/app/main.jsp";

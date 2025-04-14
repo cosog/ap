@@ -1312,7 +1312,8 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram (
        v_rpm in NUMBER) as
   p_msg varchar2(3000) := 'error';
 begin
-  update tbl_srpacqdata_latest t
+  if v_ResultStatus=1 then
+    update tbl_srpacqdata_latest t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
@@ -1357,7 +1358,8 @@ begin
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.deviceid=v_wellId;
-  commit;
+    commit;
+  end if;
   update tbl_srpacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,

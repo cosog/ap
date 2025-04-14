@@ -41,6 +41,10 @@ public class Config {
 					configFile.getAp().setReport(oemConfigFile.getReport());
 					configFile.getAp().setEmail(oemConfigFile.getEmail());
 					configFile.getAp().setOthers(oemConfigFile.getOthers());
+					
+					String loginLanguage=configFile.getAp().getOthers().getLoginLanguage().toLowerCase().replace("zh_cn", "zh_CN");
+					configFile.getAp().getOthers().setLoginLanguage(loginLanguage);
+					
 					configFile.getAp().setDatabaseMaintenance(oemConfigFile.getDatabaseMaintenance());
 				}
 				

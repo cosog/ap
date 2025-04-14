@@ -423,9 +423,10 @@ and device.calculatetype=1;
 /*==============================================================*/
 /* View: viw_srp_calculatemain                                         */
 /*==============================================================*/
-create or replace force view viw_srp_calculatemain as
+create or replace view viw_srp_calculatemain as
 select t.id as id,
 device.id as deviceid,device.deviceName,
+t.acqtime,
 t.fesdiagramacqtime,t.resultstatus,t.resultcode,
 t.liquidWeightProduction,t.oilWeightProduction,t.waterweightproduction,
 t.liquidVolumetricProduction,t.oilVolumetricProduction,t.watervolumetricproduction,

@@ -195,7 +195,7 @@ public class UserLoginManagerController extends BaseController {
 			if (user != null && user.getUserEnable()==1) {
 				service.setUserLanguage(user);
 				service.setUserRoleRight(user);
-				locale=user.getLanguageName();
+				locale=user.getLanguageName().toLowerCase().replace("zh_cn", "zh_CN");
 				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
 				languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
 				

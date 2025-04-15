@@ -2884,7 +2884,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,languageResourceMap.get("calculate"),languageResourceMap.get("resultName"))));
 			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("optimizationSuggestion"),"OptimizationSuggestion","",1,languageResourceMap.get("calculate"),languageResourceMap.get("optimizationSuggestion"))));
 			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("stroke"),"Stroke","m",2,languageResourceMap.get("calculate"),languageResourceMap.get("stroke"))));
-			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SPM"),"SPM","次/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("SPM"))));
+			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SPM"),"SPM","1/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("SPM"))));
 			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMax"),"FMax","kN",2,languageResourceMap.get("calculate"),languageResourceMap.get("fMax"))));
 			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMin"),"FMin","kN",2,languageResourceMap.get("calculate"),languageResourceMap.get("fMin"))));
 			
@@ -3239,7 +3239,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,languageResourceMap.get("calculate"),languageResourceMap.get("resultName"))));
 			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("optimizationSuggestion"),"OptimizationSuggestion","",1,languageResourceMap.get("calculate"),languageResourceMap.get("optimizationSuggestion"))));
 			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("stroke"),"Stroke","m",2,languageResourceMap.get("calculate"),languageResourceMap.get("stroke"))));
-			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SPM"),"SPM","次/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("SPM"))));
+			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SPM"),"SPM","1/min",2,languageResourceMap.get("calculate"),languageResourceMap.get("SPM"))));
 			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMax"),"FMax","kN",2,languageResourceMap.get("calculate"),languageResourceMap.get("fMax"))));
 			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMin"),"FMin","kN",2,languageResourceMap.get("calculate"),languageResourceMap.get("fMin"))));
 			

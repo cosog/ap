@@ -74,7 +74,7 @@ tablespace AP_DATA
 create table TBL_ROLE
 (
   role_id           NUMBER(10) not null,
-  role_name         VARCHAR2(40) not null,
+  role_name         VARCHAR2(200) not null,
   role_level        NUMBER(3) default 1,
   showlevel         NUMBER(10) default 0,
   role_videokeyedit NUMBER(10) default 0,
@@ -313,7 +313,7 @@ alter table TBL_CODE
 create table TBL_DATAMAPPING
 (
   id              NUMBER(10) not null,
-  name            VARCHAR2(50) not null,
+  name            VARCHAR2(200) not null,
   mappingcolumn   VARCHAR2(128) not null,
   protocoltype    NUMBER(1),
   calcolumn       VARCHAR2(128),
@@ -366,9 +366,9 @@ alter table TBL_RUNSTATUSCONFIG add constraint PK_RUNSTATUSCONFIG primary key (I
 create table TBL_ACQ_UNIT_CONF
 (
   id        NUMBER(10) not null,
-  unit_code VARCHAR2(50) not null,
-  unit_name VARCHAR2(50),
-  protocol  VARCHAR2(50),
+  unit_code VARCHAR2(200) not null,
+  unit_name VARCHAR2(200),
+  protocol  VARCHAR2(200),
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -416,8 +416,8 @@ create table TBL_ACQ_ITEM2GROUP_CONF
 (
   id                      NUMBER(10) not null,
   itemid                  NUMBER(10),
-  itemname                NVARCHAR2(100),
-  itemcode                VARCHAR2(100),
+  itemname                NVARCHAR2(200),
+  itemcode                VARCHAR2(200),
   groupid                 NUMBER(10) not null,
   bitindex                NUMBER(3),
   dailytotalcalculate     NUMBER(1) default 0,
@@ -463,9 +463,9 @@ alter table TBL_ACQ_GROUP2UNIT_CONF add constraint PK_ACQ_UNIT_GROUP primary key
 create table TBL_ALARM_UNIT_CONF
 (
   id            NUMBER(10) not null,
-  unit_code     VARCHAR2(50) not null,
-  unit_name     VARCHAR2(50),
-  protocol      VARCHAR2(50),
+  unit_code     VARCHAR2(200) not null,
+  unit_name     VARCHAR2(200),
+  protocol      VARCHAR2(200),
   remark        VARCHAR2(2000),
   calculatetype NUMBER(2) default 0
 )
@@ -489,8 +489,8 @@ create table TBL_ALARM_ITEM2UNIT_CONF
   id            NUMBER(10) not null,
   unitid        NUMBER(10) not null,
   itemid        NUMBER(10),
-  itemname      VARCHAR2(100),
-  itemcode      VARCHAR2(100),
+  itemname      VARCHAR2(200),
+  itemcode      VARCHAR2(200),
   itemaddr      NUMBER(10),
   value         NUMBER(10,3),
   upperlimit    NUMBER(10,3),
@@ -522,9 +522,9 @@ alter table TBL_ALARM_ITEM2UNIT_CONF add constraint PK_ALARM_ITEM2UNIT_CONF prim
 create table TBL_DISPLAY_UNIT_CONF
 (
   id        NUMBER(10) not null,
-  unit_code VARCHAR2(50) not null,
-  unit_name VARCHAR2(50),
-  protocol  VARCHAR2(50),
+  unit_code     VARCHAR2(200) not null,
+  unit_name     VARCHAR2(200),
+  protocol      VARCHAR2(200),
   acqunitid NUMBER(10),
   calculatetype NUMBER(2) default 0,
   remark    VARCHAR2(2000)
@@ -547,8 +547,8 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
 (
   id                NUMBER(10) not null,
   itemid            NUMBER(10),
-  itemname          VARCHAR2(100),
-  itemcode          VARCHAR2(100),
+  itemname          VARCHAR2(200),
+  itemcode          VARCHAR2(200),
   unitid            NUMBER(10) not null,
   realtimesort      NUMBER(10),
   realtimecolor     VARCHAR2(50),
@@ -586,12 +586,12 @@ alter table TBL_DISPLAY_ITEMS2UNIT_CONF add constraint PK_DISPLAY_ITEMS2UNIT_CON
 create table TBL_REPORT_UNIT_CONF
 (
   id                            NUMBER(10) not null,
-  unit_code                     VARCHAR2(50) not null,
-  unit_name                     VARCHAR2(50),
-  singlewellrangereporttemplate VARCHAR2(50),
-  productionreporttemplate      VARCHAR2(50),
+  unit_code                     VARCHAR2(200) not null,
+  unit_name                     VARCHAR2(200),
+  singlewellrangereporttemplate VARCHAR2(200),
+  productionreporttemplate      VARCHAR2(200),
   sort                          NUMBER(10),
-  singlewelldailyreporttemplate VARCHAR2(50),
+  singlewelldailyreporttemplate VARCHAR2(200),
   calculatetype                 NUMBER(2) default 0
 )
 tablespace AP_DATA
@@ -612,8 +612,8 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
 (
   id              NUMBER(10) not null,
   itemid          NUMBER(10),
-  itemname        VARCHAR2(100),
-  itemcode        VARCHAR2(100),
+  itemname        VARCHAR2(200),
+  itemcode        VARCHAR2(200),
   unitid          NUMBER(10),
   sort            NUMBER(10),
   showlevel       NUMBER(10),
@@ -645,17 +645,17 @@ alter table TBL_REPORT_ITEMS2UNIT_CONF add constraint PK_REPORT_ITEMS2UNIT_CONF 
 create table TBL_PROTOCOLINSTANCE
 (
   id                       NUMBER(10) not null,
-  name                     VARCHAR2(50),
-  code                     VARCHAR2(50),
-  acqprotocoltype          VARCHAR2(50),
-  ctrlprotocoltype         VARCHAR2(50),
+  name                     VARCHAR2(200),
+  code                     VARCHAR2(200),
+  acqprotocoltype          VARCHAR2(200),
+  ctrlprotocoltype         VARCHAR2(200),
   signinprefixsuffixhex    NUMBER(1) default 1,
-  signinprefix             VARCHAR2(50),
-  signinsuffix             VARCHAR2(50),
+  signinprefix             VARCHAR2(200),
+  signinsuffix             VARCHAR2(200),
   signinidhex              NUMBER(1) default 1,
   heartbeatprefixsuffixhex NUMBER(1) default 1,
-  heartbeatprefix          VARCHAR2(50),
-  heartbeatsuffix          VARCHAR2(50),
+  heartbeatprefix          VARCHAR2(200),
+  heartbeatsuffix          VARCHAR2(200),
   packetsendinterval       NUMBER(10) default 100,
   unitid                   NUMBER(10),
   sort                     NUMBER(10)
@@ -677,8 +677,8 @@ alter table TBL_PROTOCOLINSTANCE  add constraint PK_PROTOCOLINSTANCE primary key
 create table TBL_PROTOCOLALARMINSTANCE
 (
   id          NUMBER(10) not null,
-  name        VARCHAR2(50),
-  code        VARCHAR2(50),
+  name        VARCHAR2(200),
+  code        VARCHAR2(200),
   alarmunitid NUMBER(10),
   sort        NUMBER(10)
 )
@@ -699,8 +699,8 @@ alter table TBL_PROTOCOLALARMINSTANCE add constraint PK_PROTOCOLALARMINSTANCE pr
 create table TBL_PROTOCOLDISPLAYINSTANCE
 (
   id            NUMBER(10) not null,
-  name          VARCHAR2(50),
-  code          VARCHAR2(50),
+  name          VARCHAR2(200),
+  code          VARCHAR2(200),
   displayunitid NUMBER(10),
   sort          NUMBER(10)
 )
@@ -721,8 +721,8 @@ alter table TBL_PROTOCOLDISPLAYINSTANCE add constraint PK_PROTOCOLDISPLAYINSTANC
 create table TBL_PROTOCOLREPORTINSTANCE
 (
   id     NUMBER(10) not null,
-  name   VARCHAR2(50),
-  code   VARCHAR2(50),
+  name   VARCHAR2(200),
+  code   VARCHAR2(200),
   unitid NUMBER(10),
   sort   NUMBER(10)
 )
@@ -743,10 +743,10 @@ alter table TBL_PROTOCOLREPORTINSTANCE add constraint PK_PROTOCOLREPORTINSTANCE 
 create table TBL_PROTOCOLSMSINSTANCE
 (
   id               NUMBER(10) not null,
-  name             VARCHAR2(50),
-  code             VARCHAR2(50),
-  acqprotocoltype  VARCHAR2(50),
-  ctrlprotocoltype VARCHAR2(50),
+  name             VARCHAR2(200),
+  code             VARCHAR2(200),
+  acqprotocoltype  VARCHAR2(200),
+  ctrlprotocoltype VARCHAR2(200),
   sort             NUMBER(10)
 )
 tablespace AP_DATA

@@ -610,7 +610,7 @@ var ProductionDailyReportHelper = {
 		        					td.style.fontSize = productionDailyReportHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(productionDailyReportHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = productionDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = productionDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(productionDailyReportHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = productionDailyReportHelper.templateData.header[i].tdStyle.height;

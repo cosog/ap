@@ -2405,6 +2405,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		rawData.append("[");
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			
 			int columnCoumnt=template.getColumnWidths_zh_CN().size();
 			if("zh_CN".equalsIgnoreCase(language)){
 				columnCoumnt=template.getColumnWidths_zh_CN().size();
@@ -2456,8 +2458,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				List<?> list=this.findCallSql(sql);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
+					String itemName=obj[0]+"";
+					String itemCode=obj[1]+"";
+					if(itemCode.toUpperCase().startsWith("C_")){
+						if(loadProtocolMappingColumnMap.containsKey(itemCode)){
+							itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
+						}
+					}else{
+						if(StringManagerUtils.stringToInteger(reportType)==2){
+							itemName=MemoryDataManagerTask.getTimingTotalCalItemNameByCode(itemName,itemCode,language);
+						}else{
+							itemName=MemoryDataManagerTask.getTotalCalItemNameByCode(itemName,itemCode,language);
+						}
+					}
+					itemsList.add(itemName);
+					itemsCodeList.add(itemCode);
 					itemsSortList.add(obj[2]+"");
 					itemsShowLevelList.add(obj[3]+"");
 					
@@ -2672,6 +2687,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			int columnCoumnt=template.getColumnWidths_zh_CN().size();
 			if("zh_CN".equalsIgnoreCase(language)){
 				columnCoumnt=template.getColumnWidths_zh_CN().size();
@@ -2722,8 +2738,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				List<?> list=this.findCallSql(sql);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
+					
+					String itemName=obj[0]+"";
+					String itemCode=obj[1]+"";
+					if(itemCode.toUpperCase().startsWith("C_")){
+						if(loadProtocolMappingColumnMap.containsKey(itemCode)){
+							itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
+						}
+					}else{
+						if(StringManagerUtils.stringToInteger(reportType)==2){
+							itemName=MemoryDataManagerTask.getTimingTotalCalItemNameByCode(itemName,itemCode,language);
+						}else{
+							itemName=MemoryDataManagerTask.getTotalCalItemNameByCode(itemName,itemCode,language);
+						}
+					}
+					
+					
+					itemsList.add(itemName);
+					itemsCodeList.add(itemCode);
 					itemsSortList.add(obj[2]+"");
 					itemsShowLevelList.add(obj[3]+"");
 					

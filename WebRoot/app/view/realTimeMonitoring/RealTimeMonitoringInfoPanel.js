@@ -841,7 +841,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	td.style.fontWeight = 'bold';
 		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
+//		        td.style.fontFamily = 'SimSun';
 		        td.style.height = '40px';
 	        }
 	        
@@ -852,7 +852,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	            	Handsontable.renderers.TextRenderer.apply(this, arguments);
 //		        	td.style.fontWeight = 'bold';
 			        td.style.fontSize = '20px';
-			        td.style.fontFamily = 'SimSun';
+//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '40px';
 	            }
 	            if (row%2==1&&row>0) {
@@ -861,7 +861,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	            if (col%2==0) {
 //	            	td.style.fontWeight = 'bold';
                 }else{
-                	td.style.fontFamily = 'SimHei';
+//                	td.style.fontFamily = 'SimHei';
                 }
 	            
 	            td.style.whiteSpace='nowrap'; //文本不换行
@@ -894,7 +894,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
         				if(row==row2 && col==col2 ){
         					if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>0){
         						td.style.fontWeight = 'bold';
-       			             	td.style.fontFamily = 'SimHei';
+//       			             	td.style.fontFamily = 'SimHei';
         					}
    			             	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==0){
    			             		if(AlarmShowStyle.Data.Normal.Opacity!=0){
@@ -960,21 +960,6 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
-//	                		var record=deviceRealTimeMonitoringDataHandsontableHelper.sourceData[coords.row];
-//	                		var rawValue='';
-//	                		if(coords.col==0){
-//	                			rawValue=record.name1;
-//	                		}else if(coords.col==1){
-//	                			rawValue=record.value1;
-//	                		}else if(coords.col==2){
-//	                			rawValue=record.name2;
-//	                		}else if(coords.col==3){
-//	                			rawValue=record.value2;
-//	                		}else if(coords.col==4){
-//	                			rawValue=record.name3;
-//	                		}else if(coords.col==5){
-//	                			rawValue=record.value3;
-//	                		}
 	                		var rawValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

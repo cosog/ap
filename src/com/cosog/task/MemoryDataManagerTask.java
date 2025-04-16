@@ -3387,17 +3387,10 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),23, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff2_pcp"),"PumpEff2","",2,languageResourceMap.get("calculate"),languageResourceMap.get("pumpEff2_pcp"))));
 			jedis.zadd(key.getBytes(),24, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff"),"PumpEff","",2,languageResourceMap.get("calculate"),languageResourceMap.get("pumpEff"))));
 			
-//			jedis.zadd(key.getBytes(),25, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,languageResourceMap.get("calculate"),"日用电量,累计用电量计算所得")));
-//			jedis.zadd(key.getBytes(),26, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2,languageResourceMap.get("calculate"),"累计用电量,当日最新采集数据")));
-//			
-//			jedis.zadd(key.getBytes(),27, SerializeObjectUnils.serialize(new CalItem("累计产气量","TotalGasVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),"累计产气量,当日最新采集数据")));
-//			jedis.zadd(key.getBytes(),28, SerializeObjectUnils.serialize(new CalItem("累计产水量","TotalWaterVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),"累计产水量,当日最新采集数据")));
-			
 			jedis.zadd(key.getBytes(),29, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction"),"RealtimeLiquidVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),languageResourceMap.get("liquidVolumetricProduction"))));
 			jedis.zadd(key.getBytes(),30, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction"),"RealtimeOilVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),languageResourceMap.get("oilVolumetricProduction"))));
 			jedis.zadd(key.getBytes(),31, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction"),"RealtimeWaterVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),languageResourceMap.get("waterVolumetricProduction"))));
-//			jedis.zadd(key.getBytes(),32, SerializeObjectUnils.serialize(new CalItem("瞬时产气量","RealtimeGasVolumetricProduction","m^3",2,languageResourceMap.get("calculate"),"瞬时产气量")));
-			
+
 			jedis.zadd(key.getBytes(),33, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction"),"RealtimeLiquidWeightProduction","t/d",2,languageResourceMap.get("calculate"),languageResourceMap.get("liquidWeightProduction"))));
 			jedis.zadd(key.getBytes(),34, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction"),"RealtimeOilWeightProduction","t/d",2,languageResourceMap.get("calculate"),languageResourceMap.get("oilWeightProduction"))));
 			jedis.zadd(key.getBytes(),35, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction"),"RealtimeWaterWeightProduction","t/d",2,languageResourceMap.get("calculate"),languageResourceMap.get("waterWeightProduction"))));

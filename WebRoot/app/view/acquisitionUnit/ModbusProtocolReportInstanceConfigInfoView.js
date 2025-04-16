@@ -565,7 +565,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 		        					td.style.fontSize = reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = reportInstanceSingleWellRangeReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
@@ -594,7 +594,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	                td.style.fontWeight = 'bold';
 					td.style.fontSize = '13px';
 					td.style.color = 'rgb(0, 0, 51)';
-					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
+//					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
 	            }
 	        }
 			
@@ -603,7 +603,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 	            if (row < 1) {
 	                td.style.fontWeight = 'bold';
 			        td.style.fontSize = '25px';
-			        td.style.fontFamily = 'SimSun';
+//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '50px';   
 			    }      
 	        }
@@ -614,7 +614,7 @@ var ReportInstanceSingleWellRangeReportTemplateHandsontableHelper = {
 		         if(row < 3){
 	                 td.style.fontWeight = 'bold';
 			         td.style.fontSize = '5px';
-			         td.style.fontFamily = 'SimHei';
+//			         td.style.fontFamily = 'SimHei';
 	            }      
 	        }
 			
@@ -1011,7 +1011,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 		        					td.style.fontSize = reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = reportInstanceSingleWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
@@ -1040,7 +1040,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	                td.style.fontWeight = 'bold';
 					td.style.fontSize = '13px';
 					td.style.color = 'rgb(0, 0, 51)';
-					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
+//					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
 	            }
 	        }
 			
@@ -1049,7 +1049,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 	            if (row < 1) {
 	                td.style.fontWeight = 'bold';
 			        td.style.fontSize = '25px';
-			        td.style.fontFamily = 'SimSun';
+//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '50px';   
 			    }      
 	        }
@@ -1060,7 +1060,7 @@ var ReportInstanceSingleWellDailyReportTemplateHandsontableHelper = {
 		         if(row < 3){
 	                 td.style.fontWeight = 'bold';
 			         td.style.fontSize = '5px';
-			         td.style.fontFamily = 'SimHei';
+//			         td.style.fontFamily = 'SimHei';
 	            }      
 	        }
 			
@@ -1917,7 +1917,7 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 		        					td.style.fontSize = reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = reportInstanceProductionTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
@@ -1946,7 +1946,7 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 	                td.style.fontWeight = 'bold';
 					td.style.fontSize = '13px';
 					td.style.color = 'rgb(0, 0, 51)';
-					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
+//					td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
 	            }
 	        }
 			
@@ -1955,7 +1955,7 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 	            if (row < 1) {
 	                td.style.fontWeight = 'bold';
 			        td.style.fontSize = '25px';
-			        td.style.fontFamily = 'SimSun';
+//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '50px';   
 			    }      
 	        }
@@ -1966,7 +1966,7 @@ var ReportInstanceProductionTemplateHandsontableHelper = {
 		         if(row < 3){
 	                 td.style.fontWeight = 'bold';
 			         td.style.fontSize = '5px';
-			         td.style.fontFamily = 'SimHei';
+//			         td.style.fontFamily = 'SimHei';
 	            }      
 	        }
 			

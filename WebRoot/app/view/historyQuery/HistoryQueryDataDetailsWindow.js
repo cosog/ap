@@ -167,7 +167,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	td.style.fontWeight = 'bold';
 		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
+//		        td.style.fontFamily = 'SimSun';
 		        td.style.height = '40px';
 	        }
 	        
@@ -186,7 +186,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	            	Handsontable.renderers.TextRenderer.apply(this, arguments);
 //		        	td.style.fontWeight = 'bold';
 			        td.style.fontSize = '20px';
-			        td.style.fontFamily = 'SimSun';
+//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '40px';
 	            }
 	            if (row%2==1&&row>0) {
@@ -195,7 +195,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	            if (col%2==0) {
 //	            	td.style.fontWeight = 'bold';
                 }else{
-                	td.style.fontFamily = 'SimHei';
+//                	td.style.fontFamily = 'SimHei';
                 }
 	            for(var i=0;i<deviceHistoryQueryDataHandsontableHelper.CellInfo.length;i++){
 	            	if( isNotVal(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].historyColor) ){
@@ -221,7 +221,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
         				if(row==row2 && col==col2 ){
         					if(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].alarmLevel>0){
         						td.style.fontWeight = 'bold';
-       			             	td.style.fontFamily = 'SimHei';
+//       			             	td.style.fontFamily = 'SimHei';
         					}
    			             	if(deviceHistoryQueryDataHandsontableHelper.CellInfo[i].alarmLevel==0){
 			             		if(AlarmShowStyle.Data.Normal.Opacity!=0){

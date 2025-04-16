@@ -488,7 +488,7 @@ var ProtocolImportOverlayHandsontableHelper = {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	td.style.fontWeight = 'bold';
 		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
+//		        td.style.fontFamily = 'SimSun';
 		        td.style.height = '40px';
 	        }
 	        
@@ -585,7 +585,7 @@ var ProtocolImportErrorHandsontableHelper = {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	td.style.fontWeight = 'bold';
 		        td.style.fontSize = '20px';
-		        td.style.fontFamily = 'SimSun';
+//		        td.style.fontFamily = 'SimSun';
 		        td.style.height = '40px';
 	        }
 	        

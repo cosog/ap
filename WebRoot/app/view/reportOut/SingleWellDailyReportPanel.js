@@ -606,7 +606,7 @@ var SingleWellRangeReportHelper = {
 		        					td.style.fontSize = singleWellRangeReportHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(singleWellRangeReportHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = singleWellRangeReportHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = singleWellRangeReportHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(singleWellRangeReportHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = singleWellRangeReportHelper.templateData.header[i].tdStyle.height;
@@ -1030,7 +1030,7 @@ var SingleWellDailyReportHelper = {
 		        					td.style.fontSize = singleWellDailyReportHelper.templateData.header[i].tdStyle.fontSize;
 		        				}
 		        				if(isNotVal(singleWellDailyReportHelper.templateData.header[i].tdStyle.fontFamily)){
-		        					td.style.fontFamily = singleWellDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
+//		        					td.style.fontFamily = singleWellDailyReportHelper.templateData.header[i].tdStyle.fontFamily;
 		        				}
 		        				if(isNotVal(singleWellDailyReportHelper.templateData.header[i].tdStyle.height)){
 		        					td.style.height = singleWellDailyReportHelper.templateData.header[i].tdStyle.height;

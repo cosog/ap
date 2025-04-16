@@ -4544,7 +4544,7 @@ public class StringManagerUtils {
         return r;
     }
     
-    public static String stringFormat(String str) {
+    public static String stringFormat(String str) {//首字母大写，后面单词首字母小写，缩写除外
         if (str == null || str.length() == 0) {
             return str;
         }
@@ -4553,7 +4553,7 @@ public class StringManagerUtils {
         String[] words = str.split("\\s+");
         for (int i=0;i<words.length;i++) {
             if (!words[i].isEmpty()) {
-            	if(isUpper(words[i])){
+            	if(isAllUpperCase(words[i])){
             		result.append(words[i]).append(" ");
             	}else{
             		if(i==0){
@@ -4567,7 +4567,37 @@ public class StringManagerUtils {
         return result.toString().trim();
     }
     
+    public static String stringFormat2(String str) {//首字母小写，缩写除外
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        
+        StringBuffer result = new StringBuffer();
+        String[] words = str.split("\\s+");
+        for (int i=0;i<words.length;i++) {
+            if (!words[i].isEmpty()) {
+            	if(isAllUpperCase(words[i])){
+            		result.append(words[i]).append(" ");
+            	}else{
+            		result.append(capitalizeFirstLower(words[i])).append(" ");
+            	}
+            }
+        }
+        return result.toString().trim();
+    }
+    
     public static boolean isUpper(String str){
-    	return Pattern.matches("[A-Z]+", str);
+//    	return Pattern.matches("[A-Z]+", str);
+    	return Pattern.matches("[А-ЯA-Z]*", str);
+    }
+    
+    public static boolean isAllUpperCase(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (!Character.isUpperCase(ch)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

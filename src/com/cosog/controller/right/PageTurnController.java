@@ -35,6 +35,12 @@ public class PageTurnController extends BaseController {
 		@SuppressWarnings("static-access")
 		ConfigFile configFile=Config.getInstance().configFile;
 		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
+		
+		String loginCSS=configFile.getAp().getOem().getLoginCSS();
+		if(!loginCSS.endsWith("/")){
+			loginCSS+="/";
+		}
+		
 		String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(loginLanguage);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
 		String viewProjectName="";
@@ -42,13 +48,15 @@ public class PageTurnController extends BaseController {
 			viewProjectName=languageResourceMap.get("projectName");
 		}
 		
+		loginCSS+="login"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".css";
+		
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
 		session.setAttribute("viewProjectName", viewProjectName);
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
-		session.setAttribute("loginCSS", configFile.getAp().getOem().getLoginCSS());
+		session.setAttribute("loginCSS", loginCSS);
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
@@ -77,14 +85,21 @@ public class PageTurnController extends BaseController {
 		String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
 		String viewProjectName="";
 		String helpDocumentUrl=configFile.getAp().getOem().getHelpDocument();
+		String bannerCSS=configFile.getAp().getOem().getBannerCSS();
 		
 		if(!helpDocumentUrl.endsWith("/")){
 			helpDocumentUrl+="/";
 		}
+		if(!bannerCSS.endsWith("/")){
+			bannerCSS+="/";
+		}
+		
+		
 		if(user!=null){
 			loginLanguage=user.getLanguageName();
 		}
 		helpDocumentUrl+="help"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".html";
+		bannerCSS+="banner"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".css";
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginLanguage);
 		if(languageResourceMap.containsKey("projectName")){
@@ -115,7 +130,7 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
 		session.setAttribute("viewProjectName", viewProjectName);
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
-		session.setAttribute("bannerCSS", configFile.getAp().getOem().getBannerCSS());
+		session.setAttribute("bannerCSS", bannerCSS);
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		session.setAttribute("showVideo", configFile.getAp().getOthers().getShowVideo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());

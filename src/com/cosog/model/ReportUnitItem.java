@@ -33,7 +33,7 @@ public class ReportUnitItem implements java.io.Serializable {
 	private Integer totalType;
 	private Integer prec;
 	
-	private String dataSource;
+	private Integer dataSource;
 
 	public ReportUnitItem() {
 		super();
@@ -43,7 +43,8 @@ public class ReportUnitItem implements java.io.Serializable {
 	/** full constructor */
 	public ReportUnitItem(Integer id, Integer itemId, String itemName, String itemCode, Integer unitId, String matrix,
 			Integer showLevel, Integer sort, 
-			String reportCurveConf, Integer dataType, Integer reportType, Integer totalType,  
+			String reportCurveConf, Integer dataType, Integer dataSource,
+			Integer reportType, Integer totalType,  
 			Integer prec) {
 		super();
 		this.id = id;
@@ -58,6 +59,7 @@ public class ReportUnitItem implements java.io.Serializable {
 		this.dataType = dataType;
 		this.reportType = reportType;
 		this.totalType = totalType;
+		this.dataSource = dataSource;
 		this.prec=prec;
 	}
 
@@ -207,11 +209,11 @@ public class ReportUnitItem implements java.io.Serializable {
 	}
 
 	@Column(name = "dataSource")
-	public String getDataSource() {
+	public Integer getDataSource() {
 		return dataSource;
 	}
 
-	public void setDataSource(String dataSource) {
+	public void setDataSource(Integer dataSource) {
 		this.dataSource = dataSource;
 	}
 }

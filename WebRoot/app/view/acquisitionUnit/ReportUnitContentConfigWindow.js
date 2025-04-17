@@ -1053,7 +1053,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	    }
 };
 
-var grantReportUnitContentItemsPermission = function (unitId,reportType,calculateType,sort,itemsConfigData) {
+function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,itemsConfigData) {
     var addUrl = context + '/acquisitionUnitManagerController/grantReportUnitContentItemsPermission';
     // 添加条件
     var saveData={};
@@ -1088,22 +1088,21 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
-        			
-        			if(item.dataSource==loginUserLanguageResource.acquisition){
-        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
-                			item.totalType=1;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
-                			item.totalType=2;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
-                			item.totalType=3;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
-                			item.totalType=4;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
-                			item.totalType=5;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
-                			item.totalType=6;
-                		}
-        			}
+
+    				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
+            			item.totalType=1;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
+            			item.totalType=2;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
+            			item.totalType=3;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
+            			item.totalType=4;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
+            			item.totalType=5;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
+            			item.totalType=6;
+            		}
+    			
         		}
         	}else if(reportType==2){
         		item.itemName = itemsConfigData[index][2];
@@ -1128,21 +1127,21 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
         			
-        			if(item.dataSource==loginUserLanguageResource.acquisition){
-        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
-                			item.totalType=1;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
-                			item.totalType=2;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
-                			item.totalType=3;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
-                			item.totalType=4;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
-                			item.totalType=5;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
-                			item.totalType=6;
-                		}
-        			}
+
+    				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
+            			item.totalType=1;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
+            			item.totalType=2;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
+            			item.totalType=3;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
+            			item.totalType=4;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
+            			item.totalType=5;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
+            			item.totalType=6;
+            		}
+    			
         		}
         	}else if(reportType==1){
         		item.itemName = itemsConfigData[index][2];
@@ -1183,21 +1182,21 @@ var grantReportUnitContentItemsPermission = function (unitId,reportType,calculat
         		
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
-        			if(item.dataSource==loginUserLanguageResource.acquisition){
-        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
-                			item.totalType=1;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
-                			item.totalType=2;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
-                			item.totalType=3;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
-                			item.totalType=4;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
-                			item.totalType=5;
-                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
-                			item.totalType=6;
-                		}
-        			}
+
+    				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
+            			item.totalType=1;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
+            			item.totalType=2;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
+            			item.totalType=3;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
+            			item.totalType=4;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
+            			item.totalType=5;
+            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
+            			item.totalType=6;
+            		}
+    			
         		}
         	}
         	saveData.itemList.push(item);

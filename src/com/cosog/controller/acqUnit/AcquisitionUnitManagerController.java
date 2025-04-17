@@ -1191,7 +1191,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				
 				for (int i = 0; i < totalCalItemsToReportUnitSaveData.getItemList().size(); i++) {
 					boolean save=true;
-					if("计算".equalsIgnoreCase(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource())){
+					if(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("DATASOURCE",totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource()+"", language))==1){
 						if(!StringManagerUtils.existOrNot(calItemName, totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName(), false)){
 							save=false;
 						}
@@ -1219,7 +1219,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
 						
-						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
+						reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("DATASOURCE",totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource()+"", language)));
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
 						this.reportUnitItemManagerService.grantReportItemsPermission(reportUnitItem);
 					}
@@ -1304,7 +1304,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						reportUnitItem.setItemName(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemName());
 						reportUnitItem.setItemCode(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemCode());
 						
-						reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+						
 						
 						reportUnitItem.setSort( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemSort()):null);
 						reportUnitItem.setShowLevel( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getItemShowLevel()):null);
@@ -1319,8 +1319,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 						reportUnitItem.setCurveStatType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getCurveStatType()):null);
 						
 						reportUnitItem.setDataType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataType()):null);
+						reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("DATASOURCE",totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource()+"", language)));
 						
-						reportUnitItem.setDataSource(totalCalItemsToReportUnitSaveData.getItemList().get(i).getDataSource());
+						if(reportUnitItem.getDataSource()==0){
+							reportUnitItem.setTotalType( (totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()!=null && StringManagerUtils.isNumber(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()) )?StringManagerUtils.stringToInteger(totalCalItemsToReportUnitSaveData.getItemList().get(i).getTotalType()):null);
+						}else{
+							reportUnitItem.setTotalType(null);
+						}
+						
 						reportUnitItem.setMatrix(totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix()!=null?totalCalItemsToReportUnitSaveData.getItemList().get(i).getMatrix():"");
 						
 						this.displayUnitItemManagerService.deleteCurrentReportUnitOwnItems(unitId,reportType,reportUnitItem.getSort()+"");

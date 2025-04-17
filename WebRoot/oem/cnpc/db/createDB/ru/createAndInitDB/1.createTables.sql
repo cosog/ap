@@ -1101,7 +1101,7 @@ create table TBL_DAILYTOTALCALCULATE_LATEST
   itemcolumn VARCHAR2(4000),
   totalvalue NUMBER(12,3),
   todayvalue NUMBER(12,3),
-  itemname   VARCHAR2(50)
+  itemname   VARCHAR2(200)
 )
 tablespace AP_DATA
   storage
@@ -1127,7 +1127,7 @@ create table TBL_DAILYTOTALCALCULATE_HIST
   itemcolumn VARCHAR2(4000),
   totalvalue NUMBER(12,3),
   todayvalue NUMBER(12,3),
-  itemname   VARCHAR2(50)
+  itemname   VARCHAR2(200)
 )
 tablespace AP_DATA
   storage

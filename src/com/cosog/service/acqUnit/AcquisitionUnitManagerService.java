@@ -1411,7 +1411,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"historyCurveConf\":"+historyCurveConf+","
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 												+ "\"type\":0,"
-												+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+												+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
 												+ "\"realtimeOverview\":"+realtimeOverview+","
 												+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 												+ "\"realtimeData\":"+realtimeData+","
@@ -1491,7 +1491,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"historyCurveConf\":"+historyCurveConf+","
 									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 									+ "\"type\":0,"
-									+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+									+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
 									+ "\"realtimeOverview\":"+realtimeOverview+","
 									+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 									+ "\"realtimeData\":"+realtimeData+","
@@ -1553,7 +1553,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,totalCode,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+				CalItem calItem=new CalItem(name,totalCode,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
 				calItemList.add(calItem);
 			}
 		}
@@ -1673,7 +1673,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			String dataSource=languageResourceMap.get("calculate");
+
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(index)+","
 					+ "\"title\":\""+calItem.getName()+"\","
@@ -1690,9 +1690,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"historyCurveConf\":"+historyCurveConf+","
 					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 					+ "\"code\":\""+calItem.getCode()+"\","
-//					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
 					+ "\"type\":1,"
-					+ "\"dataSource\":\""+dataSource+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
 					+ "\"realtimeOverview\":"+realtimeOverview+","
 					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 					+ "\"realtimeData\":"+realtimeData+","
@@ -1701,7 +1700,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"historyData\":"+historyData+""
 					+ "},");
 			index++;
-		
 		}
 		
 		//input
@@ -1857,7 +1855,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 					+ "\"code\":\""+calItem.getCode()+"\","
 					+ "\"type\":3,"
-					+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
 					+ "\"realtimeOverview\":"+realtimeOverview+","
 					+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 					+ "\"realtimeData\":"+realtimeData+","
@@ -2095,7 +2093,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+				CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
 				calItemList.add(calItem);
 			}
 		}
@@ -2204,7 +2202,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"historyCurveConf\":"+historyCurveConf+","
 					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 					+ "\"code\":\""+calItem.getCode()+"\","
-					+ "\"dataSource\":\""+calItem.getDataSource()+"\""
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\""
 					+ "},");
 			index++;
 		
@@ -2487,7 +2485,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					curveStatTypeList.add(obj[7]+"");
 					itemsPrecList.add(obj[8]+"");
 					itemsTotalTypeList.add(obj[9]+"");
-					dataSourceList.add(obj[10]+"");
+					dataSourceList.add(MemoryDataManagerTask.getCodeName("DATASOURCE",obj[10]+"", language));
 					dataTypeList.add(obj[11]+"");
 				}
 			}
@@ -2590,7 +2588,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 						}
 						
-						dataSource=dataSourceList.get(k);
+						dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE",dataSourceList.get(k)+"", language);
 						totalType=itemsTotalTypeList.get(k);
 						dataType=dataTypeList.get(k);
 						break;
@@ -2741,6 +2739,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 					String itemName=obj[0]+"";
 					String itemCode=obj[1]+"";
+					
 					if(itemCode.toUpperCase().startsWith("C_")){
 						if(loadProtocolMappingColumnMap.containsKey(itemCode)){
 							itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
@@ -2770,7 +2769,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					curveStatTypeList.add(obj[7]+"");
 					itemsPrecList.add(obj[8]+"");
 					itemsTotalTypeList.add(obj[9]+"");
-					dataSourceList.add(obj[10]+"");
+					dataSourceList.add(MemoryDataManagerTask.getCodeName("DATASOURCE",obj[10]+"", language));
 					dataTypeList.add(obj[11]+"");
 				}
 			}
@@ -3081,7 +3080,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"title\":\""+calItem.getName()+"\","
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"totalType\":\""+totalType+"\","
-						+ "\"dataSource\":\""+calItem.getDataSource()+"\","
+						+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"sort\":\""+sort+"\","
 						+ "\"prec\":\""+prec+"\","
@@ -3180,7 +3179,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"title\":\""+dataMappingColumn.getName()+"\","
 					+ "\"unit\":\"\","
 					+ "\"totalType\":\""+totalType+"\","
-					+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"sort\":\""+sortStr+"\","
 					+ "\"prec\":\""+prec+"\","
@@ -3317,7 +3316,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
-					+ "\"dataSource\":\""+obj[9]+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",obj[9]+"", language)+"\","
 					+ "\"totalType\":\""+obj[10]+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
@@ -3450,7 +3449,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+obj[0]+""+"\","
 					+ "\"unit\":\""+unit+"\","
-					+ "\"dataSource\":\""+obj[9]+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",obj[9]+"", language)+"\","
 					+ "\"totalType\":\""+obj[10]+"\","
 					+ "\"showLevel\":\""+obj[3]+""+"\","
 					+ "\"sort\":\""+obj[2]+""+"\","
@@ -3775,7 +3774,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 												+ "\"type\":0,"
-												+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+												+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
 												+ "\"realtimeOverview\":"+realtimeOverview+","
 												+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 												+ "\"realtimeData\":"+realtimeData+","
@@ -3825,7 +3824,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 									+ "\"type\":0,"
-									+ "\"dataSource\":\""+languageResourceMap.get("acquisition")+"\","
+									+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
 									+ "\"realtimeOverview\":"+realtimeOverview+","
 									+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 									+ "\"realtimeData\":"+realtimeData+","
@@ -3884,7 +3883,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 						}
 					}
-					CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+					CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
 					calItemList.add(calItem);
 				}
 			}
@@ -3966,9 +3965,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						boolean historyOverview=false;
 						String  historyOverviewSort="";
 						boolean historyData=false;
-						
-						String dataSource=languageResourceMap.get("calculate");
-						
 
 						for(int k=0;k<itemsList.size();k++){
 							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
@@ -4006,7 +4002,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 								+ "\"type\":1,"
-								+ "\"dataSource\":\""+dataSource+"\","
+								+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
 								+ "\"realtimeOverview\":"+realtimeOverview+","
 								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 								+ "\"realtimeData\":"+realtimeData+","
@@ -4156,7 +4152,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
 								+ "\"type\":3,"
-								+ "\"dataSource\":\""+languageResourceMap.get("input")+"\","
+								+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
 								+ "\"realtimeOverview\":"+realtimeOverview+","
 								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
 								+ "\"realtimeData\":"+realtimeData+","
@@ -4360,7 +4356,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
-				CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+				CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
 				calItemList.add(calItem);
 			}
 		}
@@ -4453,7 +4449,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"historyBgColor\":\""+historyBgColor+"\","
 							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
 							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-							+ "\"dataSource\":\""+calItem.getDataSource()+"\""
+							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\""
 							+ "},");
 					index++;
 				}
@@ -11896,7 +11892,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				CalItem item=MemoryDataManagerTask.getSingleCalItem(displayItemList.get(i).getItemName(), calItemList);
 				if(item!=null){
 					unit=item.getUnit();
-					dataSource=item.getDataSource();
+					dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE",item.getDataSource()+"",language);
 				}
 			}else if(displayItemList.get(i).getType()==3){
 				CalItem item=MemoryDataManagerTask.getSingleCalItem(displayItemList.get(i).getItemName(), inputItemList);
@@ -12322,7 +12318,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 					reportUnitItem.setDataType( (exportReportUnitData.getItemList().get(i).getDataType()!=null && StringManagerUtils.isNumber(exportReportUnitData.getItemList().get(i).getDataType()) )?StringManagerUtils.stringToInteger(exportReportUnitData.getItemList().get(i).getDataType()):null);
 					
-					reportUnitItem.setDataSource(exportReportUnitData.getItemList().get(i).getDataSource());
+					reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("DATASOURCE",exportReportUnitData.getItemList().get(i).getDataSource()+"", user.getLanguageName())));
 					reportUnitItem.setMatrix(exportReportUnitData.getItemList().get(i).getMatrix()!=null?exportReportUnitData.getItemList().get(i).getMatrix():"");
 					this.grantReportItemsPermission(reportUnitItem);
 				} catch (Exception e) {
@@ -12935,7 +12931,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										}
 									}
 								}
-								CalItem calItem=new CalItem(name,code,unit,2,languageResourceMap.get("configuration"),itemName+languageResourceMap.get("dailyCalculate"));
+								CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
 								calItemList.add(calItem);
 							}
 							

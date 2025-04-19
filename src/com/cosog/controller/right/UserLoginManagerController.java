@@ -197,6 +197,7 @@ public class UserLoginManagerController extends BaseController {
 				service.setUserRoleRight(user);
 				locale=user.getLanguageName().toLowerCase().replace("zh_cn", "zh_CN");
 				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
+				String languageResourceFirstLower=MemoryDataManagerTask.getLanguageResourceStr_FirstLetterLowercase(locale);
 				languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
 				
 				user.setPicUrl(picUrl);// 通过session传到前台
@@ -217,6 +218,7 @@ public class UserLoginManagerController extends BaseController {
 				user.setDeviceTypeIds(tabInfoManagerService.queryTabs(user));
 				user.setLoginIp(clientIp);
 				user.setLanguageResource(languageResourceStr);
+				user.setLanguageResourceFirstLower(languageResourceFirstLower);
 				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				
 				session.setAttribute("userLogin", user);

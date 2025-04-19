@@ -342,12 +342,6 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-//                	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
-//                	if(!r2.test(startTime_Second)){
-//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-//                		Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').focus(true, 100);
-//                		return;
-//                	}
                 	var startTime_Second=0;
                 	
                 	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
@@ -362,12 +356,6 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-//                	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
-//                	if(!r2.test(endTime_Second)){
-//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-//                		Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').focus(true, 100);
-//                		return;
-//                	}
                 	var endTime_Second=0;
                 	
                 	var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
@@ -395,12 +383,6 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-//                	var startTime_Second=Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').getValue();
-//                	if(!r2.test(startTime_Second)){
-//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-//                		Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').focus(true, 100);
-//                		return;
-//                	}
                 	var startTime_Second=0;
                 	
                 	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
@@ -415,12 +397,6 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
-//                	var endTime_Second=Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').getValue();
-//                	if(!r2.test(endTime_Second)){
-//                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-//                		Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').focus(true, 100);
-//                		return;
-//                	}
                 	var endTime_Second=0;
                 	
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();

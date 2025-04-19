@@ -63,6 +63,15 @@
         	loginUserLanguageResource={};
         }
         
+        
+        var loginUserLanguageResourceFirstLower='${userLogin.languageResourceFirstLower}';
+        if(isNotVal(loginUserLanguageResourceFirstLower)){
+        	loginUserLanguageResourceFirstLower=JSON.parse(loginUserLanguageResourceFirstLower);
+        }else{
+        	loginUserLanguageResourceFirstLower={};
+        }
+        
+        
         var oem = ${configFile}.ap.oem;
 
         var bannerLogoImg = oem.logo;

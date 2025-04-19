@@ -244,10 +244,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		roleName = selected[0].data.roleName;
                         		Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                         		
-                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】"+loginUserLanguageResource.moduleLicense);
+                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.moduleLicense);
                         		clkLoadAjaxFn();
                         		
-                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】"+loginUserLanguageResource.deviceTypeLicense);
+                        		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.deviceTypeLicense);
                         		clkLoadTabAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();

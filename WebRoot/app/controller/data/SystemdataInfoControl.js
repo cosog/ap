@@ -141,7 +141,7 @@ function savesystemdataInfoSubmit() {
                     reFreshg("SystemdataInfoGridPanelId");
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 } else {
-                    Ext.Msg.msg('info', "<font color=red>" + action.result.error + "。</font> ");
+                    Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>" + action.result.error + "。</font> ");
                 }
 
             },
@@ -314,7 +314,7 @@ function savetoSysDataItems() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
                 }
 
             },
@@ -372,7 +372,7 @@ function editsystemdataInfoUpdata() {
                     reFreshg("SystemdataInfoGridPanelId");
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 } else {
-                    Ext.Msg.alert('info', "<font color=red>" + action.result.error + "。</font> ");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + action.result.error + "。</font> ");
                 }
             },
             failure: function () {

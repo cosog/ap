@@ -34,9 +34,9 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             	var expectedTorqueChartTitle=loginUserLanguageResource.torqueCurve;
             	if(Math.abs(deltaRadius)>0){
             		if(deltaRadius>0){
-            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardOutside+' '+deltaRadius+"cm "+expectedTorqueChartTitle;
+            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardOutside+' '+deltaRadius+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
             		}else{
-            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardInside+' '+Math.abs(deltaRadius)+"cm "+expectedTorqueChartTitle;
+            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardInside+' '+Math.abs(deltaRadius)+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
             		}
             	}else {
             		expectedTorqueChartTitle=loginUserLanguageResource.expectTorqueCurve;

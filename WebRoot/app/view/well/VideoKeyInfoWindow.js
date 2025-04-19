@@ -61,7 +61,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
                         title: loginUserLanguageResource.addVideoKey
                     });
                     window.show();
-                    Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml("密钥将添加到【<font color=red>"+selectedOrgName+"</font>】下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+                    Ext.getCmp("videoKeyWinOrgLabel_Id").setHtml(loginUserLanguageResource.targetOrg+":【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResourceFirstLower.pleaseConfirm+"<br/>&nbsp;");
                     Ext.getCmp("videoKeyOrg_Id").setValue(selectedOrgId);
                     return false;
     			}

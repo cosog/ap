@@ -35,7 +35,7 @@ body {
 
 #bannerTitle{
 	color: tomato;
-	font: bold 23px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+	font: bold 23px/50% "Times New Roman", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:10px;
 	text-shadow: 1px 1px 0px white;
 }
@@ -58,7 +58,7 @@ body {
 }
 
 #banner_exit_text{
-	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+	font: bold 13px/50% "Times New Roman", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }
@@ -73,7 +73,7 @@ body {
 }
 
 #banner_help_text{
-	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+	font: bold 13px/50% "Times New Roman", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }

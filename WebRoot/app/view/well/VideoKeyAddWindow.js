@@ -52,7 +52,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【该名称已存在:"+t.value+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+t.value+" "+loginUserLanguageResource.alreadyExist+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }

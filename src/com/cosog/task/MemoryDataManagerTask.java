@@ -4885,6 +4885,28 @@ public class MemoryDataManagerTask {
 		return result_json.toString();
 	}
 	
+	
+	public static String getLanguageResourceStr_FirstLetterLowercase(String language){
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageMap=getLanguageResource(language);
+		result_json.append("{");
+		if(languageMap!=null){
+			Iterator<Map.Entry<String, String>> iterator = languageMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+			    Map.Entry<String, String> entry = iterator.next();
+			    String key = entry.getKey();
+			    String value=StringManagerUtils.stringFormat2(entry.getValue());
+			    result_json.append("\""+key+"\":\""+value+"\",");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("}");
+		return result_json.toString();
+	}
+	
+	
 	public static String getLanguageResourceItem(String language,String code){
 		String value="";
 		Map<String,String> languageMap=getLanguageResource(language);
@@ -5062,12 +5084,6 @@ public class MemoryDataManagerTask {
 			    		String resultDescription=StringManagerUtils.stringFormat(obj.getString("RESULTDESCRIPTION"));
 			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATIONSUGGESTION"));
 			    		String remark=StringManagerUtils.stringFormat(obj.getString("REMARK"));
-			    		
-			    		
-//			    		String resultName=obj.getString("RESULTNAME"); 
-//			    		String resultDescription=obj.getString("RESULTDESCRIPTION");
-//			    		String optimizationSuggestion=obj.getString("OPTIMIZATIONSUGGESTION");
-//			    		String remark=obj.getString("REMARK");
 			    		
 			    		workType.setResultCode(resultCode);
 						workType.setResultName(resultName);

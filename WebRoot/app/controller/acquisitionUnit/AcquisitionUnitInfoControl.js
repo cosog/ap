@@ -36,7 +36,7 @@ function addModbusProtocolAddrMappingConfigData() {
 	    });
 	    window.show();
 	    
-	    Ext.getCmp("protocolWinTabLabel_Id").setHtml(loginUserLanguageResource.owningDeviceType+":<font color=red>"+selectedDeviceTypeName+"</font>,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+	    Ext.getCmp("protocolWinTabLabel_Id").setHtml(loginUserLanguageResource.owningDeviceType+":<font color=red>"+selectedDeviceTypeName+"</font>,"+loginUserLanguageResourceFirstLower.pleaseConfirm+"<br/>&nbsp;");
 	    Ext.getCmp("protocolWinTabLabel_Id").show();
 	    
 	    Ext.getCmp('modbusProtocolDeviceType_Id').setValue(selectedDeviceTypeId);
@@ -420,7 +420,7 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert(loginUserLanguageResource.Infotip, "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.Infotip, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;
@@ -460,7 +460,7 @@ showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert(loginUserLanguageResource.Infotip, "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.Infotip, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;
@@ -545,11 +545,11 @@ var grantAcquisitionItemsPermission = function (groupType) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', loginUserLanguageResource.saveFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     
@@ -606,15 +606,15 @@ var grantAcquisitionGroupsPermission = function () {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控组' + "。");
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控组安排失败' + "。</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + '采控组安排失败' + "。</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + '无选中的采控单元!' + '！</font>');
+        Ext.Msg.alert(loginUserLanguageResource.tip, '<font color=blue>' + loginUserLanguageResource.checkOne + '！</font>');
     }
     return false;
 };

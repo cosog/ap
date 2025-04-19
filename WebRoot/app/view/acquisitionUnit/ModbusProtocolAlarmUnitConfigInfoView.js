@@ -106,7 +106,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportAlarmUnitWindow");
                         window.show();
-        				Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").setHtml("单元将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+        				Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").setHtml(loginUserLanguageResource.targetType+":【<font color=red>"+selectedDeviceTypeName+"</font>】,"+loginUserLanguageResourceFirstLower.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAlarmUnitWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportAlarmUnitWinDeviceType_Id').setValue(selectedDeviceTypeId);

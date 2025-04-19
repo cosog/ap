@@ -213,7 +213,7 @@ clkLoadAjaxFn = function () {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;
@@ -277,7 +277,7 @@ clkLoadTabAjaxFn = function () {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;

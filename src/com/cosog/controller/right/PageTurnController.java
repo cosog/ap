@@ -110,7 +110,6 @@ public class PageTurnController extends BaseController {
 			loadingUI=languageResourceMap.get("loadingTheUI");
 		}
 		
-		
 		String tabInfoJson = "";
 		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
 		if (list != null) {

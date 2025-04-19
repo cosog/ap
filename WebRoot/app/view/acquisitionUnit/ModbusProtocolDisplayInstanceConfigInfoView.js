@@ -80,7 +80,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportDisplayInstanceWindow");
                         window.show();
-        				Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+        				Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").setHtml(loginUserLanguageResource.targetType+":【<font color=red>"+selectedDeviceTypeName+"</font>】,"+loginUserLanguageResourceFirstLower.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportDisplayInstanceWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportDisplayInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);

@@ -548,7 +548,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          	}else{
 //                         		showDeviceName+='井';
                          	}
-                         	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResource.calculateMaintainingConfirm+"</font>"
+                         	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResourceFirstLower.calculateMaintainingConfirm+"</font>"
                          	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
                                  if (btn == "yes") {
                                  	Ext.Ajax.request({

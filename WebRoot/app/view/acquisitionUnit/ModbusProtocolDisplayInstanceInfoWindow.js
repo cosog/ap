@@ -62,7 +62,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                 },
             	select: function (picker,record,eOpts) {
                 	if(record.data.classes==1){
-                		Ext.Msg.alert('info', "<font color=red>"+loginUserLanguageResource.selectDisplayUnit+"</font>");
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.selectDisplayUnit+"</font>");
                 	}else{
                 		Ext.getCmp("modbusInstanceDisplayUnit_Id").setValue(record.data.id);
                 	}

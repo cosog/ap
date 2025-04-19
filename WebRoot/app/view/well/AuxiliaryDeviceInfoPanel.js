@@ -664,7 +664,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         if (rdata.success) {
                         	var saveInfo=loginUserLanguageResource.saveSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
+                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResourceFirstLower.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}

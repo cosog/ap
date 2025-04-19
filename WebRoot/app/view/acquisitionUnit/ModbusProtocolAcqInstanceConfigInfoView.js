@@ -77,7 +77,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         				}
         				var window = Ext.create("AP.view.acquisitionUnit.ImportAcqInstanceWindow");
                         window.show();
-        				Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").setHtml("实例将导入到【<font color=red>"+selectedDeviceTypeName+"</font>】标签下,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
+        				Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").setHtml(loginUserLanguageResource.targetType+":【<font color=red>"+selectedDeviceTypeName+"</font>】,"+loginUserLanguageResourceFirstLower.pleaseConfirm+"<br/>&nbsp;");
 //        			    Ext.getCmp("ImportAcqInstanceWinTabLabel_Id").show();
         			    
         			    Ext.getCmp('ImportAcqInstanceWinDeviceType_Id').setValue(selectedDeviceTypeId);

@@ -66,6 +66,8 @@ public class User implements java.io.Serializable {
 	private String deviceTypeIds;
 	
 	private String languageResource;
+	
+	private String languageResourceFirstLower;
 
 	/**
 	 * 组织节点orgCode集合
@@ -431,5 +433,14 @@ public class User implements java.io.Serializable {
 
 	public void setLanguageResource(String languageResource) {
 		this.languageResource = languageResource;
+	}
+
+	@Transient
+	public String getLanguageResourceFirstLower() {
+		return languageResourceFirstLower;
+	}
+
+	public void setLanguageResourceFirstLower(String languageResourceFirstLower) {
+		this.languageResourceFirstLower = languageResourceFirstLower;
 	}
 }

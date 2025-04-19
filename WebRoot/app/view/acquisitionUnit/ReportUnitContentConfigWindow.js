@@ -1228,11 +1228,11 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
                 	}
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
                 }
             },
             failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
             }
         });
     }else{

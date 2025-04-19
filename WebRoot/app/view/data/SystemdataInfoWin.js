@@ -48,7 +48,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
             listeners: {
                 select: function (picker,record,eOpts) {
                 	if(!record.isLeaf()){
-                		Ext.Msg.alert('info', "<font color=red>"+loginUserLanguageResource.selectLeafNode+"</font>");
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.selectLeafNode+"</font>");
                 		Ext.getCmp("systemdataModule_Id1").setValue(null);
                 		Ext.getCmp("sysmodule_Id").setValue(null);
                 	}else{

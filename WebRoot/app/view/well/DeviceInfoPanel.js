@@ -3441,10 +3441,6 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 
 function deviceProductionDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -3918,7 +3914,7 @@ function deviceProductionDataDownlink(){
 		}
 		
 		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-			all_loading.show();
+			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
 	            method: "POST",
@@ -3932,7 +3928,8 @@ function deviceProductionDataDownlink(){
 	            	applicationScenarios:applicationScenarios
 	            },
 	            success: function (response, action) {
-	            	all_loading.hide();
+	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	            	
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -3967,7 +3964,7 @@ function deviceProductionDataDownlink(){
 	                } 
 	            },
 	            failure: function () {
-	            	all_loading.hide();
+	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });
@@ -3981,10 +3978,6 @@ function deviceProductionDataDownlink(){
 
 function devicePumpingUnitDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('PumpingInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4010,7 +4003,7 @@ function devicePumpingUnitDataDownlink(){
         	}
         }
 
-		all_loading.show();
+        Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/devicePumpingUnitDataDownlink',
             method: "POST",
@@ -4022,7 +4015,7 @@ function devicePumpingUnitDataDownlink(){
             	balanceInfo:JSON.stringify(balanceInfo)
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4102,7 +4095,7 @@ function devicePumpingUnitDataDownlink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4113,10 +4106,6 @@ function devicePumpingUnitDataDownlink(){
 
 function deviceFSDiagramConstructionDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceFSDiagramConstructionInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4200,7 +4189,7 @@ function deviceFSDiagramConstructionDataDownlink(){
 			}
 		}
 
-		all_loading.show();
+		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataDownlink',
             method: "POST",
@@ -4209,7 +4198,7 @@ function deviceFSDiagramConstructionDataDownlink(){
             	data: JSON.stringify(FSDiagramConstructionData)
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4243,7 +4232,7 @@ function deviceFSDiagramConstructionDataDownlink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4255,10 +4244,6 @@ function deviceFSDiagramConstructionDataDownlink(){
 
 function deviceSystemParameterDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceSystemParameterConfigurationInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4269,7 +4254,7 @@ function deviceSystemParameterDataDownlink(){
 			applicationScenarios=1;
 		}
 
-		all_loading.show();
+		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceSystemParameterDataDownlink',
             method: "POST",
@@ -4277,7 +4262,7 @@ function deviceSystemParameterDataDownlink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4310,7 +4295,7 @@ function deviceSystemParameterDataDownlink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4321,10 +4306,6 @@ function deviceSystemParameterDataDownlink(){
 
 function deviceProductionDataUplink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceCalculateDataInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4337,7 +4318,7 @@ function deviceProductionDataUplink(){
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 		
 		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-			all_loading.show();
+			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceProductionDataUplink',
 	            method: "POST",
@@ -4347,7 +4328,7 @@ function deviceProductionDataUplink(){
 	            	deviceCalculateDataType: deviceCalculateDataType
 	            },
 	            success: function (response, action) {
-	            	all_loading.hide();
+	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -4381,7 +4362,7 @@ function deviceProductionDataUplink(){
 	                } 
 	            },
 	            failure: function () {
-	            	all_loading.hide();
+	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });
@@ -4395,16 +4376,12 @@ function deviceProductionDataUplink(){
 
 function devicePumpingUnitDataUplink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('PumpingInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
 		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
 
-		all_loading.show();
+		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/devicePumpingUnitDataUplink',
             method: "POST",
@@ -4412,7 +4389,7 @@ function devicePumpingUnitDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4533,7 +4510,7 @@ function devicePumpingUnitDataUplink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4545,10 +4522,6 @@ function devicePumpingUnitDataUplink(){
 
 function deviceFSDiagramConstructionDataUplink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceFSDiagramConstructionInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4559,7 +4532,7 @@ function deviceFSDiagramConstructionDataUplink(){
 			applicationScenarios=1;
 		}
 
-		all_loading.show();
+		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataUplink',
             method: "POST",
@@ -4567,7 +4540,7 @@ function deviceFSDiagramConstructionDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4601,7 +4574,7 @@ function deviceFSDiagramConstructionDataUplink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4612,10 +4585,6 @@ function deviceFSDiagramConstructionDataUplink(){
 
 function deviceSystemParameterDataUplink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
-	var all_loading = new Ext.LoadMask({
-        msg: loginUserLanguageResource.commandSending+'...',
-        target: Ext.getCmp('DeviceSystemParameterConfigurationInfoPanel_Id')
-    });
 	if(deviceInfoHandsontableData.length>0){
 		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
@@ -4626,7 +4595,7 @@ function deviceSystemParameterDataUplink(){
 			applicationScenarios=1;
 		}
 
-		all_loading.show();
+		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceSystemParameterDataUplink',
             method: "POST",
@@ -4634,7 +4603,7 @@ function deviceSystemParameterDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4667,7 +4636,7 @@ function deviceSystemParameterDataUplink(){
                 } 
             },
             failure: function () {
-            	all_loading.hide();
+            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });

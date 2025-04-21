@@ -11,6 +11,7 @@ public class ModbusProtocolAlarmUnitSaveData {
 	public String oldUnitName;
 	public String protocol;
 	public int calculateType;
+	public String sort;
 	public String remark;
 	
 	public String alarmItemName;
@@ -238,5 +239,13 @@ public class ModbusProtocolAlarmUnitSaveData {
 
 	public void setCalculateType(int calculateType) {
 		this.calculateType = calculateType;
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
 	}
 }

@@ -440,11 +440,17 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 		item1.value=data.text;
 		root.push(item1);
 		
-		var item2={};
-		item2.id=2;
-		item2.title=loginUserLanguageResource.remark;
-		item2.value=data.remark;
-		root.push(item2);
+		var item2 = {};
+        item2.id = 2;
+        item2.title = loginUserLanguageResource.sortNum;
+        item2.value = data.sort;
+        root.push(item2);
+		
+		var item3={};
+		item3.id=3;
+		item3.title=loginUserLanguageResource.remark;
+		item3.value=data.remark;
+		root.push(item3);
 	}else if(data.classes==3){
 		var item1={};
 		item1.id=1;
@@ -567,7 +573,11 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 		                    		this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
 			                    	}
-			                    }
+			                    } else if (visualColIndex === 2 && visualRowIndex === 1) {
+                                    this.validator = function (val, callback) {
+                                        return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+                                    }
+                                }
 		                    	if (visualColIndex === 2) {
 	                    			cellProperties.renderer = protocolConfigAcqUnitPropertiesHandsontableHelper.addCellStyle;
 	                    		}
@@ -655,21 +665,22 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			protocolProperties.classes=selectedItem.data.classes;
 			protocolProperties.id=selectedItem.data.id;
 			protocolProperties.unitCode=selectedItem.data.code;
-			protocolProperties.unitName=propertiesData[0][2];
-			protocolProperties.remark=propertiesData[1][2];
+			protocolProperties.unitName=isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
+			protocolProperties.sort=isNotVal(propertiesData[1][2])?propertiesData[1][2]:"";
+			protocolProperties.remark=isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
 		}else if(selectedItem.data.classes==3){//选中的是采控单元组
 			protocolProperties.classes=selectedItem.data.classes;
 			protocolProperties.id=selectedItem.data.id;
 			protocolProperties.groupCode=selectedItem.data.code;
-			protocolProperties.groupName=propertiesData[0][2];
-			protocolProperties.typeName=propertiesData[1][2];
+			protocolProperties.groupName=isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
+			protocolProperties.typeName=isNotVal(propertiesData[1][2])?propertiesData[1][2]:"";
 			
 			if(selectedItem.data.type==0){//采集组
-				protocolProperties.groupTimingInterval=propertiesData[2][2];
-				protocolProperties.groupSavingInterval=propertiesData[3][2];
-				protocolProperties.remark=propertiesData[4][2];
+				protocolProperties.groupTimingInterval=isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
+				protocolProperties.groupSavingInterval=isNotVal(propertiesData[3][2])?propertiesData[3][2]:"";
+				protocolProperties.remark=isNotVal(propertiesData[4][2])?propertiesData[4][2]:"";
 			}else if(selectedItem.data.type==1){//控制组
-				protocolProperties.remark=propertiesData[2][2];
+				protocolProperties.remark=isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
 			}
 		}
 		if(selectedItem.data.classes==2){//保存采控单元
@@ -677,9 +688,7 @@ function SaveModbusProtocolAcqUnitConfigTreeData(){
 			acqUnitSaveData.updatelist=[];
 			acqUnitSaveData.updatelist.push(protocolProperties);
 			saveAcquisitionUnitConfigData(acqUnitSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.deviceType);
-		}
-		
-		if(selectedItem.data.classes==3){//选中的是采控单元组
+		}else if(selectedItem.data.classes==3){//选中的是采控单元组
 			var acqGroupSaveData={};
 			acqGroupSaveData.updatelist=[];
 			acqGroupSaveData.updatelist.push(protocolProperties);

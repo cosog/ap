@@ -2838,7 +2838,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 							String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
 							modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
-							modbusProtocolConfig.getProtocol().get(i).setSort(modbusDriverSaveData.getSort());
+							modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.isNumber(modbusDriverSaveData.getSort())?StringManagerUtils.stringToInteger(modbusDriverSaveData.getSort()):0);
 							
 							List<String> delItemList=new ArrayList<String>();
 							
@@ -3050,9 +3050,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(acquisitionUnitHandsontableChangeData.getUpdatelist()!=null){
 				for(int i=0;i<acquisitionUnitHandsontableChangeData.getUpdatelist().size();i++){
 					AcquisitionUnit acquisitionUnit=new AcquisitionUnit();
+					
+					String sort=acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getSort();
 					acquisitionUnit.setId(StringManagerUtils.stringToInteger(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getId()));
 					acquisitionUnit.setUnitCode(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitCode());
 					acquisitionUnit.setUnitName(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+					
+					acquisitionUnit.setSort(StringManagerUtils.isNumber(sort)?StringManagerUtils.stringToInteger(sort):null);
+					
+					
 					acquisitionUnit.setRemark(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					acquisitionUnit.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
@@ -3213,10 +3219,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(displayUnitHandsontableChangeData.getUpdatelist()!=null){
 				for(int i=0;i<displayUnitHandsontableChangeData.getUpdatelist().size();i++){
 					DisplayUnit displayUnit=new DisplayUnit();
+					String sort=displayUnitHandsontableChangeData.getUpdatelist().get(i).getSort();
 					displayUnit.setId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getId()));
 					displayUnit.setUnitCode(displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitCode());
 					displayUnit.setUnitName(displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
 					displayUnit.setCalculateType(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getCalculateType()));
+					displayUnit.setSort(StringManagerUtils.isNumber(sort)?StringManagerUtils.stringToInteger(sort):null);
 					displayUnit.setRemark(displayUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					displayUnit.setProtocol(protocol);
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));
@@ -3405,11 +3413,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getUnitName())){
 				AlarmUnit alarmUnit=new AlarmUnit();
+				String sort=modbusProtocolAlarmUnitSaveData.getSort();
 				alarmUnit.setId(modbusProtocolAlarmUnitSaveData.getId());
 				alarmUnit.setUnitCode(modbusProtocolAlarmUnitSaveData.getUnitCode());
 				alarmUnit.setUnitName(modbusProtocolAlarmUnitSaveData.getUnitName());
 				alarmUnit.setProtocol(modbusProtocolAlarmUnitSaveData.getProtocol());
 				alarmUnit.setCalculateType(modbusProtocolAlarmUnitSaveData.getCalculateType());
+				alarmUnit.setSort(StringManagerUtils.isNumber(sort)?StringManagerUtils.stringToInteger(sort):null);
 				alarmUnit.setRemark(modbusProtocolAlarmUnitSaveData.getRemark());
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);

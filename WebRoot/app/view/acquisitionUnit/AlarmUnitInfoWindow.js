@@ -133,6 +133,15 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
                 anchor: '100%',
                 value: ''
                 
+            },{
+            	xtype: 'numberfield',
+            	id: "alarmUnitSort_Id",
+                name: 'alarmUnit.sort',
+                fieldLabel: loginUserLanguageResource.sortNum,
+                allowBlank: true,
+                minValue: 1,
+                anchor: '100%',
+                msgTarget: 'side'
             }, {
             	id: 'alarmUnitRemark_Id',
             	name: "alarmUnit.remark",

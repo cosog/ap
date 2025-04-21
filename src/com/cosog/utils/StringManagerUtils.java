@@ -1855,12 +1855,6 @@ public class StringManagerUtils {
         }else{
         	return false;
         }
-//    	try {
-//            Integer.parseInt(value);
-//            return true;
-//        } catch (NumberFormatException e) {
-//            return false;
-//        }
     }
 
     /**

@@ -42,6 +42,8 @@ public class DisplayUnitHandsontableChangeData {
 	    private String acqUnitName;
 	    
 	    private String calculateType;
+	    
+	    private String sort;
 
 	    private String remark;
 
@@ -86,6 +88,12 @@ public class DisplayUnitHandsontableChangeData {
 		}
 		public void setCalculateType(String calculateType) {
 			this.calculateType = calculateType;
+		}
+		public String getSort() {
+			return sort;
+		}
+		public void setSort(String sort) {
+			this.sort = sort;
 		}
 	}
 }

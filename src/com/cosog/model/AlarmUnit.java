@@ -26,6 +26,7 @@ public class AlarmUnit implements java.io.Serializable {
 	private String unitName;
 	private String protocol;
 	private Integer calculateType;
+	private Integer sort;
 	private String remark;
 
 	// Constructors
@@ -35,10 +36,16 @@ public class AlarmUnit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AlarmUnit(String unitCode, String unitName,String remark) {
+	public AlarmUnit(Integer id, String unitCode, String unitName, String protocol, Integer calculateType, Integer sort,
+			String remark) {
+		super();
+		this.id = id;
 		this.unitCode = unitCode;
 		this.unitName = unitName;
-		this.remark=remark;
+		this.protocol = protocol;
+		this.calculateType = calculateType;
+		this.sort = sort;
+		this.remark = remark;
 	}
 
 	@Id
@@ -99,6 +106,15 @@ public class AlarmUnit implements java.io.Serializable {
 
 	public void setCalculateType(Integer calculateType) {
 		this.calculateType = calculateType;
+	}
+
+	@Column(name = "sort")
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 
 }

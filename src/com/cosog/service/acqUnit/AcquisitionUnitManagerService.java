@@ -5160,7 +5160,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.sort "
 					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -5168,7 +5168,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}else{
 				unitSql+=" and 1=2 ";
 			}
-			unitSql+= " order by t.protocol,t.id";
+			unitSql+= " order by t.sort,t.protocol,t.id";
 			String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
 					+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
 					+ " where t.unitid=t2.id and t.groupid=t3.id "
@@ -5189,20 +5189,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						String unitId=unitObj[0]+"";
+						String protocol=unitObj[4]+"";
+						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(protocol)){
 							tree_json.append("{\"classes\":2,");
-							tree_json.append("\"id\":"+unitObj[0]+",");
+//							tree_json.append("\"checked\":false,");
+							tree_json.append("\"id\":"+unitId+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
 							tree_json.append("\"text\":\""+unitObj[2]+"\",");
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+							tree_json.append("\"protocol\":\""+protocol+"\",");
+							tree_json.append("\"sort\":\""+unitObj[5]+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"expanded\": true,");
 							tree_json.append("\"children\": [");
 							for(int k=0;k<groupList.size();k++){
 								Object[] groupObj = (Object[]) groupList.get(k);
-								if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
+								String groupUnitId=groupObj[8]+"";
+								if(unitId.equalsIgnoreCase(groupUnitId)){
 									tree_json.append("{\"classes\":3,");
+//									tree_json.append("\"checked\":false,");
 									tree_json.append("\"id\":"+groupObj[0]+",");
 									tree_json.append("\"code\":\""+groupObj[1]+"\",");
 									tree_json.append("\"text\":\""+groupObj[2]+"\",");
@@ -5212,7 +5218,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"protocol\":\""+groupObj[6]+"\",");
 									tree_json.append("\"type\":"+groupObj[7]+",");
 									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
-									tree_json.append("\"unitId\":"+groupObj[groupObj.length-1]+",");
+									tree_json.append("\"unitId\":"+groupUnitId+",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
 									tree_json.append("},");
@@ -5351,7 +5357,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
 					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
+					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+					+ " t.sort"
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -5359,7 +5366,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}else{
 				unitSql+=" and 1=2 ";
 			}
-			unitSql+= " order by t.protocol,t.id";
+			unitSql+= " order by t.sort,t.protocol,t.id";
 			List<?> unitList=this.findCallSql(unitSql);
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
@@ -5386,6 +5393,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
 							tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
 							tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
+							tree_json.append("\"sort\":\""+unitObj[9]+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");
@@ -5912,7 +5920,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,"
 					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
+					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+					+ " t.sort"
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
 					+ " where t.protocol=t2.name ";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
@@ -5920,7 +5929,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}else{
 				unitSql+=" and 1=2 ";
 			}
-			unitSql+= " order by t.protocol,t.unit_code";
+			unitSql+= " order by t.sort, t.protocol,t.unit_code";
 			List<?> unitList=this.findCallSql(unitSql);
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
@@ -5948,6 +5957,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"protocol\":\""+protocol+"\",");
 							tree_json.append("\"calculateType\":\""+unitObj[5]+"\",");
 							tree_json.append("\"calculateTypeName\":\""+unitObj[6]+"\",");
+							tree_json.append("\"sort\":\""+unitObj[7]+"\",");
 							tree_json.append("\"iconCls\": \"acqGroup\",");
 							tree_json.append("\"leaf\": true");
 							tree_json.append("},");

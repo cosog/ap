@@ -242,7 +242,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0){
             			selectedRow=i;
-            			break;
+            			if(store.getAt(i).data.classes==3){
+            				break;
+            			}
             		}
             	}
             }

@@ -132,6 +132,15 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
                 hidden:true,
                 anchor: '100%',
                 value: ''
+            },{
+            	xtype: 'numberfield',
+            	id: "acquisitionUnitSort_Id",
+                name: 'acquisitionUnit.sort',
+                fieldLabel: loginUserLanguageResource.sortNum,
+                allowBlank: true,
+                minValue: 1,
+                anchor: '100%',
+                msgTarget: 'side'
             }, {
             	id: 'acquisitionUnitRemark_Id',
             	name: "acquisitionUnit.remark",

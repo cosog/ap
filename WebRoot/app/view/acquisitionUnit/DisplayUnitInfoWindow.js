@@ -229,6 +229,15 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 						
 					}
 				}
+            },{
+            	xtype: 'numberfield',
+            	id: "displayUnitSort_Id",
+                name: 'displayUnit.sort',
+                fieldLabel: loginUserLanguageResource.sortNum,
+                allowBlank: true,
+                minValue: 1,
+                anchor: '100%',
+                msgTarget: 'side'
             }, {
             	id: 'displayUnitRemark_Id',
             	name: "displayUnit.remark",

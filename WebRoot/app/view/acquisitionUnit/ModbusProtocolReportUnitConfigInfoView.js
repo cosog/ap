@@ -2135,7 +2135,7 @@ function SaveReportUnitData() {
             reportUnitProperties.classes = selectedItem.data.classes;
             reportUnitProperties.id = selectedItem.data.id;
             reportUnitProperties.unitCode = selectedItem.data.code;
-            reportUnitProperties.unitName = propertiesData[0][2];
+            reportUnitProperties.unitName = isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
 
             reportUnitProperties.singleWellRangeReportTemplate = selectedItem.data.singleWellRangeReportTemplate;
             reportUnitProperties.singleWellDailyReportTemplate = selectedItem.data.singleWellDailyReportTemplate;
@@ -2168,7 +2168,7 @@ function SaveReportUnitData() {
             } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
                 reportUnitProperties.calculateType = 2;
             }
-            reportUnitProperties.sort = propertiesData[2][2];
+            reportUnitProperties.sort = isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
         }
         if (selectedItem.data.classes == 1) { //保存单元
             SaveModbusProtocolReportUnitData(reportUnitProperties);

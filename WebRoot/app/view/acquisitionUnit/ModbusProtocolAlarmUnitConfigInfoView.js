@@ -1171,9 +1171,15 @@ function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 		
 		var item3={};
 		item3.id=3;
-		item3.title=loginUserLanguageResource.remark;
-		item3.value=data.remark;
+		item3.title=loginUserLanguageResource.sortNum;
+		item3.value=data.sort;
 		root.push(item3);
+		
+		var item4={};
+		item4.id=4;
+		item4.title=loginUserLanguageResource.remark;
+		item4.value=data.remark;
+		root.push(item4);
 	}
 	
 	if(protocolConfigAlarmUnitPropertiesHandsontableHelper==null || protocolConfigAlarmUnitPropertiesHandsontableHelper.hot==undefined){
@@ -1260,7 +1266,11 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];
 		                                this.strict = true;
 		                                this.allowInvalid = false;
-		                            }else{
+		                            } else if (visualColIndex === 2 && visualRowIndex === 2) {
+	                                    this.validator = function (val, callback) {
+	                                        return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAlarmUnitPropertiesHandsontableHelper);
+	                                    }
+	                                } else{
 		                            	cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addCellStyle;
 		                            }
 				                	
@@ -2347,7 +2357,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 			saveData.unitCode=selectedItem.data.code;
 			saveData.oldUnitName=selectedItem.data.text;
 			saveData.protocol=selectedItem.data.protocol;
-			saveData.unitName=propertiesData[0][2];
+			saveData.unitName=isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
 			
 			saveData.calculateType = 0;
             if (propertiesData[1][2] == loginUserLanguageResource.SRPCalculate) {
@@ -2356,7 +2366,8 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
             	saveData.calculateType = 2;
             }
 			
-			saveData.remark=propertiesData[2][2];
+            saveData.sort=isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
+			saveData.remark=isNotVal(propertiesData[3][2])?propertiesData[3][2]:"";;
 			var activeId = Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
 			if(activeId=="ModbusProtocolAlarmUnitNumItemsConfigTableInfoPanel_Id"){
 				saveData.resolutionMode=2;

@@ -1556,9 +1556,15 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		
 		var item4={};
 		item4.id=4;
-		item4.title=loginUserLanguageResource.remark;
-		item4.value=data.remark;
+		item4.title=loginUserLanguageResource.sortNum;
+		item4.value=data.sort;
 		root.push(item4);
+		
+		var item5={};
+		item5.id=5;
+		item5.title=loginUserLanguageResource.remark;
+		item5.value=data.remark;
+		root.push(item5);
 	}
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){
@@ -1644,7 +1650,11 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];
 		                                this.strict = true;
 		                                this.allowInvalid = false;
-		                            }else{
+		                            } else if (visualColIndex === 2 && visualRowIndex === 3) {
+	                                    this.validator = function (val, callback) {
+	                                        return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolDisplayUnitPropertiesHandsontableHelper);
+	                                    }
+	                                }else{
 		                            	cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addCellStyle;
 		                            }
 				                }
@@ -1722,9 +1732,9 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitProperties.classes=selectedItem.data.classes;
 			displayUnitProperties.id=selectedItem.data.id;
 			displayUnitProperties.unitCode=selectedItem.data.code;
-			displayUnitProperties.unitName=propertiesData[0][2];
+			displayUnitProperties.unitName=isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
 			displayUnitProperties.acqUnitId=selectedItem.data.acqUnitId;
-			displayUnitProperties.acqUnitName=propertiesData[1][2];
+			displayUnitProperties.acqUnitName=isNotVal(propertiesData[1][2])?propertiesData[1][2]:"";
 			
 			displayUnitProperties.calculateType = 0;
             if (propertiesData[2][2] == loginUserLanguageResource.SRPCalculate) {
@@ -1733,7 +1743,9 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
             	displayUnitProperties.calculateType = 2;
             }
             
-			displayUnitProperties.remark=propertiesData[3][2];
+			displayUnitProperties.sort=isNotVal(propertiesData[3][2])?propertiesData[3][2]:"";
+			
+			displayUnitProperties.remark=isNotVal(propertiesData[4][2])?propertiesData[4][2]:"";
 		}
 		if(selectedItem.data.classes==2){//保存单元
 			var displayUnitSaveData={};
@@ -1741,8 +1753,6 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 			displayUnitSaveData.updatelist.push(displayUnitProperties);
 			saveDisplayUnitConfigData(displayUnitSaveData,selectedItem.data.protocol,selectedItem.parentNode.data.deviceType);
 			grantDisplayAcqItemsPermission();
-//			grantDisplayCalItemsPermission();
-//			grantDisplayInputItemsPermission();
 			grantDisplayCtrlItemsPermission();
 		}
 	}

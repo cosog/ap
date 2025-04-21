@@ -14,7 +14,7 @@ public class ModbusDriverSaveData {
 	
 	private String ProtocolCode;
 	
-	private int Sort=0;
+	private String Sort="";
 	
 	private List<String> delidslist;
 
@@ -39,7 +39,7 @@ public class ModbusDriverSaveData {
     		this.setProtocolName("");
     	}
     	if(!StringManagerUtils.isNotNull(this.getSort()+"")){
-    		this.setSort(0);
+    		this.setSort(null);
     	}
     	if(this.getDataConfig()!=null){
     		for(int i=0;i<this.getDataConfig().size();i++){
@@ -249,10 +249,10 @@ public class ModbusDriverSaveData {
 	public void setDelidslist(List<String> delidslist) {
 		this.delidslist = delidslist;
 	}
-	public int getSort() {
+	public String getSort() {
 		return Sort;
 	}
-	public void setSort(int sort) {
+	public void setSort(String sort) {
 		Sort = sort;
 	}
 }

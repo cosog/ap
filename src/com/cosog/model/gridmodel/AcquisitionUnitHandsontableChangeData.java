@@ -36,6 +36,8 @@ public class AcquisitionUnitHandsontableChangeData {
 	    private String unitName;
 
 	    private String unitCode;
+	    
+	    private String sort;
 
 	    private String remark;
 
@@ -63,5 +65,11 @@ public class AcquisitionUnitHandsontableChangeData {
 	    public String getRemark(){
 	        return this.remark;
 	    }
+		public String getSort() {
+			return sort;
+		}
+		public void setSort(String sort) {
+			this.sort = sort;
+		}
 	}
 }

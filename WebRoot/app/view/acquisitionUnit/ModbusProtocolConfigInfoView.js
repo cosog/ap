@@ -698,8 +698,8 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 		var propertiesData=protocolPropertiesHandsontableHelper.hot.getData();
 		if(selectedItem.data.classes==1){//选中的是协议
 			protocolConfigData=selectedItem.data;
-			protocolConfigData.text=propertiesData[0][2];
-			protocolConfigData.sort=propertiesData[1][2];
+			protocolConfigData.text=isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
+			protocolConfigData.sort=isNotVal(propertiesData[1][2])?propertiesData[1][2]:"";
 		}else if(selectedItem.data.classes==0 && isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
 			protocolConfigData=selectedItem.data.children[0];
 		}

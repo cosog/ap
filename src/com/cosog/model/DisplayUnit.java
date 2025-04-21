@@ -25,6 +25,7 @@ public class DisplayUnit implements java.io.Serializable {
 	private String protocol;
 	private Integer acqUnitId;
 	private Integer calculateType;
+	private Integer sort;
 	private String remark;
 
 	// Constructors
@@ -34,7 +35,7 @@ public class DisplayUnit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DisplayUnit(Integer id, String unitCode, String unitName, String protocol, Integer acqUnitId,Integer calculateType,
+	public DisplayUnit(Integer id, String unitCode, String unitName, String protocol, Integer acqUnitId,Integer calculateType,Integer sort,
 			String remark) {
 		super();
 		this.id = id;
@@ -43,6 +44,7 @@ public class DisplayUnit implements java.io.Serializable {
 		this.protocol = protocol;
 		this.acqUnitId = acqUnitId;
 		this.calculateType = calculateType;
+		this.sort = sort;
 		this.remark = remark;
 	}
 
@@ -109,6 +111,15 @@ public class DisplayUnit implements java.io.Serializable {
 
 	public void setCalculateType(Integer calculateType) {
 		this.calculateType = calculateType;
+	}
+
+	@Column(name = "sort")
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 
 }

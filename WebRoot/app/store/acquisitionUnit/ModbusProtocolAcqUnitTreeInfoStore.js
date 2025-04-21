@@ -41,6 +41,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                     rootVisible: false,
                     autoScroll: true,
                     forceFit: true,
+//                    selModel:{
+//                    	selType: 'checkboxmodel',
+//                    	mode: 'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly: false,
+//                    	allowDeselect: false
+//                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true

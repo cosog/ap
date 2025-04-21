@@ -23,6 +23,7 @@ public class AcquisitionUnit implements java.io.Serializable {
 	private String unitCode;
 	private String unitName;
 	private String protocol;
+	private Integer sort;
 	private String remark;
 
 	// Constructors
@@ -32,10 +33,13 @@ public class AcquisitionUnit implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AcquisitionUnit(String unitCode, String unitName,String remark) {
+	public AcquisitionUnit(Integer id, String unitCode, String unitName, String protocol, Integer sort, String remark) {
+		this.id = id;
 		this.unitCode = unitCode;
 		this.unitName = unitName;
-		this.remark=remark;
+		this.protocol = protocol;
+		this.sort = sort;
+		this.remark = remark;
 	}
 
 	@Id
@@ -83,6 +87,15 @@ public class AcquisitionUnit implements java.io.Serializable {
 
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
+	}
+
+	@Column(name = "sort")
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 
 }

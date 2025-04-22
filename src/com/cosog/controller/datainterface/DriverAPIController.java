@@ -2199,7 +2199,7 @@ public class DriverAPIController extends BaseController{
 					
 					
 					
-					boolean isAcqRunStatus=false,isAcqEnergy=false,isAcqTotalGasProd=false,isAcqTotalWaterProd=false;
+					boolean isAcqRunStatus=false;
 					int runStatus=2;
 					int checkSign=acqGroupDataCheck(protocol,acqGroup)?1:0;
 					

@@ -369,6 +369,7 @@ create table TBL_ACQ_UNIT_CONF
   unit_code VARCHAR2(200) not null,
   unit_name VARCHAR2(200),
   protocol  VARCHAR2(200),
+  sort      NUMBER(10),
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -466,8 +467,9 @@ create table TBL_ALARM_UNIT_CONF
   unit_code     VARCHAR2(200) not null,
   unit_name     VARCHAR2(200),
   protocol      VARCHAR2(200),
-  remark        VARCHAR2(2000),
-  calculatetype NUMBER(2) default 0
+  calculatetype NUMBER(2) default 0,
+  sort          NUMBER(10),
+  remark        VARCHAR2(2000)
 )
 tablespace AP_DATA
   storage
@@ -527,6 +529,7 @@ create table TBL_DISPLAY_UNIT_CONF
   protocol      VARCHAR2(200),
   acqunitid NUMBER(10),
   calculatetype NUMBER(2) default 0,
+  sort          NUMBER(10),
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA

@@ -8,7 +8,7 @@ DECLARE
   clobValue TBL_PROTOCOL.ITEMS%TYPE;  
 BEGIN  
   clobValue := '[{"Title":"Tubing Pressure","Addr":40300,"StoreDataType":"float32","IFDataType":"float32","Prec":2,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"MPa","ResolutionMode":2,"AcqMode":"passive","Meaning":[]},{"Title":"Casing Pressure","Addr":40302,"StoreDataType":"float32","IFDataType":"float32","Prec":2,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"MPa","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Back Pressure","Addr":40304,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"MPa","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Well Head Temperature","Addr":40306,"StoreDataType":"float32","IFDataType":"float32","Prec":2,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"℃","ResolutionMode":2,"AcqMode":"passive"},'
-  ||'{"Title":"Run Status","Addr":40317,"StoreDataType":"uint16","IFDataType":"int","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"","ResolutionMode":1,"AcqMode":"passive","Meaning":[{"Value":0,"Meaning":"Stop"},{"Value":1,"Meaning":"Running"}]},{"Title":"Run/Stop","Addr":40320,"StoreDataType":"uint16","IFDataType":"int","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"rw","Unit":"","ResolutionMode":1,"AcqMode":"passive","Meaning":[{"Value":1,"Meaning":"run"},{"Value":2,"Meaning":"stop"}]},{"Title":"Water Cut","Addr":40327,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"%","ResolutionMode":2,"AcqMode":"passive","Meaning":[]},{"Title":"Producing Fluid Level","Addr":40329,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"m","ResolutionMode":2,"AcqMode":"passive"},'
+  ||'{"Title":"Run Status","Addr":40317,"StoreDataType":"uint16","IFDataType":"int","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"","ResolutionMode":1,"AcqMode":"passive","Meaning":[{"Value":0,"Meaning":"Stopped"},{"Value":1,"Meaning":"Running"}]},{"Title":"Run/Stop","Addr":40320,"StoreDataType":"uint16","IFDataType":"int","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"rw","Unit":"","ResolutionMode":1,"AcqMode":"passive","Meaning":[{"Value":1,"Meaning":"run"},{"Value":2,"Meaning":"stop"}]},{"Title":"Water Cut","Addr":40327,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"%","ResolutionMode":2,"AcqMode":"passive","Meaning":[]},{"Title":"Producing Fluid Level","Addr":40329,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"m","ResolutionMode":2,"AcqMode":"passive"},'
   ||'{"Title":"A Phase Current","Addr":40351,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"A","ResolutionMode":2,"AcqMode":"passive"},{"Title":"B Phase Current","Addr":40353,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"A","ResolutionMode":2,"AcqMode":"passive"},{"Title":"C Phase Current","Addr":40355,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"V","ResolutionMode":2,"AcqMode":"passive"},{"Title":"A Phase Voltage","Addr":40357,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"V","ResolutionMode":2,"AcqMode":"passive"},{"Title":"B Phase Voltage","Addr":40359,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"V","ResolutionMode":2,"AcqMode":"passive"},'
   ||'{"Title":"C Phase Voltage","Addr":40361,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"V","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Active Power Consumption","Addr":40363,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"kW·h","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Reactive Power Consumption","Addr":40365,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"kVar·h","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Active Power","Addr":40367,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"kW","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Reactive Power","Addr":40369,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"kVar","ResolutionMode":2,"AcqMode":"passive"},'
   ||'{"Title":"Reverse Power","Addr":40371,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"kW","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Power Factor","Addr":40373,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Setting Frequency","Addr":40402,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"rw","Unit":"Hz","ResolutionMode":2,"AcqMode":"passive"},{"Title":"Running Frequency","Addr":40404,"StoreDataType":"float32","IFDataType":"float32","Prec":0,"Quantity":1,"Ratio":1.0,"RWType":"r","Unit":"Hz","ResolutionMode":2,"AcqMode":"passive"},'
@@ -139,11 +139,11 @@ values (1, 'protocol1', 'Run Status', 'C_CLOUMN5', '1', '0', 0, 1, null, null);
 /*==============================================================*/
 /* 初始化TBL_ACQ_UNIT_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (1, 'unit1', 'SRP Acquisition Unit', 'A11 Protocol', 'SRP Acquisition Unit');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (1, 'unit1', 'SRP Acquisition Unit', 'A11 Protocol', 1, 'SRP Acquisition Unit');
 
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (2, 'unit2', 'PCP Acquisition Unit', 'A11 Protocol', 'PCP Acquisition Unit');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (2, 'unit2', 'PCP Acquisition Unit', 'A11 Protocol', 2, 'PCP Acquisition Unit');
 
 /*==============================================================*/
 /* 初始化TBL_ACQ_GROUP_CONF数据                                          */
@@ -238,11 +238,11 @@ values (19, null, 'Setting Frequency', null, 4, null, '0,0,0', 0, null);
 /*==============================================================*/
 /* 初始化TBL_ALARM_UNIT_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK, CALCULATETYPE)
-values (1, 'alarmunit1', 'SRP Alarm Unit', 'A11 Protocol', 'SRP Alarm Unit', 1);
+insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK, CALCULATETYPE, SORT)
+values (1, 'alarmunit1', 'SRP Alarm Unit', 'A11 Protocol', 'SRP Alarm Unit', 1, 1);
 
-insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK, CALCULATETYPE)
-values (2, 'alarmunit2', 'PCP Alarm Unit', 'A11 Protocol', 'PCP Alarm Unit', 2);
+insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK, CALCULATETYPE, SORT)
+values (2, 'alarmunit2', 'PCP Alarm Unit', 'A11 Protocol', 'PCP Alarm Unit', 2, 2);
 
 /*==============================================================*/
 /* 初始化TBL_ALARM_ITEM2UNIT_CONF数据                                          */
@@ -352,11 +352,11 @@ values (34, 2, null, 'Stopped', 'stop', 0, 0.000, null, null, null, null, 100, 1
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                */
 /*==============================================================*/
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK, CALCULATETYPE)
-values (1, 'unit1', 'SRPDisplayUnit', 'A11 Protocol', 1, 'SRPDisplayUnit', 1);
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK, CALCULATETYPE, SORT)
+values (1, 'unit1', 'SRPDisplayUnit', 'A11 Protocol', 1, 'SRPDisplayUnit', 1, 1);
 
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK, CALCULATETYPE)
-values (2, 'unit2', 'PCPDisplayUnit', 'A11 Protocol', 2, 'PCPDisplayUnit', 2);
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK, CALCULATETYPE, SORT)
+values (2, 'unit2', 'PCPDisplayUnit', 'A11 Protocol', 2, 'PCPDisplayUnit', 2, 2);
 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_ITEMS2UNIT_CONF数据                                          */

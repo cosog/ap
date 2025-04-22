@@ -64,6 +64,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                             }
                         }
                     },{
+                        header: loginUserLanguageResource.type,
+                        hidden: true,
+                        dataIndex: 'type',
+                        align: 'center',
+                        flex: 3
+                    },{
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'

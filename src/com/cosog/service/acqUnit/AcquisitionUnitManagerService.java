@@ -2588,7 +2588,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							}
 						}
 						
-						dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE",dataSourceList.get(k)+"", language);
+						dataSource=dataSourceList.get(k);
 						totalType=itemsTotalTypeList.get(k);
 						dataType=dataTypeList.get(k);
 						break;
@@ -5185,6 +5185,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
 					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
 					tree_json.append("\"iconCls\": \"protocol\",");
+					tree_json.append("\"type\": \""+languageResourceMap.get("protocol")+"\",");
 					tree_json.append("\"expanded\": true,");
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
@@ -5200,6 +5201,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
 							tree_json.append("\"protocol\":\""+protocol+"\",");
 							tree_json.append("\"sort\":\""+unitObj[5]+"\",");
+							tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Unit")+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"expanded\": true,");
 							tree_json.append("\"children\": [");
@@ -5219,6 +5221,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"type\":"+groupObj[7]+",");
 									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 									tree_json.append("\"unitId\":"+groupUnitId+",");
+									tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Group")+"\",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
 									tree_json.append("},");
@@ -5246,7 +5249,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"type\":\""+languageResourceMap.get("rootNode")+"\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -6917,7 +6920,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> stopConditionList=new ArrayList<>();
 		String setValueSql="select t.runvalue,t.stopvalue,t.runcondition,t.stopcondition"
 				+ " from tbl_runstatusconfig t "
-				+ " where t.protocol='"+protocolCode+"' and t.itemname='"+itemName+"' and t.itemmappingcolumn='"+itemColumn+"' ";
+				+ " where t.protocol='"+protocolCode+"' and t.itemmappingcolumn='"+itemColumn+"' ";
 		List<?> list=this.findCallSql(setValueSql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);

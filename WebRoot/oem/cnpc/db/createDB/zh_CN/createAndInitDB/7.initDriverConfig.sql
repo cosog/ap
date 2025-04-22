@@ -19,6 +19,8 @@ BEGIN
 END;  
 /
 
+
+
 /*==============================================================*/
 /* 初始化TBL_DATAMAPPING数据                                          */
 /*==============================================================*/
@@ -137,11 +139,11 @@ values (1, 'protocol1', '运行状态', 'C_CLOUMN5', '1', '0', 0, 1, null, null);
 /*==============================================================*/
 /* 初始化TBL_ACQ_UNIT_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (1, 'unit1', '抽油机A11采集单元', 'A11协议', '抽油机A11采集单元');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (1, 'unit1', '抽油机A11采集单元', 'A11协议', 1, '抽油机A11采集单元');
 
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (2, 'unit2', '螺杆泵A11采集单元', 'A11协议', '螺杆泵A11采集单元');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (2, 'unit2', '螺杆泵A11采集单元', 'A11协议', 2,'螺杆泵A11采集单元');
 
 /*==============================================================*/
 /* 初始化TBL_ACQ_GROUP_CONF数据                                          */
@@ -345,11 +347,11 @@ values (56, null, '变频设置频率', null, 4, null, '0,0,0', 0, null);
 /*==============================================================*/
 /* 初始化TBL_ALARM_UNIT_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (1, 'alarmunit1', 'A11-抽油机报警单元', 'A11协议', 'A11-抽油机报警单元');
+insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (1, 'alarmunit1', 'A11-抽油机报警单元', 'A11协议', 1, 'A11-抽油机报警单元');
 
-insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (2, 'alarmunit2', 'A11-螺杆泵报警单元', 'A11协议', 'A11-螺杆泵报警单元');
+insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, SORT, REMARK)
+values (2, 'alarmunit2', 'A11-螺杆泵报警单元', 'A11协议', 2, 'A11-螺杆泵报警单元');
 
 /*==============================================================*/
 /* 初始化TBL_ALARM_ITEM2UNIT_CONF数据                                          */
@@ -465,11 +467,11 @@ values (36, 2, null, '停止', 'stop', 0, 0.000, null, null, null, null, 100, 1, 6
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                */
 /*==============================================================*/
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, REMARK)
-values (1, 'unit1', '抽油机A11显示单元', 'A11协议', 1, 1, '抽油机A11显示单元');
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, SORT, REMARK)
+values (1, 'unit1', '抽油机A11显示单元', 'A11协议', 1, 1, 1, '抽油机A11显示单元');
 
-insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, REMARK)
-values (2, 'unit2', '螺杆泵A11显示单元', 'A11协议', 2, 2, '螺杆泵A11显示单元');
+insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, CALCULATETYPE, SORT, REMARK)
+values (2, 'unit2', '螺杆泵A11显示单元', 'A11协议', 2, 2, 2, '螺杆泵A11显示单元');
 
 /*==============================================================*/
 /* 初始化TBL_DISPLAY_ITEMS2UNIT_CONF数据                                          */

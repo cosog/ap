@@ -70,16 +70,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0){
-                        		if(protocolInstanceConfigItemsHandsontableHelper!=null){
-                					if(protocolInstanceConfigItemsHandsontableHelper.hot!=undefined){
-                						protocolInstanceConfigItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolInstanceConfigItemsHandsontableHelper=null;
-                				}
-                        	}else{
-                        		CreateProtocolInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes);
-                        	}
                         	CreateProtocolInstanceConfigPropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单

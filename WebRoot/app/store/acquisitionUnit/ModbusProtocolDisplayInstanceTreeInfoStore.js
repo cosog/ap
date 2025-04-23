@@ -70,43 +70,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore'
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0){
-                        		if(protocolDisplayInstanceAcqItemsHandsontableHelper!=null){
-                					if(protocolDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
-                						protocolDisplayInstanceAcqItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolDisplayInstanceAcqItemsHandsontableHelper=null;
-                				}
-                				if(protocolDisplayInstanceCalItemsHandsontableHelper!=null){
-                					if(protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
-                						protocolDisplayInstanceCalItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolDisplayInstanceCalItemsHandsontableHelper=null;
-                				}
-                				if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null){
-                					if(protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
-                						protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
-                				}
-                				if(protocolDisplayInstanceInputItemsHandsontableHelper!=null){
-                					if(protocolDisplayInstanceInputItemsHandsontableHelper.hot!=undefined){
-                						protocolDisplayInstanceInputItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolDisplayInstanceInputItemsHandsontableHelper=null;
-                				}
-                        	}else if(record.data.classes==2){//选中显示单元
-                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
-//                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
-//                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes,record.parentNode.data.calculateType);
-                        		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.parentNode.data.id,record.parentNode.data.text,record.parentNode.data.classes);
-                        	}else{
-                        		CreateProtocolDisplayInstanceAcqItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
-//                        		CreateProtocolDisplayInstanceCalItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
-//                        		CreateProtocolDisplayInstanceInputItemsInfoTable(record.data.id,record.data.text,record.data.classes,record.data.calculateType);
-                        		CreateProtocolDisplayInstanceCtrlItemsInfoTable(record.data.id,record.data.text,record.data.classes);
-                        	}
-                        	
                         	CreateProtocolDisplayInstancePropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单

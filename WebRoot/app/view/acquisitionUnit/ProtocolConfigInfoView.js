@@ -36,33 +36,15 @@ var singleWellDailyReportTemplateHandsontableHelper = null;
 var singleWellDailyReportTemplateContentHandsontableHelper = null;
 
 //采控实例
-var protocolInstanceConfigItemsHandsontableHelper=null;
 var protocolConfigInstancePropertiesHandsontableHelper=null;
 
 //显示实例
-var protocolDisplayInstanceAcqItemsHandsontableHelper=null;
-var protocolDisplayInstanceCalItemsHandsontableHelper=null;
-var protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
-var protocolDisplayInstanceInputItemsHandsontableHelper=null;
 var protocolDisplayInstancePropertiesHandsontableHelper=null;
 
 //报警实例
-var protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
-var protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
 var protocolAlarmInstancePropertiesHandsontableHelper=null;
 
 //报表实例
-var reportInstanceSingleWellRangeReportTemplateHandsontableHelper=null;
-var reportInstanceSingleWellRangeReportContentHandsontableHelper=null;
-var reportInstanceSingleWellDailyReportTemplateHandsontableHelper=null;
-var reportInstanceSingleWellDailyReportContentHandsontableHelper=null;
-var reportInstanceProductionTemplateHandsontableHelper=null;
-var reportInstanceProductionTemplateContentHandsontableHelper=null;
 var protocolReportInstancePropertiesHandsontableHelper=null;
 
 Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
@@ -344,12 +326,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     				}
     				
     				//采控实例HandsontableHelper资源
-    				if(protocolInstanceConfigItemsHandsontableHelper!=null){
-    					if(protocolInstanceConfigItemsHandsontableHelper.hot!=undefined){
-    						protocolInstanceConfigItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolInstanceConfigItemsHandsontableHelper=null;
-    				}
     				if(protocolConfigInstancePropertiesHandsontableHelper!=null){
     					if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined){
     						protocolConfigInstancePropertiesHandsontableHelper.hot.destroy();
@@ -364,118 +340,16 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolDisplayInstancePropertiesHandsontableHelper=null;
     				}
-    				if(protocolDisplayInstanceAcqItemsHandsontableHelper!=null){
-    					if(protocolDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
-    						protocolDisplayInstanceAcqItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolDisplayInstanceAcqItemsHandsontableHelper=null;
-    				}
-    				if(protocolDisplayInstanceCalItemsHandsontableHelper!=null){
-    					if(protocolDisplayInstanceCalItemsHandsontableHelper.hot!=undefined){
-    						protocolDisplayInstanceCalItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolDisplayInstanceCalItemsHandsontableHelper=null;
-    				}
-    				if(protocolDisplayInstanceCtrlItemsHandsontableHelper!=null){
-    					if(protocolDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined){
-    						protocolDisplayInstanceCtrlItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolDisplayInstanceCtrlItemsHandsontableHelper=null;
-    				}
-    				if(protocolDisplayInstanceInputItemsHandsontableHelper!=null){
-    					if(protocolDisplayInstanceInputItemsHandsontableHelper.hot!=undefined){
-    						protocolDisplayInstanceInputItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolDisplayInstanceInputItemsHandsontableHelper=null;
-    				}
     				
     				//报表实例
-    				if(reportInstanceSingleWellRangeReportTemplateHandsontableHelper!=null){
-    					if(reportInstanceSingleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
-    						reportInstanceSingleWellRangeReportTemplateHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceSingleWellRangeReportTemplateHandsontableHelper=null;
-    				}
-    				if(reportInstanceSingleWellRangeReportContentHandsontableHelper!=null){
-    					if(reportInstanceSingleWellRangeReportContentHandsontableHelper.hot!=undefined){
-    						reportInstanceSingleWellRangeReportContentHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceSingleWellRangeReportContentHandsontableHelper=null;
-    				}
     				if(protocolReportInstancePropertiesHandsontableHelper!=null){
     					if(protocolReportInstancePropertiesHandsontableHelper.hot!=undefined){
     						protocolReportInstancePropertiesHandsontableHelper.hot.destroy();
     					}
     					protocolReportInstancePropertiesHandsontableHelper=null;
     				}
-    				if(reportInstanceProductionTemplateHandsontableHelper!=null){
-    					if(reportInstanceProductionTemplateHandsontableHelper.hot!=undefined){
-    						reportInstanceProductionTemplateHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceProductionTemplateHandsontableHelper=null;
-    				}
-    				if(reportInstanceProductionTemplateContentHandsontableHelper!=null){
-    					if(reportInstanceProductionTemplateContentHandsontableHelper.hot!=undefined){
-    						reportInstanceProductionTemplateContentHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceProductionTemplateContentHandsontableHelper=null;
-    				}
-    				if(reportInstanceSingleWellDailyReportTemplateHandsontableHelper!=null){
-    					if(reportInstanceSingleWellDailyReportTemplateHandsontableHelper.hot!=undefined){
-    						reportInstanceSingleWellDailyReportTemplateHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceSingleWellDailyReportTemplateHandsontableHelper=null;
-    				}
-    				if(reportInstanceSingleWellDailyReportContentHandsontableHelper!=null){
-    					if(reportInstanceSingleWellDailyReportContentHandsontableHelper.hot!=undefined){
-    						reportInstanceSingleWellDailyReportContentHandsontableHelper.hot.destroy();
-    					}
-    					reportInstanceSingleWellDailyReportContentHandsontableHelper=null;
-    				}
     				
     				//报警实例HandsontableHelper资源
-    				if(protocolAlarmInstanceConfigNumItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigNumItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigNumItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigCalNumItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigSwitchItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigEnumItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigEnumItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigRunStatusItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null){
-    					if(protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmInstanceConfigCommStatusItemsHandsontableHelper=null;
-    				}
     				if(protocolAlarmInstancePropertiesHandsontableHelper!=null){
     					if(protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined){
     						protocolAlarmInstancePropertiesHandsontableHelper.hot.destroy();

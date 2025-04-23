@@ -2580,6 +2580,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDisplayUnitList")
+	public String getDisplayUnitList() throws IOException {
+		String json = acquisitionUnitItemManagerService.getDisplayUnitList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getAlarmUnitList")
+	public String getAlarmUnitList() throws IOException {
+		String json = acquisitionUnitItemManagerService.getAlarmUnitList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportUnitList")
 	public String getReportUnitList() throws IOException {
 		String json = acquisitionUnitItemManagerService.getReportUnitList();

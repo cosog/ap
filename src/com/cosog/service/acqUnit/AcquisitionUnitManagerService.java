@@ -4982,7 +4982,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t.itemname as alarmLevel,"
+				+ " t.alarmLevel,"
 				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
 				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
@@ -5009,13 +5009,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			String code=obj[2]+"";
 			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(code, language);
-			
+			String alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL", obj[5]+"", language);
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+(workType!=null?workType.getResultName():"")+"\","
 					+ "\"code\":\""+code+"\","
 					+ "\"delay\":\""+obj[3]+"\","
 					+ "\"retriggerTime\":\""+obj[4]+"\","
-					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+obj[6]+"\","
 					+ "\"isSendMessage\":\""+obj[7]+"\","
 					+ "\"isSendMail\":\""+obj[8]+"\"},");
@@ -5185,7 +5185,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
 					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
 					tree_json.append("\"iconCls\": \"protocol\",");
-					tree_json.append("\"type\": \""+languageResourceMap.get("protocol")+"\",");
+					tree_json.append("\"nodeType\": \""+languageResourceMap.get("protocol")+"\",");
 					tree_json.append("\"expanded\": true,");
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
@@ -5194,14 +5194,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String protocol=unitObj[4]+"";
 						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(protocol)){
 							tree_json.append("{\"classes\":2,");
-//							tree_json.append("\"checked\":false,");
 							tree_json.append("\"id\":"+unitId+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
 							tree_json.append("\"text\":\""+unitObj[2]+"\",");
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
 							tree_json.append("\"protocol\":\""+protocol+"\",");
 							tree_json.append("\"sort\":\""+unitObj[5]+"\",");
-							tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Unit")+"\",");
+							tree_json.append("\"nodeType\": \""+languageResourceMap.get("driverConfig_Unit")+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"expanded\": true,");
 							tree_json.append("\"children\": [");
@@ -5210,7 +5209,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								String groupUnitId=groupObj[8]+"";
 								if(unitId.equalsIgnoreCase(groupUnitId)){
 									tree_json.append("{\"classes\":3,");
-//									tree_json.append("\"checked\":false,");
 									tree_json.append("\"id\":"+groupObj[0]+",");
 									tree_json.append("\"code\":\""+groupObj[1]+"\",");
 									tree_json.append("\"text\":\""+groupObj[2]+"\",");
@@ -5221,7 +5219,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"type\":"+groupObj[7]+",");
 									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 									tree_json.append("\"unitId\":"+groupUnitId+",");
-									tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Group")+"\",");
+									tree_json.append("\"nodeType\": \""+languageResourceMap.get("driverConfig_Group")+"\",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
 									tree_json.append("},");
@@ -5249,7 +5247,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"type\":\""+languageResourceMap.get("rootNode")+"\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"nodeType\":\""+languageResourceMap.get("rootNode")+"\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}

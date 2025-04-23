@@ -63,13 +63,15 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                                 return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                             }
                         }
-                    },{
-                        header: loginUserLanguageResource.type,
-                        hidden: true,
-                        dataIndex: 'type',
-                        align: 'center',
-                        flex: 3
-                    },{
+                    },
+//                    {
+//                        header: loginUserLanguageResource.type,
+//                        hidden: false,
+//                        dataIndex: 'nodeType',
+//                        align: 'center',
+//                        flex: 3
+//                    },
+                    {
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'

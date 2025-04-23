@@ -4982,7 +4982,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String itemsSql="select t.id, t.itemname,t.itemcode,"
 				+ "t.delay,t.retriggerTime,"
-				+ " t.itemname as alarmLevel,"
+				+ " t.alarmLevel,"
 				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign, "
 				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
@@ -5009,13 +5009,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			String code=obj[2]+"";
 			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(code, language);
-			
+			String alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL", obj[5]+"", language);
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+(workType!=null?workType.getResultName():"")+"\","
 					+ "\"code\":\""+code+"\","
 					+ "\"delay\":\""+obj[3]+"\","
 					+ "\"retriggerTime\":\""+obj[4]+"\","
-					+ "\"alarmLevel\":\""+obj[5]+"\","
+					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+obj[6]+"\","
 					+ "\"isSendMessage\":\""+obj[7]+"\","
 					+ "\"isSendMail\":\""+obj[8]+"\"},");
@@ -5185,7 +5185,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
 					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
 					tree_json.append("\"iconCls\": \"protocol\",");
-					tree_json.append("\"type\": \""+languageResourceMap.get("protocol")+"\",");
+					tree_json.append("\"nodeType\": \""+languageResourceMap.get("protocol")+"\",");
 					tree_json.append("\"expanded\": true,");
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
@@ -5194,14 +5194,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						String protocol=unitObj[4]+"";
 						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(protocol)){
 							tree_json.append("{\"classes\":2,");
-//							tree_json.append("\"checked\":false,");
 							tree_json.append("\"id\":"+unitId+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
 							tree_json.append("\"text\":\""+unitObj[2]+"\",");
 							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
 							tree_json.append("\"protocol\":\""+protocol+"\",");
 							tree_json.append("\"sort\":\""+unitObj[5]+"\",");
-							tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Unit")+"\",");
+							tree_json.append("\"nodeType\": \""+languageResourceMap.get("driverConfig_Unit")+"\",");
 							tree_json.append("\"iconCls\": \"acqUnit\",");
 							tree_json.append("\"expanded\": true,");
 							tree_json.append("\"children\": [");
@@ -5210,7 +5209,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								String groupUnitId=groupObj[8]+"";
 								if(unitId.equalsIgnoreCase(groupUnitId)){
 									tree_json.append("{\"classes\":3,");
-//									tree_json.append("\"checked\":false,");
 									tree_json.append("\"id\":"+groupObj[0]+",");
 									tree_json.append("\"code\":\""+groupObj[1]+"\",");
 									tree_json.append("\"text\":\""+groupObj[2]+"\",");
@@ -5221,7 +5219,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									tree_json.append("\"type\":"+groupObj[7]+",");
 									tree_json.append("\"typeName\":\""+("0".equalsIgnoreCase(groupObj[7]+"")?languageResourceMap.get("acqGroup"):languageResourceMap.get("controlGroup"))+"\",");
 									tree_json.append("\"unitId\":"+groupUnitId+",");
-									tree_json.append("\"type\": \""+languageResourceMap.get("driverConfig_Group")+"\",");
+									tree_json.append("\"nodeType\": \""+languageResourceMap.get("driverConfig_Group")+"\",");
 									tree_json.append("\"iconCls\": \"acqGroup\",");
 									tree_json.append("\"leaf\": true");
 									tree_json.append("},");
@@ -5249,7 +5247,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("[");
 		
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"type\":\""+languageResourceMap.get("rootNode")+"\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"nodeType\":\""+languageResourceMap.get("rootNode")+"\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -6084,37 +6082,61 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getAcqUnitList(){
 		StringBuffer result_json = new StringBuffer();
-		StringBuffer srpUnit_json = new StringBuffer();
-		StringBuffer pcpUnit_json = new StringBuffer();
+		StringBuffer unit_json = new StringBuffer();
 
-		srpUnit_json.append("[");
-		pcpUnit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.id";
+		unit_json.append("[");
+		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.sort,t.protocol, t.id";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-					if(modbusProtocolConfig.getProtocol().get(j).getName().equalsIgnoreCase(obj[2]+"")){
-
-						srpUnit_json.append("\""+obj[1]+"\",");
-					
-						break;
-					}
-				}
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[2]+"");
+			if(protocol!=null){
+				unit_json.append("\""+obj[1]+"\",");
 			}
 		}
-		if(srpUnit_json.toString().endsWith(",")){
-			srpUnit_json.deleteCharAt(srpUnit_json.length() - 1);
+		if(unit_json.toString().endsWith(",")){
+			unit_json.deleteCharAt(unit_json.length() - 1);
 		}
-		if(pcpUnit_json.toString().endsWith(",")){
-			pcpUnit_json.deleteCharAt(pcpUnit_json.length() - 1);
+		unit_json.append("]");
+		result_json.append("{\"unitList\":"+unit_json+"}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getDisplayUnitList(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer unit_json = new StringBuffer();
+
+		unit_json.append("[");
+		String acqUnitSql="select t.unit_code,t.unit_name from tbl_display_unit_conf t order by  t.sort";
+		List<?> unitList=this.findCallSql(acqUnitSql);
+		for(int i=0;i<unitList.size();i++){
+			Object[] obj = (Object[]) unitList.get(i);
+			unit_json.append("\""+obj[1]+"\",");
 		}
-		srpUnit_json.append("]");
-		pcpUnit_json.append("]");
-		result_json.append("{\"srpAcqUnit\":"+srpUnit_json+",");
-		result_json.append("\"pcpAcqUnit\":"+pcpUnit_json+"}");
+		if(unit_json.toString().endsWith(",")){
+			unit_json.deleteCharAt(unit_json.length() - 1);
+		}
+		unit_json.append("]");
+		result_json.append("{\"unitList\":"+unit_json+"}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getAlarmUnitList(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer unit_json = new StringBuffer();
+
+		unit_json.append("[");
+		String acqUnitSql="select t.unit_code,t.unit_name from tbl_alarm_unit_conf t order by  t.sort";
+		List<?> unitList=this.findCallSql(acqUnitSql);
+		for(int i=0;i<unitList.size();i++){
+			Object[] obj = (Object[]) unitList.get(i);
+			unit_json.append("\""+obj[1]+"\",");
+		}
+		if(unit_json.toString().endsWith(",")){
+			unit_json.deleteCharAt(unit_json.length() - 1);
+		}
+		unit_json.append("]");
+		result_json.append("{\"unitList\":"+unit_json+"}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -6142,7 +6164,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
@@ -6156,13 +6177,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			sql+=" and 1=2 ";
 		}	
 		sql+= " order by t.sort";
-		String groupSql="select t.id,t.group_name,t.group_code,t2.unitid "
-				+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2 "
-				+ " where t.id=t2.groupid "
-				+ " order by t2.unitid,t.type";
 		
 		List<?> list=this.findCallSql(sql);
-		List<?> groupList=this.findCallSql(groupSql);
 		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -6190,37 +6206,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"unitId\":"+obj[14]+",");
 			tree_json.append("\"unitName\":\""+obj[15]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
-
-			tree_json.append("\"expanded\": true,");
-			tree_json.append("\"children\": [");
-			tree_json.append("{\"classes\":2,");
-			tree_json.append("\"text\":\""+obj[15]+"\",");
-			tree_json.append("\"id\":"+obj[14]+",");
-			tree_json.append("\"iconCls\": \"acqUnit\","); 
-			
-			tree_json.append("\"expanded\": true,");
-			tree_json.append("\"children\": [");
-			for(int j=0;j<groupList.size();j++){
-				Object[] groupObj = (Object[]) groupList.get(j);
-				if((obj[15]+"").equalsIgnoreCase(groupObj[3]+"")){
-					tree_json.append("{\"classes\":3,");
-					tree_json.append("\"id\":"+groupObj[0]+",");
-					tree_json.append("\"text\":\""+groupObj[1]+"\",");
-					tree_json.append("\"code\":\""+groupObj[2]+"\",");
-					tree_json.append("\"iconCls\": \"acqGroup\","); 
-					tree_json.append("\"leaf\": true},");
-				}
-			}
-			if(tree_json.toString().endsWith(",")){
-				tree_json.deleteCharAt(tree_json.length() - 1);
-			}
-			
-			tree_json.append("]");
-			
-			tree_json.append("}]");
-			
-			tree_json.append("},");
-		
+			tree_json.append("\"leaf\": true},");
 		}
 		
 		if(tree_json.toString().endsWith(",")){
@@ -6303,7 +6289,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
@@ -6316,7 +6301,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":\""+obj[0]+"\",");
 			tree_json.append("\"text\":\""+obj[1]+"\",");
@@ -6326,17 +6310,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
-			tree_json.append("\"expanded\": true,");
-			tree_json.append("\"children\": [");
-			tree_json.append("{\"classes\":2,");
-			tree_json.append("\"id\":"+obj[3]+",");
-			tree_json.append("\"text\":\""+obj[4]+"\",");
-			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
-			tree_json.append("\"iconCls\": \"acqUnit\","); 
-			tree_json.append("\"leaf\": true}");
-			tree_json.append("]");
-			tree_json.append("},");
-		
+			tree_json.append("\"leaf\": true},");
 		}
 		
 		if(tree_json.toString().endsWith(",")){
@@ -6422,19 +6396,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
-			tree_json.append("\"expanded\": true,");
-			tree_json.append("\"children\": [");
-			tree_json.append("{\"classes\":2,");
-			tree_json.append("\"unitId\":"+obj[3]+",");
-			tree_json.append("\"text\":\""+obj[4]+"\",");
-			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
-			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
-			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
-			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
-			tree_json.append("\"iconCls\": \"acqUnit\","); 
-			tree_json.append("\"leaf\": true}");
-			tree_json.append("]");
-			tree_json.append("},");
+			tree_json.append("\"leaf\": true},");
 		
 		}
 		
@@ -6498,7 +6460,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
@@ -6521,15 +6482,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
-			tree_json.append("\"expanded\": true,");
-			tree_json.append("\"children\": [");
-			tree_json.append("{\"classes\":2,");
-			tree_json.append("\"id\":"+obj[3]+",");
-			tree_json.append("\"text\":\""+obj[4]+"\",");
-			tree_json.append("\"iconCls\": \"acqGroup\","); 
-			tree_json.append("\"leaf\": true}");
-			tree_json.append("]");
-			tree_json.append("},");
+			tree_json.append("\"leaf\": true},");
 		
 		}
 		

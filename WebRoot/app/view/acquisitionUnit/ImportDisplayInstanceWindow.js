@@ -560,72 +560,6 @@ var ImportDisplayInstanceAcqItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportDisplayInstanceCalItemsInfoTable(protocolName,acqUnitName,displayUnitName,instanceName){
-	Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getImportDisplayInstanceItemsConfigData',
-		success:function(response) {
-			Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			if(instanceName!=''){
-				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.calculateItem);
-			}else{
-				Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItem);
-			}
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importDisplayInstanceCalItemsHandsontableHelper==null || importDisplayInstanceCalItemsHandsontableHelper.hot==undefined){
-				importDisplayInstanceCalItemsHandsontableHelper = ImportDisplayInstanceCalItemsHandsontableHelper.createNew("importDisplayInstanceCalItemsConfigTableInfoDiv_id");
-				var colHeaders="[" 
-					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'']," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'"+loginUserLanguageResource.dataSource+"']" 
-					+"]";
-				var columns="["
-					+"{data:'id'}," 
-					+"{data:'title'},"
-					+"{data:'unit'},"
-					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
-					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
-					+"{data:'realtimeColor'}," 
-                    +"{data:'realtimeBgColor'}," 
-					+"{data:'realtimeCurveConfShowValue'},"
-					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceCalItemsHandsontableHelper);}}," 
-					+"{data:'historyColor'}," 
-                    +"{data:'historyBgColor'}," 
-					+"{data:'historyCurveConfShowValue'},"
-					+"{data:'dataSource'}"
-					+"]";
-				importDisplayInstanceCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importDisplayInstanceCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importDisplayInstanceCalItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayInstanceCalItemsHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					importDisplayInstanceCalItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayInstanceCalItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-		},
-		params: {
-			protocolName:protocolName,
-			acqUnitName:acqUnitName,
-			displayUnitName:displayUnitName,
-			instanceName:instanceName,
-			type:1
-        }
-	});
-};
-
 var ImportDisplayInstanceCalItemsHandsontableHelper = {
 		createNew: function (divid) {
 	        var importDisplayInstanceCalItemsHandsontableHelper = {};
@@ -928,12 +862,12 @@ function CreateImportDisplayInstanceInputItemsInfoTable(protocolName,acqUnitName
 					+"{data:'id'}," 
 					+"{data:'title'},"
 					+"{data:'unit'},"
-					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
-					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
 					+"{data:'realtimeColor'}," 
                     +"{data:'realtimeBgColor'}," 
 					+"{data:'realtimeCurveConfShowValue'},"
-					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayInstanceInputItemsHandsontableHelper);}}," 
+					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayInstanceInputItemsHandsontableHelper);}}," 
 					+"{data:'historyColor'}," 
                     +"{data:'historyBgColor'}," 
 					+"{data:'historyCurveConfShowValue'}"

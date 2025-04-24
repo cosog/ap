@@ -70,12 +70,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
-                			Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
-                			var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+                    		Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(0);
+                			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
                     		}else{
-                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
                     		Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);

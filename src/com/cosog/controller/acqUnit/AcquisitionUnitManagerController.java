@@ -2286,14 +2286,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/acquisitionUnitTreeData")
 	public String acquisitionUnitTreeData() throws IOException {
-		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.getAcquisitionUnitTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

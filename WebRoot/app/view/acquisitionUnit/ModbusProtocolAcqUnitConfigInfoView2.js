@@ -11,11 +11,6 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
     	Ext.apply(me, {
     		items: [{
             	tbar: [{
-                    id: 'ModbusProtocolAcqUnitProtocolSelectRow_Id',
-                    xtype: 'textfield',
-                    value: 0,
-                    hidden: true
-                },{
                     id: 'ModbusProtocolAcqGroupConfigSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
@@ -26,12 +21,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     iconCls: 'note-refresh',
                     hidden:false,
                     handler: function (v, o) {
-            			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
-                		if(isNotVal(treePanel)){
-                			treePanel.getStore().load();
-                		}else{
-                			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
-                		}
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+                        }
                     }
         		},'->',{
         			xtype: 'button',
@@ -97,33 +92,26 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 layout: "border",
                 items: [{
                 	region: 'west',
-                	width:'20%',
-                    layout: "fit",
-                    id:'ModbusProtocolAcqUnitProtocolListPanel_Id',
+                	width:'25%',
+                    layout: "border",
                     border: true,
                     header: false,
                     collapsible: true,
                     split: true,
-                    collapseDirection: 'left'
-                },{
-                	region: 'center',
-                	border: true,
-                    header: false,
-                    layout: "fit",
-                    id: 'ModbusProtocolAcqGroupConfigPanel_Id'
-                },{
-                	region: 'east',
-                	width:'55%',
-                	border: true,
-                    header: false,
-                    layout: "border",
-                    items:[{
+                    collapseDirection: 'left',
+                    hideMode:'offsets',
+                    items: [{
                     	region: 'center',
+                    	title:loginUserLanguageResource.acqUnitConfig,
                     	layout: 'fit',
+                    	id:"ModbusProtocolAcqGroupConfigPanel_Id"
+                    },{
+                    	region: 'south',
+                    	height:'42%',
                     	title:loginUserLanguageResource.properties,
-                    	border: false,
                     	collapsible: true,
                         split: true,
+                    	layout: 'fit',
                         html:'<div class="ModbusProtocolAcqGroupPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -141,70 +129,68 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                             	}
                             }
                         }
-                    },{
-                    	region: 'south',
-                    	height:'67%',
-                    	border: false,
-                    	split: true,
-                    	title:loginUserLanguageResource.acqAndCtrlItemConfig,
-                        id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
-                        layout: "fit",
-                    	tbar:[{
-                            xtype: 'button',
-                            text: loginUserLanguageResource.selectAll,
-                            id: 'acqUnitConfigSelectAllBtn',
-                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
-                            pressed: false,
-                            handler: function (v, o) {
-                            	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
-                            		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
-                                	var updateData=[];
-                                	var selected=true;
-                                    for(var i=0;i<rowCount;i++){
-                                    	var data=[i,'checked',selected];
-                                    	updateData.push(data);
-                                    }
-                                    protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
-                            	}
-                            }
-                        },{
-                            xtype: 'button',
-                            text: loginUserLanguageResource.deselectAll,
-                            id: 'acqUnitConfigDeselectAllBtn',
-                            disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
-                            pressed: false,
-                            handler: function (v, o) {
-                            	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
-                            		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
-                                	var updateData=[];
-                                	var selected=false;
-                                    for(var i=0;i<rowCount;i++){
-                                    	var data=[i,'checked',selected];
-                                    	updateData.push(data);
-                                    }
-                                    protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
-                            	}
-                            }
-                        }],
-                        html:'<div class="ModbusProtocolAcqGroupItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolAcqUnitConfigItemsHandsontableHelper!=null && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
-//                            		protocolAcqUnitConfigItemsHandsontableHelper.hot.refreshDimensions();
-                            		var newWidth=width;
-                            		var newHeight=height-22-1;//减去tbar
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		protocolAcqUnitConfigItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
-                            }
-                        }
                     }]
+                },{
+                	border: true,
+                	region: 'center',
+                	tbar:[{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.selectAll,
+                        id: 'acqUnitConfigSelectAllBtn',
+                        disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                        		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=true;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        	}
+                        }
+                    },{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.deselectAll,
+                        id: 'acqUnitConfigDeselectAllBtn',
+                        disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                        pressed: false,
+                        handler: function (v, o) {
+                        	if(protocolAcqUnitConfigItemsHandsontableHelper!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                        		var rowCount = protocolAcqUnitConfigItemsHandsontableHelper.hot.countRows();
+                            	var updateData=[];
+                            	var selected=false;
+                                for(var i=0;i<rowCount;i++){
+                                	var data=[i,'checked',selected];
+                                	updateData.push(data);
+                                }
+                                protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtRowProp(updateData);
+                        	}
+                        }
+                    }],
+                    title:loginUserLanguageResource.acqAndCtrlItemConfig,
+                    id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
+                    layout: 'fit',
+                    html:'<div class="ModbusProtocolAcqGroupItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if(protocolAcqUnitConfigItemsHandsontableHelper!=null && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+//                        		protocolAcqUnitConfigItemsHandsontableHelper.hot.refreshDimensions();
+                        		var newWidth=width;
+                        		var newHeight=height-22-1;//减去tbar
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		protocolAcqUnitConfigItemsHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
+                        }
+                    }
                 }]
             }]
     	});
@@ -233,10 +219,10 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'title'},"
-					 	+"{data:'addr'},"
-						+"{data:'RWType'}," 
+					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}},"
+						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
 						+"{data:'unit'},"
-						+"{data:'resolutionMode'}," 
+						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'bitIndex'}," 
 						+"{data:'dailyTotalCalculate',type:'checkbox'},"
 						+"{data:'dailyTotalCalculateName'}"
@@ -245,14 +231,9 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 				protocolAcqUnitConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				
 				if(classes==3 && type==0){
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7];
-					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [25,25,140,60,80,80,80,80,80,80];
-				}else if(classes==3 && type==1){
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7,8,9];
-					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [20,20,200,60,80,80,80,80,80,80];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7];
 				}else{
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[0,3,4,5,6,7,8,9];
-					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [20,20,240,60,80,80,80,80,80,80];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[7,8,9];
 				}
 				
 				protocolAcqUnitConfigItemsHandsontableHelper.createTable(result.totalRoot);
@@ -283,7 +264,6 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        protocolAcqUnitConfigItemsHandsontableHelper.columns=[];
 	        protocolAcqUnitConfigItemsHandsontableHelper.AllData=[];
 	        protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[];
-	        protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [];
 	        
 	        protocolAcqUnitConfigItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -339,7 +319,7 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: protocolAcqUnitConfigItemsHandsontableHelper.colWidths,
+	        		colWidths: [25,50,140,60,80,80,80,80,80,80],
 	                columns:protocolAcqUnitConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -558,7 +538,7 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 	        	protocolConfigAcqUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [1,5,5],
+	        		colWidths: [2,5,5],
 	                columns:protocolConfigAcqUnitPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

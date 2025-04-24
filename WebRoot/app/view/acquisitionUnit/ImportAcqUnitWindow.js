@@ -366,12 +366,12 @@ function saveSingelImportedAcqUnit(unitName,protocolName){
 			}
 			Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-            	treeGridPanel.getStore().load();
-            }else{
-            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
-            }
+			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
+    		if(isNotVal(treePanel)){
+    			treePanel.getStore().load();
+    		}else{
+    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
+    		}
 		},
 		failure : function() {
 			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
@@ -403,12 +403,12 @@ function saveAllImportedAcqUnit(){
 					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
 				}
 				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
-				var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
-	            if (isNotVal(treeGridPanel)) {
-	            	treeGridPanel.getStore().load();
-	            }else{
-	            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
-	            }
+    			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
+        		if(isNotVal(treePanel)){
+        			treePanel.getStore().load();
+        		}else{
+        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
+        		}
 			},
 			failure : function() {
 				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);

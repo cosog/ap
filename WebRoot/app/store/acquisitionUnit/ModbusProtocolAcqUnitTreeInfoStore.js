@@ -18,13 +18,22 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceTypeIds='';
-        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
-        	if(tabTreeGridPanelSelection.length>0){
-        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        	var protocolList=[];
+        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+        	if(protocolTreeGridPanelSelection.length>0){
+        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+        		}else{
+        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+        				}
+        			}
+        		}
+        		
         	}
         	var new_params = {
-        			deviceTypeIds: deviceTypeIds
+        			protocol: protocolList.join(",")
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
@@ -33,7 +42,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
             if (!isNotVal(gridPanel)) {
                 gridPanel = Ext.create('Ext.tree.Panel', {
                     id: "ModbusProtocolAcqGroupConfigTreeGridPanel_Id",
-//                    layout: "fit",
                     border: false,
                     animate: true,
                     enableDD: false,
@@ -41,12 +49,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                     rootVisible: false,
                     autoScroll: true,
                     forceFit: true,
-//                    selModel:{
-//                    	selType: 'checkboxmodel',
-//                    	mode: 'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-//                    	checkOnly: false,
-//                    	allowDeselect: false
-//                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
@@ -63,15 +65,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                                 return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                             }
                         }
-                    },
-//                    {
-//                        header: loginUserLanguageResource.type,
-//                        hidden: false,
-//                        dataIndex: 'nodeType',
-//                        align: 'center',
-//                        flex: 3
-//                    },
-                    {
+                    },{
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'
@@ -84,21 +78,28 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0 || record.data.classes==1){
+                        	if(record.data.classes==0 || record.data.classes==1 || record.data.classes==2){
                         		if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
                 					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
                 						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
                 					}
                 					protocolAcqUnitConfigItemsHandsontableHelper=null;
                 				}
-                        	}
-                        	
-                        	else if(record.data.classes==2){
-                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
+                        		Ext.getCmp('ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id').hide();
                         	}else if(record.data.classes==3){
+                        		Ext.getCmp('ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id').show();
                         		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
                         	}
-                        	CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                        	if(record.data.classes==2 || record.data.classes==3){
+                            	CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                        	}else{
+                        		if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null){
+                					if(protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined){
+                						protocolConfigAcqUnitPropertiesHandsontableHelper.hot.destroy();
+                					}
+                					protocolConfigAcqUnitPropertiesHandsontableHelper=null;
+                				}
+                        	}
                         	
                         	if(loginUserProtocolConfigModuleRight.editFlag==1){
                         		if(record.data.classes==3){
@@ -109,15 +110,21 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         			Ext.getCmp('acqUnitConfigDeselectAllBtn').disable();
                         		}
                         	}
+                        	
+                        	
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
-                        	var info='节点';
+                        	var info='node';
                         	if(record.data.classes==0 || record.data.classes==1){
                         		return;
                         	}else if(record.data.classes==2){
                         		info=loginUserLanguageResource.acqUnit;
                         	}else if(record.data.classes==3){
-                        		info='采控组';
+                        		if(record.data.type==0){
+                        			info=loginUserLanguageResource.acqGroup;
+                        		}else if(record.data.type==1){
+                        			info=loginUserLanguageResource.controlGroup;
+                        		}
                         	}
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,
@@ -125,23 +132,17 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                                     text: loginUserLanguageResource.deleteData,
                                     glyph: 0xf056,
                                     handler: function () {
-//                                        Ext.MessageBox.confirm("确认","您确定要进行删除操作吗?",
-//                                            function(ok){
-//                                                if("yes"==ok) {
-                                                	if(record.data.classes==2){
-                                                		var acqUnitSaveData={};
-                                                		acqUnitSaveData.delidslist=[];
-                                                		acqUnitSaveData.delidslist.push(record.data.id);
-                                                		saveAcquisitionUnitConfigData(acqUnitSaveData,record.data.protocol,record.parentNode.data.deviceType);
-                                                	}else if(record.data.classes==3){
-                                                		var acqGroupSaveData={};
-                                                		acqGroupSaveData.delidslist=[];
-                                                		acqGroupSaveData.delidslist.push(record.data.id);
-                                                		saveAcquisitionGroupConfigData(acqGroupSaveData,record.data.protocol,record.parentNode.data.id);
-                                                	}
-//                                                }
-//                                            }
-//                                        )
+                                    	if(record.data.classes==2){
+                                    		var acqUnitSaveData={};
+                                    		acqUnitSaveData.delidslist=[];
+                                    		acqUnitSaveData.delidslist.push(record.data.id);
+                                    		saveAcquisitionUnitConfigData(acqUnitSaveData,record.data.protocol,record.parentNode.data.deviceType);
+                                    	}else if(record.data.classes==3){
+                                    		var acqGroupSaveData={};
+                                    		acqGroupSaveData.delidslist=[];
+                                    		acqGroupSaveData.delidslist.push(record.data.id);
+                                    		saveAcquisitionGroupConfigData(acqGroupSaveData,record.data.protocol,record.parentNode.data.id);
+                                    	}
                                     }
                                 }],
                                 renderTo: document.body
@@ -159,7 +160,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue());
             if(selectedRow==0){
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>1){
+            		if(store.getAt(i).data.classes>=2){
             			selectedRow=i;
             			break;
             		}

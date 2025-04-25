@@ -985,6 +985,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setItemCode(itemCode);
 						displayUnitItem.setType(StringManagerUtils.stringToInteger(itemType));
 						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
+						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setMatrix(module_[6]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
@@ -2343,14 +2344,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/displayUnitTreeData")
 	public String displayUnitTreeData() throws IOException {
-		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.getDisplayUnitTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2513,14 +2514,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusProtocolAlarmUnitTreeData")
 	public String modbusProtocolAlarmUnitTreeData() throws IOException {
-		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol=ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3447,6 +3448,52 @@ public class AcquisitionUnitManagerController extends BaseController {
 				alarmUnit.setRemark(modbusProtocolAlarmUnitSaveData.getRemark());
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);
+					if(user!=null){
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmUnit")+":"+modbusProtocolAlarmUnitSaveData.getUnitName());
+					}
+					json = "{success:true,msg:true}";
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					json = "{success:false,msg:false}";
+				}
+			}
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/grantAlarmItemsToAlarmUnitPermission")
+	public String grantAlarmItemsToAlarmUnitPermission() throws Exception {
+		Gson gson=new Gson();
+		String json ="{success:true}";
+		String data = ParamUtils.getParameter(request, "data");
+		java.lang.reflect.Type type = new TypeToken<ModbusProtocolAlarmUnitSaveData>() {}.getType();
+		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		if(modbusProtocolAlarmUnitSaveData!=null){
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+			
+			if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getUnitName())){
+				try {
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmUnit")+":"+modbusProtocolAlarmUnitSaveData.getUnitName());
 					}

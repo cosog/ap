@@ -78,40 +78,90 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0 || record.data.classes==1 || record.data.classes==2){
-                        		if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
-                					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
-                						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolAcqUnitConfigItemsHandsontableHelper=null;
-                				}
-                        		Ext.getCmp('ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id').hide();
-                        	}else if(record.data.classes==3){
-                        		Ext.getCmp('ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id').show();
-                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
-                        	}
-                        	if(record.data.classes==2 || record.data.classes==3){
-                            	CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
-                        	}else{
+                        	var tabPanel = Ext.getCmp("ModbusProtocolAcqUnitConfigRightTabPanel_Id");
+                        	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
+                			var acqGroupItemsTabPanel = tabPanel.getComponent("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
+                        	if(record.data.classes==0 || record.data.classes==1){
                         		if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null){
                 					if(protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined){
                 						protocolConfigAcqUnitPropertiesHandsontableHelper.hot.destroy();
                 					}
                 					protocolConfigAcqUnitPropertiesHandsontableHelper=null;
                 				}
-                        	}
-                        	
-                        	if(loginUserProtocolConfigModuleRight.editFlag==1){
-                        		if(record.data.classes==3){
-                        			Ext.getCmp('acqUnitConfigSelectAllBtn').enable();
-                        			Ext.getCmp('acqUnitConfigDeselectAllBtn').enable();
-                        		}else{
-                        			Ext.getCmp('acqUnitConfigSelectAllBtn').disable();
-                        			Ext.getCmp('acqUnitConfigDeselectAllBtn').disable();
+                        		
+                        		if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
+                					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAcqUnitConfigItemsHandsontableHelper=null;
+                				}
+                        		if(propertiesTabPanel!=undefined){
+                        			tabPanel.remove("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
                         		}
+                        		if(acqGroupItemsTabPanel!=undefined){
+                        			tabPanel.remove("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
+                        		}
+                        	}else if(record.data.classes==2){
+                    			if(tabPanel.getActiveTab()==undefined){//无激活标签
+                    				if(acqGroupItemsTabPanel!=undefined){
+                            			tabPanel.remove("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
+                            		}
+                					if(propertiesTabPanel==undefined){
+                    					tabPanel.insert(0,acqUnitConfigRightTabPanelItems[0]);
+                    				}
+                					tabPanel.setActiveTab("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
+                    			}else{
+                    				var activeId = tabPanel.getActiveTab().id; 
+                    				if(activeId=='ModbusProtocolAcqUnitPropertiesConfigPanel_Id'){
+                    					if(acqGroupItemsTabPanel!=undefined){
+                    						if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
+                            					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                            						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
+                            					}
+                            					protocolAcqUnitConfigItemsHandsontableHelper=null;
+                            				}
+                                			tabPanel.remove("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
+                                		}
+                    					CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                    				}else if(activeId=='ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id'){
+                    					if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
+                        					if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+                        						protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolAcqUnitConfigItemsHandsontableHelper=null;
+                        				}
+                    					tabPanel.remove("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
+                    					
+                    					if(propertiesTabPanel==undefined){
+                        					tabPanel.insert(0,acqUnitConfigRightTabPanelItems[0]);
+                        				}
+                    					tabPanel.setActiveTab("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
+                    				}
+                    			}
+                        	}else if(record.data.classes==3){
+                        		if(tabPanel.getActiveTab()==undefined){//无激活标签
+                					if(propertiesTabPanel==undefined){
+                    					tabPanel.insert(0,acqUnitConfigRightTabPanelItems[0]);
+                    				}
+                					if(acqGroupItemsTabPanel==undefined){
+                						tabPanel.insert(1,acqUnitConfigRightTabPanelItems[1]);
+                            		}
+                					tabPanel.setActiveTab("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
+                    			}else{
+                    				var activeId = tabPanel.getActiveTab().id; 
+                    				if(activeId=='ModbusProtocolAcqUnitPropertiesConfigPanel_Id'){
+                    					CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                    					if(acqGroupItemsTabPanel==undefined){
+                    						tabPanel.insert(1,acqUnitConfigRightTabPanelItems[1]);
+                                		}
+                    				}else if(activeId=='ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id'){
+                    					CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
+                    					if(propertiesTabPanel==undefined){
+                    						tabPanel.insert(0,acqUnitConfigRightTabPanelItems[0]);
+                                		}
+                    				}
+                    			}
                         	}
-                        	
-                        	
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='node';

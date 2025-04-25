@@ -86,7 +86,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
         },
         beforeload: function (store, options) {
         	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue();
-        	
         	var protocolCode="";
         	if(ScadaDriverModbusConfigSelectRow!=''){
         		var selectedProtocol=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
@@ -94,8 +93,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
         			protocolCode=selectedProtocol.data.code;
         		}else if(selectedProtocol.data.classes==0){
         			protocolCode='';
-        		}else if(selectedProtocol.data.classes==2||selectedProtocol.data.classes==3){
-        			protocolCode=selectedProtocol.parentNode.data.code;
+        		}else if(selectedProtocol.data.classes==2){
+        			protocolCode=selectedProtocol.data.protocolCode;
+            	}else if(selectedProtocol.data.classes==3){
+        			protocolCode=selectedProtocol.data.protocolCode;
             	}
         	}
             var new_params = {

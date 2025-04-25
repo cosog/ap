@@ -170,32 +170,6 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			}else if(parseInt(col)==19){
                 				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),21,curveConfig);
                 			}
-                		}else if(tableType==1){
-                			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
-                			var curveConfig={};
-                			curveConfig.sort=sort;
-                			curveConfig.lineWidth=lineWidth;
-                			curveConfig.dashStyle=dashStyle;
-                			curveConfig.yAxisOpposite=yAxisOpposite;
-                			curveConfig.color=color;
-                			if(parseInt(col)==8){
-                				protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),13,curveConfig);
-                			}else if(parseInt(col)==12){
-                				protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
-                			}
-                		}else if(tableType==3){
-                			protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
-                			var curveConfig={};
-                			curveConfig.sort=sort;
-                			curveConfig.lineWidth=lineWidth;
-                			curveConfig.dashStyle=dashStyle;
-                			curveConfig.yAxisOpposite=yAxisOpposite;
-                			curveConfig.color=color;
-                			if(parseInt(col)==8){
-                				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),13,curveConfig);
-                			}else if(parseInt(col)==12){
-                				protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),14,curveConfig);
-                			}
                 		}else if(tableType==21){//单井区间报表汇总计算项
                 			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};

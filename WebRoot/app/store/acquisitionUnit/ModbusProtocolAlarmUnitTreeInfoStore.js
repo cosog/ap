@@ -18,13 +18,22 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceTypeIds='';
-        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
-        	if(tabTreeGridPanelSelection.length>0){
-        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        	var protocolList=[];
+        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+        	if(protocolTreeGridPanelSelection.length>0){
+        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+        		}else{
+        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+        				}
+        			}
+        		}
+        		
         	}
         	var new_params = {
-        			deviceTypeIds: deviceTypeIds
+        			protocol: protocolList.join(",")
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
@@ -70,130 +79,89 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(index);
-                        	var activeId = Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
-                			if(activeId=="ModbusProtocolAlarmUnitNumItemsConfigTableInfoPanel_Id"){
-                				if(record.data.classes==0){
-                					if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=null){
-                    					if(protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
-                    						protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.destroy();
-                    					}
-                    					protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
-                    				}
-                    				if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null){
-                    					if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
-                    						protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.destroy();
-                    					}
-                    					protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
-                    				}
-                            	}else if(record.data.classes==1){
-                            		CreateProtocolAlarmUnitNumItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code,0);
-                            	}else if(record.data.classes==2||record.data.classes==3){
-                            		CreateProtocolAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
-                            		CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(record.data.deviceType,record.data.classes,record.data.code,record.data.calculateType);
-                            	}
-                        	}else if(activeId=="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
-                        		var gridPanel=Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsGridPanel_Id");
-                        		if(isNotVal(gridPanel)){
-                        			gridPanel.getSelectionModel().deselectAll(true);
-                        			gridPanel.getStore().load();
-                        		}else{
-                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore');
-                        		}
-                        	}else if(activeId=="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
-                        		var gridPanel=Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsGridPanel_Id");
-                        		if(isNotVal(gridPanel)){
-                        			gridPanel.getSelectionModel().deselectAll(true);
-                        			gridPanel.getStore().load();
-                        		}else{
-                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore');
-                        		}
-                        	}else if(activeId=="ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id"){
-                    			if(record.data.classes==0){
-                    				if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null){
-                    					if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-                    						protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.destroy();
-                    					}
-                    					protocolAlarmUnitConfigCommStatusItemsHandsontableHelper=null;
-                    				}
-                    			}else if(record.data.classes==1){
-                            		CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-                            	}else if(record.data.classes==2||record.data.classes==3){
-                            		CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
-                            	}
-                        	}else if(activeId=="ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id"){
-                    			if(record.data.classes==0){
-                    				if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null){
-                    					if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-                    						protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.destroy();
-                    					}
-                    					protocolAlarmUnitConfigRunStatusItemsHandsontableHelper=null;
-                    				}
-                            	}else if(record.data.classes==1){
-                            		CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
-                            	}else if(record.data.classes==2||record.data.classes==3){
-                            		CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
-                            	}
-                        	}else if(activeId=="ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
-                    			if(record.data.classes==0){
-                    				if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null){
-                    					if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
-                    						protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.destroy();
-                    					}
-                    					protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper=null;
-                    				}
-                            	}else if(record.data.classes==1){
-                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.text,record.data.classes,record.data.code,0);
-                            	}else if(record.data.classes==2||record.data.classes==3){
-                            		CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.calculateType);
-                            	}
-                        	}
-                        	CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);
                         	
-                        	if(loginUserProtocolConfigModuleRight.editFlag==1){
-                        		if(record.data.classes==3){
-                        			Ext.getCmp('alarmUnitNumItemsConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitNumItemsConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitCalculateItemsConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitCalculateItemsConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitSwitchItemsConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitSwitchItemsConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitEnumItemsConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitEnumItemsConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitRunStatusConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitRunStatusConfigDeselectAllBtn').enable();
-                        			
-                        			Ext.getCmp('alarmUnitCommStatusConfigSelectAllBtn').enable();
-                        			Ext.getCmp('alarmUnitCommStatusConfigDeselectAllBtn').enable();
-                        		}else{
-                        			Ext.getCmp('alarmUnitNumItemsConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitNumItemsConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitCalculateItemsConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitCalculateItemsConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitSwitchItemsConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitSwitchItemsConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitEnumItemsConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitEnumItemsConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitFESDiagramConditionsConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitRunStatusConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitRunStatusConfigDeselectAllBtn').disable();
-                        			
-                        			Ext.getCmp('alarmUnitCommStatusConfigSelectAllBtn').disable();
-                        			Ext.getCmp('alarmUnitCommStatusConfigDeselectAllBtn').disable();
+                        	var tabPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigRightTabPanel_Id");
+                        	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAlarmUnitPropertiesConfigPanel_Id");
+                			var itemsConfigTabPanel = tabPanel.getComponent("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id");
+                        	if(record.data.classes!=3){
+                        		if(protocolConfigAlarmUnitPropertiesHandsontableHelper!=null){
+                					if(protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined){
+                						protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.destroy();
+                					}
+                					protocolConfigAlarmUnitPropertiesHandsontableHelper=null;
+                				}
+                        		
+                        		if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigEnumItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigRunStatusItemsHandsontableHelper=null;
+                				}
+                				if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null){
+                					if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+                						protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.destroy();
+                					}
+                					protocolAlarmUnitConfigCommStatusItemsHandsontableHelper=null;
+                				}
+                        		if(propertiesTabPanel!=undefined){
+                        			tabPanel.remove("ModbusProtocolAlarmUnitPropertiesConfigPanel_Id");
                         		}
+                        		if(itemsConfigTabPanel!=undefined){
+                        			tabPanel.remove("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id");
+                        		}
+                        	}else if(record.data.classes==3){
+                        		if(tabPanel.getActiveTab()==undefined){//无激活标签
+                					if(propertiesTabPanel==undefined){
+                    					tabPanel.insert(0,alarmUnitConfigRightTabPanelItems[0]);
+                    				}
+                					if(itemsConfigTabPanel==undefined){
+                						tabPanel.insert(1,alarmUnitConfigRightTabPanelItems[1]);
+                            		}
+                					tabPanel.setActiveTab("ModbusProtocolAlarmUnitPropertiesConfigPanel_Id");
+                    			}else{
+                    				var activeId = tabPanel.getActiveTab().id; 
+                    				if(activeId=='ModbusProtocolAlarmUnitPropertiesConfigPanel_Id'){
+                    					CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);
+                    					if(itemsConfigTabPanel==undefined){
+                    						tabPanel.insert(1,alarmUnitConfigRightTabPanelItems[1]);
+                                		}
+                    				}else if(activeId=='ModbusProtocolAlarmUnitItemsConfigTabPanel_Id'){
+                    					CreateProtocolAlarmUnitContentConfigInfoTable(record);
+                    					if(propertiesTabPanel==undefined){
+                    						tabPanel.insert(0,alarmUnitConfigRightTabPanelItems[0]);
+                                		}
+                    				}
+                    			}
                         	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单

@@ -353,12 +353,12 @@ function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName){
 			}
 			Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-            	treeGridPanel.getStore().load();
-            }else{
-            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
-            }
+    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
+    		if(isNotVal(treePanel)){
+    			treePanel.getStore().load();
+    		}else{
+    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
+    		}
 		},
 		failure : function() {
 			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
@@ -390,12 +390,12 @@ function saveAllImportedDisplayUnit(){
 			}
 			Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-            	treeGridPanel.getStore().load();
-            }else{
-            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
-            }
+    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
+    		if(isNotVal(treePanel)){
+    			treePanel.getStore().load();
+    		}else{
+    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
+    		}
 		},
 		failure : function() {
 			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);

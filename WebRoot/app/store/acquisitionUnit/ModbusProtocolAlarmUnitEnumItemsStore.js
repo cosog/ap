@@ -93,8 +93,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
         			protocolCode=selectedProtocol.data.code;
         		}else if(selectedProtocol.data.classes==0){
         			protocolCode='';
-        		}else if(selectedProtocol.data.classes==2||selectedProtocol.data.classes==3){
-        			protocolCode=selectedProtocol.parentNode.data.code;
+        		}else if(selectedProtocol.data.classes==2){
+        			protocolCode=selectedProtocol.data.protocolCode;
+            	}else if(selectedProtocol.data.classes==3){
+        			protocolCode=selectedProtocol.data.protocolCode;
             	}
         	}
             var new_params = {

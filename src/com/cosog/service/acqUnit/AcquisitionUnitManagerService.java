@@ -5331,73 +5331,52 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDisplayUnitTreeData(String deviceTypeIds,String language){
+	public String getDisplayUnitTreeData(String protocol,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
-		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
-					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
-					+ " t.sort"
-					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
-			if(StringManagerUtils.isNotNull(deviceTypeIds)){
-				unitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
-			}else{
-				unitSql+=" and 1=2 ";
-			}
-			unitSql+= " order by t.sort,t.protocol,t.id";
-			List<?> unitList=this.findCallSql(unitSql);
-			//排序
-			Collections.sort(modbusProtocolConfig.getProtocol());
-			
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
-					tree_json.append("{\"classes\":1,");
-					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					tree_json.append("\"iconCls\": \"protocol\",");
-					tree_json.append("\"expanded\": true,");
-					tree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
-							tree_json.append("{\"classes\":2,");
-							tree_json.append("\"id\":"+unitObj[0]+",");
-							tree_json.append("\"code\":\""+unitObj[1]+"\",");
-							tree_json.append("\"text\":\""+unitObj[2]+"\",");
-							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
-							tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
-							tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
-							tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
-							tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
-							tree_json.append("\"sort\":\""+unitObj[9]+"\",");
-							tree_json.append("\"iconCls\": \"acqUnit\",");
-							tree_json.append("\"leaf\": true");
-							tree_json.append("},");
-						}
-					}
-					if(tree_json.toString().endsWith(",")){
-						tree_json.deleteCharAt(tree_json.length() - 1);
-					}
-					tree_json.append("]},");
-				}
-			}
+
+		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t2.protocol,t.acqunitid,t2.unit_name as acqunitname,"
+				+ " t.calculateType, "
+				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+				+ " t.sort"
+				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
+		if(StringManagerUtils.isNotNull(protocol)){
+			unitSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+		}else{
+			unitSql+=" and 1=2 ";
 		}
+		unitSql+= " order by t.sort,t.protocol,t.id";
+		List<?> unitList=this.findCallSql(unitSql);
+		
+
+		for(int j=0;j<unitList.size();j++){
+			Object[] unitObj = (Object[]) unitList.get(j);
+			tree_json.append("{\"classes\":2,");
+			tree_json.append("\"id\":"+unitObj[0]+",");
+			tree_json.append("\"code\":\""+unitObj[1]+"\",");
+			tree_json.append("\"text\":\""+unitObj[2]+"\",");
+			tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+			tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
+			tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
+			tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
+			tree_json.append("\"calculateTypeName\":\""+unitObj[8]+"\",");
+			tree_json.append("\"sort\":\""+unitObj[9]+"\",");
+			tree_json.append("\"iconCls\": \"acqUnit\",");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
+		}
+		
 		if(tree_json.toString().endsWith(",")){
 			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
 		tree_json.append("]");
 		
 		result_json.append("[");
-		
 		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
@@ -5894,74 +5873,51 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String modbusProtocolAlarmUnitTreeData(String deviceTypeIds,String language){
+	public String modbusProtocolAlarmUnitTreeData(String protocol,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		tree_json.append("[");
 		
-		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,"
-					+ " t.calculateType, "
-					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
-					+ " t.sort"
-					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name ";
-			if(StringManagerUtils.isNotNull(deviceTypeIds)){
-				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
-			}else{
-				unitSql+=" and 1=2 ";
-			}
-			unitSql+= " order by t.sort, t.protocol,t.unit_code";
-			List<?> unitList=this.findCallSql(unitSql);
-			//排序
-			Collections.sort(modbusProtocolConfig.getProtocol());
-			
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
-					tree_json.append("{\"classes\":1,");
-					tree_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
-					tree_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
-					tree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
-					tree_json.append("\"sort\":\""+modbusProtocolConfig.getProtocol().get(i).getSort()+"\",");
-					tree_json.append("\"iconCls\": \"protocol\",");
-					tree_json.append("\"expanded\": true,");
-					tree_json.append("\"children\": [");
-					for(int j=0;j<unitList.size();j++){
-						Object[] unitObj = (Object[]) unitList.get(j);
-						String protocol=unitObj[4]+"";
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(protocol)){
-							tree_json.append("{\"classes\":3,");
-							tree_json.append("\"id\":"+unitObj[0]+",");
-							tree_json.append("\"deviceType\":"+0+",");
-							tree_json.append("\"code\":\""+unitObj[1]+"\",");
-							tree_json.append("\"text\":\""+unitObj[2]+"\",");
-							tree_json.append("\"remark\":\""+unitObj[3]+"\",");
-							tree_json.append("\"protocol\":\""+protocol+"\",");
-							tree_json.append("\"calculateType\":\""+unitObj[5]+"\",");
-							tree_json.append("\"calculateTypeName\":\""+unitObj[6]+"\",");
-							tree_json.append("\"sort\":\""+unitObj[7]+"\",");
-							tree_json.append("\"iconCls\": \"acqGroup\",");
-							tree_json.append("\"leaf\": true");
-							tree_json.append("},");
-						}
-					}
-					if(tree_json.toString().endsWith(",")){
-						tree_json.deleteCharAt(tree_json.length() - 1);
-					}
-					tree_json.append("]},");
-				}
-			}
+
+		String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,t2.code,"
+				+ " t.calculateType, "
+				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+				+ " t.sort"
+				+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
+				+ " where t.protocol=t2.name ";
+		if(StringManagerUtils.isNotNull(protocol)){
+			unitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+		}else{
+			unitSql+=" and 1=2 ";
 		}
+		unitSql+= " order by t.sort, t.protocol,t.unit_code";
+		List<?> unitList=this.findCallSql(unitSql);
+		
+		for(int j=0;j<unitList.size();j++){
+			Object[] unitObj = (Object[]) unitList.get(j);
+			tree_json.append("{\"classes\":3,");
+			tree_json.append("\"id\":"+unitObj[0]+",");
+			tree_json.append("\"deviceType\":"+0+",");
+			tree_json.append("\"code\":\""+unitObj[1]+"\",");
+			tree_json.append("\"text\":\""+unitObj[2]+"\",");
+			tree_json.append("\"remark\":\""+unitObj[3]+"\",");
+			tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			tree_json.append("\"protocolCode\":\""+unitObj[5]+"\",");
+			tree_json.append("\"calculateType\":\""+unitObj[6]+"\",");
+			tree_json.append("\"calculateTypeName\":\""+unitObj[7]+"\",");
+			tree_json.append("\"sort\":\""+unitObj[8]+"\",");
+			tree_json.append("\"iconCls\": \"acqGroup\",");
+			tree_json.append("\"leaf\": true");
+			tree_json.append("},");
+		}
+	
 		if(tree_json.toString().endsWith(",")){
 			tree_json.deleteCharAt(tree_json.length() - 1);
 		}
 		tree_json.append("]");
 		
 		result_json.append("[");
-		
 		result_json.append("{\"classes\":0,\"deviceType\": 0,\"text\":\""+languageResourceMap.get("unitList")+"\",\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");

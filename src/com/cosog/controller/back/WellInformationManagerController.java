@@ -3731,7 +3731,7 @@ public class WellInformationManagerController extends BaseController {
 	public String dataUplink(String protocolName,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
-		String result="";
+		String result=languageResourceMap.get("noUplink");
 		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
 			result=readAddr(protocolName,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
 			
@@ -3740,11 +3740,12 @@ public class WellInformationManagerController extends BaseController {
 	}
 	
 	public String readAddr(String protocolName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String language){
-		String result="";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String result=languageResourceMap.get("noUplink");
 		try {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
 			DataMapping dataMapping=null;
 			String col="";
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();

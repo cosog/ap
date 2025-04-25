@@ -50,12 +50,8 @@ Ext.define("AP.view.acquisitionUnit.CellColorSelectWindow", {
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
                 		if(tableType==231){//显示单元 采控项列表
                 			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),cellColor);
-                		}else if(tableType==232){//显示单元 计算项列表
-                			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),cellColor);
                 		}else if(tableType==233){//显示单元 控制项列表
                 			protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),cellColor);
-                		}else if(tableType==234){//显示单元 录入项列表
-                			protocolDisplayUnitInputItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),cellColor);
                 		}
                 	}
                 	Ext.getCmp("CellColorSelectWindow_Id").close();

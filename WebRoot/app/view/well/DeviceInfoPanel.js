@@ -4595,7 +4595,7 @@ function deviceSystemParameterDataUplink(){
 			applicationScenarios=1;
 		}
 
-		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceSystemParameterDataUplink',
             method: "POST",
@@ -4603,7 +4603,7 @@ function deviceSystemParameterDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {

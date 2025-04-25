@@ -78,20 +78,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
-                    		var treePanel=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
+                    		Ext.getCmp("ModbusProtocolAlarmUnitProtocolSelectRow_Id").setValue(0);
+                    		var treePanel=Ext.getCmp("AlarmUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
                     		}else{
-                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
-                    		var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
+                    		Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").setValue(0);
+                    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
                     		}else{
-                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolReportUnitConfigTabPanel_Id"){
                     		Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(0);

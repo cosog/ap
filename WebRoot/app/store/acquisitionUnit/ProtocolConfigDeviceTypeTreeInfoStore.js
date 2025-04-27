@@ -111,28 +111,28 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                         	}else if(tabPanel.getActiveTab().id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
                         		var activeId = Ext.getCmp("ModbusProtocolInstanceConfigTabPanel_Id").getActiveTab().id;
                         		if(activeId=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
-                        			Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
-                        			var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                        			Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(0);
+                                	var treePanel=Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id");
                             		if(isNotVal(treePanel)){
                             			treePanel.getStore().load();
                             		}else{
-                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
+                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoStore');
                             		}
                             	}else if(activeId=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
-                            		Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
-                            		var treePanel=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
+                            		Ext.getCmp("ModbusProtocolDisplayInstanceProtocolSelectRow_Id").setValue(0);
+                            		var treePanel=Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id");
                             		if(isNotVal(treePanel)){
                             			treePanel.getStore().load();
                             		}else{
-                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore');
+                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeInfoStore');
                             		}
                             	}else if(activeId=="ModbusProtocolAlarmInstanceConfigTabPanel_Id"){
-                            		Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").setValue(0);
-                            		var treePanel=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
+                            		Ext.getCmp("ModbusProtocolAlarmInstanceProtocolSelectRow_Id").setValue(0);
+                            		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
                             		if(isNotVal(treePanel)){
                             			treePanel.getStore().load();
                             		}else{
-                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
+                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
                             		}
                             	}else if(activeId=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
                             		Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(0);

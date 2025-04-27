@@ -49,6 +49,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                             }
                         }
                     },{
+                    	text: loginUserLanguageResource.primaryDeviceCount,
+                    	align: 'center',
+                    	dataIndex: 'deviceCount',
+                    	flex: 3
+                    },{
                         header: 'id',
                         hidden: true,
                         dataIndex: 'id'

@@ -212,6 +212,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>=2){
             			selectedRow=i;
+            			if(isNotVal(store.getAt(i).data.children) && store.getAt(i).data.children.length>0){
+            				selectedRow+=1;
+            			}
             			break;
             		}
             	}

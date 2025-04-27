@@ -19,7 +19,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
     listeners: {
         beforeload: function (store, options) {
         	var protocolList=[];
-        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+        	var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
         	if(protocolTreeGridPanelSelection.length>0){
         		if(protocolTreeGridPanelSelection[0].data.classes==1){
         			protocolList.push(protocolTreeGridPanelSelection[0].data.code);

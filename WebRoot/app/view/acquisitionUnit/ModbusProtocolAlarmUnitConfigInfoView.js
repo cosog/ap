@@ -12,7 +12,6 @@ var alarmUnitConfigRightTabPanelItems=[{
 	title:loginUserLanguageResource.properties,
 	id:"ModbusProtocolAlarmUnitPropertiesConfigPanel_Id",
 	border: false,
-	iconCls: 'check3',
 	html:'<div class="ModbusProtocolAlarmUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -34,6 +33,7 @@ var alarmUnitConfigRightTabPanelItems=[{
 	title:loginUserLanguageResource.config,
     id:"ModbusProtocolAlarmUnitItemsConfigTabPanel_Id",
     xtype: 'tabpanel',
+	iconCls: 'check3',
     activeTab: 0,
     border: false,
     tabPosition: 'top',
@@ -700,15 +700,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                 	width:'20%',
                     layout: "fit",
                     id:'ModbusProtocolAlarmUnitProtocolListPanel_Id',
-                    border: true,
-                    header: false,
+                    border: false,
+                    title:loginUserLanguageResource.protocolList,
                     collapsible: true,
                     split: true,
                     collapseDirection: 'left'
                 },{
                 	region: 'center',
-                	border: true,
-                    header: false,
+                	border: false,
+                	title:loginUserLanguageResource.alarmUnitList,
                     layout: "fit",
                     id: 'ModbusProtocolAlarmUnitConfigPanel_Id'
                 },{
@@ -720,7 +720,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     header:false,
                     xtype: 'tabpanel',
                     id:"ModbusProtocolAlarmUnitConfigRightTabPanel_Id",
-                    activeTab: 0,
+                    activeTab: 1,
                     items: alarmUnitConfigRightTabPanelItems,
                     listeners: {
                     	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -1333,7 +1333,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	        	protocolConfigAlarmUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [2,5,5],
+	        		colWidths: [1,4,5],
 	                columns:protocolConfigAlarmUnitPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

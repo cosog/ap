@@ -499,12 +499,12 @@ function saveSingelImportedAlarmInstance(instanceName,unitName,protocolName){
 			}
 			Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-            	treeGridPanel.getStore().load();
-            }else{
-            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
-            }
+    		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
+    		if(isNotVal(treePanel)){
+    			treePanel.getStore().load();
+    		}else{
+    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
+    		}
 		},
 		failure : function() {
 			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
@@ -537,12 +537,12 @@ function saveAllImportedAlarmInstance(){
 				}
 				Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
 				
-				var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
-                if (isNotVal(treeGridPanel)) {
-                	treeGridPanel.getStore().load();
-                }else{
-                	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
-                }
+        		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
+        		if(isNotVal(treePanel)){
+        			treePanel.getStore().load();
+        		}else{
+        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
+        		}
 			},
 			failure : function() {
 				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);

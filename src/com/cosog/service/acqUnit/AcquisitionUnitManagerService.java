@@ -6099,7 +6099,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolInstanceConfigTreeData(String deviceTypeIds,String language){
+	public String getModbusProtocolInstanceConfigTreeData(String protocol,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -6111,22 +6111,39 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.name";
-		if(StringManagerUtils.isNotNull(deviceTypeIds)){
-			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
+		
+		String deviceCountSql="select t.instancecode,count(1) "
+				+ " from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+				+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.name";
+		if(StringManagerUtils.isNotNull(protocol)){
+			sql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+			deviceCountSql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
 			sql+=" and 1=2 ";
-		}	
+			deviceCountSql+=" and 1=2 ";
+		}
+		
+		deviceCountSql+= " group by t.instancecode";
+		
 		sql+= " order by t.sort";
+		deviceCountSql+= " order by t.instancecode";
 		
 		List<?> list=this.findCallSql(sql);
+		List<?> deviceCountList=this.findCallSql(deviceCountSql);
+		Map<String,Integer> deviceCountMap=new HashMap<>();
+		for(int i=0;i<deviceCountList.size();i++){
+			Object[] obj = (Object[]) deviceCountList.get(i);
+			deviceCountMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
 		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-
+			String code=obj[2]+"";
+			int deviceCount=deviceCountMap.containsKey(code)?deviceCountMap.get(code):0;
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":\""+obj[0]+"\",");
 			tree_json.append("\"text\":\""+obj[1]+"\",");
-			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"code\":\""+code+"\",");
 			tree_json.append("\"acqProtocolType\":\""+obj[3]+"\",");
 			tree_json.append("\"ctrlProtocolType\":\""+obj[4]+"\",");
 			
@@ -6145,6 +6162,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"sort\":\""+obj[13]+"\",");
 			tree_json.append("\"unitId\":"+obj[14]+",");
 			tree_json.append("\"unitName\":\""+obj[15]+"\",");
+			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
 		}
@@ -6224,7 +6242,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusDisplayProtocolInstanceConfigTreeData(String deviceTypeIds,String language){
+	public String getModbusDisplayProtocolInstanceConfigTreeData(String protocol,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -6232,23 +6250,44 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
-		if(StringManagerUtils.isNotNull(deviceTypeIds)){
-			sql+=" and t4.devicetype in ("+deviceTypeIds+")";
+		
+		String deviceCountSql="select device.displayinstancecode,count(1) "
+				+ " from tbl_device device,tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+				+ " where device.displayinstancecode=t.code and t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name ";
+		if(StringManagerUtils.isNotNull(protocol)){
+			sql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+			deviceCountSql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
 			sql+=" and 1=2 ";
+			deviceCountSql+=" and 1=2 ";
 		}
+		
+		deviceCountSql+=" group by device.displayinstancecode ";
+		
 		sql+= " order by t.sort";
+		deviceCountSql+=" order by device.displayinstancecode ";
 		List<?> list=this.findCallSql(sql);
+		List<?> deviceCountList=this.findCallSql(deviceCountSql);
+		Map<String,Integer> deviceCountMap=new HashMap<>();
+		for(int i=0;i<deviceCountList.size();i++){
+			Object[] obj = (Object[]) deviceCountList.get(i);
+			deviceCountMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
+		
+		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
+			String code=obj[2]+"";
+			int deviceCount=deviceCountMap.containsKey(code)?deviceCountMap.get(code):0;
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":\""+obj[0]+"\",");
 			tree_json.append("\"text\":\""+obj[1]+"\",");
-			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"code\":\""+code+"\",");
 			tree_json.append("\"displayUnitId\":"+obj[3]+",");
 			tree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
 		}
@@ -6320,14 +6359,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id "
 				+ " order by t.sort,t.id";
+		
+		String deviceCountSql="select device.reportinstancecode,count(1) "
+				+ " from tbl_device device"
+				+ " group by device.reportinstancecode"
+				+ " order by device.reportinstancecode";
+		
 		List<?> list=this.findCallSql(sql);
+		List<?> deviceCountList=this.findCallSql(deviceCountSql);
+		Map<String,Integer> deviceCountMap=new HashMap<>();
+		for(int i=0;i<deviceCountList.size();i++){
+			Object[] obj = (Object[]) deviceCountList.get(i);
+			deviceCountMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-
+			String code=obj[2]+"";
+			int deviceCount=deviceCountMap.containsKey(code)?deviceCountMap.get(code):0;
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":"+obj[0]+",");
 			tree_json.append("\"text\":\""+obj[1]+"\",");
-			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"code\":\""+code+"\",");
 			tree_json.append("\"unitId\":"+obj[3]+",");
 			tree_json.append("\"unitName\":\""+obj[4]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
@@ -6335,6 +6387,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
 			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
 			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
+			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
 		
@@ -6396,7 +6449,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolAlarmInstanceConfigTreeData(String deviceTypeIds,String language){
+	public String getModbusProtocolAlarmInstanceConfigTreeData(String protocol,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -6404,23 +6457,40 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
-		if(StringManagerUtils.isNotNull(deviceTypeIds)){
-			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
+		String deviceCountSql="select device.alarminstancecode,count(1)  "
+				+ " from tbl_device device,tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
+				+ " where device.alarminstancecode= t.code and t.alarmunitid=t2.id and t2.protocol=t3.name";
+		if(StringManagerUtils.isNotNull(protocol)){
+			sql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+			deviceCountSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
 			sql+=" and 1=2 ";
+			deviceCountSql+=" and 1=2 ";
 		}
+		
+		deviceCountSql+=" group by device.alarminstancecode ";
+		
 		sql+= " order by t.sort";
+		deviceCountSql+=" order by device.alarminstancecode ";
 		List<?> list=this.findCallSql(sql);
+		List<?> deviceCountList=this.findCallSql(deviceCountSql);
+		Map<String,Integer> deviceCountMap=new HashMap<>();
+		for(int i=0;i<deviceCountList.size();i++){
+			Object[] obj = (Object[]) deviceCountList.get(i);
+			deviceCountMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-
+			String code=obj[2]+"";
+			int deviceCount=deviceCountMap.containsKey(code)?deviceCountMap.get(code):0;
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":\""+obj[0]+"\",");
 			tree_json.append("\"text\":\""+obj[1]+"\",");
-			tree_json.append("\"code\":\""+obj[2]+"\",");
+			tree_json.append("\"code\":\""+code+"\",");
 			tree_json.append("\"alarmUnitId\":"+obj[3]+",");
 			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
 		

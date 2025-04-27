@@ -2533,14 +2533,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusInstanceConfigTreeData")
 	public String modbusInstanceConfigTreeData() throws IOException {
-		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2619,14 +2619,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
-		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2693,14 +2693,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/modbusAlarmInstanceConfigTreeData")
 	public String modbusAlarmInstanceConfigTreeData() throws IOException {
-		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getModbusProtocolAlarmInstanceConfigTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.getModbusProtocolAlarmInstanceConfigTreeData(protocol,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

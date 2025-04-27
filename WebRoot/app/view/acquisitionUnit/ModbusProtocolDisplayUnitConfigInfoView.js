@@ -3,7 +3,6 @@ var displayUnitConfigRightTabPanelItems=[{
 	title:loginUserLanguageResource.properties,
 	id:"ModbusProtocolDisplayUnitPropertiesConfigPanel_Id",
 	border: false,
-	iconCls: 'check3',
 	html:'<div class="ModbusProtocolDisplayUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -25,6 +24,7 @@ var displayUnitConfigRightTabPanelItems=[{
 	title:loginUserLanguageResource.config,
     id:"ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id",
     layout: "border",
+	iconCls: 'check3',
 	items: [{
 		region: 'center',
 		title:loginUserLanguageResource.acquisitionItemConfig,
@@ -234,15 +234,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 	width:'20%',
                     layout: "fit",
                     id:'ModbusProtocolDisplayUnitProtocolListPanel_Id',
-                    border: true,
-                    header: false,
+                    border: false,
+                    title:loginUserLanguageResource.protocolList,
                     collapsible: true,
                     split: true,
                     collapseDirection: 'left'
                 },{
                 	region: 'center',
-                	border: true,
-                    header: false,
+                	border: false,
+                	title:loginUserLanguageResource.displayUnitList,
                     layout: "fit",
                     id: 'ModbusProtocolDisplayUnitConfigPanel_Id'
                 },{
@@ -254,7 +254,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     header:false,
                     xtype: 'tabpanel',
                     id:"ModbusProtocolDisplayUnitConfigRightTabPanel_Id",
-                    activeTab: 0,
+                    activeTab: 1,
                     items: displayUnitConfigRightTabPanelItems,
                     listeners: {
                     	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -946,7 +946,7 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	        	protocolDisplayUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [2,3,5],
+	        		colWidths: [1,4,5],
 	                columns:protocolDisplayUnitPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

@@ -10,6 +10,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
     	Ext.apply(me, {
     		items: [{
             	tbar: [{
+                    id: 'ModbusProtocolAlarmInstanceProtocolSelectRow_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
                     id: 'ModbusProtocolAlarmInstanceTreeSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
@@ -20,12 +25,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     iconCls: 'note-refresh',
                     hidden: false,
                     handler: function (v, o) {
-                    	var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
-                        if (isNotVal(treeGridPanel)) {
-                        	treeGridPanel.getStore().load();
-                        }else{
-                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore');
-                        }
+                		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
+                		if(isNotVal(treePanel)){
+                			treePanel.getStore().load();
+                		}else{
+                			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
+                		}
                     }
         		},'->',{
         			xtype: 'button',
@@ -85,13 +90,23 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                 }],
                 layout: "border",
                 items: [{
+                	region: 'west',
+                	width:'20%',
+                    layout: "fit",
+                    id:'ModbusProtocolAlarmInstanceProtocolListPanel_Id',
+                    border: false,
+                    title:loginUserLanguageResource.protocolList,
+                    collapsible: true,
+                    split: true,
+                    collapseDirection: 'left'
+                },{
                 	region: 'center',
                 	title:loginUserLanguageResource.alarmInstanceList,
                 	layout: 'fit',
                 	id:"ModbusProtocolAlarmInstanceConfigPanel_Id"
                 },{
                 	region: 'east',
-                	width:'60%',
+                	width:'50%',
                 	title:loginUserLanguageResource.properties,
                 	collapsible: true,
                     split: true,
@@ -217,7 +232,7 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	        	protocolAlarmInstancePropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [1,5,5],
+	        		colWidths: [1,4,5],
 	                columns:protocolAlarmInstancePropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -244,10 +259,12 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
 			                    	}
+			                    	cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addCellStyle;
 			                    }else if(visualColIndex === 2 && visualRowIndex===2){
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
 			                    	}
+			                    	cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    		this.type = 'dropdown';
 		                    		this.source = protocolAlarmInstancePropertiesHandsontableHelper.unitList;

@@ -6,7 +6,6 @@ var acqUnitConfigRightTabPanelItems=[{
 	title:loginUserLanguageResource.properties,
 	id:"ModbusProtocolAcqUnitPropertiesConfigPanel_Id",
 	border: false,
-	iconCls: 'check3',
     html:'<div class="ModbusProtocolAcqGroupPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -29,6 +28,7 @@ var acqUnitConfigRightTabPanelItems=[{
     id:"ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id",
     layout: "fit",
     border: false,
+	iconCls: 'check3',
 	tbar:[{
         xtype: 'button',
         text: loginUserLanguageResource.selectAll,
@@ -186,15 +186,15 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 	width:'20%',
                     layout: "fit",
                     id:'ModbusProtocolAcqUnitProtocolListPanel_Id',
-                    border: true,
-                    header: false,
+                    border: false,
+                    title:loginUserLanguageResource.protocolList,
                     collapsible: true,
                     split: true,
                     collapseDirection: 'left'
                 },{
                 	region: 'center',
-                	border: true,
-                    header: false,
+                	border: false,
+                	title:loginUserLanguageResource.acqUnitList,
                     layout: "fit",
                     id: 'ModbusProtocolAcqGroupConfigPanel_Id'
                 },{
@@ -206,7 +206,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     header:false,
                     xtype: 'tabpanel',
                     id:"ModbusProtocolAcqUnitConfigRightTabPanel_Id",
-                    activeTab: 0,
+                    activeTab: 1,
                     items: acqUnitConfigRightTabPanelItems,
                     listeners: {
                     	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {

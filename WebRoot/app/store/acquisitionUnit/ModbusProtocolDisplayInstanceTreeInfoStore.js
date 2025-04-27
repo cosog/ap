@@ -18,13 +18,22 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore'
     },
     listeners: {
         beforeload: function (store, options) {
-        	var deviceTypeIds='';
-        	var tabTreeGridPanelSelection= Ext.getCmp("ProtocolConfigTabTreeGridView_Id").getSelectionModel().getSelection();
-        	if(tabTreeGridPanelSelection.length>0){
-        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
+        	var protocolList=[];
+        	var protocolTreeGridPanelSelection= Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+        	if(protocolTreeGridPanelSelection.length>0){
+        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+        		}else{
+        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+        				}
+        			}
+        		}
+        		
         	}
         	var new_params = {
-        			deviceTypeIds: deviceTypeIds
+        			protocol: protocolList.join(",")
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },
@@ -57,6 +66,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore'
                                 return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                             }
                         }
+                    },{
+                    	text: loginUserLanguageResource.primaryDeviceCount,
+                    	align: 'center',
+                    	dataIndex: 'deviceCount',
+                    	flex: 3
                     },{
                         header: 'id',
                         hidden: true,

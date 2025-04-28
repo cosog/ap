@@ -100,7 +100,6 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateUploadedProtocolContentInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
                         		}else{
-                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(loginUserLanguageResource.acqAndCtrlItem);
                         			if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
                         				importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
                         			}

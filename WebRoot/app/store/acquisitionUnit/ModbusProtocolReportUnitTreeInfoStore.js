@@ -61,52 +61,50 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(index);
-                        	
-                        	var selectedUnitCode='';
-                        	var selectedUnitId=0;
-                        	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			selectedUnitCode=record.data.children[0].code;
-                        			selectedUnitId=record.data.children[0].id;
-                        		}
-                        	}else if(record.data.classes==1){
-                        		selectedUnitCode=record.data.code;
-                        		selectedUnitId=record.data.id;
-                        	}
-                        	
-                        	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
-            				var activeId = tabPanel.getActiveTab().id;
-            				if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
-            					var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
-            					if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id'){
-            						var ReportUnitSingleWellDailyReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
-                                	if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
-                                		ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
-                                	}else{
-                                		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
-                                	}
-//                                	CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
-                                	
-            					}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
-            						var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
-                                	if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
-                                		ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
-                                	}else{
-                                		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
-                                	}
-//                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
-            					}
-            				}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
-            					var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
-                            	if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
-                            		ReportUnitProductionReportTemplateListGridPanel.getStore().load();
-                            	}else{
-                            		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                        	if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ReportUnitPropertiesConfigRightTabPanel_Id'){
+                        		CreateProtocolReportUnitPropertiesInfoTable(record.data);
+                        	}else if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ModbusProtocolReportUnitReportTemplateTabPanel_Id'){
+                        		var selectedUnitCode='';
+                            	var selectedUnitId=0;
+                            	if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			selectedUnitCode=record.data.children[0].code;
+                            			selectedUnitId=record.data.children[0].id;
+                            		}
+                            	}else if(record.data.classes==1){
+                            		selectedUnitCode=record.data.code;
+                            		selectedUnitId=record.data.id;
                             	}
-//                            	CreateproductionReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
-            				}
-                        	
-                        	CreateProtocolReportUnitPropertiesInfoTable(record.data);
+                            	
+                            	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+                				var activeId = tabPanel.getActiveTab().id;
+                				if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+                					var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+                					if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id'){
+                						var ReportUnitSingleWellDailyReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
+                                    	if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
+                                    		ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
+                                    	}else{
+                                    		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
+                                    	}
+                                    	
+                					}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
+                						var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
+                                    	if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
+                                    		ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
+                                    	}else{
+                                    		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
+                                    	}
+                					}
+                				}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+                					var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
+                                	if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
+                                		ReportUnitProductionReportTemplateListGridPanel.getStore().load();
+                                	}else{
+                                		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                                	}
+                				}
+                        	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

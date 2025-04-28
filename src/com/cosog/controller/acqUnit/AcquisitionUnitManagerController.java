@@ -2813,6 +2813,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String data = ParamUtils.getParameter(request, "data");
+		int saveType =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "saveType"));
 		data = StringManagerUtils.superscriptToNormal(data);
 		System.out.println(data);
 		try{
@@ -2836,138 +2837,145 @@ public class AcquisitionUnitManagerController extends BaseController {
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				
 				//删除协议
-				for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
-					for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-						if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-							DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-							dataSynchronizationThread.setSign(002);
-							dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
-							dataSynchronizationThread.setMethod("delete");
-							dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-							executor.execute(dataSynchronizationThread);
-							
-							modbusProtocolConfig.getProtocol().remove(j);
-							String delSql="delete from TBL_PROTOCOL t where t.name='"+modbusDriverSaveData.getDelidslist().get(i)+"'";
-							acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
-							
-							if(user!=null){
-								this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
+				if(modbusDriverSaveData.getDelidslist()!=null && modbusDriverSaveData.getDelidslist().size()>0){
+					for(int i=0;i<modbusDriverSaveData.getDelidslist().size();i++){
+						for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+							if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+								DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+								dataSynchronizationThread.setSign(002);
+								dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
+								dataSynchronizationThread.setMethod("delete");
+								dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+								executor.execute(dataSynchronizationThread);
+								
+								modbusProtocolConfig.getProtocol().remove(j);
+								String delSql="delete from TBL_PROTOCOL t where t.name='"+modbusDriverSaveData.getDelidslist().get(i)+"'";
+								acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
+								
+								if(user!=null){
+									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
+				
 				
 				if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 						if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 							String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
-							modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
-							modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.isNumber(modbusDriverSaveData.getSort())?StringManagerUtils.stringToInteger(modbusDriverSaveData.getSort()):0);
+							if(saveType==0){
+								modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
+								modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.isNumber(modbusDriverSaveData.getSort())?StringManagerUtils.stringToInteger(modbusDriverSaveData.getSort()):0);
+							}
 							
 							List<String> delItemList=new ArrayList<String>();
-							
-							for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
-								boolean isAddItem=true;
-								String acqMode="passive";
-								if(languageResourceMap.get("activeAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
-									acqMode="active";
-								}else if(languageResourceMap.get("passiveAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
-									acqMode="passive";
-								}
-								String RWType="r";
-								if(languageResourceMap.get("readWrite").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
-									RWType="rw";
-								}else if(languageResourceMap.get("readOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
-									RWType="r";
-								}else if(languageResourceMap.get("writeOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
-									RWType="w";
-								}
-								int resolutionMode=2;
-								if(languageResourceMap.get("switchingValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
-									resolutionMode=0;
-								}else if(languageResourceMap.get("enumValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
-									resolutionMode=1;
-								}
-								for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-									if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getTitle())){
-										isAddItem=false;
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
-										//如果读写模式改变
-										if(!RWType.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
-											delItemList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
+							if(saveType==1){
+								for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
+									boolean isAddItem=true;
+									String acqMode="passive";
+									if(languageResourceMap.get("activeAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
+										acqMode="active";
+									}else if(languageResourceMap.get("passiveAcqModel").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
+										acqMode="passive";
+									}
+									String RWType="r";
+									if(languageResourceMap.get("readWrite").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+										RWType="rw";
+									}else if(languageResourceMap.get("readOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+										RWType="r";
+									}else if(languageResourceMap.get("writeOnly").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
+										RWType="w";
+									}
+									int resolutionMode=2;
+									if(languageResourceMap.get("switchingValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
+										resolutionMode=0;
+									}else if(languageResourceMap.get("enumValue").equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getResolutionMode())){
+										resolutionMode=1;
+									}
+									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+										if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getTitle())){
+											isAddItem=false;
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
+											//如果读写模式改变
+											if(!RWType.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
+												delItemList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
+											}
+											
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRWType(RWType);
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setResolutionMode(resolutionMode);
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAcqMode(acqMode);
+											
+											if(modbusDriverSaveData.getDataConfig().get(j).getMeaning()!=null){
+												modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setMeaning(new ArrayList<ItemsMeaning>());
+												for(int m=0;m<modbusDriverSaveData.getDataConfig().get(j).getMeaning().size();m++){
+													ItemsMeaning itemsMeaning=new ItemsMeaning();
+													itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getValue());
+													itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getMeaning());
+													modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().add(itemsMeaning);
+												}
+												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null&&modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
+													Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning());
+												}
+											}
+											break;
 										}
-										
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRWType(RWType);
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setResolutionMode(resolutionMode);
-										modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAcqMode(acqMode);
-										
-										if(modbusDriverSaveData.getDataConfig().get(j).getMeaning()!=null){
-											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setMeaning(new ArrayList<ItemsMeaning>());
+									}
+									if(isAddItem){
+										ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
+										item.setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
+										item.setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
+										item.setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
+										item.setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
+										item.setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
+										item.setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
+										item.setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
+										item.setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
+										item.setRWType(RWType);
+										item.setResolutionMode(resolutionMode);
+										item.setAcqMode(acqMode);
+										if(modbusDriverSaveData.getDataConfig().get(j).getMeaning()!=null && modbusDriverSaveData.getDataConfig().get(j).getMeaning().size()>0){
+											item.setMeaning(new ArrayList<ItemsMeaning>());
 											for(int m=0;m<modbusDriverSaveData.getDataConfig().get(j).getMeaning().size();m++){
 												ItemsMeaning itemsMeaning=new ItemsMeaning();
 												itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getValue());
 												itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getMeaning());
-												modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().add(itemsMeaning);
+												item.getMeaning().add(itemsMeaning);
 											}
-											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null&&modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
-												Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning());
+											if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+												Collections.sort(item.getMeaning());
 											}
 										}
-										break;
+										modbusProtocolConfig.getProtocol().get(i).getItems().add(item);
 									}
 								}
-								if(isAddItem){
-									ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
-									item.setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
-									item.setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
-									item.setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
-									item.setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
-									item.setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
-									item.setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
-									item.setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
-									item.setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
-									item.setRWType(RWType);
-									item.setResolutionMode(resolutionMode);
-									item.setAcqMode(acqMode);
-									if(modbusDriverSaveData.getDataConfig().get(j).getMeaning()!=null && modbusDriverSaveData.getDataConfig().get(j).getMeaning().size()>0){
-										item.setMeaning(new ArrayList<ItemsMeaning>());
-										for(int m=0;m<modbusDriverSaveData.getDataConfig().get(j).getMeaning().size();m++){
-											ItemsMeaning itemsMeaning=new ItemsMeaning();
-											itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getValue());
-											itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getMeaning());
-											item.getMeaning().add(itemsMeaning);
-										}
-										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											Collections.sort(item.getMeaning());
+								
+								//处理删除项
+								Iterator<Items> it = modbusProtocolConfig.getProtocol().get(i).getItems().iterator();
+								while(it.hasNext()){
+									boolean isDel=true;
+									Items item=(Items)it.next();
+									for(int k=0;k<modbusDriverSaveData.getDataConfig().size();k++){
+										if(item.getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(k).getTitle())){
+											isDel=false;
+											break;
 										}
 									}
-									modbusProtocolConfig.getProtocol().get(i).getItems().add(item);
+									if(isDel){
+										delItemList.add(item.getTitle());
+										it.remove();
+									}
 								}
 							}
 							
-							//处理删除项
-							Iterator<Items> it = modbusProtocolConfig.getProtocol().get(i).getItems().iterator();
-							while(it.hasNext()){
-								boolean isDel=true;
-								Items item=(Items)it.next();
-								for(int k=0;k<modbusDriverSaveData.getDataConfig().size();k++){
-									if(item.getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(k).getTitle())){
-										isDel=false;
-										break;
-									}
-								}
-								if(isDel){
-									delItemList.add(item.getTitle());
-									it.remove();
-								}
-							}
 							//如果协议名称改变，更新数据库
 							if(!oldName.equals(modbusDriverSaveData.getProtocolName())){
 								EquipmentDriverServerTask.initProtocolConfig(oldName,"delete");
@@ -2995,14 +3003,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 								service.updateSql(delDisplayItemSql);
 							}
 							Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
-							String updateSql="update TBL_PROTOCOL t set t.name='"+modbusProtocolConfig.getProtocol().get(i).getName()+"',"
-									+ " t.sort="+modbusProtocolConfig.getProtocol().get(i).getSort()
-									+" where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
-							service.updateSql(updateSql);
-							String updateProtocolItemsClobSql="update TBL_PROTOCOL t set t.items=? where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
-							List<String> clobCont=new ArrayList<String>();
-							clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getItems()));
-							service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+							if(saveType==0){
+								String updateSql="update TBL_PROTOCOL t set t.name='"+modbusProtocolConfig.getProtocol().get(i).getName()+"',"
+										+ " t.sort="+modbusProtocolConfig.getProtocol().get(i).getSort()
+										+" where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
+								service.updateSql(updateSql);
+							}else if(saveType==1){
+								String updateProtocolItemsClobSql="update TBL_PROTOCOL t set t.items=? where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
+								List<String> clobCont=new ArrayList<String>();
+								clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getItems()));
+								service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+							}
+							
 							
 							if(user!=null){
 								this.service.saveSystemLog(user,2,languageResourceMap.get("editProtocol")+":"+modbusProtocolConfig.getProtocol().get(i).getName());

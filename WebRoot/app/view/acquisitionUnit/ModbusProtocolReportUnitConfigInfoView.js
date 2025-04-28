@@ -94,31 +94,25 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                 }],
                 layout: "border",
                 items: [{
-                    region: 'west',
-                    width: '16%',
-                    layout: "border",
+                	region: 'west',
+                    width: '20%',
+                    title: loginUserLanguageResource.reportUnitConfig,
+                    layout: 'fit',
+                    id: "ModbusProtocolReportUnitConfigPanel_Id",
                     border: false,
-                    header: false,
-                    split: true,
-                    collapsible: true,
-                    collapseDirection: 'left',
-                    hideMode: 'offsets',
-                    items: [{
-                        region: 'center',
-                        title: loginUserLanguageResource.reportUnitConfig,
-                        border: false,
-                        layout: 'fit',
-                        id: "ModbusProtocolReportUnitConfigPanel_Id"
-                    }, {
-                        region: 'south',
-                        height: '42%',
-                        title: loginUserLanguageResource.properties,
-                        collapsible: true,
-                        border: false,
-                        split: true,
-                        collapsible: true,
-                        hidden: false,
-                        layout: 'fit',
+                	collapsible: true,
+                    split: true
+                },{
+                	region: 'center',
+                	border: false,
+                	header: false,
+                	xtype: 'tabpanel',
+                    id:"ReportUnitConfigRightTabPanel_Id",
+                    activeTab: 1,
+                    items:[{
+                    	id:"ReportUnitPropertiesConfigRightTabPanel_Id",
+                    	title:loginUserLanguageResource.properties,
+                    	layout: 'fit',
                         html: '<div class="ModbusProtocolReportUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -136,165 +130,294 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                 }
                             }
                         }
-                    }]
-                }, {
-                    region: 'center',
-                    xtype: 'tabpanel',
-                    id: "ModbusProtocolReportUnitReportTemplateTabPanel_Id",
-                    activeTab: 0,
-                    border: false,
-                    tabPosition: 'top',
-                    items: [{
-                        title: loginUserLanguageResource.singleDeviceReport,
+                    },{
+                    	id:"ModbusProtocolReportUnitReportTemplateTabPanel_Id",
+                    	border: false,
+                        title:loginUserLanguageResource.config,
                         iconCls: 'check3',
-                        id: 'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
                         xtype: 'tabpanel',
                         activeTab: 0,
                         border: false,
                         tabPosition: 'top',
                         items: [{
-                            title: loginUserLanguageResource.hourlyReport,
+                            title: loginUserLanguageResource.singleDeviceReport,
                             iconCls: 'check3',
-                            id: 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id',
-                            layout: "border",
+                            id: 'ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id',
+                            xtype: 'tabpanel',
+                            activeTab: 0,
                             border: false,
+                            tabPosition: 'top',
                             items: [{
-                                region: 'west',
-                                width: '16%',
-                                layout: 'fit',
-                                border: false,
-                                id: 'ReportUnitSingleWellDailyReportTemplateListPanel_Id',
-                                title: '报表模板列表',
-                                header: false,
-                                split: true,
-                                collapsible: true
-                        	}, {
-                                region: 'center',
+                                title: loginUserLanguageResource.hourlyReport,
+                                iconCls: 'check3',
+                                id: 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id',
                                 layout: "border",
                                 border: false,
                                 items: [{
-                                    region: 'center',
-                                    title: loginUserLanguageResource.deviceHourlyReportTemplate,
-                                    id: "ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id",
+                                    region: 'west',
+                                    width: '20%',
                                     layout: 'fit',
                                     border: false,
-                                    html: '<div class="ReportUnitSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (singleWellDailyReportTemplateHandsontableHelper != null && singleWellDailyReportTemplateHandsontableHelper.hot != null && singleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
-                                                }
-                                                singleWellDailyReportTemplateHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
-                                            }
-                                        }
-                                    }
-                            	}, {
-                                    region: 'south',
-                                    height: '50%',
-                                    title: loginUserLanguageResource.deviceHourlyReportContentConfig,
-                                    collapsible: true,
+                                    id: 'ReportUnitSingleWellDailyReportTemplateListPanel_Id',
+                                    title: '报表模板列表',
+                                    header: false,
                                     split: true,
-                                    layout: 'fit',
+                                    collapsible: true
+                            	}, {
+                                    region: 'center',
+                                    layout: "border",
                                     border: false,
-                                    id: "ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id",
-                                    layout: 'fit',
-                                    html: '<div class="ReportUnitSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (singleWellDailyReportTemplateContentHandsontableHelper != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
+                                    items: [{
+                                        region: 'center',
+                                        title: loginUserLanguageResource.deviceHourlyReportTemplate,
+                                        id: "ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        border: false,
+                                        html: '<div class="ReportUnitSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (singleWellDailyReportTemplateHandsontableHelper != null && singleWellDailyReportTemplateHandsontableHelper.hot != null && singleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    singleWellDailyReportTemplateHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
                                                 }
-                                                singleWellDailyReportTemplateContentHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
                                             }
                                         }
-                                    }
+                                	}, {
+                                        region: 'south',
+                                        height: '50%',
+                                        title: loginUserLanguageResource.deviceHourlyReportContentConfig,
+                                        collapsible: true,
+                                        split: true,
+                                        layout: 'fit',
+                                        border: false,
+                                        id: "ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        html: '<div class="ReportUnitSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (singleWellDailyReportTemplateContentHandsontableHelper != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    singleWellDailyReportTemplateContentHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
+                                                }
+                                            }
+                                        }
+                                	}]
                             	}]
-                        	}]
+                            }, {
+                                title: loginUserLanguageResource.dailyReport,
+                                id: 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id',
+                                layout: "border",
+                                border: false,
+                                items: [{
+                                    region: 'west',
+                                    width: '20%',
+                                    layout: 'fit',
+                                    border: false,
+                                    id: 'ReportUnitSingleWellRangeReportTemplateListPanel_Id',
+                                    title: '报表模板列表',
+                                    header: false,
+                                    split: true,
+                                    collapsible: true
+                            	}, {
+                                    region: 'center',
+                                    layout: "border",
+                                    border: false,
+                                    items: [{
+                                        region: 'center',
+                                        title: loginUserLanguageResource.deviceDailyReportTemplate,
+                                        id: "ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        border: false,
+                                        html: '<div class="ReportUnitSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (singleWellRangeReportTemplateHandsontableHelper != null && singleWellRangeReportTemplateHandsontableHelper.hot != null && singleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    singleWellRangeReportTemplateHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
+                                                }
+                                            }
+                                        }
+                                	}, {
+                                        region: 'south',
+                                        height: '60%',
+                                        title: loginUserLanguageResource.deviceDailyReportContentConfig,
+                                        collapsible: true,
+                                        split: true,
+                                        layout: 'fit',
+                                        border: false,
+                                        id: "ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        html: '<div class="ReportUnitSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (singleWellRangeReportTemplateContentHandsontableHelper != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    singleWellRangeReportTemplateContentHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
+                                                }
+                                            }
+                                        }
+                                	}]
+                            	}]
+                            }],
+                            listeners: {
+                            	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                    				oldCard.setIconCls(null);
+                    				newCard.setIconCls('check3');
+                    			},
+                    			tabchange: function (tabPanel, newCard, oldCard, obj) {
+                                    var unitTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+                                    var selectedUnitId = 0;
+                                    if (unitTreeSelection.length > 0) {
+                                        var record = unitTreeSelection[0];
+                                        if (record.data.classes == 0 && isNotVal(record.data.children) && record.data.children.length > 0) {
+                                            selectedUnitId = record.data.children[0].id;
+                                        } else if (record.data.classes == 1) {
+                                            selectedUnitCode = record.data.code;
+                                            selectedUnitId = record.data.id;
+                                        }
+                                    }
+
+                                    if (newCard.id == "ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id") {
+                                        var ReportUnitSingleWellDailyReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
+                                        if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
+                                            ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
+                                        } else {
+                                            Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
+                                        }
+//                                        CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType, selectedUnitId, record.data.text, record.data.classes);
+
+                                    } else if (newCard.id == "ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id") {
+                                        var ReportUnitSingleWellRangeReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
+                                        if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
+                                            ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
+                                        } else {
+                                            Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
+                                        }
+                                        //                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
+                                    }
+                                }
+                            }
                         }, {
-                            title: loginUserLanguageResource.dailyReport,
-                            id: 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id',
-                            layout: "border",
+                            title: loginUserLanguageResource.areaReport,
+                            id: 'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
+                            xtype: 'tabpanel',
+                            activeTab: 0,
                             border: false,
+                            tabPosition: 'top',
                             items: [{
-                                region: 'west',
-                                width: '16%',
-                                layout: 'fit',
-                                border: false,
-                                id: 'ReportUnitSingleWellRangeReportTemplateListPanel_Id',
-                                title: '报表模板列表',
-                                header: false,
-                                split: true,
-                                collapsible: true
-                        	}, {
-                                region: 'center',
+                                title: loginUserLanguageResource.dailyReport,
+                                iconCls: 'check3',
+                                id: 'ModbusProtocolReportUnitProductionRangeReportTemplatePanel_Id',
                                 layout: "border",
                                 border: false,
                                 items: [{
-                                    region: 'center',
-                                    title: loginUserLanguageResource.deviceDailyReportTemplate,
-                                    id: "ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id",
+                                    region: 'west',
+                                    width: '20%',
                                     layout: 'fit',
                                     border: false,
-                                    html: '<div class="ReportUnitSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (singleWellRangeReportTemplateHandsontableHelper != null && singleWellRangeReportTemplateHandsontableHelper.hot != null && singleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
-                                                }
-                                                singleWellRangeReportTemplateHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
-                                            }
-                                        }
-                                    }
-                            	}, {
-                                    region: 'south',
-                                    height: '60%',
-                                    title: loginUserLanguageResource.deviceDailyReportContentConfig,
-                                    collapsible: true,
+                                    id: 'ReportUnitProductionReportTemplateListPanel_Id',
+                                    title: '报表模板列表',
+                                    header: false,
                                     split: true,
-                                    layout: 'fit',
+                                    collapsible: true
+                            	}, {
+                                    region: 'center',
+                                    layout: "border",
                                     border: false,
-                                    id: "ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id",
-                                    layout: 'fit',
-                                    html: '<div class="ReportUnitSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (singleWellRangeReportTemplateContentHandsontableHelper != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
+                                    items: [{
+                                        region: 'center',
+                                        title: '区间日报模板',
+                                        id: "ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        border: false,
+                                        html: '<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (productionReportTemplateHandsontableHelper != null && productionReportTemplateHandsontableHelper.hot != null && productionReportTemplateHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    productionReportTemplateHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
                                                 }
-                                                singleWellRangeReportTemplateContentHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
                                             }
                                         }
-                                    }
+                                	}, {
+                                        region: 'south',
+                                        height: '50%',
+                                        title: loginUserLanguageResource.deviceDailyReportContentConfig,
+                                        collapsible: true,
+                                        split: true,
+                                        layout: 'fit',
+                                        border: false,
+                                        id: "ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id",
+                                        layout: 'fit',
+                                        html: '<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
+                                        listeners: {
+                                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                                                if (productionReportTemplateContentHandsontableHelper != null && productionReportTemplateContentHandsontableHelper.hot != null && productionReportTemplateContentHandsontableHelper.hot != undefined) {
+                                                    var newWidth = width;
+                                                    var newHeight = height;
+                                                    var header = thisPanel.getHeader();
+                                                    if (header) {
+                                                        newHeight = newHeight - header.lastBox.height - 2;
+                                                    }
+                                                    productionReportTemplateContentHandsontableHelper.hot.updateSettings({
+                                                        width: newWidth,
+                                                        height: newHeight
+                                                    });
+                                                }
+                                            }
+                                        }
+                                	}]
                             	}]
-                        	}]
+                            }],
+                            listeners: {
+                            	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                    				oldCard.setIconCls(null);
+                    				newCard.setIconCls('check3');
+                    			},
+                    			tabchange: function (tabPanel, newCard, oldCard, obj) {
+
+                                }
+                            }
                         }],
                         listeners: {
                         	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -314,163 +437,90 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                                     }
                                 }
 
-                                if (newCard.id == "ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id") {
-                                    var ReportUnitSingleWellDailyReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
-                                    if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
-                                        ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
-                                    } else {
-                                        Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
-                                    }
-//                                    CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType, selectedUnitId, record.data.text, record.data.classes);
+                                if (newCard.id == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
+                                    var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+                                    if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
+                                        var ReportUnitSingleWellDailyReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
+                                        if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
+                                            ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
+                                        } else {
+                                            Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
+                                        }
 
-                                } else if (newCard.id == "ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id") {
-                                    var ReportUnitSingleWellRangeReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
-                                    if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
-                                        ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
-                                    } else {
-                                        Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
+                                    } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
+                                        var ReportUnitSingleWellRangeReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
+                                        if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
+                                            ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
+                                        } else {
+                                            Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
+                                        }
                                     }
-                                    //                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
+                                } else if (newCard.id == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
+                                    var ReportUnitProductionReportTemplateListGridPanel = Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
+                                    if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
+                                        ReportUnitProductionReportTemplateListGridPanel.getStore().load();
+                                    } else {
+                                        Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                                    }
                                 }
-                            }
-                        }
-                    }, {
-                        title: loginUserLanguageResource.areaReport,
-                        id: 'ModbusProtocolReportUnitProductionReportTemplatePanel_Id',
-                        xtype: 'tabpanel',
-                        activeTab: 0,
-                        border: false,
-                        tabPosition: 'top',
-                        items: [{
-                            title: loginUserLanguageResource.dailyReport,
-                            iconCls: 'check3',
-                            id: 'ModbusProtocolReportUnitProductionRangeReportTemplatePanel_Id',
-                            layout: "border",
-                            border: false,
-                            items: [{
-                                region: 'west',
-                                width: '16%',
-                                layout: 'fit',
-                                border: false,
-                                id: 'ReportUnitProductionReportTemplateListPanel_Id',
-                                title: '报表模板列表',
-                                header: false,
-                                split: true,
-                                collapsible: true
-                        	}, {
-                                region: 'center',
-                                layout: "border",
-                                border: false,
-                                items: [{
-                                    region: 'center',
-                                    title: '区间日报模板',
-                                    id: "ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
-                                    layout: 'fit',
-                                    border: false,
-                                    html: '<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (productionReportTemplateHandsontableHelper != null && productionReportTemplateHandsontableHelper.hot != null && productionReportTemplateHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
-                                                }
-                                                productionReportTemplateHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
-                                            }
-                                        }
-                                    }
-                            	}, {
-                                    region: 'south',
-                                    height: '50%',
-                                    title: loginUserLanguageResource.deviceDailyReportContentConfig,
-                                    collapsible: true,
-                                    split: true,
-                                    layout: 'fit',
-                                    border: false,
-                                    id: "ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id",
-                                    layout: 'fit',
-                                    html: '<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
-                                    listeners: {
-                                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                            if (productionReportTemplateContentHandsontableHelper != null && productionReportTemplateContentHandsontableHelper.hot != null && productionReportTemplateContentHandsontableHelper.hot != undefined) {
-                                                var newWidth = width;
-                                                var newHeight = height;
-                                                var header = thisPanel.getHeader();
-                                                if (header) {
-                                                    newHeight = newHeight - header.lastBox.height - 2;
-                                                }
-                                                productionReportTemplateContentHandsontableHelper.hot.updateSettings({
-                                                    width: newWidth,
-                                                    height: newHeight
-                                                });
-                                            }
-                                        }
-                                    }
-                            	}]
-                        	}]
-                        }],
-                        listeners: {
-                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				oldCard.setIconCls(null);
-                				newCard.setIconCls('check3');
-                			},
-                			tabchange: function (tabPanel, newCard, oldCard, obj) {
-
                             }
                         }
                     }],
                     listeners: {
                     	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-            				oldCard.setIconCls(null);
-            				newCard.setIconCls('check3');
+                    		if(oldCard!=undefined){
+                    			oldCard.setIconCls(null);
+                    		}
+                    		if(newCard!=undefined){
+                    			newCard.setIconCls('check3');
+                    		}
             			},
             			tabchange: function (tabPanel, newCard, oldCard, obj) {
-                            var unitTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
-                            var selectedUnitId = 0;
-                            if (unitTreeSelection.length > 0) {
-                                var record = unitTreeSelection[0];
-                                if (record.data.classes == 0 && isNotVal(record.data.children) && record.data.children.length > 0) {
-                                    selectedUnitId = record.data.children[0].id;
-                                } else if (record.data.classes == 1) {
-                                    selectedUnitCode = record.data.code;
-                                    selectedUnitId = record.data.id;
-                                }
-                            }
-
-                            if (newCard.id == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
-                                var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
-                                if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
-                                    var ReportUnitSingleWellDailyReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
-                                    if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
-                                        ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
-                                    } else {
-                                        Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
-                                    }
-//                                    CreateSingleWellDailyReportTotalItemsInfoTable(record.data.calculateType, selectedUnitId, record.data.text, record.data.classes);
-
-                                } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
-                                    var ReportUnitSingleWellRangeReportTemplateListGridPanel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
-                                    if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
-                                        ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
-                                    } else {
-                                        Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
-                                    }
-                                    //                                	CreateSingleWellRangeReportTotalItemsInfoTable(record.data.calculateType,selectedUnitId,record.data.text,record.data.classes);
-                                }
-                            } else if (newCard.id == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
-                                var ReportUnitProductionReportTemplateListGridPanel = Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
-                                if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
-                                    ReportUnitProductionReportTemplateListGridPanel.getStore().load();
-                                } else {
-                                    Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
-                                }
-//                                CreateproductionReportTotalItemsInfoTable(record.data.calculateType, selectedUnitId, record.data.text, record.data.classes);
-                            }
+            				var record= Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
+                        	if(newCard.id=="ReportUnitPropertiesConfigRightTabPanel_Id"){
+                        		CreateProtocolReportUnitPropertiesInfoTable(record.data);
+                        	}else if(newCard.id=="ModbusProtocolReportUnitReportTemplateTabPanel_Id"){
+                        		var selectedUnitCode='';
+                            	var selectedUnitId=0;
+                            	if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			selectedUnitCode=record.data.children[0].code;
+                            			selectedUnitId=record.data.children[0].id;
+                            		}
+                            	}else if(record.data.classes==1){
+                            		selectedUnitCode=record.data.code;
+                            		selectedUnitId=record.data.id;
+                            	}
+                            	
+                            	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+                				var activeId = tabPanel.getActiveTab().id;
+                				if(activeId=="ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id"){
+                					var singleWellReportActiveId=Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+                					if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id'){
+                						var ReportUnitSingleWellDailyReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
+                                    	if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
+                                    		ReportUnitSingleWellDailyReportTemplateListGridPanel.getStore().load();
+                                    	}else{
+                                    		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplateStore')
+                                    	}
+                                    	
+                					}else if(singleWellReportActiveId=='ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id'){
+                						var ReportUnitSingleWellRangeReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id");
+                                    	if (isNotVal(ReportUnitSingleWellRangeReportTemplateListGridPanel)) {
+                                    		ReportUnitSingleWellRangeReportTemplateListGridPanel.getStore().load();
+                                    	}else{
+                                    		Ext.create('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplateStore')
+                                    	}
+                					}
+                				}else if(activeId=="ModbusProtocolReportUnitProductionReportTemplatePanel_Id"){
+                					var ReportUnitProductionReportTemplateListGridPanel=Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id");
+                                	if (isNotVal(ReportUnitProductionReportTemplateListGridPanel)) {
+                                		ReportUnitProductionReportTemplateListGridPanel.getStore().load();
+                                	}else{
+                                		Ext.create('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore')
+                                	}
+                				}
+                        	}
                         }
                     }
                 }]
@@ -1563,7 +1613,7 @@ var ReportUnitPropertiesHandsontableHelper = {
             reportUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
-                colWidths: [2, 4, 6],
+                colWidths: [1, 8, 10],
                 columns: reportUnitPropertiesHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -2129,48 +2179,68 @@ function SaveReportUnitData() {
     var reportUnitTreeSelectedRow = Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
     if (reportUnitTreeSelectedRow != '') {
         var selectedItem = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
-        var propertiesData = reportUnitPropertiesHandsontableHelper.hot.getData();
-        var reportUnitProperties = {};
+        
         if (selectedItem.data.classes == 1) { //选中的是单元
-            reportUnitProperties.classes = selectedItem.data.classes;
+        	var saveType=0;
+			if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ReportUnitPropertiesConfigRightTabPanel_Id'){
+				saveType=0;
+			}else if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ModbusProtocolReportUnitReportTemplateTabPanel_Id'){
+				saveType=1;
+			}
+        	
+			var reportUnitProperties = {};
+			reportUnitProperties.classes = selectedItem.data.classes;
             reportUnitProperties.id = selectedItem.data.id;
             reportUnitProperties.unitCode = selectedItem.data.code;
-            reportUnitProperties.unitName = isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
-
+			
             reportUnitProperties.singleWellRangeReportTemplate = selectedItem.data.singleWellRangeReportTemplate;
-            reportUnitProperties.singleWellDailyReportTemplate = selectedItem.data.singleWellDailyReportTemplate;
-            reportUnitProperties.productionReportTemplate = selectedItem.data.productionReportTemplate;
-
-            var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
-            var activeId = tabPanel.getActiveTab().id;
-            if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
-                var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
-                if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
-                    var templateSelection = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-                    if (templateSelection.length > 0) {
-                        reportUnitProperties.singleWellDailyReportTemplate = templateSelection[0].data.templateCode;
-                    }
-                } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
-                    var templateSelection = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-                    if (templateSelection.length > 0) {
-                        reportUnitProperties.singleWellRangeReportTemplate = templateSelection[0].data.templateCode;
-                    }
-                }
-            } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
-                var templateSelection = Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
-                if (templateSelection.length > 0) {
-                    reportUnitProperties.productionReportTemplate = templateSelection[0].data.templateCode;
-                }
-            }
-            reportUnitProperties.calculateType = 0;
-            if (propertiesData[1][2] == loginUserLanguageResource.SRPCalculate) {
-                reportUnitProperties.calculateType = 1;
-            } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
-                reportUnitProperties.calculateType = 2;
-            }
-            reportUnitProperties.sort = isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
-        }
-        if (selectedItem.data.classes == 1) { //保存单元
+	         reportUnitProperties.singleWellDailyReportTemplate = selectedItem.data.singleWellDailyReportTemplate;
+	         reportUnitProperties.productionReportTemplate = selectedItem.data.productionReportTemplate;
+            
+			if(saveType==0){
+				var propertiesData = reportUnitPropertiesHandsontableHelper.hot.getData();
+				 reportUnitProperties.unitName = isNotVal(propertiesData[0][2])?propertiesData[0][2]:"";
+				 reportUnitProperties.calculateType = 0;
+				 if (propertiesData[1][2] == loginUserLanguageResource.SRPCalculate) {
+					 reportUnitProperties.calculateType = 1;
+				 } else if (propertiesData[1][2] == loginUserLanguageResource.PCPCalculate) {
+					 reportUnitProperties.calculateType = 2;
+		         }
+		         reportUnitProperties.sort = isNotVal(propertiesData[2][2])?propertiesData[2][2]:"";
+			}else if(saveType==1){
+				reportUnitProperties.unitName=selectedItem.data.text;
+				reportUnitProperties.calculateType=selectedItem.data.calculateType;
+				reportUnitProperties.sort=selectedItem.data.sort;
+				
+				var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportTemplateTabPanel_Id");
+	            var activeId = tabPanel.getActiveTab().id;
+	            if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
+	                var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+	                if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
+	                    var templateSelection = Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
+	                    if (templateSelection.length > 0) {
+	                        reportUnitProperties.singleWellDailyReportTemplate = templateSelection[0].data.templateCode;
+	                    }else{
+	                    	reportUnitProperties.singleWellDailyReportTemplate="";
+	                    }
+	                } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
+	                    var templateSelection = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
+	                    if (templateSelection.length > 0) {
+	                        reportUnitProperties.singleWellRangeReportTemplate = templateSelection[0].data.templateCode;
+	                    }else{
+	                    	reportUnitProperties.singleWellRangeReportTemplate = "";
+	                    }
+	                }
+	            } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
+	                var templateSelection = Ext.getCmp("ReportUnitProductionReportTemplateListGridPanel_Id").getSelectionModel().getSelection();
+	                if (templateSelection.length > 0) {
+	                    reportUnitProperties.productionReportTemplate = templateSelection[0].data.templateCode;
+	                }else{
+	                	reportUnitProperties.productionReportTemplate="";
+	                }
+	            }
+			}
+            
             SaveModbusProtocolReportUnitData(reportUnitProperties);
         }
     }

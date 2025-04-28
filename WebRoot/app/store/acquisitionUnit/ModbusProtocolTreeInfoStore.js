@@ -70,24 +70,27 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(index);
-                        	if(record.data.classes==0){
-                        		if(protocolItemsConfigHandsontableHelper!=null){
-                					if(protocolItemsConfigHandsontableHelper.hot!=undefined){
-                						protocolItemsConfigHandsontableHelper.hot.destroy();
-                					}
-                					protocolItemsConfigHandsontableHelper=null;
-                				}
-                        		if(protocolItemsMeaningConfigHandsontableHelper!=null){
-                					if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
-                						protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
-                					}
-                					protocolItemsMeaningConfigHandsontableHelper=null;
-                				}
-                        		Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(loginUserLanguageResource.acqAndCtrlItem);
-                        	}else if(record.data.classes==1){
-                        		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	
+                        	if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolPropertiesConfigRightTabPanel_Id'){
+                        		CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
+                        	}else if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolContentConfigRightTabPanel_Id'){
+                        		if(record.data.classes==0){
+                            		if(protocolItemsConfigHandsontableHelper!=null){
+                    					if(protocolItemsConfigHandsontableHelper.hot!=undefined){
+                    						protocolItemsConfigHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolItemsConfigHandsontableHelper=null;
+                    				}
+                            		if(protocolItemsMeaningConfigHandsontableHelper!=null){
+                    					if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+                    						protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolItemsMeaningConfigHandsontableHelper=null;
+                    				}
+                            	}else if(record.data.classes==1){
+                            		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+                            	}
                         	}
-                        	CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';

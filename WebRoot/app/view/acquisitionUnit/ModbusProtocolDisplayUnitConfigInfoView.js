@@ -242,39 +242,44 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 },{
                 	region: 'center',
                 	border: false,
-                	title:loginUserLanguageResource.displayUnitList,
-                    layout: "fit",
-                    id: 'ModbusProtocolDisplayUnitConfigPanel_Id'
-                },{
-                	region: 'east',
-                	width:'55%',
-                	border: false,
-                    collapsible: true,
-                    split: true,
-                    header:false,
-                    xtype: 'tabpanel',
-                    id:"ModbusProtocolDisplayUnitConfigRightTabPanel_Id",
-                    activeTab: 1,
-                    items: displayUnitConfigRightTabPanelItems,
-                    listeners: {
-                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                    		if(oldCard!=undefined){
-                    			oldCard.setIconCls(null);
-                    		}
-                    		if(newCard!=undefined){
-                    			newCard.setIconCls('check3');
-                    		}
-            			},
-            			tabchange: function (tabPanel, newCard, oldCard, obj) {
-            				var record= Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
-                        	if(newCard.id=="ModbusProtocolDisplayUnitPropertiesConfigPanel_Id"){
-                        		CreateProtocolDisplayUnitConfigPropertiesInfoTable(record.data);
-                        	}else if(newCard.id=="ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id"){
-                        		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
-                        		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
-                        	}
+                	layout: "border",
+                	items:[{
+                		region: 'west',
+                		width:'25%',
+                		collapsible: true,
+                        split: true,
+                        border: false,
+                        title:loginUserLanguageResource.displayUnitList,
+                        layout: "fit",
+                        id: 'ModbusProtocolDisplayUnitConfigPanel_Id'
+                	},{
+                    	region: 'center',
+                    	border: false,
+                        header:false,
+                        xtype: 'tabpanel',
+                        id:"ModbusProtocolDisplayUnitConfigRightTabPanel_Id",
+                        activeTab: 1,
+                        items: displayUnitConfigRightTabPanelItems,
+                        listeners: {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                        		if(oldCard!=undefined){
+                        			oldCard.setIconCls(null);
+                        		}
+                        		if(newCard!=undefined){
+                        			newCard.setIconCls('check3');
+                        		}
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
+                				var record= Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
+                            	if(newCard.id=="ModbusProtocolDisplayUnitPropertiesConfigPanel_Id"){
+                            		CreateProtocolDisplayUnitConfigPropertiesInfoTable(record.data);
+                            	}else if(newCard.id=="ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id"){
+                            		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                            		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                            	}
+                            }
                         }
-                    }
+                    }]
                 }]
             }]
     	});

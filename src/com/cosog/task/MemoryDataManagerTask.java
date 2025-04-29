@@ -2434,14 +2434,14 @@ public class MemoryDataManagerTask {
 				timeEfficiencyUnit="%";
 			}
 			//有序集合
-			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,3,languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("commTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,3,languageResourceMap.get("commRange"))));
+			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,1,languageResourceMap.get("commTime"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,3,languageResourceMap.get("runStatus"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,3,languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("runTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,3,languageResourceMap.get("runRange"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,1,languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
+			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -2487,103 +2487,103 @@ public class MemoryDataManagerTask {
 				timeEfficiencyUnit="%";
 			}
 			//有序集合
-			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,3,languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("commTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,3,languageResourceMap.get("commRange"))));
+			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,1,languageResourceMap.get("commTime"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatusName","",2,3,languageResourceMap.get("runStatus"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,3,languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("runTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,3,languageResourceMap.get("runRange"))));
-			
-			
-			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,3,languageResourceMap.get("resultName"))));
-			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMax"),"FMax","kN",2,3,languageResourceMap.get("fMax"))));
-			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMin"),"FMin","kN",2,3,languageResourceMap.get("fMin"))));
-			
-			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("calculateStroke"),"Stroke","",2,3,"功图计算冲程")));
-			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("plungerStroke"),"PlungerStroke","m",2,3,languageResourceMap.get("plungerStroke"))));
-			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStroke"),"AvailablePlungerStroke","m",2,3,languageResourceMap.get("availablePlungerStroke"))));
-			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("noLiquidAvailablePlungerStroke"),"NoLiquidAvailablePlungerStroke","m",2,3,languageResourceMap.get("noLiquidAvailablePlungerStroke"))));
-			
-			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fullnessCoefficient"),"FullnessCoefficient","",2,3,languageResourceMap.get("fullnessCoefficient"))));
-			jedis.zadd(key.getBytes(),16, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("noLiquidFullnessCoefficient"),"NoLiquidFullnessCoefficient","",2,3,languageResourceMap.get("noLiquidFullnessCoefficient"))));
-			
-			jedis.zadd(key.getBytes(),17, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upperLoadLine"),"UpperLoadLine","kN",2,3,languageResourceMap.get("upperLoadLine"))));
-			jedis.zadd(key.getBytes(),18, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("lowerLoadLine"),"LowerLoadLine","kN",2,3,languageResourceMap.get("lowerLoadLine"))));
-			jedis.zadd(key.getBytes(),19, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upperLoadLineOfExact"),"UpperLoadLineOfExact","kN",2,3,languageResourceMap.get("upperLoadLineOfExact"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatusName","",2,1,languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
+			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));
 			
 			
-			jedis.zadd(key.getBytes(),20, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction","m^3/d",2,3,languageResourceMap.get("theoreticalProduction"))));
+			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,1,languageResourceMap.get("resultName"))));
+			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMax"),"FMax","kN",2,1,languageResourceMap.get("fMax"))));
+			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMin"),"FMin","kN",2,1,languageResourceMap.get("fMin"))));
 			
-			jedis.zadd(key.getBytes(),21, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction"),"LiquidVolumetricProduction","m^3/d",2,3,languageResourceMap.get("liquidVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),22, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction"),"OilVolumetricProduction","m^3/d",2,3,languageResourceMap.get("oilVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),23, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction"),"WaterVolumetricProduction","m^3/d",2,3,languageResourceMap.get("waterVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),24, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStrokeProd_v"),"AvailablePlungerStrokeProd_v","m^3/d",2,3,languageResourceMap.get("availablePlungerStrokeProd_v"))));
-			jedis.zadd(key.getBytes(),25, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpClearanceleakProd_v"),"PumpClearanceleakProd_v","m^3/d",2,3,languageResourceMap.get("pumpClearanceleakProd_v"))));
-			jedis.zadd(key.getBytes(),26, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("TVLeakVolumetricProduction"),"TVLeakVolumetricProduction","m^3/d",2,3,languageResourceMap.get("TVLeakVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),27, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SVLeakVolumetricProduction"),"SVLeakVolumetricProduction","m^3/d",2,3,languageResourceMap.get("SVLeakVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),28, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("gasInfluenceProd_v"),"GasInfluenceProd_v","m^3/d",2,3,languageResourceMap.get("gasInfluenceProd_v"))));
-			jedis.zadd(key.getBytes(),29, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction_l"),"LiquidVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("liquidVolumetricProduction_l"))));
-			jedis.zadd(key.getBytes(),30, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction_l"),"OilVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("oilVolumetricProduction_l"))));
-			jedis.zadd(key.getBytes(),31, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction_l"),"WaterVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("waterVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("calculateStroke"),"Stroke","",2,1,languageResourceMap.get("calculateStroke"))));
+			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("plungerStroke"),"PlungerStroke","m",2,1,languageResourceMap.get("plungerStroke"))));
+			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStroke"),"AvailablePlungerStroke","m",2,1,languageResourceMap.get("availablePlungerStroke"))));
+			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("noLiquidAvailablePlungerStroke"),"NoLiquidAvailablePlungerStroke","m",2,1,languageResourceMap.get("noLiquidAvailablePlungerStroke"))));
 			
-			jedis.zadd(key.getBytes(),32, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction"),"LiquidWeightProduction","t/d",2,3,languageResourceMap.get("liquidWeightProduction"))));
-			jedis.zadd(key.getBytes(),33, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction"),"OilWeightProduction","t/d",2,3,languageResourceMap.get("oilWeightProduction"))));
-			jedis.zadd(key.getBytes(),34, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction"),"WaterWeightProduction","t/d",2,3,languageResourceMap.get("waterWeightProduction"))));
-			jedis.zadd(key.getBytes(),35, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStrokeProd_w"),"AvailablePlungerStrokeProd_w","t/d",2,3,languageResourceMap.get("availablePlungerStrokeProd_w"))));
-			jedis.zadd(key.getBytes(),36, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpClearanceleakProd_w"),"PumpClearanceleakProd_w","t/d",2,3,languageResourceMap.get("pumpClearanceleakProd_w"))));
-			jedis.zadd(key.getBytes(),37, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("TVLeakWeightProduction"),"TVLeakWeightProduction","t/d",2,3,languageResourceMap.get("TVLeakWeightProduction"))));
-			jedis.zadd(key.getBytes(),38, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SVLeakWeightProduction"),"SVLeakWeightProduction","t/d",2,3,languageResourceMap.get("SVLeakWeightProduction"))));
-			jedis.zadd(key.getBytes(),39, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("gasInfluenceProd_w"),"GasInfluenceProd_w","t/d",2,3,languageResourceMap.get("gasInfluenceProd_w"))));
-			jedis.zadd(key.getBytes(),40, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction_l"),"LiquidWeightProduction_l","t/d",2,3,languageResourceMap.get("liquidWeightProduction_l"))));
-			jedis.zadd(key.getBytes(),41, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction_l"),"OilWeightProduction_l","t/d",2,3,languageResourceMap.get("oilWeightProduction_l"))));
-			jedis.zadd(key.getBytes(),42, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction_l"),"WaterWeightProduction_l","t/d",2,3,languageResourceMap.get("waterWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fullnessCoefficient"),"FullnessCoefficient","",2,1,languageResourceMap.get("fullnessCoefficient"))));
+			jedis.zadd(key.getBytes(),16, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("noLiquidFullnessCoefficient"),"NoLiquidFullnessCoefficient","",2,1,languageResourceMap.get("noLiquidFullnessCoefficient"))));
 			
-			jedis.zadd(key.getBytes(),43, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("averageWatt"),"AverageWatt","kW",2,3,languageResourceMap.get("averageWatt"))));
-			jedis.zadd(key.getBytes(),44, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("polishRodPower"),"PolishRodPower","kW",2,3,languageResourceMap.get("polishRodPower"))));
-			jedis.zadd(key.getBytes(),45, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterPower"),"WaterPower","kW",2,3,languageResourceMap.get("waterPower"))));
-			
-			jedis.zadd(key.getBytes(),46, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("surfaceSystemEfficiency"),"SurfaceSystemEfficiency","",2,3,languageResourceMap.get("surfaceSystemEfficiency"))));
-			jedis.zadd(key.getBytes(),47, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("wellDownSystemEfficiency"),"WellDownSystemEfficiency","",2,3,languageResourceMap.get("wellDownSystemEfficiency"))));
-			jedis.zadd(key.getBytes(),48, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("systemEfficiency"),"SystemEfficiency","",2,3,languageResourceMap.get("systemEfficiency"))));
-			jedis.zadd(key.getBytes(),49, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("area"),"Area","",2,3,languageResourceMap.get("area"))));
-			jedis.zadd(key.getBytes(),50, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("energyPer100mLift"),"EnergyPer100mLift","kW· h/100m· t",2,3,languageResourceMap.get("energyPer100mLift"))));
+			jedis.zadd(key.getBytes(),17, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upperLoadLine"),"UpperLoadLine","kN",2,1,languageResourceMap.get("upperLoadLine"))));
+			jedis.zadd(key.getBytes(),18, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("lowerLoadLine"),"LowerLoadLine","kN",2,1,languageResourceMap.get("lowerLoadLine"))));
+			jedis.zadd(key.getBytes(),19, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upperLoadLineOfExact"),"UpperLoadLineOfExact","kN",2,1,languageResourceMap.get("upperLoadLineOfExact"))));
 			
 			
-			jedis.zadd(key.getBytes(),51, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("rodFlexLength"),"RodFlexLength","m",2,3,languageResourceMap.get("rodFlexLength"))));
-			jedis.zadd(key.getBytes(),52, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("tubingFlexLength"),"TubingFlexLength","m",2,3,languageResourceMap.get("tubingFlexLength"))));
-			jedis.zadd(key.getBytes(),53, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("inertiaLength"),"InertiaLength","m",2,3,languageResourceMap.get("inertiaLength"))));
-			jedis.zadd(key.getBytes(),54, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff1"),"PumpEff1","",2,3,languageResourceMap.get("pumpEff1"))));
-			jedis.zadd(key.getBytes(),55, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff2"),"PumpEff2","",2,3,languageResourceMap.get("pumpEff2"))));
-			jedis.zadd(key.getBytes(),56, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff3"),"PumpEff3","",2,3,languageResourceMap.get("pumpEff3"))));
-			jedis.zadd(key.getBytes(),57, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff4"),"PumpEff4","",2,3,languageResourceMap.get("pumpEff4"))));
-			jedis.zadd(key.getBytes(),58, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff"),"PumpEff","",2,3,languageResourceMap.get("pumpEff"))));
+			jedis.zadd(key.getBytes(),20, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction","m^3/d",2,1,languageResourceMap.get("theoreticalProduction"))));
 			
-			jedis.zadd(key.getBytes(),59, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeP"),"PumpIntakeP","MPa",2,3,languageResourceMap.get("pumpIntakeP"))));
-			jedis.zadd(key.getBytes(),60, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeT"),"PumpIntakeT","℃",2,3,languageResourceMap.get("pumpIntakeT"))));
-			jedis.zadd(key.getBytes(),61, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeGOL"),"PumpIntakeGOL","m^3/m^3",2,3,languageResourceMap.get("pumpIntakeGOL"))));
-			jedis.zadd(key.getBytes(),62, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeVisl"),"PumpIntakeVisl","mPa·s",2,3,languageResourceMap.get("pumpIntakeVisl"))));
-			jedis.zadd(key.getBytes(),63, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeBo"),"PumpIntakeBo","",2,3,languageResourceMap.get("pumpIntakeBo"))));
+			jedis.zadd(key.getBytes(),21, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction"),"LiquidVolumetricProduction","m^3/d",2,1,languageResourceMap.get("liquidVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),22, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction"),"OilVolumetricProduction","m^3/d",2,1,languageResourceMap.get("oilVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),23, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction"),"WaterVolumetricProduction","m^3/d",2,1,languageResourceMap.get("waterVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),24, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStrokeProd_v"),"AvailablePlungerStrokeProd_v","m^3/d",2,1,languageResourceMap.get("availablePlungerStrokeProd_v"))));
+			jedis.zadd(key.getBytes(),25, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpClearanceleakProd_v"),"PumpClearanceleakProd_v","m^3/d",2,1,languageResourceMap.get("pumpClearanceleakProd_v"))));
+			jedis.zadd(key.getBytes(),26, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("TVLeakVolumetricProduction"),"TVLeakVolumetricProduction","m^3/d",2,1,languageResourceMap.get("TVLeakVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),27, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SVLeakVolumetricProduction"),"SVLeakVolumetricProduction","m^3/d",2,1,languageResourceMap.get("SVLeakVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),28, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("gasInfluenceProd_v"),"GasInfluenceProd_v","m^3/d",2,1,languageResourceMap.get("gasInfluenceProd_v"))));
+			jedis.zadd(key.getBytes(),29, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction_l"),"LiquidVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("liquidVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),30, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction_l"),"OilVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("oilVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),31, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction_l"),"WaterVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("waterVolumetricProduction_l"))));
 			
-			jedis.zadd(key.getBytes(),64, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletP"),"PumpOutletP","MPa",2,3,languageResourceMap.get("pumpOutletP"))));
-			jedis.zadd(key.getBytes(),65, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletT"),"PumpOutletT","℃",2,3,languageResourceMap.get("pumpOutletT"))));
-			jedis.zadd(key.getBytes(),66, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletGOL"),"PumpOutletGOL","m^3/m^3",2,3,languageResourceMap.get("pumpOutletGOL"))));
-			jedis.zadd(key.getBytes(),67, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletVisl"),"PumpOutletVisl","mPa·s",2,3,languageResourceMap.get("pumpOutletVisl"))));
-			jedis.zadd(key.getBytes(),68, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletBo"),"PumpOutletBo","",2,3,languageResourceMap.get("pumpOutletBo"))));
+			jedis.zadd(key.getBytes(),32, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction"),"LiquidWeightProduction","t/d",2,1,languageResourceMap.get("liquidWeightProduction"))));
+			jedis.zadd(key.getBytes(),33, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction"),"OilWeightProduction","t/d",2,1,languageResourceMap.get("oilWeightProduction"))));
+			jedis.zadd(key.getBytes(),34, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction"),"WaterWeightProduction","t/d",2,1,languageResourceMap.get("waterWeightProduction"))));
+			jedis.zadd(key.getBytes(),35, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("availablePlungerStrokeProd_w"),"AvailablePlungerStrokeProd_w","t/d",2,1,languageResourceMap.get("availablePlungerStrokeProd_w"))));
+			jedis.zadd(key.getBytes(),36, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpClearanceleakProd_w"),"PumpClearanceleakProd_w","t/d",2,1,languageResourceMap.get("pumpClearanceleakProd_w"))));
+			jedis.zadd(key.getBytes(),37, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("TVLeakWeightProduction"),"TVLeakWeightProduction","t/d",2,1,languageResourceMap.get("TVLeakWeightProduction"))));
+			jedis.zadd(key.getBytes(),38, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("SVLeakWeightProduction"),"SVLeakWeightProduction","t/d",2,1,languageResourceMap.get("SVLeakWeightProduction"))));
+			jedis.zadd(key.getBytes(),39, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("gasInfluenceProd_w"),"GasInfluenceProd_w","t/d",2,1,languageResourceMap.get("gasInfluenceProd_w"))));
+			jedis.zadd(key.getBytes(),40, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction_l"),"LiquidWeightProduction_l","t/d",2,1,languageResourceMap.get("liquidWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),41, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction_l"),"OilWeightProduction_l","t/d",2,1,languageResourceMap.get("oilWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),42, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction_l"),"WaterWeightProduction_l","t/d",2,1,languageResourceMap.get("waterWeightProduction_l"))));
 			
-			jedis.zadd(key.getBytes(),69, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upStrokeIMax"),"UpStrokeIMax","A",2,3,languageResourceMap.get("upStrokeIMax"))));
-			jedis.zadd(key.getBytes(),70, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("downStrokeIMax"),"DownStrokeIMax","A",2,3,languageResourceMap.get("downStrokeIMax"))));
-			jedis.zadd(key.getBytes(),71, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upStrokeWattMax"),"UpStrokeWattMax","kW",2,3,languageResourceMap.get("upStrokeWattMax"))));
-			jedis.zadd(key.getBytes(),72, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("downStrokeWattMax"),"DownStrokeWattMax","kW",2,3,languageResourceMap.get("downStrokeWattMax"))));
-			jedis.zadd(key.getBytes(),73, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("iDegreeBalance"),"IDegreeBalance","%",2,3,languageResourceMap.get("iDegreeBalance"))));
-			jedis.zadd(key.getBytes(),74, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("wattDegreeBalance"),"WattDegreeBalance","%",2,3,languageResourceMap.get("wattDegreeBalance"))));
-			jedis.zadd(key.getBytes(),75, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deltaRadius"),"DeltaRadius","m",2,3,languageResourceMap.get("deltaRadius"))));
+			jedis.zadd(key.getBytes(),43, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("averageWatt"),"AverageWatt","kW",2,1,languageResourceMap.get("averageWatt"))));
+			jedis.zadd(key.getBytes(),44, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("polishRodPower"),"PolishRodPower","kW",2,1,languageResourceMap.get("polishRodPower"))));
+			jedis.zadd(key.getBytes(),45, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterPower"),"WaterPower","kW",2,1,languageResourceMap.get("waterPower"))));
 			
-			jedis.zadd(key.getBytes(),76, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("levelDifferenceValue"),"LevelDifferenceValue","MPa",2,3,languageResourceMap.get("levelDifferenceValue"))));
-			jedis.zadd(key.getBytes(),77, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("calcProducingfluidLevel"),"CalcProducingfluidLevel","m",2,3,languageResourceMap.get("calcProducingfluidLevel"))));
+			jedis.zadd(key.getBytes(),46, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("surfaceSystemEfficiency"),"SurfaceSystemEfficiency","",2,1,languageResourceMap.get("surfaceSystemEfficiency"))));
+			jedis.zadd(key.getBytes(),47, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("wellDownSystemEfficiency"),"WellDownSystemEfficiency","",2,1,languageResourceMap.get("wellDownSystemEfficiency"))));
+			jedis.zadd(key.getBytes(),48, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("systemEfficiency"),"SystemEfficiency","",2,1,languageResourceMap.get("systemEfficiency"))));
+			jedis.zadd(key.getBytes(),49, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("area"),"Area","",2,1,languageResourceMap.get("area"))));
+			jedis.zadd(key.getBytes(),50, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("energyPer100mLift"),"EnergyPer100mLift","kW· h/100m· t",2,1,languageResourceMap.get("energyPer100mLift"))));
 			
-			jedis.zadd(key.getBytes(),78, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("submergence"),"Submergence","m",2,3,languageResourceMap.get("submergence"))));
+			
+			jedis.zadd(key.getBytes(),51, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("rodFlexLength"),"RodFlexLength","m",2,1,languageResourceMap.get("rodFlexLength"))));
+			jedis.zadd(key.getBytes(),52, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("tubingFlexLength"),"TubingFlexLength","m",2,1,languageResourceMap.get("tubingFlexLength"))));
+			jedis.zadd(key.getBytes(),53, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("inertiaLength"),"InertiaLength","m",2,1,languageResourceMap.get("inertiaLength"))));
+			jedis.zadd(key.getBytes(),54, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff1"),"PumpEff1","",2,1,languageResourceMap.get("pumpEff1"))));
+			jedis.zadd(key.getBytes(),55, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff2"),"PumpEff2","",2,1,languageResourceMap.get("pumpEff2"))));
+			jedis.zadd(key.getBytes(),56, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff3"),"PumpEff3","",2,1,languageResourceMap.get("pumpEff3"))));
+			jedis.zadd(key.getBytes(),57, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff4"),"PumpEff4","",2,1,languageResourceMap.get("pumpEff4"))));
+			jedis.zadd(key.getBytes(),58, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff"),"PumpEff","",2,1,languageResourceMap.get("pumpEff"))));
+			
+			jedis.zadd(key.getBytes(),59, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeP"),"PumpIntakeP","MPa",2,1,languageResourceMap.get("pumpIntakeP"))));
+			jedis.zadd(key.getBytes(),60, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeT"),"PumpIntakeT","℃",2,1,languageResourceMap.get("pumpIntakeT"))));
+			jedis.zadd(key.getBytes(),61, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeGOL"),"PumpIntakeGOL","m^3/m^3",2,1,languageResourceMap.get("pumpIntakeGOL"))));
+			jedis.zadd(key.getBytes(),62, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeVisl"),"PumpIntakeVisl","mPa·s",2,1,languageResourceMap.get("pumpIntakeVisl"))));
+			jedis.zadd(key.getBytes(),63, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeBo"),"PumpIntakeBo","",2,1,languageResourceMap.get("pumpIntakeBo"))));
+			
+			jedis.zadd(key.getBytes(),64, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletP"),"PumpOutletP","MPa",2,1,languageResourceMap.get("pumpOutletP"))));
+			jedis.zadd(key.getBytes(),65, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletT"),"PumpOutletT","℃",2,1,languageResourceMap.get("pumpOutletT"))));
+			jedis.zadd(key.getBytes(),66, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletGOL"),"PumpOutletGOL","m^3/m^3",2,1,languageResourceMap.get("pumpOutletGOL"))));
+			jedis.zadd(key.getBytes(),67, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletVisl"),"PumpOutletVisl","mPa·s",2,1,languageResourceMap.get("pumpOutletVisl"))));
+			jedis.zadd(key.getBytes(),68, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletBo"),"PumpOutletBo","",2,1,languageResourceMap.get("pumpOutletBo"))));
+			
+			jedis.zadd(key.getBytes(),69, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upStrokeIMax"),"UpStrokeIMax","A",2,1,languageResourceMap.get("upStrokeIMax"))));
+			jedis.zadd(key.getBytes(),70, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("downStrokeIMax"),"DownStrokeIMax","A",2,1,languageResourceMap.get("downStrokeIMax"))));
+			jedis.zadd(key.getBytes(),71, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("upStrokeWattMax"),"UpStrokeWattMax","kW",2,1,languageResourceMap.get("upStrokeWattMax"))));
+			jedis.zadd(key.getBytes(),72, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("downStrokeWattMax"),"DownStrokeWattMax","kW",2,1,languageResourceMap.get("downStrokeWattMax"))));
+			jedis.zadd(key.getBytes(),73, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("iDegreeBalance"),"IDegreeBalance","%",2,1,languageResourceMap.get("iDegreeBalance"))));
+			jedis.zadd(key.getBytes(),74, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("wattDegreeBalance"),"WattDegreeBalance","%",2,1,languageResourceMap.get("wattDegreeBalance"))));
+			jedis.zadd(key.getBytes(),75, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deltaRadius"),"DeltaRadius","m",2,1,languageResourceMap.get("deltaRadius"))));
+			
+			jedis.zadd(key.getBytes(),76, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("levelDifferenceValue"),"LevelDifferenceValue","MPa",2,1,languageResourceMap.get("levelDifferenceValue"))));
+			jedis.zadd(key.getBytes(),77, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("calcProducingfluidLevel"),"CalcProducingfluidLevel","m",2,1,languageResourceMap.get("calcProducingfluidLevel"))));
+			
+			jedis.zadd(key.getBytes(),78, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("submergence"),"Submergence","m",2,1,languageResourceMap.get("submergence"))));
 			
 			
 		}catch (Exception e) {
@@ -2631,50 +2631,50 @@ public class MemoryDataManagerTask {
 				timeEfficiencyUnit="%";
 			}
 			//有序集合
-			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,3,languageResourceMap.get("commTime"))));
-			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("commTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,3,languageResourceMap.get("commRange"))));
+			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,1,languageResourceMap.get("commTime"))));
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,3,languageResourceMap.get("runStatus"))));
-			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,3,languageResourceMap.get("runTime"))));
-			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,3,languageResourceMap.get("runTimeEfficiency"))));
-			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,3,languageResourceMap.get("runRange"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,1,languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
+			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));
 			
-			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction","m^3/d",2,3,languageResourceMap.get("theoreticalProduction"))));
+			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("theoreticalProduction"),"TheoreticalProduction","m^3/d",2,1,languageResourceMap.get("theoreticalProduction"))));
 			
-			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction"),"LiquidVolumetricProduction","m^3/d",2,3,languageResourceMap.get("liquidVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction"),"OilVolumetricProduction","m^3/d",2,3,languageResourceMap.get("oilVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction"),"WaterVolumetricProduction","m^3/d",2,3,languageResourceMap.get("waterVolumetricProduction"))));
-			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction_l"),"LiquidVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("liquidVolumetricProduction_l"))));
-			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction_l"),"OilVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("oilVolumetricProduction_l"))));
-			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction_l"),"WaterVolumetricProduction_l","m^3/d",2,3,languageResourceMap.get("waterVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction"),"LiquidVolumetricProduction","m^3/d",2,1,languageResourceMap.get("liquidVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction"),"OilVolumetricProduction","m^3/d",2,1,languageResourceMap.get("oilVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction"),"WaterVolumetricProduction","m^3/d",2,1,languageResourceMap.get("waterVolumetricProduction"))));
+			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidVolumetricProduction_l"),"LiquidVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("liquidVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilVolumetricProduction_l"),"OilVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("oilVolumetricProduction_l"))));
+			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterVolumetricProduction_l"),"WaterVolumetricProduction_l","m^3/d",2,1,languageResourceMap.get("waterVolumetricProduction_l"))));
 			
-			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction"),"LiquidWeightProduction","t/d",2,3,languageResourceMap.get("liquidWeightProduction"))));
-			jedis.zadd(key.getBytes(),16, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction"),"OilWeightProduction","t/d",2,3,languageResourceMap.get("oilWeightProduction"))));
-			jedis.zadd(key.getBytes(),17, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction"),"WaterWeightProduction","t/d",2,3,languageResourceMap.get("waterWeightProduction"))));
-			jedis.zadd(key.getBytes(),18, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction_l"),"LiquidWeightProduction_l","t/d",2,3,languageResourceMap.get("liquidWeightProduction_l"))));
-			jedis.zadd(key.getBytes(),19, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction_l"),"OilWeightProduction_l","t/d",2,3,languageResourceMap.get("oilWeightProduction_l"))));
-			jedis.zadd(key.getBytes(),20, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction_l"),"WaterWeightProduction_l","t/d",2,3,languageResourceMap.get("waterWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction"),"LiquidWeightProduction","t/d",2,1,languageResourceMap.get("liquidWeightProduction"))));
+			jedis.zadd(key.getBytes(),16, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction"),"OilWeightProduction","t/d",2,1,languageResourceMap.get("oilWeightProduction"))));
+			jedis.zadd(key.getBytes(),17, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction"),"WaterWeightProduction","t/d",2,1,languageResourceMap.get("waterWeightProduction"))));
+			jedis.zadd(key.getBytes(),18, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("liquidWeightProduction_l"),"LiquidWeightProduction_l","t/d",2,1,languageResourceMap.get("liquidWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),19, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("oilWeightProduction_l"),"OilWeightProduction_l","t/d",2,1,languageResourceMap.get("oilWeightProduction_l"))));
+			jedis.zadd(key.getBytes(),20, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterWeightProduction_l"),"WaterWeightProduction_l","t/d",2,1,languageResourceMap.get("waterWeightProduction_l"))));
 			
-			jedis.zadd(key.getBytes(),21, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("averageWatt"),"AverageWatt","kW",2,3,languageResourceMap.get("averageWatt"))));
-			jedis.zadd(key.getBytes(),22, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterPower"),"WaterPower","kW",2,3,languageResourceMap.get("waterPower"))));
-			jedis.zadd(key.getBytes(),23, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("systemEfficiency"),"SystemEfficiency","",2,3,languageResourceMap.get("systemEfficiency"))));
+			jedis.zadd(key.getBytes(),21, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("averageWatt"),"AverageWatt","kW",2,1,languageResourceMap.get("averageWatt"))));
+			jedis.zadd(key.getBytes(),22, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("waterPower"),"WaterPower","kW",2,1,languageResourceMap.get("waterPower"))));
+			jedis.zadd(key.getBytes(),23, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("systemEfficiency"),"SystemEfficiency","",2,1,languageResourceMap.get("systemEfficiency"))));
 			
-			jedis.zadd(key.getBytes(),24, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff1_pcp"),"PumpEff1","",2,3,languageResourceMap.get("pumpEff1_pcp"))));
-			jedis.zadd(key.getBytes(),25, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff2_pcp"),"PumpEff2","",2,3,languageResourceMap.get("pumpEff2_pcp"))));
-			jedis.zadd(key.getBytes(),26, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff"),"PumpEff","",2,3,languageResourceMap.get("pumpEff"))));
+			jedis.zadd(key.getBytes(),24, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff1_pcp"),"PumpEff1","",2,1,languageResourceMap.get("pumpEff1_pcp"))));
+			jedis.zadd(key.getBytes(),25, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff2_pcp"),"PumpEff2","",2,1,languageResourceMap.get("pumpEff2_pcp"))));
+			jedis.zadd(key.getBytes(),26, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpEff"),"PumpEff","",2,1,languageResourceMap.get("pumpEff"))));
 			
-			jedis.zadd(key.getBytes(),27, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeP"),"PumpIntakeP","MPa",2,3,languageResourceMap.get("pumpIntakeP"))));
-			jedis.zadd(key.getBytes(),28, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeT"),"PumpIntakeT","℃",2,3,languageResourceMap.get("pumpIntakeT"))));
-			jedis.zadd(key.getBytes(),29, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeGOL"),"PumpIntakeGOL","m^3/m^3",2,3,languageResourceMap.get("pumpIntakeGOL"))));
-			jedis.zadd(key.getBytes(),30, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeVisl"),"PumpIntakeVisl","mPa·s",2,3,languageResourceMap.get("pumpIntakeVisl"))));
-			jedis.zadd(key.getBytes(),31, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeBo"),"PumpIntakeBo","",2,3,languageResourceMap.get("pumpIntakeBo"))));
+			jedis.zadd(key.getBytes(),27, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeP"),"PumpIntakeP","MPa",2,1,languageResourceMap.get("pumpIntakeP"))));
+			jedis.zadd(key.getBytes(),28, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeT"),"PumpIntakeT","℃",2,1,languageResourceMap.get("pumpIntakeT"))));
+			jedis.zadd(key.getBytes(),29, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeGOL"),"PumpIntakeGOL","m^3/m^3",2,1,languageResourceMap.get("pumpIntakeGOL"))));
+			jedis.zadd(key.getBytes(),30, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeVisl"),"PumpIntakeVisl","mPa·s",2,1,languageResourceMap.get("pumpIntakeVisl"))));
+			jedis.zadd(key.getBytes(),31, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpIntakeBo"),"PumpIntakeBo","",2,1,languageResourceMap.get("pumpIntakeBo"))));
 			
-			jedis.zadd(key.getBytes(),32, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletP"),"PumpOutletP","MPa",2,3,languageResourceMap.get("pumpOutletP"))));
-			jedis.zadd(key.getBytes(),33, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletT"),"PumpOutletT","℃",2,3,languageResourceMap.get("pumpOutletT"))));
-			jedis.zadd(key.getBytes(),34, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletGOL"),"PumpOutletGOL","m^3/m^3",2,3,languageResourceMap.get("pumpOutletGOL"))));
-			jedis.zadd(key.getBytes(),35, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletVisl"),"PumpOutletVisl","mPa·s",2,3,languageResourceMap.get("pumpOutletVisl"))));
-			jedis.zadd(key.getBytes(),36, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletBo"),"PumpOutletBo","",2,3,languageResourceMap.get("pumpOutletBo"))));
+			jedis.zadd(key.getBytes(),32, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletP"),"PumpOutletP","MPa",2,1,languageResourceMap.get("pumpOutletP"))));
+			jedis.zadd(key.getBytes(),33, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletT"),"PumpOutletT","℃",2,1,languageResourceMap.get("pumpOutletT"))));
+			jedis.zadd(key.getBytes(),34, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletGOL"),"PumpOutletGOL","m^3/m^3",2,1,languageResourceMap.get("pumpOutletGOL"))));
+			jedis.zadd(key.getBytes(),35, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletVisl"),"PumpOutletVisl","mPa·s",2,1,languageResourceMap.get("pumpOutletVisl"))));
+			jedis.zadd(key.getBytes(),36, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpOutletBo"),"PumpOutletBo","",2,1,languageResourceMap.get("pumpOutletBo"))));
 			
 //			jedis.zadd(key.getBytes(),36, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,1,"日用电量")));
 		}catch (Exception e) {
@@ -5038,9 +5038,13 @@ public class MemoryDataManagerTask {
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
 						String item=obj.getString("FIELD");
+						if(item.equalsIgnoreCase("userLogin")){
+							System.out.println(item);
+						}
 						if(StringManagerUtils.isNotNull(item)){
 							String value=obj.getString("LANGUAGE");
 							value=StringManagerUtils.stringFormat(value);
+
 							languageMap.put(item, value);
 						}
 					}

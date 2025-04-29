@@ -2687,14 +2687,20 @@ showSurfaceCard = function(result, divId) {
 	}
 	
 	if(result.positionCurveData!="" && positionCurveData.length>0 && result.loadCurveData!="" && loadCurveData.length>0){
+//		var firstXData=positionCurveData[0];
+//		var lastXData=positionCurveData[positionCurveData.length-1];
 		for (var i=0; i <= gtcount; i++) {
 			if(i<gtcount){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
+				
 				if(changeTwoDecimal(loadCurveData[i])<minLoadValue){
 					minLoadValue=changeTwoDecimal(loadCurveData[i]);
 				}
 			}else{
-				data += "[" + changeTwoDecimal(positionCurveData[1]) + ","+changeTwoDecimal(loadCurveData[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
+//				if(Math.abs(lastXData-firstXData)<0.5){
+//					
+//				}
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(loadCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 	}

@@ -194,38 +194,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 },{
                 	region: 'center',
                 	border: false,
-                	title:loginUserLanguageResource.acqUnitList,
-                    layout: "fit",
-                    id: 'ModbusProtocolAcqGroupConfigPanel_Id'
-                },{
-                	region: 'east',
-                	width:'55%',
-                	border: false,
-                    collapsible: true,
-                    split: true,
-                    header:false,
-                    xtype: 'tabpanel',
-                    id:"ModbusProtocolAcqUnitConfigRightTabPanel_Id",
-                    activeTab: 1,
-                    items: acqUnitConfigRightTabPanelItems,
-                    listeners: {
-                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                    		if(oldCard!=undefined){
-                    			oldCard.setIconCls(null);
-                    		}
-                    		if(newCard!=undefined){
-                    			newCard.setIconCls('check3');
-                    		}
-            			},
-            			tabchange: function (tabPanel, newCard, oldCard, obj) {
-            				var record= Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
-                        	if(newCard.id=="ModbusProtocolAcqUnitPropertiesConfigPanel_Id"){
-                        		CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
-                        	}else if(newCard.id=="ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id"){
-                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
-                        	}
+                	layout: "border",
+                	items:[{
+                		region: 'west',
+                		width:'25%',
+                		collapsible: true,
+                        split: true,
+                        border: false,
+                    	title:loginUserLanguageResource.acqUnitList,
+                        layout: "fit",
+                        id: 'ModbusProtocolAcqGroupConfigPanel_Id'
+                	},{
+                    	region: 'center',
+                    	border: false,
+                        header:false,
+                        xtype: 'tabpanel',
+                        id:"ModbusProtocolAcqUnitConfigRightTabPanel_Id",
+                        activeTab: 1,
+                        items: acqUnitConfigRightTabPanelItems,
+                        listeners: {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                        		if(oldCard!=undefined){
+                        			oldCard.setIconCls(null);
+                        		}
+                        		if(newCard!=undefined){
+                        			newCard.setIconCls('check3');
+                        		}
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
+                				var record= Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
+                            	if(newCard.id=="ModbusProtocolAcqUnitPropertiesConfigPanel_Id"){
+                            		CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
+                            	}else if(newCard.id=="ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id"){
+                            		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
+                            	}
+                            }
                         }
-                    }
+                    }]
                 }]
             }]
     	});

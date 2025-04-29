@@ -101,33 +101,40 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     collapseDirection: 'left'
                 },{
                 	region: 'center',
-                	title:loginUserLanguageResource.alarmInstanceList,
-                	layout: 'fit',
-                	id:"ModbusProtocolAlarmInstanceConfigPanel_Id"
-                },{
-                	region: 'east',
-                	width:'50%',
-                	title:loginUserLanguageResource.properties,
-                	collapsible: true,
-                    split: true,
-                	layout: 'fit',
-                    html:'<div class="ProtocolAlarmInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolAlarmInstancePropertiesTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(protocolAlarmInstancePropertiesHandsontableHelper!=null && protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined){
-                        		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		protocolAlarmInstancePropertiesHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                        	}
+                	border: false,
+                	layout: "border",
+                	items:[{
+                		region: 'west',
+                		width:'33%',
+                		collapsible: true,
+                        split: true,
+                        border: false,
+                        title:loginUserLanguageResource.alarmInstanceList,
+                    	layout: 'fit',
+                    	id:"ModbusProtocolAlarmInstanceConfigPanel_Id"
+                	},{
+                    	region: 'center',
+                    	title:loginUserLanguageResource.properties,
+                    	border: false,
+                    	layout: 'fit',
+                        html:'<div class="ProtocolAlarmInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolAlarmInstancePropertiesTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolAlarmInstancePropertiesHandsontableHelper!=null && protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolAlarmInstancePropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                            }
                         }
-                    }
+                    }]
                 }]
             }]
     	});

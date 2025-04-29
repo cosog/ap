@@ -118,7 +118,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 layout: "border",
                 items: [{
                 	region: 'west',
-                	width:'20%',
+                	width:'17%',
                 	title:loginUserLanguageResource.protocolConfig,
                 	layout: 'fit',
                 	id:"ModbusProtocolAddrMappingConfigPanel_Id",
@@ -186,7 +186,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             }
                         },{
                         	region: 'east',
-                        	width:'15%',
+                        	width:'20%',
                         	title:loginUserLanguageResource.meaning,
                         	id:'ModbusProtocolAddrMappingItemsMeaningConfigPanel_Id',
                         	header:false,

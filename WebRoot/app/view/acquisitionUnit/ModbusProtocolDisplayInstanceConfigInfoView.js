@@ -101,34 +101,41 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     collapseDirection: 'left'
                 },{
                 	region: 'center',
-                	title:loginUserLanguageResource.displayInstanceList,
-                	layout: 'fit',
-                	id:"ModbusProtocolDisplayInstanceConfigPanel_Id"
-                },{
-                	region: 'east',
-                	width:'50%',
-                	title:loginUserLanguageResource.properties,
-                	collapsible: true,
-                    split: true,
-                	layout: 'fit',
-                    html:'<div class="ProtocolDisplayInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstancePropertiesTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(protocolDisplayInstancePropertiesHandsontableHelper!=null && protocolDisplayInstancePropertiesHandsontableHelper.hot!=undefined){
-//                        		protocolDisplayInstancePropertiesHandsontableHelper.hot.refreshDimensions();
-                        		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		protocolDisplayInstancePropertiesHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                        	}
+                	border: false,
+                	layout: "border",
+                	items:[{
+                		region: 'west',
+                		width:'33%',
+                		collapsible: true,
+                        split: true,
+                        border: false,
+                        title:loginUserLanguageResource.displayInstanceList,
+                    	layout: 'fit',
+                    	id:"ModbusProtocolDisplayInstanceConfigPanel_Id"
+                	},{
+                    	region: 'center',
+                    	title:loginUserLanguageResource.properties,
+                    	border: false,
+                    	layout: 'fit',
+                        html:'<div class="ProtocolDisplayInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolDisplayInstancePropertiesTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolDisplayInstancePropertiesHandsontableHelper!=null && protocolDisplayInstancePropertiesHandsontableHelper.hot!=undefined){
+//                            		protocolDisplayInstancePropertiesHandsontableHelper.hot.refreshDimensions();
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolDisplayInstancePropertiesHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                            }
                         }
-                    }
+                    }]
                 }]
             }]
     	});

@@ -708,38 +708,43 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                 },{
                 	region: 'center',
                 	border: false,
-                	title:loginUserLanguageResource.alarmUnitList,
-                    layout: "fit",
-                    id: 'ModbusProtocolAlarmUnitConfigPanel_Id'
-                },{
-                	region: 'east',
-                	width:'55%',
-                	border: false,
-                    collapsible: true,
-                    split: true,
-                    header:false,
-                    xtype: 'tabpanel',
-                    id:"ModbusProtocolAlarmUnitConfigRightTabPanel_Id",
-                    activeTab: 1,
-                    items: alarmUnitConfigRightTabPanelItems,
-                    listeners: {
-                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                    		if(oldCard!=undefined){
-                    			oldCard.setIconCls(null);
-                    		}
-                    		if(newCard!=undefined){
-                    			newCard.setIconCls('check3');
-                    		}
-            			},
-            			tabchange: function (tabPanel, newCard, oldCard, obj) {
-            				var record= Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
-                        	if(newCard.id=="ModbusProtocolAlarmUnitPropertiesConfigPanel_Id"){
-                        		CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);
-                        	}else if(newCard.id=="ModbusProtocolAlarmUnitItemsConfigTabPanel_Id"){
-                        		CreateProtocolAlarmUnitContentConfigInfoTable(record);
-                        	}
+                	layout: "border",
+                	items:[{
+                		region: 'west',
+                		width:'25%',
+                		collapsible: true,
+                        split: true,
+                        border: false,
+                        title:loginUserLanguageResource.alarmUnitList,
+                        layout: "fit",
+                        id: 'ModbusProtocolAlarmUnitConfigPanel_Id'
+                	},{
+                    	region: 'center',
+                    	border: false,
+                        header:false,
+                        xtype: 'tabpanel',
+                        id:"ModbusProtocolAlarmUnitConfigRightTabPanel_Id",
+                        activeTab: 1,
+                        items: alarmUnitConfigRightTabPanelItems,
+                        listeners: {
+                        	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                        		if(oldCard!=undefined){
+                        			oldCard.setIconCls(null);
+                        		}
+                        		if(newCard!=undefined){
+                        			newCard.setIconCls('check3');
+                        		}
+                			},
+                			tabchange: function (tabPanel, newCard, oldCard, obj) {
+                				var record= Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];
+                            	if(newCard.id=="ModbusProtocolAlarmUnitPropertiesConfigPanel_Id"){
+                            		CreateProtocolAlarmUnitConfigPropertiesInfoTable(record.data);
+                            	}else if(newCard.id=="ModbusProtocolAlarmUnitItemsConfigTabPanel_Id"){
+                            		CreateProtocolAlarmUnitContentConfigInfoTable(record);
+                            	}
+                            }
                         }
-                    }
+                    }]
                 }]
             }]
     	});

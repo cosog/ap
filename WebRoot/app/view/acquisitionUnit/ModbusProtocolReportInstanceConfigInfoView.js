@@ -85,18 +85,18 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                 }],
                 layout: "border",
                 items: [{
-                	region: 'center',
+                	region: 'west',
+                	width:'33%',
                 	title:loginUserLanguageResource.reportInstanceList,
                 	layout: 'fit',
                 	border: false,
-                	id:"ModbusProtocolReportInstanceConfigPanel_Id"
-                },{
-                	region: 'east',
-                	width:'60%',
-                	title:loginUserLanguageResource.properties,
-                	border: false,
                 	collapsible: true,
                     split: true,
+                	id:"ModbusProtocolReportInstanceConfigPanel_Id"
+                },{
+                	region: 'center',
+                	title:loginUserLanguageResource.properties,
+                	border: false,
                 	layout: 'fit',
                     html:'<div class="ModbusProtocolReportInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportInstancePropertiesTableInfoDiv_id"></div></div>',
                     listeners: {

@@ -1744,7 +1744,8 @@ public class DriverAPIController extends BaseController{
 			DisplayInstanceOwnItem displayInstanceOwnItem,int items,
 			String functionCode,int commAlarmLevel,int runAlarmLevel,
 			SRPCalculateResponseData srpCalculateResponseData,SRPCalculateRequestData srpCalculateRequestData,int resultAlarmLevel,
-			AlarmShowStyle alarmShowStyle){
+			AlarmShowStyle alarmShowStyle,
+			int checkSign){
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
 		StringBuffer allItemInfo_json = new StringBuffer();
@@ -1901,7 +1902,10 @@ public class DriverAPIController extends BaseController{
 				+ "\"deviceName\":\""+deviceInfo.getDeviceName()+"\","
 				+ "\"orgId\":"+deviceInfo.getOrgId()+","
 				+ "\"deviceType\":"+deviceInfo.getDeviceType()+","
-				+ "\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+				+ "\"acqTime\":\""+acqTime+"\","
+				+ "\"columns\":"+columns+","
+				+ "\"checkSign\":"+checkSign
+				+ "");
 		webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 		webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 		webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
@@ -2396,6 +2400,8 @@ public class DriverAPIController extends BaseController{
 					
 					//添加新采集数据至内存
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
+					everyDataMap.put("commStatus", "1");
+					everyDataMap.put("checkSign", checkSign+"");
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}
@@ -2598,7 +2604,8 @@ public class DriverAPIController extends BaseController{
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
-										alarmShowStyle);
+										alarmShowStyle,
+										checkSign);
 //								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}

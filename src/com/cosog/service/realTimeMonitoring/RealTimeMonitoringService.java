@@ -2948,7 +2948,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					    String key = entry.getKey();
 					    Map<String,String> everyDataMap = entry.getValue();
 					    acqTimeList.add(key);
-					    
+					    String commStatus=everyDataMap.get("commStatus");
+					    String checkSign=everyDataMap.get("checkSign");
 					    for (String itemCode : itemCodeSortMap.keySet()) {
 					    	String value=null;
 							if(everyDataMap.containsKey(itemCode.toUpperCase())){

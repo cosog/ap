@@ -8,6 +8,26 @@ public class GraphicSetData {
 	public List<Graphic> Report;
 	public List<Graphic> DailyReport;
 	
+	public DataFilter HistoryDataFilter;
+	
+	
+	public static class DataFilter{
+		private boolean commData;
+		private boolean exceptionData;
+		public boolean getCommData() {
+			return commData;
+		}
+		public void setCommData(boolean commData) {
+			this.commData = commData;
+		}
+		public boolean getExceptionData() {
+			return exceptionData;
+		}
+		public void setExceptionData(boolean exceptionData) {
+			this.exceptionData = exceptionData;
+		}
+	}
+	
 	public static class  Graphic{
 		private String itemCode;
 		private String itemType;
@@ -62,5 +82,13 @@ public class GraphicSetData {
 
 	public void setDailyReport(List<Graphic> dailyReport) {
 		DailyReport = dailyReport;
+	}
+
+	public DataFilter getHistoryDataFilter() {
+		return HistoryDataFilter;
+	}
+
+	public void setHistoryDataFilter(DataFilter historyDataFilter) {
+		HistoryDataFilter = historyDataFilter;
 	}
 }

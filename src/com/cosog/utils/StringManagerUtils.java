@@ -3759,7 +3759,7 @@ public class StringManagerUtils {
                 if(value.toUpperCase().contains("E")){
                 	value=StringManagerUtils.scientificNotationToNormal(value);
                 }else{
-                	value=StringManagerUtils.dataFormat(value);
+                	value=dataFormat(value,item.getPrec());
                 }
             	jsonBuffer.append(value + ",");
             } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
@@ -3767,7 +3767,7 @@ public class StringManagerUtils {
                 if(value.toUpperCase().contains("E")){
                 	value=StringManagerUtils.scientificNotationToNormal(value);
                 }else{
-                 	value=StringManagerUtils.dataFormat(value);
+                 	value=dataFormat(value,item.getPrec());
                 }
              	jsonBuffer.append(value + ",");
             } else if ("float64".equalsIgnoreCase(item.getIFDataType())) {
@@ -3775,7 +3775,7 @@ public class StringManagerUtils {
                  if(value.toUpperCase().contains("E")){
                  	value=StringManagerUtils.scientificNotationToNormal(value);
                  }else{
-                  	value=StringManagerUtils.dataFormat(value);
+                  	value=dataFormat(value,item.getPrec());
                  }
              	 jsonBuffer.append(value + ",");
             } else if ("string".equalsIgnoreCase(item.getIFDataType())) {
@@ -4503,7 +4503,7 @@ public class StringManagerUtils {
         return decimalString;
     }
     
-    public static String dataFormat(String data){
+    public static String dataFormat(String data,int prec){
     	if(data.toUpperCase().contains("E")){
     		data=StringManagerUtils.scientificNotationToNormal(data);
         }
@@ -4511,7 +4511,27 @@ public class StringManagerUtils {
     	if(data.contains(".")){
     		r = new BigDecimal(data).stripTrailingZeros().toPlainString();
     	}
+    	if(data.contains(".")){
+    		String arr[]=data.split("\\.");
+    		if(arr.length>1 && arr[1].length()>prec){
+//    			r=arr[0]+"."+arr[1].substring(0, prec);
+    			r=valueStringFormat(StringManagerUtils.stringToFloat(data, prec)+"");
+    		}
+    	}
     	return r;
+    }
+    
+    public static String valueStringFormat(String value){
+    	if(value.contains(".")){
+    		while(value.endsWith("0")){
+    			value=value.substring(0, value.length()-1);
+    		}
+    		if(value.endsWith(".")){
+    			value=value.substring(0, value.length()-1);
+    		}
+    	}
+    	
+    	return value;
     }
     
     public static String capitalizeFirstLetter(String str) {

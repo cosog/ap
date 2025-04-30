@@ -45,7 +45,7 @@ others:
    deviceShowName: 设备名称
    timeEfficiencyUnit: 1               #时率单位 1-小数 2-百分数
    cache: false
-   loginLanguage: en                   #登录界面语言，目前支持中、英、俄文  zh_CN en ru
+   loginLanguage: zh_CN                   #登录界面语言，目前支持中、英、俄文  zh_CN en ru
    pageSize: 100
    syncOrAsync: false
    expandedAll: true

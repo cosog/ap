@@ -55,6 +55,7 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
+		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		

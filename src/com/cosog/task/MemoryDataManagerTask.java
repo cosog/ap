@@ -1287,7 +1287,7 @@ public class MemoryDataManagerTask {
 			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			String date=StringManagerUtils.getCurrentTime();
 			
-			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata";
+			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata,t.commStatus,t.checksign";
 			sql+=" from tbl_acqdata_hist t "
 				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
@@ -1305,6 +1305,8 @@ public class MemoryDataManagerTask {
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 				String acqTime=obj[1]+"";
 				String acqData=obj[2]+"";
+				String commStatus=obj[3]+"";
+				String checkSign=obj[3]+"";
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
@@ -1312,6 +1314,8 @@ public class MemoryDataManagerTask {
 				String key="DeviceRealtimeAcqData_"+deviceId;
 				
 				Map<String,String> everyDataMap =new HashMap<>();
+				everyDataMap.put("commStatus", commStatus);
+				everyDataMap.put("checkSign", checkSign);
 				if(acqDataList!=null){
 					for(int i=0;i<acqDataList.size();i++){
 						everyDataMap.put(acqDataList.get(i).getKey().toUpperCase(), acqDataList.get(i).getValue());
@@ -5038,9 +5042,6 @@ public class MemoryDataManagerTask {
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
 						String item=obj.getString("FIELD");
-						if(item.equalsIgnoreCase("userLogin")){
-							System.out.println(item);
-						}
 						if(StringManagerUtils.isNotNull(item)){
 							String value=obj.getString("LANGUAGE");
 							value=StringManagerUtils.stringFormat(value);

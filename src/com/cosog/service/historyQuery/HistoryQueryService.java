@@ -2968,6 +2968,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String displayInstanceCode="";
 		String graphicSet="{}";
+		GraphicSetData graphicSetData =null;
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
@@ -3015,6 +3016,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
+			
+			if(graphicSetList.size()>0){
+				graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
+				reflectType = new TypeToken<GraphicSetData>() {}.getType();
+				graphicSetData=gson.fromJson(graphicSet, reflectType);
+			}
 			
 			if(displayInstanceOwnItem!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
@@ -3235,12 +3242,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 			}
 			
-			
-			
-			if(graphicSetList.size()>0){
-				graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
-			}
-			
 			itemsBuff.append("[");
 			for (Integer key : itemNameMap.keySet()) {
 	            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
@@ -3327,6 +3328,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}else{
 					sql+=" and 1=2";
 				}
+				
+				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getCommData()) ){
+					sql+=" and t.commStatus=1";
+				}
+				
+				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getExceptionData()) ){
+					sql+=" and t.checksign=1";
+				}
+				
 				sql+= " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
 				int rarefy=total/vacuateThreshold+1;
@@ -3509,7 +3519,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<DisplayItem> itemList=null;
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
-		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 				+ " and  t.id="+deviceId;
@@ -3639,7 +3649,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		
+		result_json.append("],");
+		result_json.append("\"dataFilterTotalRoot\":[");
+		boolean commData=graphicSetData!=null&&graphicSetData.getHistoryDataFilter()!=null?graphicSetData.getHistoryDataFilter().getCommData():false;
+		boolean exceptionData=graphicSetData!=null&&graphicSetData.getHistoryDataFilter()!=null?graphicSetData.getHistoryDataFilter().getExceptionData():false;
+		result_json.append("{\"title\":\""+languageResourceMap.get("onlineAndOffline")+"\",\"value\":"+commData+"},{\"title\":\""+languageResourceMap.get("exceptionData")+"\",\"value\":"+exceptionData+"}");
+		
+		
 		result_json.append("]}");
+		
 		return result_json.toString();
 	}
 	
@@ -3649,7 +3667,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		java.lang.reflect.Type type=null;
 		
 		if(StringManagerUtils.stringToInteger(deviceId)>0){
-			String deviceTableName="tbl_device";
 			String graphicSetTableName="tbl_devicegraphicset";
 			
 			type = new TypeToken<GraphicSetData>() {}.getType();
@@ -3682,6 +3699,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}else{
 					graphicSetData.setHistory(graphicSetSaveData.getHistory());
 				}
+				
+				graphicSetData.setHistoryDataFilter(graphicSetSaveData.getHistoryDataFilter());
+				
 				saveStr=gson.toJson(graphicSetData);
 			}
 			String sql="select t.deviceId from "+graphicSetTableName+" t where t.deviceId="+deviceId;

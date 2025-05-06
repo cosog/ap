@@ -4044,7 +4044,7 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 	}
 	
-	public void uodateSRPRealtimeDiagramData(int deviceId) throws SQLException{
+	public void updateSRPRealtimeDiagramData(int deviceId) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
@@ -4061,7 +4061,7 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 	}
 	
-	public void uodatePCPRealtimeRPMData(int deviceId) throws SQLException{
+	public void updatePCPRealtimeRPMData(int deviceId) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {

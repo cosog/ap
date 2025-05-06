@@ -125,11 +125,13 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingWellListStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceName = Ext.getCmp('SRPCalculateMaintainingWellListComBox_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
+        	var timeType = Ext.getCmp('SRPCalculateMaintainingTimeType_Id').getValue();
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
             		deviceName: deviceName,
                     deviceType:deviceType,
+                    timeType:timeType,
                     calculateType:calculateType
                 };
             Ext.apply(store.proxy.extraParams, new_params);

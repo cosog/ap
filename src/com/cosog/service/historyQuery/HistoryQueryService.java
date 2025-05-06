@@ -4760,7 +4760,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		data_json.append("[");
 		
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String distinctSql="select deviceid,resultcode,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
 				+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -4788,7 +4788,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}	
 		
 		distinctSql+=" and deviceId="+deviceId+" and resultstatus=1";
-		distinctSql+=" group by deviceid,fesdiagramacqtime";
+		distinctSql+=" group by deviceid,resultcode,fesdiagramacqtime";
 		
 		String sql="select t.deviceid,t.resultcode,count(1) "
 				+ " from tbl_srpacqdata_hist t"

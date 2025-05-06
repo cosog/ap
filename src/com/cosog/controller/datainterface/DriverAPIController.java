@@ -1904,7 +1904,7 @@ public class DriverAPIController extends BaseController{
 				+ "\"deviceType\":"+deviceInfo.getDeviceType()+","
 				+ "\"acqTime\":\""+acqTime+"\","
 				+ "\"columns\":"+columns+","
-				+ "\"checkSign\":"+checkSign
+				+ "\"checkSign\":"+checkSign+","
 				+ "");
 		webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 		webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");

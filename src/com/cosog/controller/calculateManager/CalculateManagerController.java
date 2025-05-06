@@ -73,6 +73,7 @@ public class CalculateManagerController extends BaseController {
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
 		String resultCode = ParamUtils.getParameter(request, "resultCode");
+		int timeType = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "timeType"));
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -90,8 +91,19 @@ public class CalculateManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 		}
+		
+		String timeCol="acqTime";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			if(timeType==0){
+				timeCol="fesdiagramacqtime";
+			}else if(timeType==1){
+				timeCol="acqTime";
+			}
+		}
+		
+		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t."+timeCol+"+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -108,7 +120,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,resultCode,calculateType,language);
+		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,resultCode,calculateType,timeType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -218,7 +230,7 @@ public class CalculateManagerController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		
+		int timeType = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "timeType"));
 		User user = null;
 		HttpSession session=request.getSession();
 		user = (User) session.getAttribute("userLogin");
@@ -236,8 +248,20 @@ public class CalculateManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 		}
+		
+		String timeCol="acqTime";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			if(timeType==0){
+				timeCol="fesdiagramacqtime";
+			}else if(timeType==1){
+				timeCol="acqTime";
+			}
+		}
+		
+		
+		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from "+tableName+" t";
+			String sql = " select to_char(max(t."+timeCol+"),'yyyy-mm-dd') from "+tableName+" t";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -249,7 +273,7 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
-		String json = this.calculateManagerService.getCalculateStatusList(orgId,deviceName,calculateType,startDate,endDate,language);
+		String json = this.calculateManagerService.getCalculateStatusList(orgId,deviceName,calculateType,startDate,endDate,timeType,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -277,7 +301,7 @@ public class CalculateManagerController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		
+		int timeType = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "timeType"));
 		User user = null;
 		HttpSession session=request.getSession();
 		user = (User) session.getAttribute("userLogin");
@@ -295,8 +319,18 @@ public class CalculateManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(calculateType)==2){
 			tableName="tbl_pcpacqdata_hist";
 		}
+		
+		String timeCol="acqTime";
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			if(timeType==0){
+				timeCol="fesdiagramacqtime";
+			}else if(timeType==1){
+				timeCol="acqTime";
+			}
+		}
+		
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+			String sql = " select to_char(t."+timeCol+"+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
 					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
@@ -309,7 +343,7 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=endDate.split(" ")[0]+" 00:00:00";
 		}
-		String json = this.calculateManagerService.getResultNameList(orgId,deviceId,calculateType,startDate,endDate,language);
+		String json = this.calculateManagerService.getResultNameList(orgId,deviceId,calculateType,startDate,endDate,timeType,language);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

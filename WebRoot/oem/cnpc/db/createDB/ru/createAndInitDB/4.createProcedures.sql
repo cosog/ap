@@ -2071,7 +2071,7 @@ begin
   realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
   realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction
   from tbl_srpacqdata_hist t3 where t3.id=
-  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.fesdiagramacqtime desc) v where rownum=1) )
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 and t2.fesdiagramacqtime is not null order by t2.fesdiagramacqtime desc) v where rownum=1) )
   where t.deviceid=v_deviceId;
   commit;
   p_msg := 'ÐÞ¸Ä³É¹¦';

@@ -79,11 +79,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCode,String calculateType,String language)
+	public String getCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCode,String calculateType,int timeType,String language)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)){
-			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, resultCode, calculateType,language);
+			json=this.getFESDiagramCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, resultCode, calculateType,timeType,language);
 		}else if("2".equals(calculateType)){
 			json=this.getRPMCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager, deviceType, startDate, endDate, calculateSign, calculateType,language);
 		}else if("5".equals(calculateType)){//电参反演地面功图
@@ -105,7 +105,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCodeStr,String calculateType,String language)
+	public String getFESDiagramCalculateResultData(String orgId, String deviceName,String deviceId,String applicationScenarios, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String resultCodeStr,String calculateType,int timeType,String language)
 			throws Exception {
 		DataDictionary ddic = null;
 		Gson gson = new Gson();
@@ -121,6 +121,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		try{
+			String timeCol="acqTime";
+			if(timeType==0){
+				timeCol="fesdiagramacqtime";
+			}else if(timeType==1){
+				timeCol="acqTime";
+			}
+			
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
 			columns = ddic.getTableHeader();
 			
@@ -129,7 +136,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,";
 			}
 			
-			sql="select t.id,t.deviceId,t.deviceName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
+			sql="select t.id,t.deviceId,t.deviceName,"
+				+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ "to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ "decode(t.resultStatus,-1,'"+languageResourceMap.get("calculateDataException")+"',1,'"+languageResourceMap.get("calculateSuccessfully")+"',0,'"+languageResourceMap.get("notCalculate")+"',2,'"+languageResourceMap.get("notCalculate")+"','"+languageResourceMap.get("calculateFailure")+"'),"
 				+ "t.resultcode,"
 				+ prodCol
@@ -137,7 +146,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " from viw_srp_calculatemain t "
 				+ " where t.deviceid="+deviceId
 				+ " and t.resultStatus<>-1"
-				+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+				+ " and t."+timeCol+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 			if(StringManagerUtils.isNotNull(calculateSign)){
 				if("0".equals(calculateSign)){
 					sql+=" and  t.resultstatus in(0,2) ";
@@ -152,7 +161,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			
 			int totals=this.getTotalCountRows(sql);
 			
-			sql+=" order by t.acqtime desc";
+			sql+=" order by t."+timeCol+" desc";
 			int maxvalue=pager.getLimit()+pager.getStart();
 			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
@@ -177,7 +186,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"totalRoot\":[");
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
-				String productionData=obj[9].toString();
+				String productionData=obj[10].toString();
 				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 				SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 				
@@ -186,18 +195,20 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				result_json.append("\"checked\":false,");
 				result_json.append("\"deviceId\":\""+obj[1]+"\",");
 				result_json.append("\"deviceName\":\""+obj[2]+"\",");
+				
 				result_json.append("\"acqTime\":\""+obj[3]+"\",");
-				result_json.append("\"resultStatus\":\""+obj[4]+"\",");
-				result_json.append("\"resultName\":\""+(workTypeMap.get(obj[5]+"")!=null?workTypeMap.get(obj[5]+"").getResultName():"")+"\",");
+				result_json.append("\"FESDiagramAcqtime\":\""+obj[4]+"\",");
+				result_json.append("\"resultStatus\":\""+obj[5]+"\",");
+				result_json.append("\"resultName\":\""+(workTypeMap.get(obj[6]+"")!=null?workTypeMap.get(obj[6]+"").getResultName():"")+"\",");
 				
 				if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-					result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
-					result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
-					result_json.append("\"waterWeightProduction\":\""+obj[8]+"\",");
+					result_json.append("\"liquidWeightProduction\":\""+obj[7]+"\",");
+					result_json.append("\"oilWeightProduction\":\""+obj[8]+"\",");
+					result_json.append("\"waterWeightProduction\":\""+obj[9]+"\",");
 				}else{
-					result_json.append("\"liquidVolumetricProduction\":\""+obj[6]+"\",");
-					result_json.append("\"oilVolumetricProduction\":\""+obj[7]+"\",");
-					result_json.append("\"waterVolumetricProduction\":\""+obj[8]+"\",");
+					result_json.append("\"liquidVolumetricProduction\":\""+obj[7]+"\",");
+					result_json.append("\"oilVolumetricProduction\":\""+obj[8]+"\",");
+					result_json.append("\"waterVolumetricProduction\":\""+obj[9]+"\",");
 				}
 				
 				if(srpProductionData!=null){
@@ -882,7 +893,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate,String language)throws Exception {
+	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate,int timeType,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("RESULTSTATUS",language);
 		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
@@ -898,15 +909,21 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getResultNameList(String orgId, String deviceId, String calculateType,String startDate,String endDate,String language)throws Exception {
+	public String getResultNameList(String orgId, String deviceId, String calculateType,String startDate,String endDate,int timeType,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		List<WorkType> workTypeList=new ArrayList<>();
 		List<Integer> workTypeCount=new ArrayList<>();
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			String timeCol="acqTime";
+			if(timeType==0){
+				timeCol="fesdiagramacqtime";
+			}else if(timeType==1){
+				timeCol="acqTime";
+			}
 			String sql="select t.deviceid,t.resultcode,count(1) "
 					+ " from TBL_SRPACQDATA_HIST t "
-					+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " where t."+timeCol+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.resultstatus=1 "
 					+ " and t.deviceid= "+deviceId
@@ -1396,9 +1413,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			
 			if(updateRealtimeData){
 				if("1".equals(calculateType)){
-					this.getBaseDao().uodateSRPRealtimeDiagramData(StringManagerUtils.stringToInteger(deviceId));
+					this.getBaseDao().updateSRPRealtimeDiagramData(StringManagerUtils.stringToInteger(deviceId));
 				}else if("2".equals(calculateType)){
-					this.getBaseDao().uodatePCPRealtimeRPMData(StringManagerUtils.stringToInteger(deviceId));
+					this.getBaseDao().updatePCPRealtimeRPMData(StringManagerUtils.stringToInteger(deviceId));
 				}
 			}
 		}catch (Exception e) {

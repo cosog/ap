@@ -127,12 +127,14 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 	
                     var startDate=Ext.getCmp('SRPCalculateMaintainingStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id').rawValue;
+                    var timeType = Ext.getCmp('SRPCalculateMaintainingTimeType_Id').getValue();
                     var new_params = {
                     		orgId: orgId,
                     		deviceId: deviceId,
                     		deviceName: deviceName,
                             startDate:startDate,
                             endDate:endDate,
+                            timeType,
                             calculateType:1
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
@@ -223,13 +225,14 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 	var endTime_Minute=Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').getValue();
 //                	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
                 	var endTime_Second=0;
-                    
+                	var timeType = Ext.getCmp('SRPCalculateMaintainingTimeType_Id').getValue();
                     var new_params = {
                     		orgId: orgId,
                     		deviceId: deviceId,
                     		deviceName: deviceName,
                     		startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                             endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+                            timeType:timeType,
                             calculateType:1
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
@@ -299,7 +302,28 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          	refreshSRPCalculateMaintainingData();
                          }
              		},'-',wellListComb
-             			,"-",{
+             		,'-',{
+            			xtype : "combobox",
+            			id : 'SRPCalculateMaintainingTimeType_Id',
+            			fieldLabel: loginUserLanguageResource.timeType,
+        	            labelWidth: getLabelWidth(loginUserLanguageResource.timeType,loginUserLanguage),
+        	            width: getLabelWidth(loginUserLanguageResource.timeType,loginUserLanguage)+120,
+        				triggerAction : 'all',
+        				selectOnFocus : false,
+        			    forceSelection : true,
+        			    value:0,
+        			    allowBlank: false,
+        				editable : false,
+        				store : new Ext.data.SimpleStore({fields : ['value', 'text'],data: [[0, loginUserLanguageResource.FESDiagramAcqtime], [1, loginUserLanguageResource.cloudAcqtime]]}),
+        				displayField : 'text',
+        				valueField : 'value',
+        				queryMode : 'local',
+        				listeners : {
+        					select:function(v,o){
+        						refreshSRPCalculateMaintainingData();
+        					}
+        				}
+                    },"-",{
                          xtype: 'datefield',
                          anchor: '100%',
                          fieldLabel: '',
@@ -912,6 +936,10 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
     						Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').show();
     						Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').show();
 //    						Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').show();
+    						
+    						
+    						Ext.getCmp('SRPCalculateMaintainingResultNameComBox_Id').show();
+    						Ext.getCmp('SRPCalculateMaintainingTimeType_Id').show();
     					}else if(newCard.id=="SRPTotalCalculateMaintainingPanel"){
     						Ext.getCmp("SRPCalculateMaintainingUpdateDataBtn").hide();
     						Ext.getCmp("SRPCalculateMaintainingLinkedDataBtn").hide();
@@ -927,6 +955,9 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
     						Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').hide();
     						Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').hide();
 //    						Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').hide();
+    						
+    						Ext.getCmp('SRPCalculateMaintainingResultNameComBox_Id').hide();
+    						Ext.getCmp('SRPCalculateMaintainingTimeType_Id').hide();
     					}
     					refreshSRPCalculateMaintainingData();
     				}
@@ -936,73 +967,6 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
         me.callParent(arguments);
     }
 });
-
-////数据行渲染器
-//function checkboxRenderer(instance, td, row, col, prop, value) {
-//  const checkbox = document.createElement('input');
-//  checkbox.type = 'checkbox';
-//  checkbox.checked = value;
-//  checkbox.className = 'row-checkbox';
-//  checkbox.addEventListener('click', (e) => e.stopPropagation());
-//  td.innerHTML = '';
-//  td.appendChild(checkbox);
-//  td.classList.add('htCenter');
-//  return td;
-//}
-//
-//// 表头渲染器
-//function headerCheckboxRenderer(instance, td) {
-//  const checkbox = document.createElement('input');
-//  checkbox.type = 'checkbox';
-//  checkbox.className = 'header-checkbox';
-//  
-//  const data = instance.getSourceData();
-//  const allChecked = data.every(row => row.checked);
-//  const someChecked = data.some(row => row.checked);
-//  checkbox.checked = allChecked;
-//  checkbox.indeterminate = !allChecked && someChecked;
-//
-//  checkbox.addEventListener('click', (e) => {
-//    e.stopPropagation();
-//    const isChecked = checkbox.checked;
-//    const newData = data.map(row => ({ row, checked: isChecked }));
-//    instance.loadData(newData);
-//  });
-//
-//  td.innerHTML = '';
-//  td.appendChild(checkbox);
-//  td.classList.add('htCenter');
-//  return td;
-//}
-//
-//
-//
-//function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
-//	const data = [
-//        { id: 1, checked: false, name: 'Alice' },
-//        { id: 2, checked: false, name: 'Bob' },
-//        { id: 3, checked: false, name: 'Charlie' }
-//      ];
-//	const container = document.getElementById(divid);
-//    const hot = new Handsontable(container, {
-//      data: data,
-//      colHeaders: ['Select', 'ID', 'Name'],
-//      columns: [
-//        {
-//          data: 'checked',
-//          renderer: checkboxRenderer,
-//          headerRenderer: headerCheckboxRenderer // 应用表头渲染器
-//        },
-//        { data: 'id' },
-//        { data: 'name' }
-//      ],
-//      afterChange: function(changes) {
-//        if (changes && changes[0][1] === 'checked') {
-//          this.render(); // 刷新表头
-//        }
-//      }
-//    });
-//}
 
 function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
 	if(isNew&&srpFESDiagramCalculateMaintainingHandsontableHelper!=null){
@@ -1145,7 +1109,19 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	}
 	        	
-	            if(col<=8 && col>=1){
+	            if (prop.toUpperCase()=='id'.toUpperCase()
+            			||prop.toUpperCase()=='deviceName'.toUpperCase()
+            			||prop.toUpperCase()=='acqTime'.toUpperCase()
+            			||prop.toUpperCase()=='FESDiagramAcqtime'.toUpperCase()
+            			||prop.toUpperCase()=='resultStatus'.toUpperCase()
+            			||prop.toUpperCase()=='resultName'.toUpperCase()
+            			||prop.toUpperCase()=='liquidWeightProduction'.toUpperCase()
+            			||prop.toUpperCase()=='oilWeightProduction'.toUpperCase()
+            			||prop.toUpperCase()=='waterWeightProduction'.toUpperCase()
+            			||prop.toUpperCase()=='liquidVolumetricProduction'.toUpperCase()
+            			||prop.toUpperCase()=='oilVolumetricProduction'.toUpperCase()
+            			||prop.toUpperCase()=='waterVolumetricProduction'.toUpperCase()
+            	){
 	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            }
             	
@@ -1211,7 +1187,19 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    
 	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
 	                    if(CalculateMaintainingModuleEditFlag==1){
-	                    	if (visualColIndex >= 1 && visualColIndex <= 8) {
+	                    	if (prop.toUpperCase()=='id'.toUpperCase()
+	                    			||prop.toUpperCase()=='deviceName'.toUpperCase()
+	                    			||prop.toUpperCase()=='acqTime'.toUpperCase()
+	                    			||prop.toUpperCase()=='FESDiagramAcqtime'.toUpperCase()
+	                    			||prop.toUpperCase()=='resultStatus'.toUpperCase()
+	                    			||prop.toUpperCase()=='resultName'.toUpperCase()
+	                    			||prop.toUpperCase()=='liquidWeightProduction'.toUpperCase()
+	                    			||prop.toUpperCase()=='oilWeightProduction'.toUpperCase()
+	                    			||prop.toUpperCase()=='waterWeightProduction'.toUpperCase()
+	                    			||prop.toUpperCase()=='liquidVolumetricProduction'.toUpperCase()
+	                    			||prop.toUpperCase()=='oilVolumetricProduction'.toUpperCase()
+	                    			||prop.toUpperCase()=='waterVolumetricProduction'.toUpperCase()
+	                    	) {
 								cellProperties.readOnly = true;
 			                }else if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()
 			                		&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
@@ -1240,12 +1228,6 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    	cellProperties.renderer=srpFESDiagramCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle;
 	                    }
-//	                    if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type == undefined 
-//	                    		|| 
-//	                    		(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='dropdown' || srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].type!='checkbox')
-//	                    			){
-//                    		cellProperties.renderer = srpFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle;
-//                    	}
 	                    
 	                    return cellProperties;
 	                },

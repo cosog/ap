@@ -633,7 +633,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			columns.append("[");
 			columns.append("{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },");
 			columns.append("{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\"},");
-			columns.append("{ \"header\":\""+languageResourceMap.get("acqTime")+"\",\"dataIndex\":\"acqTime\",\"width\": 130},");
+			columns.append("{ \"header\":\""+languageResourceMap.get("cloudAcqtime")+"\",\"dataIndex\":\"acqTime\",\"width\": 130},");
 			columns.append("{ \"header\":\""+languageResourceMap.get("commStatus")+"\",\"dataIndex\":\"commStatusName\"},");
 			
 			String sql="select t2.id,t.devicename,"//0~1
@@ -1493,7 +1493,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
-			String head=languageResourceMap.get("idx")+","+languageResourceMap.get("deviceName")+","+languageResourceMap.get("acqTime")+","+languageResourceMap.get("commStatus")+"";
+			String head=languageResourceMap.get("idx")+","+languageResourceMap.get("deviceName")+","+languageResourceMap.get("cloudAcqtime")+","+languageResourceMap.get("commStatus")+"";
 			
 			String field="id,deviceName,acqTime,commStatusName";
 			
@@ -3857,7 +3857,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
-			String[] heads={languageResourceMap.get("idx"),languageResourceMap.get("deviceName"),languageResourceMap.get("acqTime"),
+			String[] heads={languageResourceMap.get("idx"),languageResourceMap.get("deviceName"),languageResourceMap.get("FESDiagramAcqtime"),
 					languageResourceMap.get("stroke")+"(m)",languageResourceMap.get("SPM")+"(1/min)",
 					languageResourceMap.get("fMax")+"(kN)",languageResourceMap.get("fMin")+"(kN)",
 					languageResourceMap.get("pointCount"),

@@ -479,7 +479,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             		xtype: 'tabpanel',
                 	id:'DeviceCalculateDataInfoPanel_Id',
                 	activeTab: 0,
-//            		hidden:onlyMonitor,
+            		hidden:onlyMonitor,
                 	items: [{
                 		title:loginUserLanguageResource.wellboreData,
                 		id:'DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id',
@@ -679,6 +679,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	},{
             		title:loginUserLanguageResource.fsDiagramConstruction,
             		id:'DeviceFSDiagramConstructionInfoPanel_Id',
+            		hidden:onlyMonitor,
             		tbar:['->',{
             			xtype: 'button',
             			text:loginUserLanguageResource.downlink,
@@ -724,6 +725,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	},{
             		title:loginUserLanguageResource.systemParameterConfiguration,
             		id:'DeviceSystemParameterConfigurationInfoPanel_Id',
+            		hidden:onlyMonitor,
             		tbar:['->',{
             			xtype: 'button',
             			text:loginUserLanguageResource.downlink,

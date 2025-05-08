@@ -338,6 +338,27 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportDeviceRealTimeMonitoringData")
+	public String exportDeviceRealTimeMonitoringData() throws Exception {
+		boolean bool=false;
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
+		}
+		bool = realTimeMonitoringService.exportDeviceRealTimeMonitoringData(user,response,deviceId,deviceName,calculateType);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceInfoData")
 	public String getDeviceInfoData() throws Exception {
 		String json = "";

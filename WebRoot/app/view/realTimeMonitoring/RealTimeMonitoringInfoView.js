@@ -1820,3 +1820,16 @@ function cleanDeviceAddInfoAndControlInfo(){
 		Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
 	}
 }
+
+function exportDeviceRealTimeMonitoringData(deviceId,deviceName,calculateType) {
+	var timestamp=new Date().getTime();
+	var key='exportDeviceRealTimeMonitoringData_'+deviceId+'_'+timestamp;
+	var maskPanelId='RealTimeMonitoringInfoDataPanel_Id';
+	var url = context + '/realTimeMonitoringController/exportDeviceRealTimeMonitoringData';
+    var param = "&deviceId=" + deviceId
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + '&calculateType='+calculateType
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    openExcelWindow(url + '?flag=true' + param);
+};

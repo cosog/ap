@@ -41,7 +41,20 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                 xtype: 'textfield',
                 value: '0',
                 hidden: true
-            }],
+            },'->',{
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                hidden:false,
+                handler: function (v, o) {
+                	var recordId=Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").getValue();
+            		var deviceId=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").getValue()
+            		var deviceName=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").getValue();
+            		var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+            		var calculateType=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceCalculateType_Id").getValue();
+          			exportDeviceHistoryQueryDetailsData(recordId,deviceId,deviceName,deviceType,calculateType);
+                }
+           }],
             id:'HistoryQueryDataDetailsPanel_Id',
         	html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
             listeners: {
@@ -341,4 +354,19 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	        }
 	        return deviceHistoryQueryDataHandsontableHelper;
 	    }
+};
+
+function exportDeviceHistoryQueryDetailsData(recordId,deviceId,deviceName,deviceType,calculateType) {
+	var timestamp=new Date().getTime();
+	var key='exportDeviceHistoryQueryDetailsData_'+deviceId+'_'+timestamp;
+	var maskPanelId='HistoryQueryDataDetailsPanel_Id';
+	var url = context + '/historyQueryController/exportDeviceHistoryQueryDetailsData';
+    var param = "&recordId=" + recordId
+    + "&deviceId=" + deviceId
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&deviceType=" + deviceType
+    + '&calculateType='+calculateType
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    openExcelWindow(url + '?flag=true' + param);
 };

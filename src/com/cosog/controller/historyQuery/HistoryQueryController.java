@@ -366,6 +366,29 @@ public class HistoryQueryController extends BaseController  {
 		return null;
 	}
 	
+	@RequestMapping("/exportDeviceHistoryQueryDetailsData")
+	public String exportDeviceHistoryQueryDetailsData() throws Exception {
+		boolean bool=false;
+		String recordId = ParamUtils.getParameter(request, "recordId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
+		}
+		bool = historyQueryService.exportDeviceHistoryQueryDetailsData(user,response,recordId,deviceId,deviceName,calculateType);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/getHistoryQueryCurveData")
 	public String getHistoryQueryCurveData() throws Exception {
 		String json = "";

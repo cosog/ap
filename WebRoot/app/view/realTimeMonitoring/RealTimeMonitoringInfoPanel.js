@@ -323,6 +323,23 @@ var realtimeCurveAndTableTabPanelItems=[{
 	id:"RealTimeMonitoringTableTabPanel_Id",
 	layout: 'border',
     border: false,
+    tbar:['->',{
+         xtype: 'button',
+         text: loginUserLanguageResource.exportData,
+         iconCls: 'export',
+         hidden:false,
+         handler: function (v, o) {
+
+				var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
+				var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
+				if(isNotVal(gridPanel)&&selectRow>=0){
+					var selectedItem=gridPanel.getStore().getAt(selectRow);
+					exportDeviceRealTimeMonitoringData(selectedItem.data.id,selectedItem.data.deviceName,selectedItem.data.calculateType);
+				}
+			
+        	 
+         }
+    }],
     items: [{
     	region: 'center',
     	header: false,
@@ -663,7 +680,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
             							deviceRealtimeMonitoringCurve(0);
                 					}else if(newCard.id=="RealTimeMonitoringTableTabPanel_Id"){
                 						var selectedItem=gridPanel.getStore().getAt(selectRow);
-                            			CreateDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.wellName,getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),selectedItem.data.calculateType);
+                            			CreateDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.deviceName,getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),selectedItem.data.calculateType);
                 					}else{
                 						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
                 					}

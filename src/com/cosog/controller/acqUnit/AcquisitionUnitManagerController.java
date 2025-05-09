@@ -313,6 +313,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			protocolModel.setName(protocolModel.getName());
+			protocolModel.setLanguage(user.getLanguage());
 			this.protocolModelManagerService.doProtocolAdd(protocolModel);
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addProtocol")+":"+protocolModel.getName());
@@ -2389,7 +2390,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if (user != null) {
 			language = "" + user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAddrMappingTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

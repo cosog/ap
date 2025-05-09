@@ -471,11 +471,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public String getAcqInstanceCombList(String deviceTypeStr){
+	public String getAcqInstanceCombList(String deviceTypeStr,User user){
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		StringBuffer result_json = new StringBuffer();
 		int protocolType=0;
-		if((deviceType>=200&&deviceType<300)||deviceType==1){
+		if( (deviceType>=200&&deviceType<300) || deviceType==1 ){
 			protocolType=1;
 		}
 		

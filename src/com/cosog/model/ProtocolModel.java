@@ -23,6 +23,7 @@ public class ProtocolModel implements java.io.Serializable {
 	private String name;
 	private String code;
 	private Integer deviceType;
+	private Integer language;
 	private Integer sort;
 
 	// Constructors
@@ -32,12 +33,13 @@ public class ProtocolModel implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ProtocolModel(Integer id, String name, String code,Integer deviceType,Integer sort) {
+	public ProtocolModel(Integer id, String name, String code,Integer deviceType,Integer language,Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.code = code;
 		this.deviceType = deviceType;
+		this.language = language;
 		this.sort = sort;
 	}
 
@@ -86,5 +88,14 @@ public class ProtocolModel implements java.io.Serializable {
 
 	public void setDeviceType(Integer deviceType) {
 		this.deviceType = deviceType;
+	}
+
+	@Column(name = "language", precision = 22, scale = 0)
+	public Integer getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Integer language) {
+		this.language = language;
 	}
 }

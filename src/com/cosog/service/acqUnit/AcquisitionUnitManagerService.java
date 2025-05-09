@@ -5483,9 +5483,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds,String language){
+	public String modbusProtocolAddrMappingTreeData(String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		
@@ -5493,6 +5494,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " from tbl_protocol t,viw_devicetypeinfo t2 "
 				+ " where t.devicetype=t2.id "
 				+ " and t.devicetype in ("+deviceTypeIds+") "
+				+ " and t.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort,t.name";
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){

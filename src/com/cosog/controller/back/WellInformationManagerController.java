@@ -438,8 +438,10 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/getAcqInstanceCombList")
 	public String getAcqInstanceCombList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getAcqInstanceCombList(deviceType);
+		String json=wellInformationManagerService.getAcqInstanceCombList(deviceType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -451,6 +453,8 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/getDisplayInstanceCombList")
 	public String getDisplayInstanceCombList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType);
 		response.setContentType("application/json;charset=utf-8");
@@ -464,6 +468,8 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/getReportInstanceCombList")
 	public String getReportInstanceCombList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String json=wellInformationManagerService.getReportInstanceCombList(deviceType);
 		response.setContentType("application/json;charset=utf-8");
@@ -477,6 +483,8 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/getAlarmInstanceCombList")
 	public String getAlarmInstanceCombList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType);
 		response.setContentType("application/json;charset=utf-8");

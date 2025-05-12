@@ -352,6 +352,8 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
             	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
             } else if (dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
             	columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,batchAddDeviceCollisionDataHandsontableHelper);}}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
             } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
             		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
@@ -734,14 +736,16 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
             	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
             } else if (dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
             	columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,batchAddDeviceOverlayDataHandsontableHelper);}}";
-            } else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
+            } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
+            }  else if (dataIndex.toUpperCase() != "wellName".toUpperCase() 
             		&& dataIndex.toUpperCase() != "signInId".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoKeyName1".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoUrl2".toUpperCase()
             		&& dataIndex.toUpperCase() != "videoKeyName2".toUpperCase() ) {
                 columns += "{data:'" + dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceOverlayDataHandsontableHelper);}}";
-            }  else {
+            }else {
                 columns += "{data:'" + dataIndex + "'}";
             }
             if (i < result.columns.length - 1) {
@@ -749,7 +753,7 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
                 columns += ",";
             }
         }
-        colHeaders += ",'覆盖信息'";
+        colHeaders += ",'"+loginUserLanguageResource.collisionInfo+"'";
         columns += ",{data:'dataInfo'}";
         colHeaders += "]";
         columns += "]";

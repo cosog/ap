@@ -73,6 +73,8 @@ public class WellHandsontableChangedData {
 	    
 	    private String statusName="";
 	    
+	    private String commissioningDate="";
+	    
 	    private String sortNum="";
 	    
 	    private String crudeOilDensity="";
@@ -819,6 +821,14 @@ public class WellHandsontableChangedData {
 
 		public void setDeviceTypeName_ru(String deviceTypeName_ru) {
 			this.deviceTypeName_ru = deviceTypeName_ru;
+		}
+
+		public String getCommissioningDate() {
+			return commissioningDate;
+		}
+
+		public void setCommissioningDate(String commissioningDate) {
+			this.commissioningDate = commissioningDate;
 		}
 	    
 	}

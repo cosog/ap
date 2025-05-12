@@ -1,11 +1,17 @@
 package com.cosog.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
 /**
  *  <p>描述：设备 实体类  tbl_device</p>
  *  
@@ -34,6 +40,8 @@ public class DeviceInformation implements java.io.Serializable {
 	private String slave;
 	private Integer peakDelay;
 	private Integer status;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date commissioningDate;
 	private Integer sortNum;
 	
 
@@ -46,7 +54,8 @@ public class DeviceInformation implements java.io.Serializable {
 	public DeviceInformation(Integer id, Integer orgId, String deviceName, Integer deviceType,
 			String instanceCode, String alarmInstanceCode,String displayInstanceCode,String reportInstanceCode,  
 			String tcpType, String signInId,String ipPort, String slave,
-			Integer sortNum) {
+			Integer sortNum,
+			Date commissioningDate) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
@@ -61,6 +70,7 @@ public class DeviceInformation implements java.io.Serializable {
 		this.ipPort = ipPort;
 		this.slave = slave;
 		this.sortNum = sortNum;
+		this.commissioningDate = commissioningDate;
 	}
 
 	@Id
@@ -207,5 +217,15 @@ public class DeviceInformation implements java.io.Serializable {
 
 	public void setApplicationScenarios(Integer applicationScenarios) {
 		this.applicationScenarios = applicationScenarios;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "commissioningDate")
+	public Date getCommissioningDate() {
+		return commissioningDate;
+	}
+
+	public void setCommissioningDate(Date commissioningDate) {
+		this.commissioningDate = commissioningDate;
 	}
 }

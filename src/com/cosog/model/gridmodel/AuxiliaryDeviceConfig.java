@@ -32,6 +32,8 @@ public class AuxiliaryDeviceConfig {
 		private String itemName;
 		private String itemValue;
 		private String itemUnit;
+		private String overview;
+		private String overviewSort;
 		public String getItemName() {
 			return itemName;
 		}
@@ -49,6 +51,18 @@ public class AuxiliaryDeviceConfig {
 		}
 		public void setItemUnit(String itemUnit) {
 			this.itemUnit = itemUnit;
+		}
+		public String getOverview() {
+			return overview;
+		}
+		public void setOverview(String overview) {
+			this.overview = overview;
+		}
+		public String getOverviewSort() {
+			return overviewSort;
+		}
+		public void setOverviewSort(String overviewSort) {
+			this.overviewSort = overviewSort;
 		}
 		
 	}

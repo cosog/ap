@@ -15,18 +15,22 @@ public class DeviceAddInfo implements java.io.Serializable{
 	private String itemName;
 	private String itemValue;
 	private String itemUnit;
+	private Integer overview;
+	private Integer overviewSort;
 	
 	public DeviceAddInfo() {
 		super();
 	}
 
-	public DeviceAddInfo(Integer id, Integer deviceId, String itemName, String itemValue, String itemUnit) {
+	public DeviceAddInfo(Integer id, Integer deviceId, String itemName, String itemValue, String itemUnit, Integer overview, Integer overviewSort) {
 		super();
 		this.id = id;
 		this.deviceId = deviceId;
 		this.itemName = itemName;
 		this.itemValue = itemValue;
 		this.itemUnit = itemUnit;
+		this.overview = overview;
+		this.overviewSort = overviewSort;
 	}
 
 	@Id
@@ -73,6 +77,24 @@ public class DeviceAddInfo implements java.io.Serializable{
 
 	public void setItemUnit(String itemUnit) {
 		this.itemUnit = itemUnit;
+	}
+
+	@Column(name = "overview", nullable = true, precision = 22, scale = 0)
+	public Integer getOverview() {
+		return overview;
+	}
+
+	public void setOverview(Integer overview) {
+		this.overview = overview;
+	}
+
+	@Column(name = "overviewSort", nullable = true, precision = 22, scale = 0)
+	public Integer getOverviewSort() {
+		return overviewSort;
+	}
+
+	public void setOverviewSort(Integer overviewSort) {
+		this.overviewSort = overviewSort;
 	}
 	
 }

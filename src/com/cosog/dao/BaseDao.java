@@ -1005,7 +1005,7 @@ public class BaseDao extends HibernateDaoSupport {
 		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		
 		try {
-			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1034,14 +1034,14 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay());
 							
 							cs.setInt(13, status);
-							
-							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
-							cs.registerOutParameter(15, Types.INTEGER);
-							cs.registerOutParameter(16,Types.VARCHAR);
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getCommissioningDate().replaceAll("null", ""));
+							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
+							cs.registerOutParameter(16, Types.INTEGER);
+							cs.registerOutParameter(17,Types.VARCHAR);
 							cs.executeUpdate();
 							
-							int saveSign=cs.getInt(15);
-							String saveResultStr=cs.getString(16);
+							int saveSign=cs.getInt(16);
+							String saveResultStr=cs.getString(17);
 							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
 							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
@@ -1094,12 +1094,13 @@ public class BaseDao extends HibernateDaoSupport {
 							
 							cs.setInt(13, status);
 							
-							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
-							cs.registerOutParameter(15, Types.INTEGER);
-							cs.registerOutParameter(16,Types.VARCHAR);
+							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getCommissioningDate().replaceAll("null", ""));
+							cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
+							cs.registerOutParameter(16, Types.INTEGER);
+							cs.registerOutParameter(17,Types.VARCHAR);
 							cs.executeUpdate();
 							
-							int saveSign=cs.getInt(15);
+							int saveSign=cs.getInt(16);
 							String saveResultStr=cs.getString(17);
 							wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
 							wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
@@ -1229,7 +1230,7 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 		}
 		try {
-			cs = conn.prepareCall("{call prd_save_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1270,15 +1271,18 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
 							
 							cs.setInt(14, status);
-							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
 							
-							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-							cs.setInt(17, license);
-							cs.registerOutParameter(18, Types.INTEGER);
-							cs.registerOutParameter(19,Types.VARCHAR);
+							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getCommissioningDate().replaceAll("null", ""));
+							
+							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
+							
+							cs.setInt(17, StringManagerUtils.stringToInteger(isCheckout));
+							cs.setInt(18, license);
+							cs.registerOutParameter(19, Types.INTEGER);
+							cs.registerOutParameter(20,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(18);
-							String saveResultStr=cs.getString(19);
+							int saveSign=cs.getInt(19);
+							String saveResultStr=cs.getString(20);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									this.saveDeviceOperationLog(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceName(),0,user,StringManagerUtils.stringToInteger(saveDeviceType),"",currentTiem);
@@ -1349,15 +1353,16 @@ public class BaseDao extends HibernateDaoSupport {
 								cs.setInt(13, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
 								
 								cs.setInt(14, status);
-								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
+								cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getCommissioningDate().replaceAll("null", ""));
+								cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
 								
-								cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-								cs.setInt(17, license);
-								cs.registerOutParameter(18, Types.INTEGER);
-								cs.registerOutParameter(19,Types.VARCHAR);
+								cs.setInt(17, StringManagerUtils.stringToInteger(isCheckout));
+								cs.setInt(18, license);
+								cs.registerOutParameter(19, Types.INTEGER);
+								cs.registerOutParameter(20,Types.VARCHAR);
 								cs.executeUpdate();
-								int saveSign=cs.getInt(18);
-								String saveResultStr=cs.getString(19);
+								int saveSign=cs.getInt(19);
+								String saveResultStr=cs.getString(20);
 								if(saveSign==0||saveSign==1){//保存成功
 									if(saveSign==0){//添加
 //										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName());

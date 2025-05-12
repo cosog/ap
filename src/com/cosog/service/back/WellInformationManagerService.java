@@ -474,13 +474,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getAcqInstanceCombList(String deviceTypeStr,User user){
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		StringBuffer result_json = new StringBuffer();
-		int protocolType=0;
-		if( (deviceType>=200&&deviceType<300) || deviceType==1 ){
-			protocolType=1;
-		}
-		
-		String sql="select t.code,t.name from tbl_protocolinstance t  order by t.sort";
-		
+		String sql="select t.code,t.name "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
 		for(int i=0;i<list.size();i++){
@@ -495,15 +493,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDisplayInstanceCombList(String deviceTypeStr){
+	public String getDisplayInstanceCombList(String deviceTypeStr,User user){
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		StringBuffer result_json = new StringBuffer();
-		int protocolType=0;
-		if((deviceType>=200&&deviceType<300)||deviceType==1){
-			protocolType=1;
-		}
-		
-		String sql="select t.code,t.name from tbl_protocoldisplayinstance t order by t.sort";
+		String sql="select t.code,t.name "
+				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
@@ -543,16 +540,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getAlarmInstanceCombList(String deviceTypeStr){
+	public String getAlarmInstanceCombList(String deviceTypeStr,User user){
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		StringBuffer result_json = new StringBuffer();
-		int protocolType=0;
-		if((deviceType>=200&&deviceType<300)||deviceType==1){
-			protocolType=1;
-		}
-		
-		String sql="select t.code,t.name from tbl_protocolalarminstance t  order by t.sort";
-		
+		String sql="select t.code,t.name "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
 		for(int i=0;i<list.size();i++){
@@ -718,10 +713,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		
 		String deviceTypeSql="select t.name_"+user.getLanguageName()+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
-		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String instanceSql="select t.name "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
+		String displayInstanceSql="select t.name "
+				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
+		String alarmInstanceSql="select t.name "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		
 		deviceTypeDropdownData.append("[");
 		instanceDropdownData.append("[");
@@ -848,6 +855,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
 					collisionBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
+					collisionBuff.append("\"commissioningDate\":\""+list.get(i).getCommissioningDate()+"\",");
+					
 					collisionBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
 					collisionBuff.append("\"crudeOilDensity\":\""+list.get(i).getCrudeOilDensity()+"\",");
@@ -935,6 +944,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"videoUrl2\":\""+list.get(i).getVideoUrl2()+"\",");
 					overlayBuff.append("\"videoKeyName2\":\""+list.get(i).getVideoKeyName2()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
+					overlayBuff.append("\"commissioningDate\":\""+list.get(i).getCommissioningDate()+"\",");
 					overlayBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
 					overlayBuff.append("\"crudeOilDensity\":\""+list.get(i).getCrudeOilDensity()+"\",");
@@ -1277,8 +1287,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	
 	@SuppressWarnings("rawtypes")
-	public String getDeviceInfoList(Map map,Page pager,int recordCount,String language) {
+	public String getDeviceInfoList(Map map,Page pager,int recordCount,User user) {
 		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
@@ -1301,6 +1312,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"
 				+ " allpath_"+language+","
 				+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+				+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1312,10 +1324,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		sql+= " order by t.sortnum,t.devicename ";
 		
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
-		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String instanceSql="select t.name "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
+		String displayInstanceSql="select t.name "
+				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
+		String alarmInstanceSql="select t.name "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		
 		
 		deviceTypeDropdownData.append("[");
@@ -1434,7 +1458,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"statusName\":\""+obj[15]+"\",");
 			result_json.append("\"allPath\":\""+obj[16]+"\",");
 			result_json.append("\"productionDataUpdateTime\":\""+obj[17]+"\",");
-			result_json.append("\"sortNum\":\""+obj[18]+"\"},");
+			result_json.append("\"commissioningDate\":\""+obj[18]+"\",");
+			result_json.append("\"sortNum\":\""+obj[19]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -2887,8 +2912,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getBatchAddDeviceTableInfo(String deviceType,int recordCount,String language) {
+	public String getBatchAddDeviceTableInfo(String deviceType,int recordCount,User user) {
 		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
@@ -2903,10 +2929,22 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String ddicCode="deviceInfo_DeviceBatchAdd";
 		
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
-		String instanceSql="select t.name from tbl_protocolinstance t  order by t.sort";
-		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t  order by t.sort";
+		String instanceSql="select t.name "
+				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
+		String displayInstanceSql="select t.name "
+				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
-		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t  order by t.sort";
+		String alarmInstanceSql="select t.name "
+				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " order by t.sort";
 		String columns=service.showTableHeadersColumns(ddicCode,language);
 		
 		deviceTypeDropdownData.append("[");
@@ -3794,7 +3832,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "]";
 		String deviceTableName="tbl_device";
 		String infoTableName="tbl_deviceaddinfo";
-		String sql = "select t2.id,t2.itemname,t2.itemvalue,t2.itemunit "
+		String sql = "select t2.id,t2.itemname,t2.itemvalue,t2.itemunit,t2.overview,t2.overviewSort "
 				+ " from "+deviceTableName+" t,"+infoTableName+" t2 "
 				+ " where t.id=t2.deviceid and t.id="+deviceId
 				+ " order by t2.id";
@@ -3806,7 +3844,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
 			result_json.append("\"itemValue\":\""+obj[2]+"\",");
-			result_json.append("\"itemUnit\":\""+obj[3]+"\"},");
+			result_json.append("\"itemUnit\":\""+obj[3]+"\",");
+			result_json.append("\"overview\":"+(StringManagerUtils.stringToInteger(obj[4]+"")==1)+",");
+			result_json.append("\"overviewSort\":\""+obj[5]+"\"},");
 		}
 		for(int i=list.size();i<20;i++){
 			result_json.append("{},");

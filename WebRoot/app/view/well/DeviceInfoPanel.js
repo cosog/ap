@@ -1011,7 +1011,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
-                    } else {
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
+                    }  else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }
                     if (i < result.columns.length - 1) {
@@ -1416,6 +1418,9 @@ var DeviceInfoHandsontableHelper = {
                             	additionalInfo.itemName=additionalInfoData[index][1];
                             	additionalInfo.itemValue=isNotVal(additionalInfoData[index][2])?additionalInfoData[index][2]:"";
                             	additionalInfo.itemUnit=isNotVal(additionalInfoData[index][3])?additionalInfoData[index][3]:"";
+                            	additionalInfo.overview=additionalInfoData[index][4]?1:0;
+                            	additionalInfo.overviewSort=isNumber(additionalInfoData[index][5])?additionalInfoData[index][5]:"";
+                            	
                             	additionalInfoList.push(additionalInfo);
                             }
                         });
@@ -3089,9 +3094,21 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			
 			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
 				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.unit+"']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemUnit'}]";
-				
+				var colHeaders="['"+loginUserLanguageResource.idx+"'," 
+				+"'"+loginUserLanguageResource.name+"'," 
+				+"'"+loginUserLanguageResource.variable+"'," 
+				+"'"+loginUserLanguageResource.unit+"'," 
+				+"'"+loginUserLanguageResource.deviceOverview+"'," 
+				+"'"+loginUserLanguageResource.columnSort+"'"
+				+"]";
+				var columns="[" 
+					+"{data:'id'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue'}," 
+					+"{data:'itemUnit'}," 
+					+"{data:'overview',type:'checkbox'}," 
+					+"{data:'overviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceAdditionalInfoHandsontableHelper);}}" 
+					+"]" 
 				deviceAdditionalInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceAdditionalInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -3203,9 +3220,11 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
-//							cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addBoldBg;
 	                    }
-	                    cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addCellStyle;
+	                    if(!prop.toUpperCase()=="overview".toUpperCase()){
+		                    cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addCellStyle;
+	                    }
+
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

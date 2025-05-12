@@ -456,7 +456,7 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType);
+		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -486,7 +486,7 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType);
+		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -608,7 +608,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,language);
 		}else{
-			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,language);
+			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,user);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -642,7 +642,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount,language);
+		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount,user);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1384,6 +1384,8 @@ public class WellInformationManagerController extends BaseController {
 						deviceAddInfo.setItemName(additionalInfoList.get(i).getItemName());
 						deviceAddInfo.setItemValue(additionalInfoList.get(i).getItemValue());
 						deviceAddInfo.setItemUnit(additionalInfoList.get(i).getItemUnit());
+						deviceAddInfo.setOverview(StringManagerUtils.isNum(additionalInfoList.get(i).getOverview())?StringManagerUtils.stringToInteger(additionalInfoList.get(i).getOverview()):0);
+						deviceAddInfo.setOverviewSort(StringManagerUtils.isNum(additionalInfoList.get(i).getOverviewSort())?StringManagerUtils.stringToInteger(additionalInfoList.get(i).getOverviewSort()):null);
 						this.wellInformationManagerService.saveDeviceAdditionalInfo(deviceAddInfo);
 					}
 				}

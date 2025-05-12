@@ -733,7 +733,32 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                         id:'deviceStatusRadio0_Id'
                     }
                 ]
+            }
+            ,{
+                xtype: 'datefield',
+                format: 'Y-m-d ',
+                value: '',
+                fieldLabel: loginUserLanguageResource.commissioningDate,
+                labelWidth: labelWidth,
+                anchor: '95%',
+                allowBlank: true,
+                listeners: {
+                	select: function (combo, record, index) {
+                		Ext.getCmp('deviceCommissioningDate_Id').setValue(combo.rawValue.replace(/\s*/g,""));
+                	}
+                }
             },{
+                xtype: "textfield",
+                hidden: true,
+                allowBlank: true,
+                fieldLabel: loginUserLanguageResource.commissioningDate,
+                labelWidth: labelWidth,
+                anchor: '95%',
+                id: "deviceCommissioningDate_Id",
+                name: "deviceInformation.commissioningDate",
+                value: ''
+            }
+            ,{
             	xtype: 'numberfield',
             	id: "deviceSortNum_Id",
             	name: "deviceInformation.sortNum",

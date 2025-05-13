@@ -475,7 +475,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
                 hiddenColumns: {
-                    columns: [0,6,7,13,14,20, 21, 22, 23, 24, 25, 26],
+                    columns: [0,20, 21, 22, 23, 24, 25, 26],
                     indicators: false,
                     copyPasteEnabled: false
                 },

@@ -226,7 +226,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
-                        header: loginUserLanguageResource.enable,
+                        header: loginUserLanguageResource.status,
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,

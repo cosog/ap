@@ -217,7 +217,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 		}
 
-		json = realTimeMonitoringService.getDeviceRealTimeOverview(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
+		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 	
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

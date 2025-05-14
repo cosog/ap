@@ -642,7 +642,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "decode(t2.runstatus,null,2,t2.runstatus) as runStatusCalValue,t.calculateType,"
 					+ "t2.acqdata";
-			if(displayInstanceOwnItem!=null&&userInfo!=null&&protocol!=null){
+			if(displayInstanceOwnItem!=null && userInfo!=null && protocol!=null){
 				String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
 						+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
 						+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"

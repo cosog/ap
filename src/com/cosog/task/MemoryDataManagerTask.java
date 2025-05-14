@@ -1421,10 +1421,15 @@ public class MemoryDataManagerTask {
 			}
 			
 			//加载转速计产数据
-			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";
+			sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.productiondata";	
 			for(CalItem calItem:pcpCalItemList){
-				sql+=",t."+calItem.getCode();
-			}	
+				String columnCode=calItem.getCode();
+				if("runstatusName".equalsIgnoreCase(columnCode)){
+					columnCode="runstatus";
+				}
+				sql+=",t."+columnCode;
+			}
+			
 			sql+= " from viw_pcpacqdata_hist t"
 					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
@@ -2442,7 +2447,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,1,languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatusName","",2,1,languageResourceMap.get("runStatus"))));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));
@@ -2639,7 +2644,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
 			
-			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatus","",2,1,languageResourceMap.get("runStatus"))));
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runStatus"),"RunStatusName","",2,1,languageResourceMap.get("runStatus"))));
 			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
 			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
 			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));

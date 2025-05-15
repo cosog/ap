@@ -252,6 +252,12 @@ function addfindtattxtInfo() {
     Ext.getCmp("savettosysfordataFormBtnId").show();
     Ext.getCmp("oktosysfordataFormBtnId").hide();
     Ext.getCmp("editttosysfordataFormBtnId").hide();
+    
+    var deviceType=getDeviceTypeFromTabId("DictItemRootTabPanel");
+	if(deviceType.includes(",")){
+		deviceType=getDeviceTypeFromTabId_first("DictItemRootTabPanel");
+	}
+	Ext.getCmp("dictItemDeviceType_Id").setValue(deviceType);
 
     return false;
 };

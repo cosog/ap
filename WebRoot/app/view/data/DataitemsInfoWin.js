@@ -20,6 +20,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             allowBlank: false,
             width: 350,
             msgTarget: 'side',
+            value :'',
             blankText: loginUserLanguageResource.required
         });
         //顺序
@@ -41,6 +42,74 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             width: 450,
             height: 100
         });
+        
+        
+        var dataSourceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/loadCodeComboxListWithoutAll',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							itemCode: 'DICTDATASOURCE'
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var dataSourceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  loginUserLanguageResource.dataSource+'<font color=red>*</font>',
+					width: 350,
+//					emptyText : loginUserLanguageResource.dataSource,
+//					blankText : loginUserLanguageResource.dataSource,
+					id : 'dictItemDataSourceComb_Id',
+					store: dataSourceStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (combo, record, eOpts) {
+							if(combo.value==0){
+								Ext.getCmp("sysDataCode_Ids").show();
+								Ext.getCmp("sysDataCode_Ids").setConfig({
+								    allowBlank: false
+								});
+								
+							}else{
+								Ext.getCmp("sysDataCode_Ids").hide();
+								Ext.getCmp("sysDataCode_Ids").setConfig({
+								    allowBlank: true
+								});
+							}
+							Ext.getCmp("dictItemDataSource_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         //表单组件		
         var addtenaorgLevfromname = Ext.create("Ext.form.Panel", {
             id: "addtenaorgLevfromnameId",
@@ -85,6 +154,16 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     width: 350,
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
+                },dataSourceComb,{
+                	xtype: "hidden",
+                    id: 'dictItemDataSource_Id',
+                    value: '',
+                    name: "dataitemsInfo.dataSource"
+                },{
+                	xtype: "hidden",
+                    id: 'dictItemDeviceType_Id',
+                    value: '',
+                    name: "dataitemsInfo.deviceType"
                 }, sysdata_code,
                 {
                     xtype: 'radiogroup',

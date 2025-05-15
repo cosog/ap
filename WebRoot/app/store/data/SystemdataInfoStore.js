@@ -60,7 +60,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         align: 'center',
                         locked: false
                     }, {
-                        text: 'Name',
+                    	text: loginUserLanguageResource.dataModuleName,
                         flex: 2,
                         align: 'center',
                         dataIndex: 'name',
@@ -74,7 +74,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         	}
                         }
                     }, {
-                        text: 'Code',
+                    	text: loginUserLanguageResource.dataModuleCode,
                         flex: 3,
                         align: 'center',
                         dataIndex: 'code',
@@ -88,7 +88,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         	}
                         }
                     }, {
-                        text: 'Sort',
+                    	text: loginUserLanguageResource.displayOrder,
                         flex: 1,
                         align: 'center',
                         dataIndex: 'sorts',
@@ -100,7 +100,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                             minValue: 1
                         }:""
                     }, {
-                        text: 'Module',
+                    	text: loginUserLanguageResource.dictionaryBelongTo,
                         flex: 2,
                         align: 'center',
                         dataIndex: 'moduleName',

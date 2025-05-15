@@ -665,6 +665,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String loadCodeComboxListWithoutAll(String itemCode,String language) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap(itemCode.toUpperCase(),language);
+		result_json.append("{\"totals\":"+codeMap.size()+",\"list\":[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
+			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+		return result_json.toString();
+	}
+	
 	public String saveDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,String deviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionbuff = new StringBuffer();

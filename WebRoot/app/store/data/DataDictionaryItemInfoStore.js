@@ -71,6 +71,16 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	}
                         }
                     },{
+                    	header: loginUserLanguageResource.dataSource,
+                    	align: 'center',
+                    	flex: 1,
+                    	dataIndex: 'dataSourceName',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    },{
                         header: loginUserLanguageResource.dataColumnCode,
                         align: 'center',
                         flex: 1,
@@ -188,11 +198,17 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
         	if(dictionarySelection.length>0){
         		dictionaryId = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection()[0].data.sysdataid;
         	}
+        	var deviceType=getDeviceTypeFromTabId("DictItemRootTabPanel");
+        	if(deviceType.includes(",")){
+        		deviceType=getDeviceTypeFromTabId_first("DictItemRootTabPanel");
+        	}
+        	
         	
         	var new_params = {
         			dictionaryId:dictionaryId,
         			type:type,
-        			value:value
+        			value:value,
+        			deviceType:deviceType
         	};
             Ext.apply(store.proxy.extraParams, new_params); 	
         }

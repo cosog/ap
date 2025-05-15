@@ -13,6 +13,7 @@ import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.data.DataitemsInfo;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataDicUtils;
@@ -74,14 +75,15 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		return list;
 	}
 	
-	public String getDataDictionaryItemList(Page pager, User user, String dictionaryId, String type, String value) throws Exception {
+	public String getDataDictionaryItemList(Page pager, User user, String dictionaryId, String type, String value,String deviceType) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="dictionary_DataDictionaryManage";
 		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
 		String columns = ddic.getTableHeader();
-		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,t.status "
+		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,t.datasource,t.devicetype,t.status "
 				+ "from tbl_dist_item t "
-				+ "where t.sysdataid='"+dictionaryId+"' ";
+				+ "where t.sysdataid='"+dictionaryId+"' "
+				+ " and t.deviceType="+deviceType;
 		if (StringUtils.isNotBlank(value)) {
 			if ("0".equals(type)) {
 				sql+=" and t.code like '%"+value+"%'";
@@ -104,7 +106,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"datavalue\":\""+obj[3]+"\",");
 			result_json.append("\"sorts\":"+obj[4]+",");
-			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[5]+"")==1)+"},");
+			result_json.append("\"dataSource\":\""+obj[5]+"\",");
+			result_json.append("\"dataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName()))+"\",");
+			result_json.append("\"deviceType\":\""+obj[6]+"\",");
+			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[7]+"")==1)+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

@@ -39,7 +39,8 @@ public class DataitemsInfo implements Serializable {
 	private String updateuser; // 修改人
 	private Date updatetime; // 修改时间
 	private Date createdate; // 创建时间
-	
+	private Integer dataSource; // 数据源
+	private Integer deviceType; // 设备类型
 	public DataitemsInfo() {
 		super();
 	}
@@ -171,6 +172,24 @@ public class DataitemsInfo implements Serializable {
 
 	public void setName_ru(String name_ru) {
 		this.name_ru = name_ru;
+	}
+
+	@Column(name = "DATASOURCE")
+	public Integer getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(Integer dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	@Column(name = "DEVICETYPE")
+	public Integer getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(Integer deviceType) {
+		this.deviceType = deviceType;
 	}
 
 }

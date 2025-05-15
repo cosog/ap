@@ -115,9 +115,10 @@ public class DataitemsInfoController extends BaseController {
 			String dictionaryId = request.getParameter("dictionaryId");
 			String type = request.getParameter("type");
 			String value = request.getParameter("value");
+			String deviceType = request.getParameter("deviceType");
 			this.pager = new Page("pagerForm", request);
 			User userInfo = this.findCurrentUserInfo();
-			String json = dataitemsInfoService.getDataDictionaryItemList(pager, userInfo, dictionaryId, type, value);
+			String json = dataitemsInfoService.getDataDictionaryItemList(pager, userInfo, dictionaryId, type, value,deviceType);
 			response.setCharacterEncoding("utf-8");
 			PrintWriter pw;
 			try {

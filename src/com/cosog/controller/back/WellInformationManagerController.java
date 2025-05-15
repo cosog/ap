@@ -569,6 +569,27 @@ public class WellInformationManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/loadCodeComboxListWithoutAll")
+	public String loadCodeComboxListWithoutAll() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.loadCodeComboxListWithoutAll(itemCode,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	@RequestMapping("/doWellInformationShow")
 	public String doWellInformationShow() throws IOException {

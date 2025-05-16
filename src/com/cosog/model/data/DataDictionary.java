@@ -25,6 +25,7 @@ public class DataDictionary implements Serializable {
 	private String dataValue;
 	private String tableHeader;
 	private String group;
+	private List<DataitemsInfo> dataItemList;
 
 	@Override
 	public boolean equals(Object obj) {
@@ -114,5 +115,11 @@ public class DataDictionary implements Serializable {
 	}
 	public void setGroup(String group) {
 		this.group = group;
+	}
+	public List<DataitemsInfo> getDataItemList() {
+		return dataItemList;
+	}
+	public void setDataItemList(List<DataitemsInfo> dataItemList) {
+		this.dataItemList = dataItemList;
 	}
 }

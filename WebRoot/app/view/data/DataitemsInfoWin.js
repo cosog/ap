@@ -44,7 +44,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         });
         
         
-        var dataSourceStore = new Ext.data.SimpleStore({
+        var columnDataSourceStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
                 type: "string"
@@ -75,14 +75,12 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
 			}
 		});
         
-        var dataSourceComb = Ext.create(
+        var columnDataSourceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  loginUserLanguageResource.dataSource+'<font color=red>*</font>',
+					fieldLabel :  loginUserLanguageResource.columnDataSource+'<font color=red>*</font>',
 					width: 350,
-//					emptyText : loginUserLanguageResource.dataSource,
-//					blankText : loginUserLanguageResource.dataSource,
-					id : 'dictItemDataSourceComb_Id',
-					store: dataSourceStore,
+					id : 'dictItemColumnDataSourceComb_Id',
+					store: columnDataSourceStore,
 					queryMode : 'remote',
 					typeAhead : true,
 					autoSelect : false,
@@ -93,18 +91,95 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
 					valueField : "boxkey",
 					listeners : {
 						select: function (combo, record, eOpts) {
-							if(combo.value==0){
-								Ext.getCmp("sysDataCode_Ids").show();
-								Ext.getCmp("sysDataCode_Ids").setConfig({
-								    allowBlank: false
-								});
-								
-							}else{
+							if(combo.value==1){//字段数据来源为驱动配置
 								Ext.getCmp("sysDataCode_Ids").hide();
+								Ext.getCmp("dictItemDataSourceComb_Id").show();
+								Ext.getCmp("dictItemDataUnit_Id").show();
+								
 								Ext.getCmp("sysDataCode_Ids").setConfig({
 								    allowBlank: true
 								});
+								Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+								    allowBlank: false
+								});
+								
+							}else if(combo.value==2){//字段数据来源为附加信息
+								Ext.getCmp("sysDataCode_Ids").hide();
+								Ext.getCmp("dictItemDataSourceComb_Id").hide();
+								Ext.getCmp("dictItemDataUnit_Id").hide();
+								
+								Ext.getCmp("sysDataCode_Ids").setConfig({
+								    allowBlank: true
+								});
+								Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+								    allowBlank: true
+								});
+							}else{//字段数据来源为基础字段
+								Ext.getCmp("sysDataCode_Ids").show();
+								Ext.getCmp("dictItemDataSourceComb_Id").hide();
+								Ext.getCmp("dictItemDataUnit_Id").hide();
+								
+								Ext.getCmp("sysDataCode_Ids").setConfig({
+								    allowBlank: false
+								});
+								Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+								    allowBlank: true
+								});
 							}
+							Ext.getCmp("dictItemColumnDataSource_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
+        var dataSourceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/loadCodeComboxListWithoutAll',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							itemCode: 'DATASOURCE',
+							values: '0,1,2'
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var dataSourceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  loginUserLanguageResource.dataSource,
+					width: 350,
+					id : 'dictItemDataSourceComb_Id',
+					store: dataSourceStore,
+					queryMode : 'remote',
+					hidden: true,
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (combo, record, eOpts) {
 							Ext.getCmp("dictItemDataSource_Id").setValue(this.value);
 	                    }
 					}
@@ -154,17 +229,30 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     width: 350,
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
-                },dataSourceComb,{
+                },columnDataSourceComb,{
                 	xtype: "hidden",
-                    id: 'dictItemDataSource_Id',
+                    id: 'dictItemColumnDataSource_Id',
                     value: '',
-                    name: "dataitemsInfo.dataSource"
+                    name: "dataitemsInfo.columnDataSource"
                 },{
                 	xtype: "hidden",
                     id: 'dictItemDeviceType_Id',
                     value: '',
                     name: "dataitemsInfo.deviceType"
-                }, sysdata_code,
+                },dataSourceComb,{
+                	xtype: "hidden",
+                    id: 'dictItemDataSource_Id',
+                    value: '',
+                    name: "dataitemsInfo.dataSource"
+                }, sysdata_code,{
+                    id: 'dictItemDataUnit_Id',
+                    value: '',
+                    name: "dataitemsInfo.dataUnit",
+                    fieldLabel: loginUserLanguageResource.unit,
+                    hidden:true,
+                    width: 350,
+                    msgTarget: 'side',
+                },
                 {
                     xtype: 'radiogroup',
                     width: 200,

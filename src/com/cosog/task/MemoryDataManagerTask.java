@@ -4971,6 +4971,38 @@ public class MemoryDataManagerTask {
 		return code;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static Map<String,Code> getCodeMap(String itemCode,String values,String language){
+		String key="codeLanguageResource-"+language;
+		String[] valueArr=values.split(",");
+		Map<String,Code> resultCodeMap=new LinkedHashMap<>();
+		Map<String,Code> code=new LinkedHashMap<>();
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(language);
+		}
+		if(dataModelMap.containsKey(key)){
+			codeMap=(Map<String,Map<String,Code>>) dataModelMap.get(key);
+			if(codeMap.containsKey(itemCode)){
+				code=codeMap.get(itemCode);
+			}
+		}
+		if(StringManagerUtils.isNotNull(values) && valueArr!=null && valueArr.length>0){
+			Iterator<Map.Entry<String,Code>> it = code.entrySet().iterator();
+			while(it.hasNext()){
+				Map.Entry<String,Code> entry = it.next();
+				Code c=entry.getValue();
+				if(StringManagerUtils.existOrNot(valueArr, c.getItemvalue()+"")){
+					resultCodeMap.put(c.getItemvalue()+"", c);
+				}
+			}
+		}else{
+			resultCodeMap=code;
+		}
+		return resultCodeMap;
+	}
+	
 	public static Code getCode(String itemCode,String itemValue,String language){
 		Map<String,Code> codeMap=getCodeMap(itemCode,language);
 		Code code=null;

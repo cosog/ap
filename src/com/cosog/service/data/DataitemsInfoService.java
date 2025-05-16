@@ -80,7 +80,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		String ddicCode="dictionary_DataDictionaryManage";
 		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
 		String columns = ddic.getTableHeader();
-		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,t.datasource,t.devicetype,t.status "
+		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,"
+				+ "t.columnDataSource,t.devicetype,"
+				+ "t.dataSource,t.dataUnit,"
+				+ "t.status "
 				+ "from tbl_dist_item t "
 				+ "where t.sysdataid='"+dictionaryId+"' "
 				+ " and t.deviceType="+deviceType;
@@ -106,10 +109,15 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"datavalue\":\""+obj[3]+"\",");
 			result_json.append("\"sorts\":"+obj[4]+",");
-			result_json.append("\"dataSource\":\""+obj[5]+"\",");
-			result_json.append("\"dataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName()))+"\",");
+			result_json.append("\"columnDataSource\":\""+obj[5]+"\",");
+			result_json.append("\"columnDataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName()))+"\",");
 			result_json.append("\"deviceType\":\""+obj[6]+"\",");
-			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[7]+"")==1)+"},");
+			
+			result_json.append("\"dataSource\":\""+obj[7]+"\",");
+			result_json.append("\"dataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DATASOURCE", obj[7]+"", user.getLanguageName()))+"\",");
+			result_json.append("\"dataUnit\":\""+obj[8]+"\",");
+			
+			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -306,14 +314,14 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		try {
 			// 根据模块字典英文名称从数据库中找出该模块的字典数据信息
 			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { code });
-
+			ddic.setDataItemList(dataWhereList);
 			if (null != dataWhereList && dataWhereList.size() > 0) {
-				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList,language);// 把集合中含有多表头信息的数据封装在Map
-																							// 集合了里
-			TreeMap<String, List<DataDictionary>> treemap = new TreeMap<String, List<DataDictionary>>(map);
+				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList,language);// 把集合中含有多表头信息的数据封装在Map集合了里
+				TreeMap<String, List<DataDictionary>> treemap = new TreeMap<String, List<DataDictionary>>(map);
+				int addInfoIndex=0;
 				for (DataitemsInfo dataInfo : dataWhereList) {
-					String dataCode = dataInfo.getCode();// 字典英文名称对应数据库中的字段信息
-					
+					int columnDataSource=dataInfo.getColumnDataSource();
+					String dataCode = columnDataSource==0?(dataInfo.getCode()!=null?dataInfo.getCode():""):"";// 字典英文名称对应数据库中的字段信息
 					String header="";
 					if("zh_CN".equalsIgnoreCase(language)){
 						header=dataInfo.getName_zh_CN();
@@ -325,21 +333,31 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					
 					header=StringManagerUtils.stringFormat(header);
 					
-					String enameField = dataCode.trim();
+					String enameField ="";
+					
+					if(columnDataSource==2){//附加信息
+						addInfoIndex++;
+						enameField="addInfoColumn"+addInfoIndex;
+					}else if(columnDataSource==1){
+						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
+					}else{
+						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
+					}
+					
 					String dataValueString = dataInfo.getDatavalue();
 					if (!StringUtils.isNotBlank(dataValueString)) {
 						dataValueString = "";
 					}
-
+					
 					if (dataCode.indexOf("root") == -1) { // 过滤掉根节点
 						if (dataCode.indexOf(" as ") > 0) {
 							/* 当该字段中含有 as 时，截取as后的字符串作为字段数据 */
 							enameField = dataCode.substring(dataCode.indexOf(" as ") + 3).trim();
-
 						} else if (dataCode.indexOf("#") > 0) {
 							enameField = dataCode.substring(dataCode.lastIndexOf("#") + 1);// 如果字段中含有“#”截取最后一段作为字段数据
 						}
 					}
+					
 					if (!dataCode.equals("table") && !dataCode.equals("where") && !dataCode.equals("order") && !dataCode.equals("group") && !dataCode.equals("params")) {
 						int index = dataCode.indexOf("root");
 						if (index >= 0) {
@@ -356,7 +374,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							if (nowIndex == -1) {
 								strBuf.append("{ ");
 								strBuf.append("\"header\":\"" + header + "\",");
-								strBuf.append("\"dataIndex\":\"" + enameField.trim() + "\"");
+								strBuf.append("\"dataIndex\":\"" + enameField.trim() + "\",");
+								strBuf.append("\"columnDataSource\":\"" + columnDataSource + "\"");
 								if (StringUtils.isNotBlank(dataValueString) &&!"null".equals(dataValueString)) {
 									strBuf.append("," + dataValueString);
 								}
@@ -372,7 +391,6 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 								sqlColumn.append(dataCode + ",");
 								headers.add(header);
 							}
-
 						}
 						if (dataCode.indexOf("root") == -1 && dataCode.indexOf("child") == -1) {
 							fields.add(enameField.trim());

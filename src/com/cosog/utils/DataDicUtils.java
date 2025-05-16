@@ -101,53 +101,56 @@ public class DataDicUtils {
 		List<DataDictionary> set = null;
 		DataDictionary ddic = null;
 		for (DataitemsInfo str : data) {
-			String strArr[] = str.getCode().split("_");
-			String rootVal = strArr[0];
-			if (strArr.length > 1 && strArr[1].equals("root")) {
-				for (DataitemsInfo d : data) {
-					String sdataArr[] = d.getCode().split("#");
-					
-					String header="";
-					if("zh_CN".equalsIgnoreCase(language)){
-						header=d.getName_zh_CN();
-					}else if("EN".equalsIgnoreCase(language)){
-						header=d.getName_en();
-					}else if("RU".equalsIgnoreCase(language)){
-						header=d.getName_ru();
-					}
-					header=StringManagerUtils.stringFormat(header);
-					
-					
-					if (sdataArr[0].equals(rootVal)) {
-						String colString = sdataArr[sdataArr.length - 1];
-						if (colString.indexOf(" as ") > 0) {
-							colString = colString.substring(colString.indexOf(" as ") + 3);
+			String rootVal="";
+			if(StringManagerUtils.isNotNull(str.getCode())){
+				String strArr[] = str.getCode().split("_");
+				rootVal = strArr[0];
+				if (strArr.length > 1 && strArr[1].equals("root")) {
+					for (DataitemsInfo d : data) {
+						String sdataArr[] = d.getCode().split("#");
+						
+						String header="";
+						if("zh_CN".equalsIgnoreCase(language)){
+							header=d.getName_zh_CN();
+						}else if("EN".equalsIgnoreCase(language)){
+							header=d.getName_en();
+						}else if("RU".equalsIgnoreCase(language)){
+							header=d.getName_ru();
 						}
-						String secondValString = sdataArr[sdataArr.length - 2];
-						if (map.containsKey(secondValString)) {
-							set = map.get(secondValString);
-							ddic = new DataDictionary();
-							ddic.setColunn(colString);
-							ddic.setHead(header);
-							//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
-							if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
-							ddic.setDataValue(d.getDatavalue());
+						header=StringManagerUtils.stringFormat(header);
+						
+						
+						if (sdataArr[0].equals(rootVal)) {
+							String colString = sdataArr[sdataArr.length - 1];
+							if (colString.indexOf(" as ") > 0) {
+								colString = colString.substring(colString.indexOf(" as ") + 3);
 							}
-							set.add(ddic);
-							map.remove(secondValString);
-							map.put(secondValString, set);
-
-						} else {
-							ddic = new DataDictionary();
-							set = new ArrayList<DataDictionary>();
-							ddic.setColunn(colString);
-							ddic.setHead(header);
-							//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
-							if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
+							String secondValString = sdataArr[sdataArr.length - 2];
+							if (map.containsKey(secondValString)) {
+								set = map.get(secondValString);
+								ddic = new DataDictionary();
+								ddic.setColunn(colString);
+								ddic.setHead(header);
+								//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
+								if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
 								ddic.setDataValue(d.getDatavalue());
 								}
-							set.add(ddic);
-							map.put(secondValString, set);
+								set.add(ddic);
+								map.remove(secondValString);
+								map.put(secondValString, set);
+
+							} else {
+								ddic = new DataDictionary();
+								set = new ArrayList<DataDictionary>();
+								ddic.setColunn(colString);
+								ddic.setHead(header);
+								//if(StringUtils.isNotBlank(d.getDatavalue())&&!d.getDatavalue().equals("null")){
+								if(StringManagerUtils.isNotNull(d.getDatavalue())&&!"null".equals(d.getDatavalue())){
+									ddic.setDataValue(d.getDatavalue());
+									}
+								set.add(ddic);
+								map.put(secondValString, set);
+							}
 						}
 					}
 				}

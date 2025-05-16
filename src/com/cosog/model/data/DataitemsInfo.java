@@ -39,8 +39,11 @@ public class DataitemsInfo implements Serializable {
 	private String updateuser; // 修改人
 	private Date updatetime; // 修改时间
 	private Date createdate; // 创建时间
-	private Integer dataSource; // 数据源
+	private Integer columnDataSource; // 字段数据源
 	private Integer deviceType; // 设备类型
+	
+	private Integer dataSource; // 字段数据源为驱动配置时，数据源 采集 计算 录入
+	private String dataUnit; // 字段数据源为驱动配置时，数据单位，区分相同字段名称
 	public DataitemsInfo() {
 		super();
 	}
@@ -174,6 +177,24 @@ public class DataitemsInfo implements Serializable {
 		this.name_ru = name_ru;
 	}
 
+	@Column(name = "DEVICETYPE")
+	public Integer getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(Integer deviceType) {
+		this.deviceType = deviceType;
+	}
+
+	@Column(name = "COLUMNDATASOURCE")
+	public Integer getColumnDataSource() {
+		return columnDataSource;
+	}
+
+	public void setColumnDataSource(Integer columnDataSource) {
+		this.columnDataSource = columnDataSource;
+	}
+
 	@Column(name = "DATASOURCE")
 	public Integer getDataSource() {
 		return dataSource;
@@ -183,13 +204,13 @@ public class DataitemsInfo implements Serializable {
 		this.dataSource = dataSource;
 	}
 
-	@Column(name = "DEVICETYPE")
-	public Integer getDeviceType() {
-		return deviceType;
+	@Column(name = "DATAUNIT")
+	public String getDataUnit() {
+		return dataUnit;
 	}
 
-	public void setDeviceType(Integer deviceType) {
-		this.deviceType = deviceType;
+	public void setDataUnit(String dataUnit) {
+		this.dataUnit = dataUnit;
 	}
 
 }

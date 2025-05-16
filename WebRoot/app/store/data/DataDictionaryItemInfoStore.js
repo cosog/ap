@@ -71,10 +71,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	}
                         }
                     },{
-                    	header: loginUserLanguageResource.dataSource,
+                    	header: loginUserLanguageResource.columnDataSource,
                     	align: 'center',
                     	flex: 1,
-                    	dataIndex: 'dataSourceName',
+                    	dataIndex: 'columnDataSourceName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";

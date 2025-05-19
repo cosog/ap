@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.DataMapping;
 import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.data.DataitemsInfo;
@@ -179,6 +180,33 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		String jsonaddstr = "";
 		if (StringUtils.isNotBlank(sysId)) {
 			dinfo.setSysdataid(sysId);
+			if(dinfo.getColumnDataSource()==1){
+				String name=dinfo.getName_zh_CN();
+				if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+					name=dinfo.getName_en();
+				}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+					name=dinfo.getName_ru();
+				}
+				if(dinfo.getDataSource()==1){
+					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+					if(calItem!=null){
+						dinfo.setCode(calItem.getCode());
+					}
+				}else if(dinfo.getDataSource()==2){
+					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+					if(calItem!=null){
+						dinfo.setCode(calItem.getCode());
+					}
+				}else if(dinfo.getDataSource()==0){
+					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+					if(loadProtocolMappingColumnByTitleMap!=null){
+						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(name);
+						if(dataMapping!=null){
+							dinfo.setCode(dataMapping.getMappingColumn());
+						}
+					}
+				}
+			}
 			this.saveDataitemsInfo(dinfo);
 			jsonaddstr = "{success:true,msg:true}";
 		} else {
@@ -321,7 +349,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				int addInfoIndex=0;
 				for (DataitemsInfo dataInfo : dataWhereList) {
 					int columnDataSource=dataInfo.getColumnDataSource();
-					String dataCode = columnDataSource==0?(dataInfo.getCode()!=null?dataInfo.getCode():""):"";// 字典英文名称对应数据库中的字段信息
+					String dataCode = columnDataSource!=2?(dataInfo.getCode()!=null?dataInfo.getCode():""):"";// 字典英文名称对应数据库中的字段信息
 					String header="";
 					if("zh_CN".equalsIgnoreCase(language)){
 						header=dataInfo.getName_zh_CN();
@@ -340,6 +368,17 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						enameField="addInfoColumn"+addInfoIndex;
 					}else if(columnDataSource==1){
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
+						if(dataInfo.getDataSource()==1){
+							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
+							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
+								header+="("+calItem.getUnit()+")";
+							}
+						}else if(dataInfo.getDataSource()==2){
+							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
+							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
+								header+="("+calItem.getUnit()+")";
+							}
+						}
 					}else{
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
 					}

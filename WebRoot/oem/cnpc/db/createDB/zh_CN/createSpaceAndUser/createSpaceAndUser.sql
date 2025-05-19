@@ -11,6 +11,7 @@ size 350m reuse
 autoextend on
 next 50m maxsize unlimited
 extent management local;
+Alter PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 create user ap identified by Ap201#
 default tablespace ap_data
 temporary tablespace ap_temp;

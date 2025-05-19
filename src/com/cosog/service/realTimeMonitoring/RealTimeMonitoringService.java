@@ -47,6 +47,7 @@ import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.data.DataDictionary;
+import com.cosog.model.data.DataitemsInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
@@ -897,6 +898,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumn=MemoryDataManagerTask.getProtocolMappingColumn();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			String tableName="tbl_acqdata_latest";
@@ -906,14 +908,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			DataDictionary ddic = null;
 			
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
-			StringBuffer columns = new StringBuffer();
-			columns.append(ddic.getTableHeader());
-			if(columns.toString().endsWith("]")){
-				columns.deleteCharAt(columns.length() - 1);
-			}
-			if(columns.toString().endsWith("}")){
-				columns.append(",");
-			}
+			List<DataitemsInfo> dataItemList=ddic.getDataItemList();
+			
+			String columns = ddic.getTableHeader();
+			
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
@@ -925,8 +923,35 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				timeEfficiencyZoom=100;
 			}
 			
-			Map<String, DisplayInstanceOwnItem.DisplayItem> displayItemMap=new LinkedHashMap<>();
-			Map<String, DeviceAddInfo> addInfoMap=new LinkedHashMap<>();
+			List<DataitemsInfo> protocolItems=new ArrayList<>();
+			List<DataitemsInfo> displayCalItemList=new ArrayList<>();
+			List<DataitemsInfo> displayInputItemList=new ArrayList<>();
+			List<DataitemsInfo> dailyTotalCalItemMap=new ArrayList<>();
+			
+			List<DataitemsInfo> addInfoDataItemList=new ArrayList();
+			List<String> addInfoNameList=new ArrayList<>();
+			
+			for(DataitemsInfo dataitemsInfo:dataItemList){
+				if(dataitemsInfo.getColumnDataSource()==2){
+					addInfoDataItemList.add(dataitemsInfo);
+					
+					String addInfoName=dataitemsInfo.getName_zh_CN();
+					if("en".equalsIgnoreCase(language)){
+						addInfoName=dataitemsInfo.getName_en();
+					}else if("ru".equalsIgnoreCase(language)){
+						addInfoName=dataitemsInfo.getName_ru();
+					}
+					addInfoNameList.add(addInfoName);
+				}else if(dataitemsInfo.getColumnDataSource()==1){
+					if(dataitemsInfo.getDataSource()==0){
+						protocolItems.add(dataitemsInfo);
+					}else if(dataitemsInfo.getDataSource()==1){
+						displayCalItemList.add(dataitemsInfo);
+					}else if(dataitemsInfo.getDataSource()==2){
+						displayInputItemList.add(dataitemsInfo);
+					}
+				}
+			}
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
@@ -1007,25 +1032,21 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				List<CalItem> calItemList=null;
 				List<CalItem> inputItemList=null;
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
-				DisplayInstanceOwnItem displayInstanceOwnItem=null;
 				AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 				String acqInstanceCode="";
-				String displayInstanceCode="";
 				String alarmInstanceCode="";
 				
 				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 				if(deviceInfo!=null){
-					displayInstanceCode=deviceInfo.getDisplayInstanceCode();
 					alarmInstanceCode=deviceInfo.getAlarmInstanceCode();
 					acqInstanceCode=deviceInfo.getInstanceCode();
 				}
 				
 				acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
-				displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
-				if(displayInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				if(acqInstanceOwnItem!=null){
+					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1058,10 +1079,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
-				List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
-				List<CalItem> displayCalItemList=new ArrayList<CalItem>();
-				List<CalItem> displayInputItemList=new ArrayList<CalItem>();
-				Map<String,DisplayInstanceOwnItem.DisplayItem> dailyTotalCalItemMap=new LinkedHashMap<>();
+				
 				
 				List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 				
@@ -1090,237 +1108,123 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"commissioningDate\":\""+obj[13]+"\",");
 				result_json.append("\"operatingDays\":\""+obj[14]+"\",");
 				
-				if(displayInstanceOwnItem!=null && userInfo!=null && protocol!=null){
-					String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
-							+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
-							+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
-							+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
-							+ "t.realtimecurveconf,t.historycurveconf,"
-							+ "t.type "
-							+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-							+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
-							+ " and t.type<>2"
-							+ " and t.realtimeoverview=1"
-							+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
-					displayItemSql+=" order by t.realtimeoverviewsort,t.type,t.id";
-					List<?> displayItemQueryList = this.findCallSql(displayItemSql);
-					for(int j=0;j<displayItemQueryList.size();j++){
-						Object[] displayItemObj=(Object[]) displayItemQueryList.get(j);
-						DisplayInstanceOwnItem.DisplayItem displayItem=new DisplayInstanceOwnItem.DisplayItem();
-						displayItem.setUnitId(StringManagerUtils.stringToInteger(displayItemObj[0]+""));
-	    				displayItem.setItemId(StringManagerUtils.stringToInteger(displayItemObj[1]+""));
-	    				displayItem.setItemName(displayItemObj[2]+"");
-	    				displayItem.setItemCode(displayItemObj[3]+"");
-	    				displayItem.setBitIndex(StringManagerUtils.stringToInteger(displayItemObj[4]+""));
-	    				displayItem.setShowLevel(StringManagerUtils.stringToInteger(displayItemObj[5]+""));
-	    				displayItem.setRealtimeSort(StringManagerUtils.stringToInteger(displayItemObj[6]+""));
-	    				displayItem.setHistorySort(StringManagerUtils.stringToInteger(displayItemObj[7]+""));
-	    				displayItem.setRealtimeCurveConf(displayItemObj[8]+"");
-	    				displayItem.setHistoryCurveConf(displayItemObj[9]+"");
-	    				displayItem.setType(StringManagerUtils.stringToInteger(displayItemObj[10]+""));
-	    				
-	    				if(!displayItemMap.containsKey(displayItem.getItemCode())){
-	    					String header=displayItem.getItemName();
-	    					String dataIndex=displayItem.getItemCode();
-	    					String unit="";
-	    					
-	    					if(displayItem.getType()==0){
-	    						ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, header);
-	    						if(item!=null){
-	    							unit=item.getUnit();
-	    						}
-	    					}else if(displayItem.getType()==1){
-	    						if(dailyTotalCalItemMap.containsKey(dataIndex.toUpperCase())){
-	    							if(dailyTotalCalItemMap.get(dataIndex.toUpperCase())!=null){
-	    								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, dailyTotalCalItemMap.get(dataIndex.toUpperCase()).getItemSourceName());
-	    								if(item!=null){
-	    									unit=item.getUnit();
-	    								}
-	    							}
-	    						}else{
-	    							CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, calItemList);
-	    							if(calItem!=null){
-	    								header=calItem.getName();
-	    								unit=calItem.getUnit();
-	    							}
-	    						}
-	    						
-	    						
-	    					}else if(displayItem.getType()==3){
-	    						CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(dataIndex, inputItemList);
-	    						if(calItem!=null){
-	    							header=calItem.getName();
-	    							unit=calItem.getUnit();
-	    						}
-	    					}
-	    					
-	    					for(ModbusProtocolConfig.Items item:protocol.getItems()){
-	    						if(item.getResolutionMode()==0 
-	    								&& displayItem.getItemName().equalsIgnoreCase(item.getTitle())
-	    								&& item.getMeaning()!=null
-	    								&& item.getMeaning().size()>0
-	    								){//开关量处理
-	    							for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
-	    								if(displayItem.getBitIndex()==itemsMeaning.getValue()){
-	    									header=itemsMeaning.getMeaning();
-	    									dataIndex+="_"+itemsMeaning.getValue();
-	    									break;
-	    								}
-	    							}
-	    							break;
-	    						}
-	    					}
-	    					
-	    					if(StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
-	    						header+="("+unit+")";
-	    					}
-	    					displayItem.setItemName(header);
-	    					displayItemMap.put(displayItem.getItemCode(), displayItem);
-	    				}
-					}
+				if(userInfo!=null && protocol!=null){
+
+				
 					
 					
 					//采集项
-					for(int j=0;j<protocol.getItems().size();j++){
-						if((!"w".equalsIgnoreCase(protocol.getItems().get(j).getRWType())) 
-								&& (StringManagerUtils.existDisplayItem(displayInstanceOwnItem.getItemList(), protocol.getItems().get(j).getTitle(), false))){
-							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-								if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
-										&& displayInstanceOwnItem.getItemList().get(k).getRealtimeOverview()==1
-										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
-										&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
-										){
-									protocolItems.add(protocol.getItems().get(j));
-									break;
-								}
-							}
-						}
-					}
+					
 					
 					//计算项
-					if(calItemList!=null){
-						for(CalItem calItem:calItemList){
-							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,2)){
-								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
-											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeOverview()==1
-											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
-											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
-										displayCalItemList.add(calItem);
-										break;
-									}
-								}
-								
-							}
-						}
-					}
+					
 					//日汇总计算项
-					if(acqInstanceOwnItem!=null){
-						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
-							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0,2)){
-								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
-											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeOverview()==1
-											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
-											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
-										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
-										displayInstanceOwnItem.getItemList().get(k).setItemSourceCode(acqItem.getItemCode());
-										dailyTotalCalItemMap.put(displayInstanceOwnItem.getItemList().get(k).getItemCode().toUpperCase(), displayInstanceOwnItem.getItemList().get(k));
-										break;
-									}
-								}
-								
-							}
-						}
-					}
-					//录入项
-					if(inputItemList!=null){
-						for(CalItem calItem:inputItemList){
-							if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,2)){
-								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-									if(displayInstanceOwnItem.getItemList().get(k).getType()==3
-											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeOverview()==1
-											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
-											&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
-										displayInputItemList.add(calItem);
-										break;
-									}
-								}
-								
-							}
-						}
-					}
+//					if(acqInstanceOwnItem!=null){
+//						for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
+//							if(acqItem.getDailyTotalCalculate()==1 && StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), (acqItem.getItemCode()+"_total").toUpperCase(), false,0,2)){
+//								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+//									if(displayInstanceOwnItem.getItemList().get(k).getType()==1
+//											&& displayInstanceOwnItem.getItemList().get(k).getRealtimeOverview()==1
+//											&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
+//											&& (acqItem.getItemCode()+"_total").equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
+//										displayInstanceOwnItem.getItemList().get(k).setItemSourceName(acqItem.getItemName());
+//										displayInstanceOwnItem.getItemList().get(k).setItemSourceCode(acqItem.getItemCode());
+//										dailyTotalCalItemMap.put(displayInstanceOwnItem.getItemList().get(k).getItemCode().toUpperCase(), displayInstanceOwnItem.getItemList().get(k));
+//										break;
+//									}
+//								}
+//								
+//							}
+//						}
+//					}
 				}
 				
 				if(displayCalItemList.size()>0){
-					String calDataSql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime";//0~2;
-					if(StringManagerUtils.stringToInteger(calculateType)>0){
-						for(int j=0;j<displayCalItemList.size();j++){
-							String column=displayCalItemList.get(j).getCode();
-							if("resultName".equalsIgnoreCase(column)){
-								column="resultCode";
-							}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-								column=column+"*"+timeEfficiencyZoom+" as "+column;
-							}else if("runstatusName".equalsIgnoreCase(column)){
-								column="runstatus";
-							}
-							calDataSql+=",t3."+column;
-						}
-					}else{
-						for(int j=0;j<displayCalItemList.size();j++){
-							String column=displayCalItemList.get(j).getCode();
-							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-								column=column+"*"+timeEfficiencyZoom+" as "+column;
-							}
-							calDataSql+=",t2."+column;
+					List<DataitemsInfo> deviceCalItemList=new ArrayList<>();
+					for(int j=0;j<displayCalItemList.size();j++){
+						String column=displayCalItemList.get(j).getCode();
+						CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
+						if(calItem!=null){
+							deviceCalItemList.add(displayCalItemList.get(j));
 						}
 					}
-					
-					calDataSql+= " from "+deviceTableName+" t "
-							+" left outer join "+tableName+" t2 on t2.deviceid=t.id"
-							+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime "
-							+" where t.id="+deviceId+"";
-					List<?> calDataQueryList = this.findCallSql(calDataSql);
-					if(calDataQueryList.size()>0){
-						Object[] calDataObj=(Object[]) calDataQueryList.get(0);
-						for(int j=0;j<displayCalItemList.size();j++){
-							int index=j+3;
-							if(index<calDataObj.length){
-								String columnName=displayCalItemList.get(j).getName();
-								String rawColumnName=columnName;
-								String value=calDataObj[index]+"";
-								if(calDataObj[index] instanceof CLOB || calDataObj[index] instanceof Clob){
-									value=StringManagerUtils.CLOBObjectToString(calDataObj[index]);
+					if(deviceCalItemList.size()>0){
+						String calDataSql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime";//0~2;
+						if(StringManagerUtils.stringToInteger(calculateType)>0){
+							for(int j=0;j<deviceCalItemList.size();j++){
+								String column=deviceCalItemList.get(j).getCode();
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
+								if(calItem!=null){
+									if("resultName".equalsIgnoreCase(column)){
+										column="resultCode";
+									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}else if("runstatusName".equalsIgnoreCase(column)){
+										column="runstatus";
+									}
+									calDataSql+=",t3."+column;
 								}
-								String rawValue=value;
-								String addr="";
-								String column=displayCalItemList.get(j).getCode();
-								String columnDataType="";
-								String resolutionMode="";
-								String bitIndex="";
-								String unit=displayCalItemList.get(j).getUnit();
-								int sort=9999;
-								
-								if(!("runStatus".equalsIgnoreCase(column) || "runStatusName".equalsIgnoreCase(column))){
-									for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-										if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-											sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-											//如果是工况
-											if("resultCode".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())||"resultName".equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-												WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-												if(workType!=null){
-													value=workType.getResultName();
-													for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
-														if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-															resultAlarmLevel=alarmItem.getAlarmLevel();
-														}
-													}
-													
+							}
+						}else{
+							for(int j=0;j<deviceCalItemList.size();j++){
+								String column=deviceCalItemList.get(j).getCode();
+								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
+								if(calItem!=null){
+									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}
+									calDataSql+=",t2."+column;
+								}
+							}
+						}
+						
+						calDataSql+= " from "+deviceTableName+" t "
+								+" left outer join "+tableName+" t2 on t2.deviceid=t.id"
+								+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime "
+								+" where t.id="+deviceId+"";
+						List<?> calDataQueryList = this.findCallSql(calDataSql);
+						if(calDataQueryList.size()>0){
+							Object[] calDataObj=(Object[]) calDataQueryList.get(0);
+							for(int j=0;j<deviceCalItemList.size();j++){
+								int index=j+3;
+								if(index<calDataObj.length){
+									String columnName=deviceCalItemList.get(j).getName_zh_CN();
+									if("en".equalsIgnoreCase(language)){
+										columnName=deviceCalItemList.get(j).getName_en();
+									}else if("ru".equalsIgnoreCase(language)){
+										columnName=deviceCalItemList.get(j).getName_ru();
+									}
+									
+									
+									String rawColumnName=columnName;
+									String value=calDataObj[index]+"";
+									if(calDataObj[index] instanceof CLOB || calDataObj[index] instanceof Clob){
+										value=StringManagerUtils.CLOBObjectToString(calDataObj[index]);
+									}
+									String rawValue=value;
+									String addr="";
+									String column=deviceCalItemList.get(j).getCode();
+									String columnDataType="";
+									String resolutionMode="";
+									String bitIndex="";
+									String unit=deviceCalItemList.get(j).getDataUnit();
+									int sort=deviceCalItemList.get(j).getSorts();
+									
+									
+									if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+										if(workType!=null){
+											value=workType.getResultName();
+											for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+												if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+													resultAlarmLevel=alarmItem.getAlarmLevel();
 												}
 											}
-											break;
+											
 										}
 									}
+									
+									
 									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
@@ -1335,7 +1239,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 						for(int j=0;j<displayInputItemList.size();j++){
-							String columnName=displayInputItemList.get(j).getName();
+							String columnName=displayInputItemList.get(j).getName_zh_CN();
+							if("en".equalsIgnoreCase(language)){
+								columnName=displayInputItemList.get(j).getName_en();
+							}else if("ru".equalsIgnoreCase(language)){
+								columnName=displayInputItemList.get(j).getName_ru();
+							}
 							String rawColumnName=columnName;
 							String value="";
 							String rawValue=value;
@@ -1344,14 +1253,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String columnDataType="";
 							String resolutionMode="";
 							String bitIndex="";
-							String unit=displayInputItemList.get(j).getUnit();
-							int sort=9999;
-							for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-								if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-									break;
-								}
-							}
+							String unit=displayInputItemList.get(j).getDataUnit();
+							int sort=displayInputItemList.get(j).getSorts();
+							
 							
 							if(srpProductionData!=null){
 								if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
@@ -1404,7 +1308,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 						PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 						for(int j=0;j<displayInputItemList.size();j++){
-							String columnName=displayInputItemList.get(j).getName();
+							String columnName=displayInputItemList.get(j).getName_zh_CN();
+							if("en".equalsIgnoreCase(language)){
+								columnName=displayInputItemList.get(j).getName_en();
+							}else if("ru".equalsIgnoreCase(language)){
+								columnName=displayInputItemList.get(j).getName_ru();
+							}
 							String rawColumnName=columnName;
 							String value="";
 							String rawValue=value;
@@ -1413,14 +1322,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String columnDataType="";
 							String resolutionMode="";
 							String bitIndex="";
-							String unit=displayInputItemList.get(j).getUnit();
-							int sort=9999;
-							for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-								if(column.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(l).getItemCode())){
-									sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-									break;
-								}
-							}
+							String unit=displayInputItemList.get(j).getDataUnit();
+							int sort=displayInputItemList.get(j).getSorts();
 							
 							if(pcpProductionData!=null){
 								if("CrudeOilDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
@@ -1473,10 +1376,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					List<KeyValue> acqDataList=gson.fromJson(acqData, type);
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
-							for(ModbusProtocolConfig.Items item: protocolItems){
-								String column=loadProtocolMappingColumnByTitleMap.get(item.getTitle()).getMappingColumn();
-								if(StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-									String columnName=item.getTitle();
+							for(DataitemsInfo dataitemsInfo: protocolItems){
+								String columnName=dataitemsInfo.getName_zh_CN();
+								if("en".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_en();
+								}else if("ru".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_ru();
+								}
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, columnName);
+								String column=dataitemsInfo.getCode();
+								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
 									String rawColumnName=columnName;
 									String value=keyValue.getValue();
 									String rawValue=value;
@@ -1485,7 +1394,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									String resolutionMode=item.getResolutionMode()+"";
 									String bitIndex="";
 									String unit=item.getUnit();
-									int sort=9999;
+									int sort=dataitemsInfo.getSorts();
 									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
 											||"float32".equalsIgnoreCase(item.getIFDataType())
 											||"float64".equalsIgnoreCase(item.getIFDataType())){
@@ -1494,13 +1403,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						                 }
 									}
 									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-												break;
-											}
-										}
-										
 										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
 											for(int l=0;l<item.getMeaning().size();l++){
 												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
@@ -1516,22 +1418,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
 											String[] valueArr=value.split(",");
 											for(int l=0;l<item.getMeaning().size();l++){
-												isMatch=false;
 												columnName=item.getMeaning().get(l).getMeaning();
-												sort=9999;
-												
-												for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
-													if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
-															&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
-															){
-														sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
-														isMatch=true;
-														break;
-													}
-												}
-												if(!isMatch){
-													continue;
-												}
+												sort=dataitemsInfo.getSorts();
 												if(StringManagerUtils.isNotNull(value)){
 													boolean match=false;
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
@@ -1557,13 +1445,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 													}
 												}else{
-													for(int m=0;m<displayInstanceOwnItem.getItemList().size();m++){
-														if(displayInstanceOwnItem.getItemList().get(m).getItemCode().equalsIgnoreCase(column) 
-																&& displayInstanceOwnItem.getItemList().get(m).getBitIndex()==item.getMeaning().get(l).getValue() ){
-															sort=displayInstanceOwnItem.getItemList().get(m).getRealtimeSort();
-															break;
-														}
-													}
 													value="";
 													rawValue="";
 													bitIndex=item.getMeaning().get(l).getValue()+"";
@@ -1572,23 +1453,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}
 											}
 										}else{
-											for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-												if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column)){
-													sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-													break;
-												}
-											}
 											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
 									}else{//如果是数据量
-										for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-											if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-												sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-												break;
-											}
-										}
-										
 										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									} 
@@ -1600,82 +1468,74 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					
 				}
 				
-				if(dailyTotalCalItemMap.size()>0){
-					String dailyTotalDatasql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-							+ "t.itemcolumn,t.itemname,"
-							+ "t.totalvalue,t.todayvalue "
-							+ " from tbl_dailytotalcalculate_latest t "
-							+ " where t.deviceId="+deviceId;
-					
-					List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
-					for(int j=0;j<dailyTotalDatasList.size();j++){
-						Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(j);
-						if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() )  && acqTime.equalsIgnoreCase(dailyTotalDataObj[0]+"")  ){
-							DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
-							if(displayItem!=null){
-								String unit="";
-								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemSourceName());
-								if(item!=null){
-									unit=item.getUnit();
-								}
-								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-										dailyTotalDataObj[2]+"",
-										dailyTotalDataObj[2]+"",
-										dailyTotalDataObj[4]+"",
-										dailyTotalDataObj[4]+"",
-										"",
-										dailyTotalDataObj[1]+"",
-										"",
-										"",
-										"",
-										unit,
-										displayItem.getRealtimeSort(),
-										1);
-								protocolItemResolutionDataList.add(protocolItemResolutionData);
-							}
-						}
-					}
-				
-				}
+//				if(dailyTotalCalItemMap.size()>0){
+//					String dailyTotalDatasql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+//							+ "t.itemcolumn,t.itemname,"
+//							+ "t.totalvalue,t.todayvalue "
+//							+ " from tbl_dailytotalcalculate_latest t "
+//							+ " where t.deviceId="+deviceId;
+//					
+//					List<?> dailyTotalDatasList = this.findCallSql(dailyTotalDatasql);
+//					for(int j=0;j<dailyTotalDatasList.size();j++){
+//						Object[] dailyTotalDataObj=(Object[]) dailyTotalDatasList.get(j);
+//						if(dailyTotalCalItemMap.containsKey( (dailyTotalDataObj[1]+"").toUpperCase() )  && acqTime.equalsIgnoreCase(dailyTotalDataObj[0]+"")  ){
+//							DisplayInstanceOwnItem.DisplayItem displayItem=dailyTotalCalItemMap.get( (dailyTotalDataObj[1]+"").toUpperCase() );
+//							if(displayItem!=null){
+//								String unit="";
+//								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemSourceName());
+//								if(item!=null){
+//									unit=item.getUnit();
+//								}
+//								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+//										dailyTotalDataObj[2]+"",
+//										dailyTotalDataObj[2]+"",
+//										dailyTotalDataObj[4]+"",
+//										dailyTotalDataObj[4]+"",
+//										"",
+//										dailyTotalDataObj[1]+"",
+//										"",
+//										"",
+//										"",
+//										unit,
+//										displayItem.getRealtimeSort(),
+//										1);
+//								protocolItemResolutionDataList.add(protocolItemResolutionData);
+//							}
+//						}
+//					}
+//				
+//				}
 				
 				//附加信息
-				String addInfoSql="select t.itemname,t.itemvalue,t.itemunit "
-						+ " from tbl_deviceaddinfo t "
-						+ " where t.deviceid= "+deviceId
-						+ " and t.overview=1 "
-						+ " order by t.overviewsort";
-				List<?> addInfoList = this.findCallSql(addInfoSql);
-				for(int j=0;j<addInfoList.size();j++){
-					Object[] addInfoObj=(Object[]) addInfoList.get(j);
-					String itemName=addInfoObj[0]+"";
-					String itemValue=addInfoObj[1]+"";
-					String itemUnit=addInfoObj[2]+"";
-					if(StringManagerUtils.isNotNull(itemUnit)){
-						itemName+="("+itemUnit+")";
-					}
-					DeviceAddInfo deviceAddInfo=new DeviceAddInfo();
-					deviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(deviceId));
-					deviceAddInfo.setItemName(itemName);
-					deviceAddInfo.setItemValue(itemValue);
-					deviceAddInfo.setItemUnit(itemUnit);
-					if(!addInfoMap.containsKey(itemName)){
-						addInfoMap.put(itemName, deviceAddInfo);
-					}
-					int addInfoIndex=0;
-					for (Map.Entry<String, DeviceAddInfo> entry : addInfoMap.entrySet()) {
-						if(entry.getKey().equals(deviceAddInfo.getItemName())){
-							break;
-						}else{
-							addInfoIndex++;
+				if(addInfoDataItemList.size()>0){
+					String addInfoSql="select t.itemname,t.itemvalue,t.itemunit "
+							+ " from tbl_deviceaddinfo t "
+							+ " where t.deviceid= "+deviceId
+							+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(addInfoNameList, ",")+") ";
+					List<?> addInfoList = this.findCallSql(addInfoSql);
+					for(int j=0;j<addInfoList.size();j++){
+						Object[] addInfoObj=(Object[]) addInfoList.get(j);
+						String itemName=addInfoObj[0]+"";
+						String itemValue=addInfoObj[1]+"";
+						String itemUnit=addInfoObj[2]+"";
+						
+						String addInfoColumn="";
+						
+						for(int k=0;k<addInfoDataItemList.size();k++){
+							String addInfoName=addInfoDataItemList.get(k).getName_zh_CN();
+							if("en".equalsIgnoreCase(language)){
+								addInfoName=addInfoDataItemList.get(k).getName_en();
+							}else if("ru".equalsIgnoreCase(language)){
+								addInfoName=addInfoDataItemList.get(k).getName_ru();
+							}
+							if(itemName.equals(addInfoName)){
+								addInfoColumn="addInfoColumn"+(k+1);
+								break;
+							}
 						}
-			        }
-					String addInfoColumn="addInfoColumn"+(addInfoIndex+1);
-					result_json.append("\""+addInfoColumn+"\":\""+deviceAddInfo.getItemValue()+"\",");
-					
+						result_json.append("\""+addInfoColumn+"\":\""+itemValue+"\",");
+					}
 				}
-				
-				
-				
 				
 				
 				//报警信息
@@ -1764,11 +1624,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				alarmInfo.append("]");
 				
-				
-				
-				
-				
-				
 				result_json.append("\"resultAlarmLevel\":\""+resultAlarmLevel+"\",");
 				result_json.append("\"alarmInfo\":"+alarmInfo+"");
 				result_json.append("},");
@@ -1777,40 +1632,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
 			result_json.append("],");
-			
-			Iterator<Map.Entry<String, DisplayInstanceOwnItem.DisplayItem>> iterator = displayItemMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-			    Map.Entry<String, DisplayInstanceOwnItem.DisplayItem> entry = iterator.next();
-			    String key = entry.getKey();
-			    DisplayInstanceOwnItem.DisplayItem displayItem = entry.getValue();
-
-				if(displayItem.getType()!=2 && displayItem.getShowLevel()>=userInfo.getRoleShowLevel()){
-					String header=displayItem.getItemName();
-					String dataIndex=displayItem.getItemCode();
-					columns.append("{ \"header\":\""+header+"\",\"dataIndex\":\""+(dataIndex.equalsIgnoreCase("runStatus")?"RunStatusName":dataIndex)+"\"},");
-				}
-			}
-			if(columns.toString().endsWith(",")){
-				columns.deleteCharAt(columns.length() - 1);
-			}
-			
-			if(columns.toString().endsWith("}")){
-				columns.append(",");
-			}
-			
-			//附加信息
-			int addInfoIndex=0;
-			for (Map.Entry<String, DeviceAddInfo> entry : addInfoMap.entrySet()) {
-				String addInfoColumn="addInfoColumn"+(addInfoIndex+1);
-				columns.append("{ \"header\":\""+entry.getKey()+"\",\"dataIndex\":\""+addInfoColumn+"\"},");
-				addInfoIndex++;
-	        }
-			if(columns.toString().endsWith(",")){
-				columns.deleteCharAt(columns.length() - 1);
-			}
-			
-			
-			columns.append("]");
 			
 			result_json.append("\"columns\":"+columns+",");
 			result_json.append("\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");

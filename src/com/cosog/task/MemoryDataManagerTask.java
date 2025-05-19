@@ -2324,6 +2324,21 @@ public class MemoryDataManagerTask {
 		return c;
 	}
 	
+	public static CalItem getCalItemByNameAndUnit(String name,String unit,String language){
+		CalItem c=null;
+		List<CalItem> list= getAcqCalculateItem(language);
+		c=getSingleCalItemByNameAndUnit(name,unit,list);
+		if(c==null){
+			list= getSRPCalculateItem(language);
+			c=getSingleCalItemByNameAndUnit(name,unit,list);
+		}
+		if(c==null){
+			list= getPCPCalculateItem(language);
+			c=getSingleCalItemByNameAndUnit(name,unit,list);
+		}
+		return c;
+	}
+	
 	public static String calItemLanguageSwitchover(String name,String language){
 		String r="";
 		int type=0;
@@ -2402,6 +2417,27 @@ public class MemoryDataManagerTask {
 					item=calItem;
 					break;
 				}
+			}
+		}
+		return item;
+	}
+	
+	public static CalItem getSingleCalItemByNameAndUnit(String name,String unit,List<CalItem> list){
+		CalItem item=null;
+		if(list!=null){
+			for(CalItem calItem:list){
+				if(StringManagerUtils.isNotNull(unit)){
+					if(name.equalsIgnoreCase(calItem.getName()) && unit.equalsIgnoreCase(calItem.getUnit())){
+						item=calItem;
+						break;
+					}
+				}else{
+					if(name.equalsIgnoreCase(calItem.getName())){
+						item=calItem;
+						break;
+					}
+				}
+				
 			}
 		}
 		return item;
@@ -3445,6 +3481,17 @@ public class MemoryDataManagerTask {
 		if(c==null){
 			list= getPCPInputItem(language);
 			c=getSingleCalItemByCode(code,list);
+		}
+		return c;
+	}
+	
+	public static CalItem getInputItemByNameAndUnit(String name,String unit,String language){
+		CalItem c=null;
+		List<CalItem> list= getSRPInputItem(language);
+		c=getSingleCalItemByNameAndUnit(name,unit,list);
+		if(c==null){
+			list= getPCPInputItem(language);
+			c=getSingleCalItemByNameAndUnit(name,unit,list);
 		}
 		return c;
 	}

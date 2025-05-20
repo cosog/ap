@@ -36,7 +36,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
+	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String dictDeviceType,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
@@ -52,7 +52,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		String tableName="viw_alarminfo_hist";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName_"+language+",to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
 				+ " t.itemname,t.alarmtype,"
@@ -170,7 +170,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportAlarmData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
-			String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language){
+			String orgId,
+			String deviceType,String dictDeviceType,
+			String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language){
 		try{
 			
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();

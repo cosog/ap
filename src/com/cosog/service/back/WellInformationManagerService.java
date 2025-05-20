@@ -710,7 +710,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String batchAddDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,
-			String orgId,String deviceType,String isCheckout,User user) throws Exception {
+			String orgId,String deviceType,String isCheckout,String dictDeviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionBuff = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
@@ -729,7 +729,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int overlayCount=0;
 		int overCount=0;
 		String ddicCode="deviceInfo_DeviceBatchAdd";
-		String columns=service.showTableHeadersColumns(ddicCode,user.getLanguageName());
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,user.getLanguageName());
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		
 		String deviceTypeSql="select t.name_"+user.getLanguageName()+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
@@ -1252,12 +1252,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String batchAddPumpingModel(PumpingModelHandsontableChangedData auxiliaryDeviceHandsontableChangedData,String isCheckout,String language) throws Exception {
+	public String batchAddPumpingModel(PumpingModelHandsontableChangedData auxiliaryDeviceHandsontableChangedData,String isCheckout,String dictDeviceType,String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		int overlayCount=0;
 		String ddicCode="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		List<PumpingModelHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPumpingModel(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout),language);
 		
 		overlayBuff.append("[");
@@ -1307,7 +1307,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	
 	@SuppressWarnings("rawtypes")
-	public String getDeviceInfoList(Map map,Page pager,int recordCount,User user) {
+	public String getDeviceInfoList(Map map,Page pager,int recordCount,String dictDeviceType,User user) {
 		StringBuffer result_json = new StringBuffer();
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1324,7 +1324,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceType=(String) map.get("deviceType");
 		String orgId = (String) map.get("orgId");
 		
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 				+ " applicationScenarios,"
 				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
@@ -1497,6 +1497,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String tableName="viw_device";
 			String deviceName = (String) map.get("deviceName");
 			String deviceType=(String) map.get("deviceType");
+			String dictDeviceType=(String) map.get("dictDeviceType");
 			String orgId = (String) map.get("orgId");
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -1585,7 +1586,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String language) {
+	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String dictDeviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
 		String ddicCode="deviceInfo_SMSDeviceManager";
@@ -1598,7 +1599,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.deviceName like '%" + deviceName+ "%'";
 		}
 		
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String sql = "select id,orgName_"+language+",deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1893,10 +1894,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String doPumpingModelShow(String manufacturer,String model,String language) throws SQLException, IOException {
+	public String doPumpingModelShow(String manufacturer,String model,String dictDeviceType,String language) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','"+languageResourceMap.get("anticlockwise")+"','Clockwise','"+languageResourceMap.get("clockwise")+"','') as crankrotationdirection,"
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
@@ -1933,10 +1934,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getBatchAddPumpingModelTableInfo(int recordCount,String language) {
+	public String getBatchAddPumpingModelTableInfo(int recordCount,String dictDeviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="pumpingDevice_PumpingModelManager";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<recordCount;i++){
@@ -2932,7 +2933,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getBatchAddDeviceTableInfo(String deviceType,int recordCount,User user) {
+	public String getBatchAddDeviceTableInfo(String deviceType,int recordCount,String dictDeviceType,User user) {
 		StringBuffer result_json = new StringBuffer();
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2965,7 +2966,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		
 		deviceTypeDropdownData.append("[");
 		instanceDropdownData.append("[");
@@ -3511,11 +3512,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String doAuxiliaryDeviceShow(Map map,Page pager,String deviceType,int recordCount,String language) {
+	public String doAuxiliaryDeviceShow(Map map,Page pager,String deviceType,int recordCount,String dictDeviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="auxiliaryDeviceManager";
 		
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String sql = "select t.id,t.specificType,t.name,t.manufacturer,t.model,t.remark,t.sort "
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
 				+ " where t.type=t2.id";
@@ -3739,10 +3740,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getBatchAddAuxiliaryDeviceTableInfo(int recordCount,String language) {
+	public String getBatchAddAuxiliaryDeviceTableInfo(int recordCount,String dictDeviceType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="auxiliaryDeviceManager";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<recordCount;i++){
@@ -3927,12 +3928,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public String batchAddAuxiliaryDevice(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,String isCheckout,String language) throws Exception {
+	public String batchAddAuxiliaryDevice(AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData,String isCheckout,String dictDeviceType,String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		int overlayCount=0;
 		String ddicCode="auxiliaryDeviceManager";
-		String columns=service.showTableHeadersColumns(ddicCode,language);
+		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> list=getBaseDao().batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout));
 		
 		overlayBuff.append("[");

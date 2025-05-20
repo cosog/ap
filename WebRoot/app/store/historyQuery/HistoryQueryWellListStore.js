@@ -207,10 +207,15 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
         	var commStatusStatValue=Ext.getCmp("HistoryQueryStatSelectCommStatus_Id").getValue();
         	var runStatusStatValue=Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").getValue();
 			var deviceTypeStatValue=Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").getValue();
+			var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
+        	}
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
                     deviceName:deviceName,
+                    dictDeviceType:dictDeviceType,
                     FESdiagramResultStatValue:FESdiagramResultStatValue,
                     commStatusStatValue:commStatusStatValue,
                     runStatusStatValue:runStatusStatValue,

@@ -598,6 +598,7 @@ public class WellInformationManagerController extends BaseController {
 	public String doWellInformationShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
@@ -630,9 +631,9 @@ public class WellInformationManagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		String json="";
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
-			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,language);
+			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,dictDeviceType,language);
 		}else{
-			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,user);
+			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,dictDeviceType,user);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -647,6 +648,7 @@ public class WellInformationManagerController extends BaseController {
 	public String getBatchAddDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
@@ -666,7 +668,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount,user);
+		String json = this.wellInformationManagerService.getBatchAddDeviceTableInfo(deviceType,recordCount,dictDeviceType,user);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -680,6 +682,7 @@ public class WellInformationManagerController extends BaseController {
 	public String doAuxiliaryDeviceShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
@@ -696,7 +699,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.doAuxiliaryDeviceShow(map, pager,deviceType,recordCount,language);
+		String json = this.wellInformationManagerService.doAuxiliaryDeviceShow(map, pager,deviceType,recordCount,dictDeviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -755,6 +758,7 @@ public class WellInformationManagerController extends BaseController {
 	public String getBatchAddAuxiliaryDeviceTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -762,7 +766,7 @@ public class WellInformationManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.wellInformationManagerService.getBatchAddAuxiliaryDeviceTableInfo(recordCount,language);
+		String json = this.wellInformationManagerService.getBatchAddAuxiliaryDeviceTableInfo(recordCount,dictDeviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -910,6 +914,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/batchAddAuxiliaryDevice")
 	public String batchAddAuxiliaryDevice() throws Exception {
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -920,7 +925,7 @@ public class WellInformationManagerController extends BaseController {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
 		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,isCheckout,language);
+		String json=this.wellInformationManagerService.batchAddAuxiliaryDevice(auxiliaryDeviceHandsontableChangedData,isCheckout,dictDeviceType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -957,6 +962,7 @@ public class WellInformationManagerController extends BaseController {
 	public String doPumpingModelShow() throws IOException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
@@ -975,7 +981,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.doPumpingModelShow(manufacturer,model,language);
+		String json = this.wellInformationManagerService.doPumpingModelShow(manufacturer,model,dictDeviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1022,6 +1028,7 @@ public class WellInformationManagerController extends BaseController {
 	public String getBatchAddPumpingModelTableInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1029,7 +1036,7 @@ public class WellInformationManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getBatchAddPumpingModelTableInfo(recordCount,language);
+		String json = this.wellInformationManagerService.getBatchAddPumpingModelTableInfo(recordCount,dictDeviceType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1275,6 +1282,7 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
@@ -1306,6 +1314,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("deviceName", deviceName);
 		map.put("deviceType", deviceType);
+		map.put("dictDeviceType", dictDeviceType);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);
 		map.put("orgId", orgId);
@@ -1542,6 +1551,7 @@ public class WellInformationManagerController extends BaseController {
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String json="";
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
@@ -1577,7 +1587,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else{
-			json=this.wellInformationManagerService.batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
+			json=this.wellInformationManagerService.batchAddDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,dictDeviceType,user);
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -1888,6 +1898,7 @@ public class WellInformationManagerController extends BaseController {
 	public String batchAddPumpingModel() throws Exception {
 		String data = ParamUtils.getParameter(request, "data");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1897,7 +1908,7 @@ public class WellInformationManagerController extends BaseController {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<PumpingModelHandsontableChangedData>() {}.getType();
 		PumpingModelHandsontableChangedData pumpingModelHandsontableChangedData=gson.fromJson(data, type);
-		String json=this.wellInformationManagerService.batchAddPumpingModel(pumpingModelHandsontableChangedData,isCheckout,language);
+		String json=this.wellInformationManagerService.batchAddPumpingModel(pumpingModelHandsontableChangedData,isCheckout,dictDeviceType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

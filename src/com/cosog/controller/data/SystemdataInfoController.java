@@ -86,6 +86,7 @@ public class SystemdataInfoController extends BaseController {
 	public void findSystemdataInfoByListId() throws Exception {
 		String typeName = request.getParameter("typeName");
 		String findName = request.getParameter("sysName");
+		String dictDeviceType=request.getParameter("dictDeviceType");
 		// 分页
 		this.pager = new Page("pagerForm", request);
 		// 当前登录用户
@@ -94,7 +95,7 @@ public class SystemdataInfoController extends BaseController {
 //		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage",userInfo.getLanguageName());
+		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage",dictDeviceType,userInfo.getLanguageName());
 		// 输出json数据。
 		PrintWriter pw = response.getWriter();
 		pw.print(data);
@@ -106,13 +107,14 @@ public class SystemdataInfoController extends BaseController {
 	public String findSystemdataInfo() throws Exception {
 		String typeName = request.getParameter("typeName");
 		String findName = request.getParameter("sysName");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String json="{}";
 		if(user!=null){
-			json=systemdataInfoService.findSystemdataInfo(user,typeName,findName,pager);
+			json=systemdataInfoService.findSystemdataInfo(dictDeviceType,user,typeName,findName,pager);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

@@ -56,6 +56,7 @@ public class LogQueryController extends BaseController{
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -94,7 +95,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getDeviceOperationLogData(orgId,deviceType,deviceName,operationType,pager,user);
+		json = logQueryService.getDeviceOperationLogData(orgId,deviceType,deviceName,operationType,pager,dictDeviceType,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -109,6 +110,7 @@ public class LogQueryController extends BaseController{
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
@@ -163,7 +165,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = logQueryService.exportDeviceOperationLogData(response,fileName,title, heads, fields,orgId,deviceType,deviceName,operationType,pager,user);
+		boolean bool = logQueryService.exportDeviceOperationLogData(response,fileName,title, heads, fields,orgId,deviceType,dictDeviceType,deviceName,operationType,pager,user);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
@@ -177,7 +179,7 @@ public class LogQueryController extends BaseController{
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
-		
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String selectUserId = ParamUtils.getParameter(request, "selectUserId");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -209,7 +211,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogData(orgId,operationType,pager,user,selectUserId,language);
+		json = logQueryService.getSystemLogData(orgId,operationType,pager,user,selectUserId,dictDeviceType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

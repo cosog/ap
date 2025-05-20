@@ -277,7 +277,7 @@ function exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alar
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr) {
+function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,startDate,endDate,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr) {
     var url = context + '/alarmQueryController/exportAlarmData';
     var fields = "";
     var heads = "";
@@ -317,6 +317,7 @@ function exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,startDate,end
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
     + "&deviceType=" + deviceType 
+    + "&dictDeviceType=" + dictDeviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&startDate=" + startDate

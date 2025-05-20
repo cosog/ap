@@ -221,6 +221,7 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgTreeGridTree() throws IOException {
 		String orgName = ParamUtils.getParameter(request, "orgName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -244,7 +245,7 @@ public class OrgManagerController extends BaseController {
 			}
 		}
 		json = r.modifyOrgStr(json);
-		json = this.getArrayTojsonPage(json, "orgAndUser_OrgManage",language);
+		json = this.getArrayTojsonPage(json, "orgAndUser_OrgManage",dictDeviceType,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

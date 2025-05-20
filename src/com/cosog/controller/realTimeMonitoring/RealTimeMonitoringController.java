@@ -200,6 +200,7 @@ public class RealTimeMonitoringController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceName = ParamUtils.getParameter(request, "deviceName");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
@@ -217,7 +218,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 		}
 
-		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
+		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 	
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -270,6 +271,7 @@ public class RealTimeMonitoringController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		FESdiagramResultStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "FESdiagramResultStatValue"),"utf-8");
 		commStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "commStatusStatValue"),"utf-8");
 		runStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "runStatusStatValue"),"utf-8");
@@ -290,12 +292,11 @@ public class RealTimeMonitoringController extends BaseController {
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
-			user = (User) session.getAttribute("userLogin");
 		}
 		
 		DataDictionary ddic = null;
 		String ddicCode="realTimeMonitoring_Overview";
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
 		this.pager = new Page("pagerForm", request);
@@ -306,7 +307,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 		}
 
-		bool = realTimeMonitoringService.exportDeviceRealTimeOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
+		bool = realTimeMonitoringService.exportDeviceOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 	
 		if(session!=null){
 			session.setAttribute(key, 1);
@@ -356,28 +357,6 @@ public class RealTimeMonitoringController extends BaseController {
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
-		return null;
-	}
-	
-	@RequestMapping("/getDeviceInfoData")
-	public String getDeviceInfoData() throws Exception {
-		String json = "";
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String deviceId=ParamUtils.getParameter(request, "deviceId");
-		String deviceName = ParamUtils.getParameter(request, "deviceName");
-		deviceType = ParamUtils.getParameter(request, "deviceType");
-		this.pager = new Page("pagerForm", request);
-
-		json = realTimeMonitoringService.getDeviceInfoData(deviceId,deviceName,deviceType,user);
-	
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
 		return null;
 	}
 	

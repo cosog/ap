@@ -38,12 +38,12 @@ public class LogQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
+	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager,String dictDeviceType,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="logQuery_DeviceOperationLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,user.getLanguageName());
 		String columns = ddic.getTableHeader();
 		String sql="select t.id,t.devicetype,t.deviceTypeName_"+user.getLanguageName()+","
 				+ " t.deviceName,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
@@ -102,7 +102,9 @@ public class LogQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportDeviceOperationLogData(HttpServletResponse response,String fileName,String title,String head,String field,
-			String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
+			String orgId,
+			String deviceType,String dictDeviceType,
+			String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -190,11 +192,11 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getSystemLogData(String orgId,String operationType,Page pager,User user,String selectUserId,String language) throws IOException, SQLException{
+	public String getSystemLogData(String orgId,String operationType,Page pager,User user,String selectUserId,String dictDeviceType,String language) throws IOException, SQLException{
 		String ddicCode="logQuery_SystemLog";
 		StringBuffer result_json = new StringBuffer();
 		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
 		String columns = ddic.getTableHeader();
 		String currentDeviceTypeIds=user.getDeviceTypeIds();
 		String sql="select t.id,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"

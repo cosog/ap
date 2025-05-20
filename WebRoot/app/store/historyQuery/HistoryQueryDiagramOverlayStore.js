@@ -132,6 +132,12 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	var deviceName='';
         	var deviceId=0;
         	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+        	
+        	var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
+        	}
+        	
         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
         	if(selectRow>=0){
         		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
@@ -157,6 +163,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,
+            		dictDeviceType:dictDeviceType,
             		deviceId:deviceId,
                     deviceName:deviceName,
                     resultCode:selectedResult.join(","),

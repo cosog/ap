@@ -572,6 +572,10 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                     	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
                     	var deviceTypeName=getTabPanelActiveName("AlarmQueryRootTabPanel");
+                    	var dictDeviceType=deviceType;
+                    	if(dictDeviceType.includes(",")){
+                    		dictDeviceType=getDeviceTypeFromTabId_first("AlarmQueryRootTabPanel");
+                    	}
                     	var deviceName='';
                     	var deviceId=0;
                     	if(Ext.getCmp("AlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
@@ -588,7 +592,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                    	 	var fileName=deviceTypeName+deviceName+alarmTypeName+'数据';
                    	 	var title=deviceTypeName+deviceName+alarmTypeName+'数据';
                    	 	var columnStr=Ext.getCmp("AlarmDetailsColumnStr_Id").getValue();
-                   	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
+                   	 	exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }
                 }],
         		items: AlarmQuerySecondTabPanelItems,

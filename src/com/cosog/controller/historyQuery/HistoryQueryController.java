@@ -155,6 +155,7 @@ public class HistoryQueryController extends BaseController  {
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -167,7 +168,7 @@ public class HistoryQueryController extends BaseController  {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
+		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -184,6 +185,7 @@ public class HistoryQueryController extends BaseController  {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		FESdiagramResultStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "FESdiagramResultStatValue"),"utf-8");
 		commStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "commStatusStatValue"),"utf-8");
 		runStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "runStatusStatValue"),"utf-8");
@@ -205,6 +207,12 @@ public class HistoryQueryController extends BaseController  {
 		session.removeAttribute(key);
 		session.setAttribute(key, 0);
 		
+		DataDictionary ddic = null;
+		String ddicCode="historyQuery_Overview";
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
+		heads=StringUtils.join(ddic.getHeaders(), ",");
+		fields=StringUtils.join(ddic.getFields(), ",");
+		
 		this.pager = new Page("pagerForm", request);
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
@@ -212,7 +220,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,language);
+		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -685,6 +693,7 @@ public class HistoryQueryController extends BaseController  {
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
 		String hours = ParamUtils.getParameter(request, "hours");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -714,7 +723,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
+			json = this.historyQueryService.getFESDiagramOverlayData(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,dictDeviceType,language);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -782,6 +791,7 @@ public class HistoryQueryController extends BaseController  {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String hours = ParamUtils.getParameter(request, "hours");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
@@ -803,7 +813,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		DataDictionary ddic = null;
 		String ddicCode="historyQuery_FESDiagramOverlay";
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,language);
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");
 		

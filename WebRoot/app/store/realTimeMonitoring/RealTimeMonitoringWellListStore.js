@@ -232,11 +232,19 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         	var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
         	var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
         	var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
+        	
+        	var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel");
+        	}
+        	
+        	
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
                     deviceTypeName:deviceTypeName,
                     deviceName:deviceName,
+                    dictDeviceType:dictDeviceType,
                     FESdiagramResultStatValue:FESdiagramResultStatValue,
                     commStatusStatValue:commStatusStatValue,
                     runStatusStatValue:runStatusStatValue,

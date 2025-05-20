@@ -96,6 +96,10 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
     var orgId = Ext.getCmp('batchAddDeviceOrg_Id').getValue();
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType = Ext.getCmp('batchAddDeviceType_Id').getValue();
+    var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+	if(dictDeviceType.includes(",")){
+		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+	}
     
     Ext.Ajax.request({
         method: 'POST',
@@ -256,6 +260,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
         	orgId: orgId,
         	orgIds: leftOrg_Id,
         	deviceType: deviceType,
+        	dictDeviceType:dictDeviceType,
             recordCount: 50,
 //            applicationScenarios:applicationScenarios,
             page: 1,

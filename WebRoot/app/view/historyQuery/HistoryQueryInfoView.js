@@ -289,7 +289,7 @@ function createHistoryQueryColumn(columnInfo) {
     return myColumns;
 };
 
-function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
+function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryDeviceListData_'+deviceType+'_'+timestamp;
 	
@@ -331,6 +331,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagra
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
     + "&deviceType=" + deviceType 
+    + "&dictDeviceType=" + dictDeviceType 
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&FESdiagramResultStatValue=" + URLencode(URLencode(FESdiagramResultStatValue))
     + "&commStatusStatValue=" + URLencode(URLencode(commStatusStatValue))
@@ -398,7 +399,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,startDate,endDate,hours,fileName,title,columnStr) {
+function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,resultCode,calculateType,startDate,endDate,hours,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportHistoryQueryData_'+timestamp;
 	
@@ -441,6 +442,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
     + "&deviceType=" + deviceType 
+    + "&dictDeviceType=" + dictDeviceType 
     + "&deviceId=" + deviceId 
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&resultCode=" + resultCode 

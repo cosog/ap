@@ -74,6 +74,10 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
+        	var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("AlarmQueryRootTabPanel");
+        	}
         	var alarmType=getAlarmTypeFromTabActive();
         	var deviceName='';
         	var deviceId=0;
@@ -97,6 +101,7 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
+                    dictDeviceType:dictDeviceType,
                     deviceId:deviceId,
                     deviceName:deviceName,
                     alarmLevel:alarmLevel,

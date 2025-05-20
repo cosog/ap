@@ -234,6 +234,10 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
 });
 function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
 	var deviceType = Ext.getCmp('batchAddCollisionDeviceType_Id').getValue();
+	var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+	if(dictDeviceType.includes(",")){
+		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+	}
 	if (batchAddDeviceCollisionDataHandsontableHelper == null || batchAddDeviceCollisionDataHandsontableHelper.hot == null || batchAddDeviceCollisionDataHandsontableHelper.hot == undefined) {
         batchAddDeviceCollisionDataHandsontableHelper = BatchAddDeviceCollisionDataHandsontableHelper.createNew("BatchAddDeviceCollisionDataTableDiv_Id");
         var colHeaders = "[";
@@ -619,6 +623,10 @@ var BatchAddDeviceCollisionDataHandsontableHelper = {
 
 function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
 	var deviceType = Ext.getCmp('batchAddCollisionDeviceType_Id').getValue();
+	var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+	if(dictDeviceType.includes(",")){
+		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+	}
 	if (batchAddDeviceOverlayDataHandsontableHelper == null || batchAddDeviceOverlayDataHandsontableHelper.hot == null || batchAddDeviceOverlayDataHandsontableHelper.hot == undefined) {
         batchAddDeviceOverlayDataHandsontableHelper = BatchAddDeviceOverlayDataHandsontableHelper.createNew("BatchAddDeviceOverlayDataTableDiv_Id");
         var colHeaders = "[";

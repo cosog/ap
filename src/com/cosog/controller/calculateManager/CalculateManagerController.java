@@ -69,6 +69,7 @@ public class CalculateManagerController extends BaseController {
 		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
@@ -120,7 +121,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,resultCode,calculateType,timeType,language);
+		String json = calculateManagerService.getCalculateResultData(orgId, deviceName,deviceId,applicationScenarios, pager,deviceType,startDate,endDate,calculateSign,resultCode,calculateType,timeType,dictDeviceType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -462,6 +463,7 @@ public class CalculateManagerController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -499,7 +501,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getTotalCalculateResultData(orgId, deviceId,deviceName, pager,deviceType,startDate,endDate,calculateType,language);
+		String json = calculateManagerService.getTotalCalculateResultData(orgId, deviceId,deviceName, pager,deviceType,startDate,endDate,calculateType,dictDeviceType,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

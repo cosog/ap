@@ -79,7 +79,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 	public String getDataDictionaryItemList(Page pager, User user, String dictionaryId, String type, String value,String deviceType) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="dictionary_DataDictionaryManage";
-		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
+		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,deviceType,user.getLanguageName());
 		String columns = ddic.getTableHeader();
 		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,"
 				+ "t.columnDataSource,t.devicetype,"
@@ -325,7 +325,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 	 *            数据字典英文名称
 	 * @return 数据字典信息对象
 	 */
-	public DataDictionary findTableSqlWhereByListFaceId(String code,String language) {
+	public DataDictionary findTableSqlWhereByListFaceId(String code,String dictDeviceType,String language) {
 		StringBuffer sqlColumn = new StringBuffer();
 		StringBuffer strBuf = new StringBuffer();
 		String sqlTable = "";
@@ -338,10 +338,24 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		DataDictionary ddic = new DataDictionary();
 		strBuf.append("[");
 		sqlColumn.append("select ");
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) order by dtm.sorts asc ";
+		String sqlData = "from DataitemsInfo dtm "
+				+ " where dtm.status=1 ";
+		if(StringManagerUtils.isNotNull(dictDeviceType)){
+			sqlData+= " and dtm.deviceType="+dictDeviceType+" ";
+		}	
+		sqlData+= " and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) "
+				+ " order by dtm.sorts asc ";
 		try {
 			// 根据模块字典英文名称从数据库中找出该模块的字典数据信息
 			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { code });
+			if(dataWhereList.size()==0 && StringManagerUtils.isNotNull(dictDeviceType)){
+				sqlData = "from DataitemsInfo dtm "
+						+ " where dtm.status=1 "
+						+ " and dtm.deviceType=( select d.parentId from DeviceTypeInfo d where d.id="+dictDeviceType+" ) "
+						+ " and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) "
+						+ " order by dtm.sorts asc ";
+				dataWhereList = this.find(sqlData.toString(), new Object[] { code });
+			}
 			ddic.setDataItemList(dataWhereList);
 			if (null != dataWhereList && dataWhereList.size() > 0) {
 				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList,language);// 把集合中含有多表头信息的数据封装在Map集合了里

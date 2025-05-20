@@ -56,7 +56,7 @@ private CommonDataService service;
 	}
 
 	
-	public String getRoleList(Map map,Page pager,User user) {
+	public String getRoleList(Map map,Page pager,String dictDeviceType,User user) {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String roleName = (String) map.get("roleName");
 		StringBuffer result_json = new StringBuffer();
@@ -81,7 +81,7 @@ private CommonDataService service;
 			sql+=" and t.role_Name like '%" + roleName + "%' ";
 		}
 		sql+=" order by t.role_id ";
-		String columns=service.showTableHeadersColumns("role_RoleManage",user.getLanguageName());
+		String columns=service.showTableHeadersColumns("role_RoleManage",dictDeviceType,user.getLanguageName());
 		List<?> list = this.findCallSql(sql);
 		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
 		if(currentUserLevelList.size()>0){

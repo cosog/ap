@@ -200,7 +200,7 @@ function createDeviceOperationLogColumn(columnInfo) {
     return myColumns;
 };
 
-function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,startDate,endDate,fileName,title,columnStr) {
+function exportDeviceOperationLogExcel(orgId,deviceType,dictDeviceType,deviceName,operationType,startDate,endDate,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportDeviceOperationLogExcelData'+timestamp;
 	var maskPanelId='DeviceOperationLogPanel_Id';
@@ -244,6 +244,7 @@ function exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
     + "&deviceType=" + deviceType 
+    + "&dictDeviceType=" + dictDeviceType 
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&operationType=" + operationType
     + "&startDate=" + startDate

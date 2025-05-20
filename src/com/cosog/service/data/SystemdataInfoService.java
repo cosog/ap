@@ -62,10 +62,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		return list;
 	}
 	
-	public String findSystemdataInfo(User user,String typeName,String findName,Page pager){
+	public String findSystemdataInfo(String dictDeviceType,User user,String typeName,String findName,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="dictionary_DataDictionaryManage";
-		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,user.getLanguageName());
+		DataDictionary ddic= dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,user.getLanguageName());
 		String columns = ddic.getTableHeader();
 		
 		String sql="select t.sysdataid,t.name_"+user.getLanguageName()+" as name,t.code,t.sorts,t.status,t.creator,t.updateuser,"

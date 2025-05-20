@@ -70,6 +70,10 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
         	var endTime_Second=0;
             var calculateSign=Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').getValue();
             var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
+            var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("CalculateMaintainingRootTabPanel");
+        	}
             var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
@@ -80,6 +84,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
                     calculateSign:calculateSign,
                     deviceType:deviceType,
+                    dictDeviceType:dictDeviceType,
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);

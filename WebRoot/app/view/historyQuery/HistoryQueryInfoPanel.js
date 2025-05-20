@@ -659,7 +659,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                            	 	var fileName=loginUserLanguageResource.historyQueryDeviceList;
                            	 	var title=loginUserLanguageResource.historyQueryDeviceList;
                            	 	var columnStr=Ext.getCmp("HistoryQueryWellListColumnStr_Id").getValue();
-                           	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                           	 	
+                           	 	var dictDeviceType=deviceType;
+                           	 	if(dictDeviceType.includes(",")){
+                           	 		dictDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
+                           	 	}
+                           	 	
+                           	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                             }
                         }]
                     },{
@@ -1137,10 +1143,17 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                     
                                     
                                	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                               	 	var dictDeviceType=deviceType;
+                               	 	if(dictDeviceType.includes(",")){
+                               	 		dictDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
+                               	 	}
+                               	 	
+                               	 	
                                	 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
                                	 	var title=deviceName+'-'+loginUserLanguageResource.FSDiagramOverlayData;
                                	 	var columnStr=Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").getValue();
-                               	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,resultCode,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),hours,fileName,title,columnStr);
+                               	 	
+                               	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,resultCode,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),hours,fileName,title,columnStr);
                                 }
                             }, {
                                 xtype: 'button',

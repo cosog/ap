@@ -402,6 +402,10 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=getDeviceTypeFromTabId("DeviceOperationLogRootTabPanel");
                 	var deviceName=Ext.getCmp('DeviceOperationLogDeviceListComb_Id').getValue();
+                	var dictDeviceType=deviceType;
+                	if(dictDeviceType.includes(",")){
+                		dictDeviceType=getDeviceTypeFromTabId_first("DeviceOperationLogRootTabPanel");
+                	}
                 	var operationType=Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').getValue();
                 	var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('DeviceOperationLogQueryEndDate_Id').rawValue;
@@ -409,7 +413,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                	 	var fileName=loginUserLanguageResource.deviceOperationLog;
                	 	var title=loginUserLanguageResource.deviceOperationLog;
                	 	var columnStr=Ext.getCmp("DeviceOperationLogColumnStr_Id").getValue();
-               	 	exportDeviceOperationLogExcel(orgId,deviceType,deviceName,operationType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+               	 	exportDeviceOperationLogExcel(orgId,deviceType,dictDeviceType,deviceName,operationType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                 }
             }]
         });

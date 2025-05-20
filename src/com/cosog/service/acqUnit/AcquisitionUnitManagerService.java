@@ -67,6 +67,7 @@ import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
+import com.cosog.utils.ParamUtils;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
@@ -92,7 +93,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	@Autowired
 	private TabInfoManagerService<?> tabInfoManagerService;
 
-	public String getAcquisitionUnitList(Map map,Page pager,String language) {
+	public String getAcquisitionUnitList(Map map,Page pager,String dictDeviceType,String language) {
 		String protocolName = (String) map.get("protocolName");
 		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
@@ -108,7 +109,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		sqlBuffer.append(" order by t.id  asc");
 		String json = "";
-		String columns=service.showTableHeadersColumns("acquisitionUnit",language);
+		String columns=service.showTableHeadersColumns("acquisitionUnit",dictDeviceType,language);
 		try {
 			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
 		} catch (Exception e) {

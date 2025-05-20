@@ -77,6 +77,12 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
             var calculateSign=Ext.getCmp('SRPCalculateMaintainingCalculateSignComBox_Id').getValue();
             var resultCode=Ext.getCmp('SRPCalculateMaintainingResultNameComBox_Id').getValue();
             var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
+            
+            var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("CalculateMaintainingRootTabPanel");
+        	}
+            
             var timeType = Ext.getCmp('SRPCalculateMaintainingTimeType_Id').getValue();
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
@@ -89,6 +95,7 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
                     calculateSign:calculateSign,
                     resultCode:resultCode,
                     deviceType:deviceType,
+                    dictDeviceType:dictDeviceType,
                     timeType:timeType,
                     calculateType:calculateType
             };

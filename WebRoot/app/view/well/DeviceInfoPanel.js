@@ -128,6 +128,12 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+                    
+                    var dictDeviceType=deviceType;
+                	if(dictDeviceType.includes(",")){
+                		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+                	}
+                    
                     var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
                     
                     var url = context + '/wellInformationManagerController/exportWellInformationData';
@@ -148,6 +154,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     + "&heads=" + URLencode(URLencode(heads)) 
                     + "&orgId=" + leftOrg_Id 
                     + "&deviceType="+deviceType
+                    + "&dictDeviceType="+dictDeviceType
                     + "&deviceName=" + URLencode(URLencode(deviceName)) 
                     + "&recordCount=10000" 
                     + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
@@ -917,6 +924,10 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+    var dictDeviceType=deviceType;
+	if(dictDeviceType.includes(",")){
+		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+	}
     var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
     Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
     Ext.Ajax.request({
@@ -1091,6 +1102,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         params: {
         	deviceName: deviceName,
             deviceType: deviceType,
+            dictDeviceType: dictDeviceType,
             recordCount: 50,
             orgId: leftOrg_Id,
             page: 1,

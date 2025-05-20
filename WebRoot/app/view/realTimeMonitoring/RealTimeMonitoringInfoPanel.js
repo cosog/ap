@@ -598,10 +598,16 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                              	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
                             	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+                            	 
+                            	 var dictDeviceType=deviceType;
+                            	 if(dictDeviceType.includes(",")){
+                            		 dictDeviceType=getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel");
+                             	 }
+                            	 
                             	 var fileName=loginUserLanguageResource.realtimeMonitoringExpFileName;
                             	 var title=loginUserLanguageResource.realtimeMonitoringExpFileName;
                             	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
-                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }
                          }, '->', {
                          	xtype: 'button',

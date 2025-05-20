@@ -92,6 +92,10 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
             var endDate=Ext.getCmp('SRPCalculateMaintainingEndDate_Id').rawValue;
         	
             var deviceType=getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel");
+            var dictDeviceType=deviceType;
+        	if(dictDeviceType.includes(",")){
+        		dictDeviceType=getDeviceTypeFromTabId_first("CalculateMaintainingRootTabPanel");
+        	}
             var calculateType=3;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
@@ -100,6 +104,7 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
                     startDate:startDate,
                     endDate:endDate,
                     deviceType:deviceType,
+                    dictDeviceType:dictDeviceType,
                     calculateType:calculateType
                 };
             Ext.apply(store.proxy.extraParams, new_params);

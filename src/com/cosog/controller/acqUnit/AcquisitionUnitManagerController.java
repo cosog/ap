@@ -273,6 +273,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doAcquisitionUnitShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		unitName = ParamUtils.getParameter(request, "unitName");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -290,7 +291,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put("unitName", unitName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager,language);
+		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager,dictDeviceType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

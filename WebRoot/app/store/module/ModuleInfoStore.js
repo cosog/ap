@@ -22,9 +22,9 @@ Ext.define('AP.store.module.ModuleInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var ResHeadInfoGridPanel_Id = Ext.getCmp("moduleInfoTreeGridView_Id");
             if (!isNotVal(ResHeadInfoGridPanel_Id)) {
-                var arrColumns = get_rawData.columns;
-                var cloums = createTreeHeadColumns(arrColumns);
-                var newColumns = Ext.JSON.decode(cloums);
+//                var arrColumns = get_rawData.columns;
+//                var cloums = createTreeHeadColumns(arrColumns);
+//                var newColumns = Ext.JSON.decode(cloums);
                 var ResHeadrInfoGridViewPanelGrid = Ext.create('Ext.tree.Panel', {
                     id: "moduleInfoTreeGridView_Id",
                     border: false,
@@ -42,7 +42,28 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                         forceFit: true
                     },
                     store: store,
-                    columns: newColumns,
+                    columns: [{
+                        header: loginUserLanguageResource.moduleName,
+                        flex: 2,
+                        xtype: 'treecolumn',
+                        dataIndex: 'text'
+                    }, {
+                        header: loginUserLanguageResource.moduleMemo,
+                        flex: 2,
+                        dataIndex: 'mdShowname'
+                    }, {
+                        header: loginUserLanguageResource.moduleIcon,
+                        flex: 1,
+                        dataIndex: 'mdIcon'
+                    }, {
+                        header: loginUserLanguageResource.moduleType,
+                        flex: 1,
+                        dataIndex: 'mdTypeName'
+                    }, {
+                        header: loginUserLanguageResource.moduleSort,
+                        flex: 1,
+                        dataIndex: 'mdSeq'
+                    }],
                     listeners: {
                         selectionchange: function (sm, selections) {
                         },

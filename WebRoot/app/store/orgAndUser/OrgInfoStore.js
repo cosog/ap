@@ -24,9 +24,9 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var treeGridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
             if (!isNotVal(treeGridPanel)) {
-                var arrColumns = get_rawData.columns;
-                var cloums = createOrgTreeHeadColumns(arrColumns);
-                var newColumns = Ext.JSON.decode(cloums);
+//                var arrColumns = get_rawData.columns;
+//                var cloums = createOrgTreeHeadColumns(arrColumns);
+//                var newColumns = Ext.JSON.decode(cloums);
                 var treeGridPanel = Ext.create('Ext.tree.Panel', {
                     id: "OrgInfoTreeGridView_Id",
                     border: false,
@@ -43,7 +43,20 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
                     store: store,
-                    columns: newColumns,
+                    columns: [{
+                        header: loginUserLanguageResource.orgName,
+                        lockable: true,
+                        align: 'left',
+                        flex: 3,
+                        xtype: 'treecolumn',
+                        dataIndex: 'text'
+                    }, {
+                        header: loginUserLanguageResource.sortNum,
+                        lockable: true,
+                        align: 'left',
+                        flex: 1,
+                        dataIndex: 'orgSeq'
+                    }],
                     listeners: {
                         selectionchange: function (sm, selected) {
                         	if(selected.length>0){

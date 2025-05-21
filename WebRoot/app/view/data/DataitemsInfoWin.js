@@ -271,8 +271,8 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                             name: 'dataitemsInfo.status'
                           }
                       ]
-           },
-        sysdata_sorts, sysdata_datavalue,
+                },
+                sysdata_sorts, sysdata_datavalue,
                 {
                     xtype: 'textfield',
                     name: 'dataitemsInfo.sysdataid',
@@ -284,15 +284,12 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     name: 'dataitemsInfo.dataitemid',
                     id: 'hide_dataitemids',
                     hidden: true
-                }
-    ]
-        });
-
+                }]
+        	});
         Ext.apply(me, {
             items: [addtenaorgLevfromname]
         });
         me.callParent(arguments);
-
     },
     buttons: [
         {

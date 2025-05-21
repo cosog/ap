@@ -1586,10 +1586,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String dictDeviceType,String language) {
+	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
-		String ddicCode="deviceInfo_SMSDeviceManager";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String tableName="viw_smsdevice";
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		String deviceName = (String) map.get("deviceName");
@@ -1599,7 +1599,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.deviceName like '%" + deviceName+ "%'";
 		}
 		
-		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
+		String columns="["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"columnDataSource\":0,\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",\"columnDataSource\":0 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("SMSInstance")+"\",\"dataIndex\":\"instanceName\",\"columnDataSource\":0,\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signInId\",\"columnDataSource\":0 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("sortNum")+"\",\"dataIndex\":\"sortNum\",\"columnDataSource\":0 ,\"children\":[] }"
+				+ "]";
 		String sql = "select id,orgName_"+language+",deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;

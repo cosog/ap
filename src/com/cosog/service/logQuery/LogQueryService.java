@@ -193,11 +193,15 @@ public class LogQueryService<T> extends BaseService<T>  {
 	}
 	
 	public String getSystemLogData(String orgId,String operationType,Page pager,User user,String selectUserId,String dictDeviceType,String language) throws IOException, SQLException{
-		String ddicCode="logQuery_SystemLog";
 		StringBuffer result_json = new StringBuffer();
-		DataDictionary ddic = null;
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
-		String columns = ddic.getTableHeader();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"columnDataSource\":0,\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("loginIP")+"\",\"dataIndex\":\"loginIp\",\"columnDataSource\":0,\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("operatingUser")+"\",\"dataIndex\":\"user_id\",\"columnDataSource\":0,\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("operationContent")+"\",\"dataIndex\":\"actionName\",\"columnDataSource\":0,\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("operationTime")+"\",\"dataIndex\":\"createTime\",\"columnDataSource\":0,\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("remark")+"\",\"dataIndex\":\"remark\",\"columnDataSource\":0,\"flex\":1 ,\"children\":[] }]";
 		String currentDeviceTypeIds=user.getDeviceTypeIds();
 		String sql="select t.id,to_char(t.createtime,'yyyy-mm-dd hh24:mi:ss') as createtime,"
 				+ " t.user_no,t.user_id,t.role_id,t.role_level,"

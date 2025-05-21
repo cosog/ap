@@ -192,10 +192,66 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					if(calItem!=null){
 						dinfo.setCode(calItem.getCode());
 					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "en");
+						if(calItem2!=null){
+							dinfo.setName_en(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "en");
+						if(calItem3!=null){
+							dinfo.setName_en(calItem3.getName());
+						}
+					}
 				}else if(dinfo.getDataSource()==2){
 					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
 					if(calItem!=null){
 						dinfo.setCode(calItem.getCode());
+					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "en");
+						if(calItem2!=null){
+							dinfo.setName_en(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "en");
+						if(calItem3!=null){
+							dinfo.setName_en(calItem3.getName());
+						}
 					}
 				}else if(dinfo.getDataSource()==0){
 					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
@@ -203,8 +259,29 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(name);
 						if(dataMapping!=null){
 							dinfo.setCode(dataMapping.getMappingColumn());
+							if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+								dinfo.setName_en(dinfo.getName_zh_CN());
+								dinfo.setName_ru(dinfo.getName_zh_CN());
+							}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+								dinfo.setName_zh_CN(dinfo.getName_en());
+								dinfo.setName_ru(dinfo.getName_en());
+							}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+								dinfo.setName_zh_CN(dinfo.getName_ru());
+								dinfo.setName_en(dinfo.getName_ru());
+							}
 						}
 					}
+				}
+			}else{
+				if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_en(dinfo.getName_zh_CN());
+					dinfo.setName_ru(dinfo.getName_zh_CN());
+				}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_zh_CN(dinfo.getName_en());
+					dinfo.setName_ru(dinfo.getName_en());
+				}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_zh_CN(dinfo.getName_ru());
+					dinfo.setName_en(dinfo.getName_ru());
 				}
 			}
 			this.saveDataitemsInfo(dinfo);

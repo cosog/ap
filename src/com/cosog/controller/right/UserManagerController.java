@@ -440,7 +440,6 @@ public class UserManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		String userName = ParamUtils.getParameter(request, "userName");
-		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		orgId = ParamUtils.getParameter(request, "orgId");
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
@@ -453,7 +452,7 @@ public class UserManagerController extends BaseController {
 		map.put("userName", userName);
 		this.pager = new Page("pagerForm", request);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
-		String json = userService.doUserShow(pager, map,orgId,dictDeviceType,user);
+		String json = userService.doUserShow(pager, map,orgId,user);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

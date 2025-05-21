@@ -67,7 +67,6 @@ public class ModuleManagerController extends BaseController {
 	@RequestMapping("/constructModuleTreeGridTree")
 	public String constructModuleTreeGridTree() throws IOException {
 		String moduleName = ParamUtils.getParameter(request, "moduleName");
-		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		List<?>list = this.moduleService.queryModules(Module.class, moduleName,user);
@@ -82,7 +81,7 @@ public class ModuleManagerController extends BaseController {
 			}
 		}
 		json = r.modifyStr(json);
-		json=	this.getArrayTojsonPage(json,"module_ModuleManage",dictDeviceType,user.getLanguageName());
+		json=	this.getArrayTojsonPage(json,"","",user.getLanguageName());
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -631,7 +631,7 @@ public class WellInformationManagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		String json="";
 		if(StringManagerUtils.stringToInteger(deviceType)>=300){
-			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,dictDeviceType,language);
+			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount,language);
 		}else{
 			json = this.wellInformationManagerService.getDeviceInfoList(map, pager,recordCount,dictDeviceType,user);
 		}

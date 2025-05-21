@@ -264,7 +264,6 @@ public class RoleManagerController extends BaseController {
 	public String doRoleShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		roleName = ParamUtils.getParameter(request, "roleName");
-		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
@@ -276,7 +275,7 @@ public class RoleManagerController extends BaseController {
 		map.put("roleName", roleName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.roleService.getRoleList(map,pager,dictDeviceType,user);
+		String json = this.roleService.getRoleList(map,pager,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

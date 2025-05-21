@@ -86,7 +86,6 @@ public class SystemdataInfoController extends BaseController {
 	public void findSystemdataInfoByListId() throws Exception {
 		String typeName = request.getParameter("typeName");
 		String findName = request.getParameter("sysName");
-		String dictDeviceType=request.getParameter("dictDeviceType");
 		// 分页
 		this.pager = new Page("pagerForm", request);
 		// 当前登录用户
@@ -95,7 +94,7 @@ public class SystemdataInfoController extends BaseController {
 //		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage",dictDeviceType,userInfo.getLanguageName());
+		String data=this.getArrayTojsonPage(systemdatainfoList,"","",userInfo.getLanguageName());
 		// 输出json数据。
 		PrintWriter pw = response.getWriter();
 		pw.print(data);

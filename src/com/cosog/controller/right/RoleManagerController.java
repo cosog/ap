@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import com.cosog.model.Module;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
 import com.cosog.model.RoleDeviceType;
+import com.cosog.model.Code;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
 import com.cosog.service.right.RoleManagerService;
@@ -399,6 +401,47 @@ public class RoleManagerController extends BaseController {
 
 		}
 		json = r.modifyStr(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructRightModuleTreeGridTree json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/constructRightLanguageTreeGridTree")
+	public String constructRightLanguageTreeGridTree() throws Exception {
+		StringBuffer json = new StringBuffer();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		json.append("[");
+		
+		Iterator<Map.Entry<String,Code>> it = languageCodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			json.append("{");
+			json.append("\"languageId\":\""+c.getItemvalue()+"\",");
+			json.append("\"text\":\""+c.getItemname()+"\",");
+			json.append("\"value\":\""+c.getItemvalue()+"\",");
+			json.append("\"checked\":false,");
+			json.append("\"leaf\":true");
+			json.append("},");
+		}
+		if (json.toString().endsWith(",")) {
+			json.deleteCharAt(json.length() - 1);
+		}
+		
+		json.append("]");
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -10,6 +10,7 @@ Ext.define("AP.view.role.RoleInfoView", {
         var RoleInfoGridPanel = Ext.create('AP.view.role.RoleInfoGridPanel');
         var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
         var RightTabInfoTreeGridView = Ext.create('AP.view.role.RightTabInfoTreeGridView');
+        var RightLanguageInfoTreeGridView = Ext.create('AP.view.role.RightLanguageInfoTreeGridView');
         Ext.apply(me, {
         	tbar:[{
             	id: 'RoleManagerModuleViewFlag',
@@ -35,9 +36,11 @@ Ext.define("AP.view.role.RoleInfoView", {
         		items:RoleInfoGridPanel
         	},{
         		region:'east',
-        		width:'25%',
+        		width:'40%',
         		layout: 'border',
         		header:false,
+        		split: true,
+                collapsible: true,
         		items:[{
         			region:'center',
         			layout: "fit",
@@ -64,30 +67,60 @@ Ext.define("AP.view.role.RoleInfoView", {
                         }
             		}]
         		},{
-        			region:'south',
-        			height:'30%',
-        			title:loginUserLanguageResource.deviceTypeLicense,
+        			region:'east',
+        			width:'40%',
         			split: true,
                     collapsible: true,
-            		layout: "fit",
-            		items:RightTabInfoTreeGridView,
-            		tbar: [{
-                        xtype: 'label',
-                        html: loginUserLanguageResource.deviceTypeLicense,
-                        id:'RightTabTreeInfoLabel_Id',
-                        style: 'margin-left: 4px'
-                    },'->', {
-                        xtype: 'button',
-                        itemId: 'addRightTabLableClassBtnId',
-                        id: 'addRightTabLableClassBtn_Id',
-                        text: loginUserLanguageResource.save,
-                        iconCls: 'save',
-                        disabled:loginUserRoleManagerModuleRight.editFlag!=1,
-                        pressed: false,
-                        handler: function () {
-                        	grantRoleTabPermission();
-                        }
-            		}]
+                    header:false,
+                    layout: 'border',
+                    items:[{
+                    	region:'center',
+                    	title:loginUserLanguageResource.deviceTypeLicense,
+                		layout: "fit",
+                		items:RightTabInfoTreeGridView,
+                		tbar: [{
+                            xtype: 'label',
+                            html: loginUserLanguageResource.deviceTypeLicense,
+                            id:'RightTabTreeInfoLabel_Id',
+                            style: 'margin-left: 4px'
+                        },'->', {
+                            xtype: 'button',
+                            itemId: 'addRightTabLableClassBtnId',
+                            id: 'addRightTabLableClassBtn_Id',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function () {
+                            	grantRoleTabPermission();
+                            }
+                		}]
+                    },{
+                    	region:'south',
+            			height:'50%',
+            			split: true,
+                        collapsible: true,
+                        title:loginUserLanguageResource.languageLicense,
+                        layout: "fit",
+                        items: RightLanguageInfoTreeGridView,
+                        tbar: [{
+                            xtype: 'label',
+                            html: loginUserLanguageResource.languageLicense,
+                            id:'RightLanguageTreeInfoLabel_Id',
+                            style: 'margin-left: 4px'
+                        },'->', {
+                            xtype: 'button',
+                            itemId: 'addRightLanguageLableClassBtnId',
+                            id: 'addRightLanguageLableClassBtn_Id',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function () {
+//                            	grantRoleTabPermission();
+                            }
+                		}]
+                    }]
         		}]
         	}]
         });

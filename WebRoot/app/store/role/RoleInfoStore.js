@@ -250,6 +250,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		Ext.getCmp("RightTabTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.deviceTypeLicense);
                         		clkLoadTabAjaxFn();
                         		
+                        		Ext.getCmp("RightLanguageTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.languageLicense);
+                        		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
                                     Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
@@ -257,17 +259,23 @@ Ext.define('AP.store.role.RoleInfoStore', {
                                     
                                     Ext.getCmp("RightTabTreeInfoGridPanel_Id").disable();
                                     Ext.getCmp("addRightTabLableClassBtn_Id").disable();
+                                    
+                                    Ext.getCmp("RightLanguageTreeInfoGridPanel_Id").disable();
+                                    Ext.getCmp("addRightLanguageLableClassBtn_Id").disable();
                                 }else{
                                 	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();
                                 	Ext.getCmp("RightTabTreeInfoGridPanel_Id").enable();
+                                	Ext.getCmp("RightLanguageTreeInfoGridPanel_Id").enable();
                                 	
                                 	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
             	                    if(RoleManagerModuleEditFlag==1){
             	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
                                         Ext.getCmp("addRightTabLableClassBtn_Id").enable();
+                                        Ext.getCmp("addRightLanguageLableClassBtn_Id").enable();
             	                    }else{
             	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
                                         Ext.getCmp("addRightTabLableClassBtn_Id").disable();
+                                        Ext.getCmp("addRightLanguageLableClassBtn_Id").disable();
             	                    }
                                 }
                         	}

@@ -53,7 +53,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:10px;
+ 	right:70px;
  	color:white;
 }
 
@@ -68,7 +68,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:70px;
+ 	right:130px;
  	color:white;
 }
 
@@ -98,4 +98,84 @@ body {
     width: 55px;
     margin-left: 0px;
     padding-left: 20px;
+}
+
+li{
+	list-style-type: none;
+}
+#menu {
+	padding-left:16px;
+	/*height:16px; */
+	width: 40px;
+	display:inline-block;
+	position:absolute;
+	right:40px;
+	/*background-color: #030e11;*/
+}
+#menu ul{
+	padding:0;
+	margin:0;
+}
+#menu li{
+	float: left;
+	width: 40px;
+	line-height:39px;
+	text-align: center;
+	position:relative;
+	border:none;
+}
+#menu li a {
+	/*font-size:13px;*/
+	font: bold 13px/50%;
+	color: white;
+	display:block;
+	outline:0;
+	text-decoration:none; 
+}
+#menu li:hover a {
+	color: #ff0000; /*导航栏文字颜色 */
+}
+#menu li:hover .dropdown_1column {
+	left:0px;
+	top:38px;
+}
+.dropdown_1column{ /* 下拉菜单边框颜色*/
+	margin: 0px auto;
+	float: left;
+	position: absolute;
+	left: -999em;
+	text-align: left;
+	border: 1px solid #066591;
+	border-top: none;
+	background: #F4F4F4;
+	width: 140px;
+	z-index: 999;
+}
+#menu li:hover div a { /* 下拉菜单文字颜色*/
+	font-size:12px;
+	color:#444;
+}
+
+#menu li:hover div a:hover{
+	color:#21910e;
+} /*下拉带单鼠标停留颜色*/
+
+#menu li ul {
+	list-style:none;padding:10px 5px;
+	margin:0;
+}
+#menu li ul li {
+	font-size:12px;
+	line-height:26px;
+	position:relative; /*relative相对定位  absolute绝对定位*/
+	padding:0;margin:0;
+	float:none;
+	text-align:left;
+	width:130px;
+	z-index: 999;
+}
+#menu li ul li:hover {
+	background:none;
+	border:none;padding:0;
+	margin:0;
 }

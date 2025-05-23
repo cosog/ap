@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.RoleModule;
 import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.utils.Constants;
@@ -38,6 +39,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 	private List<RoleModule> list;
 	private ModuleManagerService<RoleModule> moduleService;
 	private ModuleManagerService<RoleDeviceType> roleTabService;
+	private ModuleManagerService<RoleLanguage> roleLanguageService;
 	private RoleModule roleModule;
 
 	/**
@@ -111,6 +113,39 @@ public class ModuleShowRightManagerController extends BaseController implements 
 						r.setRdDeviceTypeId(StringManagerUtils.stringToInteger(deviceType_[0]));
 						r.setRdMatrix(deviceType_[1]);
 						this.roleTabService.saveOrUpdateRoleDeviceType(r);
+					}
+				}
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/doRoleLanguageSaveOrUpdate")
+	public String doRoleLanguageSaveOrUpdate() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		RoleLanguage r = null;
+		try {
+			String languageIds = ParamUtils.getParameter(request, "paramsId");
+			String roleId = ParamUtils.getParameter(request, "roleId");
+			String languageIdArr[] = StringManagerUtils.split(languageIds, ",");
+			if (roleId != null) {
+				this.moduleService.deleteCurrentLanguageByRoleCode(roleId);
+				if (languageIdArr.length > 0) {
+					for (int i = 0; i < languageIdArr.length; i++) {
+						r = new RoleLanguage();
+						r.setRoleId(Integer.parseInt(roleId));
+						r.setLanguage(StringManagerUtils.stringToInteger(languageIdArr[i]));
+						r.setMatrix("0,0,0");
+						this.roleLanguageService.saveOrUpdateRoleLanguage(r);
 					}
 				}
 			}
@@ -208,6 +243,24 @@ public class ModuleShowRightManagerController extends BaseController implements 
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/doShowRightCurrentRoleOwnLanguages")
+	public String doShowRightCurrentRoleOwnLanguages() throws IOException {
+		// Gson g = new Gson();
+		String roleId = ParamUtils.getParameter(request, "roleId");
+		Gson g = new Gson();
+		List<RoleLanguage> list = roleLanguageService.queryCurrentRoleLanguages(RoleLanguage.class, roleId);
+		String json = "";
+		json = g.toJson(list);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("doShowRightCurrentUsersOwnRoles ***json==****" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public List<RoleModule> getList() {
 		return list;
@@ -241,5 +294,14 @@ public class ModuleShowRightManagerController extends BaseController implements 
 	@Resource
 	public void setRoleDeviceTypeService(ModuleManagerService<RoleDeviceType> roleTabService) {
 		this.roleTabService = roleTabService;
+	}
+
+	public ModuleManagerService<RoleLanguage> getRoleLanguageService() {
+		return roleLanguageService;
+	}
+
+	@Resource
+	public void setRoleLanguageService(ModuleManagerService<RoleLanguage> roleLanguageService) {
+		this.roleLanguageService = roleLanguageService;
 	}
 }

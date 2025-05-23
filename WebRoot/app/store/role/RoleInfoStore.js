@@ -251,6 +251,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		clkLoadTabAjaxFn();
                         		
                         		Ext.getCmp("RightLanguageTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.languageLicense);
+                        		clkLoadLanguageAjaxFn();
                         		
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
@@ -278,6 +279,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                                         Ext.getCmp("addRightLanguageLableClassBtn_Id").disable();
             	                    }
                                 }
+                        	}else{
+                        		Ext.getCmp("RightBottomRoleCodes_Id").setValue("");
                         	}
                         },
                         celldblclick: function ( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {

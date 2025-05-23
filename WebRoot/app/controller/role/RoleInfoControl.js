@@ -28,11 +28,6 @@ var SaveroleDataInfoSubmitBtnForm = function () {
     var rightmodule_panel = Ext.getCmp("RoleInfoWindowRightModuleTreeInfoGridPanel_Id");
     var _record;
     var roleLevel=Ext.getCmp("roleLevel_Id").getValue();
-//    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
-//    	_record = rightmodule_panel.store.data.items;
-//    }else{
-//    	_record = rightmodule_panel.getChecked();
-//    }
     _record = rightmodule_panel.store.data.items;
     
     var righttab_panel = Ext.getCmp("RoleInfoWindowRightTabTreeInfoGridPanel_Id");
@@ -41,6 +36,14 @@ var SaveroleDataInfoSubmitBtnForm = function () {
     	_tabRecord = righttab_panel.store.data.items;
     }else{
     	_tabRecord = righttab_panel.getChecked();
+    }
+    
+    var rightLanguageTreeInfoGridPanel = Ext.getCmp("RoleInfoWindowRightLanguageTreeInfoGridPanel_Id");
+    var selectedLanguages;
+    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+    	selectedLanguages = rightLanguageTreeInfoGridPanel.store.data.items;
+    }else{
+    	selectedLanguages = rightLanguageTreeInfoGridPanel.getChecked();
     }
     
     var addModule = [];
@@ -69,11 +72,22 @@ var SaveroleDataInfoSubmitBtnForm = function () {
         addDeviceType.push(deviceTypeId);
     });
     
+    var addLanguage = [];
+    Ext.Array.each(selectedLanguages, function (name, index, countriesItSelf) {
+        var languageId = selectedLanguages[index].get('languageId')
+        addLanguage.push(languageId);
+    });
+    
     if(addModule.length==0){
     	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
         return false;
     }
     if(addDeviceType.length==0){
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+        return false;
+    }
+    
+    if(addLanguage.length==0){
     	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
         return false;
     }
@@ -105,7 +119,8 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             params: {
             	addModuleIds: addModule.join(","),
             	matrixCodes: matrixCodes_,
-            	addDeviceTypeIds: addDeviceType.join(",")
+            	addDeviceTypeIds: addDeviceType.join(","),
+            	addLanguageIds: addLanguage.join(",")
             }
         });
     } else {
@@ -373,8 +388,9 @@ var grantRoleTabPermission = function () {//授予角色模块权限
         matrixData += tab_ids + ":" + matrix_value + "|";
 
     });
-
-    matrixData = matrixData.substring(0, matrixData.length - 1);
+    if(matrixData.length>0){
+    	matrixData = matrixData.substring(0, matrixData.length - 1);
+    }
     var addparamsId = "" + addjson.join(",");
     var matrixCodes_ = "" + matrixData;
 
@@ -386,6 +402,89 @@ var grantRoleTabPermission = function () {//授予角色模块权限
         params: {
             paramsId: addparamsId,
             oldModuleIds: RightOldModuleIds_Id,
+            roleId: roleId,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.grantSuccess + "</font>】" + _record.length);
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.grantFailure + "</font>");
+            }
+            // 刷新Grid
+            Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+    return false;
+}
+
+var grantRoleLanguagePermission = function () {//授予角色模块权限
+    var rightLanguageGridPanel = Ext.getCmp("RightLanguageTreeInfoGridPanel_Id");
+    var _record;
+    var roleCode="";
+    var roleId="";
+    var roleLevel="";
+    if(Ext.getCmp("RoleInfoGridPanel_Id")!=undefined){
+    	var selectedRole = Ext.getCmp("RoleInfoGridPanel_Id").getSelectionModel().getSelection();
+        if(selectedRole.length>0){
+        	roleCode=selectedRole[0].data.roleCode;
+        	roleId=selectedRole[0].data.roleId;
+        	roleLevel=selectedRole[0].data.roleLevel;
+        }
+    }
+    if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+    	_record = rightLanguageGridPanel.store.data.items;
+    }else{
+    	_record = rightLanguageGridPanel.getChecked();
+    }
+    
+    var addUrl = context + '/moduleShowRightManagerController/doRoleLanguageSaveOrUpdate'
+        // 添加条件
+    var addjson = [];
+    var matrixData = "";
+    var matrixDataArr = "";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
+    
+    if (!isNotVal(roleId)) {
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.pleaseChooseRole);
+        return false
+    }
+    
+    if (_record.length==0) {
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+        return false
+    }
+
+    Ext.Array.each(_record, function (name, index, countriesItSelf) {
+        var languageId = _record[index].get('languageId')
+        addjson.push(languageId);
+        var matrix_value = "";
+        matrix_value = '0,0,0,';
+        if (matrix_value != "" || matrix_value != null) {
+            matrix_value = matrix_value.substring(0, matrix_value.length - 1);
+        }
+        matrixData += languageId + ":" + matrix_value + "|";
+
+    });
+    if(matrixData.length>0){
+    	matrixData = matrixData.substring(0, matrixData.length - 1);
+    }
+    
+    var addparamsId = "" + addjson.join(",");
+    var matrixCodes_ = "" + matrixData;
+
+    // AJAX提交方式
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        // 提交参数
+        params: {
+            paramsId: addparamsId,
             roleId: roleId,
             matrixCodes: matrixCodes_
         },

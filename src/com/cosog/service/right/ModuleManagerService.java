@@ -195,6 +195,15 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		queryString+=" order by rt.rdDeviceTypeId asc";
 		return getBaseDao().find(queryString);
 	}
+	
+	public List<T> queryCurrentRoleLanguages(Class<T> clazz, String roleId) {
+		String queryString = "select rt From Role r,RoleLanguage rt where  rt.roleId=r.roleId ";
+		if(StringManagerUtils.isNotNull(roleId)){
+			queryString+=" and rt.roleId="+roleId;
+		}
+		queryString+=" order by rt.language asc";
+		return getBaseDao().find(queryString);
+	}
 
 	public List<T> queryCurrentRoleMatrixModules(Class<T> clazz, String roleId) {
 		String queryString = "select    rm.rmMatrix  From " + "Role r ,RoleModule rm where  rm.rmRoleId=r.roleId and rm.rmRoleId=" + roleId + " order by rm.rmMatrix asc";
@@ -215,6 +224,11 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		final String hql = "DELETE RoleDeviceType u where u.rdRoleId = " + roleId + "";
 		getBaseDao().bulkObjectDelete(hql);
 	}
+	
+	public void deleteCurrentLanguageByRoleCode(final String roleId) throws Exception {
+		final String hql = "DELETE RoleLanguage u where u.roleId = " + roleId + "";
+		getBaseDao().bulkObjectDelete(hql);
+	}
 
 	public void saveOrUpdateModule(T roleModule) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleModule);
@@ -222,6 +236,10 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	
 	public void saveOrUpdateRoleDeviceType(T roleTab) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleTab);
+	}
+	
+	public void saveOrUpdateRoleLanguage(T roleLanguage) throws Exception {
+		getBaseDao().saveOrUpdateObject(roleLanguage);
 	}
 
 	public List<?> queryModules(Class<T> clazz, String moduleName,User user) {

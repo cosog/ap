@@ -117,7 +117,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             pressed: false,
                             handler: function () {
-//                            	grantRoleTabPermission();
+                            	grantRoleLanguagePermission();
                             }
                 		}]
                     }]
@@ -307,6 +307,68 @@ clkLoadTabAjaxFn = function () {
             if (null != deviceTypeIds && deviceTypeIds != "") {
                 var getNode = store_.root.childNodes;
                 selectEachTabCombox(getNode, deviceTypeIds);
+            }
+        },
+        failure: function (response, opts) {
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+        }
+    });
+    return false;
+}
+
+function clearRoleRightLanguageTreeSelect(node){
+	var chlidArray = node;
+	Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
+		childArrNode.set('checked', false);
+		if (childArrNode.childNodes != null) {
+			clearRoleRightLanguageTreeSelect(childArrNode.childNodes);
+        }
+	});
+}
+
+
+function selectEachLanguageCombox(node, root) {
+    if (null != root && root != "") {
+        var chlidArray = node;
+        if (!Ext.isEmpty(chlidArray)) {
+            Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
+                var x_node_seId = chlidArray[index].data.languageId;
+                Ext.Array.each(root, function (name, index,countriesItSelf) {
+                    var menuselectid = root[index].language;
+                    // 处理已选择的节点
+                    if (x_node_seId == menuselectid) {
+                        childArrNode.set('checked', true);
+                    }
+                });
+                // 递归
+                if (childArrNode.childNodes != null) {
+                	selectEachLanguageCombox(childArrNode.childNodes, root);
+                }
+            });
+        }
+    }
+    return false;
+};
+
+clkLoadLanguageAjaxFn = function () {
+	var treeGridPanel=Ext.getCmp("RightLanguageTreeInfoGridPanel_Id");
+	if(isNotVal(treeGridPanel)){
+		var store_=treeGridPanel.getStore();
+		var getNode = store_.root.childNodes;
+		clearRoleRightLanguageTreeSelect(getNode);
+	}
+	
+	var roleId = Ext.getCmp("RightBottomRoleCodes_Id").getValue();
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/moduleShowRightManagerController/doShowRightCurrentRoleOwnLanguages?roleId=' + roleId,
+        success: function (response, opts) {
+            // 处理后
+            var roleLanguages = Ext.decode(response.responseText);
+            var store_=Ext.getCmp("RightLanguageTreeInfoGridPanel_Id").getStore();
+            if (null != roleLanguages && roleLanguages != "") {
+                var getNode = store_.root.childNodes;
+                selectEachLanguageCombox(getNode, roleLanguages);
             }
         },
         failure: function (response, opts) {

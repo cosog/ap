@@ -1,11 +1,14 @@
 package com.cosog.service.right;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.Code;
 import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
@@ -141,7 +144,11 @@ private CommonDataService service;
 		getBaseDao().saveOrUpdateObject(roleModule);
 	}
 	
-	public void saveOrUpdateRoleDeviceType(T roleTab) throws Exception {
+	public void saveOrUpdateRoleDeviceType(T roleLanguage) throws Exception {
+		getBaseDao().saveOrUpdateObject(roleLanguage);
+	}
+	
+	public void saveOrUpdateRoleLanguage(T roleTab) throws Exception {
 		getBaseDao().saveOrUpdateObject(roleTab);
 	}
 
@@ -233,5 +240,44 @@ private CommonDataService service;
 		result_json.append("\"editFlag\":"+editFlag+",");
 		result_json.append("\"controlFlag\":"+controlFlag+"}");
 		return result_json.toString();
+	}
+	
+	public String getRoleLanguageList(int userNo,String language){
+		List<String> roleLanguageList=new ArrayList<>();
+		String sql="select t.language "
+				+ " from TBL_LANGUAGE2ROLE t,tbl_user u,tbl_role r "
+				+ " where u.user_type=r.role_id and r.role_id=t.roleid "
+				+ " and u.user_no= "+userNo
+				+ " order by t.language";
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			roleLanguageList.add(list.get(i).toString());
+		}
+		
+		StringBuffer json = new StringBuffer();
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		json.append("[");
+		
+		Iterator<Map.Entry<String,Code>> it = languageCodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			if(StringManagerUtils.existOrNot(roleLanguageList, c.getItemvalue()+"", false)){
+				json.append("{");
+				json.append("\"languageId\":\""+c.getItemvalue()+"\",");
+				json.append("\"text\":\""+c.getItemname()+"\",");
+				json.append("\"value\":\""+c.getItemvalue()+"\",");
+				json.append("\"checked\":false,");
+				json.append("\"leaf\":true");
+				json.append("},");
+			}
+		}
+		if (json.toString().endsWith(",")) {
+			json.deleteCharAt(json.length() - 1);
+		}
+		
+		json.append("]");
+		
+		return json.toString();
 	}
 }

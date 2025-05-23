@@ -5,9 +5,9 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     iframe: true,
     id: 'role_addwin_Id',
     closeAction: 'destroy',
-    width: 600,
-    minWidth: 600,
-    height: 600,
+    width: 900,
+    minWidth: 900,
+    height: 700,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -22,6 +22,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
+        var rightLanguageTreeInfoStore = Ext.create("AP.store.role.RightLanguageTreeInfoStore");
         
         var RoleVideoKeyEditCombox = new Ext.form.ComboBox({
             id: 'roleVideoKeyEditComboxfield_Id',
@@ -190,10 +191,12 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         		items: postroleEditForm
             },{
             	region: 'east',
-        		width: '50%',
+        		width: '66%',
         		layout: 'border',
         		header:false,
         		border: true,
+        		split: true,
+                collapsible: true,
         		items:[{
         			region:'center',
         			layout: "fit",
@@ -334,40 +337,73 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                         }
                     }
         		},{
-        			region:'south',
-        			height:'30%',
-        			title:loginUserLanguageResource.deviceTypeLicense,
+        			region:'east',
+        			width:'40%',
         			split: true,
                     collapsible: true,
-                    border: false,
-            		layout: "fit",
-                	xtype:'treepanel',
-                    border: false,
-                    animate: true,
-                    enableDD: false,
-                    useArrows: false,
-                    rootVisible: false,
-                    autoScroll: true,
-                    forceFit: true,
-                    id: "RoleInfoWindowRightTabTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
-                    store: tabStore,
-                    columns: [{
-                    	xtype: 'treecolumn',
-                    	text: loginUserLanguageResource.deviceType,
-                    	flex: 8,
-                    	align: 'left',
-                    	dataIndex: 'text'
-                    },{
-                    	header: 'deviceTypeIdaa',
-                    	hidden: true,
-                    	dataIndex: 'deviceTypeId'
-                    }],
-                    listeners: {
-                        checkchange: function (node, checked) {
-                            listenerCheck(node, checked);
+                    header:false,
+                    layout: 'border',
+                    items:[{
+                    	region:'center',
+                    	title:loginUserLanguageResource.deviceTypeLicense,
+                        border: false,
+                		layout: "fit",
+                    	xtype:'treepanel',
+                        border: false,
+                        animate: true,
+                        enableDD: false,
+                        useArrows: false,
+                        rootVisible: false,
+                        autoScroll: true,
+                        forceFit: true,
+                        id: "RoleInfoWindowRightTabTreeInfoGridPanel_Id", // 模块编码加id，定义的命名规则moduleCode是从库里取的值对应
+                        store: tabStore,
+                        columns: [{
+                        	xtype: 'treecolumn',
+                        	text: loginUserLanguageResource.deviceType,
+                        	flex: 8,
+                        	align: 'left',
+                        	dataIndex: 'text'
+                        },{
+                        	header: 'deviceTypeIdaa',
+                        	hidden: true,
+                        	dataIndex: 'deviceTypeId'
+                        }],
+                        listeners: {
+                            checkchange: function (node, checked) {
+                                listenerCheck(node, checked);
+                            }
                         }
-                    }
-        		
+                    },{
+                    	region:'south',
+            			height:'50%',
+            			split: true,
+                        collapsible: true,
+                        title:loginUserLanguageResource.languageLicense,
+                        layout: "fit",
+                        xtype:'treepanel',
+                        border: false,
+                        animate: true,
+                        enableDD: false,
+                        useArrows: false,
+                        rootVisible: false,
+                        autoScroll: true,
+                        forceFit: true,
+                        id: "RoleInfoWindowRightLanguageTreeInfoGridPanel_Id",
+                        store: rightLanguageTreeInfoStore,
+                        selType:'',
+                        columns: [{
+                        	xtype: 'treecolumn',
+                        	text: loginUserLanguageResource.language,
+                        	flex: 8,
+                        	align: 'left',
+                        	dataIndex: 'text'
+                        },{
+                        	header: 'languageId',
+                        	hidden: true,
+                        	dataIndex: 'languageId'
+                        }]
+                    }]
         		}]
             }]
         });

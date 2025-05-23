@@ -213,6 +213,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userLanguageName',
                         flex:2,
+                        hidden:true,
                         editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             xtype: 'combo',
                             typeAhead: true,

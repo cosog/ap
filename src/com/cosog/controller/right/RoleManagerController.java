@@ -28,6 +28,7 @@ import com.cosog.model.Module;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
 import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
 import com.cosog.model.Code;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
@@ -63,6 +64,8 @@ public class RoleManagerController extends BaseController {
 	private RoleManagerService<RoleModule> roleModuleService;
 	@Autowired
 	private RoleManagerService<RoleDeviceType> roleTabService;
+	@Autowired
+	private RoleManagerService<RoleLanguage> roleLanguageService;
 	private List<Role> list;
 	private Role role;
 	private String limit;
@@ -89,9 +92,10 @@ public class RoleManagerController extends BaseController {
 			String addModuleIds = ParamUtils.getParameter(request, "addModuleIds");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String addDeviceTypeIds = ParamUtils.getParameter(request, "addDeviceTypeIds");
+			String addLanguageIds = ParamUtils.getParameter(request, "addLanguageIds");
 			this.roleService.addRole(role);
 			
-			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addDeviceTypeIds)){
+			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addDeviceTypeIds) || StringManagerUtils.isNotNull(addLanguageIds)){
 				String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
 				List<?> list=this.roleService.findCallSql(sql);
 				if(list.size()>0){
@@ -127,6 +131,21 @@ public class RoleManagerController extends BaseController {
 									r.setRdDeviceTypeId(deviceTypeId);
 									r.setRdMatrix("0,0,0");
 									this.roleTabService.saveOrUpdateRoleDeviceType(r);
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(addLanguageIds)){
+							RoleLanguage r=null;
+							String[] languageArr=addLanguageIds.split(",");
+							for(int i=0;i<languageArr.length;i++){
+								int language=StringManagerUtils.stringToInteger(languageArr[i]);
+								if(language>0){
+									r=new RoleLanguage();
+									r.setRoleId(addRoleId);
+									r.setLanguage(language);
+									r.setMatrix("0,0,0");
+									this.roleLanguageService.saveOrUpdateRoleDeviceType(r);
 								}
 							}
 						}
@@ -413,35 +432,15 @@ public class RoleManagerController extends BaseController {
 	
 	@RequestMapping("/constructRightLanguageTreeGridTree")
 	public String constructRightLanguageTreeGridTree() throws Exception {
-		StringBuffer json = new StringBuffer();
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
+		int userNo=0;
 		if(user!=null){
 			language=user.getLanguageName();
+			userNo=user.getUserNo();
 		}
-		
-		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
-		json.append("[");
-		
-		Iterator<Map.Entry<String,Code>> it = languageCodeMap.entrySet().iterator();
-		while(it.hasNext()){
-			Map.Entry<String, Code> entry = it.next();
-			Code c=entry.getValue();
-			json.append("{");
-			json.append("\"languageId\":\""+c.getItemvalue()+"\",");
-			json.append("\"text\":\""+c.getItemname()+"\",");
-			json.append("\"value\":\""+c.getItemvalue()+"\",");
-			json.append("\"checked\":false,");
-			json.append("\"leaf\":true");
-			json.append("},");
-		}
-		if (json.toString().endsWith(",")) {
-			json.deleteCharAt(json.length() - 1);
-		}
-		
-		json.append("]");
-		
+		String json=roleLanguageService.getRoleLanguageList(userNo,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -79,6 +79,8 @@ public class User implements java.io.Serializable {
 	private String userorgids;
 	
 	private String moduleList;
+	
+	private List<Integer> languageList;
 
 	public User() {
 		super();
@@ -442,5 +444,14 @@ public class User implements java.io.Serializable {
 
 	public void setLanguageResourceFirstLower(String languageResourceFirstLower) {
 		this.languageResourceFirstLower = languageResourceFirstLower;
+	}
+
+	@Transient
+	public List<Integer> getLanguageList() {
+		return languageList;
+	}
+
+	public void setLanguageList(List<Integer> languageList) {
+		this.languageList = languageList;
 	}
 }

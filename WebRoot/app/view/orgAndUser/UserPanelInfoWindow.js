@@ -178,12 +178,6 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                     anchor: '100%',
                     value: '',
                     name: 'user.userType'
-            }, {
-                xtype: "hidden",
-                id: 'userLanguage_Id',
-                anchor: '100%',
-                value: '',
-                name: 'user.language'
             },{
                     fieldLabel: loginUserLanguageResource.userName + '<font color=red>*</font>',
                     id: 'userName_Id',
@@ -339,7 +333,15 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
                         id:'userReceiveMailRadio0_Id'
                     }
                 ]
-            },languageCombox,{
+            },
+//            languageCombox, {
+//                xtype: "hidden",
+//                id: 'userLanguage_Id',
+//                anchor: '100%',
+//                value: '',
+//                name: 'user.language'
+//            },
+            {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.status+'<font color=red>*</font>',
                 defaultType: 'radiofield',

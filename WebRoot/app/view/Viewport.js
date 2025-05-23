@@ -12,8 +12,21 @@ Ext.define('AP.view.Viewport', {
             height: 60,
             border: false,
             bodyStyle: {
-                'z-index': 10
+                'z-index': 999
             },
+//            items: [{
+//                xtype: 'toolbar',
+//                dock: 'top',
+//                items: [{
+//                    text: '选项',
+//                    menu: Ext.create('Ext.menu.Menu', {
+//                        items: [
+//                            { text: '选项1', handler: function() { console.log('选项1被点击'); } },
+//                            { text: '选项2', handler: function() { console.log('选项2被点击'); } }
+//                        ]
+//                    })
+//                }]
+//            }],
             html: '<div id="bannerDiv"><img id="bannerLogoImg" style="display:none;"/><span id="bannerTitle">bannerTitle</span>' 
             	+'<div id="bannerToolbar"><a href="#" id="banner_exit" onclick="userLoginOut()"><span id="banner_exit_text"></span></a></div>'
             	+'<div id="bannerToolbar"><a href="#" id="banner_help" onclick="showHelpDocumentWinFn()"><span id="banner_help_text"></span></a></div>' 

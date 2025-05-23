@@ -476,7 +476,7 @@ public class UserManagerService<T> extends BaseService<T> {
 						+ "t.user_enable="+user.getUserEnable()+", ";
 			}	
 			sql+= "t.user_name='"+user.getUserName()+"', "
-				+ "t.user_language="+MemoryDataManagerTask.getCodeValue("LANGUAGE", user.getLanguageName(), user.getLanguageName())+","
+//				+ "t.user_language="+MemoryDataManagerTask.getCodeValue("LANGUAGE", user.getLanguageName(), user.getLanguageName())+","
 				+ "t.user_phone='"+user.getUserPhone()+"', "
 				+ "t.user_in_email='"+user.getUserInEmail()+"', "
 				+ "t.user_quicklogin="+user.getUserQuickLogin()+", "
@@ -526,8 +526,24 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void setUserLanguage(User user){
+		List<Integer> languageList=new ArrayList<>(); 
 		String languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+		if(user.getLanguage()==1){
+			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "zh_CN");
+		}else if(user.getLanguage()==2){
+			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "en");
+		}if(user.getLanguage()==3){
+			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "en");
+		}
+		String sql="select t.language from tbl_language2role t,tbl_user u where t.roleid=u.user_type and u.user_no="+user.getUserNo()
+				+" order by t.language";
+		List<?> list=getBaseDao().findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			languageList.add(StringManagerUtils.stringToInteger(list.get(i).toString()));
+		}
+		
 		user.setLanguageName(languageName);
+		user.setLanguageList(languageList);
 	}
 	
 	public void setUserRoleRight(User user){
@@ -654,5 +670,16 @@ public class UserManagerService<T> extends BaseService<T> {
 		
 		
 		return result_json.toString();
+	}
+	
+	public List<Integer> getLanguageList(int roleId){
+		List<Integer> languageList=new ArrayList<>();
+		String sql="select t.language from tbl_language2role t where t.roleid="+roleId
+				+" order by t.language";
+		List<?> list=getBaseDao().findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			languageList.add(StringManagerUtils.stringToInteger(list.get(i).toString()));
+		}
+		return languageList;
 	}
 }

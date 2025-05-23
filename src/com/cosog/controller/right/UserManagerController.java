@@ -35,6 +35,7 @@ import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Message;
 import com.cosog.utils.Page;
@@ -163,12 +164,30 @@ public class UserManagerController extends BaseController {
 	public String doUserAdd(@ModelAttribute User user) throws IOException {
 		String result = "{success:true,msg:false}";
 		try {
-			String emailContent="账号:"+user.getUserId()+"<br/>密码:"+user.getUserPwd();
-			String emailTopic="创建用户";
+			User loginUser = null;
+			HttpSession session=request.getSession();
+			loginUser = (User) session.getAttribute("userLogin");
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginUser!=null?loginUser.getLanguageName():"");
+			String loginLanguageName=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+			String languageValue=MemoryDataManagerTask.getCodeValue("LANGUAGE",loginLanguageName,loginLanguageName);
+			
+			List<Integer> loginUserLanguageList=this.userService.getLanguageList(user!=null?user.getUserType():0);
+			
+			
+			String emailContent=languageResourceMap.get("userAccount")+":"+user.getUserId()+"<br/>"+languageResourceMap.get("userPassword")+":"+user.getUserPwd();
+			String emailTopic=languageResourceMap.get("addUser");
 			List<String> receivingEMailAccount=new ArrayList<String>();
 //			user.setUserPwd(UnixPwdCrypt.crypt("dogVSgod", user.getUserPwd()));
 			user.setUserPwd(StringManagerUtils.stringToMD5(user.getUserPwd()));
 			user.setUserRegtime(new Date());
+			
+			
+			if(loginUserLanguageList.size()==0 || StringManagerUtils.existOrNot(loginUserLanguageList, StringManagerUtils.stringToInteger(languageValue))){
+				user.setLanguage(StringManagerUtils.stringToInteger(languageValue));
+			}else{
+				user.setLanguage(loginUserLanguageList.get(0));
+			}
+			
 			this.userService.addUser(user);
 			
 			List<String> userList=new ArrayList<String>();

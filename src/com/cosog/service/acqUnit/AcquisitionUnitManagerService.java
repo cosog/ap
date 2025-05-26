@@ -5491,7 +5491,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		
-		String sql="select t.name,t.code,t.sort,t.devicetype,t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath "
+		String sql="select t.name,t.code,t.sort,t.devicetype,t.language,"
+				+ " t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath "
 				+ " from tbl_protocol t,viw_devicetypeinfo t2 "
 				+ " where t.devicetype=t2.id "
 				+ " and t.devicetype in ("+deviceTypeIds+") "
@@ -5505,8 +5506,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"code\":\""+obj[1]+"\",");
 			tree_json.append("\"sort\":\""+obj[2]+"\",");
 			tree_json.append("\"deviceType\":\""+obj[3]+"\",");
-			tree_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
-			tree_json.append("\"deviceTypeAllPath\":\""+obj[5]+"\",");
+			tree_json.append("\"language\":\""+obj[4]+"\",");
+			tree_json.append("\"languageName\":\""+MemoryDataManagerTask.getCodeName("LANGUAGE", obj[4]+"", language)+"\",");
+			tree_json.append("\"deviceTypeName\":\""+obj[5]+"\",");
+			tree_json.append("\"deviceTypeAllPath\":\""+obj[6]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true");
 			tree_json.append("},");

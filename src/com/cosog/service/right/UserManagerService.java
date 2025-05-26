@@ -261,16 +261,18 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String loadLanguageList(String language) throws Exception {
+	public String loadLanguageList(User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",user!=null?user.getLanguageName():"");
 		result_json.append("[");
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
-			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			if(StringManagerUtils.existOrNot(user.getLanguageList(), c.getItemvalue())){
+				result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
+				result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			}
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -529,11 +531,11 @@ public class UserManagerService<T> extends BaseService<T> {
 		List<Integer> languageList=new ArrayList<>(); 
 		String languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		if(user.getLanguage()==1){
-			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "zh_CN");
+			languageName="zh_CN";
 		}else if(user.getLanguage()==2){
-			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "en");
+			languageName="en";
 		}if(user.getLanguage()==3){
-			languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", "en");
+			languageName="ru";
 		}
 		String sql="select t.language from tbl_language2role t,tbl_user u where t.roleid=u.user_type and u.user_no="+user.getUserNo()
 				+" order by t.language";
@@ -681,5 +683,17 @@ public class UserManagerService<T> extends BaseService<T> {
 			languageList.add(StringManagerUtils.stringToInteger(list.get(i).toString()));
 		}
 		return languageList;
+	}
+	
+	
+	public int switchUserLanguage(User user,String languageValue){
+		int r=0;
+		if(user!=null && StringManagerUtils.stringToInteger(languageValue)>0){
+			String updateSql="update tbl_user t set t.user_language="+StringManagerUtils.stringToInteger(languageValue)+" where t.user_no="+user.getUserNo();
+			r=this.getBaseDao().updateOrDeleteBySql(updateSql);
+			user.setLanguage(StringManagerUtils.stringToInteger(languageValue));
+			setUserLanguage(user);
+		}
+		return r;
 	}
 }

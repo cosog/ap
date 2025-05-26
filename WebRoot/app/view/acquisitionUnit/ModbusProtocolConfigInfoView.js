@@ -563,9 +563,15 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		
 		var item3={};
 		item3.id=3;
-		item3.title=loginUserLanguageResource.protocolBelongTo;
-		item3.value=data.deviceTypeAllPath;
+		item3.title=loginUserLanguageResource.language;
+		item3.value=data.languageName;
 		root.push(item3);
+		
+		var item4={};
+		item4.id=4;
+		item4.title=loginUserLanguageResource.protocolBelongTo;
+		item4.value=data.deviceTypeAllPath;
+		root.push(item4);
 	}
 	
 	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
@@ -653,9 +659,9 @@ var ProtocolPropertiesHandsontableHelper = {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolPropertiesHandsontableHelper);
 			                    	}
 			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
-			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
+			                    }else if (visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) ) {
 			                    	cellProperties.readOnly = true;
-			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
+			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 			                    }
 		                    }
 	                    }else{

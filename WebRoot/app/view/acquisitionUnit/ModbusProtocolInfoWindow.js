@@ -17,6 +17,51 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var languageComboxStore = new Ext.data.SimpleStore({
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/userManagerController/loadLanguageList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json'
+                }
+            },
+            autoLoad: true
+        });
+
+        var languageCombox = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: loginUserLanguageResource.language+'<font color=red>*</font>',
+                id: 'protocolLanguage_Id1',
+                anchor: '100%',
+                value: '',
+                store: languageComboxStore,
+                emptyText: '--'+loginUserLanguageResource.selectLanguage+'--',
+                blankText: '--'+loginUserLanguageResource.selectLanguage+'--',
+                typeAhead: true,
+                allowBlank: false,
+                editable:false,
+                disabled:true,
+                readOnly:true,
+                blankText: loginUserLanguageResource.required,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                listeners: {
+                    select: function () {
+//                        Ext.getCmp("protocolLanguage_Id").setValue(this.value);
+                    }
+                }
+            });
         var postModbusProtocolEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -71,7 +116,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                         }
                     }
                 }
-            }, {
+            },languageCombox, {
             	xtype: 'numberfield',
             	id: "modbusProtocolSort_Id",
                 name: 'protocolModel.sort',

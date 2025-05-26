@@ -2424,7 +2424,7 @@ public class MemoryDataManagerTask {
 	
 	public static CalItem getSingleCalItemByNameAndUnit(String name,String unit,List<CalItem> list){
 		CalItem item=null;
-		if(list!=null){
+		if(list!=null && name!=null){
 			for(CalItem calItem:list){
 				if(StringManagerUtils.isNotNull(unit)){
 					if(name.equalsIgnoreCase(calItem.getName()) && unit.equalsIgnoreCase(calItem.getUnit())){

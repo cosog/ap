@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -535,7 +536,7 @@ public class UserManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.userService.loadLanguageList(language);
+		String json = this.userService.loadLanguageList(user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -599,6 +600,51 @@ public class UserManagerController extends BaseController {
 		String selectedUserId = ParamUtils.getParameter(request, "selectedUserId");
 		String selectedOrgId=ParamUtils.getParameter(request, "selectedOrgId");
 		this.userService.changeUserOrg(selectedUserId,selectedOrgId);
+		String json = "{\"success\":true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/switchUserLanguage")
+	public String switchUserLanguage() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String languageValue = ParamUtils.getParameter(request, "languageValue");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
+		int r=0;
+		if(user!=null){
+			r=this.userService.switchUserLanguage(user, languageValue);
+			if(r>0){
+				Locale l = Locale.getDefault(); 
+				String locale=user.getLanguageName().toLowerCase().replace("zh_cn", "zh_CN");
+				if(locale==null){ 
+					l = new Locale("zh", "CN"); 
+				}else if (locale.equals("zh_CN")) { 
+					l = new Locale("zh", "CN"); 
+				}else if (locale.equals("en")) { 
+					l = new Locale("en", "US"); 
+				}else if (locale.equals("ru")) { 
+					l = new Locale("ru", "RU"); 
+				}
+				
+				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
+				String languageResourceFirstLower=MemoryDataManagerTask.getLanguageResourceStr_FirstLetterLowercase(locale);
+				Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
+				user.setLanguageResource(languageResourceStr);
+				user.setLanguageResourceFirstLower(languageResourceFirstLower);
+				
+				session.setAttribute("userLogin", user);
+				session.setAttribute("WW_TRANS_I18N_LOCALE", l);
+				session.setAttribute("browserLang", locale);
+			}
+		}
 		String json = "{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

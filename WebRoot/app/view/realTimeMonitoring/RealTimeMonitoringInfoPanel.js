@@ -618,7 +618,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         		var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
                         		if(isNotVal(gridPanel)){
                         			var record=gridPanel.getStore().getAt(selectRow);
-                        			gotoDeviceHistory(record.data.wellName,0);
+                        			gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
                         		}
                             }
                         }]

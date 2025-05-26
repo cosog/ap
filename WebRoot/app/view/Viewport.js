@@ -27,10 +27,12 @@ Ext.define('AP.view.Viewport', {
 //                    })
 //                }]
 //            }],
-            html: '<div id="bannerDiv"><img id="bannerLogoImg" style="display:none;"/><span id="bannerTitle">bannerTitle</span>' 
+            html: '<div id="bannerDiv">'
+            	+'<img id="bannerLogoImg" style="display:none;"/>'
+            	+'<span id="bannerTitle">bannerTitle</span>' 
             	+'<div id="bannerToolbar"><a href="#" id="banner_exit" onclick="userLoginOut()"><span id="banner_exit_text"></span></a></div>'
             	+'<div id="bannerToolbar"><a href="#" id="banner_help" onclick="showHelpDocumentWinFn()"><span id="banner_help_text"></span></a></div>' 
-            	+'<div id="menu"><ul><li><a href="" class="drop">语言</a><div class="dropdown_1column"><div class="col_1"><ul class="simple"><li><a href="">中文</a></li><li><a href="">英文</a></li><li><a href="">俄文</a</li></ul></div></div></li></ul></div>'
+//            	+'<div id="menu"><ul><li><a href="" class="drop">语言</a><div class="dropdown_1column"><div class="col_1"><ul class="simple"><li><a href="">中文</a></li><li><a href="">英文</a></li><li><a href="">俄文</a</li></ul></div></div></li></ul></div>'
             	+'</div>'
     }, {
             id: 'center_ids',
@@ -917,6 +919,22 @@ function invalidateSession() {
         params: {}
     });
     return false;
+}
+
+function switchLanguage(languageValue){
+	Ext.Ajax.request({
+		method:'POST',
+		async :  false,
+		url:context + '/userManagerController/switchUserLanguage',
+		success:function(response) {
+			window.location.href = context+"/home";
+		},
+		failure:function(){
+		},
+		params: {
+			languageValue:languageValue
+        }
+	});
 }
 
 function mOver(obj) {

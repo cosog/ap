@@ -55,6 +55,9 @@
         var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
         var loginUserLanguageKeyEdit = "${userLogin.roleLanguageEdit}";
         var loginUserLanguage = "${userLogin.languageName}";
+        var loginUserLanguageValue = "${userLogin.language}";
+        
+        var loginUserLanguageList=JSON.parse("${userLogin.languageList}");
         
         var loginUserLanguageResource='${userLogin.languageResource}';
         if(isNotVal(loginUserLanguageResource)){
@@ -150,6 +153,21 @@
             
             $('#banner_exit_text').html(loginUserLanguageResource.exit);
             $('#banner_help_text').html(loginUserLanguageResource.help);
+            
+            if(loginUserLanguageList.length>1){
+            	for(var i=loginUserLanguageList.length-1;i>=0;i--){
+                	var index=loginUserLanguageList.length-i;
+                	var languageShowName='';
+                	if(loginUserLanguageList[i]==1){
+                		languageShowName=loginUserLanguageResource.language_zh_CN;
+                	}else if(loginUserLanguageList[i]==2){
+                		languageShowName=loginUserLanguageResource.language_en;
+                	}else if(loginUserLanguageList[i]==3){
+                		languageShowName=loginUserLanguageResource.language_ru;
+                	}
+                	document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
+                }
+            }
         }
 
     </script>

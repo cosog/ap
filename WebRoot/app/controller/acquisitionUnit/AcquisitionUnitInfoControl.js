@@ -43,6 +43,8 @@ function addModbusProtocolAddrMappingConfigData() {
 	    
 	    Ext.getCmp("addFormModbusProtocol_Id").show();
 	    Ext.getCmp("updateFormaModbusProtocol_Id").hide();
+	    
+	    Ext.getCmp("protocolLanguage_Id1").setValue(loginUserLanguageValue);
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.selectDeviceType);
 	}

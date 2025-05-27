@@ -72,6 +72,8 @@ public class OEMConfigFile {
 	    
 	    private String exitButtonIcon;
 	    
+	    private String switchButtonIcon;
+	    
 	    private String zoomInButtonIcon;
 	    
 	    private String zoomoutButtonIcon;
@@ -159,6 +161,12 @@ public class OEMConfigFile {
 		}
 		public void setLanguageResourcePath(String languageResourcePath) {
 			this.languageResourcePath = languageResourcePath;
+		}
+		public String getSwitchButtonIcon() {
+			return switchButtonIcon;
+		}
+		public void setSwitchButtonIcon(String switchButtonIcon) {
+			this.switchButtonIcon = switchButtonIcon;
 		}
 	}
 	

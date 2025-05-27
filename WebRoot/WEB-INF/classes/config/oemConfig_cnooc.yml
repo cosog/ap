@@ -1,19 +1,20 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
-   languageResourcePath: oem/cnpc/locale
-   favicon: "./oem/cnpc/images/logo/favicon.ico"
-   logo: "./oem/cnpc/images/logo/logo.png"
-   loginBackgroundImage: "./oem/cnpc/images/login/login.jpg"
-   loginCSS: "./oem/cnpc/styles/login.css"
-   bannerCSS: "./oem/cnpc/styles/banner.css"
-   helpButtonIcon: "./oem/cnpc/images/help.svg"            #帮助按钮图标
-   exitButtonIcon: "./oem/cnpc/images/exit.svg"            #退出按钮图标
-   zoomInButtonIcon: "./oem/cnpc/images/zoomin.svg"        #放大按钮图标
-   zoomoutButtonIcon: "./oem/cnpc/images/zooout.svg"       #缩小按钮图标
+   languageResourcePath: oem/cnooc/locale
+   favicon: "./oem/cnooc/images/logo/favicon.ico"
+   logo: "./oem/cnooc/images/logo/logo.png"
+   loginBackgroundImage: "./oem/cnooc/images/login/login.jpg"
+   loginCSS: "./oem/cnooc/styles/login.css"
+   bannerCSS: "./oem/cnooc/styles/banner.css"
+   helpButtonIcon: "./oem/cnooc/images/help.svg"            #帮助按钮图标
+   exitButtonIcon: "./oem/cnooc/images/exit.svg"            #退出按钮图标
+   switchButtonIcon: "./oem/cnooc/images/switch.svg"        #语言切换按钮图标
+   zoomInButtonIcon: "./oem/cnooc/images/zoomin.svg"        #放大按钮图标
+   zoomoutButtonIcon: "./oem/cnooc/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20250414103000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./oem/cnpc/readme"             #帮助文档所在目录
+   helpDocument: "./oem/cnooc/readme"             #帮助文档所在目录
    helpDocumentTimestamp: 20250414103000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
-   template: oem/cnpc/reportTemplate/reportTemplate.json    #报表模板
+   template: oem/cnooc/reportTemplate/reportTemplate.json    #报表模板
    offsetHour: 0                          #偏移小时 数值范围：0~12
    interval: 1                            #间隔 单位：小时 数值范围：1~12
    delay: 5                               #跨天汇总延时，单位：分钟 数值范围：0~30

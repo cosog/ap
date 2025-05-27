@@ -1215,7 +1215,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	

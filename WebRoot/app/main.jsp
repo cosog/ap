@@ -86,6 +86,9 @@
         var exitButtonIcon = oem.exitButtonIcon;
         exitButtonIcon = context + exitButtonIcon.substring(exitButtonIcon.indexOf("/"), exitButtonIcon.length);
         
+        var switchButtonIcon = oem.switchButtonIcon;
+        switchButtonIcon = context + switchButtonIcon.substring(switchButtonIcon.indexOf("/"), switchButtonIcon.length);
+        
         var zoomInButtonIcon = oem.zoomInButtonIcon;
         zoomInButtonIcon = context + zoomInButtonIcon.substring(zoomInButtonIcon.indexOf("/"), zoomInButtonIcon.length);
         
@@ -154,18 +157,25 @@
             $('#banner_exit_text').html(loginUserLanguageResource.exit);
             $('#banner_help_text').html(loginUserLanguageResource.help);
             
+            var index=1;
             if(loginUserLanguageList.length>1){
             	for(var i=loginUserLanguageList.length-1;i>=0;i--){
-                	var index=loginUserLanguageList.length-i;
-                	var languageShowName='';
-                	if(loginUserLanguageList[i]==1){
-                		languageShowName=loginUserLanguageResource.language_zh_CN;
-                	}else if(loginUserLanguageList[i]==2){
-                		languageShowName=loginUserLanguageResource.language_en;
-                	}else if(loginUserLanguageList[i]==3){
-                		languageShowName=loginUserLanguageResource.language_ru;
-                	}
-                	document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
+            		//if(loginUserLanguageValue!=loginUserLanguageList[i]){
+            			//var index=loginUserLanguageList.length-i;
+                    	var languageShowName='';
+                    	if(loginUserLanguageList[i]==1){
+                    		languageShowName=loginUserLanguageResource.language_zh_CN;
+                    	}else if(loginUserLanguageList[i]==2){
+                    		languageShowName=loginUserLanguageResource.language_en;
+                    	}else if(loginUserLanguageList[i]==3){
+                    		languageShowName=loginUserLanguageResource.language_ru;
+                    	}
+                    	document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
+                    	
+                    	$("#banner_language"+index).css("background", "url(" + switchButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+                    	
+                    	index++;
+            		//}
                 }
             }
         }

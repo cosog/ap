@@ -78,16 +78,49 @@ body {
 	letter-spacing: 0px;
 }
 
-#banner_exit,#banner_help:link {
+#banner_language1 {
+ 	padding-left:16px;
+ 	height:16px; 
+ 	display:inline-block;
+ 	position:absolute;
+ 	right:130px;
+ 	color:white;
+}
+
+#banner_language2 {
+ 	padding-left:16px;
+ 	height:16px; 
+ 	display:inline-block;
+ 	position:absolute;
+ 	right:190px;
+ 	color:white;
+}
+
+#banner_language3 {
+ 	padding-left:16px;
+ 	height:16px; 
+ 	display:inline-block;
+ 	position:absolute;
+ 	right:250px;
+ 	color:white;
+}
+
+#banner_language1_text,#banner_language2_text,#banner_language3_text{
+	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+	padding-left:1px;
+	letter-spacing: 0px;
+}
+
+#banner_exit,#banner_help,#banner_language1,#banner_language2,#banner_language3:link {
  color: white;
  text-decoration: none;
 }
 
-#banner_exit,#banner_help:visited {
+#banner_exit,#banner_help,#banner_language1,#banner_language2,#banner_language3:visited {
  color: white;
  text-decoration: none;
 }
-#banner_exit,#banner_help:hover {
+#banner_exit,#banner_help,#banner_language1,#banner_language2,#banner_language3:hover {
  color: white;
  text-decoration: none;
 }

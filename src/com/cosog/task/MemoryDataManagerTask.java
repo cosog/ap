@@ -5100,15 +5100,12 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void loadLanguageResource(String language){
-		
 		language=language.toLowerCase().replace("zh_cn", "zh_CN");
-		
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();
 		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
 		
 		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
-		
 		
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String languageResourcePath=Config.getInstance().configFile.getAp().getOem().getLanguageResourcePath();
@@ -5128,8 +5125,9 @@ public class MemoryDataManagerTask {
 						String item=obj.getString("FIELD");
 						if(StringManagerUtils.isNotNull(item)){
 							String value=obj.getString("LANGUAGE");
-							value=StringManagerUtils.stringFormat(value);
-
+							if(!key.equalsIgnoreCase("oem")){
+								value=StringManagerUtils.stringFormat(value);
+							}
 							languageMap.put(item, value);
 						}
 					}
@@ -5161,7 +5159,6 @@ public class MemoryDataManagerTask {
 							itemMap.put(itemValue+"", code);
 							codeMap.put(itemCode, itemMap);
 						}
-						
 					}
 			    }else if(key.equalsIgnoreCase("worktype")){
 			    	JSONArray arr = entry.getValue();

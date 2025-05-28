@@ -566,7 +566,7 @@ var BatchAddDeviceCollisionDataHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(batchAddDeviceCollisionDataHandsontableHelper!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=''&&batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined && batchAddDeviceCollisionDataHandsontableHelper.hot.getDataAtCell!=undefined){
+                	if(coords.col>=0 && coords.row>=0 && batchAddDeviceCollisionDataHandsontableHelper!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=''&&batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined && batchAddDeviceCollisionDataHandsontableHelper.hot.getDataAtCell!=undefined){
                 		var rawValue=batchAddDeviceCollisionDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
                 		if(isNotVal(rawValue)){
             				var showValue=rawValue;
@@ -951,7 +951,7 @@ var BatchAddDeviceOverlayDataHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(batchAddDeviceOverlayDataHandsontableHelper!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=''&&batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined && batchAddDeviceOverlayDataHandsontableHelper.hot.getDataAtCell!=undefined){
+                	if(coords.col>=0 && coords.row>=0 && batchAddDeviceOverlayDataHandsontableHelper!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=''&&batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined && batchAddDeviceOverlayDataHandsontableHelper.hot.getDataAtCell!=undefined){
                 		var rawValue=batchAddDeviceOverlayDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
                 		if(isNotVal(rawValue)){
             				var showValue=rawValue;

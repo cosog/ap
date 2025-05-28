@@ -293,7 +293,8 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+	                		&& protocolAlarmInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmInstancePropertiesHandsontableHelper!=null
 	                		&& protocolAlarmInstancePropertiesHandsontableHelper.hot!=''
 	                		&& protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined 

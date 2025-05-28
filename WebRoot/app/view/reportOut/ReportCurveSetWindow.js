@@ -324,7 +324,7 @@ var DeviceReportCurveSetHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceReportCurveSetHandsontableHelper!=null&&deviceReportCurveSetHandsontableHelper.hot!=''&&deviceReportCurveSetHandsontableHelper.hot!=undefined && deviceReportCurveSetHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceReportCurveSetHandsontableHelper!=null&&deviceReportCurveSetHandsontableHelper.hot!=''&&deviceReportCurveSetHandsontableHelper.hot!=undefined && deviceReportCurveSetHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceReportCurveSetHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

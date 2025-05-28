@@ -1327,8 +1327,9 @@ var DeviceInfoHandsontableHelper = {
                             }
                         }
                     }
-                },afterOnCellMouseOver: function(event, coords, TD){
-                	if(deviceInfoHandsontableHelper!=null&&deviceInfoHandsontableHelper.hot!=''&&deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && deviceInfoHandsontableHelper!=null&&deviceInfoHandsontableHelper.hot!=''&&deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
                 		var rawValue=deviceInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
                 		if(isNotVal(rawValue)){
             				var showValue=rawValue;
@@ -2433,7 +2434,7 @@ var ProductionHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(productionHandsontableHelper!=null&&productionHandsontableHelper.hot!=''&&productionHandsontableHelper.hot!=undefined && productionHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && productionHandsontableHelper!=null&&productionHandsontableHelper.hot!=''&&productionHandsontableHelper.hot!=undefined && productionHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=productionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -2790,7 +2791,7 @@ var PumpingInfoHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(pumpingInfoHandsontableHelper!=null&&pumpingInfoHandsontableHelper.hot!=''&&pumpingInfoHandsontableHelper.hot!=undefined && pumpingInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && pumpingInfoHandsontableHelper!=null&&pumpingInfoHandsontableHelper.hot!=''&&pumpingInfoHandsontableHelper.hot!=undefined && pumpingInfoHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=pumpingInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -3042,7 +3043,7 @@ var VideoInfoHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(videoInfoHandsontableHelper!=null&&videoInfoHandsontableHelper.hot!=''&&videoInfoHandsontableHelper.hot!=undefined && videoInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && videoInfoHandsontableHelper!=null&&videoInfoHandsontableHelper.hot!=''&&videoInfoHandsontableHelper.hot!=undefined && videoInfoHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=videoInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -3240,7 +3241,7 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceAdditionalInfoHandsontableHelper!=null&&deviceAdditionalInfoHandsontableHelper.hot!=''&&deviceAdditionalInfoHandsontableHelper.hot!=undefined && deviceAdditionalInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceAdditionalInfoHandsontableHelper!=null&&deviceAdditionalInfoHandsontableHelper.hot!=''&&deviceAdditionalInfoHandsontableHelper.hot!=undefined && deviceAdditionalInfoHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceAdditionalInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -3422,7 +3423,7 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>0 && deviceAuxiliaryDeviceInfoHandsontableHelper!=null&&deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=''&&deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=undefined && deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && coords.col>0 && deviceAuxiliaryDeviceInfoHandsontableHelper!=null&&deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=''&&deviceAuxiliaryDeviceInfoHandsontableHelper.hot!=undefined && deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceAuxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -4847,7 +4848,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(fsDiagramConstructionHandsontableHelper!=null&&fsDiagramConstructionHandsontableHelper.hot!=''&&fsDiagramConstructionHandsontableHelper.hot!=undefined && fsDiagramConstructionHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && fsDiagramConstructionHandsontableHelper!=null&&fsDiagramConstructionHandsontableHelper.hot!=''&&fsDiagramConstructionHandsontableHelper.hot!=undefined && fsDiagramConstructionHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -5049,7 +5050,7 @@ var DeviceSystemParameterHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceSystemParameterHandsontableHelper!=null&&deviceSystemParameterHandsontableHelper.hot!=''&&deviceSystemParameterHandsontableHelper.hot!=undefined && deviceSystemParameterHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceSystemParameterHandsontableHelper!=null&&deviceSystemParameterHandsontableHelper.hot!=''&&deviceSystemParameterHandsontableHelper.hot!=undefined && deviceSystemParameterHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceSystemParameterHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

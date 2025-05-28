@@ -31,6 +31,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.User;
+import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
@@ -622,6 +623,7 @@ public class UserManagerController extends BaseController {
 		if(user!=null){
 			r=this.userService.switchUserLanguage(user, languageValue);
 			if(r>0){
+				UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(user.getUserNo()+"");
 				Locale l = Locale.getDefault(); 
 				String locale=user.getLanguageName().toLowerCase().replace("zh_cn", "zh_CN");
 				if(locale==null){ 
@@ -636,13 +638,24 @@ public class UserManagerController extends BaseController {
 				
 				String languageResourceStr=MemoryDataManagerTask.getLanguageResourceStr(locale);
 				String languageResourceFirstLower=MemoryDataManagerTask.getLanguageResourceStr_FirstLetterLowercase(locale);
-				Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(locale);
 				user.setLanguageResource(languageResourceStr);
 				user.setLanguageResourceFirstLower(languageResourceFirstLower);
 				
 				session.setAttribute("userLogin", user);
 				session.setAttribute("WW_TRANS_I18N_LOCALE", l);
 				session.setAttribute("browserLang", locale);
+				
+				if(userInfo!=null){
+					userInfo.setLanguage(user.getLanguage());
+					if(userInfo.getLanguage()==1){
+						userInfo.setLanguageName("zh_CN");
+					}else if(userInfo.getLanguage()==2){
+						userInfo.setLanguageName("en");
+					}else if(userInfo.getLanguage()==3){
+						userInfo.setLanguageName("ru");
+					}
+					MemoryDataManagerTask.updateUserInfo(userInfo);
+				}
 			}
 		}
 		String json = "{\"success\":true}";

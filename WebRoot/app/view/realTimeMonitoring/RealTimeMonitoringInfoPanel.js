@@ -982,7 +982,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

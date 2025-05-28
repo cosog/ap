@@ -320,7 +320,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolReportInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolReportInstancePropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolReportInstancePropertiesHandsontableHelper!=null
 	                		&& protocolReportInstancePropertiesHandsontableHelper.hot!=''
 	                		&& protocolReportInstancePropertiesHandsontableHelper.hot!=undefined 

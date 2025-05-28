@@ -215,7 +215,7 @@ var BatchAddAuxiliaryDeviceHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(batchAddAuxiliaryDeviceHandsontableHelper!=null&&batchAddAuxiliaryDeviceHandsontableHelper.hot!=''&&batchAddAuxiliaryDeviceHandsontableHelper.hot!=undefined && batchAddAuxiliaryDeviceHandsontableHelper.hot.getDataAtCell!=undefined){
+                	if(coords.col>=0 && coords.row>=0 && batchAddAuxiliaryDeviceHandsontableHelper!=null&&batchAddAuxiliaryDeviceHandsontableHelper.hot!=''&&batchAddAuxiliaryDeviceHandsontableHelper.hot!=undefined && batchAddAuxiliaryDeviceHandsontableHelper.hot.getDataAtCell!=undefined){
                 		var rawValue=batchAddAuxiliaryDeviceHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
                 		if(isNotVal(rawValue)){
             				var showValue=rawValue;

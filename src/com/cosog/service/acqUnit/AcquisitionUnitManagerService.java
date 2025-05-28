@@ -5563,18 +5563,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds,String language){
+	public String modbusProtocolAndAcqUnitTreeData(String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
+					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
+					+ " where t.protocol=t2.name"
+					+ " and t2.language="+user.getLanguage()
+					+ " order by t.protocol,t.id";
 			List<?> unitList=this.findCallSql(unitSql);
 			//排序
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(modbusProtocolConfig.getProtocol().get(i).getLanguage()==user.getLanguage() && StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -5610,7 +5615,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String modbusProtocolAndDisplayUnitTreeData(String deviceTypeIds){
+	public String modbusProtocolAndDisplayUnitTreeData(String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
@@ -5618,7 +5623,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
 					+ " from tbl_display_unit_conf t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
+					+ " where t.acqunitid=t2.id and t2.protocol=t3.name"
+					+ " and t3.language="+user.getLanguage();
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				alarmUnitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
 			}else{
@@ -5630,7 +5636,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(modbusProtocolConfig.getProtocol().get(i).getLanguage()==user.getLanguage() && StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -5667,7 +5673,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String modbusProtocolAndAlarmUnitTreeData(String deviceTypeIds){
+	public String modbusProtocolAndAlarmUnitTreeData(String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
@@ -5675,7 +5681,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name ";
+					+ " where t.protocol=t2.name"
+					+ " and t2.language= "+user.getLanguage();
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				alarmUnitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
@@ -5687,7 +5694,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+				if(modbusProtocolConfig.getProtocol().get(i).getLanguage()==user.getLanguage() && StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
 					result_json.append("{\"classes\":1,");
 					result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
 					result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
@@ -5879,19 +5886,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String modbusProtocolAlarmUnitTreeData(String protocol,String language){
+	public String modbusProtocolAlarmUnitTreeData(String protocol,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		
-
 		String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol,t2.code,"
 				+ " t.calculateType, "
 				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " t.sort"
 				+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-				+ " where t.protocol=t2.name ";
+				+ " where t.protocol=t2.name "
+				+ " and t2.language="+user.getLanguage();
 		if(StringManagerUtils.isNotNull(protocol)){
 			unitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
@@ -6026,12 +6033,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAcqUnitList(){
+	public String getAcqUnitList(User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.sort,t.protocol, t.id";
+		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol "
+				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
+				+ " where t.protocol=t2.name"
+				+ " and t2.language= "+user.getLanguage()
+				+ " order by t.sort,t.protocol, t.id";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
@@ -6048,12 +6059,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDisplayUnitList(){
+	public String getDisplayUnitList(User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name from tbl_display_unit_conf t order by  t.sort";
+		String acqUnitSql="select t.unit_code,t.unit_name "
+				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+				+ " and t3.language= "+user.getLanguage()
+				+ " order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
@@ -6067,12 +6082,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAlarmUnitList(){
+	public String getAlarmUnitList(User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name from tbl_alarm_unit_conf t order by  t.sort";
+		String acqUnitSql="select t.unit_code,t.unit_name "
+				+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
+				+ " where t.protocol=t2.name "
+				+ " and t2.language= "+user.getLanguage()
+				+ " order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
@@ -6105,9 +6124,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolInstanceConfigTreeData(String protocol,String language){
+	public String getModbusProtocolInstanceConfigTreeData(String protocol,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
@@ -6116,8 +6136,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.packetsendinterval,"//12
 				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name";
-		
+				+ " where t.unitid=t2.id and t2.protocol=t3.name"
+				+ " and t3.language="+user.getLanguage();
 		String deviceCountSql="select t.instancecode,count(1) "
 				+ " from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4"
 				+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.name";
@@ -6553,7 +6573,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtoclCombList(String deviceTypeIds){
+	public String getModbusProtoclCombList(String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
@@ -6562,7 +6582,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		result_json.append("{\"totals\":"+modbusProtocolConfig.getProtocol().size()+",\"list\":[");
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+			if(StringManagerUtils.existOrNot(deviceTypeIdArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")
+//					&&StringManagerUtils.existOrNot(user.getLanguageList(), modbusProtocolConfig.getProtocol().get(i).getLanguage())
+					&&modbusProtocolConfig.getProtocol().get(i).getLanguage()==user.getLanguage()
+					){
 				result_json.append("{boxkey:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\",");
 				result_json.append("boxval:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\"},");
 			}
@@ -6654,12 +6677,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	
 	
-	public String getAcquisitionUnitCombList(String protocol,String deviceTypeIds){
+	public String getAcquisitionUnitCombList(String protocol,String deviceTypeIds,User user){
 		StringBuffer result_json = new StringBuffer();
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.unit_name "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name";
+				+ " where t.protocol=t2.name"
+				+ " and t2.language="+user.getLanguage();
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+=" and t2.devicetype in ("+deviceTypeIds+")";
 		}else{
@@ -6668,6 +6692,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(protocol)){
 			sql+=" and t.protocol='"+protocol+"'";
 		}
+		sql+=" order by t.sort";
 		
 		List<?> list=this.findCallSql(sql);
 		result_json.append("{\"totals\":"+list.size()+",\"list\":[");

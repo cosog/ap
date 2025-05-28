@@ -489,7 +489,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolItemsConfigHandsontableHelper!=null&&protocolItemsConfigHandsontableHelper.hot!=''&&protocolItemsConfigHandsontableHelper.hot!=undefined && protocolItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && protocolItemsConfigHandsontableHelper!=null&&protocolItemsConfigHandsontableHelper.hot!=''&&protocolItemsConfigHandsontableHelper.hot!=undefined && protocolItemsConfigHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolItemsConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -672,7 +672,7 @@ var ProtocolPropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolPropertiesHandsontableHelper!=null&&protocolPropertiesHandsontableHelper.hot!=''&&protocolPropertiesHandsontableHelper.hot!=undefined && protocolPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && protocolPropertiesHandsontableHelper!=null&&protocolPropertiesHandsontableHelper.hot!=''&&protocolPropertiesHandsontableHelper.hot!=undefined && protocolPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -970,7 +970,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolItemsMeaningConfigHandsontableHelper!=null&&protocolItemsMeaningConfigHandsontableHelper.hot!=''&&protocolItemsMeaningConfigHandsontableHelper.hot!=undefined && protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && protocolItemsMeaningConfigHandsontableHelper!=null&&protocolItemsMeaningConfigHandsontableHelper.hot!=''&&protocolItemsMeaningConfigHandsontableHelper.hot!=undefined && protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

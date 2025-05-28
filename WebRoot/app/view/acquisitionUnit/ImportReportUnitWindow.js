@@ -778,7 +778,8 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitSingleWellDailyReportTemplateHandsontableHelper!=null
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper!=null
 	                		&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot!=''
 	                		&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot!=undefined 
 	                		&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -953,7 +954,8 @@ var ImportReportUnitSingleWellDailyReportContentHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitSingleWellDailyReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitSingleWellDailyReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importReportUnitSingleWellDailyReportContentHandsontableHelper!=null
 	                		&& importReportUnitSingleWellDailyReportContentHandsontableHelper.hot!=''
 	                		&& importReportUnitSingleWellDailyReportContentHandsontableHelper.hot!=undefined 
@@ -1197,7 +1199,8 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitSingleWellRangeReportTemplateHandsontableHelper!=null
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper!=null
 	                		&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot!=''
 	                		&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot!=undefined 
 	                		&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -1369,7 +1372,8 @@ var ImportReportUnitSingleWellRangeReportContentHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitSingleWellRangeReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitSingleWellRangeReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importReportUnitSingleWellRangeReportContentHandsontableHelper!=null
 	                		&& importReportUnitSingleWellRangeReportContentHandsontableHelper.hot!=''
 	                		&& importReportUnitSingleWellRangeReportContentHandsontableHelper.hot!=undefined 
@@ -1612,7 +1616,8 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitProductionTemplateHandsontableHelper!=null
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitProductionTemplateHandsontableHelper!=null
 	                		&& importReportUnitProductionTemplateHandsontableHelper.hot!=''
 	                		&& importReportUnitProductionTemplateHandsontableHelper.hot!=undefined 
 	                		&& importReportUnitProductionTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -1796,7 +1801,8 @@ var ImportReportUnitProductionReportContentHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importReportUnitProductionReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importReportUnitProductionReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importReportUnitProductionReportContentHandsontableHelper!=null
 	                		&& importReportUnitProductionReportContentHandsontableHelper.hot!=''
 	                		&& importReportUnitProductionReportContentHandsontableHelper.hot!=undefined 

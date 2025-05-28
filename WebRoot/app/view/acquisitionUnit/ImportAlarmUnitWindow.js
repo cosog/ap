@@ -672,7 +672,8 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+	                		&& importAlarmUnitConfigNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigNumItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigNumItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined 
@@ -823,7 +824,8 @@ var ImportAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+		                	&& importAlarmUnitConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined 
@@ -973,7 +975,8 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigSwitchItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importAlarmUnitConfigSwitchItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigSwitchItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined 
@@ -1122,7 +1125,8 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigEnumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importAlarmUnitConfigEnumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigEnumItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined 
@@ -1268,7 +1272,8 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined 
@@ -1414,7 +1419,8 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigRunStatusItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined 
@@ -1558,7 +1564,8 @@ var ImportAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAlarmUnitConfigCommStatusItemsHandsontableHelper!=null
 	                		&& importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=''
 	                		&& importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined 

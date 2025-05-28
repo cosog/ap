@@ -710,7 +710,7 @@ var SingleWellRangeReportHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(singleWellRangeReportHelper!=null&&singleWellRangeReportHelper.hot!=''&&singleWellRangeReportHelper.hot!=undefined && singleWellRangeReportHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && singleWellRangeReportHelper!=null&&singleWellRangeReportHelper.hot!=''&&singleWellRangeReportHelper.hot!=undefined && singleWellRangeReportHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=singleWellRangeReportHelper.sourceData[coords.row][coords.col];
 	                		if(coords.row>=singleWellRangeReportHelper.templateData.header.length){
 	                			if(isNotVal(rawValue)){
@@ -1135,7 +1135,7 @@ var SingleWellDailyReportHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(singleWellDailyReportHelper!=null&&singleWellDailyReportHelper.hot!=''&&singleWellDailyReportHelper.hot!=undefined && singleWellDailyReportHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && singleWellDailyReportHelper!=null&&singleWellDailyReportHelper.hot!=''&&singleWellDailyReportHelper.hot!=undefined && singleWellDailyReportHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=singleWellDailyReportHelper.sourceData[coords.row][coords.col];
 	                		if(coords.row>=singleWellDailyReportHelper.templateData.header.length){
 	                			if(isNotVal(rawValue)){

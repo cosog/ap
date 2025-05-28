@@ -2429,7 +2429,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if (user != null) {
 			language = "" + user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2442,7 +2442,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndDisplayUnitTreeData")
 	public String modbusProtocolAndDisplayUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2504,7 +2510,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndAlarmUnitTreeData")
 	public String modbusProtocolAndAlarmUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2523,7 +2535,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(protocol,language);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAlarmUnitTreeData(protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2542,7 +2554,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(protocol,language);
+		String json = acquisitionUnitItemManagerService.getModbusProtocolInstanceConfigTreeData(protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2573,7 +2585,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getAcqUnitList")
 	public String getAcqUnitList() throws IOException {
-		String json = acquisitionUnitItemManagerService.getAcqUnitList();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String json = acquisitionUnitItemManagerService.getAcqUnitList(user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2585,7 +2599,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getDisplayUnitList")
 	public String getDisplayUnitList() throws IOException {
-		String json = acquisitionUnitItemManagerService.getDisplayUnitList();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String json = acquisitionUnitItemManagerService.getDisplayUnitList(user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2597,7 +2613,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getAlarmUnitList")
 	public String getAlarmUnitList() throws IOException {
-		String json = acquisitionUnitItemManagerService.getAlarmUnitList();
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String json = acquisitionUnitItemManagerService.getAlarmUnitList(user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2759,7 +2777,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getModbusProtoclCombList")
 	public String getModbusProtoclCombList() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
-		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(deviceTypeIds);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2799,7 +2823,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getAcquisitionUnitCombList() throws IOException {
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,deviceTypeIds);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

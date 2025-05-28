@@ -530,7 +530,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     }
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(auxiliaryDeviceInfoHandsontableHelper!=null&&auxiliaryDeviceInfoHandsontableHelper.hot!=''&&auxiliaryDeviceInfoHandsontableHelper.hot!=undefined && auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+                	if(coords.col>=0 && coords.row>=0 && auxiliaryDeviceInfoHandsontableHelper!=null&&auxiliaryDeviceInfoHandsontableHelper.hot!=''&&auxiliaryDeviceInfoHandsontableHelper.hot!=undefined && auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
                 		var rawValue=auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
                 		if(isNotVal(rawValue)){
             				var showValue=rawValue;

@@ -298,7 +298,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=''&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined && deviceHistoryQueryDataHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=''&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined && deviceHistoryQueryDataHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var record=deviceHistoryQueryDataHandsontableHelper.sourceData[coords.row];
 	                		var rawValue='';
 	                		if(coords.col==0){

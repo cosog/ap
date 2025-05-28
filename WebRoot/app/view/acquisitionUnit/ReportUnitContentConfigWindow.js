@@ -464,7 +464,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(reportUnitContentConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && reportUnitContentConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& reportUnitContentConfigHandsontableHelper!=null
 	                		&& reportUnitContentConfigHandsontableHelper.hot!=''
 	                		&& reportUnitContentConfigHandsontableHelper.hot!=undefined 
@@ -983,7 +983,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(reportUnitContentConfigColInfoHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && reportUnitContentConfigColInfoHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& reportUnitContentConfigColInfoHandsontableHelper!=null
 	                		&& reportUnitContentConfigColInfoHandsontableHelper.hot!=''
 	                		&& reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined 

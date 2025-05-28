@@ -1757,8 +1757,7 @@ public class DriverAPIController extends BaseController{
 		
 		WorkType workType=null;
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-//			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"");
-			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",userInfo.getLanguageName());
 		}
 		
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
@@ -1995,6 +1994,20 @@ public class DriverAPIController extends BaseController{
 							columnName=calItem.getName();
 							unit=calItem.getUnit();
 						}
+						if(column.equalsIgnoreCase("RunStatusName") || column.equalsIgnoreCase("RunStatus")){
+							if(StringManagerUtils.stringToInteger(rawValue)==1){
+								value=LanguageResourceMap.get("run");
+							}else if(StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToInteger(rawValue)==0){
+								value=LanguageResourceMap.get("stop");
+							}else{
+								value=LanguageResourceMap.get("emptyMsg");
+							}
+						}else if(column.equalsIgnoreCase("ResultName") || column.equalsIgnoreCase("ResultCode")){
+							workType=MemoryDataManagerTask.getWorkTypeByCode(rawValue,userInfo.getLanguageName());
+							if(workType!=null){
+								value=workType.getResultName();
+							}
+						}
 					}else if(finalAcquisitionItemInfoList.get(index).getType()==3){
 						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, userInfo.getLanguageName());
 						if(calItem!=null){
@@ -2145,8 +2158,6 @@ public class DriverAPIController extends BaseController{
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 				
 				if(protocol!=null){
-					
-					
 					String lastSaveTime=deviceInfo.getSaveTime();
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
@@ -2243,7 +2254,6 @@ public class DriverAPIController extends BaseController{
 								isAcqRunStatus=true;
 							}
 							//计算采集数据实时汇总
-							
 							if(checkSign==1 && StringManagerUtils.isNum(rawValue)){
 								if(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getResolutionMode())==2){
 									float newValue=StringManagerUtils.stringToFloat(rawValue);

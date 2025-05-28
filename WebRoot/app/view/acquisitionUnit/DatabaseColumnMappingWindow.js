@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
                         	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
                         		var newWidth=width;
-                        		var newHeight=height;
+                        		var newHeight=height-22-1;
                         		var header=thisPanel.getHeader();
                         		if(header){
                         			newHeight=newHeight-header.lastBox.height-2;
@@ -283,7 +283,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if( (databaseColumnMappingHandsontableHelper.columns[coords.col].type ==undefined || databaseColumnMappingHandsontableHelper.columns[coords.col].type!='checkbox' )
+	                	if(coords.col>=0 && coords.row>=0 && (databaseColumnMappingHandsontableHelper.columns[coords.col].type ==undefined || databaseColumnMappingHandsontableHelper.columns[coords.col].type!='checkbox' )
 	                		&& databaseColumnMappingHandsontableHelper!=null
 	                		&& databaseColumnMappingHandsontableHelper.hot!=''
 	                		&& databaseColumnMappingHandsontableHelper.hot!=undefined 

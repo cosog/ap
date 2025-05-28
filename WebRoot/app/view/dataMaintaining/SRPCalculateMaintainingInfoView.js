@@ -1274,7 +1274,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(srpFESDiagramCalculateMaintainingHandsontableHelper!=null&&srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=''&&srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined && srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && srpFESDiagramCalculateMaintainingHandsontableHelper!=null&&srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=''&&srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined && srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

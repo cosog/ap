@@ -599,7 +599,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                     }
                 },
                 afterOnCellMouseOver: function (event, coords, TD) {
-                    if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[coords.col].type != 'checkbox' &&
+                    if (coords.col>=0 && coords.row>=0 && protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[coords.col].type != 'checkbox' &&
                         protocolDisplayUnitAcqItemsConfigHandsontableHelper != null &&
                         protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot != '' &&
                         protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot != undefined &&
@@ -804,7 +804,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null
 	                		&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=''
 	                		&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined 
@@ -1006,7 +1006,8 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolDisplayUnitPropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+	                		&& protocolDisplayUnitPropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolDisplayUnitPropertiesHandsontableHelper!=null
 	                		&& protocolDisplayUnitPropertiesHandsontableHelper.hot!=''
 	                		&& protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined 

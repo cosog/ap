@@ -180,6 +180,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private int Sort;
 	    
 	    private int DeviceType;
+	    
+	    private int Language;
 
 	    private List<Items> Items;
 
@@ -223,6 +225,12 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setDeviceType(int deviceType) {
 			DeviceType = deviceType;
+		}
+		public int getLanguage() {
+			return Language;
+		}
+		public void setLanguage(int language) {
+			Language = language;
 		}
 	}
 }

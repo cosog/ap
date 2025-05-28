@@ -984,7 +984,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                			&& protocolAlarmUnitConfigNumItemsHandsontableHelper!=null
 	                			&& protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=''
 	                			&& protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined 
@@ -1197,7 +1197,7 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined 
@@ -1394,7 +1394,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolConfigAlarmUnitPropertiesHandsontableHelper!=null&&protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=''&&protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined && protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && protocolConfigAlarmUnitPropertiesHandsontableHelper!=null&&protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=''&&protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined && protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -1585,7 +1585,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined 
@@ -1790,7 +1790,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined 
@@ -1998,7 +1998,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined 
@@ -2203,7 +2203,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined 
@@ -2400,7 +2400,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null
 	                		&& protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=''
 	                		&& protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined 

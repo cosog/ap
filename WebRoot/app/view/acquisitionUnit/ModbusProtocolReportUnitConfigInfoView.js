@@ -722,7 +722,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(singleWellRangeReportTemplateHandsontableHelper!=null
+                	if(coords.col>=0 && coords.row>=0 && singleWellRangeReportTemplateHandsontableHelper!=null
                 		&& singleWellRangeReportTemplateHandsontableHelper.hot!=''
                 		&& singleWellRangeReportTemplateHandsontableHelper.hot!=undefined 
                 		&& singleWellRangeReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -973,7 +973,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(singleWellDailyReportTemplateHandsontableHelper!=null
+                	if(coords.col>=0 && coords.row>=0 && singleWellDailyReportTemplateHandsontableHelper!=null
                 		&& singleWellDailyReportTemplateHandsontableHelper.hot!=''
                 		&& singleWellDailyReportTemplateHandsontableHelper.hot!=undefined 
                 		&& singleWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -1264,7 +1264,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                     }
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(singleWellRangeReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                	if(coords.col>=0 && coords.row>=0 && singleWellRangeReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
                 		&& singleWellRangeReportTemplateContentHandsontableHelper!=null
                 		&& singleWellRangeReportTemplateContentHandsontableHelper.hot!=''
                 		&& singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined 
@@ -1485,7 +1485,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(singleWellDailyReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                	if(coords.col>=0 && coords.row>=0 && singleWellDailyReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
                 		&& singleWellDailyReportTemplateContentHandsontableHelper!=null
                 		&& singleWellDailyReportTemplateContentHandsontableHelper.hot!=''
                 		&& singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined 
@@ -1669,7 +1669,7 @@ var ReportUnitPropertiesHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(reportUnitPropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
+                	if(coords.col>=0 && coords.row>=0 && reportUnitPropertiesHandsontableHelper.columns[coords.col].type!='checkbox' 
                 		&& reportUnitPropertiesHandsontableHelper!=null
                 		&& reportUnitPropertiesHandsontableHelper.hot!=''
                 		&& reportUnitPropertiesHandsontableHelper.hot!=undefined 
@@ -1914,7 +1914,7 @@ var ProductionReportTemplateHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(productionReportTemplateHandsontableHelper!=null
+                	if(coords.col>=0 && coords.row>=0 && productionReportTemplateHandsontableHelper!=null
                 		&& productionReportTemplateHandsontableHelper.hot!=''
                 		&& productionReportTemplateHandsontableHelper.hot!=undefined 
                 		&& productionReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -2121,7 +2121,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
-                	if(productionReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                	if(coords.col>=0 && coords.row>=0 && productionReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
                 		&& productionReportTemplateContentHandsontableHelper!=null
                 		&& productionReportTemplateContentHandsontableHelper.hot!=''
                 		&& productionReportTemplateContentHandsontableHelper.hot!=undefined 

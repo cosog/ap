@@ -714,7 +714,7 @@ var ProductionDailyReportHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(productionDailyReportHelper!=null&&productionDailyReportHelper.hot!=''&&productionDailyReportHelper.hot!=undefined && productionDailyReportHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && productionDailyReportHelper!=null&&productionDailyReportHelper.hot!=''&&productionDailyReportHelper.hot!=undefined && productionDailyReportHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=productionDailyReportHelper.sourceData[coords.row][coords.col];
 	                		if(coords.row>=productionDailyReportHelper.templateData.header.length){
 	                			if(isNotVal(rawValue)){

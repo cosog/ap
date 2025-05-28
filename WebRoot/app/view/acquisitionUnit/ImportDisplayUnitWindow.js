@@ -560,7 +560,8 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayUnitAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayUnitAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayUnitAcqItemsHandsontableHelper!=null
 	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=''
 	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined 
@@ -709,7 +710,8 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayUnitCtrlItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayUnitCtrlItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayUnitCtrlItemsHandsontableHelper!=null
 	                		&& importDisplayUnitCtrlItemsHandsontableHelper.hot!=''
 	                		&& importDisplayUnitCtrlItemsHandsontableHelper.hot!=undefined 
@@ -905,7 +907,8 @@ var ImportDisplayUnitCalItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayUnitCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayUnitCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayUnitCalItemsHandsontableHelper!=null
 	                		&& importDisplayUnitCalItemsHandsontableHelper.hot!=''
 	                		&& importDisplayUnitCalItemsHandsontableHelper.hot!=undefined 
@@ -1098,7 +1101,8 @@ var ImportDisplayUnitInputItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayUnitInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayUnitInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayUnitInputItemsHandsontableHelper!=null
 	                		&& importDisplayUnitInputItemsHandsontableHelper.hot!=''
 	                		&& importDisplayUnitInputItemsHandsontableHelper.hot!=undefined 

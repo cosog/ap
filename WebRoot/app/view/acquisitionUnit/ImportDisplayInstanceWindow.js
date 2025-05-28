@@ -511,7 +511,8 @@ var ImportDisplayInstanceAcqItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayInstanceAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayInstanceAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayInstanceAcqItemsHandsontableHelper!=null
 	                		&& importDisplayInstanceAcqItemsHandsontableHelper.hot!=''
 	                		&& importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined 
@@ -639,7 +640,8 @@ var ImportDisplayInstanceCalItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayInstanceCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayInstanceCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayInstanceCalItemsHandsontableHelper!=null
 	                		&& importDisplayInstanceCalItemsHandsontableHelper.hot!=''
 	                		&& importDisplayInstanceCalItemsHandsontableHelper.hot!=undefined 
@@ -788,7 +790,8 @@ var ImportDisplayInstanceCtrlItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayInstanceCtrlItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayInstanceCtrlItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayInstanceCtrlItemsHandsontableHelper!=null
 	                		&& importDisplayInstanceCtrlItemsHandsontableHelper.hot!=''
 	                		&& importDisplayInstanceCtrlItemsHandsontableHelper.hot!=undefined 
@@ -980,7 +983,8 @@ var ImportDisplayInstanceInputItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importDisplayInstanceInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+			                	&& importDisplayInstanceInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importDisplayInstanceInputItemsHandsontableHelper!=null
 	                		&& importDisplayInstanceInputItemsHandsontableHelper.hot!=''
 	                		&& importDisplayInstanceInputItemsHandsontableHelper.hot!=undefined 

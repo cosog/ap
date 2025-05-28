@@ -270,6 +270,8 @@ public class OrgManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
+			HttpSession session=request.getSession();
+			User userInfo = this.findCurrentUserInfo();
 			if (org.getOrgParent() == null || org.getOrgParent()==0) {
 				String sql = "select t.org_id from tbl_org t where t.org_parent=0 and rownum=1";
 				List list = this.service.findCallSql(sql);
@@ -279,20 +281,22 @@ public class OrgManagerController extends BaseController {
 					org.setOrgParent(0);
 				}
 			}
-			if(!StringManagerUtils.isNotNull(org.getOrgName_zh_CN())){
-				org.setOrgName_zh_CN(MemoryDataManagerTask.getLanguageResourceItem("zh_CN","unnamed"));
+			
+			if(userInfo.getLanguage()==1){
+				org.setOrgName_en(org.getOrgName_zh_CN());
+				org.setOrgName_ru(org.getOrgName_zh_CN());
+			}else if(userInfo.getLanguage()==2){
+				org.setOrgName_zh_CN(org.getOrgName_en());
+				org.setOrgName_ru(org.getOrgName_en());
+			}else if(userInfo.getLanguage()==3){
+				org.setOrgName_zh_CN(org.getOrgName_ru());
+				org.setOrgName_en(org.getOrgName_ru());
 			}
-			if(!StringManagerUtils.isNotNull(org.getOrgName_en())){
-				org.setOrgName_en(MemoryDataManagerTask.getLanguageResourceItem("en","unnamed"));
-			}
-			if(!StringManagerUtils.isNotNull(org.getOrgName_ru())){
-				org.setOrgName_ru(MemoryDataManagerTask.getLanguageResourceItem("ru","unnamed"));
-			}
+			
 			this.orgService.addOrg(org);
 			result = "{success:true,msg:true}";
 			Map<String, Object> map = DataModelMap.getMapObject();
-			HttpSession session=request.getSession();
-			User userInfo = this.findCurrentUserInfo();
+			
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
 			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
 			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
@@ -365,8 +369,22 @@ public class OrgManagerController extends BaseController {
 	@RequestMapping("/doOrgEdit")
 	public String doOrgEdit(@ModelAttribute Org org) {
 		try {
+			HttpSession session=request.getSession();
+			User userInfo = this.findCurrentUserInfo();
 			if (org.getOrgParent() == null) {
 				org.setOrgParent(0);
+			}
+			if(userInfo!=null){
+				if(userInfo.getLanguage()==1){
+					org.setOrgName_en(org.getOrgName_zh_CN());
+					org.setOrgName_ru(org.getOrgName_zh_CN());
+				}else if(userInfo.getLanguage()==2){
+					org.setOrgName_zh_CN(org.getOrgName_en());
+					org.setOrgName_ru(org.getOrgName_en());
+				}else if(userInfo.getLanguage()==3){
+					org.setOrgName_zh_CN(org.getOrgName_ru());
+					org.setOrgName_en(org.getOrgName_ru());
+				}
 			}
 			this.orgService.modifyOrg(org);
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -375,8 +393,7 @@ public class OrgManagerController extends BaseController {
 			String result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			Map<String, Object> map = DataModelMap.getMapObject();
-			HttpSession session=request.getSession();
-			User userInfo = this.findCurrentUserInfo();
+			
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
 			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
 			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));

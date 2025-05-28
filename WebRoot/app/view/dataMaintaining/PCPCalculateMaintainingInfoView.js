@@ -1040,7 +1040,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    }
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(pcpRPMCalculateMaintainingHandsontableHelper!=null&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=''&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined && pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && pcpRPMCalculateMaintainingHandsontableHelper!=null&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=''&&pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined && pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

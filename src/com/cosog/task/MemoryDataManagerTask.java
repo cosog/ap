@@ -408,7 +408,7 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			StringBuffer protocolBuff=null;
-			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype from TBL_PROTOCOL t where 1=1 ";
+			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language from TBL_PROTOCOL t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}
@@ -427,6 +427,7 @@ public class MemoryDataManagerTask {
 					protocolBuff.append("\"Code\":\""+obj[2]+"\",");
 					protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
 					protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
+					protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
 					protocolBuff.append("\"Items\":"+itemsStr+"");
 					protocolBuff.append("}");
 					
@@ -3706,6 +3707,21 @@ public class MemoryDataManagerTask {
 		}
 		return userInfo;
 	}
+	public static void updateUserInfo(UserInfo userInfo){
+		Jedis jedis=null;
+		try {
+			if(userInfo!=null){
+				jedis = RedisUtil.jedisPool.getResource();
+				jedis.hset("UserInfo".getBytes(), (userInfo.getUserNo()+"").getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+	}
 	
 	public static void loadUserInfo(List<String> userList,int condition,String method){//condition 0 -用户id 1-用户账号
 		Jedis jedis=null;
@@ -3782,7 +3798,13 @@ public class MemoryDataManagerTask {
 				userInfo.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[14]+""));
 				
 				userInfo.setLanguage(StringManagerUtils.stringToInteger(obj[15]+""));
-				userInfo.setLanguageName(languageCodeMap.get(userInfo.getLanguage()+"")!=null?languageCodeMap.get(userInfo.getLanguage()+"").getItemname():"");
+				if(userInfo.getLanguage()==1){
+					userInfo.setLanguageName("zh_CN");
+				}else if(userInfo.getLanguage()==2){
+					userInfo.setLanguageName("en");
+				}else if(userInfo.getLanguage()==3){
+					userInfo.setLanguageName("ru");
+				}
 				
 				userInfo.setOrgChildrenNode(new ArrayList<>());
 				userInfo.setDeviceTypeChildrenNode(new ArrayList<>());

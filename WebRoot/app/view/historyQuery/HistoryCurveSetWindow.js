@@ -326,7 +326,7 @@ var DeviceHistoryCurveSetHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceHistoryCurveSetHandsontableHelper!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=''&&deviceHistoryCurveSetHandsontableHelper.hot!=undefined && deviceHistoryCurveSetHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceHistoryCurveSetHandsontableHelper!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=''&&deviceHistoryCurveSetHandsontableHelper.hot!=undefined && deviceHistoryCurveSetHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceHistoryCurveSetHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;
@@ -424,7 +424,7 @@ var DeviceHistoryCurveDataFilterSetHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(deviceHistoryCurveDataFilterSetHandsontableHelper!=null&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=''&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=undefined && deviceHistoryCurveDataFilterSetHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && deviceHistoryCurveDataFilterSetHandsontableHelper!=null&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=''&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=undefined && deviceHistoryCurveDataFilterSetHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceHistoryCurveDataFilterSetHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

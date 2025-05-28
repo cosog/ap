@@ -648,7 +648,7 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null&&protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=''&&protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined && protocolConfigAcqUnitPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+	                	if(coords.col>=0 && coords.row>=0 && protocolConfigAcqUnitPropertiesHandsontableHelper!=null&&protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=''&&protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined && protocolConfigAcqUnitPropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolConfigAcqUnitPropertiesHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
 	                		if(isNotVal(rawValue)){
                 				var showValue=rawValue;

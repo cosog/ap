@@ -388,7 +388,8 @@ var ImportAcqInstanceConfigItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(importAcqInstanceConfigItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
+	                	if(coords.col>=0 && coords.row>=0 
+	                		&& importAcqInstanceConfigItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
 	                		&& importAcqInstanceConfigItemsHandsontableHelper!=null
 	                		&& importAcqInstanceConfigItemsHandsontableHelper.hot!=''
 	                		&& importAcqInstanceConfigItemsHandsontableHelper.hot!=undefined 

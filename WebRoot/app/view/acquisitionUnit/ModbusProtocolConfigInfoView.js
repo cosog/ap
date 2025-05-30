@@ -635,6 +635,16 @@ var ProtocolPropertiesHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -948,14 +958,15 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	                        },
 	                        "cut": {
 	                            name: loginUserLanguageResource.contextMenu_cut,
-	                        },
-	                        "paste": {
-	                            name: loginUserLanguageResource.contextMenu_paste,
-	                            disabled: function () {
-	                            },
-	                            callback: function () {
-	                            }
 	                        }
+//	                        ,
+//	                        "paste": {
+//	                            name: loginUserLanguageResource.contextMenu_paste,
+//	                            disabled: function () {
+//	                            },
+//	                            callback: function () {
+//	                            }
+//	                        }
 	                    }
 	                },//右键菜单展示
 	                cells: function (row, col, prop) {

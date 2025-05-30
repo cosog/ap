@@ -713,6 +713,16 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                 renderAllRows: true,
                 search: true,
                 mergeCells: singleWellRangeReportTemplateHandsontableHelper.templateData.mergeCells,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -964,6 +974,16 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
                 renderAllRows: true,
                 search: true,
                 mergeCells: singleWellDailyReportTemplateHandsontableHelper.templateData.mergeCells,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -1240,6 +1260,16 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -1466,6 +1496,16 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -1626,6 +1666,16 @@ var ReportUnitPropertiesHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -1904,6 +1954,16 @@ var ProductionReportTemplateHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 mergeCells: productionReportTemplateHandsontableHelper.templateData.mergeCells,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
@@ -2104,6 +2164,16 @@ var ProductionReportTemplateContentHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);

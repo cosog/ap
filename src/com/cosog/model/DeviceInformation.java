@@ -30,6 +30,7 @@ public class DeviceInformation implements java.io.Serializable {
 	private String deviceName;
 	private Integer deviceType;
 	private Integer applicationScenarios;
+	private Integer calculateType;
 	private String instanceCode;
 	private String displayInstanceCode;
 	private String reportInstanceCode;
@@ -52,6 +53,7 @@ public class DeviceInformation implements java.io.Serializable {
 
 	/** full constructor */
 	public DeviceInformation(Integer id, Integer orgId, String deviceName, Integer deviceType,
+			Integer applicationScenarios,Integer calculateType,
 			String instanceCode, String alarmInstanceCode,String displayInstanceCode,String reportInstanceCode,  
 			String tcpType, String signInId,String ipPort, String slave,
 			Integer sortNum,
@@ -61,6 +63,8 @@ public class DeviceInformation implements java.io.Serializable {
 		this.orgId = orgId;
 		this.deviceName = deviceName;
 		this.deviceType = deviceType;
+		this.applicationScenarios = applicationScenarios;
+		this.calculateType = calculateType;
 		this.instanceCode = instanceCode;
 		this.displayInstanceCode = displayInstanceCode;
 		this.reportInstanceCode = reportInstanceCode;
@@ -227,5 +231,14 @@ public class DeviceInformation implements java.io.Serializable {
 
 	public void setCommissioningDate(Date commissioningDate) {
 		this.commissioningDate = commissioningDate;
+	}
+
+	@Column(name = "calculateType", precision = 22, scale = 0)
+	public Integer getCalculateType() {
+		return calculateType;
+	}
+
+	public void setCalculateType(Integer calculateType) {
+		this.calculateType = calculateType;
 	}
 }

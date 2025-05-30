@@ -1333,6 +1333,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " allpath_"+language+","
 				+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
+				+ " calculatetype,decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1479,7 +1480,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"allPath\":\""+obj[16]+"\",");
 			result_json.append("\"productionDataUpdateTime\":\""+obj[17]+"\",");
 			result_json.append("\"commissioningDate\":\""+obj[18]+"\",");
-			result_json.append("\"sortNum\":\""+obj[19]+"\"},");
+			result_json.append("\"calculateType\":\""+obj[19]+"\",");
+			result_json.append("\"calculateTypeName\":\""+obj[20]+"\",");
+			result_json.append("\"sortNum\":\""+obj[21]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

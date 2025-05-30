@@ -144,8 +144,11 @@ public class DataitemsInfoController extends BaseController {
 			String sorts = ParamUtils.getParameter(request, "sorts");
 			String datavalue = ParamUtils.getParameter(request, "datavalue");
 			String status = ParamUtils.getParameter(request, "status");
+			String status_cn = ParamUtils.getParameter(request, "status_cn");
+			String status_en = ParamUtils.getParameter(request, "status_en");
+			String status_ru = ParamUtils.getParameter(request, "status_ru");
 			User userInfo = this.findCurrentUserInfo();
-			int r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemid,name,code,sorts,datavalue,status,userInfo.getLanguageName());
+			int r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemid,name,code,sorts,datavalue,status,status_cn,status_en,status_ru,userInfo.getLanguageName());
 			if(r==1){
 				result = "{success:true,flag:true}";
 			}else if(r==2){

@@ -524,6 +524,39 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 id: 'deviceApplicationScenarios_Id',
                 value: '',
                 name: "deviceInformation.applicationScenarios"
+            },{
+            	xtype : "combobox",
+				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
+				id : 'deviceCalculateTypeComb_Id',
+				anchor : '95%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : loginUserLanguageResource.selectCalculateType,
+				blankText : loginUserLanguageResource.selectCalculateType,
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("deviceCalculateType_Id").setValue(this.value);
+						
+					}
+				}
+            },{
+            	xtype: "hidden",
+                fieldLabel: loginUserLanguageResource.calculateType,
+                labelWidth: labelWidth,
+                id: 'deviceCalculateType_Id',
+                value: '',
+                name: "deviceInformation.calculateType"
             },deviceAcqInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '采控实例编码',

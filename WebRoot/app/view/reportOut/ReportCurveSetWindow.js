@@ -313,6 +313,16 @@ var DeviceReportCurveSetHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

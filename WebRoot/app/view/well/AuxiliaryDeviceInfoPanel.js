@@ -436,6 +436,16 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 renderAllRows: true,
                 search: true,
                 outsideClickDeselects:false,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
@@ -890,6 +900,16 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                columnSorting: true, //允许排序
 	                contextMenu: {
 	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
+	                contextMenu: {
+	                    items: {
 	                        "row_above": {
 	                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
 	                        },
@@ -916,14 +936,15 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                        },
 	                        "cut": {
 	                            name: loginUserLanguageResource.contextMenu_cut,
-	                        },
-	                        "paste": {
-	                            name: loginUserLanguageResource.contextMenu_paste,
-	                            disabled: function () {
-	                            },
-	                            callback: function () {
-	                            }
 	                        }
+//	                        ,
+//	                        "paste": {
+//	                            name: loginUserLanguageResource.contextMenu_paste,
+//	                            disabled: function () {
+//	                            },
+//	                            callback: function () {
+//	                            }
+//	                        }
 	                    }
 	                }, 
 	                sortIndicator: true,
@@ -1086,7 +1107,42 @@ var PumpingUnitPRTFHandsontableHelper = {
 	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
 	                renderAllRows: true,
-	                search: true
+	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "row_above": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowAbove
+	                        },
+	                        "row_below": {
+	                            name: loginUserLanguageResource.contextMenu_insertRowBelow
+	                        },
+	                        "col_left": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnLeft
+	                        },
+	                        "col_right": {
+	                            name: loginUserLanguageResource.contextMenu_insertColumnRight
+	                        },
+	                        "remove_row": {
+	                            name: loginUserLanguageResource.contextMenu_removeRow
+	                        },
+	                        "remove_col": {
+	                            name: loginUserLanguageResource.contextMenu_removeColumn
+	                        },
+	                        "merge_cell": {
+	                            name: loginUserLanguageResource.contextMenu_mergeCell
+	                        },
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+//	                        ,
+//	                        "paste": {
+//	                            name: loginUserLanguageResource.contextMenu_paste
+//	                        }
+	                    }
+	                }
 	        	});
 	        }
 	        //保存数据

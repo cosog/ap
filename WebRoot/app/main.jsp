@@ -170,7 +170,11 @@
                     	}else if(loginUserLanguageList[i]==3){
                     		languageShowName=loginUserLanguageResource.language_ru;
                     	}
-                    	document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
+                    	if(loginUserLanguageList[i]==loginUserLanguageValue){
+                    		document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="return false;"><span id="banner_language'+index+'_text" style="color:#808080;">'+languageShowName+'</span></a></div>';
+                    	}else{
+                    		document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
+                    	}
                     	
                     	$("#banner_language"+index).css("background", "url(" + switchButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
                     	

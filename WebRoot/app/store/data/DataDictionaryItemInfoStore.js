@@ -109,6 +109,57 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	}
                         }
                     },{
+                    	xtype: 'checkcolumn',
+                    	align: 'center',
+                    	header: loginUserLanguageResource.language_zh_CN,
+                    	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                    	dataIndex: 'status_cn',
+                    	width: getLabelWidth(loginUserLanguageResource.language_zh_CN,loginUserLanguage)+'px',
+                    	editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    		checkchange: function (sm, e, ival, o, n) {
+                    			
+                    		}
+                    	}
+                    },{
+                    	xtype: 'checkcolumn',
+                    	align: 'center',
+                    	header: loginUserLanguageResource.language_en,
+                    	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                    	dataIndex: 'status_en',
+                    	width: getLabelWidth(loginUserLanguageResource.language_en,loginUserLanguage)+'px',
+                    	editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    		checkchange: function (sm, e, ival, o, n) {
+                    			
+                    		}
+                    	}
+                    },{
+                    	xtype: 'checkcolumn',
+                    	align: 'center',
+                    	header: loginUserLanguageResource.language_ru,
+                    	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                    	dataIndex: 'status_ru',
+                    	width: getLabelWidth(loginUserLanguageResource.language_ru,loginUserLanguage)+'px',
+                    	editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                    	listeners: {
+                    		checkchange: function (sm, e, ival, o, n) {
+                    			
+                    		}
+                    	}
+                    },{
                     	header: loginUserLanguageResource.sortNum,
                     	align: 'center',
                     	width: 40,

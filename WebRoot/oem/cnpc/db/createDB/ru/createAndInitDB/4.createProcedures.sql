@@ -606,6 +606,7 @@ CREATE OR REPLACE PROCEDURE prd_save_device (
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
+                                                    v_commissioningDate in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_isCheckout in NUMBER,
                                                     v_license in NUMBER,
@@ -638,7 +639,7 @@ begin
           t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
           t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
           t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
-          t.status=v_status, t.sortnum=v_sortNum,
+          t.commissioningdate=to_date(v_commissioningDate,'yyyy-mm-dd'),t.status=v_status, t.sortnum=v_sortNum,
           t.productiondataupdatetime=sysdate
         Where t.deviceName=v_deviceName and t.orgid=v_orgId;
         commit;
@@ -668,8 +669,8 @@ begin
         and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
-            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,commissioningdate,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,to_date(v_commissioningDate,'yyyy-mm-dd'),v_sortNum,sysdate);
             commit;
             update tbl_device t
             set t.applicationscenarios=v_applicationScenarios,
@@ -716,8 +717,8 @@ begin
         and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
-            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,commissioningdate,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,to_date(v_commissioningDate,'yyyy-mm-dd'),v_sortNum,sysdate);
             commit;
             update tbl_device t
             set t.applicationscenarios=v_applicationScenarios,
@@ -1879,6 +1880,7 @@ end prd_update_auxiliarydevice;
 CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_applicationScenarios    in NUMBER,
+                                                    v_calculateType   in NUMBER,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -1889,6 +1891,7 @@ CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
+                                                    v_commissioningDate in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_result out NUMBER,
                                                     v_resultstr out varchar2) as
@@ -1911,12 +1914,14 @@ begin
           Update tbl_device t
            Set t.devicename=v_deviceName,
                t.applicationscenarios=v_applicationScenarios,
+               t.calculatetype=v_calculateType,
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
+               t.commissioningdate=to_date(v_commissioningDate,'yyyy-mm-dd'),
                t.sortnum=v_sortNum,
                t.productiondataupdatetime=sysdate
            Where t.id=v_recordId;

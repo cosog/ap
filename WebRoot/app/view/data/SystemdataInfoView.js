@@ -114,7 +114,7 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         		items:SystemdataInfoGridPanel
         	},{
         		region:'east',
-        		width:'45%',
+        		width:'55%',
         		xtype: 'tabpanel',
         		id:"DictItemRootTabPanel",
         		activeTab: firstActiveTab,

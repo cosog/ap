@@ -84,7 +84,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,"
 				+ "t.columnDataSource,t.devicetype,"
 				+ "t.dataSource,t.dataUnit,"
-				+ "t.status "
+				+ "t.status,"
+				+ "t.status_cn,t.status_en,t.status_ru "
 				+ "from tbl_dist_item t "
 				+ "where t.sysdataid='"+dictionaryId+"' "
 				+ " and t.deviceType="+deviceType;
@@ -118,7 +119,11 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"dataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DATASOURCE", obj[7]+"", user.getLanguageName()))+"\",");
 			result_json.append("\"dataUnit\":\""+obj[8]+"\",");
 			
-			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+"},");
+			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+",");
+			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
+			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
+			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+"");
+			result_json.append("},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -127,7 +132,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public int updateDataDictionaryItemInfo(String dataitemid,String name,String code,String sorts,String datavalue,String status,String language){
+	public int updateDataDictionaryItemInfo(String dataitemid,String name,String code,String sorts,String datavalue,
+			String status,String status_cn,String status_en,String status_ru,
+			String language){
 		int r=0;
 		try {
 			String sql = "update tbl_dist_item t "
@@ -135,7 +142,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					+ " t.code='"+code+"',"
 					+ " t.sorts= "+sorts+","
 					+ " t.datavalue ='"+datavalue+"',"
-					+ " t.status="+("true".equalsIgnoreCase(status)?1:0)
+					+ " t.status="+("true".equalsIgnoreCase(status)?1:0)+","
+					+ " t.status_cn="+("true".equalsIgnoreCase(status_cn)?1:0)+","
+					+ " t.status_en="+("true".equalsIgnoreCase(status_en)?1:0)+","
+					+ " t.status_ru="+("true".equalsIgnoreCase(status_ru)?1:0)
 					+ " where t.dataitemid='"+dataitemid+"' ";;
 			r=this.getBaseDao().updateOrDeleteBySql(sql);
 		} catch (Exception e) {
@@ -420,6 +430,18 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		if(StringManagerUtils.isNotNull(dictDeviceType)){
 			sqlData+= " and dtm.deviceType="+dictDeviceType+" ";
 		}	
+		
+		if("zh_CN".equalsIgnoreCase(language)){
+			sqlData+= " and dtm.status_cn=1 ";
+		}else if("EN".equalsIgnoreCase(language)){
+			sqlData+= " and dtm.status_en=1 ";
+		}else if("RU".equalsIgnoreCase(language)){
+			sqlData+= " and dtm.status_ru=1 ";
+		}else{
+			sqlData+= " and 1=2 ";
+		}
+		
+		
 		sqlData+= " and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.code=?0 ) "
 				+ " order by dtm.sorts asc ";
 		try {

@@ -470,13 +470,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String runStatusStatValue,
 			String deviceTypeStatValue,
 			Page pager,
-			int userNo,
-			String language) throws IOException, SQLException{
+			User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		try{
+			String language=user!=null?user.getLanguageName():"";
+			int languageValue=user!=null?user.getLanguage():0;
+			int userNo=user!=null?user.getUserNo():0;
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();

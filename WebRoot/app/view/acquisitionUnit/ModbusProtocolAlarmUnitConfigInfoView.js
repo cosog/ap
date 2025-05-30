@@ -952,6 +952,16 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -1166,6 +1176,16 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -1351,6 +1371,16 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -1553,6 +1583,16 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -1758,6 +1798,16 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -1966,6 +2016,16 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -2172,6 +2232,16 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -2368,6 +2438,16 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

@@ -430,6 +430,9 @@ function updateDataDictionaryItemInfoByGridBtn(record) {
     var datavalue=record.get("datavalue");
     var sorts=record.get("sorts");
     var status=record.get("status");
+    var status_cn=record.get("status_cn");
+    var status_en=record.get("status_en");
+    var status_ru=record.get("status_ru");
     Ext.Ajax.request({
 		url : context + '/dataitemsInfoController/updateDataDictionaryItemInfo',
 		method : "POST",
@@ -439,7 +442,10 @@ function updateDataDictionaryItemInfoByGridBtn(record) {
 			code : code,
 			datavalue : datavalue,
 			sorts : sorts,
-			status : status
+			status : status,
+			status_cn : status_cn,
+			status_en : status_en,
+			status_ru : status_ru
 		},
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);

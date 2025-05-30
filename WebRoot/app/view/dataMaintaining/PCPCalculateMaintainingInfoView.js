@@ -981,6 +981,16 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                renderAllRows: true,
 	                search: true,
 	                outsideClickDeselects: false, // 点击到表格以外，表格就失去focus
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

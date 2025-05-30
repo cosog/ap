@@ -922,19 +922,21 @@ function invalidateSession() {
 }
 
 function switchLanguage(languageValue){
-	Ext.Ajax.request({
-		method:'POST',
-		async :  false,
-		url:context + '/userManagerController/switchUserLanguage',
-		success:function(response) {
-			window.location.href = context+"/home";
-		},
-		failure:function(){
-		},
-		params: {
-			languageValue:languageValue
-        }
-	});
+	if(parseInt(languageValue)!=parseInt(loginUserLanguageValue)){
+		Ext.Ajax.request({
+			method:'POST',
+			async :  false,
+			url:context + '/userManagerController/switchUserLanguage',
+			success:function(response) {
+				window.location.href = context+"/home";
+			},
+			failure:function(){
+			},
+			params: {
+				languageValue:languageValue
+	        }
+		});
+	}
 }
 
 function mOver(obj) {

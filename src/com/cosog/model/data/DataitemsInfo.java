@@ -44,6 +44,11 @@ public class DataitemsInfo implements Serializable {
 	
 	private Integer dataSource; // 字段数据源为驱动配置时，数据源 采集 计算 录入
 	private String dataUnit; // 字段数据源为驱动配置时，数据单位，区分相同字段名称
+	
+	private Integer status_cn;//是否在中文环境下显示
+	private Integer status_en;//是否在英文环境下显示
+	private Integer status_ru;//是否在俄文环境下显示
+	
 	public DataitemsInfo() {
 		super();
 	}
@@ -211,6 +216,33 @@ public class DataitemsInfo implements Serializable {
 
 	public void setDataUnit(String dataUnit) {
 		this.dataUnit = dataUnit;
+	}
+
+	@Column(name = "STATUS_CN")
+	public Integer getStatus_cn() {
+		return status_cn;
+	}
+
+	public void setStatus_cn(Integer status_cn) {
+		this.status_cn = status_cn;
+	}
+
+	@Column(name = "STATUS_EN")
+	public Integer getStatus_en() {
+		return status_en;
+	}
+
+	public void setStatus_en(Integer status_en) {
+		this.status_en = status_en;
+	}
+
+	@Column(name = "STATUS_RU")
+	public Integer getStatus_ru() {
+		return status_ru;
+	}
+
+	public void setStatus_ru(Integer status_ru) {
+		this.status_ru = status_ru;
 	}
 
 }

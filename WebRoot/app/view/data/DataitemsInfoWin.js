@@ -256,6 +256,63 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 {
                     xtype: 'radiogroup',
                     width: 200,
+                    id: "dataitemsInfo_status_cn_id",
+                    fieldLabel: loginUserLanguageResource.language_zh_CN,
+                    items: [
+                        {
+                            checked: true,
+                            boxLabel: loginUserLanguageResource.yes,
+                            inputValue: 1,
+                            name: 'dataitemsInfo.status_cn'
+                          },
+                        {
+                            boxLabel: loginUserLanguageResource.no,
+                            inputValue: 0,
+                            name: 'dataitemsInfo.status_cn'
+                          }
+                      ]
+                },
+                {
+                    xtype: 'radiogroup',
+                    width: 200,
+                    id: "dataitemsInfo_status_en_id",
+                    fieldLabel: loginUserLanguageResource.language_en,
+                    items: [
+                        {
+                            checked: true,
+                            boxLabel: loginUserLanguageResource.yes,
+                            inputValue: 1,
+                            name: 'dataitemsInfo.status_en'
+                          },
+                        {
+                            boxLabel: loginUserLanguageResource.no,
+                            inputValue: 0,
+                            name: 'dataitemsInfo.status_en'
+                          }
+                      ]
+                },
+                {
+                    xtype: 'radiogroup',
+                    width: 200,
+                    id: "dataitemsInfo_status_ru_id",
+                    fieldLabel: loginUserLanguageResource.language_ru,
+                    items: [
+                        {
+                            checked: true,
+                            boxLabel: loginUserLanguageResource.yes,
+                            inputValue: 1,
+                            name: 'dataitemsInfo.status_ru'
+                          },
+                        {
+                            boxLabel: loginUserLanguageResource.no,
+                            inputValue: 0,
+                            name: 'dataitemsInfo.status_ru'
+                          }
+                      ]
+                },
+                {
+                    xtype: 'radiogroup',
+                    width: 200,
                     id: "dataitemsInfo_status_id",
                     fieldLabel: loginUserLanguageResource.enable,
                     items: [

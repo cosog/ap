@@ -214,14 +214,15 @@ var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
                         },
                         "cut": {
                             name: loginUserLanguageResource.contextMenu_cut,
-                        },
-                        "paste": {
-                            name: loginUserLanguageResource.contextMenu_paste,
-                            disabled: function () {
-                            },
-                            callback: function () {
-                            }
                         }
+//                        ,
+//                        "paste": {
+//                            name: loginUserLanguageResource.contextMenu_paste,
+//                            disabled: function () {
+//                            },
+//                            callback: function () {
+//                            }
+//                        }
                     }
                 }, //右键菜单展示
                 sortIndicator: true,

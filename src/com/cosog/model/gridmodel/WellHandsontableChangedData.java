@@ -44,6 +44,8 @@ public class WellHandsontableChangedData {
 		private String deviceTypeName_ru;
 	    
 	    private String applicationScenariosName="";
+	    
+	    private String calculateTypeName="";
 
 	    private String instanceName="";
 	    
@@ -829,6 +831,14 @@ public class WellHandsontableChangedData {
 
 		public void setCommissioningDate(String commissioningDate) {
 			this.commissioningDate = commissioningDate;
+		}
+
+		public String getCalculateTypeName() {
+			return calculateTypeName;
+		}
+
+		public void setCalculateTypeName(String calculateTypeName) {
+			this.calculateTypeName = calculateTypeName;
 		}
 	    
 	}

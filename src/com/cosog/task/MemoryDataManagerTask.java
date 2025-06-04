@@ -4199,18 +4199,20 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void updateSRPDeviceTodayDataDeviceInfo(SRPDeviceTodayData deviceTodayData){
-		Jedis jedis=null;
-		if(!existsKey("SRPDeviceTodayData")){
-			MemoryDataManagerTask.loadTodayFESDiagram(null,0);
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			jedis.hset("SRPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
+		if(deviceTodayData!=null){
+			Jedis jedis=null;
+			if(!existsKey("SRPDeviceTodayData")){
+				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+			}
+			try {
+				jedis = RedisUtil.jedisPool.getResource();
+				jedis.hset("SRPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+			}catch (Exception e) {
+				e.printStackTrace();
+			} finally{
+				if(jedis!=null){
+					jedis.close();
+				}
 			}
 		}
 	}
@@ -4565,18 +4567,20 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void updatePCPDeviceTodayDataDeviceInfo(PCPDeviceTodayData deviceTodayData){
-		Jedis jedis=null;
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("PCPDeviceTodayData".getBytes())){
-				MemoryDataManagerTask.loadTodayRPMData(null,0);
-			}
-			jedis.hset("PCPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
+		if(deviceTodayData!=null){
+			Jedis jedis=null;
+			try {
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists("PCPDeviceTodayData".getBytes())){
+					MemoryDataManagerTask.loadTodayRPMData(null,0);
+				}
+				jedis.hset("PCPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+			}catch (Exception e) {
+				e.printStackTrace();
+			} finally{
+				if(jedis!=null){
+					jedis.close();
+				}
 			}
 		}
 	}

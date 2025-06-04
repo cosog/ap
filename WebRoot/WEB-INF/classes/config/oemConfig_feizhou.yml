@@ -8,6 +8,7 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    helpButtonIcon: "./oem/feizhou/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/feizhou/images/exit.svg"            #退出按钮图标
    switchButtonIcon: "./oem/feizhou/images/switch.svg"        #语言切换按钮图标
+   switchDisabledButtonIcon: "./oem/feizhou/images/switch_disabled.svg"        #语言切换不可用按钮图标
    zoomInButtonIcon: "./oem/feizhou/images/zoomin.svg"        #放大按钮图标
    zoomoutButtonIcon: "./oem/feizhou/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20250529100000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效

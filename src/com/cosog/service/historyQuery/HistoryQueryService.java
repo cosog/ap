@@ -550,6 +550,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								String column=deviceCalItemList.get(j).getCode();
 								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
 								if(calItem!=null){
+									String rawColumn=column;
 									if("resultName".equalsIgnoreCase(column)){
 										column="resultCode";
 									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -557,7 +558,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("runstatusName".equalsIgnoreCase(column)){
 										column="runstatus";
 									}
-									calDataSql+=",t3."+column;
+									String tableAlias="t3";
+									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+										tableAlias="t2";
+									}
+									calDataSql+=","+tableAlias+"."+column;
 								}
 							}
 						}else{
@@ -1263,6 +1268,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								String column=deviceCalItemList.get(j).getCode();
 								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
 								if(calItem!=null){
+									String rawColumn=column;
 									if("resultName".equalsIgnoreCase(column)){
 										column="resultCode";
 									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -1270,7 +1276,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("runstatusName".equalsIgnoreCase(column)){
 										column="runstatus";
 									}
-									calDataSql+=",t3."+column;
+									String tableAlias="t3";
+									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+										tableAlias="t2";
+									}
+									calDataSql+=","+tableAlias+"."+column;
 								}
 							}
 						}else{

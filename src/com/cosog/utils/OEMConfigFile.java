@@ -74,6 +74,8 @@ public class OEMConfigFile {
 	    
 	    private String switchButtonIcon;
 	    
+	    private String switchDisabledButtonIcon;
+	    
 	    private String zoomInButtonIcon;
 	    
 	    private String zoomoutButtonIcon;
@@ -167,6 +169,12 @@ public class OEMConfigFile {
 		}
 		public void setSwitchButtonIcon(String switchButtonIcon) {
 			this.switchButtonIcon = switchButtonIcon;
+		}
+		public String getSwitchDisabledButtonIcon() {
+			return switchDisabledButtonIcon;
+		}
+		public void setSwitchDisabledButtonIcon(String switchDisabledButtonIcon) {
+			this.switchDisabledButtonIcon = switchDisabledButtonIcon;
 		}
 	}
 	

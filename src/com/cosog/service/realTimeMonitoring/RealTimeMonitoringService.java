@@ -734,6 +734,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								String column=deviceCalItemList.get(j).getCode();
 								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
 								if(calItem!=null){
+									String rawColumn=column;
 									if("resultName".equalsIgnoreCase(column)){
 										column="resultCode";
 									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -741,7 +742,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}else if("runstatusName".equalsIgnoreCase(column)){
 										column="runstatus";
 									}
-									calDataSql+=",t3."+column;
+									
+									String tableAlias="t3";
+									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+										tableAlias="t2";
+									}
+									calDataSql+=","+tableAlias+"."+column;
 								}
 							}
 						}else{
@@ -759,7 +765,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 						calDataSql+= " from "+deviceTableName+" t "
 								+" left outer join "+tableName+" t2 on t2.deviceid=t.id"
-								+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime "
+								+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid "
+//								+ " and t3.acqtime=t2.acqtime "
 								+" where t.id="+deviceId+"";
 						List<?> calDataQueryList = this.findCallSql(calDataSql);
 						if(calDataQueryList.size()>0){
@@ -1446,6 +1453,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								String column=deviceCalItemList.get(j).getCode();
 								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
 								if(calItem!=null){
+									String rawColumn=column;
 									if("resultName".equalsIgnoreCase(column)){
 										column="resultCode";
 									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -1453,7 +1461,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}else if("runstatusName".equalsIgnoreCase(column)){
 										column="runstatus";
 									}
-									calDataSql+=",t3."+column;
+									String tableAlias="t3";
+									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+										tableAlias="t2";
+									}
+									calDataSql+=","+tableAlias+"."+column;
 								}
 							}
 						}else{

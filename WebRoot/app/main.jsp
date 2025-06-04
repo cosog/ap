@@ -89,6 +89,9 @@
         var switchButtonIcon = oem.switchButtonIcon;
         switchButtonIcon = context + switchButtonIcon.substring(switchButtonIcon.indexOf("/"), switchButtonIcon.length);
         
+        var switchDisabledButtonIcon = oem.switchDisabledButtonIcon;
+        switchDisabledButtonIcon = context + switchDisabledButtonIcon.substring(switchDisabledButtonIcon.indexOf("/"), switchDisabledButtonIcon.length);
+        
         var zoomInButtonIcon = oem.zoomInButtonIcon;
         zoomInButtonIcon = context + zoomInButtonIcon.substring(zoomInButtonIcon.indexOf("/"), zoomInButtonIcon.length);
         
@@ -176,7 +179,12 @@
                     		document.getElementById('bannerDiv').innerHTML+='<div id="bannerToolbar"><a href="#" id="banner_language'+index+'" onclick="switchLanguage('+loginUserLanguageList[i]+')"><span id="banner_language'+index+'_text">'+languageShowName+'</span></a></div>';
                     	}
                     	
-                    	$("#banner_language"+index).css("background", "url(" + switchButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+                    	
+                    	if(loginUserLanguageList[i]==loginUserLanguageValue){
+                    		$("#banner_language"+index).css("background", "url(" + switchDisabledButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+                    	}else{
+                    		$("#banner_language"+index).css("background", "url(" + switchButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
+                    	}
                     	
                     	index++;
             		//}
@@ -207,6 +215,81 @@
 
         #loading-msg {
             font: normal 18px arial, tahoma, sans-serif;
+        }
+        
+        .horizontal-header .x-column-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .horizontal-header .x-column-header-text {
+            order: 2; /* 文本在右侧 */
+            margin-left: 5px;
+        }
+        
+        .horizontal-header .x-column-header-checkbox {
+            order: 1; /* 复选框在左侧 */
+        }
+        
+        /* 网格容器样式 */
+        .grid-container {
+            margin: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* 标题样式 */
+        .title-container {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .title-container h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .title-container p {
+            margin: 10px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* 说明卡片 */
+        .info-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .grid-container {
+                margin: 10px;
+            }
+            
+            .title-container h1 {
+                font-size: 22px;
+            }
         }
 
     </style>

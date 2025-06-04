@@ -111,10 +111,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                     	xtype: 'checkcolumn',
                     	align: 'center',
-                    	header: loginUserLanguageResource.language_zh_CN,
+                    	text: loginUserLanguageResource.language_zh_CN,
                     	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     	dataIndex: 'status_cn',
-                    	width: getLabelWidth(loginUserLanguageResource.language_zh_CN,loginUserLanguage)+'px',
+                    	width: (getLabelWidth(loginUserLanguageResource.language_zh_CN,loginUserLanguage)+30),
+                    	hidden:isExist(loginUserLanguageList,1)==0,
+                    	headerCheckbox: true,
+                    	headerCls: 'horizontal-header',
                     	editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
@@ -128,10 +131,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                     	xtype: 'checkcolumn',
                     	align: 'center',
-                    	header: loginUserLanguageResource.language_en,
+                    	text: loginUserLanguageResource.language_en,
                     	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     	dataIndex: 'status_en',
-                    	width: getLabelWidth(loginUserLanguageResource.language_en,loginUserLanguage)+'px',
+                    	width: getLabelWidth(loginUserLanguageResource.language_en,loginUserLanguage)+30,
+                    	hidden:isExist(loginUserLanguageList,2)==0,
+                    	headerCheckbox: true,
+                    	headerCls: 'horizontal-header',
                     	editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
@@ -145,10 +151,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                     	xtype: 'checkcolumn',
                     	align: 'center',
-                    	header: loginUserLanguageResource.language_ru,
+                    	text: loginUserLanguageResource.language_ru,
                     	disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     	dataIndex: 'status_ru',
-                    	width: getLabelWidth(loginUserLanguageResource.language_ru,loginUserLanguage)+'px',
+                    	width: getLabelWidth(loginUserLanguageResource.language_ru,loginUserLanguage)+30,
+                    	hidden:isExist(loginUserLanguageList,3)==0,
+                    	headerCheckbox: true,
+                    	headerCls: 'horizontal-header',
                     	editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',

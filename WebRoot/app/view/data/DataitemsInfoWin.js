@@ -2,14 +2,14 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     extend: 'Ext.Window',
     alias: 'widget.dataitemsInfoWin',
     id: "DataitemsInfoWinId",
-    width: 510,
-    height: 420,
+    width: 450,
+    height: 500,
     layout: 'fit',
     closeAction: 'destroy',
     resizable: false,
     constrain: true,
     modal: true,
-    bodyStyle: 'background-color:#ffffff;',
+    bodyStyle: 'padding:10px;background-color:#ffffff;',
     initComponent: function () {
         var me = this;
         //英文名称
@@ -18,7 +18,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             name: 'dataitemsInfo.code',
             fieldLabel: loginUserLanguageResource.dataColumnCode+'<font color=red>*</font>',
             allowBlank: false,
-            width: 350,
+            anchor : '95%',
             msgTarget: 'side',
             value :'',
             blankText: loginUserLanguageResource.required
@@ -30,7 +30,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             fieldLabel: loginUserLanguageResource.sortNum+'<font color=red>*</font>',
             allowBlank: false,
             minValue: 0,
-            width: 350,
+            anchor : '95%',
             msgTarget: 'side',
             blankText: loginUserLanguageResource.required
         });
@@ -39,7 +39,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             id: "sysdatadatavalue_Ids",
             name: 'dataitemsInfo.datavalue',
             fieldLabel: loginUserLanguageResource.dataColumnParams,
-            width: 450,
+            anchor : '95%',
             height: 100
         });
         
@@ -78,7 +78,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var columnDataSourceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.columnDataSource+'<font color=red>*</font>',
-					width: 350,
+					anchor : '95%',
 					id : 'dictItemColumnDataSourceComb_Id',
 					store: columnDataSourceStore,
 					queryMode : 'remote',
@@ -166,7 +166,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var dataSourceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.dataSource,
-					width: 350,
+					anchor : '95%',
 					id : 'dictItemDataSourceComb_Id',
 					store: dataSourceStore,
 					queryMode : 'remote',
@@ -188,10 +188,12 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         //表单组件		
         var addtenaorgLevfromname = Ext.create("Ext.form.Panel", {
             id: "addtenaorgLevfromnameId",
-            layout: 'auto',
-            border: false,
-            labelSeparator: ':',
-            bodyStyle: 'padding:20px;',
+//            layout: 'auto',
+//            border: false,
+//            labelSeparator: ':',
+//            bodyStyle: 'padding:20px;',
+//            defaultType: 'textfield',
+            baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [
                 {
@@ -206,7 +208,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
                     allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                     hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
-                    width: 350,
+                    anchor : '95%',
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
                 },
@@ -216,7 +218,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
                     allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
                     hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
-                    width: 350,
+                    anchor : '95%',
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
                 },
@@ -226,7 +228,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     fieldLabel: loginUserLanguageResource.dataColumnName+'<font color=red>*</font>',
                     allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
                     hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
-                    width: 350,
+                    anchor : '95%',
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
                 },columnDataSourceComb,{
@@ -250,14 +252,15 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     name: "dataitemsInfo.dataUnit",
                     fieldLabel: loginUserLanguageResource.unit,
                     hidden:true,
-                    width: 350,
+                    anchor : '95%',
                     msgTarget: 'side',
                 },
                 {
                     xtype: 'radiogroup',
-                    width: 200,
+//                    width: 200,
+                    anchor : '95%',
                     id: "dataitemsInfo_status_cn_id",
-                    fieldLabel: loginUserLanguageResource.language_zh_CN,
+                    fieldLabel: loginUserLanguageResource.language_zh_CN+'<font color=red>*</font>',
                     items: [
                         {
                             checked: true,
@@ -274,9 +277,9 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 },
                 {
                     xtype: 'radiogroup',
-                    width: 200,
+                    anchor : '95%',
                     id: "dataitemsInfo_status_en_id",
-                    fieldLabel: loginUserLanguageResource.language_en,
+                    fieldLabel: loginUserLanguageResource.language_en+'<font color=red>*</font>',
                     items: [
                         {
                             checked: true,
@@ -293,9 +296,9 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 },
                 {
                     xtype: 'radiogroup',
-                    width: 200,
+                    anchor : '95%',
                     id: "dataitemsInfo_status_ru_id",
-                    fieldLabel: loginUserLanguageResource.language_ru,
+                    fieldLabel: loginUserLanguageResource.language_ru+'<font color=red>*</font>',
                     items: [
                         {
                             checked: true,
@@ -312,9 +315,9 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 },
                 {
                     xtype: 'radiogroup',
-                    width: 200,
+                    anchor : '95%',
                     id: "dataitemsInfo_status_id",
-                    fieldLabel: loginUserLanguageResource.enable,
+                    fieldLabel: loginUserLanguageResource.enable+'<font color=red>*</font>',
                     items: [
                         {
                             checked: true,

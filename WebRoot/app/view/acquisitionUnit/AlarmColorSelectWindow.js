@@ -6,8 +6,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     iframe: true,
     id: 'AlarmColorSelectWindow_Id',
     closeAction: 'destroy',
-    width: 500,
-    minWidth: 500,
+    width: 600,
+    minWidth: 600,
     height: 400,
     minHeight: 400,
     shadow: 'sides',
@@ -536,7 +536,6 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         }
                 	}]
                 }]
-
             }]
         });
         me.callParent(arguments);

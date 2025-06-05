@@ -526,7 +526,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 name: "deviceInformation.applicationScenarios"
             },{
             	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.calculateType,
+				labelWidth: labelWidth,
 				id : 'deviceCalculateTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
@@ -555,7 +556,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 fieldLabel: loginUserLanguageResource.calculateType,
                 labelWidth: labelWidth,
                 id: 'deviceCalculateType_Id',
-                value: '',
+                value: '0',
                 name: "deviceInformation.calculateType"
             },deviceAcqInstanceComb,{
             	xtype: "hidden",

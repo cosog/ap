@@ -137,9 +137,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
     					
     					var DictItemGridPanel = Ext.create('AP.view.data.DictItemGridPanel');
         				if(newCard.xtype=='tabpanel'){
-        					newCard.activeTab.add(DeviceOperationLogInfoPanel);
+        					newCard.activeTab.add(DictItemGridPanel);
         				}else{
-	        				newCard.add(DeviceOperationLogInfoPanel);
+	        				newCard.add(DictItemGridPanel);
         				}
         				
         				var dataDictionaryItemGridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id"); 

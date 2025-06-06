@@ -480,6 +480,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int languageValue=user!=null?user.getLanguage():0;
 			int userNo=user!=null?user.getUserNo():0;
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			String tableName="tbl_acqdata_latest";
@@ -969,8 +970,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("ru".equalsIgnoreCase(language)){
 									columnName=dataitemsInfo.getName_ru();
 								}
-								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, columnName);
 								String column=dataitemsInfo.getCode();
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
 								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
 									String rawColumnName=columnName;
 									String value=keyValue.getValue();
@@ -1242,6 +1243,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="viw_device";
@@ -1679,8 +1681,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("ru".equalsIgnoreCase(language)){
 									columnName=dataitemsInfo.getName_ru();
 								}
-								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, columnName);
 								String column=dataitemsInfo.getCode();
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
+								
 								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
 									String rawColumnName=columnName;
 									String value=keyValue.getValue();
@@ -1839,7 +1842,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList,2);
+			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
 					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);

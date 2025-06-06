@@ -13,6 +13,7 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.data.DataitemsInfo;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
@@ -491,6 +492,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
 								header+="("+calItem.getUnit()+")";
 							}
+						}else{
+//							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+//							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);
 						}
 					}else{
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";

@@ -573,6 +573,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(calItem!=null){
 									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}else if("runstatusName".equalsIgnoreCase(column)){
+										column="runstatus";
 									}
 									calDataSql+=",t2."+column;
 								}
@@ -1292,6 +1294,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								if(calItem!=null){
 									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}else if("runstatusName".equalsIgnoreCase(column)){
+										column="runstatus";
 									}
 									calDataSql+=",t2."+column;
 								}
@@ -1960,6 +1964,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					String column=displayCalItemList.get(i).getCode();
 					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}else if("runstatusName".equalsIgnoreCase(column)){
+						column="runstatus";
 					}
 					sql+=",t2."+column;
 				}
@@ -2804,6 +2810,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					String column=displayCalItemList.get(i).getCode();
 					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 						column=column+"*"+timeEfficiencyZoom+" as "+column;
+					}else if("runstatusName".equalsIgnoreCase(column)){
+						column="runstatus";
 					}
 					sql+=",t2."+column;
 				}
@@ -3510,6 +3518,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}else if("runstatusName".equalsIgnoreCase(column)){
+								column="runstatus";
 							}
 							sql+=",t2."+column;
 						}
@@ -4267,6 +4277,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
+							}else if("runstatusName".equalsIgnoreCase(column)){
+								column="runstatus";
 							}
 							sql+=",t2."+column;
 						}

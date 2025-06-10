@@ -582,8 +582,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                 border: false,
                 layout: 'border',
                 items: [{
-                	region: 'west',
-                    width: '32%',
+                	region: 'center',
                     layout: 'border',
                     split: true,
                     collapsible: true,
@@ -701,7 +700,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             			}
                     }]
                 }, {
-                	region: 'center',
+                	
+                	region: 'east',
+                    width: '68%',
+                    split: true,
+                    collapsible: true,
                 	layout: 'border',
                     xtype: 'tabpanel',
                     id:"HistoryQueryCenterTabPanel",

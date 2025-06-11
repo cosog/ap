@@ -173,7 +173,7 @@ public class UserManagerController extends BaseController {
 			String loginLanguageName=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 			String languageValue=MemoryDataManagerTask.getCodeValue("LANGUAGE",loginLanguageName,loginLanguageName);
 			
-			List<Integer> loginUserLanguageList=this.userService.getLanguageList(user!=null?user.getUserType():0);
+			List<Integer> userRoleLanguageList=this.userService.getLanguageList(user!=null?user.getUserType():0);
 			
 			
 			String emailContent=languageResourceMap.get("userAccount")+":"+user.getUserId()+"<br/>"+languageResourceMap.get("userPassword")+":"+user.getUserPwd();
@@ -184,10 +184,10 @@ public class UserManagerController extends BaseController {
 			user.setUserRegtime(new Date());
 			
 			
-			if(loginUserLanguageList.size()==0 || StringManagerUtils.existOrNot(loginUserLanguageList, StringManagerUtils.stringToInteger(languageValue))){
+			if(userRoleLanguageList.size()==0 || StringManagerUtils.existOrNot(userRoleLanguageList, StringManagerUtils.stringToInteger(languageValue))){
 				user.setLanguage(StringManagerUtils.stringToInteger(languageValue));
 			}else{
-				user.setLanguage(loginUserLanguageList.get(0));
+				user.setLanguage(userRoleLanguageList.get(0));
 			}
 			
 			this.userService.addUser(user);

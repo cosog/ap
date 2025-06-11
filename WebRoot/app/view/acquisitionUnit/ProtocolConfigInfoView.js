@@ -4,6 +4,7 @@ var loginUserProtocolConfigModuleRight=getRoleModuleRight('DriverManagement');
 var protocolItemsConfigHandsontableHelper=null;
 var protocolPropertiesHandsontableHelper=null;
 var protocolItemsMeaningConfigHandsontableHelper=null;
+var protocolExtendedFieldConfigHandsontableHelper=null;
 
 //采控单元
 var protocolAcqUnitConfigItemsHandsontableHelper=null;
@@ -257,6 +258,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
     					}
     					protocolItemsMeaningConfigHandsontableHelper=null;
+    				}
+    				if(protocolExtendedFieldConfigHandsontableHelper!=null){
+    					if(protocolExtendedFieldConfigHandsontableHelper.hot!=undefined){
+    						protocolExtendedFieldConfigHandsontableHelper.hot.destroy();
+    					}
+    					protocolExtendedFieldConfigHandsontableHelper=null;
     				}
     				
     				//采控组HandsontableHelper资源

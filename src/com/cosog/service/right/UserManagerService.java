@@ -530,6 +530,13 @@ public class UserManagerService<T> extends BaseService<T> {
 	public void setUserLanguage(User user){
 		List<Integer> languageList=new ArrayList<>(); 
 		String languageName=MemoryDataManagerTask.getCodeName("LANGUAGE",user.getLanguage()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+		List<Integer> userRoleLanguageList=this.getLanguageList(user!=null?user.getUserType():0);
+		if(!StringManagerUtils.existOrNot(userRoleLanguageList, user.getLanguage())){
+			user.setLanguage(userRoleLanguageList.get(0));
+			String sql = "update tbl_user t set t.user_language="+user.getLanguage()+" where t.user_no = "+user.getUserNo();
+			int result=this.getBaseDao().updateOrDeleteBySql(sql);
+		}
+		
 		if(user.getLanguage()==1){
 			languageName="zh_CN";
 		}else if(user.getLanguage()==2){

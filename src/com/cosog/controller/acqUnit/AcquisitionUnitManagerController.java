@@ -77,6 +77,7 @@ import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmInstanceSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.ModbusProtocolConfig.ExtendedField;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
@@ -823,13 +824,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 							}
 							if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
 								itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
-								if(!StringManagerUtils.isNotNull(itemCode)){
-									MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-									loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-									if(loadProtocolMappingColumnByTitleMap.containsKey(itemName)){
-										itemCode=loadProtocolMappingColumnByTitleMap.get(itemName).getMappingColumn();
-									}
-								}
 							}
 							
 							displayUnitItem = new DisplayUnitItem();
@@ -860,33 +854,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
-						}else if(type==1){
-							displayUnitItem = new DisplayUnitItem();
-							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
-							displayUnitItem.setItemName(itemName);
-							displayUnitItem.setItemCode(itemCode);
-							displayUnitItem.setType(type);
-							
-							displayUnitItem.setRealtimeOverview(StringManagerUtils.stringToInteger(module_[1]));
-							displayUnitItem.setRealtimeOverviewSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
-							displayUnitItem.setRealtimeData(StringManagerUtils.stringToInteger(module_[3]));
-							displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
-							displayUnitItem.setRealtimeColor(module_[5]);
-							displayUnitItem.setRealtimeBgColor(module_[6]);
-							
-							displayUnitItem.setHistoryOverview(StringManagerUtils.stringToInteger(module_[7]));
-							displayUnitItem.setHistoryOverviewSort(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
-							displayUnitItem.setHistoryData(StringManagerUtils.stringToInteger(module_[9]));
-							displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[10])?StringManagerUtils.stringToInteger(module_[10]):null);
-							displayUnitItem.setHistoryColor(module_[11]);
-							displayUnitItem.setHistoryBgColor(module_[12]);
-							
-							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
-							displayUnitItem.setRealtimeCurveConf(module_[14]);
-							displayUnitItem.setHistoryCurveConf(module_[15]);
-							displayUnitItem.setMatrix(module_[21]);
-							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
-						}else if(type==3){
+						}else {
 							displayUnitItem = new DisplayUnitItem();
 							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
 							displayUnitItem.setItemName(itemName);
@@ -1408,6 +1376,28 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		json = acquisitionUnitItemManagerService.getProtocolItemsConfigData(protocolName,classes,code,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getProtocolExtendedFieldsConfigData")
+	public String getProtocolExtendedFieldsConfigData() throws Exception {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String code = ParamUtils.getParameter(request, "code");
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getProtocolExtendedFieldsConfigData(protocolName,classes,code,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2899,13 +2889,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 						if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 							String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
+							List<String> delItemList=new ArrayList<String>();
 							if(saveType==0){
 								modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
 								modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.isNumber(modbusDriverSaveData.getSort())?StringManagerUtils.stringToInteger(modbusDriverSaveData.getSort()):0);
-							}
-							
-							List<String> delItemList=new ArrayList<String>();
-							if(saveType==1){
+							}else if(saveType==1){
 								for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
 									boolean isAddItem=true;
 									String acqMode="passive";
@@ -3007,6 +2995,20 @@ public class AcquisitionUnitManagerController extends BaseController {
 										it.remove();
 									}
 								}
+							}else if(saveType==2){
+								List<ModbusProtocolConfig.ExtendedField> extendedFieldList=new ArrayList<>();
+								for(int j=0;j<modbusDriverSaveData.getExtendedFieldConfig().size();j++){
+									ModbusProtocolConfig.ExtendedField extendedField=new ModbusProtocolConfig.ExtendedField();
+									extendedField.setTitle(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle());
+									extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
+									extendedField.setTitle2(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle2());
+									extendedField.setOperation(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FOUROPERATION", modbusDriverSaveData.getExtendedFieldConfig().get(j).getOperation(), language)));
+									extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
+									extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
+									extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+									extendedFieldList.add(extendedField);
+								}
+								modbusProtocolConfig.getProtocol().get(i).setExtendedFields(extendedFieldList);
 							}
 							
 							//如果协议名称改变，更新数据库
@@ -3046,6 +3048,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 								List<String> clobCont=new ArrayList<String>();
 								clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getItems()));
 								service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
+							}else if(saveType==2){
+								String updateProtocolExtendedFieldClobSql="update TBL_PROTOCOL t set t.extendedfield=? where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
+								List<String> clobCont=new ArrayList<String>();
+								clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()));
+								service.getBaseDao().executeSqlUpdateClob(updateProtocolExtendedFieldClobSql,clobCont);
 							}
 							
 							

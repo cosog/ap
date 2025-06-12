@@ -51,23 +51,29 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 	
 	@Override
 	public int compareTo(ProtocolItemResolutionData protocolItemResolutionData) {//重写Comparable接口的compareTo方法   按照sort升序 addr升序 bitIndex升序
+		int r=0;
 		if(this.sort>protocolItemResolutionData.getSort()){
-			return 1;
+			r= 1;
 		}else if(this.sort<protocolItemResolutionData.getSort()){
-			return -1;
+			r= -1;
 		}else{
-			if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-				return 1;
-			}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-				return -1;
-			}else{
-				if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
-					return 1;
+			if(this.type==0 && protocolItemResolutionData.getType()==0){
+				if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+					r= 1;
+				}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+					r= -1;
 				}else{
-					return -1;
+					if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
+						r= 1;
+					}else{
+						r= -1;
+					}
 				}
+			}else{
+				
 			}
 		}
+		return r;
 	}
 	
 	public String getColumnName() {

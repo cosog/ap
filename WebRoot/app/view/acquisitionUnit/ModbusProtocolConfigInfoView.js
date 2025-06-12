@@ -214,6 +214,27 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             }
                         	
                         }]
+                    },{
+                    	id:"ProtocolExtendedFieldConfigRightTabPanel_Id",
+                    	title:loginUserLanguageResource.extendedField,
+                    	layout: 'fit',
+                        html:'<div class="ProtocolExtendedFieldTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                            	if(protocolExtendedFieldConfigHandsontableHelper!=null && protocolExtendedFieldConfigHandsontableHelper.hot!=undefined){
+                            		var newWidth=width;
+                            		var newHeight=height;
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		protocolExtendedFieldConfigHandsontableHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                            }
+                        }
                     }],
                     listeners: {
                     	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -245,6 +266,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             	}else if(record.data.classes==1){
                             		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                             	}
+                        	}else if(newCard.id=="ProtocolExtendedFieldConfigRightTabPanel_Id"){
+                        		
                         	}
                         }
                     }

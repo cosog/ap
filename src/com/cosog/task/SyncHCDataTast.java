@@ -25,7 +25,7 @@ import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 
-@Component("SyncFBDataTast")  
+@Component("SyncHCDataTast")  
 public class SyncHCDataTast {
 	private static SyncHCDataTast instance=new SyncHCDataTast();
 	public static SyncHCDataTast getInstance(){

@@ -184,6 +184,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private int Language;
 
 	    private List<Items> Items;
+	    
+	    private List<ExtendedField> ExtendedFields;
 
 	    public void setName(String Name){
 	        this.Name = Name;
@@ -231,6 +233,87 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setLanguage(int language) {
 			Language = language;
+		}
+		public List<ExtendedField> getExtendedFields() {
+			return ExtendedFields;
+		}
+		public void setExtendedFields(List<ExtendedField> extendedFields) {
+			ExtendedFields = extendedFields;
+		}
+	}
+	
+	public static class ExtendedField  implements Serializable
+    {
+    	private static final long serialVersionUID = 1L;
+    	
+    	private String Title;
+    	
+    	private int Prec;
+
+	    private float Ratio;
+
+	    private String Unit;
+	    
+	    private String Title1;
+	    
+	    private String Title2;
+	    
+	    private int Operation;
+
+		public String getTitle() {
+			return Title;
+		}
+
+		public void setTitle(String title) {
+			Title = title;
+		}
+
+		public int getPrec() {
+			return Prec;
+		}
+
+		public void setPrec(int prec) {
+			Prec = prec;
+		}
+
+		public float getRatio() {
+			return Ratio;
+		}
+
+		public void setRatio(float ratio) {
+			Ratio = ratio;
+		}
+
+		public String getUnit() {
+			return Unit;
+		}
+
+		public void setUnit(String unit) {
+			Unit = unit;
+		}
+
+		public String getTitle1() {
+			return Title1;
+		}
+
+		public void setTitle1(String title1) {
+			Title1 = title1;
+		}
+
+		public String getTitle2() {
+			return Title2;
+		}
+
+		public void setTitle2(String title2) {
+			Title2 = title2;
+		}
+
+		public int getOperation() {
+			return Operation;
+		}
+
+		public void setOperation(int operation) {
+			Operation = operation;
 		}
 	}
 }

@@ -1329,50 +1329,6 @@ public class DriverAPIController extends BaseController{
 		return acquisitionItemInfoList;
 	}
 	
-	public Map<String,String> DataProcessing(AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol){
-		Map<String,String> map=new HashMap<>();
-		
-		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
-		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
-		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-		
-		if(acqGroup!=null && protocol!=null){
-			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
-				for(int j=0;j<protocol.getItems().size();j++){
-					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
-						String value="";
-						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
-						String columnName=dataMappingColumn.getMappingColumn();
-						
-						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null ){
-							value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
-						}
-						String rawValue=value;
-						String addr=protocol.getItems().get(j).getAddr()+"";
-						String title=protocol.getItems().get(j).getTitle();
-						String rawTitle=title;
-						String columnDataType=protocol.getItems().get(j).getIFDataType();
-						String resolutionMode=protocol.getItems().get(j).getResolutionMode()+"";
-						String bitIndex="";
-						String unit=protocol.getItems().get(j).getUnit();
-						int alarmLevel=0;
-						int sort=9999;
-						
-						String saveValue=rawValue;
-						if(protocol.getItems().get(j).getQuantity()==1&&rawValue.length()>50){
-							saveValue=rawValue.substring(0, 50);
-						}
-						map.put(columnName, saveValue);
-					}
-				}
-			}
-		}
-		return map;
-	} 
-	
 	public void saveDailyTotalData(DeviceInfo deviceInfo){
 		if(deviceInfo.getDailyTotalItemMap().size()>0){
 			Iterator<Map.Entry<String, DeviceInfo.DailyTotalItem>> iterator = deviceInfo.getDailyTotalItemMap().entrySet().iterator();
@@ -1412,12 +1368,13 @@ public class DriverAPIController extends BaseController{
 		
 	}
 	
-	public List<ProtocolItemResolutionData> DataProcessing(DeviceInfo deviceInfo,String acqTime,AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,
+	public List<ProtocolItemResolutionData> AcqDataProcessing(DeviceInfo deviceInfo,String acqTime,AcqGroup acqGroup,ModbusProtocolConfig.Protocol protocol,
 			AcqInstanceOwnItem acqInstanceOwnItem,
 			List<ProtocolItemResolutionData> calItemResolutionDataList,
 			List<KeyValue> acqDataList){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,String> acqDataMap=new LinkedHashMap<>();
 		
 		if(acqGroup!=null && protocol!=null && acqInstanceOwnItem!=null){
 			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
@@ -1443,6 +1400,10 @@ public class DriverAPIController extends BaseController{
 						
 						KeyValue keyValue=new KeyValue(columnName,rawValue);
 						acqDataList.add(keyValue);
+						if(protocol.getItems().get(j).getResolutionMode()==2 && (protocol.getItems().get(j).getIFDataType().startsWith("int")||protocol.getItems().get(j).getIFDataType().startsWith("float"))){
+							acqDataMap.put(columnName,rawValue);
+						}
+						
 						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 							AcqInstanceOwnItem.AcqItem thisAcqItem=null;
@@ -1553,6 +1514,54 @@ public class DriverAPIController extends BaseController{
 						break;
 					}
 				}
+			}
+		}
+		
+		if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
+			for(int i=0;i<protocol.getExtendedFields().size();i++){
+				DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
+				DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle2());
+				String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+				String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+				String extendedField=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(i).getOperation()).toUpperCase();
+				String extendedFieldValue="";
+				if(acqDataMap.containsKey(mappingColumn1)){
+					String value1=acqDataMap.get(mappingColumn1);
+					extendedFieldValue=value1;
+					if(acqDataMap.containsKey(mappingColumn2)){
+						String value2=acqDataMap.get(mappingColumn2);
+						if(protocol.getExtendedFields().get(i).getOperation()==1){
+							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)+StringManagerUtils.stringToFloat(value2))+"";
+						}else if(protocol.getExtendedFields().get(i).getOperation()==2){
+							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)-StringManagerUtils.stringToFloat(value2))+"";
+						}else if(protocol.getExtendedFields().get(i).getOperation()==3){
+							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)*StringManagerUtils.stringToFloat(value2))+"";
+						}else if(protocol.getExtendedFields().get(i).getOperation()==2){
+							if(StringManagerUtils.stringToFloat(value2)!=0){
+								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)/StringManagerUtils.stringToFloat(value2))+"";
+							}
+						}
+					}
+					extendedFieldValue=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(extendedFieldValue)*protocol.getExtendedFields().get(i).getRatio()+"", protocol.getExtendedFields().get(i).getPrec())+"";
+				}
+				
+				KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
+				acqDataList.add(keyValue);
+				
+				ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+						protocol.getExtendedFields().get(i).getTitle(),
+						protocol.getExtendedFields().get(i).getTitle(),
+						extendedFieldValue,
+						extendedFieldValue,
+						"",
+						extendedField,
+						"",
+						"",
+						"",
+						protocol.getExtendedFields().get(i).getUnit(),
+						1,
+						5);
+				protocolItemResolutionDataList.add(protocolItemResolutionData);
 			}
 		}
 		
@@ -2231,7 +2240,7 @@ public class DriverAPIController extends BaseController{
 					List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 					List<ProtocolItemResolutionData> calItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 					
-					List<ProtocolItemResolutionData> protocolItemResolutionDataList=DataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
+					List<ProtocolItemResolutionData> protocolItemResolutionDataList=AcqDataProcessing(deviceInfo,acqTime,acqGroup,protocol,acqInstanceOwnItem,calItemResolutionDataList,acqDataList);
 					cleanDailyTotalItems(deviceInfo,acqInstanceOwnItem);
 					
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){

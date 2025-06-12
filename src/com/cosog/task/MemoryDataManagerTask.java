@@ -408,7 +408,9 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			StringBuffer protocolBuff=null;
-			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language from TBL_PROTOCOL t where 1=1 ";
+			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language,t.extendedField "
+					+ " from TBL_PROTOCOL t "
+					+ " where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}
@@ -417,8 +419,12 @@ public class MemoryDataManagerTask {
 			for(Object[] obj:list){
 				try {
 					String itemsStr=obj[3]+"";
+					String extendedFieldStr=obj[7]+"";
 					if(!StringManagerUtils.isNotNull(itemsStr)){
 						itemsStr="[]";
+					}
+					if(!StringManagerUtils.isNotNull(extendedFieldStr)){
+						extendedFieldStr="[]";
 					}
 					protocolBuff=new StringBuffer();
 					protocolBuff.append("{");
@@ -428,7 +434,8 @@ public class MemoryDataManagerTask {
 					protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
 					protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
 					protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
-					protocolBuff.append("\"Items\":"+itemsStr+"");
+					protocolBuff.append("\"Items\":"+itemsStr+",");
+					protocolBuff.append("\"ExtendedFields\":"+extendedFieldStr+"");
 					protocolBuff.append("}");
 					
 					type = new TypeToken<ModbusProtocolConfig.Protocol>() {}.getType();

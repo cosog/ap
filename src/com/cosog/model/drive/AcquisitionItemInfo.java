@@ -63,23 +63,27 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	@Override
 	public int compareTo(AcquisitionItemInfo acquisitionItemInfo) {//重写Comparable接口的compareTo方法   按照sort升序 addr升序 bitIndex升序
+		int r=0;
 		if(this.sort>acquisitionItemInfo.getSort()){
-			return 1;
+			r= 1;
 		}else if(this.sort<acquisitionItemInfo.getSort()){
-			return -1;
+			r= -1;
 		}else{
-			if(this.addr>acquisitionItemInfo.getAddr()){
-				return 1;
-			}else if(this.addr<acquisitionItemInfo.getAddr()){
-				return -1;
-			}else{
-				if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
-					return 1;
+			if(this.type==0 && acquisitionItemInfo.getType()==0){
+				if(this.addr>acquisitionItemInfo.getAddr()){
+					r= 1;
+				}else if(this.addr<acquisitionItemInfo.getAddr()){
+					r= -1;
 				}else{
-					return -1;
+					if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
+						r= 1;
+					}else{
+						r= -1;
+					}
 				}
 			}
 		}
+		return r;
 	}
 
 

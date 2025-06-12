@@ -2,11 +2,7 @@ package com.cosog.model.drive;
 
 import java.util.List;
 
-import com.cosog.model.drive.ModbusProtocolConfig.Items;
-import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
 import com.cosog.utils.StringManagerUtils;
-
-import java.util.ArrayList;
 
 public class ModbusDriverSaveData {
 
@@ -19,6 +15,8 @@ public class ModbusDriverSaveData {
 	private List<String> delidslist;
 
     private List<DataConfig> DataConfig;
+	
+	private List<ExtendedFieldConfig> ExtendedFieldConfig;
     
     public void setProtocolName(String ProtocolName){
         this.ProtocolName = ProtocolName;
@@ -237,6 +235,82 @@ public class ModbusDriverSaveData {
 			Prec = prec;
 		}
 	}
+	
+	public static class ExtendedFieldConfig
+	{
+	    
+	    private String Title;
+	    
+	    private String Title1;
+	    
+	    private String Title2;
+	    
+	    private String Operation;
+	    
+	    private float Ratio=1;
+	    
+	    private int Prec=0;
+	    
+	    private String Unit;
+
+		public String getTitle() {
+			return Title;
+		}
+
+		public void setTitle(String title) {
+			Title = title;
+		}
+
+		public String getTitle1() {
+			return Title1;
+		}
+
+		public void setTitle1(String title1) {
+			Title1 = title1;
+		}
+
+		public String getTitle2() {
+			return Title2;
+		}
+
+		public void setTitle2(String title2) {
+			Title2 = title2;
+		}
+
+		public String getOperation() {
+			return Operation;
+		}
+
+		public void setOperation(String operation) {
+			Operation = operation;
+		}
+
+		public float getRatio() {
+			return Ratio;
+		}
+
+		public void setRatio(float ratio) {
+			Ratio = ratio;
+		}
+
+		public int getPrec() {
+			return Prec;
+		}
+
+		public void setPrec(int prec) {
+			Prec = prec;
+		}
+
+		public String getUnit() {
+			return Unit;
+		}
+
+		public void setUnit(String unit) {
+			Unit = unit;
+		}
+	}
+	
+	
 	public String getProtocolCode() {
 		return ProtocolCode;
 	}
@@ -254,5 +328,11 @@ public class ModbusDriverSaveData {
 	}
 	public void setSort(String sort) {
 		Sort = sort;
+	}
+	public List<ExtendedFieldConfig> getExtendedFieldConfig() {
+		return ExtendedFieldConfig;
+	}
+	public void setExtendedFieldConfig(List<ExtendedFieldConfig> extendedFieldConfig) {
+		ExtendedFieldConfig = extendedFieldConfig;
 	}
 }

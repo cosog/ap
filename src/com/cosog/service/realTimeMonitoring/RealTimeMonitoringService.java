@@ -504,6 +504,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			List<DataitemsInfo> protocolItems=new ArrayList<>();
+			List<DataitemsInfo> protocolExtendedFieldList=new ArrayList<>();
 			List<DataitemsInfo> displayCalItemList=new ArrayList<>();
 			List<DataitemsInfo> displayInputItemList=new ArrayList<>();
 			List<DataitemsInfo> dailyTotalCalItemMap=new ArrayList<>();
@@ -529,6 +530,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						displayCalItemList.add(dataitemsInfo);
 					}else if(dataitemsInfo.getDataSource()==2){
 						displayInputItemList.add(dataitemsInfo);
+					}else if(dataitemsInfo.getDataSource()==5){
+						protocolExtendedFieldList.add(dataitemsInfo);
 					}
 				}
 			}
@@ -688,11 +691,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"commissioningDate\":\""+obj[13]+"\",");
 				result_json.append("\"operatingDays\":\""+obj[14]+"\",");
 				
+				type = new TypeToken<List<KeyValue>>() {}.getType();
+				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
 				if(userInfo!=null && protocol!=null){
-
-				
-					
-					
 					//采集项
 					
 					
@@ -717,6 +718,154 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 //							}
 //						}
 //					}
+				}
+				
+				if(protocolItems.size()>0){
+					if(acqDataList!=null){
+						for(KeyValue keyValue:acqDataList){
+							for(DataitemsInfo dataitemsInfo: protocolItems){
+								String columnName=dataitemsInfo.getName_zh_CN();
+								if("en".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_en();
+								}else if("ru".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_ru();
+								}
+								String column=dataitemsInfo.getCode();
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
+								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
+									String rawColumnName=columnName;
+									String value=keyValue.getValue();
+									String rawValue=value;
+									String addr=item.getAddr()+"";
+									String columnDataType=item.getIFDataType();
+									String resolutionMode=item.getResolutionMode()+"";
+									String bitIndex="";
+									String unit=item.getUnit();
+									int sort=dataitemsInfo.getSorts();
+									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+											||"float32".equalsIgnoreCase(item.getIFDataType())
+											||"float64".equalsIgnoreCase(item.getIFDataType())){
+										if(value.toUpperCase().contains("E")){
+						                 	value=StringManagerUtils.scientificNotationToNormal(value);
+						                 }
+									}
+									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
+										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+													value=item.getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+										}
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}else if(item.getResolutionMode()==0){//如果是开关量
+										boolean isMatch=false;
+										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+											String[] valueArr=value.split(",");
+											for(int l=0;l<item.getMeaning().size();l++){
+												columnName=item.getMeaning().get(l).getMeaning();
+												sort=dataitemsInfo.getSorts();
+												if(StringManagerUtils.isNotNull(value)){
+													boolean match=false;
+													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+														if(m==item.getMeaning().get(l).getValue()){
+															bitIndex=m+"";
+															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															}else{
+																value=valueArr[m];
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															match=true;
+															break;
+														}
+													}
+													if(!match){
+														value="";
+														rawValue="";
+														bitIndex=item.getMeaning().get(l).getValue()+"";
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+													}
+												}else{
+													value="";
+													rawValue="";
+													bitIndex=item.getMeaning().get(l).getValue()+"";
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+													protocolItemResolutionDataList.add(protocolItemResolutionData);
+												}
+											}
+										}else{
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											protocolItemResolutionDataList.add(protocolItemResolutionData);
+										}
+									}else{//如果是数据量
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									} 
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+					if(acqDataList!=null){
+						for(int j=0;j<protocolExtendedFieldList.size();j++){
+							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
+							if("en".equalsIgnoreCase(language)){
+								title=protocolExtendedFieldList.get(j).getName_en();
+							}else if("ru".equalsIgnoreCase(language)){
+								title=protocolExtendedFieldList.get(j).getName_ru();
+							}
+							title=title.replaceAll("（", "(");
+							if(title.contains("(")){
+								title=title.split("\\(")[0];
+							}
+							
+							for(ModbusProtocolConfig.ExtendedField extendedField: protocol.getExtendedFields()){
+								if(title.equalsIgnoreCase(extendedField.getTitle())){
+									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
+									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
+									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
+									String extendedFieldValue="";
+									int sort=protocolExtendedFieldList.get(j).getSorts();
+									String itemUnit=extendedField.getUnit();
+									String extendedFieldColumn="extendedFieldColumn"+(j+1);
+									
+									for(KeyValue keyValue:acqDataList){
+										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
+											extendedFieldValue=keyValue.getValue();
+											break;
+										}
+									}
+									result_json.append("\""+extendedFieldColumn+"\":\""+extendedFieldValue+"\",");
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+											extendedField.getTitle(),
+											extendedField.getTitle(),
+											extendedFieldValue,
+											extendedFieldValue,
+											"",
+											extendedFieldCode,
+											"",
+											"",
+											"",
+											extendedField.getUnit(),
+											sort,
+											5);
+									protocolItemResolutionDataList.add(protocolItemResolutionData);
+									break;
+								}
+							}
+						}
+					}
 				}
 				
 				if(displayCalItemList.size()>0){
@@ -958,103 +1107,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
-				if(protocolItems.size()>0){
-					type = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-					if(acqDataList!=null){
-						for(KeyValue keyValue:acqDataList){
-							for(DataitemsInfo dataitemsInfo: protocolItems){
-								String columnName=dataitemsInfo.getName_zh_CN();
-								if("en".equalsIgnoreCase(language)){
-									columnName=dataitemsInfo.getName_en();
-								}else if("ru".equalsIgnoreCase(language)){
-									columnName=dataitemsInfo.getName_ru();
-								}
-								String column=dataitemsInfo.getCode();
-								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
-								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-									String rawColumnName=columnName;
-									String value=keyValue.getValue();
-									String rawValue=value;
-									String addr=item.getAddr()+"";
-									String columnDataType=item.getIFDataType();
-									String resolutionMode=item.getResolutionMode()+"";
-									String bitIndex="";
-									String unit=item.getUnit();
-									int sort=dataitemsInfo.getSorts();
-									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
-											||"float32".equalsIgnoreCase(item.getIFDataType())
-											||"float64".equalsIgnoreCase(item.getIFDataType())){
-										if(value.toUpperCase().contains("E")){
-						                 	value=StringManagerUtils.scientificNotationToNormal(value);
-						                 }
-									}
-									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-											for(int l=0;l<item.getMeaning().size();l++){
-												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-													value=item.getMeaning().get(l).getMeaning();
-													break;
-												}
-											}
-										}
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									}else if(item.getResolutionMode()==0){//如果是开关量
-										boolean isMatch=false;
-										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
-											for(int l=0;l<item.getMeaning().size();l++){
-												columnName=item.getMeaning().get(l).getMeaning();
-												sort=dataitemsInfo.getSorts();
-												if(StringManagerUtils.isNotNull(value)){
-													boolean match=false;
-													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
-														if(m==item.getMeaning().get(l).getValue()){
-															bitIndex=m+"";
-															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-															}else{
-																value=valueArr[m];
-															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-															protocolItemResolutionDataList.add(protocolItemResolutionData);
-															match=true;
-															break;
-														}
-													}
-													if(!match){
-														value="";
-														rawValue="";
-														bitIndex=item.getMeaning().get(l).getValue()+"";
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-													}
-												}else{
-													value="";
-													rawValue="";
-													bitIndex=item.getMeaning().get(l).getValue()+"";
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-													protocolItemResolutionDataList.add(protocolItemResolutionData);
-												}
-											}
-										}else{
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-										}
-									}else{//如果是数据量
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									} 
-									break;
-								}
-							}
-						}
-					}
-					
-				}
-				
 //				if(dailyTotalCalItemMap.size()>0){
 //					String dailyTotalDatasql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 //							+ "t.itemcolumn,t.itemname,"
@@ -1228,7 +1280,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public boolean exportDeviceOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
+	public boolean exportDeviceOverviewData(User user,HttpServletResponse response,String fileName,String sheetName,String head,String field,
 			String orgId,String deviceName,
 			String deviceType,String dictDeviceType,
 			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager,
@@ -1265,6 +1317,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			List<DataitemsInfo> protocolItems=new ArrayList<>();
+			List<DataitemsInfo> protocolExtendedFieldList=new ArrayList<>();
 			List<DataitemsInfo> displayCalItemList=new ArrayList<>();
 			List<DataitemsInfo> displayInputItemList=new ArrayList<>();
 			List<DataitemsInfo> dailyTotalCalItemMap=new ArrayList<>();
@@ -1290,6 +1343,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						displayCalItemList.add(dataitemsInfo);
 					}else if(dataitemsInfo.getDataSource()==2){
 						displayInputItemList.add(dataitemsInfo);
+					}else if(dataitemsInfo.getDataSource()==5){
+						protocolExtendedFieldList.add(dataitemsInfo);
 					}
 				}
 			}
@@ -1438,6 +1493,157 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				result_json.append("\"commissioningDate\":\""+obj[13]+"\",");
 				result_json.append("\"operatingDays\":\""+obj[14]+"\",");
+				
+				type = new TypeToken<List<KeyValue>>() {}.getType();
+				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+				if(protocolItems.size()>0){
+					if(acqDataList!=null){
+						for(KeyValue keyValue:acqDataList){
+							for(DataitemsInfo dataitemsInfo: protocolItems){
+								String columnName=dataitemsInfo.getName_zh_CN();
+								if("en".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_en();
+								}else if("ru".equalsIgnoreCase(language)){
+									columnName=dataitemsInfo.getName_ru();
+								}
+								String column=dataitemsInfo.getCode();
+								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
+								
+								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
+									String rawColumnName=columnName;
+									String value=keyValue.getValue();
+									String rawValue=value;
+									String addr=item.getAddr()+"";
+									String columnDataType=item.getIFDataType();
+									String resolutionMode=item.getResolutionMode()+"";
+									String bitIndex="";
+									String unit=item.getUnit();
+									int sort=dataitemsInfo.getSorts();
+									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+											||"float32".equalsIgnoreCase(item.getIFDataType())
+											||"float64".equalsIgnoreCase(item.getIFDataType())){
+										if(value.toUpperCase().contains("E")){
+						                 	value=StringManagerUtils.scientificNotationToNormal(value);
+						                 }
+									}
+									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
+										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+													value=item.getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+										}
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									}else if(item.getResolutionMode()==0){//如果是开关量
+										boolean isMatch=false;
+										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
+											String[] valueArr=value.split(",");
+											for(int l=0;l<item.getMeaning().size();l++){
+												columnName=item.getMeaning().get(l).getMeaning();
+												sort=dataitemsInfo.getSorts();
+												if(StringManagerUtils.isNotNull(value)){
+													boolean match=false;
+													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+														if(m==item.getMeaning().get(l).getValue()){
+															bitIndex=m+"";
+															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															}else{
+																value=valueArr[m];
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															match=true;
+															break;
+														}
+													}
+													if(!match){
+														value="";
+														rawValue="";
+														bitIndex=item.getMeaning().get(l).getValue()+"";
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+													}
+												}else{
+													value="";
+													rawValue="";
+													bitIndex=item.getMeaning().get(l).getValue()+"";
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+													protocolItemResolutionDataList.add(protocolItemResolutionData);
+												}
+											}
+										}else{
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											protocolItemResolutionDataList.add(protocolItemResolutionData);
+										}
+									}else{//如果是数据量
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										protocolItemResolutionDataList.add(protocolItemResolutionData);
+									} 
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+					if(acqDataList!=null){
+						for(int j=0;j<protocolExtendedFieldList.size();j++){
+							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
+							if("en".equalsIgnoreCase(language)){
+								title=protocolExtendedFieldList.get(j).getName_en();
+							}else if("ru".equalsIgnoreCase(language)){
+								title=protocolExtendedFieldList.get(j).getName_ru();
+							}
+							title=title.replaceAll("（", "(");
+							if(title.contains("(")){
+								title=title.split("\\(")[0];
+							}
+							
+							for(ModbusProtocolConfig.ExtendedField extendedField: protocol.getExtendedFields()){
+								if(title.equalsIgnoreCase(extendedField.getTitle())){
+									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
+									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
+									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
+									String extendedFieldValue="";
+									int sort=protocolExtendedFieldList.get(j).getSorts();
+									String itemUnit=extendedField.getUnit();
+									String extendedFieldColumn="extendedFieldColumn"+(j+1);
+									
+									for(KeyValue keyValue:acqDataList){
+										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
+											extendedFieldValue=keyValue.getValue();
+											break;
+										}
+									}
+									result_json.append("\""+extendedFieldColumn+"\":\""+extendedFieldValue+"\",");
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+											extendedField.getTitle(),
+											extendedField.getTitle(),
+											extendedFieldValue,
+											extendedFieldValue,
+											"",
+											extendedFieldCode,
+											"",
+											"",
+											"",
+											extendedField.getUnit(),
+											sort,
+											5);
+									protocolItemResolutionDataList.add(protocolItemResolutionData);
+									break;
+								}
+							}
+						}
+					}
+				}
 				
 				if(displayCalItemList.size()>0){
 					List<DataitemsInfo> deviceCalItemList=new ArrayList<>();
@@ -1669,102 +1875,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
-				if(protocolItems.size()>0){
-					type = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-					if(acqDataList!=null){
-						for(KeyValue keyValue:acqDataList){
-							for(DataitemsInfo dataitemsInfo: protocolItems){
-								String columnName=dataitemsInfo.getName_zh_CN();
-								if("en".equalsIgnoreCase(language)){
-									columnName=dataitemsInfo.getName_en();
-								}else if("ru".equalsIgnoreCase(language)){
-									columnName=dataitemsInfo.getName_ru();
-								}
-								String column=dataitemsInfo.getCode();
-								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(column)!=null?loadProtocolMappingColumnMap.get(column).getName():columnName);
-								
-								if(item!=null && StringManagerUtils.isNotNull(column) && column.equalsIgnoreCase(keyValue.getKey())){
-									String rawColumnName=columnName;
-									String value=keyValue.getValue();
-									String rawValue=value;
-									String addr=item.getAddr()+"";
-									String columnDataType=item.getIFDataType();
-									String resolutionMode=item.getResolutionMode()+"";
-									String bitIndex="";
-									String unit=item.getUnit();
-									int sort=dataitemsInfo.getSorts();
-									if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
-											||"float32".equalsIgnoreCase(item.getIFDataType())
-											||"float64".equalsIgnoreCase(item.getIFDataType())){
-										if(value.toUpperCase().contains("E")){
-						                 	value=StringManagerUtils.scientificNotationToNormal(value);
-						                 }
-									}
-									if(item.getResolutionMode()==1||item.getResolutionMode()==2){//如果是枚举量
-										if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-											for(int l=0;l<item.getMeaning().size();l++){
-												if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-													value=item.getMeaning().get(l).getMeaning();
-													break;
-												}
-											}
-										}
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									}else if(item.getResolutionMode()==0){//如果是开关量
-										boolean isMatch=false;
-										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
-											for(int l=0;l<item.getMeaning().size();l++){
-												columnName=item.getMeaning().get(l).getMeaning();
-												sort=dataitemsInfo.getSorts();
-												if(StringManagerUtils.isNotNull(value)){
-													boolean match=false;
-													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
-														if(m==item.getMeaning().get(l).getValue()){
-															bitIndex=m+"";
-															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-															}else{
-																value=valueArr[m];
-															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-															protocolItemResolutionDataList.add(protocolItemResolutionData);
-															match=true;
-															break;
-														}
-													}
-													if(!match){
-														value="";
-														rawValue="";
-														bitIndex=item.getMeaning().get(l).getValue()+"";
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-													}
-												}else{
-													value="";
-													rawValue="";
-													bitIndex=item.getMeaning().get(l).getValue()+"";
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
-													protocolItemResolutionDataList.add(protocolItemResolutionData);
-												}
-											}
-										}else{
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-										}
-									}else{//如果是数据量
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									} 
-									break;
-								}
-							}
-						}
-					}
-				}
+				
 				
 				//附加信息
 				if(addInfoDataItemList.size()>0){
@@ -1842,10 +1953,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				sheetDataList.add(record);
 			}
-			ExcelUtils.export(response,fileName,title, sheetDataList,1);
+			ExcelUtils.export(response,fileName,sheetName, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+sheetName);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -4379,23 +4490,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			
-//			List<String> itemNameList=new ArrayList<String>();
 			List<String> acqItemColumnList=new ArrayList<String>();
-//			List<String> curveConfList=new ArrayList<String>();
-//			List<Integer> curveSortConfList=new ArrayList<>();
-//			List<List<String>> curveDataList=new ArrayList<>();
-//			
-//			List<String> calItemNameList=new ArrayList<String>();
+			List<String> extendedFieldColumnList=new ArrayList<String>();
 			List<String> calItemColumnList=new ArrayList<String>();
-//			List<String> calItemCurveConfList=new ArrayList<String>();
-//			List<Integer> calItemCurveSortConfList=new ArrayList<>();
-//			List<List<String>> calItemCurveDataList=new ArrayList<>();
-//			
-//			List<String> inputItemNameList=new ArrayList<String>();
 			List<String> inputItemColumnList=new ArrayList<String>();
-//			List<String> inputItemCurveConfList=new ArrayList<String>();
-//			List<Integer> inputItemCurveSortConfList=new ArrayList<>();
-//			List<List<String>> inputItemCurveDataList=new ArrayList<>();
 			
 			
 			List<String> acqTimeList=new ArrayList<>();
@@ -4468,6 +4566,29 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
 										curveDataMap.put(sort, new ArrayList<>());
 										break;
+									}
+								}
+							}else if("5".equalsIgnoreCase(type)){
+								if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
+									for(int k=0;k<protocol.getExtendedFields().size();k++){
+										if(protocol.getExtendedFields().get(k).getTitle().equalsIgnoreCase(itemname)){
+											DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(k).getTitle1());
+											DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(k).getTitle2());
+											String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+											String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+											String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(k).getOperation()).toUpperCase();
+											
+											if(StringManagerUtils.isNotNull(protocol.getExtendedFields().get(k).getUnit())){
+												itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle()+"("+protocol.getExtendedFields().get(k).getUnit()+")");
+											}else{
+												itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle());
+											}
+											itemCodeSortMap.put(extendedFieldCode, sort);
+											extendedFieldColumnList.add(extendedFieldCode);
+											curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
+											curveDataMap.put(sort, new ArrayList<>());
+											break;
+										}
 									}
 								}
 							}else if("1".equalsIgnoreCase(type)){
@@ -4564,7 +4685,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 						calAndInputDataTable="tbl_pcpacqdata_hist";
 					}
-					if(acqItemColumnList.size()>0){
+					if(acqItemColumnList.size()>0 || extendedFieldColumnList.size()>0){
 						columns+=",t.acqdata";
 					}
 					if(StringManagerUtils.stringToInteger(calculateType)>0){
@@ -4602,7 +4723,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						acqTimeList.add(obj[0]+"");
 						
 						int startIndex=1;
-						if(acqItemColumnList.size()>0){
+						if(acqItemColumnList.size()>0 || extendedFieldColumnList.size()>0){
 							startIndex=2;
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
@@ -4625,8 +4746,23 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						    	}
 						    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(value);
 							}
+							
+							for(String itemColumn:extendedFieldColumnList){
+								String value="";
+								if(acqDataList!=null){
+									for(KeyValue keyValue:acqDataList){
+										if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+											value=keyValue.getValue();
+											break;
+										}
+									}
+								}
+								if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
+						    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
+						    	}
+						    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(value);
+							}
 						}
-						
 						
 						for(int j=startIndex;j<startIndex+calItemColumnList.size();j++){
 							String value=obj[j]+"";

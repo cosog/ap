@@ -270,17 +270,28 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(name);
 						if(dataMapping!=null){
 							dinfo.setCode(dataMapping.getMappingColumn());
-							if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
-								dinfo.setName_en(dinfo.getName_zh_CN());
-								dinfo.setName_ru(dinfo.getName_zh_CN());
-							}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
-								dinfo.setName_zh_CN(dinfo.getName_en());
-								dinfo.setName_ru(dinfo.getName_en());
-							}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
-								dinfo.setName_zh_CN(dinfo.getName_ru());
-								dinfo.setName_en(dinfo.getName_ru());
-							}
 						}
+					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_en(dinfo.getName_zh_CN());
+						dinfo.setName_ru(dinfo.getName_zh_CN());
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_en());
+						dinfo.setName_ru(dinfo.getName_en());
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_ru());
+						dinfo.setName_en(dinfo.getName_ru());
+					}
+				}else if(dinfo.getDataSource()==5){
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_en(dinfo.getName_zh_CN());
+						dinfo.setName_ru(dinfo.getName_zh_CN());
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_en());
+						dinfo.setName_ru(dinfo.getName_en());
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_ru());
+						dinfo.setName_en(dinfo.getName_ru());
 					}
 				}
 			}else{
@@ -461,6 +472,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				Map<String, List<DataDictionary>> map = DataDicUtils.initData(dataWhereList,language);// 把集合中含有多表头信息的数据封装在Map集合了里
 				TreeMap<String, List<DataDictionary>> treemap = new TreeMap<String, List<DataDictionary>>(map);
 				int addInfoIndex=0;
+				int extendedFieldIndex=0;
 				for (DataitemsInfo dataInfo : dataWhereList) {
 					int columnDataSource=dataInfo.getColumnDataSource();
 					String dataCode = columnDataSource!=2?(dataInfo.getCode()!=null?dataInfo.getCode():""):"";// 字典英文名称对应数据库中的字段信息
@@ -492,6 +504,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
 								header+="("+calItem.getUnit()+")";
 							}
+						}else if(dataInfo.getDataSource()==5){
+							extendedFieldIndex++;
+							enameField="extendedFieldColumn"+extendedFieldIndex;
 						}else{
 //							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 //							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);

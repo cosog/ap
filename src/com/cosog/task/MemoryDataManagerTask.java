@@ -4155,6 +4155,19 @@ public class MemoryDataManagerTask {
 		return rtnItem;
 	}
 	
+	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedField(ModbusProtocolConfig.Protocol protocol,String itemName){
+		ModbusProtocolConfig.ExtendedField r=null;
+		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
+			for(ModbusProtocolConfig.ExtendedField extendedField:protocol.getExtendedFields()){
+				if(itemName.equalsIgnoreCase(extendedField.getTitle())){
+					r=extendedField;
+					break;
+				}
+			}
+		}
+		return r;
+	}
+	
 	public static ModbusProtocolConfig.Protocol getProtocolByCode(String protocolCode){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;

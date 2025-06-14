@@ -300,7 +300,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"title2\":\""+protocolConfig.getExtendedFields().get(j).getTitle2()+"\","
 						+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
 						+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
-						+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\""
+						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\""
 						+ "},");
 				
 			}
@@ -13793,6 +13793,47 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
+	}
+	
+	public String getProtocolExtendedFieldItems(String protocolCode,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		
+		String columns="["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "]";
+		
+		List<ModbusProtocolConfig.Items> itemList=new ArrayList<>();
+		if(protocol!=null){
+			for(int i=0;i<protocol.getItems().size();i++){
+				if(protocol.getItems().get(i).getResolutionMode()==2 
+						&& (protocol.getItems().get(i).getIFDataType().contains("int") || protocol.getItems().get(i).getIFDataType().contains("float") )
+						&& protocol.getItems().get(i).getQuantity()==1
+						&& !"w".equalsIgnoreCase(protocol.getItems().get(i).getRWType())
+						){
+					itemList.add(protocol.getItems().get(i));
+				}
+			}
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":" + itemList.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
+		
+		for(int i=0;i<itemList.size();i++){
+			DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(itemList.get(i).getTitle());
+			result_json.append("{\"id\":\""+(i+1)+"\",");
+			result_json.append("\"itemName\":\""+itemList.get(i).getTitle()+"\",");
+			result_json.append("\"itemColumn\":\""+(dataMapping!=null?dataMapping.getMappingColumn():"")+"\"},");
+		}
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public void doModbusProtocolDisplayInstanceAdd(ProtocolDisplayInstance protocolDisplayInstance) throws Exception {

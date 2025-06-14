@@ -156,7 +156,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
 				beforeload : function(store, options) {
 					var new_params = {
 							itemCode: 'DATASOURCE',
-							values: '0,1,2'
+							values: '0,1,2,5'
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}

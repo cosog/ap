@@ -7183,6 +7183,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolExtendedFieldItems")
+	public String getProtocolExtendedFieldItems() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.acquisitionUnitManagerService.getProtocolExtendedFieldItems(protocolCode,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getLimit() {
 		return limit;
 	}

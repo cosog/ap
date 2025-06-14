@@ -1205,7 +1205,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	        	protocolExtendedFieldConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,200,200,200,80,80,80,80],
+	        		colWidths: [50,200,200,80,200,80,80,80],
 	                columns:protocolExtendedFieldConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1266,6 +1266,20 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    return cellProperties;
+	                },
+	                afterBeginEditing: function (row, column) {
+	                	var cellMeta = protocolExtendedFieldConfigHandsontableHelper.hot.getCellMeta(row, column);
+	                	var selectedItemName=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtCell(row, column);
+	                	if(cellMeta.prop.toUpperCase()=='title1'.toUpperCase() || cellMeta.prop.toUpperCase()=='title2'.toUpperCase()){
+	                		var record= Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];//record.data.text,record.data.classes,record.data.code
+	                		if(record.data.classes==1){
+	                			var ProtocolExtendedFieldSelectWindow = Ext.create("AP.view.acquisitionUnit.ProtocolExtendedFieldSelectWindow");
+	                			ProtocolExtendedFieldSelectWindow.show();
+	                			Ext.getCmp("protocolExtendedFieldSelectedRow_Id").setValue(row);
+                                Ext.getCmp("protocolExtendedFieldSelectedCol_Id").setValue(column);
+                                Ext.getCmp("protocolExtendedFieldSelectedItemName_Id").setValue(selectedItemName);
+	                		}
+	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && protocolExtendedFieldConfigHandsontableHelper!=null&&protocolExtendedFieldConfigHandsontableHelper.hot!=''&&protocolExtendedFieldConfigHandsontableHelper.hot!=undefined && protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtCell!=undefined){

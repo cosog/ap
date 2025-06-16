@@ -3281,7 +3281,7 @@ public class WellInformationManagerController extends BaseController {
 		try {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
@@ -3793,7 +3793,7 @@ public class WellInformationManagerController extends BaseController {
 			
 			DataMapping dataMapping=null;
 			String col="";
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();

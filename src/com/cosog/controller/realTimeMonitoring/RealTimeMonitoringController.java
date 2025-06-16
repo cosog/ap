@@ -452,7 +452,7 @@ public class RealTimeMonitoringController extends BaseController {
 		try {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
@@ -808,7 +808,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		
 		String deviceTableName="tbl_device";
 		

@@ -488,6 +488,9 @@ public class EquipmentDriverServerTask {
 	public static int syncDataMappingTable(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		List<String> acquisitionItemNameList=MemoryDataManagerTask.getAcquisitionItemNameList();
+		List<String> protocolExtendedFieldNameList=MemoryDataManagerTask.getProtocolExtendedFieldNameList();
+		
+		
 		int result=0;
 		try {
 			//删除重复映射
@@ -517,7 +520,7 @@ public class EquipmentDriverServerTask {
 			try {
 				String delSql="";
 				List<String> itemNameList=new ArrayList<>();
-				String queryItemSql="select t.name from TBL_DATAMAPPING t";
+				String queryItemSql="select t.name from TBL_DATAMAPPING t where upper(t.mappingcolumn) like 'C_CLOUMN%'";
 				
 				List<Object[]> queryItemList=OracleJdbcUtis.query(queryItemSql);
 				for(int i=0;i<queryItemList.size();i++){
@@ -526,7 +529,27 @@ public class EquipmentDriverServerTask {
 				
 				for(String itemName:itemNameList){
 					if(!StringManagerUtils.existOrNot(acquisitionItemNameList, itemName, true)){
-						delSql="delete from tbl_datamapping t where t.name='"+itemName+"'";
+						delSql="delete from tbl_datamapping t "
+								+ " where t.name='"+itemName+"'"
+								+ " and upper(t.mappingcolumn) like 'C_CLOUMN%'";
+						result=OracleJdbcUtis.executeSqlUpdate(delSql);
+					}
+				}
+				
+				//拓展字段
+				itemNameList=new ArrayList<>();
+				queryItemSql="select t.name from TBL_DATAMAPPING t where upper(t.mappingcolumn) like 'EXTENDEDFIELD_CLOUMN%'";
+				
+				queryItemList=OracleJdbcUtis.query(queryItemSql);
+				for(int i=0;i<queryItemList.size();i++){
+					itemNameList.add(queryItemList.get(i)[0]+"");
+				}
+				
+				for(String itemName:itemNameList){
+					if(!StringManagerUtils.existOrNot(protocolExtendedFieldNameList, itemName, true)){
+						delSql="delete from tbl_datamapping t "
+								+ " where t.name='"+itemName+"'"
+								+ " and upper(t.mappingcolumn) like 'EXTENDEDFIELD_CLOUMN%'";
 						result=OracleJdbcUtis.executeSqlUpdate(delSql);
 					}
 				}
@@ -535,8 +558,10 @@ public class EquipmentDriverServerTask {
 			}
 
 			//添加映射
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			
 			for(int i=0;i<acquisitionItemNameList.size();i++){
 				if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnByTitleMap, acquisitionItemNameList.get(i),false)){
 					String addMappingColumn="C_CLOUMN";
@@ -554,8 +579,33 @@ public class EquipmentDriverServerTask {
 						index++;
 					}
 					
-					if(StringManagerUtils.isNotNull(addMappingColumn)){
+					if(!"C_CLOUMN".equalsIgnoreCase(addMappingColumn)){
 						String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+acquisitionItemNameList.get(i)+"','"+addMappingColumn+"')";
+						result=OracleJdbcUtis.executeSqlUpdate(addSql);
+					}
+				}
+			}
+			
+			//拓展字段映射
+			for(int i=0;i<protocolExtendedFieldNameList.size();i++){
+				if(!StringManagerUtils.dataMappingKeyExistOrNot(protocolExtendedFieldColumnByTitleMap, protocolExtendedFieldNameList.get(i),false)){
+					String addMappingColumn="EXTENDEDFIELD_CLOUMN";
+					int index=1;
+					while(true){
+						if(!StringManagerUtils.dataMappingKeyExistOrNot(loadProtocolMappingColumnMap, addMappingColumn+index,false)){
+							addMappingColumn=addMappingColumn+index;
+							DataMapping dataMapping=new DataMapping();
+							dataMapping.setName(protocolExtendedFieldNameList.get(i));
+							dataMapping.setMappingColumn(addMappingColumn);
+							loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
+							protocolExtendedFieldColumnByTitleMap.put(dataMapping.getName(), dataMapping);
+							break;
+						}
+						index++;
+					}
+					
+					if(!"EXTENDEDFIELD_CLOUMN".equalsIgnoreCase(addMappingColumn)){
+						String addSql="insert into tbl_datamapping(name,mappingcolumn) values('"+protocolExtendedFieldNameList.get(i)+"','"+addMappingColumn+"')";
 						result=OracleJdbcUtis.executeSqlUpdate(addSql);
 					}
 				}
@@ -563,7 +613,8 @@ public class EquipmentDriverServerTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		MemoryDataManagerTask.loadProtocolMappingColumnByTitle(0);
+		MemoryDataManagerTask.loadProtocolMappingColumnByTitle(1);
 		MemoryDataManagerTask.loadProtocolMappingColumn();
 		return result;
 	}
@@ -592,6 +643,7 @@ public class EquipmentDriverServerTask {
 
 	public static int loadAcquisitionItemColumns(){
 		MemoryDataManagerTask.loadAcquisitionItemNameList();
+		MemoryDataManagerTask.loadProtocolExtendedFieldNameList();
 		syncDataMappingTable();
 		return 0;
 	}

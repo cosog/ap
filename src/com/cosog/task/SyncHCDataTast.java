@@ -57,7 +57,7 @@ public class SyncHCDataTast {
 			}
 			
 			Gson gson = new Gson();
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			Map<String,String> HCMappingColumnMap=getFBMappingData();

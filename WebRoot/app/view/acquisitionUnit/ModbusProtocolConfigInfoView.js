@@ -859,6 +859,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 								var Unit=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit')+"";
 								Unit=Unit!=''?Unit.replace(/\s/g, ""):Unit;
 								extendedField.Unit=Unit;
+								extendedField.AdditionalConditions=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'additionalConditions');
 								
 								configInfo.ExtendedFieldConfig.push(extendedField);
 							}
@@ -1113,6 +1114,7 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 			if(protocolExtendedFieldConfigHandsontableHelper==null || protocolExtendedFieldConfigHandsontableHelper.hot==undefined){
 				protocolExtendedFieldConfigHandsontableHelper = ProtocolExtendedFieldConfigHandsontableHelper.createNew("ProtocolExtendedFieldTableInfoDiv_id");
 				var operationList=result.operationList;
+				var additionalConditionsList=result.additionalConditionsList;
 				var colHeaders=[
 					loginUserLanguageResource.idx,
 					loginUserLanguageResource.name,
@@ -1121,7 +1123,8 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 					loginUserLanguageResource.dataColumn+'2',
 					loginUserLanguageResource.prec,
 					loginUserLanguageResource.ratio,
-					loginUserLanguageResource.unit
+					loginUserLanguageResource.unit,
+					loginUserLanguageResource.additionalConditions
 					];
 				
 				var columns=[{
@@ -1154,6 +1157,12 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				    }
 				}, {
 				    data: 'unit'
+				}, {
+				    data: 'additionalConditions',
+				    type: 'dropdown',
+				    strict: true,
+				    allowInvalid: false,
+				    source: additionalConditionsList
 				}];
 				
 				protocolExtendedFieldConfigHandsontableHelper.colHeaders=colHeaders;
@@ -1205,7 +1214,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	        	protocolExtendedFieldConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,200,200,80,200,80,80,80],
+	        		colWidths: [50,200,200,80,200,80,80,80,150],
 	                columns:protocolExtendedFieldConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

@@ -421,7 +421,7 @@ public class MobileService<T> extends BaseService<T> {
 			DeviceInfo deviceInfo=null;
 			String deviceInfoKey="DeviceInfo";
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			
@@ -1195,7 +1195,7 @@ public class MobileService<T> extends BaseService<T> {
 			DeviceInfo deviceInfo=null;
 			String deviceInfoKey="DeviceInfo";
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
 			String realtimeTableName="tbl_acqdata_latest";
@@ -2307,7 +2307,7 @@ public class MobileService<T> extends BaseService<T> {
 				DeviceInfo deviceInfo=null;
 				String deviceInfoKey="DeviceInfo";
 				
-				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 				Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 				
 				String realtimeTableName="tbl_acqdata_latest";

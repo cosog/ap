@@ -256,9 +256,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer operationBuff = new StringBuffer();
+		StringBuffer additionalConditionsBuff = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("FOUROPERATION",language);
+		Map<String,Code> additionalConditionsCodeMap=MemoryDataManagerTask.getCodeMap("ADDITIONALCONDITIONS",language);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -267,7 +269,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"2"+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("additionalConditions")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] }"
 				+ "]";
 		
 		
@@ -283,8 +286,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		operationBuff.append("]");
 		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"operationList\":"+operationBuff+",");
 		
+		additionalConditionsBuff.append("[");
+		it = additionalConditionsCodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			additionalConditionsBuff.append("\""+c.getItemname()+"\",");
+		}
+		if(additionalConditionsBuff.toString().endsWith(",")){
+			additionalConditionsBuff.deleteCharAt(additionalConditionsBuff.length() - 1);
+		}
+		additionalConditionsBuff.append("]");
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"operationList\":"+operationBuff+",\"additionalConditionsList\":"+additionalConditionsBuff+",");
 		
 		result_json.append("\"totalRoot\":[");
 		
@@ -300,7 +315,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"title2\":\""+protocolConfig.getExtendedFields().get(j).getTitle2()+"\","
 						+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
 						+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
-						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\""
+						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+						+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
 						+ "},");
 				
 			}
@@ -1666,13 +1682,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				String  historyOverviewSort="";
 				boolean historyData=false;
 				
-				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
-				DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle1());
-				DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle2());
-				String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-				String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-				String extendedField=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocolConfig.getExtendedFields().get(j).getOperation()).toUpperCase();
-				
+				Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+				DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle());
+				String extendedField=dataMapping!=null?dataMapping.getMappingColumn():"";
 				checked=StringManagerUtils.existOrNot(itemsCodeList, extendedField,false);
 				if(checked){
 					for(int k=0;k<itemsList.size();k++){
@@ -3158,7 +3170,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		
 		List<CalItem> totalItemList=null;
 		try{
@@ -6955,7 +6967,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer calColumnNameBuff = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.calculateEnable from tbl_datamapping t where 1=1";
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
@@ -7019,7 +7031,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolRunStatusItems(String classes,String deviceType,String protocolCode,String language) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
@@ -7144,7 +7156,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
@@ -13799,7 +13811,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"

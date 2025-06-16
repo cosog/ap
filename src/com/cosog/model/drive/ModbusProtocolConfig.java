@@ -259,6 +259,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private String Title2;
 	    
 	    private int Operation;
+	    
+	    private int AdditionalConditions;
 
 		public String getTitle() {
 			return Title;
@@ -314,6 +316,14 @@ public class ModbusProtocolConfig implements Serializable{
 
 		public void setOperation(int operation) {
 			Operation = operation;
+		}
+
+		public int getAdditionalConditions() {
+			return AdditionalConditions;
+		}
+
+		public void setAdditionalConditions(int additionalConditions) {
+			AdditionalConditions = additionalConditions;
 		}
 	}
 }

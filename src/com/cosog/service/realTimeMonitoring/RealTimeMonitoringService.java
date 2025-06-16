@@ -479,7 +479,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String language=user!=null?user.getLanguageName():"";
 			int languageValue=user!=null?user.getLanguage():0;
 			int userNo=user!=null?user.getUserNo():0;
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -823,22 +824,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}else if("ru".equalsIgnoreCase(language)){
 								title=protocolExtendedFieldList.get(j).getName_ru();
 							}
-							title=title.replaceAll("（", "(");
-							if(title.contains("(")){
-								title=title.split("\\(")[0];
-							}
+							String extendedFieldCode=protocolExtendedFieldList.get(j).getCode();
 							
 							for(ModbusProtocolConfig.ExtendedField extendedField: protocol.getExtendedFields()){
-								if(title.equalsIgnoreCase(extendedField.getTitle())){
-									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
-									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
-									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
+								DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(extendedField.getTitle());
+								if(dataMapping!=null && extendedFieldCode.equalsIgnoreCase(dataMapping.getMappingColumn())){
 									String extendedFieldValue="";
 									int sort=protocolExtendedFieldList.get(j).getSorts();
 									String itemUnit=extendedField.getUnit();
-									String extendedFieldColumn="extendedFieldColumn"+(j+1);
 									
 									for(KeyValue keyValue:acqDataList){
 										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
@@ -846,7 +839,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											break;
 										}
 									}
-									result_json.append("\""+extendedFieldColumn+"\":\""+extendedFieldValue+"\",");
 									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
 											extendedField.getTitle(),
 											extendedField.getTitle(),
@@ -1294,7 +1286,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			String tableName="tbl_acqdata_latest";
@@ -1600,22 +1593,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}else if("ru".equalsIgnoreCase(language)){
 								title=protocolExtendedFieldList.get(j).getName_ru();
 							}
-							title=title.replaceAll("（", "(");
-							if(title.contains("(")){
-								title=title.split("\\(")[0];
-							}
+							String extendedFieldCode=protocolExtendedFieldList.get(j).getCode();
 							
 							for(ModbusProtocolConfig.ExtendedField extendedField: protocol.getExtendedFields()){
-								if(title.equalsIgnoreCase(extendedField.getTitle())){
-									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
-									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
-									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
+								DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(extendedField.getTitle());
+								if(dataMapping!=null && extendedFieldCode.equalsIgnoreCase(dataMapping.getMappingColumn())){
 									String extendedFieldValue="";
 									int sort=protocolExtendedFieldList.get(j).getSorts();
 									String itemUnit=extendedField.getUnit();
-									String extendedFieldColumn="extendedFieldColumn"+(j+1);
 									
 									for(KeyValue keyValue:acqDataList){
 										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
@@ -1623,7 +1608,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											break;
 										}
 									}
-									result_json.append("\""+extendedFieldColumn+"\":\""+extendedFieldValue+"\",");
 									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
 											extendedField.getTitle(),
 											extendedField.getTitle(),
@@ -2571,7 +2555,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			timeEfficiencyZoom=100;
 		}
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		try{
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -2642,17 +2627,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					//拓展字段
 					if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
 						for(int j=0;j<protocol.getExtendedFields().size();j++){
-							
-							DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle1());
-							DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle2());
-							String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-							String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-							String extendedField=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(j).getOperation()).toUpperCase();
-							
-							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-								if( extendedField.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
-									protocolExtendedFields.add(protocol.getExtendedFields().get(j));
-									break;
+							DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle());
+							if(dataMapping!=null){
+								String extendedField=dataMapping.getMappingColumn();
+								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+									if( extendedField.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
+										protocolExtendedFields.add(protocol.getExtendedFields().get(j));
+										break;
+									}
 								}
 							}
 						}
@@ -2894,40 +2876,38 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						if(protocolExtendedFields.size()>0){
 							if(acqDataList!=null){
 								for(ModbusProtocolConfig.ExtendedField extendedField: protocolExtendedFields){
-									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
-									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
-									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
-									String extendedFieldValue="";
-									int sort=9999;
-									for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-										if( extendedFieldCode.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
-											sort=displayInstanceOwnItem.getItemList().get(k).getRealtimeSort();
-											break;
+									DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(extendedField.getTitle());
+									if(dataMapping!=null){
+										String extendedFieldCode=dataMapping.getMappingColumn();
+										String extendedFieldValue="";
+										int sort=9999;
+										for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+											if( extendedFieldCode.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
+												sort=displayInstanceOwnItem.getItemList().get(k).getRealtimeSort();
+												break;
+											}
 										}
-									}
-									
-									
-									for(KeyValue keyValue:acqDataList){
-										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
-											extendedFieldValue=keyValue.getValue();
-											
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-													extendedField.getTitle(),
-													extendedField.getTitle(),
-													extendedFieldValue,
-													extendedFieldValue,
-													"",
-													extendedFieldCode,
-													"",
-													"",
-													"",
-													extendedField.getUnit(),
-													sort,
-													5);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-											break;
+										
+										for(KeyValue keyValue:acqDataList){
+											if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
+												extendedFieldValue=keyValue.getValue();
+												
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+														extendedField.getTitle(),
+														extendedField.getTitle(),
+														extendedFieldValue,
+														extendedFieldValue,
+														"",
+														extendedFieldCode,
+														"",
+														"",
+														"",
+														extendedField.getUnit(),
+														sort,
+														5);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+												break;
+											}
 										}
 									}
 								}
@@ -3394,7 +3374,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				timeEfficiencyZoom=100;
 			}
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -3465,17 +3446,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					//拓展字段
 					if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
 						for(int j=0;j<protocol.getExtendedFields().size();j++){
-							
-							DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle1());
-							DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle2());
-							String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-							String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-							String extendedField=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(j).getOperation()).toUpperCase();
-							
-							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-								if( extendedField.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
-									protocolExtendedFields.add(protocol.getExtendedFields().get(j));
-									break;
+							DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(j).getTitle());
+							if(dataMapping!=null){
+								String extendedField=dataMapping.getMappingColumn();
+								for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+									if( extendedField.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
+										protocolExtendedFields.add(protocol.getExtendedFields().get(j));
+										break;
+									}
 								}
 							}
 						}
@@ -3716,40 +3694,37 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						if(protocolExtendedFields.size()>0){
 							if(acqDataList!=null){
 								for(ModbusProtocolConfig.ExtendedField extendedField: protocolExtendedFields){
-									DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle1());
-									DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(extendedField.getTitle2());
-									String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-									String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-									String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+extendedField.getOperation()).toUpperCase();
-									String extendedFieldValue="";
-									int sort=9999;
-									for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-										if( extendedFieldCode.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
-											sort=displayInstanceOwnItem.getItemList().get(k).getRealtimeSort();
-											break;
+									DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(extendedField.getTitle());
+									if(dataMapping!=null){
+										String extendedFieldCode=dataMapping.getMappingColumn();
+										String extendedFieldValue="";
+										int sort=9999;
+										for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
+											if( extendedFieldCode.equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) ){
+												sort=displayInstanceOwnItem.getItemList().get(k).getRealtimeSort();
+												break;
+											}
 										}
-									}
-									
-									
-									for(KeyValue keyValue:acqDataList){
-										if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
-											extendedFieldValue=keyValue.getValue();
-											
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-													extendedField.getTitle(),
-													extendedField.getTitle(),
-													extendedFieldValue,
-													extendedFieldValue,
-													"",
-													extendedFieldCode,
-													"",
-													"",
-													"",
-													extendedField.getUnit(),
-													sort,
-													5);
-											protocolItemResolutionDataList.add(protocolItemResolutionData);
-											break;
+										
+										for(KeyValue keyValue:acqDataList){
+											if(extendedFieldCode.equalsIgnoreCase(keyValue.getKey())){
+												extendedFieldValue=keyValue.getValue();
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+														extendedField.getTitle(),
+														extendedField.getTitle(),
+														extendedFieldValue,
+														extendedFieldValue,
+														"",
+														extendedFieldCode,
+														"",
+														"",
+														"",
+														extendedField.getUnit(),
+														sort,
+														5);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+												break;
+											}
 										}
 									}
 								}
@@ -4146,7 +4121,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String protocolName="";
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try{
 			try{
 				deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
@@ -4462,7 +4437,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -4572,21 +4548,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
 									for(int k=0;k<protocol.getExtendedFields().size();k++){
 										if(protocol.getExtendedFields().get(k).getTitle().equalsIgnoreCase(itemname)){
-											DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(k).getTitle1());
-											DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(k).getTitle2());
-											String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-											String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-											String extendedFieldCode=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(k).getOperation()).toUpperCase();
-											
-											if(StringManagerUtils.isNotNull(protocol.getExtendedFields().get(k).getUnit())){
-												itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle()+"("+protocol.getExtendedFields().get(k).getUnit()+")");
-											}else{
-												itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle());
+											DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(k).getTitle());
+											if(dataMapping!=null){
+												String extendedFieldCode=dataMapping.getMappingColumn();
+												if(StringManagerUtils.isNotNull(protocol.getExtendedFields().get(k).getUnit())){
+													itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle()+"("+protocol.getExtendedFields().get(k).getUnit()+")");
+												}else{
+													itemNameMap.put(sort, protocol.getExtendedFields().get(k).getTitle());
+												}
+												itemCodeSortMap.put(extendedFieldCode, sort);
+												extendedFieldColumnList.add(extendedFieldCode);
+												curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
+												curveDataMap.put(sort, new ArrayList<>());
 											}
-											itemCodeSortMap.put(extendedFieldCode, sort);
-											extendedFieldColumnList.add(extendedFieldCode);
-											curveConfMap.put(sort, realtimecurveconf.replaceAll("null", ""));
-											curveDataMap.put(sort, new ArrayList<>());
 											break;
 										}
 									}
@@ -4910,7 +4884,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");

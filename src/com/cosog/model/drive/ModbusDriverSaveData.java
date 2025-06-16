@@ -252,6 +252,8 @@ public class ModbusDriverSaveData {
 	    private int Prec=0;
 	    
 	    private String Unit;
+	    
+	    private String AdditionalConditions;
 
 		public String getTitle() {
 			return Title;
@@ -307,6 +309,14 @@ public class ModbusDriverSaveData {
 
 		public void setUnit(String unit) {
 			Unit = unit;
+		}
+
+		public String getAdditionalConditions() {
+			return AdditionalConditions;
+		}
+
+		public void setAdditionalConditions(String additionalConditions) {
+			AdditionalConditions = additionalConditions;
 		}
 	}
 	

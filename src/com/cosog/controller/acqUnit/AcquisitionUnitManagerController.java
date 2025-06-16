@@ -773,7 +773,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
@@ -906,7 +906,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
@@ -3006,6 +3006,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 									extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
 									extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
 									extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+									extendedField.setAdditionalConditions(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("ADDITIONALCONDITIONS", modbusDriverSaveData.getExtendedFieldConfig().get(j).getAdditionalConditions(), language)));
 									extendedFieldList.add(extendedField);
 								}
 								modbusProtocolConfig.getProtocol().get(i).setExtendedFields(extendedFieldList);

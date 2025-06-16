@@ -1373,7 +1373,8 @@ public class DriverAPIController extends BaseController{
 			List<ProtocolItemResolutionData> calItemResolutionDataList,
 			List<KeyValue> acqDataList){
 		List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		Map<String,String> acqDataMap=new LinkedHashMap<>();
 		
 		if(acqGroup!=null && protocol!=null && acqInstanceOwnItem!=null){
@@ -1519,49 +1520,59 @@ public class DriverAPIController extends BaseController{
 		
 		if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
 			for(int i=0;i<protocol.getExtendedFields().size();i++){
-				DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
-				DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle2());
-				String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-				String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-				String extendedField=("extended_"+mappingColumn1+"_"+mappingColumn2+"_"+protocol.getExtendedFields().get(i).getOperation()).toUpperCase();
-				String extendedFieldValue="";
-				if(acqDataMap.containsKey(mappingColumn1)){
-					String value1=acqDataMap.get(mappingColumn1);
-					extendedFieldValue=value1;
-					if(acqDataMap.containsKey(mappingColumn2)){
-						String value2=acqDataMap.get(mappingColumn2);
-						if(protocol.getExtendedFields().get(i).getOperation()==1){
-							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)+StringManagerUtils.stringToFloat(value2))+"";
-						}else if(protocol.getExtendedFields().get(i).getOperation()==2){
-							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)-StringManagerUtils.stringToFloat(value2))+"";
-						}else if(protocol.getExtendedFields().get(i).getOperation()==3){
-							extendedFieldValue=(StringManagerUtils.stringToFloat(value1)*StringManagerUtils.stringToFloat(value2))+"";
-						}else if(protocol.getExtendedFields().get(i).getOperation()==2){
-							if(StringManagerUtils.stringToFloat(value2)!=0){
-								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)/StringManagerUtils.stringToFloat(value2))+"";
+				DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle());
+				if(dataMapping!=null){
+					DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
+					DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle2());
+					String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+					String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+					String extendedField=dataMapping.getMappingColumn();
+					String extendedFieldValue="";
+					if(acqDataMap.containsKey(mappingColumn1)){
+						String value1=acqDataMap.get(mappingColumn1);
+						extendedFieldValue=value1;
+						if(acqDataMap.containsKey(mappingColumn2)){
+							String value2=acqDataMap.get(mappingColumn2);
+							if(protocol.getExtendedFields().get(i).getOperation()==1){
+								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)+StringManagerUtils.stringToFloat(value2))+"";
+							}else if(protocol.getExtendedFields().get(i).getOperation()==2){
+								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)-StringManagerUtils.stringToFloat(value2))+"";
+							}else if(protocol.getExtendedFields().get(i).getOperation()==3){
+								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)*StringManagerUtils.stringToFloat(value2))+"";
+							}else if(protocol.getExtendedFields().get(i).getOperation()==4){
+								if(StringManagerUtils.stringToFloat(value2)!=0){
+									extendedFieldValue=(StringManagerUtils.stringToFloat(value1)/StringManagerUtils.stringToFloat(value2))+"";
+								}
 							}
 						}
+						extendedFieldValue=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(extendedFieldValue)*protocol.getExtendedFields().get(i).getRatio()+"", protocol.getExtendedFields().get(i).getPrec())+"";
 					}
-					extendedFieldValue=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(extendedFieldValue)*protocol.getExtendedFields().get(i).getRatio()+"", protocol.getExtendedFields().get(i).getPrec())+"";
+					
+					if(protocol.getExtendedFields().get(i).getAdditionalConditions()==1 && StringManagerUtils.stringToFloat(extendedFieldValue)<0 ){
+						extendedFieldValue="";
+					}
+					
+					
+					
+					
+					KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
+					acqDataList.add(keyValue);
+					
+					ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+							protocol.getExtendedFields().get(i).getTitle(),
+							protocol.getExtendedFields().get(i).getTitle(),
+							extendedFieldValue,
+							extendedFieldValue,
+							"",
+							extendedField,
+							"",
+							"",
+							"",
+							protocol.getExtendedFields().get(i).getUnit(),
+							1,
+							5);
+					protocolItemResolutionDataList.add(protocolItemResolutionData);
 				}
-				
-				KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
-				acqDataList.add(keyValue);
-				
-				ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-						protocol.getExtendedFields().get(i).getTitle(),
-						protocol.getExtendedFields().get(i).getTitle(),
-						extendedFieldValue,
-						extendedFieldValue,
-						"",
-						extendedField,
-						"",
-						"",
-						"",
-						protocol.getExtendedFields().get(i).getUnit(),
-						1,
-						5);
-				protocolItemResolutionDataList.add(protocolItemResolutionData);
 			}
 		}
 		
@@ -2140,7 +2151,7 @@ public class DriverAPIController extends BaseController{
 		try{
 			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			
 			String realtimeTable="tbl_acqdata_latest";
 			String historyTable="tbl_acqdata_hist";
@@ -2703,7 +2714,8 @@ public class DriverAPIController extends BaseController{
 		SRPDeviceTodayData deviceTodayData=null;
 		SRPCalculateResponseData srpCalculateResponseData=null;
 		try{
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			int FESDiagramCheckSign=1;
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			
 			String realtimeTable="tbl_srpacqdata_latest";
 			String historyTable="tbl_srpacqdata_hist";
@@ -3106,7 +3118,9 @@ public class DriverAPIController extends BaseController{
 						
 						//如果采集了计算数据
 						deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
-						if(isAcqCalResultData && checkSign==1){
+						if(isAcqCalResultData 
+//								&& checkSign==1
+								){
 							fesDiagramEnabled=true;
 							
 							srpCalculateResponseData=new SRPCalculateResponseData();
@@ -3188,7 +3202,9 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						
-						if(FESDiagramCalculate && checkSign==1){
+						if(FESDiagramCalculate 
+//								&& checkSign==1
+								){
 							fesDiagramEnabled=true;
 							if(FESDiagramAcqCount>0){
 								if(srpCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
@@ -3239,7 +3255,9 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						//计算结果回写
-						if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && srpCalculateResponseData!=null && checkSign==1){
+						if(dataWriteBackConfig!=null && dataWriteBackConfig.isEnable() && srpCalculateResponseData!=null 
+//								&& checkSign==1
+								){
 							ThreadPool executor = new ThreadPool("DiagramDataWriteBack",
 									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getCorePoolSize(), 
 									Config.getInstance().configFile.getAp().getThreadPool().getDataWriteBack().getMaximumPoolSize(), 
@@ -3400,7 +3418,9 @@ public class DriverAPIController extends BaseController{
 						insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 						updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 						
-						if(save && checkSign==1){
+						if(save 
+//								&& checkSign==1
+								){
 							int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 							if(result==0){
 								updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
@@ -3460,7 +3480,7 @@ public class DriverAPIController extends BaseController{
 		PCPDeviceTodayData deviceTodayData=null;
 		PCPCalculateResponseData pcpCalculateResponseData=null;
 		try{
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			
 			String realtimeTable="tbl_pcpacqdata_latest";
 			String historyTable="tbl_pcpacqdata_hist";
@@ -3611,7 +3631,9 @@ public class DriverAPIController extends BaseController{
 					
 					//进行转速计算
 					deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
-					if(isAcqRPM && checkSign==1){
+					if(isAcqRPM 
+//							&& checkSign==1
+							){
 						if(pcpCalculateRequestData.getProduction()!=null && pcpCalculateRequestData.getFluidPVT()!=null){
 							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(pcpCalculateRequestData.getProduction().getWaterCut(), pcpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), pcpCalculateRequestData.getFluidPVT().getWaterDensity());
 							pcpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
@@ -3726,7 +3748,9 @@ public class DriverAPIController extends BaseController{
 					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
 					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					if(save && checkSign==1){
+					if(save 
+//							&& checkSign==1
+							){
 						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
 						if(result==0){
 							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);

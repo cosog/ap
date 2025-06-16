@@ -494,6 +494,22 @@ public class MemoryDataManagerTask {
 		dataModelMap.put("acquisitionItemNameList", acquisitionItemNameList);
 	}
 	
+	public static void loadProtocolExtendedFieldNameList(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> protocolExtendedFieldNameList=new ArrayList<>();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		if(modbusProtocolConfig!=null){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+					if(!StringManagerUtils.existOrNot(protocolExtendedFieldNameList, modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle(),false)){
+						protocolExtendedFieldNameList.add(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle());
+					}
+				}
+			}
+		}
+		dataModelMap.put("protocolExtendedFieldNameList", protocolExtendedFieldNameList);
+	}
+	
 	public static List<String> getAcquisitionItemNameList(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		List<String> acquisitionItemNameList=new ArrayList<>();
@@ -502,6 +518,16 @@ public class MemoryDataManagerTask {
 		}
 		acquisitionItemNameList=(List<String>) dataModelMap.get("acquisitionItemNameList");
 		return acquisitionItemNameList;
+	}
+	
+	public static List<String> getProtocolExtendedFieldNameList(){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		List<String> protocolExtendedFieldNameList=new ArrayList<>();
+		if(!dataModelMap.containsKey("protocolExtendedFieldNameList") || dataModelMap.get("protocolExtendedFieldNameList")==null){
+			loadProtocolExtendedFieldNameList();
+		}
+		protocolExtendedFieldNameList=(List<String>) dataModelMap.get("protocolExtendedFieldNameList");
+		return protocolExtendedFieldNameList;
 	}
 	
 	public static DataMapping getDataMappingByCalColumn(String calColumn){
@@ -540,7 +566,9 @@ public class MemoryDataManagerTask {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnMap=new LinkedHashMap<String,DataMapping>();
 			
-			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable from TBL_DATAMAPPING t order by t.protocoltype,t.id";
+			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable "
+					+ "from TBL_DATAMAPPING t "
+					+ "order by t.protocoltype,t.id";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
 				DataMapping dataMapping=new DataMapping();
@@ -574,26 +602,42 @@ public class MemoryDataManagerTask {
 	}
 	
 	
-	public static Map<String,DataMapping> getProtocolMappingColumnByTitle(){
+	public static Map<String,DataMapping> getProtocolMappingColumnByTitle(int type){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
-		if(!dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			MemoryDataManagerTask.loadProtocolMappingColumnByTitle();
+		String rootKey="ProtocolMappingColumnByTitle";
+		if(type==1){
+			rootKey="ProtocolExtendedFieldMappingColumnByTitle";
 		}
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=null;
-		if(dataModelMap.containsKey("ProtocolMappingColumnByTitle")){
-			loadProtocolMappingColumnByTitleMap=(Map<String, DataMapping>) dataModelMap.get("ProtocolMappingColumnByTitle");
+		if(!dataModelMap.containsKey(rootKey)){
+			MemoryDataManagerTask.loadProtocolMappingColumnByTitle(type);
+		}
+		Map<String,DataMapping> map=null;
+		if(dataModelMap.containsKey(rootKey)){
+			map=(Map<String, DataMapping>) dataModelMap.get(rootKey);
 		}	
 				
-		return loadProtocolMappingColumnByTitleMap;
+		return map;
 	}
 	
-	public static void loadProtocolMappingColumnByTitle(){
+	public static void loadProtocolMappingColumnByTitle(int type){//0-普通协议字段  1-拓展字段
 		Jedis jedis=null;
 		try {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=new LinkedHashMap<String,DataMapping>();
+			String rootKey="ProtocolMappingColumnByTitle";
+			if(type==1){
+				rootKey="ProtocolExtendedFieldMappingColumnByTitle";
+			}
 			
-			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable from TBL_DATAMAPPING t order by t.protocoltype,t.id";
+			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable "
+					+ "from TBL_DATAMAPPING t "
+					+ "where 1=1";
+			if(type==1){
+				sql+=" and upper(t.mappingcolumn) like 'EXTENDEDFIELD_CLOUMN%'";
+			}else{
+				sql+=" and upper(t.mappingcolumn) like 'C_CLOUMN%'";
+			}
+			sql+= "order by t.protocoltype,t.id";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			
 			for(Object[] obj:list){
@@ -608,14 +652,14 @@ public class MemoryDataManagerTask {
 				dataMapping.setCalculateEnable(StringManagerUtils.stringToInteger(obj[7]+""));
 				loadProtocolMappingColumnByTitleMap.put(dataMapping.getName(), dataMapping);
 			}
-			dataModelMap.put("ProtocolMappingColumnByTitle", loadProtocolMappingColumnByTitleMap);
+			dataModelMap.put(rootKey, loadProtocolMappingColumnByTitleMap);
 			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(jedis!=null){
 				for (Map.Entry<String, DataMapping> entry : loadProtocolMappingColumnByTitleMap.entrySet()) {
 				    String key = entry.getKey();
 				    DataMapping dataMapping = entry.getValue();
-				    jedis.hset("ProtocolMappingColumnByTitle".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
+				    jedis.hset(rootKey.getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMapping));//哈希(Hash)
 				}
 			}
 		}catch (Exception e) {

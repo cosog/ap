@@ -766,7 +766,7 @@ public class TimingTotalCalculateThread extends Thread {
                 }
             }
         }else{
-        	Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+        	Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
     		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
     		
     		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");

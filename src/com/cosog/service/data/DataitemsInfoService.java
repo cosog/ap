@@ -265,7 +265,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						}
 					}
 				}else if(dinfo.getDataSource()==0){
-					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle();
+					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 					if(loadProtocolMappingColumnByTitleMap!=null){
 						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(name);
 						if(dataMapping!=null){
@@ -283,6 +283,14 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						dinfo.setName_en(dinfo.getName_ru());
 					}
 				}else if(dinfo.getDataSource()==5){
+					Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+					if(protocolExtendedFieldColumnByTitleMap!=null){
+						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(name);
+						if(dataMapping!=null){
+							dinfo.setCode(dataMapping.getMappingColumn());
+						}
+					}
+					
 					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
 						dinfo.setName_en(dinfo.getName_zh_CN());
 						dinfo.setName_ru(dinfo.getName_zh_CN());
@@ -505,8 +513,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 								header+="("+calItem.getUnit()+")";
 							}
 						}else if(dataInfo.getDataSource()==5){
-							extendedFieldIndex++;
-							enameField="extendedFieldColumn"+extendedFieldIndex;
+							
 						}else{
 //							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 //							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);

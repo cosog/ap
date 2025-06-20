@@ -545,6 +545,7 @@ function deviceHistoryQueryCurve(deviceType){
 			var result =  Ext.JSON.decode(response.responseText);
 		    var data = result.list;
 		    var graphicSet=result.graphicSet;
+		    var hiddenExceptionData=result.hiddenExceptionData;
 		    
 		    var timeFormat='%m-%d';
 		    if(data.length>0 && result.minAcqTime.split(' ')[0]==result.maxAcqTime.split(' ')[0]){
@@ -607,20 +608,26 @@ function deviceHistoryQueryCurve(deviceType){
 		        	var pointData=[];
 		        	pointData.push(Date.parse(data[j].acqTime.replace(/-/g, '/')));
 		        	pointData.push(data[j].data[i]);
-		        	singleSeries.data.push(pointData);
+		        	
 		        	if(parseFloat(data[j].data[i])<0){
 		            	allPositive=false;
 		            }else if(parseFloat(data[j].data[i])>=0){
 		            	allNegative=false;
 		            }
+		        	
+		        	if(hiddenExceptionData){
+		        		if(isNumber(data[j].data[i])){
+		        			singleSeries.data.push(pointData);
+		        		}
+		        	}else{
+		        		singleSeries.data.push(pointData);
+		        	}
 		        }
 		        if(curveConf[i].yAxisOpposite){
 		        	series_r.push(singleSeries);
 		        }else{
 		        	series_l.push(singleSeries);
 		        }
-		        
-		        
 		        
 		        var opposite=curveConf[i].yAxisOpposite;
 		        if(allNegative){

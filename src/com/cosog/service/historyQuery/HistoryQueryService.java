@@ -5252,6 +5252,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				graphicSetData=gson.fromJson(graphicSet, reflectType);
 			}
 			
+			boolean hiddenExceptionData= graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && !graphicSetData.getHistoryDataFilter().getExceptionData();
+			
 			if(displayInstanceOwnItem!=null){
 				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
 					@Override
@@ -5606,9 +5608,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					sql+=" and t.commStatus=1";
 				}
 				
-				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getExceptionData()) ){
-					sql+=" and t.checksign=1";
-				}
+//				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getExceptionData()) ){
+//					sql+=" and t.checksign=1";
+//				}
 				
 				sql+= " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
@@ -5772,6 +5774,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("{\"deviceName\":\""+deviceName+"\","
 					+ "\"startDate\":\""+startDate+"\","
 					+ "\"endDate\":\""+endDate+"\","
+					+ "\"hiddenExceptionData\":"+hiddenExceptionData+","
 					+ "\"curveCount\":"+itemCodeSortMap.size()+","
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveItemCodes\":"+itemsCodeBuff+","
@@ -5941,7 +5944,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append("],");
 		result_json.append("\"dataFilterTotalRoot\":[");
 		boolean commData=graphicSetData!=null&&graphicSetData.getHistoryDataFilter()!=null?graphicSetData.getHistoryDataFilter().getCommData():false;
-		boolean exceptionData=graphicSetData!=null&&graphicSetData.getHistoryDataFilter()!=null?graphicSetData.getHistoryDataFilter().getExceptionData():false;
+		boolean exceptionData= !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && !graphicSetData.getHistoryDataFilter().getExceptionData());
 		result_json.append("{\"title\":\""+languageResourceMap.get("onlineAndOffline")+"\",\"value\":"+commData+"},{\"title\":\""+languageResourceMap.get("exceptionData")+"\",\"value\":"+exceptionData+"}");
 		
 		

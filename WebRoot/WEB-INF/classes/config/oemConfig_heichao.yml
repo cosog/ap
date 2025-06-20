@@ -1,10 +1,10 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
-   languageResourcePath: oem/heichao/locale
+   languageResourcePath: "oem/heichao/locale"
    favicon: "./oem/heichao/images/logo/favicon.ico"
    logo: "./oem/heichao/images/logo/logo.png"
    loginBackgroundImage: "./oem/heichao/images/login/login.jpg"
-   loginCSS: "./oem/heichao/styles/login.css"
-   bannerCSS: "./oem/heichao/styles/banner.css"
+   loginCSS: "./oem/heichao/styles"
+   bannerCSS: "./oem/heichao/styles"
    helpButtonIcon: "./oem/heichao/images/help.svg"            #帮助按钮图标
    exitButtonIcon: "./oem/heichao/images/exit.svg"            #退出按钮图标
    switchButtonIcon: "./oem/heichao/images/switch.svg"        #语言切换按钮图标
@@ -15,7 +15,7 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    helpDocument: "./oem/heichao/readme"             #帮助文档所在目录
    helpDocumentTimestamp: 20250414103000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
-   template: oem/heichao/reportTemplate/reportTemplate.json    #报表模板
+   template: "oem/heichao/reportTemplate/reportTemplate.json"    #报表模板
    offsetHour: 0                          #偏移小时 数值范围：0~12
    interval: 1                            #间隔 单位：小时 数值范围：1~12
    delay: 5                               #跨天汇总延时，单位：分钟 数值范围：0~30

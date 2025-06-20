@@ -32,16 +32,16 @@ public class SyncHCDataTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void syncFBAcqData(){
 		loadTableColumn("TBL_RPCACQDATA_LATEST","oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#","tbl_pumpacqdata_latestcolumn");
 		loadTableColumn("TBL_RPCACQDATA_HIST","oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#","tbl_pumpacqdata_histcolumn");
 		loadHCMappingData();
 		
-//		syncHCRealtimeData(0);
-//		syncHCRealtimeData(1);
+		syncHCRealtimeData(0);
 		
 		syncHCHistoryData();
+		System.out.println("数据同步完成");
 	}
 	
 	public static int syncHCRealtimeData(int type){
@@ -60,7 +60,7 @@ public class SyncHCDataTast {
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 			
-			Map<String,String> HCMappingColumnMap=getFBMappingData();
+			Map<String,String> HCMappingColumnMap=getHCMappingData();
 			
 			List<String> tableColumnList=getTableColumn(realtimeTable,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#",realtimeTable+"column");
 			
@@ -162,11 +162,7 @@ public class SyncHCDataTast {
 		}finally{
 			
 		}
-		if(type==0){
-			System.out.println("泵设备实时数据同步完成");
-		}else if(type==1){
-			System.out.println("管设备实时数据同步完成");
-		}
+		System.out.println("实时数据同步完成");
 		
 		return result;
 	}
@@ -176,7 +172,7 @@ public class SyncHCDataTast {
 				+ " from tbl_device t "
 				+ " left outer join (select t2.deviceid,max(t2.acqtime) as acqtime from tbl_acqdata_hist t2 group by t2.deviceid) v on t.id=v.deviceid "
 				+ " where 1=1"
-				+ " and t.id > 10482"
+				+ " and (t.id=421 or t.id=422 or t.id=423 or t.id=424 or t.id=425 or t.id=461 or t.id=462 or t.id=464 or t.id=561)"
 				+ " order by t.id";
 		ThreadPool executor = new ThreadPool("syncHCHistoryData",
 				10, 
@@ -256,7 +252,7 @@ public class SyncHCDataTast {
 		dataModelMap.put(key, tableColumnList);
 	}
 	
-	public static Map<String,String> getFBMappingData(){
+	public static Map<String,String> getHCMappingData(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(!dataModelMap.containsKey("HCMappingColumnMap")){
 			loadHCMappingData();
@@ -273,11 +269,10 @@ public class SyncHCDataTast {
 	public static void loadHCMappingData(){
 		Map<String,String> HCMappingColumnMap=new LinkedHashMap<String,String>();
 		
-		String hcMappingSql="select t.mappingcolumn,t.name "
+		String hcMappingSql="select t.mappingcolumn,t.name,count(1) "
 				+ " from TBL_DATAMAPPING t "
-				+ " where t.name is not null "
-				+ " and t.mappingcolumn is not null "
-				+ " and t.protocoltype=0"
+				+ " where t.name is not null and t.mappingcolumn is not null  "
+				+ " group by t.mappingcolumn,t.name "
 				+ " order by t.mappingcolumn ";
 		List<Object[]> queryFBMappingDataList=OracleJdbcUtis.query(hcMappingSql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#");
 		for(Object[] obj:queryFBMappingDataList){

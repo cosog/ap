@@ -8,8 +8,8 @@ import java.util.Map;
 import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.task.MemoryDataManagerTask;
-import com.cosog.task.SyncFBDataTast;
-import com.cosog.utils.FeiZhouCounterUtils;
+import com.cosog.task.SyncHCDataTast;
+import com.cosog.utils.HeiChaoCounterUtils;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -36,12 +36,12 @@ public class HCHistoryDataSyncThread implements Runnable{
 				historyTable="tbl_pcpacqdata_hist";
 				realtimeTable="tbl_pcpacqdata_latest";
 			}
-			int days=10;
+			int days=60;
 			
 			Gson gson = new Gson();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
-			Map<String,String> fbMappingColumnMap=SyncFBDataTast.getFBMappingData();
+			Map<String,String> hcMappingColumnMap=SyncHCDataTast.getHCMappingData();
 			
 			String acqItemsSql="select t7.name,t7.mappingcolumn from tbl_datamapping t7 where t7.name in("
 					+ " select t6.itemname"
@@ -58,18 +58,6 @@ public class HCHistoryDataSyncThread implements Runnable{
 					queryTableColumnList.add(obj[1]+"");
 				}
 			}
-			
-//			List<String> tableColumnList=SyncFBDataTast.getTableColumn(historyTable,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#",historyTable+"column");
-//			List<String> queryTableColumnList=new ArrayList<>();
-//			for(String columm:acqColumnList){
-//				for (String mappingColumn : fbMappingColumnMap.keySet()) {
-//					 if(columm.equalsIgnoreCase(mappingColumn)){
-//						 queryTableColumnList.add(mappingColumn);
-//						 break;
-//					 }
-//				 
-//				}
-//			}
 			
 			if(queryTableColumnList.size()>0){
 				String sql="select t.id,t.wellname,"
@@ -100,15 +88,11 @@ public class HCHistoryDataSyncThread implements Runnable{
 				long t1=System.nanoTime();
 				List<Object[]> queryDataList=OracleJdbcUtis.query(sql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#");
 				long t2=System.nanoTime();
-				if(deviceId>10000){
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
-				}
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size());
 				
-				String updateSql="";
 				String insertSql="";
 				String insertColumns="";
 				String insertValues="";
-				String updateClobSql="";
 				List<String> clobDataList=null;
 				for(Object[] obj:queryDataList){
 					try{
@@ -126,10 +110,10 @@ public class HCHistoryDataSyncThread implements Runnable{
 						String runRange=(obj[10]+"").replaceAll("null", "");
 						String acqData="";
 						for(int i=0;i<queryTableColumnList.size();i++){
-							String column_fb=queryTableColumnList.get(i);
-							if(fbMappingColumnMap.containsKey(column_fb)){
+							String column_hc=queryTableColumnList.get(i);
+							if(hcMappingColumnMap.containsKey(column_hc)){
 								String value=obj[i+11]+"";
-								String name=fbMappingColumnMap.get(column_fb);
+								String name=hcMappingColumnMap.get(column_hc);
 								if(loadProtocolMappingColumnByTitleMap.containsKey(name) && StringManagerUtils.isNotNull(value)){
 									String mappingColumn=loadProtocolMappingColumnByTitleMap.get(name).getMappingColumn();
 									KeyValue keyValue=new KeyValue(mappingColumn,value);
@@ -140,40 +124,18 @@ public class HCHistoryDataSyncThread implements Runnable{
 						if(dataList.size()>0){
 							acqData=gson.toJson(dataList);
 						}
-						
-						updateSql="update tbl_acqdata_hist t set t.commStatus="+commStatus+",t.commTime="+commTime+",commTimeEfficiency="+commTimeEfficiency+","
-								+ "runStatus="+runStatus+",runTime="+runTime+",runTimeEfficiency="+runTimeEfficiency;
 						insertSql="";
 						insertColumns="deviceId,acqtime,commStatus,commTime,commTimeEfficiency,runStatus,runTime,runTimeEfficiency,commRange,runRange,acqData";
 						insertValues=saveDeviceId+",to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss'),"+commStatus+","+commTime+","+commTimeEfficiency+","+runStatus+","+runTime+","+runTimeEfficiency+",?,?,?";
 						
-						
-						updateSql+=" where t.acqtime=to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss') and t.deviceId="+saveDeviceId;
 						insertSql= "insert into tbl_acqdata_hist ("+insertColumns+") values ("+insertValues+")";
 						
-//						int r=OracleJdbcUtis.executeSqlUpdate(updateSql);
-//						if(r==0){
-//							r=OracleJdbcUtis.executeSqlUpdate(insertSql);
-//						}
-//						t1=System.nanoTime();
-//						int r=OracleJdbcUtis.executeSqlUpdate(insertSql);
-//						t2=System.nanoTime();
-//						if(deviceId>10000){
-//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
-//						}
-//						
-//						updateClobSql="update tbl_acqdata_hist t set t.commRange=?,t.runRange=?,t.acqData=? where t.acqtime=to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss') and t.deviceId="+saveDeviceId;
 						clobDataList=new ArrayList<>();
 						clobDataList.add(commRange);
 						clobDataList.add(runRange);
 						clobDataList.add(acqData);
-						t1=System.nanoTime();
 						OracleJdbcUtis.executeSqlUpdateClob(insertSql, clobDataList);
-						t2=System.nanoTime();
-//						if(deviceId>10000){
-//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
-//						}
-						FeiZhouCounterUtils.incr();//计数器加一
+						HeiChaoCounterUtils.incr();//计数器加一
 					}catch(Exception e){
 						e.printStackTrace();
 						continue;
@@ -185,7 +147,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 		}finally{
 			
 		}
-		FeiZhouCounterUtils.countDown();
+		HeiChaoCounterUtils.countDown();
 		System.out.println("设备id:"+deviceId+"执行完毕！");
 	}
 }

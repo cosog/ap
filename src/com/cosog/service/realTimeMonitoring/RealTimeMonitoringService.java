@@ -899,6 +899,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								if(calItem!=null){
 									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}else if("runstatusName".equalsIgnoreCase(column)){
+										column="runstatus";
 									}
 									calDataSql+=",t2."+column;
 								}
@@ -1667,6 +1669,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								if(calItem!=null){
 									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 										column=column+"*"+timeEfficiencyZoom+" as "+column;
+									}else if("runstatusName".equalsIgnoreCase(column)){
+										column="runstatus";
 									}
 									calDataSql+=",t2."+column;
 								}

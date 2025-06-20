@@ -1703,6 +1703,19 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static AcqInstanceOwnItem.AcqItem getAcqItemByCode(AcqInstanceOwnItem acqInstanceOwnItem,String code){
+		AcqInstanceOwnItem.AcqItem acqItem=null;
+		if(acqInstanceOwnItem!=null && acqInstanceOwnItem.getItemList()!=null){
+			for(AcqInstanceOwnItem.AcqItem item:acqInstanceOwnItem.getItemList()){
+				if(code.equalsIgnoreCase(item.getItemCode())){
+					acqItem=item;
+				}
+			}
+		}
+		return acqItem;
+	}
+	
+	
 	public static AcqInstanceOwnItem getAcqInstanceOwnItemByCode(String instanceCode){
 		AcqInstanceOwnItem acqInstanceOwnItem=null;
 		Jedis jedis=null;

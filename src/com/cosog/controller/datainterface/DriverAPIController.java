@@ -2258,6 +2258,7 @@ public class DriverAPIController extends BaseController{
 						Map<String,DailyTotalItem> dailyTotalItemMap=deviceInfo.getDailyTotalItemMap();
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
 							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
+							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
 							String mappingColumn="";
 							if(dataMappingColumn!=null){
 								mappingColumn=dataMappingColumn.getMappingColumn();
@@ -2298,7 +2299,13 @@ public class DriverAPIController extends BaseController{
 										totalItem.getTotalStatus().setCalTime(acqTime);
 										totalItem.getTotalStatus().setCount(totalItem.getTotalStatus().getCount()+1);
 										totalItem.getTotalStatus().setSum(totalItem.getTotalStatus().getSum()+newValue);
-										totalItem.getTotalStatus().setAvgValue(  totalItem.getTotalStatus().getSum()/totalItem.getTotalStatus().getCount()   );
+										float avgValue=totalItem.getTotalStatus().getSum()/totalItem.getTotalStatus().getCount();
+										if(item!=null){
+											avgValue=StringManagerUtils.stringToFloat(avgValue+"",item.getPrec());
+										}else{
+											
+										}
+										totalItem.getTotalStatus().setAvgValue(avgValue);
 										
 										
 										if(newValue>totalItem.getTotalStatus().getMaxValue()){

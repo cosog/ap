@@ -104,7 +104,7 @@
         var sceneConfig = ${ configFile}.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
         var moduleConfig = ${ configFile}.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
         
-        
+        var showDeviceAdditionalInformation = ${ configFile}.ap.others.deviceAdditionalInformation;
         
         var pcpHidden = true;
         if(moduleConfig=='all' || moduleConfig=='pcp'){

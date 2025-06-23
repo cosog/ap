@@ -32,15 +32,20 @@ public class SyncHCDataTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void syncFBAcqData(){
 		loadTableColumn("TBL_RPCACQDATA_LATEST","oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#","tbl_pumpacqdata_latestcolumn");
 		loadTableColumn("TBL_RPCACQDATA_HIST","oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#","tbl_pumpacqdata_histcolumn");
 		loadHCMappingData();
 		
-		syncHCRealtimeData(0);
+//		syncHCRealtimeData(0);
+//		
+//		syncHCHistoryData();
 		
-		syncHCHistoryData();
+//		syncDailyTotalData();
+		
+		syncTimingTotalData();
+		
 		System.out.println("数据同步完成");
 	}
 	
@@ -168,7 +173,7 @@ public class SyncHCDataTast {
 	}
 	
 	public static void syncHCHistoryData(){
-		String sql="select t.id,t.devicename,to_char(v.acqtime,'yyyy-mm-dd hh24:mi:ss') "
+		String sql="select t.id,t.devicename,t.instancecode,to_char(v.acqtime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_device t "
 				+ " left outer join (select t2.deviceid,max(t2.acqtime) as acqtime from tbl_acqdata_hist t2 group by t2.deviceid) v on t.id=v.deviceid "
 				+ " where 1=1"
@@ -190,8 +195,9 @@ public class SyncHCDataTast {
 			long calculateStartTime=System.nanoTime();
 			for(Object[] obj:deviceList){
 				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
-				String acqtime=obj[2]+"";
-				executor.execute(new HCHistoryDataSyncThread(deviceId, acqtime));
+				String instanceCode=obj[2]+"";
+				String acqtime=obj[3]+"";
+				executor.execute(new HCHistoryDataSyncThread(deviceId, acqtime,instanceCode,0));
 			}
 			try {
 				HeiChaoCounterUtils.await();//等待所有线程执行完毕
@@ -203,10 +209,86 @@ public class SyncHCDataTast {
 			long sum2=HeiChaoCounterUtils.sum();
 			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
 		}while(true);
-		
-		
-		
-		
+	}
+	
+	
+	public static void syncDailyTotalData(){
+		String sql="select t.id,t.devicename,t.instancecode,to_char(v.caldate,'yyyy-mm-dd hh24:mi:ss')  "
+				+ " from tbl_device t "
+				+ " left outer join (select t2.deviceid,max(t2.caldate) as caldate from tbl_dailycalculationdata t2 group by t2.deviceid) v on t.id=v.deviceid "
+				+ " where 1=1"
+//				+ " and t.id=206"
+				+ " order by t.id";
+		ThreadPool executor = new ThreadPool("syncHCHistoryData",
+				10, 
+				20, 
+				5, 
+				TimeUnit.SECONDS, 
+				0);
+		HeiChaoCounterUtils.reset();//加法计数器清零
+		HeiChaoCounterUtils.calculateSpeedTimer();//创建统计计算速度计时器
+		do{
+			List<Object[]> deviceList=OracleJdbcUtis.query(sql);
+			HeiChaoCounterUtils.initCountDownLatch(deviceList.size());
+			
+			long sum1=HeiChaoCounterUtils.sum();
+			long calculateStartTime=System.nanoTime();
+			for(Object[] obj:deviceList){
+				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+				String instanceCode=obj[2]+"";
+				String acqtime=obj[3]+"";
+				executor.execute(new HCHistoryDataSyncThread(deviceId, acqtime,instanceCode,1));
+			}
+			try {
+				HeiChaoCounterUtils.await();//等待所有线程执行完毕
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			long calculateEndTime=System.nanoTime();
+			long sum2=HeiChaoCounterUtils.sum();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
+		}while(true);
+	}
+	
+	public static void syncTimingTotalData(){
+		String sql="select t.id,t.devicename,t.instancecode,to_char(v.caltime,'yyyy-mm-dd hh24:mi:ss')  "
+				+ " from tbl_device t "
+				+ " left outer join (select t2.deviceid,max(t2.caltime) as caltime from tbl_timingcalculationdata t2 group by t2.deviceid) v on t.id=v.deviceid "
+				+ " where 1=1"
+				+ " and t.instancecode in ('instance1','instance125','instance145')"
+//				+ " and t.id=3"
+				+ " order by t.id";
+		ThreadPool executor = new ThreadPool("syncHCHistoryData",
+				10, 
+				20, 
+				5, 
+				TimeUnit.SECONDS, 
+				0);
+		HeiChaoCounterUtils.reset();//加法计数器清零
+		HeiChaoCounterUtils.calculateSpeedTimer();//创建统计计算速度计时器
+		do{
+			List<Object[]> deviceList=OracleJdbcUtis.query(sql);
+			HeiChaoCounterUtils.initCountDownLatch(deviceList.size());
+			
+			long sum1=HeiChaoCounterUtils.sum();
+			long calculateStartTime=System.nanoTime();
+			for(Object[] obj:deviceList){
+				int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
+				String instanceCode=obj[2]+"";
+				String acqtime=obj[3]+"";
+				executor.execute(new HCHistoryDataSyncThread(deviceId, acqtime,instanceCode,2));
+			}
+			try {
+				HeiChaoCounterUtils.await();//等待所有线程执行完毕
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			long calculateEndTime=System.nanoTime();
+			long sum2=HeiChaoCounterUtils.sum();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
+		}while(true);
 	}
 	
 	public static List<String > getTableColumn(String tableName,String driver,String url,String username,String password,String key){

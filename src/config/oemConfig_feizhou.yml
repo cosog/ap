@@ -57,6 +57,7 @@ others:
    productionUnit: stere           #产量单位 stere-立方米 ton-吨
    resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
    resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值
+   deviceAdditionalInformation: true
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: ""                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 

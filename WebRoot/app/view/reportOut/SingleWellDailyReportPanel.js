@@ -454,7 +454,7 @@ function CreateSingleWellRangeReportTable(){
     var calculateType=0;
     var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
     var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
@@ -819,7 +819,7 @@ var SingleWellRangeReportHelper = {
 	        	    var deviceId=0;
 	        	    var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	        	    var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-	        	    if(selectRow>=0){
+	        	    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
 	        	    	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 	        	    	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	        	    }
@@ -879,7 +879,7 @@ function CreateSingleWellDailyReportTable(){
     var deviceId=0;
     var calculateType=0;
     var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
@@ -1244,7 +1244,7 @@ var SingleWellDailyReportHelper = {
 	        	    var deviceId=0;
 	        	    var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	        	    var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-	        	    if(selectRow>=0){
+	        	    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
 	        	    	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 	        	    	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	        	    }
@@ -1350,7 +1350,7 @@ function CreateSingleWellRangeReportCurve(){
     var calculateType=0;
     var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
     var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
@@ -1536,7 +1536,7 @@ function CreateSingleWellDailyReportCurve(){
     var calculateType=0;
     var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
     var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     	deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     	calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
@@ -1858,7 +1858,7 @@ function ExportSingleWellRangeReportData(){
 	var calculateType=0;
 	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
@@ -1921,7 +1921,7 @@ function ExportSingleWellDailyReportData(){
 	var calculateType=0;
 	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	var selectRow= Ext.getCmp("SingleWellDailyReportDeviceListSelectRow_Id").getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp("SingleWellDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;

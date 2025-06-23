@@ -759,6 +759,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	split: true,
             	collapsible: true,
             	header:false,
+            	hidden:!showDeviceAdditionalInformation,
             	xtype: 'tabpanel',
             	id:'DeviceAdditionalInformationTabpanel_Id',
             	activeTab: 0,

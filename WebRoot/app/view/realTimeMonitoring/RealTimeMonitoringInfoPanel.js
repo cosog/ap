@@ -329,15 +329,13 @@ var realtimeCurveAndTableTabPanelItems=[{
          iconCls: 'export',
          hidden:false,
          handler: function (v, o) {
-
 				var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
 				var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
-				if(isNotVal(gridPanel)&&selectRow>=0){
-					var selectedItem=gridPanel.getStore().getAt(selectRow);
+				gridPanel.getSelectionModel().getSelection()
+				if(isNotVal(gridPanel)&&gridPanel.getSelectionModel().getSelection().length>0){
+					var selectedItem=gridPanel.getSelectionModel().getSelection()[0];
 					exportDeviceRealTimeMonitoringData(selectedItem.data.id,selectedItem.data.deviceName,selectedItem.data.calculateType);
 				}
-			
-        	 
          }
     }],
     items: [{
@@ -681,11 +679,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
             					var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
-            					if(isNotVal(gridPanel)&&selectRow>=0){
+            					
+            					if(isNotVal(gridPanel)&&gridPanel.getSelectionModel().getSelection().length>0){
             						if(newCard.id=="RealTimeMonitoringCurveTabPanel_Id"){
             							deviceRealtimeMonitoringCurve(0);
                 					}else if(newCard.id=="RealTimeMonitoringTableTabPanel_Id"){
-                						var selectedItem=gridPanel.getStore().getAt(selectRow);
+                						var selectedItem=gridPanel.getSelectionModel().getSelection()[0];
                             			CreateDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.deviceName,getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),selectedItem.data.calculateType);
                 					}else{
                 						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');

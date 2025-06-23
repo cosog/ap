@@ -39,6 +39,7 @@ import com.cosog.model.User;
 import com.cosog.model.ReportTemplate.Template;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
 import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.model.gridmodel.GraphicSetData.Graphic;
@@ -93,9 +94,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			timeEfficiencyZoom=100;
 		}
 		
-		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
-				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+		ModbusProtocolConfig.Protocol protocol=null;
+		String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType,"
+				+ " t5.protocol "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+				+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.instancecode=t4.code and t4.unitid=t5.id"
 				+ " and t.id="+deviceId;
 		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 		if(reportTemplateCodeList.size()>0){
@@ -107,6 +112,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportTemplateCode=(obj[2]+"").replaceAll("null", "");
 			}
 			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
+			protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
 		}
 		
 		if(reportUnitCalculateType==1){
@@ -212,8 +218,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									}
 								}
 							}
-							
-							
 							
 							if(exit){
 								break;
@@ -344,6 +348,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
+						int prec=reportUnitItem.getPrec();
 						if(calDataList!=null){
 							for(KeyValue keyValue:calDataList){
 								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -368,6 +373,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							
+							if(StringManagerUtils.isNum(addValue)){
+								if(prec<0  && protocol!=null ){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+									if(item!=null){
+										prec=item.getPrec();
+									}
+								}
+								if(prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
+								}
 							}
 						}
 						everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -453,9 +470,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				timeEfficiencyZoom=100;
 			}
 			
-			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType "
-					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+			ModbusProtocolConfig.Protocol protocol=null;
+			String reportTemplateCodeSql="select t3.id,t3.singleWellRangeReportTemplate,t3.productionreporttemplate,t3.calculateType,"
+					+ " t5.protocol "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+					+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t.instancecode=t4.code and t4.unitid=t5.id"
 					+ " and t.id="+deviceId;
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			if(reportTemplateCodeList.size()>0){
@@ -467,6 +488,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportTemplateCode=(obj[2]+"").replaceAll("null", "");
 				}
 				reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
+				protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
 			}
 			
 			if(reportUnitCalculateType==1){
@@ -735,6 +757,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
+							int prec=reportUnitItem.getPrec();
 							if(calDataList!=null){
 								for(KeyValue keyValue:calDataList){
 									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -759,6 +782,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[4];
 								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 									addValue=totalValueArr[5];
+								}
+								if(StringManagerUtils.isNum(addValue)){
+									if(prec<0  && protocol!=null ){
+										ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+										if(item!=null){
+											prec=item.getPrec();
+										}
+									}
+									if(prec>=0){
+										addValue=StringManagerUtils.dataFormat(addValue, prec);
+									}
 								}
 							}
 							everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -883,10 +917,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String deviceTableName="tbl_device";
 			String calTotalTableName="";
 			
-			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewellrangereporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType "
+			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewellrangereporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType,"
+					+ " t5.protocol "
 					+ " from "+deviceTableName+" t "
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
+					+ " left outer join tbl_protocolinstance t4 on t.instancecode=t4.code"
+					+ " left outer join tbl_acq_unit_conf t5 on t4.unitid=t5.id"
 					+ " where t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				wellListSql+= " and t.devicetype="+deviceType;
@@ -908,6 +945,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[6]+"");
 				String sheetName=deviceName+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
@@ -1184,6 +1222,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
+								int prec=reportUnitItem.getPrec();
 								if(calDataList!=null){
 									for(KeyValue keyValue:calDataList){
 										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -1208,6 +1247,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[4];
 									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 										addValue=totalValueArr[5];
+									}
+									
+									if(StringManagerUtils.isNum(addValue)){
+										if(prec<0  && protocol!=null ){
+											ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+											if(item!=null){
+												prec=item.getPrec();
+											}
+										}
+										if(prec>=0){
+											addValue=StringManagerUtils.dataFormat(addValue, prec);
+										}
 									}
 								}
 								everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -1333,9 +1384,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		ReportTemplate.Template template=null;
-		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
-				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+		ModbusProtocolConfig.Protocol protocol=null;
+		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType,"
+				+ " t5.protocol "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+				+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
 				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.instancecode=t4.code and t4.unitid=t5.id"
 				+ " and t.id="+deviceId;
 		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 		if(reportTemplateCodeList.size()>0){
@@ -1343,7 +1398,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitId=(obj[0]+"").replaceAll("null", "");
 			reportTemplateCode=(obj[1]+"").replaceAll("null", "");
 			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
+			protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
 		}
+		
 		if(reportUnitCalculateType==1){
 			calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
 		}else if(reportUnitCalculateType==2){
@@ -1579,6 +1636,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
+						int prec=reportUnitItem.getPrec();
 						if(calDataList!=null){
 							for(KeyValue keyValue:calDataList){
 								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -1603,6 +1661,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							
+							if(StringManagerUtils.isNum(addValue)){
+								if(prec<0  && protocol!=null ){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+									if(item!=null){
+										prec=item.getPrec();
+									}
+								}
+								if(prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
+								}
 							}
 						}
 						everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -1726,9 +1796,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			ReportTemplate.Template template=null;
-			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
-					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+			ModbusProtocolConfig.Protocol protocol=null;
+			String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType,"
+					+ " t5.protocol "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+					+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
 					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t.instancecode=t4.code and t4.unitid=t5.id"
 					+ " and t.id="+deviceId;
 			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
 			if(reportTemplateCodeList.size()>0){
@@ -1736,6 +1810,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitId=(obj[0]+"").replaceAll("null", "");
 				reportTemplateCode=(obj[1]+"").replaceAll("null", "");
 				reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
+				protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
 			}
 			if(reportUnitCalculateType==1){
 				calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
@@ -2009,6 +2084,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
+							int prec=reportUnitItem.getPrec();
 							if(calDataList!=null){
 								for(KeyValue keyValue:calDataList){
 									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -2033,6 +2109,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[4];
 								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 									addValue=totalValueArr[5];
+								}
+							}
+							if(StringManagerUtils.isNum(addValue)){
+								if(prec<0  && protocol!=null ){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+									if(item!=null){
+										prec=item.getPrec();
+									}
+								}
+								if(prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
 								}
 							}
 							everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -2187,10 +2274,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			String deviceTableName="tbl_device";
 			String calTotalTableName="";
-			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewelldailyreporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType"
+			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewelldailyreporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType,"
+					+ " t5.protocol"
 					+ " from "+deviceTableName+" t "
 					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
+					+ " left outer join tbl_protocolinstance t4 on t.instancecode=t4.code"
+					+ " left outer join tbl_acq_unit_conf t5 on t4.unitid=t5.id"
 					+ " where t.orgid in ("+orgId+")";
 			if(StringManagerUtils.isNum(deviceType)){
 				wellListSql+= " and t.devicetype="+deviceType;
@@ -2204,6 +2294,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			List<?> wellList = this.findCallSql(wellListSql);
 			
+			
 			for(int i=0;i<wellList.size();i++){
 				Object[] obj=(Object[]) wellList.get(i);
 				String deviceId=obj[0]+"";
@@ -2212,6 +2303,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[6]+"");
 				
 				String viewName="VIW_TIMINGCALCULATIONDATA";
 				calTotalTableName="";
@@ -2498,6 +2590,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
+								int prec=reportUnitItem.getPrec();
 								if(calDataList!=null){
 									for(KeyValue keyValue:calDataList){
 										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -2522,6 +2615,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[4];
 									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 										addValue=totalValueArr[5];
+									}
+									
+									if(StringManagerUtils.isNum(addValue)){
+										if(prec<0  && protocol!=null ){
+											ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+											if(item!=null){
+												prec=item.getPrec();
+											}
+										}
+										if(prec>=0){
+											addValue=StringManagerUtils.dataFormat(addValue, prec);
+										}
 									}
 								}
 								everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -2869,6 +2974,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
+						int prec=reportUnitItem.getPrec();
+						if(prec<0){
+							prec=3;
+						}
 						if(calDataList!=null){
 							for(KeyValue keyValue:calDataList){
 								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -2893,6 +3002,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							
+							if(StringManagerUtils.isNum(addValue)){
+								addValue=StringManagerUtils.dataFormat(addValue, prec);
 							}
 						}
 						everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -3293,6 +3406,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
+							int prec=reportUnitItem.getPrec();
+							if(prec<0){
+								prec=3;
+							}
 							if(calDataList!=null){
 								for(KeyValue keyValue:calDataList){
 									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -3317,6 +3434,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[4];
 								}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 									addValue=totalValueArr[5];
+								}
+								if(StringManagerUtils.isNum(addValue)){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
 								}
 							}
 							everyDaya.set(reportUnitItem.getSort()-1, addValue.replaceAll("null", ""));
@@ -3763,6 +3883,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
+								int prec=reportUnitItem.getPrec();
+								if(prec<0){
+									prec=3;
+								}
 								if(calDataList!=null){
 									for(KeyValue keyValue:calDataList){
 										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
@@ -3787,6 +3911,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										addValue=totalValueArr[4];
 									}else if(reportUnitItem.getTotalType()==6 && totalValueArr.length>=6){
 										addValue=totalValueArr[5];
+									}
+									if(StringManagerUtils.isNum(addValue)){
+										addValue=StringManagerUtils.dataFormat(addValue, prec);
 									}
 								}
 								everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -4030,6 +4157,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<Integer,String> itemCodeMap=new TreeMap<>();
 		Map<Integer,String> curveConfMap=new TreeMap<>();
 		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
+		Map<Integer,Integer> precMap=new TreeMap<>();
 		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 		
 		List<String> acqItemColumnList=new ArrayList<String>();
@@ -4046,6 +4174,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String itemCode=reportCurveItemObj[1]+"";
 			String reportCurveConfStr=(reportCurveItemObj[2]+"").replaceAll("null", "");
 			int dataType=StringManagerUtils.stringToInteger(reportCurveItemObj[3]+"");
+			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1;
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
 			
@@ -4054,7 +4183,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			if(dataType==2 && curveConfObj!=null){
 				int sort=curveConfObj.getSort();
-				if(itemNameMap.containsKey(sort)){
+				while(itemNameMap.containsKey(sort)){
 					sort+=1;
 				}
 				
@@ -4077,12 +4206,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								acqItemName+="("+protocol.getItems().get(k).getUnit()+")";
 							}
 							
+							if(prec<0){
+								prec=protocol.getItems().get(k).getPrec();
+							}
+							
 							itemNameMap.put(sort, acqItemName);
 							itemCodeSortMap.put(col, sort);
 							itemCodeMap.put(sort, col);
 							totalTypeMap.put(sort, totalType);
 							acqItemColumnList.add(col);
 							curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+							precMap.put(sort, prec);
 							curveDataMap.put(sort, new ArrayList<>());
 							break;
 						}
@@ -4092,19 +4226,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(calItem!=null){
 						itemName=StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName());
 					}
-					
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}else if(dataSource==2){
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}
 			}
@@ -4190,6 +4331,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
 			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 				}
 				
@@ -4199,6 +4344,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
 			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 				}
 				
@@ -4234,6 +4383,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(totalType==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							
+							int prec=precMap.get(itemCodeSortMap.get(itemColumn));
+							if(StringManagerUtils.isNum(addValue) && prec>=0){
+								addValue=StringManagerUtils.dataFormat(addValue, prec);;
 							}
 						}
 						
@@ -4273,228 +4427,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getSingleWellRangeReportCurveData2(Page pager, String orgId,String deviceType,String reportType,
-			String deviceId,String deviceName,String calculateType,
-			String startDate,String endDate,User user)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		StringBuffer itemsBuff = new StringBuffer();
-		StringBuffer itemsCodeBuff = new StringBuffer();
-		StringBuffer curveConfBuff = new StringBuffer();
-		
-		Gson gson =new Gson();
-		ConfigFile configFile=Config.getInstance().configFile;
-		String reportTemplateCode="";
-		String reportUnitId="";
-		int reportUnitCalculateType=0;
-		String deviceTableName="tbl_device";
-		String tableName="TBL_DAILYCALCULATIONDATA";
-		String viewName="VIW_DAILYCALCULATIONDATA";
-		String calTotalTableName="";
-		String graphicSet="{}";
-		
-		String graphicSetTableName="tbl_devicegraphicset";
-		result_json.append("{\"success\":true,");
-		
-		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceid="+deviceId;
-		List<?> graphicSetList = this.findCallSql(graphicSetSql);
-		if(graphicSetList.size()>0){
-			graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
-		}
-		
-		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
-				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
-				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
-				+ " and t.id="+deviceId;
-		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
-		if(reportTemplateCodeList.size()>0){
-			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
-			reportUnitId=(obj[0]+"").replaceAll("null", "");
-			reportTemplateCode=(obj[1]+"").replaceAll("null", "");
-			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
-		}
-		
-		if(reportUnitCalculateType==1){
-			calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
-		}else if(reportUnitCalculateType==2){
-			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
-		}
-		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.totalType,t.dataSource "
-				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
-				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
-				+ " and t3.id="+deviceId
-				+ " and t.sort>=0"
-				+ " and t.reportType= "+reportType
-				+ " and t.reportcurveconf is not null "
-				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+user.getUserNo()+"))"
-				+ " order by t.sort,t.id";
-		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
-		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
-		
-		for(int i=0;i<reportCurveItemQuertList.size();i++){
-			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
-			ReportUnitItem reportUnitItem=new ReportUnitItem();
-			reportUnitItem.setItemName(reportCurveItemObj[0]+"");
-			reportUnitItem.setItemCode(reportCurveItemObj[1]+"");
-			reportUnitItem.setReportCurveConf((reportCurveItemObj[2]+"").replaceAll("null", ""));
-			reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportCurveItemObj[3]+""));
-			reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""));
-			reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(reportCurveItemObj[5]+""));
-			
-			if(reportUnitItem.getDataSource()==1 || reportUnitItem.getDataSource()==2){
-				CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(reportUnitItem.getItemCode(), user.getLanguageName());
-				if(calItem!=null){
-					reportUnitItem.setItemName(StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName()));
-				}
-			}
-			
-			if(reportUnitItem.getDataType()==2){
-				reportCurveItemList.add(reportUnitItem);
-			}
-		}
-		
-		Collections.sort(reportCurveItemList,new Comparator<ReportUnitItem>(){
-			@Override
-			public int compare(ReportUnitItem item1,ReportUnitItem item2){
-				Gson gson = new Gson();
-				java.lang.reflect.Type type=null;
-				int sort1=0;
-				int sort2=0;
-				type = new TypeToken<CurveConf>() {}.getType();
-				CurveConf curveConfObj1=gson.fromJson(item1.getReportCurveConf(), type);
-				
-				type = new TypeToken<CurveConf>() {}.getType();
-				CurveConf curveConfObj2=gson.fromJson(item2.getReportCurveConf(), type);
-				
-				if(curveConfObj1!=null){
-					sort1=curveConfObj1.getSort();
-				}
-				
-				if(curveConfObj2!=null){
-					sort2=curveConfObj2.getSort();
-				}
-				
-				int diff=sort1-sort2;
-				if(diff>0){
-					return 1;
-				}else if(diff<0){
-					return -1;
-				}
-				return 0;
-			}
-		});
-		
-		
-		itemsBuff.append("[");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			itemsBuff.append("\""+reportCurveItemList.get(i).getItemName()+"\",");
-		}
-		if (itemsBuff.toString().endsWith(",")) {
-			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
-		}
-		itemsBuff.append("]");
-		
-		itemsCodeBuff.append("[");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			itemsCodeBuff.append("\""+reportCurveItemList.get(i).getItemCode()+"\",");
-		}
-		if (itemsCodeBuff.toString().endsWith(",")) {
-			itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
-		}
-		itemsCodeBuff.append("]");
-		
-		curveConfBuff.append("[");
-		for(int i=0;i<reportCurveItemList.size();i++){
-			curveConfBuff.append(""+reportCurveItemList.get(i).getReportCurveConf()+",");
-		}
-		if (curveConfBuff.toString().endsWith(",")) {
-			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
-		}
-		curveConfBuff.append("]");
-		
-		result_json.append("\"deviceName\":\""+deviceName+"\","
-				+ "\"startDate\":\""+startDate+"\","
-				+ "\"endDate\":\""+endDate+"\","
-				+ "\"curveItems\":"+itemsBuff+","
-				+ "\"curveItemCodes\":"+itemsCodeBuff+","
-				+ "\"curveConf\":"+curveConfBuff+","
-				+ "\"graphicSet\":"+graphicSet+","
-				+ "\"list\":[");
-		if(reportCurveItemList.size()>0){
-			StringBuffer cueveSqlBuff = new StringBuffer();
-			cueveSqlBuff.append("select t.id,to_char(t.calDate,'yyyy-mm-dd') as calDate");
-			
-			for(int i=0;i<reportCurveItemList.size();i++){
-				String tableAlias="t";
-				if(reportUnitCalculateType>0){
-					if(reportCurveItemList.get(i).getDataSource()==0){
-						tableAlias="t2";
-					}else if(reportCurveItemList.get(i).getDataSource()==1){
-						if(StringManagerUtils.generalCalColumnFiter(reportCurveItemList.get(i).getItemCode())){
-							tableAlias="t";
-						}else{
-							tableAlias="t3";
-						}
-					}
-				}
-				
-				cueveSqlBuff.append(","+tableAlias+"."+reportCurveItemList.get(i).getItemCode()+"");
-			}
-			cueveSqlBuff.append(" from "+viewName+" t,"+tableName+" t2 ");
-			if(reportUnitCalculateType>0){
-				cueveSqlBuff.append(","+calTotalTableName+" t3");
-				
-			}
-			cueveSqlBuff.append(" where t.id=t2.id");
-			
-			if(reportUnitCalculateType>0){
-				cueveSqlBuff.append(" and t.deviceId=t3.deviceId and t.calDate=t3.calDate");
-			}
-			cueveSqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
-			cueveSqlBuff.append(" and t.deviceid="+deviceId);
-			cueveSqlBuff.append(" order by t.calDate");
-			
-			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
-			for(int i=0;i<reportCurveDataList.size();i++){
-				Object[] obj=(Object[]) reportCurveDataList.get(i);
-				result_json.append("{\"calDate\":\"" + obj[1] + "\",\"data\":[");
-				for(int j=2;j<obj.length;j++){
-					String addValue=obj[j]+"";
-					if(reportCurveItemList.get(j-2).getDataSource()==0){
-						if(StringManagerUtils.isNotNull(addValue)){
-							String[] totalValueArr=addValue.split(";");
-							
-							addValue="";
-							if(reportCurveItemList.get(j).getTotalType()==1 && totalValueArr.length>=1){
-								addValue=totalValueArr[0];
-							}else if(reportCurveItemList.get(j).getTotalType()==2 && totalValueArr.length>=2){
-								addValue=totalValueArr[1];
-							}else if(reportCurveItemList.get(j).getTotalType()==3 && totalValueArr.length>=3){
-								addValue=totalValueArr[2];
-							}else if(reportCurveItemList.get(j).getTotalType()==4 && totalValueArr.length>=4){
-								addValue=totalValueArr[3];
-							}else if(reportCurveItemList.get(j).getTotalType()==5 && totalValueArr.length>=5){
-								addValue=totalValueArr[4];
-							}else if(reportCurveItemList.get(j).getTotalType()==6 && totalValueArr.length>=6){
-								addValue=totalValueArr[5];
-							}
-						}
-					}
-					result_json.append(addValue+",");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-				result_json.append("]},");
-			}
-			if (result_json.toString().endsWith(",")) {
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -4574,7 +4506,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " and t.reportcurveconf is not null "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+user.getUserNo()+"))"
 				+ " order by t.sort,t.id";
-//		List<ReportUnitItem> reportCurveItemList=new ArrayList<ReportUnitItem>();
 		
 		List<String> calTimeList=new ArrayList<>();
 		Map<Integer,String> itemNameMap=new TreeMap<>();
@@ -4582,6 +4513,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<Integer,String> itemCodeMap=new TreeMap<>();
 		Map<Integer,String> curveConfMap=new TreeMap<>();
 		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
+		Map<Integer,Integer> precMap=new TreeMap<>();
 		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 		
 		List<String> acqItemColumnList=new ArrayList<String>();
@@ -4599,16 +4531,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int dataType=StringManagerUtils.stringToInteger(reportCurveItemObj[3]+"");
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
-			
+			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1;
 			reflectType=new TypeToken<CurveConf>() {}.getType();
 			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
 			
 			if(dataType==2 && curveConfObj!=null){
 				int sort=curveConfObj.getSort();
-				if(itemNameMap.containsKey(sort)){
+				while(itemNameMap.containsKey(sort)){
 					sort+=1;
 				}
-				
 
 				if(dataSource==0 && protocol!=null && acqInstanceOwnItem!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
@@ -4627,6 +4558,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
 								acqItemName+="("+protocol.getItems().get(k).getUnit()+")";
 							}
+							if(prec<0){
+								prec=protocol.getItems().get(k).getPrec();
+							}
 							
 							itemNameMap.put(sort, acqItemName);
 							itemCodeSortMap.put(col, sort);
@@ -4634,6 +4568,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							totalTypeMap.put(sort, totalType);
 							acqItemColumnList.add(col);
 							curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+							precMap.put(sort, prec);
 							curveDataMap.put(sort, new ArrayList<>());
 							break;
 						}
@@ -4643,19 +4578,26 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(calItem!=null){
 						itemName=StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName());
 					}
-					
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}else if(dataSource==2){
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}
 			}
@@ -4747,6 +4689,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
 			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 				}
 				
@@ -4756,6 +4702,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
 			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 				}
 				
@@ -4791,6 +4741,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(totalType==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							int prec=precMap.get(itemCodeSortMap.get(itemColumn));
+							if(StringManagerUtils.isNum(addValue) && prec>=0){
+								addValue=StringManagerUtils.dataFormat(addValue, prec);;
 							}
 						}
 						
@@ -4899,6 +4853,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<Integer,String> curveConfMap=new TreeMap<>();
 		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
 		Map<Integer,Integer> curveStatTypeMap=new TreeMap<>();
+		Map<Integer,Integer> precMap=new TreeMap<>();
 		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 		
 		Map<String,Map<Integer,List<Float>>> dailyData=new LinkedHashMap<>();
@@ -4921,7 +4876,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int curveStatType=StringManagerUtils.stringToInteger(reportCurveItemObj[4]+"");
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
-			
+			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1; 
 			reflectType=new TypeToken<CurveConf>() {}.getType();
 			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
 			
@@ -4941,12 +4896,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				itemName+=statTypeName;
 				
-				if(itemNameMap.containsKey(sort)){
+				while(itemNameMap.containsKey(sort)){
 					sort+=1;
 				}
-				
 
 				if(dataSource==0){
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
@@ -4954,12 +4911,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					curveStatTypeMap.put(sort, curveStatType);
 					acqItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}else if(dataSource==1){
 					CalItem calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(itemCode, language);
 					if(calItem!=null){
 						itemName=calItem.getName()+statTypeName;
 						itemName=StringManagerUtils.isNotNull(calItem.getUnit())?(itemName+"("+calItem.getUnit()+")"):(itemName);
+					}
+					if(prec<0){
+						prec=3;
 					}
 					
 					itemNameMap.put(sort, itemName);
@@ -4968,15 +4929,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					curveStatTypeMap.put(sort, curveStatType);
 					calItemColumnList.add(itemCode);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}else if(dataSource==2){
-					
+					if(prec<0){
+						prec=3;
+					}
 					itemNameMap.put(sort, itemName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
 					curveStatTypeMap.put(sort, curveStatType);
 					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
 					curveDataMap.put(sort, new ArrayList<>());
 				}
 			}
@@ -5079,10 +5044,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(!dailyData.get(calDate).containsKey(curveSort)){
 						dailyData.get(calDate).put(curveSort, new ArrayList<>());
 					}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
 					dailyData.get(calDate).get(curveSort).add(StringManagerUtils.stringToFloat(value));
-					
-					
-					
 				}
 				
 				for(int j=calStartIndex;j<calStartIndex+calItemColumnList.size();j++){
@@ -5091,6 +5057,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					int curveSort=itemCodeSortMap.get(itemCode);
 					if(!dailyData.get(calDate).containsKey(curveSort)){
 						dailyData.get(calDate).put(curveSort, new ArrayList<>());
+					}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
 					}
 					dailyData.get(calDate).get(curveSort).add(StringManagerUtils.stringToFloat(value));
 				}
@@ -5129,6 +5099,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 								addValue=totalValueArr[4];
 							}else if(totalType==6 && totalValueArr.length>=6){
 								addValue=totalValueArr[5];
+							}
+							
+							int prec=precMap.get(itemCodeSortMap.get(itemColumn));
+							if(StringManagerUtils.isNum(addValue) && prec>=0){
+								addValue=StringManagerUtils.dataFormat(addValue, prec);
 							}
 						}
 						
@@ -5179,6 +5154,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			    if(!curveDataMap.containsKey(curveSort)){
 		    		curveDataMap.put(curveSort, new ArrayList<>());
 		    	}
+			    addValue=StringManagerUtils.dataFormat(addValue, 3);
 		    	curveDataMap.get(curveSort).add(addValue);
 		    }
 		}

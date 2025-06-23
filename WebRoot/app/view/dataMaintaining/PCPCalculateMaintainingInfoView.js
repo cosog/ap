@@ -622,7 +622,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                         	 
                         	 var deviceId=0;
                         	 var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-                        	 if(selectRow>=0){
+                        	 if(Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
                          		deviceId=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                          	 }
                         	 
@@ -1128,7 +1128,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            	
 	            	var applicationScenarios=0;
 	            	var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-	            	if(selectRow>=0){
+	            	if(Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
 	            		applicationScenarios=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
 	            	}
 	            	

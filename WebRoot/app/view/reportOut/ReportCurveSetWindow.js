@@ -52,7 +52,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 	var deviceName='';
                 	var deviceId=0;
                 	var selectRow= Ext.getCmp(selectRowId).getValue();
-                	if(selectRow>=0){
+                	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
                 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
                 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
                 	}
@@ -232,7 +232,7 @@ function CreateDeviceReportCurveSetTable(){
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 	}

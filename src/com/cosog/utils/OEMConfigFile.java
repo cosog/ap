@@ -253,6 +253,8 @@ public class OEMConfigFile {
 	    private int resourceMonitoringSaveData;
 	    
 	    private int resourceMonitoringVacuateThreshold;
+	    
+	    private boolean deviceAdditionalInformation;
 
 	    private boolean iot;
 
@@ -444,6 +446,12 @@ public class OEMConfigFile {
 		}
 		public void setSaveAcqRawData(boolean saveAcqRawData) {
 			this.saveAcqRawData = saveAcqRawData;
+		}
+		public boolean isDeviceAdditionalInformation() {
+			return deviceAdditionalInformation;
+		}
+		public void setDeviceAdditionalInformation(boolean deviceAdditionalInformation) {
+			this.deviceAdditionalInformation = deviceAdditionalInformation;
 		}
 	}
 	

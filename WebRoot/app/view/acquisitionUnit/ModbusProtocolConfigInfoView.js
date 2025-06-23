@@ -846,8 +846,14 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 								var extendedField={};
 								extendedField.Title=title;
 								extendedField.Title1=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'title1');
+								if(extendedField.Title1==(loginUserLanguageResource.doubleClickCellTip+'...')){
+									extendedField.Title1='';
+								}
 								extendedField.Operation=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'operation');
 								extendedField.Title2=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'title2');
+								if(extendedField.Title2==(loginUserLanguageResource.doubleClickCellTip+'...')){
+									extendedField.Title2='';
+								}
 								extendedField.Prec=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'prec');
 								
 								var Prec=protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i,'prec')+"";
@@ -1096,8 +1102,6 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	    }
 };
 
-
-
 function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 	if(protocolExtendedFieldConfigHandsontableHelper!=null){
 		if(protocolExtendedFieldConfigHandsontableHelper.hot!=undefined){
@@ -1132,7 +1136,8 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				}, {
 				    data: 'title'
 				}, {
-				    data: 'title1'
+				    data: 'title1',
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer
 				}, {
 				    data: 'operation',
 				    type: 'dropdown',
@@ -1140,7 +1145,8 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				    allowInvalid: false,
 				    source: operationList
 				}, {
-				    data: 'title2'
+				    data: 'title2',
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer
 				}, {
 				    data: 'prec',
 				    type: 'text',
@@ -1206,6 +1212,15 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value === null || value === '') {
+	                td.style.color = 'gray'; // 设置灰色文本作为占位符样式
+	                td.style.fontStyle = 'italic'; // 可以添加其他样式如斜体
+	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip+'...'; // 显示占位符文本
+	            }
 	        }
 	        
 	        protocolExtendedFieldConfigHandsontableHelper.createTable = function (data) {

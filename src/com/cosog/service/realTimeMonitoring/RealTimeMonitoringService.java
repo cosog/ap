@@ -4526,7 +4526,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
 							String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
 							int sort=curveConfObj.getSort();
-							if(itemNameMap.containsKey(sort)){
+							while(itemNameMap.containsKey(sort)){
 								sort+=1;
 							}
 							if("0".equalsIgnoreCase(type)){
@@ -4644,10 +4644,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					    String commStatus=everyDataMap.get("commStatus");
 					    String checkSign=everyDataMap.get("checkSign");
 					    for (String itemCode : itemCodeSortMap.keySet()) {
-					    	String value=null;
+					    	String value="null";
 							if(everyDataMap.containsKey(itemCode.toUpperCase())){
 								value=everyDataMap.get(itemCode.toUpperCase());
 							}
+							if(!StringManagerUtils.isNum(value)){
+								value="null";
+							}
+							
 					    	if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 					    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 					    	}
@@ -4710,7 +4714,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							List<KeyValue> acqDataList=gson.fromJson(acqData, type);
 							
 							for(String itemColumn:acqItemColumnList){
-								String value="";
+								String value="null";
 								if(acqDataList!=null){
 									for(KeyValue keyValue:acqDataList){
 										if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
@@ -4719,6 +4723,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}
 									}
 								}
+								if(!StringManagerUtils.isNum(value)){
+									value="null";
+								}
 								if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
 						    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
 						    	}
@@ -4726,7 +4733,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 							
 							for(String itemColumn:extendedFieldColumnList){
-								String value="";
+								String value="null";
 								if(acqDataList!=null){
 									for(KeyValue keyValue:acqDataList){
 										if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
@@ -4734,6 +4741,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											break;
 										}
 									}
+								}
+								if(!StringManagerUtils.isNum(value)){
+									value="null";
 								}
 								if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
 						    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
@@ -4748,6 +4758,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
 					    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
 					    	}
+							if(!StringManagerUtils.isNum(value)){
+								value="null";
+							}
 					    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
 						}
 						if(inputItemColumnList.size()>0){
@@ -4762,7 +4775,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 								for(int j=0;j<inputItemColumnList.size();j++){
-									String inputItemValue="";
+									String inputItemValue="\"\"";
 									String column=inputItemColumnList.get(j);
 									if(srpProductionData!=null){
 										if("CrudeOilDensity".equalsIgnoreCase(column) && srpProductionData.getFluidPVT()!=null ){
@@ -4797,6 +4810,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 										}
 									}
+									if(!StringManagerUtils.isNum(inputItemValue)){
+										inputItemValue="null";
+									}
 									if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
 							    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());
 							    	}
@@ -4806,7 +4822,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 								for(int j=0;j<inputItemColumnList.size();j++){
-									String inputItemValue="";
+									String inputItemValue="\"\"";
 									String column=inputItemColumnList.get(j);
 									if(pcpProductionData!=null){
 										if("CrudeOilDensity".equalsIgnoreCase(column) && pcpProductionData.getFluidPVT()!=null ){
@@ -4836,6 +4852,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}else if("PumpSettingDepth".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
 											inputItemValue=pcpProductionData.getProduction().getPumpSettingDepth()+"";
 										}
+									}
+									if(!StringManagerUtils.isNum(inputItemValue)){
+										inputItemValue="null";
 									}
 									if(!curveDataMap.containsKey(itemCodeSortMap.get(column))){
 							    		curveDataMap.put(itemCodeSortMap.get(column), new ArrayList<>());

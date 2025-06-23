@@ -120,7 +120,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 	var deviceId=0;
                 	
                 	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-                	if(selectRow>=0){
+                	if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
                 		deviceName = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                 		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	}
@@ -209,7 +209,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                 	var deviceId=0;
                 	
                 	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-                	if(selectRow>=0){
+                	if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
                 		deviceName = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                 		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	}
@@ -771,7 +771,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                         	 var deleteRecordList=[];
                         	 var deviceId=0;
                         	 var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-                        	 if(selectRow>=0){
+                        	 if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
                          		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                          	}
                         	 
@@ -1362,7 +1362,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	            	
 	            	var applicationScenarios=0;
 	            	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-	            	if(selectRow>=0){
+	            	if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
 	            		applicationScenarios=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
 	            	}
 	            	

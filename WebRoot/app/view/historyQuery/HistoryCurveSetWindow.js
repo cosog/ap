@@ -43,7 +43,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 	var deviceName='';
                 	var deviceId=0;
                 	var selectRow= Ext.getCmp(selectRowId).getValue();
-                	if(selectRow>=0){
+                	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
                 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
                 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
                 	}
@@ -205,7 +205,7 @@ function CreateDeviceHistoryCurveSetTable(){
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 	}

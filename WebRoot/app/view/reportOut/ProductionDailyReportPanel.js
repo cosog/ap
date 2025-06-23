@@ -292,7 +292,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                                 var unitId=0;
                                 var instanceCode='';
                                 var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
-                                if(selectRow>=0){
+                                if(Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
                                 	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
@@ -344,7 +344,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                                 var unitId=0;
                                 var instanceCode='';
                                 var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
-                                if(selectRow>=0){
+                                if(Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
                                 	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
                                 }
@@ -439,7 +439,7 @@ function CreateProductionDailyReportTable(){
     var unitId=0;
     var instanceCode='';
     var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
@@ -822,7 +822,7 @@ var ProductionDailyReportHelper = {
 	        		var wellName='';
 	        	    var wellId=0;
 	        	    var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
-	        	    if(selectRow>=0){
+	        	    if(Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
 	        	    	wellName=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
 	        	    	wellId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	        	    }
@@ -935,7 +935,7 @@ function CreateProductionDailyReportCurve(){
     var unitId=0;
     var instanceCode='';
     var selectRow= Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").getValue();
-    if(selectRow>=0){
+    if(Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection().length>0){
     	instanceCode=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.instanceCode;
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }

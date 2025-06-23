@@ -932,7 +932,10 @@ public class StringManagerUtils {
     }
 
     public static boolean isNum(String str) {
-        return isNotNull(str) && str != null && str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
+        return isNotNull(str) && str != null && (str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$") || str.matches("^[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][+-]?\\d+)?$"));
+        
+        
+        
     }
     
     /**
@@ -4514,7 +4517,6 @@ public class StringManagerUtils {
     	if(data.contains(".")){
     		String arr[]=data.split("\\.");
     		if(arr.length>1 && arr[1].length()>prec){
-//    			r=arr[0]+"."+arr[1].substring(0, prec);
     			r=valueStringFormat(StringManagerUtils.stringToFloat(data, prec)+"");
     		}
     	}

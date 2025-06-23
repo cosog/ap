@@ -103,7 +103,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
         	var deviceId=0;
         	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
-        	if(selectRow>=0){
+        	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
         		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}

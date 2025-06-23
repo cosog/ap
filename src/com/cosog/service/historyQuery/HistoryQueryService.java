@@ -5305,7 +5305,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();
 							String type=displayInstanceOwnItem.getItemList().get(j).getType()+"";
 							int sort=curveConfObj.getSort();
-							if(itemNameMap.containsKey(sort)){
+							
+							while(itemNameMap.containsKey(sort)){
 								sort+=1;
 							}
 							if("0".equalsIgnoreCase(type)){
@@ -5424,7 +5425,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getHistoryCurveConf(), reflectType);
 							
 							int sort=curveConfObj.getSort();
-							if(itemNameMap.containsKey(sort)){
+							while(itemNameMap.containsKey(sort)){
 								sort+=1;
 							}
 							

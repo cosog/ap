@@ -1270,7 +1270,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var deviceId=0;
 	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
 		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;

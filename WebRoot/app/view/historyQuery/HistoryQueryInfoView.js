@@ -522,7 +522,7 @@ function deviceHistoryQueryCurve(deviceType){
 	var deviceId=0;
 	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
@@ -1394,7 +1394,7 @@ loadSurfaceCardList = function (page) {
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
@@ -1507,7 +1507,7 @@ loadPSDiagramTiledList = function (page) {
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}
@@ -1618,7 +1618,7 @@ loadISDiagramTiledList = function (page) {
 	var deviceName='';
 	var deviceId=0;
 	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
-	if(selectRow>=0){
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
 	}

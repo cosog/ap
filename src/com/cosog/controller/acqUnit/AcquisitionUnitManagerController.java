@@ -2927,7 +2927,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
 											//如果读写模式改变
-											if(!RWType.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
+											String oldRWType=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType();
+											if(("r".equalsIgnoreCase(oldRWType) && "w".equalsIgnoreCase(RWType))||("w".equalsIgnoreCase(oldRWType) && "r".equalsIgnoreCase(RWType))){
 												delItemList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 											}
 											

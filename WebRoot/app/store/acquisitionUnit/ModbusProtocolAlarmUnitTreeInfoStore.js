@@ -97,12 +97,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                 					}
                 					protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
                 				}
-                				if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null){
-                					if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
-                						protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.destroy();
-                					}
-                					protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
-                				}
                 				if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
                 					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
                 						protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.destroy();

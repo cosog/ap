@@ -1726,7 +1726,7 @@ color16ToRgba = function(sColor,Opacity){
 	    	if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
 		        for (var i = 0; i < alarmInfo.length; i++) {
 		            if (column.toUpperCase() == alarmInfo[i].item.toUpperCase()) {
-		                if(alarmInfo[i].alarmType==2 || alarmInfo[i].alarmType==5){//数据量报警
+		                if(alarmInfo[i].alarmType==2 || alarmInfo[i].alarmType==5 || alarmInfo[i].alarmType==7){//数据量报警
 		                	if(val!=undefined){
 		                		var backgroundColor = '#FFFFFF';
 		    	                var color = '#000000';

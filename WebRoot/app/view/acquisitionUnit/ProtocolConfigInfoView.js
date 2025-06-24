@@ -17,7 +17,6 @@ var protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
 var protocolAlarmUnitConfigEnumItemsHandsontableHelper=null;
 var protocolAlarmUnitConfigCommStatusItemsHandsontableHelper=null;
 var protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper=null;
-var protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
 var protocolAlarmUnitConfigRunStatusItemsHandsontableHelper=null;
 
 //显示单元
@@ -292,12 +291,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.destroy();
     					}
     					protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
-    				}
-    				if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper!=null){
-    					if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
-    						protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot.destroy();
-    					}
-    					protocolAlarmUnitConfigCalNumItemsHandsontableHelper=null;
     				}
     				if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
     					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){

@@ -575,15 +575,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code,String language){
+	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,DataMapping> protocolColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+		
 		String columns = "["
 				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSource")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
@@ -593,10 +597,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
 				+ "]";
+		List<CalItem> calItemList=null;
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+			calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+		}else{
+			calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+		}
+		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
 		List<Integer> itemAddrsList=new ArrayList<Integer>();
+		List<String> itemsList=new ArrayList<String>();
 		List<?> list=null;
 		if("3".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
@@ -606,24 +620,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
-					+ " where t.type=2 and t.unitid=t2.id "
+					+ " where t.unitid=t2.id "
+					+ " and t.type in(2,5,7) "
 					+ " and t2.unit_code='"+code+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
 				Object[] obj = (Object[]) list.get(i);
+				itemsList.add(obj[1]+"");
 				itemAddrsList.add(StringManagerUtils.stringToInteger(obj[2]+""));
 			}
 		}
-
+		int index=1;
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
-			int index=1;
 			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if((!"w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())) && protocolConfig.getItems().get(j).getResolutionMode()==2){
+				if((!"w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())) 
+						&& protocolConfig.getItems().get(j).getResolutionMode()==2
+						&& protocolConfig.getItems().get(j).getQuantity()==1
+						&& ( protocolConfig.getItems().get(j).getIFDataType().contains("int") || protocolConfig.getItems().get(j).getIFDataType().contains("float") )
+						){
 					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
 					boolean checked=false;
+					DataMapping dataMapping=protocolColumnByTitleMap.get(protocolConfig.getItems().get(j).getTitle());
 					for(int k=0;k<itemAddrsList.size();k++){
 						Object[] obj = (Object[]) list.get(k);
 						if(itemAddrsList.get(k)==protocolConfig.getItems().get(j).getAddr()){
@@ -633,9 +653,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							hystersis=obj[5]+"";
 							delay=obj[6]+"";
 							retriggerTime=obj[7]+"";
-							
 							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
-							
 							alarmSign=obj[9]+"";
 							isSendMessage=obj[10]+"";
 							isSendMail=obj[11]+"";
@@ -645,7 +663,58 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("{\"checked\":"+checked+","
 							+ "\"id\":"+(index)+","
 							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"addr\":\""+protocolConfig.getItems().get(j).getAddr()+"\","
+							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
+							+ "\"code\":\""+(dataMapping!=null?dataMapping.getMappingColumn():"")+"\","
+							+ "\"type\":2,"
+							+ "\"upperLimit\":\""+upperLimit+"\","
+							+ "\"lowerLimit\":\""+lowerLimit+"\","
+							+ "\"hystersis\":\""+hystersis+"\","
+							+ "\"delay\":\""+delay+"\","
+							+ "\"retriggerTime\":\""+retriggerTime+"\","
+							+ "\"alarmLevel\":\""+alarmLevel+"\","
+							+ "\"alarmSign\":\""+alarmSign+"\","
+							+ "\"isSendMessage\":\""+isSendMessage+"\","
+							+ "\"isSendMail\":\""+isSendMail+"\""
+							+ "},");
+					index++;
+				}
+			}
+			if(!result_json.toString().endsWith(",")){
+				result_json.append(",");
+			}
+			if(protocolConfig.getExtendedFields()!=null){
+				for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
+
+					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+					boolean checked=false;
+					DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle());
+					String itemCode=dataMapping!=null?dataMapping.getMappingColumn():"";
+					for(int k=0;k<itemsList.size();k++){
+						Object[] obj = (Object[]) list.get(k);
+						if(itemCode.equalsIgnoreCase(itemsList.get(k))){
+							checked=true;
+							upperLimit=obj[3]+"";
+							lowerLimit=obj[4]+"";
+							hystersis=obj[5]+"";
+							delay=obj[6]+"";
+							retriggerTime=obj[7]+"";
+							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
+							alarmSign=obj[9]+"";
+							isSendMessage=obj[10]+"";
+							isSendMail=obj[11]+"";
+							break;
+						}
+					}
+					result_json.append("{\"checked\":"+checked+","
+							+ "\"id\":"+(index)+","
+							+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
+							+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","5", language)+"\","
+							+ "\"code\":\""+itemCode+"\","
+							+ "\"addr\":\"\","
+							+ "\"type\":7,"
 							+ "\"upperLimit\":\""+upperLimit+"\","
 							+ "\"lowerLimit\":\""+lowerLimit+"\","
 							+ "\"hystersis\":\""+hystersis+"\","
@@ -660,7 +729,54 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
-	
+		
+		if(!result_json.toString().endsWith(",")){
+			result_json.append(",");
+		}
+		if(calItemList!=null){
+			for(CalItem calItem:calItemList){
+				if(calItem.getDataType()==2){
+					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+					boolean checked=false;
+					for(int k=0;k<itemsList.size();k++){
+						Object[] obj = (Object[]) list.get(k);
+						if(calItem.getCode().equalsIgnoreCase(itemsList.get(k))){
+							checked=true;
+							upperLimit=obj[3]+"";
+							lowerLimit=obj[4]+"";
+							hystersis=obj[5]+"";
+							delay=obj[6]+"";
+							retriggerTime=obj[7]+"";
+							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
+							alarmSign=obj[9]+"";
+							isSendMessage=obj[10]+"";
+							isSendMail=obj[11]+"";
+							break;
+						}
+					}
+					result_json.append("{\"checked\":"+checked+","
+							+ "\"id\":"+(index)+","
+							+ "\"title\":\""+calItem.getName()+"\","
+							+ "\"unit\":\""+calItem.getUnit()+"\","
+							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","1", language)+"\","
+							+ "\"code\":\""+calItem.getCode()+"\","
+							+ "\"addr\":\"\","
+							+ "\"type\":5,"
+							+ "\"upperLimit\":\""+upperLimit+"\","
+							+ "\"lowerLimit\":\""+lowerLimit+"\","
+							+ "\"hystersis\":\""+hystersis+"\","
+							+ "\"delay\":\""+delay+"\","
+							+ "\"retriggerTime\":\""+retriggerTime+"\","
+							+ "\"alarmLevel\":\""+alarmLevel+"\","
+							+ "\"alarmSign\":\""+alarmSign+"\","
+							+ "\"isSendMessage\":\""+isSendMessage+"\","
+							+ "\"isSendMail\":\""+isSendMail+"\""
+							+ "},");
+					index++;
+				}
+			}
+		}
+		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}

@@ -2,6 +2,7 @@ package com.cosog.service.data;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,6 +17,7 @@ import com.cosog.model.data.DataitemsInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataDicUtils;
@@ -699,5 +701,195 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		}
 		
 		return strBuf.toString();
+	}
+	
+	public String getAddInfoOrDriverConfigItemList(String dictDataSource,String dataSource,User user) {
+		StringBuffer result_json = new StringBuffer();
+		String language=user.getLanguageName();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		String columns="["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "]";
+		int totalCount=0;
+		result_json.append("{\"success\":true,\"columns\":"+columns+",\"totalRoot\":[");
+		if(StringManagerUtils.stringToInteger(dictDataSource)==1){
+			if(StringManagerUtils.stringToInteger(dataSource)==0){
+				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+				String protocolSql="select t.name,t.code "
+						+ " from tbl_protocol t "
+						+ " where t.devicetype in (select t2.rd_devicetypeid from tbl_devicetype2role t2 where t2.rd_roleid="+user.getUserType()+"  ) "
+						+ " and t.language="+user.getLanguage()
+						+ " order by t.sort";
+				List<?> protocolList = this.findCallSql(protocolSql);
+				Map<String,DataMapping> addedItemMap=new LinkedHashMap<>();
+				int index=1;
+				for(int i=0;i<protocolList.size();i++){
+					Object[] obj=(Object[]) protocolList.get(i);
+					String protocolName=obj[0]+"";
+					String protocolCode=obj[1]+"";
+					ModbusProtocolConfig.Protocol protocol= MemoryDataManagerTask.getProtocolByCode(protocolCode);
+					if(protocol!=null){
+						for(ModbusProtocolConfig.Items item:protocol.getItems()){
+							if(!addedItemMap.containsKey(item.getTitle())){
+								DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
+								if(dataMapping!=null){
+									addedItemMap.put(item.getTitle(), dataMapping);
+									String itemColumn=dataMapping.getMappingColumn();
+									result_json.append("{\"id\":\""+index+"\",");
+									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
+									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+									result_json.append("\"dataSource\":\""+dataSource+"\"},");
+									
+									totalCount++;
+									index++;
+								}
+							}
+						}
+					}
+				}
+			}else if(StringManagerUtils.stringToInteger(dataSource)==5){
+				Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+				String protocolSql="select t.name,t.code "
+						+ " from tbl_protocol t "
+						+ " where t.devicetype in (select t2.rd_devicetypeid from tbl_devicetype2role t2 where t2.rd_roleid="+user.getUserType()+"  ) "
+						+ " and t.language="+user.getLanguage()
+						+ " order by t.sort";
+				List<?> protocolList = this.findCallSql(protocolSql);
+				Map<String,DataMapping> addedItemMap=new LinkedHashMap<>();
+				int index=1;
+				for(int i=0;i<protocolList.size();i++){
+					Object[] obj=(Object[]) protocolList.get(i);
+					String protocolName=obj[0]+"";
+					String protocolCode=obj[1]+"";
+					ModbusProtocolConfig.Protocol protocol= MemoryDataManagerTask.getProtocolByCode(protocolCode);
+					if(protocol!=null){
+						for(ModbusProtocolConfig.ExtendedField item:protocol.getExtendedFields()){
+							if(!addedItemMap.containsKey(item.getTitle())){
+								DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
+								if(dataMapping!=null){
+									addedItemMap.put(item.getTitle(), dataMapping);
+									String itemColumn=dataMapping.getMappingColumn();
+									result_json.append("{\"id\":\""+index+"\",");
+									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
+									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+									result_json.append("\"dataSource\":\""+dataSource+"\"},");
+									
+									totalCount++;
+									index++;
+								}
+							}
+						}
+					}
+				}
+			}else if(StringManagerUtils.stringToInteger(dataSource)==1){
+				Map<String,CalItem> addedItemMap=new LinkedHashMap<>();
+				List<CalItem> acqCalItemList= MemoryDataManagerTask.getAcqCalculateItem(language);
+				List<CalItem> SRPCalItemList= MemoryDataManagerTask.getSRPCalculateItem(language);
+				List<CalItem> PCPCalItemList= MemoryDataManagerTask.getPCPCalculateItem(language);
+				
+				int index=1;
+				for(CalItem calItem:acqCalItemList){
+					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+						result_json.append("{\"id\":\""+index+"\",");
+						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+						result_json.append("\"dataSource\":\""+dataSource+"\",");
+						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+						totalCount++;
+						index++;
+					}
+				}
+				for(CalItem calItem:SRPCalItemList){
+					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+						result_json.append("{\"id\":\""+index+"\",");
+						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+						result_json.append("\"dataSource\":\""+dataSource+"\",");
+						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+						totalCount++;
+						index++;
+					}
+				}
+				for(CalItem calItem:PCPCalItemList){
+					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+						result_json.append("{\"id\":\""+index+"\",");
+						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+						result_json.append("\"dataSource\":\""+dataSource+"\",");
+						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+						totalCount++;
+						index++;
+					}
+				}
+			}else if(StringManagerUtils.stringToInteger(dataSource)==2){
+				Map<String,CalItem> addedItemMap=new LinkedHashMap<>();
+				List<CalItem> SRPInputItemList= MemoryDataManagerTask.getSRPInputItem(language);
+				List<CalItem> PCPInputItemList= MemoryDataManagerTask.getPCPInputItem(language);
+				
+				int index=1;
+				for(CalItem calItem:SRPInputItemList){
+					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+						result_json.append("{\"id\":\""+index+"\",");
+						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+						result_json.append("\"dataSource\":\""+dataSource+"\",");
+						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+						totalCount++;
+						index++;
+					}
+				}
+				for(CalItem calItem:PCPInputItemList){
+					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+						result_json.append("{\"id\":\""+index+"\",");
+						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+						result_json.append("\"dataSource\":\""+dataSource+"\",");
+						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+						totalCount++;
+						index++;
+					}
+				}
+			}
+		}if(StringManagerUtils.stringToInteger(dictDataSource)==2){
+			String sql="select distinct(t.itemname) from TBL_DEVICEADDINFO t,tbl_device t2 "
+					+ " where t.deviceid=t2.id "
+					+ " and t2.orgid in(select org_id from tbl_org start with org_id=(select u.user_orgid from tbl_user u where u.user_no="+user.getUserNo()+" ) connect by prior  org_id=org_parent)"
+					+ " ";
+			List<?> list = this.findCallSql(sql);
+			totalCount= list.size();
+			for(int i=0;i<list.size();i++){
+				result_json.append("{\"id\":\""+(i+1)+"\",");
+				result_json.append("\"itemName\":\""+list.get(i).toString()+"\",");
+				result_json.append("\"itemColumn\":\"\",");
+				result_json.append("\"dictDataSource\":\""+dictDataSource+"\"},");
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append(",\"totalCount\":" + totalCount + "}");
+		return result_json.toString().replaceAll("null", "");
 	}
 }

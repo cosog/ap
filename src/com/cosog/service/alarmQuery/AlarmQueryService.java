@@ -67,7 +67,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		if(StringManagerUtils.isNotNull(alarmType)){
 			if(StringManagerUtils.stringToInteger(alarmType)==2){
-				sql+=" and t.alarmType in(2,5)";
+				sql+=" and t.alarmType in(2,5,7)";
 			}else {
 				sql+=" and t.alarmType="+alarmType;
 			}
@@ -204,7 +204,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			}
 			if(StringManagerUtils.isNotNull(alarmType)){
 				if(StringManagerUtils.stringToInteger(alarmType)==2){
-					sql+=" and t.alarmType in(2,5)";
+					sql+=" and t.alarmType in(2,5,7)";
 				}else {
 					sql+=" and t.alarmType="+alarmType;
 				}
@@ -347,7 +347,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		
 		if(StringManagerUtils.stringToInteger(alarmType)==2){
-			sql+=" and t.alarmType in(2,5)";
+			sql+=" and t.alarmType in(2,5,7)";
 		}else {
 			sql+= " and t.alarmtype="+alarmType;
 		}
@@ -403,7 +403,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		
 		if(StringManagerUtils.stringToInteger(alarmType)==2){
-			sql+=" and t.alarmType in(2,5)";
+			sql+=" and t.alarmType in(2,5,7)";
 		}else {
 			sql+= " and t.alarmtype="+alarmType;
 		}

@@ -158,3 +158,39 @@ Ext.define("AP.view.data.SystemdataInfoView", {
     }
 
 });
+
+function createDictItemSourceConfigGridPanelColumn(columnInfo) {
+    var myArr = columnInfo;
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        var flex_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        if (isNotVal(attr.flex)) {
+        	flex_ = ",flex:" + attr.flex;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
+        if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
+};

@@ -2,11 +2,14 @@ package com.cosog.controller.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -273,6 +276,22 @@ public class DataitemsInfoController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/getAddInfoOrDriverConfigItemList")
+	public String getAddInfoOrDriverConfigItemList() throws IOException {
+		String dictDataSource = ParamUtils.getParameter(request, "dictDataSource");
+		String dataSource = ParamUtils.getParameter(request, "dataSource");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String json = this.dataitemsInfoService.getAddInfoOrDriverConfigItemList(dictDataSource,dataSource,user);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 }

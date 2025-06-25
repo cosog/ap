@@ -96,19 +96,8 @@ function createProtocolExtendedFieldGridPanelColumn(columnInfo) {
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_+flex_;
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
-        }
-        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-        }
-        else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
-        }
-        else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
-        }
-        else {
+        }else {
             myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {

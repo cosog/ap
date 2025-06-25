@@ -80,7 +80,7 @@ public class AlarmQueryController extends BaseController{
 			String maxIdSql="select max(t2.id) from "+tableName+" t2 where t2.deviceId="+deviceId;
 			if(StringManagerUtils.isNotNull(alarmType)){
 				if(StringManagerUtils.stringToInteger(alarmType)==2){
-					maxIdSql+=" and t2.alarmType in(2,5)";
+					maxIdSql+=" and t2.alarmType in(2,5,7)";
 				}else {
 					maxIdSql+=" and t2.alarmType="+alarmType;
 				}
@@ -147,7 +147,7 @@ public class AlarmQueryController extends BaseController{
 			String maxIdSql="select max(t2.id) from "+tableName+" t2 where t2.deviceId="+deviceId;
 			if(StringManagerUtils.isNotNull(alarmType)){
 				if(StringManagerUtils.stringToInteger(alarmType)==2){
-					maxIdSql+=" and t2.alarmType in(2,5)";
+					maxIdSql+=" and t2.alarmType in(2,5,7)";
 				}else {
 					maxIdSql+=" and t2.alarmType="+alarmType;
 				}

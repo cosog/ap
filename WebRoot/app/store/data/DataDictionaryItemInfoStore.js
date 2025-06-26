@@ -85,10 +85,21 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         align: 'center',
                         flex: 1,
                         dataIndex: 'code',
+                        hidden:true,
                         editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
                         }:"",
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    },{
+                        header: loginUserLanguageResource.configureField,
+                        align: 'center',
+                        flex: 1,
+                        dataIndex: 'configItemName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -208,6 +219,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                            isDisabled: function(view, rowIndex, colIndex, item, record) {
+                                // 非基础字段禁用按钮
+                                return record.data.columnDataSource != 0;
+                            },
                             handler: function (view, recIndex, cellIndex, item, e, record) {
                             	var editFlag=parseInt(Ext.getCmp("DataDictionaryManagementModuleEditFlag").getValue());
         	                    if(editFlag==1){
@@ -216,12 +231,20 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             }
                         }]
                     },{
+                		text: loginUserLanguageResource.config, 
+                		align:'center',
+                		width: (getLabelWidth(loginUserLanguageResource.config+"...",loginUserLanguage)),
+                		renderer :function(value,e,o){
+                			return iconDictItemConfig(value,e,o)
+                		} 
+                    },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
+                        hidden:true,
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,

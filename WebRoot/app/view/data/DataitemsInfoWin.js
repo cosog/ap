@@ -20,6 +20,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             name: 'dataitemsInfo.code',
             fieldLabel: loginUserLanguageResource.dataColumnCode + '<font color=red>*</font>',
             allowBlank: false,
+            hidden:true,
             anchor: '95%',
             msgTarget: 'side',
             value: '',
@@ -70,7 +71,8 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             listeners: {
                 beforeload: function (store, options) {
                     var new_params = {
-                        itemCode: 'DICTDATASOURCE'
+                        itemCode: 'DICTDATASOURCE',
+                        values: '1,2'
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }
@@ -97,7 +99,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                         if (combo.value == 1) { //字段数据来源为驱动配置
                             Ext.getCmp("sysDataCode_Ids").hide();
                             Ext.getCmp("dictItemDataSourceComb_Id").show();
-                            Ext.getCmp("dictItemDataUnit_Id").show();
+//                            Ext.getCmp("dictItemDataUnit_Id").show();
 
                             Ext.getCmp("sysDataCode_Ids").setConfig({
                                 allowBlank: true
@@ -109,7 +111,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                         } else if (combo.value == 2) { //字段数据来源为附加信息
                             Ext.getCmp("sysDataCode_Ids").hide();
                             Ext.getCmp("dictItemDataSourceComb_Id").hide();
-                            Ext.getCmp("dictItemDataUnit_Id").hide();
+//                            Ext.getCmp("dictItemDataUnit_Id").hide();
 
                             Ext.getCmp("sysDataCode_Ids").setConfig({
                                 allowBlank: true
@@ -123,7 +125,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                         } else { //字段数据来源为基础字段
                             Ext.getCmp("sysDataCode_Ids").show();
                             Ext.getCmp("dictItemDataSourceComb_Id").hide();
-                            Ext.getCmp("dictItemDataUnit_Id").hide();
+//                            Ext.getCmp("dictItemDataUnit_Id").hide();
 
                             Ext.getCmp("sysDataCode_Ids").setConfig({
                                 allowBlank: false
@@ -206,6 +208,15 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     height: 51,
                     width: 501,
                     html: '<table width="468" height="42" border="0" cellspacing="0" style="font-size: 12px;color: #999999;"><tr><td width="95" height="21">' + loginUserLanguageResource.tip + '：</td><td width="357">&nbsp;</td></tr><tr><td height="26"></td><td> ' + loginUserLanguageResource.requiredInfo + ' </td></tr></table><div  class="divider_s"></div>'
+                },{
+                    xtype: "hidden",
+                    id: 'dictItemAddOrUpdate_Id',
+                    value: '0'
+                }, {
+                    xtype: "hidden",
+                    id: 'dictItemDataItemId_Id',
+                    value: '',
+                    name: "dataitemsInfo.dataitemid"
                 },
                 {
                     id: "sysDataName_zh_CN_Ids",

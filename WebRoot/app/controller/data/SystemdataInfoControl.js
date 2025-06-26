@@ -303,31 +303,42 @@ function savetoSysDataItems() {
     var tosavedatawin = Ext.getCmp("DataitemsInfoWinId");
     var sysdataForm = tosavedatawin.down('form');
     if (sysdataForm.getForm().isValid()) {
-        var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
-        sysdataForm.getForm().submit({
-            url: context + '/dataitemsInfoController/addDataitemsInfo',
-            clientValidation: true,
-            waitMsg: loginUserLanguageResource.sendServer,
-            waitTitle: loginUserLanguageResource.wait,
-            method: "POST",
-            params: {
-                sysId: getSysId
-            },
-            success: function (response, action) {
-                if (action.result.msg == true) {
-                    tosavedatawin.close();
-                    reFreshg("dataDictionaryItemGridPanel_Id");
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
-                }
-                if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
-                }
+    	var dictItemSourceSelection = Ext.getCmp("DictItemSourceGridPanel_Id").getSelectionModel().getSelection();
+    	if(dictItemSourceSelection.length==0){
+    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	}else{
+    		var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
+    		
+    		var configItemName=dictItemSourceSelection[0].data.itemName;
+    		var itemColumn=dictItemSourceSelection[0].data.itemColumn;
+    		
+            sysdataForm.getForm().submit({
+                url: context + '/dataitemsInfoController/addDataitemsInfo',
+                clientValidation: true,
+                waitMsg: loginUserLanguageResource.sendServer,
+                waitTitle: loginUserLanguageResource.wait,
+                method: "POST",
+                params: {
+                    sysId: getSysId,
+                    configItemName:configItemName,
+                    itemColumn:itemColumn
+                },
+                success: function (response, action) {
+                    if (action.result.msg == true) {
+                        tosavedatawin.close();
+                        reFreshg("dataDictionaryItemGridPanel_Id");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    }
+                    if (action.result.msg == false) {
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
+                    }
 
-            },
-            failure: function () {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.addFailure + "");
-            }
-        });
+                },
+                failure: function () {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.addFailure + "");
+                }
+            });
+    	}
     }
     return false;
 };

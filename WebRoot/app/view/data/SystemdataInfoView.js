@@ -9,8 +9,6 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         var me = this;
         var SystemdataInfoGridPanel = Ext.create('AP.view.data.SystemdataInfoGridPanel');
         var DictItemGridPanel = Ext.create('AP.view.data.DictItemGridPanel');
-        
-        
         var items=[];
         var firstActiveTab=0;
         var secondActiveTab=0;
@@ -194,3 +192,136 @@ function createDictItemSourceConfigGridPanelColumn(columnInfo) {
     myColumns += "]";
     return myColumns;
 };
+
+iconDictItemConfig = function(value, e, record) {
+	var resultstring="";
+	if(record.data.columnDataSource!=0){
+		var dataitemid=record.data.dataitemid;
+		var name=record.data.name;
+		var code=record.data.code;
+		var datavalue=record.data.datavalue;
+		var sorts=record.data.sorts;
+		var columnDataSource=record.data.columnDataSource;
+		var deviceType=record.data.deviceType;
+		var dataSource=record.data.dataSource;
+		var dataUnit=record.data.dataUnit;
+		var status=record.data.status;
+		var status_cn=record.data.status_cn;
+		var status_en=record.data.status_en;
+		var status_ru=record.data.status_ru;
+		var configItemName=record.data.configItemName;
+		
+		var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " 
+			+"onclick=callBackDictItemConfig(" 
+			+"\""+dataitemid+"\",\""+name+"\",\""+code+"\",\""+datavalue+"\",\""+sorts+"\"," 
+			+"\""+columnDataSource+"\",\""+deviceType+"\",\""+dataSource+"\",\""+dataUnit+"\"," 
+			+"\""+status+"\",\""+status_cn+"\",\""+status_en+"\",\""+status_ru+"\",\""+configItemName+"\")>"
+			+loginUserLanguageResource.config+"...</a>";
+	}
+	return resultstring;
+}
+
+var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName) {
+	var adddataitemwin = Ext.create("AP.view.data.DataitemsInfoWin", {
+        title: loginUserLanguageResource.editDataItem
+    });
+    adddataitemwin.show();
+    adddataitemwin.down('form').getForm().reset();
+    
+    Ext.getCmp("savettosysfordataFormBtnId").hide();
+    Ext.getCmp("oktosysfordataFormBtnId").hide();
+    Ext.getCmp("editttosysfordataFormBtnId").show();
+    
+    Ext.getCmp("dictItemAddOrUpdate_Id").setValue(1);
+    
+    Ext.getCmp("dictItemDataItemId_Id").setValue(dataitemid);
+    Ext.getCmp("sysDataName_zh_CN_Ids").setValue(name);
+    Ext.getCmp("sysDataName_en_Ids").setValue(name);
+    Ext.getCmp("sysDataName_ru_Ids").setValue(name);
+    
+    Ext.getCmp("sysDataCode_Ids").setValue(code);
+    
+    
+    Ext.getCmp("dictItemColumnDataSourceComb_Id").setValue(columnDataSource);
+    Ext.getCmp("dictItemColumnDataSource_Id").setValue(columnDataSource);
+    
+    Ext.getCmp("dictItemDeviceType_Id").setValue(deviceType);
+    
+    Ext.getCmp("dictItemDataSourceComb_Id").setValue(dataSource);
+    Ext.getCmp("dictItemDataSource_Id").setValue(dataSource);
+
+    Ext.getCmp("dictItemDataUnit_Id").setValue(dataUnit);
+    
+    if(status_cn=='true'){
+    	Ext.getCmp("dataitemsInfo_status_cn_id").setValue(1);
+    }else{
+    	Ext.getCmp("dataitemsInfo_status_cn_id").setValue(0);
+    }
+    
+    if(status_en=='true'){
+    	Ext.getCmp("dataitemsInfo_status_en_id").setValue(1);
+    }else{
+    	Ext.getCmp("dataitemsInfo_status_en_id").setValue(0);
+    }
+    
+    if(status_ru=='true'){
+    	Ext.getCmp("dataitemsInfo_status_ru_id").setValue(1);
+    }else{
+    	Ext.getCmp("dataitemsInfo_status_ru_id").setValue(0);
+    }
+    
+    if(status=='true'){
+    	Ext.getCmp("dataitemsInfo_status_id").setValue(1);
+    }else{
+    	Ext.getCmp("dataitemsInfo_status_id").setValue(0);
+    }
+    
+    
+	Ext.getCmp("sysdatasorts_Ids").setValue(sorts);
+	Ext.getCmp("sysdatadatavalue_Ids").setValue(datavalue);
+
+	
+	if(columnDataSource==1){
+        Ext.getCmp("sysDataCode_Ids").hide();
+        Ext.getCmp("dictItemDataSourceComb_Id").show();
+//        Ext.getCmp("dictItemDataUnit_Id").show();
+
+        Ext.getCmp("sysDataCode_Ids").setConfig({
+            allowBlank: true
+        });
+        Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+            allowBlank: false
+        });
+        Ext.getCmp("dictItemSelectPanel_Id").enable();
+    } else if (columnDataSource == 2) { //字段数据来源为附加信息
+        Ext.getCmp("sysDataCode_Ids").hide();
+        Ext.getCmp("dictItemDataSourceComb_Id").hide();
+//        Ext.getCmp("dictItemDataUnit_Id").hide();
+
+        Ext.getCmp("sysDataCode_Ids").setConfig({
+            allowBlank: true
+        });
+        Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+            allowBlank: true
+        });
+        Ext.getCmp("dictItemSelectPanel_Id").enable();
+    }else{
+    	Ext.getCmp("sysDataCode_Ids").show();
+        Ext.getCmp("dictItemDataSourceComb_Id").hide();
+//        Ext.getCmp("dictItemDataUnit_Id").hide();
+
+        Ext.getCmp("sysDataCode_Ids").setConfig({
+            allowBlank: false
+        });
+        Ext.getCmp("dictItemDataSourceComb_Id").setConfig({
+            allowBlank: true
+        });
+        Ext.getCmp("dictItemSelectPanel_Id").disable();
+    }
+	
+	if(columnDataSource!=0){
+		Ext.create('AP.store.data.DictItemSourceStore');
+	}
+	
+    return false;
+}

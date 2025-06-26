@@ -88,7 +88,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				+ "t.columnDataSource,t.devicetype,"
 				+ "t.dataSource,t.dataUnit,"
 				+ "t.status,"
-				+ "t.status_cn,t.status_en,t.status_ru "
+				+ "t.status_cn,t.status_en,t.status_ru,"
+				+ "t.configitemname "
 				+ "from tbl_dist_item t "
 				+ "where t.sysdataid='"+dictionaryId+"' "
 				+ " and t.deviceType="+deviceType;
@@ -125,7 +126,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+",");
 			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
 			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
-			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+"");
+			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
+			result_json.append("\"configItemName\":\""+obj[13]+"\"");
 			result_json.append("},");
 		}
 		if(result_json.toString().endsWith(",")){
@@ -201,10 +203,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					name=dinfo.getName_ru();
 				}
 				if(dinfo.getDataSource()==1){
-					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
-					if(calItem!=null){
-						dinfo.setCode(calItem.getCode());
-					}
+//					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+//					if(calItem!=null){
+//						dinfo.setCode(calItem.getCode());
+//					}
 					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
 						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "en");
 						if(calItem2!=null){
@@ -234,10 +236,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						}
 					}
 				}else if(dinfo.getDataSource()==2){
-					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
-					if(calItem!=null){
-						dinfo.setCode(calItem.getCode());
-					}
+//					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+//					if(calItem!=null){
+//						dinfo.setCode(calItem.getCode());
+//					}
 					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
 						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "en");
 						if(calItem2!=null){
@@ -267,13 +269,13 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						}
 					}
 				}else if(dinfo.getDataSource()==0){
-					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
-					if(loadProtocolMappingColumnByTitleMap!=null){
-						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(name);
-						if(dataMapping!=null){
-							dinfo.setCode(dataMapping.getMappingColumn());
-						}
-					}
+//					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+//					if(loadProtocolMappingColumnByTitleMap!=null){
+//						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(dinfo.getConfigItemName());
+//						if(dataMapping!=null){
+//							dinfo.setCode(dataMapping.getMappingColumn());
+//						}
+//					}
 					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
 						dinfo.setName_en(dinfo.getName_zh_CN());
 						dinfo.setName_ru(dinfo.getName_zh_CN());
@@ -285,13 +287,13 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						dinfo.setName_en(dinfo.getName_ru());
 					}
 				}else if(dinfo.getDataSource()==5){
-					Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
-					if(protocolExtendedFieldColumnByTitleMap!=null){
-						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(name);
-						if(dataMapping!=null){
-							dinfo.setCode(dataMapping.getMappingColumn());
-						}
-					}
+//					Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+//					if(protocolExtendedFieldColumnByTitleMap!=null){
+//						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(dinfo.getConfigItemName());
+//						if(dataMapping!=null){
+//							dinfo.setCode(dataMapping.getMappingColumn());
+//						}
+//					}
 					
 					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
 						dinfo.setName_en(dinfo.getName_zh_CN());
@@ -868,7 +870,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			String sql="select distinct(t.itemname) from TBL_DEVICEADDINFO t,tbl_device t2 "
 					+ " where t.deviceid=t2.id "
 					+ " and t2.orgid in(select org_id from tbl_org start with org_id=(select u.user_orgid from tbl_user u where u.user_no="+user.getUserNo()+" ) connect by prior  org_id=org_parent)"
-					+ " ";
+					+ " order by t.itemname";
 			List<?> list = this.findCallSql(sql);
 			totalCount= list.size();
 			for(int i=0;i<list.size();i++){

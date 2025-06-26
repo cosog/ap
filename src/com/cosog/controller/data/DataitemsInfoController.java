@@ -182,6 +182,10 @@ public class DataitemsInfoController extends BaseController {
 		if (null != dataitemsInfo && !"".equals(dataitemsInfo)) {
 			User userInfo = this.findCurrentUserInfo();
 			String sysId = request.getParameter("sysId");
+			String configItemName = request.getParameter("configItemName");
+			String itemColumn = request.getParameter("itemColumn");
+			dataitemsInfo.setConfigItemName(configItemName);
+			dataitemsInfo.setCode(itemColumn);
 			jsonaddstr = dataitemsInfoService.saveDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
 			jsonaddstr = "{success:true,msg:false}";

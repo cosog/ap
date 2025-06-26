@@ -1051,7 +1051,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
 };
 
 function renderReportUnitContentConfig(instance, td, row, col, prop, value, cellProperties) {
-    td.innerHTML = "<a href='#' onclick=reportUnitContentConfig(" + row + "," + col + "," + value + ")><span>"+loginUserLanguageResource.config+"</span></a>";
+    td.innerHTML = "<a href='#' onclick=reportUnitContentConfig(" + row + "," + col + "," + value + ")><span>"+loginUserLanguageResource.config+"..."+"</span></a>";
 }
 
 function reportUnitContentConfig(row, col, value) {

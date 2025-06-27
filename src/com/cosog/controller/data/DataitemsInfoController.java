@@ -201,6 +201,34 @@ public class DataitemsInfoController extends BaseController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping("/updateDataitemsInfo")
+	public void updateDataitemsInfo(@ModelAttribute DataitemsInfo dataitemsInfo) throws Exception {
+		String jsonaddstr = "";
+		if (null != dataitemsInfo && !"".equals(dataitemsInfo)) {
+			User userInfo = this.findCurrentUserInfo();
+			String sysId = request.getParameter("sysId");
+			String configItemName = request.getParameter("configItemName");
+			String itemColumn = request.getParameter("itemColumn");
+			String dictItemDataItemId = request.getParameter("dictItemDataItemId");
+			dataitemsInfo.setDataitemid(dictItemDataItemId);
+			dataitemsInfo.setConfigItemName(configItemName);
+			dataitemsInfo.setCode(itemColumn);
+			jsonaddstr = dataitemsInfoService.updateDataitemsInfo(dataitemsInfo, userInfo, sysId);
+		} else {
+			jsonaddstr = "{success:true,msg:false}";
+		}
+		response.setCharacterEncoding("utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(jsonaddstr);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 修改字典信息

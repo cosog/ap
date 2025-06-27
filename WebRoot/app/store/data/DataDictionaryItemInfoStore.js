@@ -65,7 +65,31 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
                         }:"",
-                        renderer: function (value) {
+                        
+//                    	editor: function (editorContext) {
+//                    		if (loginUserDataDictionaryManagementModuleRight.editFlag==1) {
+//                    			var record = editorContext.record;
+//                                if(record.data.columnDataSource == 0){
+//                                	return {
+//                                        allowBlank: false,
+//                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+//                                        readOnly: false
+//                                    };
+//                                }else{
+//                                	return {
+//                                        allowBlank: false,
+//                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+//                                        readOnly: true
+//                                    };
+//                                }
+//                            }else{
+//                            	return "";
+//                            }
+//                    	},
+                        renderer: function (value,o,p,e) {
+                        	if(!p.data.status){
+                        		o.style='color:gray;';
+                        	}
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
@@ -75,7 +99,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	align: 'center',
                     	flex: 1,
                     	dataIndex: 'columnDataSourceName',
-                        renderer: function (value) {
+                        renderer: function (value,o,p,e) {
+                        	if(!p.data.status){
+                        		o.style='color:gray;';
+                        	}
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
@@ -90,7 +117,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
                         }:"",
-                        renderer: function (value) {
+                        renderer: function (value,o,p,e) {
+                        	if(!p.data.status){
+                        		o.style='color:gray;';
+                        	}
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
@@ -100,7 +130,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         align: 'center',
                         flex: 1,
                         dataIndex: 'configItemName',
-                        renderer: function (value) {
+                        renderer: function (value,o,p,e) {
+                        	if(!p.data.status){
+                        		o.style='color:gray;';
+                        	}
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
@@ -114,7 +147,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
                         }:"",
-                        renderer: function (value) {
+                        renderer: function (value,o,p,e) {
+                        	if(!p.data.status){
+                        		o.style='color:gray;';
+                        	}
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
@@ -137,7 +173,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
-                    		}
+                    		},
+                    		beforecheckchange: function(column, recordIndex, checked, record) {
+                                return record.data.columnDataSource == 0;
+                            }
                     	}
                     },{
                     	xtype: 'checkcolumn',
@@ -157,7 +196,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
-                    		}
+                    		},
+                    		beforecheckchange: function(column, recordIndex, checked, record) {
+                                return record.data.columnDataSource == 0;
+                            }
                     	}
                     },{
                     	xtype: 'checkcolumn',
@@ -177,7 +219,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
-                    		}
+                    		},
+                    		beforecheckchange: function(column, recordIndex, checked, record) {
+                                return record.data.columnDataSource == 0;
+                            }
                     	}
                     },{
                     	header: loginUserLanguageResource.sortNum,
@@ -206,7 +251,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
-                    		}
+                    		},
+                    		beforecheckchange: function(column, recordIndex, checked, record) {
+                                return record.data.columnDataSource == 0;
+                            }
                     	}
                     },{
                     	header: loginUserLanguageResource.save,

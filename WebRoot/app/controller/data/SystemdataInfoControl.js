@@ -50,7 +50,7 @@ Ext.define('AP.controller.data.SystemdataInfoControl', {
                 click: savetoSysDataItems
             },
             'dataitemsInfoWin  button[action=edittosysfordatasAction]': {
-                click: edittoSysDatasItems
+                click: updateSysDataItems
             },
             'systemdataInfoWin  button[action=SystemdataInfoUpdataForm]': {
                 click: editsystemdataInfoUpdata
@@ -342,6 +342,54 @@ function savetoSysDataItems() {
     }
     return false;
 };
+
+function updateSysDataItems() {
+    var tosavedatawin = Ext.getCmp("DataitemsInfoWinId");
+    var sysdataForm = tosavedatawin.down('form');
+    if (sysdataForm.getForm().isValid()) {
+    	var dictItemSourceSelection = Ext.getCmp("DictItemSourceGridPanel_Id").getSelectionModel().getSelection();
+    	if(dictItemSourceSelection.length==0){
+    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	}else{
+    		var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
+    		
+    		var configItemName=dictItemSourceSelection[0].data.itemName;
+    		var itemColumn=dictItemSourceSelection[0].data.itemColumn;
+    		
+    		var dictItemDataItemId=Ext.getCmp("dictItemDataItemId_Id").getValue();
+    		
+            sysdataForm.getForm().submit({
+                url: context + '/dataitemsInfoController/updateDataitemsInfo',
+                clientValidation: true,
+                waitMsg: loginUserLanguageResource.sendServer,
+                waitTitle: loginUserLanguageResource.wait,
+                method: "POST",
+                params: {
+                    sysId: getSysId,
+                    configItemName:configItemName,
+                    itemColumn:itemColumn,
+                    dictItemDataItemId:dictItemDataItemId
+                },
+                success: function (response, action) {
+                    if (action.result.msg == true) {
+                        tosavedatawin.close();
+                        reFreshg("dataDictionaryItemGridPanel_Id");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
+                    }
+                    if (action.result.msg == false) {
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.saveFailure);
+                    }
+
+                },
+                failure: function () {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.addFailure + "");
+                }
+            });
+    	}
+    }
+    return false;
+};
+
 //edit-to-action[字典项值]
 function edittoSysDatasItems() {
     var edittosavedatawin = Ext.getCmp("DataitemsInfoWinId");

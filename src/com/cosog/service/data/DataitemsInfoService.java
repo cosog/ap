@@ -110,17 +110,24 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
+			
+			String columnDataSourceName=MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName());
+			String dataSourceName=MemoryDataManagerTask.getCodeName("DATASOURCE", obj[7]+"", user.getLanguageName());
+			if(StringManagerUtils.isNotNull(dataSourceName)){
+				columnDataSourceName+="/"+dataSourceName;
+			}
+			
 			result_json.append("{\"dataitemid\":\""+obj[0]+"\",");
 			result_json.append("\"name\":\""+obj[1]+"\",");
 			result_json.append("\"code\":\""+obj[2]+"\",");
 			result_json.append("\"datavalue\":\""+obj[3]+"\",");
 			result_json.append("\"sorts\":"+obj[4]+",");
 			result_json.append("\"columnDataSource\":\""+obj[5]+"\",");
-			result_json.append("\"columnDataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName()))+"\",");
+			result_json.append("\"columnDataSourceName\":\""+columnDataSourceName+"\",");
 			result_json.append("\"deviceType\":\""+obj[6]+"\",");
 			
 			result_json.append("\"dataSource\":\""+obj[7]+"\",");
-			result_json.append("\"dataSourceName\":\""+(MemoryDataManagerTask.getCodeName("DATASOURCE", obj[7]+"", user.getLanguageName()))+"\",");
+			result_json.append("\"dataSourceName\":\""+dataSourceName+"\",");
 			result_json.append("\"dataUnit\":\""+obj[8]+"\",");
 			
 			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+",");
@@ -318,7 +325,143 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					dinfo.setName_en(dinfo.getName_ru());
 				}
 			}
+//			getBaseDao().updateObject(dinfo);
 			this.saveDataitemsInfo(dinfo);
+			jsonaddstr = "{success:true,msg:true}";
+		} else {
+			jsonaddstr = "{success:true,msg:false,error:'此用户已创建了该数据项！'}";
+		}
+		return jsonaddstr;
+	}
+	
+	public String updateDataitemsInfo(DataitemsInfo dinfo, User userInfo, String sysId) throws Exception {
+		String jsonaddstr = "";
+		if (StringUtils.isNotBlank(sysId)) {
+			dinfo.setSysdataid(sysId);
+			if(dinfo.getColumnDataSource()==1){
+				String name=dinfo.getName_zh_CN();
+				if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+					name=dinfo.getName_en();
+				}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+					name=dinfo.getName_ru();
+				}
+				if(dinfo.getDataSource()==1){
+//					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+//					if(calItem!=null){
+//						dinfo.setCode(calItem.getCode());
+//					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "en");
+						if(calItem2!=null){
+							dinfo.setName_en(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getCalItemByCode(dinfo.getCode(), "en");
+						if(calItem3!=null){
+							dinfo.setName_en(calItem3.getName());
+						}
+					}
+				}else if(dinfo.getDataSource()==2){
+//					MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(name,dinfo.getDataUnit(),userInfo.getLanguageName());
+//					if(calItem!=null){
+//						dinfo.setCode(calItem.getCode());
+//					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "en");
+						if(calItem2!=null){
+							dinfo.setName_en(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "ru");
+						if(calItem3!=null){
+							dinfo.setName_ru(calItem3.getName());
+						}
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						MemoryDataManagerTask.CalItem calItem2=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "zh_CN");
+						if(calItem2!=null){
+							dinfo.setName_zh_CN(calItem2.getName());
+						}
+						MemoryDataManagerTask.CalItem calItem3=MemoryDataManagerTask.getInputItemByCode(dinfo.getCode(), "en");
+						if(calItem3!=null){
+							dinfo.setName_en(calItem3.getName());
+						}
+					}
+				}else if(dinfo.getDataSource()==0){
+//					Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+//					if(loadProtocolMappingColumnByTitleMap!=null){
+//						DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(dinfo.getConfigItemName());
+//						if(dataMapping!=null){
+//							dinfo.setCode(dataMapping.getMappingColumn());
+//						}
+//					}
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_en(dinfo.getName_zh_CN());
+						dinfo.setName_ru(dinfo.getName_zh_CN());
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_en());
+						dinfo.setName_ru(dinfo.getName_en());
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_ru());
+						dinfo.setName_en(dinfo.getName_ru());
+					}
+				}else if(dinfo.getDataSource()==5){
+//					Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+//					if(protocolExtendedFieldColumnByTitleMap!=null){
+//						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(dinfo.getConfigItemName());
+//						if(dataMapping!=null){
+//							dinfo.setCode(dataMapping.getMappingColumn());
+//						}
+//					}
+					
+					if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_en(dinfo.getName_zh_CN());
+						dinfo.setName_ru(dinfo.getName_zh_CN());
+					}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_en());
+						dinfo.setName_ru(dinfo.getName_en());
+					}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+						dinfo.setName_zh_CN(dinfo.getName_ru());
+						dinfo.setName_en(dinfo.getName_ru());
+					}
+				}
+			}else{
+				if("zh_CN".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_en(dinfo.getName_zh_CN());
+					dinfo.setName_ru(dinfo.getName_zh_CN());
+				}else if("en".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_zh_CN(dinfo.getName_en());
+					dinfo.setName_ru(dinfo.getName_en());
+				}else if("ru".equalsIgnoreCase(userInfo.getLanguageName())){
+					dinfo.setName_zh_CN(dinfo.getName_ru());
+					dinfo.setName_en(dinfo.getName_ru());
+				}
+			}
+			getBaseDao().updateObject(dinfo);
 			jsonaddstr = "{success:true,msg:true}";
 		} else {
 			jsonaddstr = "{success:true,msg:false,error:'此用户已创建了该数据项！'}";
@@ -506,22 +649,22 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						enameField="addInfoColumn"+addInfoIndex;
 					}else if(columnDataSource==1){
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
-						if(dataInfo.getDataSource()==1){
-							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
-							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
-								header+="("+calItem.getUnit()+")";
-							}
-						}else if(dataInfo.getDataSource()==2){
-							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
-							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
-								header+="("+calItem.getUnit()+")";
-							}
-						}else if(dataInfo.getDataSource()==5){
-							
-						}else{
-//							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
-//							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);
-						}
+//						if(dataInfo.getDataSource()==1){
+//							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
+//							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
+//								header+="("+calItem.getUnit()+")";
+//							}
+//						}else if(dataInfo.getDataSource()==2){
+//							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
+//							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
+//								header+="("+calItem.getUnit()+")";
+//							}
+//						}else if(dataInfo.getDataSource()==5){
+//							
+//						}else{
+////							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+////							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);
+//						}
 					}else{
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
 					}
@@ -712,7 +855,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",\"flex\":1,\"children\":[] }"
 				+ "]";
 		int totalCount=0;
 		result_json.append("{\"success\":true,\"columns\":"+columns+",\"totalRoot\":[");
@@ -742,6 +886,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 									result_json.append("{\"id\":\""+index+"\",");
 									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
 									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+									result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
 									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 									result_json.append("\"dataSource\":\""+dataSource+"\"},");
 									
@@ -777,6 +922,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 									result_json.append("{\"id\":\""+index+"\",");
 									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
 									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+									result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
 									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 									result_json.append("\"dataSource\":\""+dataSource+"\"},");
 									
@@ -800,6 +946,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
 						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
@@ -813,6 +960,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
 						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
@@ -826,6 +974,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
 						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
@@ -845,6 +994,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
 						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
@@ -858,6 +1008,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
 						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");

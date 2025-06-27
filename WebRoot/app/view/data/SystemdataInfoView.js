@@ -239,8 +239,12 @@ var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,colum
     Ext.getCmp("sysDataName_en_Ids").setValue(name);
     Ext.getCmp("sysDataName_ru_Ids").setValue(name);
     
-    Ext.getCmp("sysDataCode_Ids").setValue(code);
     
+    
+    
+    
+    Ext.getCmp("sysDataCode_Ids").setValue(code);
+    Ext.getCmp("dictItemConfigItemName_Id").setValue(configItemName);
     
     Ext.getCmp("dictItemColumnDataSourceComb_Id").setValue(columnDataSource);
     Ext.getCmp("dictItemColumnDataSource_Id").setValue(columnDataSource);
@@ -252,30 +256,11 @@ var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,colum
 
     Ext.getCmp("dictItemDataUnit_Id").setValue(dataUnit);
     
-    if(status_cn=='true'){
-    	Ext.getCmp("dataitemsInfo_status_cn_id").setValue(1);
-    }else{
-    	Ext.getCmp("dataitemsInfo_status_cn_id").setValue(0);
-    }
+    Ext.getCmp('dataitemsInfo_status_cn_id').setValue({'dataitemsInfo.status_cn':(status_cn=='true'?1:0)});
+    Ext.getCmp('dataitemsInfo_status_en_id').setValue({'dataitemsInfo.status_en':(status_en=='true'?1:0)});
+    Ext.getCmp('dataitemsInfo_status_ru_id').setValue({'dataitemsInfo.status_ru':(status_ru=='true'?1:0)});
     
-    if(status_en=='true'){
-    	Ext.getCmp("dataitemsInfo_status_en_id").setValue(1);
-    }else{
-    	Ext.getCmp("dataitemsInfo_status_en_id").setValue(0);
-    }
-    
-    if(status_ru=='true'){
-    	Ext.getCmp("dataitemsInfo_status_ru_id").setValue(1);
-    }else{
-    	Ext.getCmp("dataitemsInfo_status_ru_id").setValue(0);
-    }
-    
-    if(status=='true'){
-    	Ext.getCmp("dataitemsInfo_status_id").setValue(1);
-    }else{
-    	Ext.getCmp("dataitemsInfo_status_id").setValue(0);
-    }
-    
+    Ext.getCmp('dataitemsInfo_status_id').setValue({'dataitemsInfo.status':(status=='true'?1:0)});
     
 	Ext.getCmp("sysdatasorts_Ids").setValue(sorts);
 	Ext.getCmp("sysdatadatavalue_Ids").setValue(datavalue);

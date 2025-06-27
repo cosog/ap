@@ -212,6 +212,10 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     xtype: "hidden",
                     id: 'dictItemAddOrUpdate_Id',
                     value: '0'
+                },{
+                    xtype: "hidden",
+                    id: 'dictItemConfigItemName_Id',
+                    value: ''
                 }, {
                     xtype: "hidden",
                     id: 'dictItemDataItemId_Id',

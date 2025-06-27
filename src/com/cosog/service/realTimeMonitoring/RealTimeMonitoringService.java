@@ -516,13 +516,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			for(DataitemsInfo dataitemsInfo:dataItemList){
 				if(dataitemsInfo.getColumnDataSource()==2){
 					addInfoDataItemList.add(dataitemsInfo);
-					
-					String addInfoName=dataitemsInfo.getName_zh_CN();
-					if("en".equalsIgnoreCase(language)){
-						addInfoName=dataitemsInfo.getName_en();
-					}else if("ru".equalsIgnoreCase(language)){
-						addInfoName=dataitemsInfo.getName_ru();
-					}
+					String addInfoName=dataitemsInfo.getConfigItemName();
 					addInfoNameList.add(addInfoName);
 				}else if(dataitemsInfo.getColumnDataSource()==1){
 					if(dataitemsInfo.getDataSource()==0){
@@ -1155,12 +1149,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						String addInfoColumn="";
 						
 						for(int k=0;k<addInfoDataItemList.size();k++){
-							String addInfoName=addInfoDataItemList.get(k).getName_zh_CN();
-							if("en".equalsIgnoreCase(language)){
-								addInfoName=addInfoDataItemList.get(k).getName_en();
-							}else if("ru".equalsIgnoreCase(language)){
-								addInfoName=addInfoDataItemList.get(k).getName_ru();
-							}
+							String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
 							if(itemName.equals(addInfoName)){
 								addInfoColumn="addInfoColumn"+(k+1);
 								break;
@@ -1346,13 +1335,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			for(DataitemsInfo dataitemsInfo:dataItemList){
 				if(dataitemsInfo.getColumnDataSource()==2){
 					addInfoDataItemList.add(dataitemsInfo);
-					
-					String addInfoName=dataitemsInfo.getName_zh_CN();
-					if("en".equalsIgnoreCase(language)){
-						addInfoName=dataitemsInfo.getName_en();
-					}else if("ru".equalsIgnoreCase(language)){
-						addInfoName=dataitemsInfo.getName_ru();
-					}
+					String addInfoName=dataitemsInfo.getConfigItemName();
 					addInfoNameList.add(addInfoName);
 				}else if(dataitemsInfo.getColumnDataSource()==1){
 					if(dataitemsInfo.getDataSource()==0){
@@ -1904,12 +1887,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						String addInfoColumn="";
 						
 						for(int k=0;k<addInfoDataItemList.size();k++){
-							String addInfoName=addInfoDataItemList.get(k).getName_zh_CN();
-							if("en".equalsIgnoreCase(language)){
-								addInfoName=addInfoDataItemList.get(k).getName_en();
-							}else if("ru".equalsIgnoreCase(language)){
-								addInfoName=addInfoDataItemList.get(k).getName_ru();
-							}
+							String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
 							if(itemName.equals(addInfoName)){
 								addInfoColumn="addInfoColumn"+(k+1);
 								break;

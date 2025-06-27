@@ -88,7 +88,6 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                 },
                 renderer: function (value, metaData, record, rowIdx, colIdx, store, view) {
                     var rn=true;
-//                    var loginUserRoleModules=getLoginUserRoleModules();
         	    	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
                     if(RoleManagerModuleEditFlag==1){
                     	if(!record.isLeaf()){

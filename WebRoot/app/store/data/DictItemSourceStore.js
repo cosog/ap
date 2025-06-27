@@ -1,7 +1,7 @@
 Ext.define('AP.store.data.DictItemSourceStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.dictItemSourceStore',
-    fields: ['id','itemName','itemColumn','dictDataSource','dataSource','unit'],
+    fields: ['id','itemName','itemColumn','dictDataSource','dataSource','itemUnit'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -50,6 +50,24 @@ Ext.define('AP.store.data.DictItemSourceStore', {
                     		
                     	},
                     	select: function(grid, record, index, eOpts) {
+                    		var itemNameId='sysDataName_zh_CN_Ids';
+                    		if(loginUserLanguage.toUpperCase() == 'EN'){
+                    			itemNameId='sysDataName_en_Ids';
+                    		}else if(loginUserLanguage.toUpperCase() == 'RU'){
+                    			itemNameId='sysDataName_ru_Ids';
+                    		}
+                    		var itemName=Ext.getCmp(itemNameId).getValue();
+                    		if(!isNotVal(itemName)){
+                    			var setName=record.data.itemName;
+                    			var itemUnit=record.data.itemUnit;
+                    			
+                    			if(isNotVal(itemUnit)){
+                    				setName+="("+itemUnit+")";
+                    			}
+                    			
+                    			Ext.getCmp(itemNameId).setValue(setName);
+                    		}
+                    		
                     		
                     	}
                     }
@@ -57,23 +75,33 @@ Ext.define('AP.store.data.DictItemSourceStore', {
                 var panel = Ext.getCmp("dictItemSelectPanel_Id");
                 panel.add(gridPanel);
                 
-//                if(get_rawData.totalCount>0){
-//                	var selectRow=-1;
-//                	var selectedItemName=Ext.getCmp("protocolExtendedFieldSelectedItemName_Id").getValue();
-//                	
-//        			if(isNotVal(selectedItemName)){
-//        				for(var i=0;i<store.data.items.length;i++){
-//                			if(selectedItemName==store.data.items[i].data.itemName){
-//                				selectRow=i;
-//                				break;
-//                			}
-//                		}
-//        			}
-//        			gridPanel.getSelectionModel().deselectAll(true);
-//        			if(selectRow>=0){
-//        				gridPanel.getSelectionModel().select(selectRow, true);
-//        			}
-//                }
+                var dictItemAddOrUpdate=Ext.getCmp("dictItemAddOrUpdate_Id").getValue();
+                if(dictItemAddOrUpdate==1){
+                	var dictDataSource=Ext.getCmp("dictItemColumnDataSourceComb_Id").getValue();
+                	if(get_rawData.totalCount>0){
+                    	var selectRow=-1;
+                    	var itemName=Ext.getCmp("sysDataName_zh_CN_Ids").getValue();
+                    	var itemCode=Ext.getCmp("sysDataCode_Ids").getValue();
+                    	var dictItemConfigItemName=Ext.getCmp("dictItemConfigItemName_Id").getValue();
+                    	for(var i=0;i<store.data.items.length;i++){
+                			if(dictDataSource==2 && dictItemConfigItemName==store.data.items[i].data.itemName){
+                				selectRow=i;
+                				break;
+                			}else if(dictDataSource==1 && itemCode==store.data.items[i].data.itemColumn){
+                				selectRow=i;
+                				break;
+                			}
+                		}
+                    	
+                    	
+            			gridPanel.getSelectionModel().deselectAll(true);
+            			if(selectRow>=0){
+            				gridPanel.getSelectionModel().select(selectRow, true);
+            			}
+                    }
+                }
+                
+                
             }
         },
         beforeload: function (store, options) {

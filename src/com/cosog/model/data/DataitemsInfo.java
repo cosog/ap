@@ -49,6 +49,8 @@ public class DataitemsInfo implements Serializable {
 	private Integer status_en;//是否在英文环境下显示
 	private Integer status_ru;//是否在俄文环境下显示
 	
+	private String configItemName;
+	
 	public DataitemsInfo() {
 		super();
 	}
@@ -243,6 +245,15 @@ public class DataitemsInfo implements Serializable {
 
 	public void setStatus_ru(Integer status_ru) {
 		this.status_ru = status_ru;
+	}
+
+	@Column(name = "CONFIGITEMNAME")
+	public String getConfigItemName() {
+		return configItemName;
+	}
+
+	public void setConfigItemName(String configItemName) {
+		this.configItemName = configItemName;
 	}
 
 }

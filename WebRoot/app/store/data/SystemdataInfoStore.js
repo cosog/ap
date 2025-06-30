@@ -172,6 +172,12 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         	
                         },
                         select: function(grid, record, index, eOpts) {
+                        	if(record.data.code=='realTimeMonitoring_Overview' || record.data.code=='historyQuery_Overview'){
+                        		Ext.getCmp("addDictionaryItemBtn_Id").show();
+                        	}else{
+                        		Ext.getCmp("addDictionaryItemBtn_Id").hide();
+                        	}
+                        	
                         	Ext.getCmp("selectedDataDictionaryId").setValue(record.data.sysdataid);
                         	var dataDictionaryItemGridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id"); 
                         	if (isNotVal(dataDictionaryItemGridPanel)) {

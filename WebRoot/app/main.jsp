@@ -217,6 +217,34 @@
             font: normal 18px arial, tahoma, sans-serif;
         }
         
+        /* 禁用行的样式 - 完全阻止交互 */
+		.disabled-checkcolumn .x-grid-checkcolumn {
+    		opacity: 0.6;
+    		cursor: not-allowed;
+    		background-color: #f5f5f5;
+    		pointer-events: none; /* 关键属性：阻止所有鼠标事件 */
+		}
+
+		/* 额外处理键盘导航 */
+		.disabled-checkcolumn:focus {
+    		outline: none;
+		}
+        
+        /* 禁用单元格样式 */
+		.disabled-numbercell {
+    		opacity: 0.6;
+    		/*background-color: #f5f5f5;*/
+    		/*cursor: not-allowed;*/
+		}
+
+		/* 禁用状态下的输入框样式 */
+		.x-form-disabled-field {
+    		opacity: 0.6;
+    		/*background-color: #f5f5f5;*/
+    		/*cursor: not-allowed;*/
+		}
+        
+        
         .horizontal-header .x-column-header-inner {
             display: flex;
             align-items: center;

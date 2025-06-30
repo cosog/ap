@@ -31,6 +31,8 @@ create table TBL_PROTOCOL
   code       VARCHAR2(50),
   devicetype NUMBER(10),
   items      CLOB,
+  extendedfield CLOB,
+  language   NUMBER(1)
   sort       NUMBER(10)
 )
 tablespace AP_DATA
@@ -74,7 +76,7 @@ tablespace AP_DATA
 create table TBL_ROLE
 (
   role_id           NUMBER(10) not null,
-  role_name         VARCHAR2(40) not null,
+  role_name         VARCHAR2(200) not null,
   role_level        NUMBER(3) default 1,
   showlevel         NUMBER(10) default 0,
   role_videokeyedit NUMBER(10) default 0,
@@ -121,6 +123,40 @@ alter table TBL_DEVICETYPE2ROLE
 alter table TBL_DEVICETYPE2ROLE
   add constraint FK_RT_TABID foreign key (RD_DEVICETYPEID)
   references TBL_DEVICETYPEINFO (ID) on delete cascade
+/
+
+/*==============================================================*/
+/* Table: TBL_LANGUAGE2ROLE                                    */
+/*==============================================================*/
+create table TBL_LANGUAGE2ROLE
+(
+  id       NUMBER(10) not null,
+  language NUMBER(1),
+  roleid   NUMBER(10),
+  matrix   VARCHAR2(8)
+)
+tablespace AP_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+/
+-- Create/Recreate indexes 
+create index IDX_LANGUAGE2ROLE_LANGUAGE on TBL_LANGUAGE2ROLE (LANGUAGE);
+create index IDX_LANGUAGE2ROLE_ROLE on TBL_LANGUAGE2ROLE (ROLEID);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table TBL_LANGUAGE2ROLE
+  add constraint PK_LANGUAGE2ROLE primary key (ID)
+/
+alter table TBL_LANGUAGE2ROLE
+  add constraint FK_ROLEID foreign key (ROLEID)
+  references TBL_ROLE (ROLE_ID) on delete cascade
 /
 
 /*==============================================================*/
@@ -224,9 +260,9 @@ create table TBL_DIST_NAME
   sysdataid  VARCHAR2(32) not null,
   moduleid   NUMBER(10),
   tenantid   VARCHAR2(50),
-  name_zh_CN      VARCHAR2(50),
-  name_en      VARCHAR2(50),
-  name_ru      VARCHAR2(50),
+  name_zh_CN      VARCHAR2(200),
+  name_en      VARCHAR2(200),
+  name_ru      VARCHAR2(200),
   code      VARCHAR2(50),
   sorts      NUMBER,
   status     NUMBER,
@@ -261,6 +297,14 @@ create table TBL_DIST_ITEM
   datavalue  VARCHAR2(200),
   sorts      NUMBER,
   status     NUMBER,
+  columndatasource VARCHAR2(1) default 0,
+  devicetype       NUMBER(10),
+  datasource       VARCHAR2(1),
+  dataunit         VARCHAR2(50),
+  status_cn        NUMBER default 1,
+  status_en        NUMBER default 1,
+  status_ru        NUMBER default 1,
+  configitemname   VARCHAR2(200),
   creator    VARCHAR2(200),
   updateuser VARCHAR2(200),
   updatetime DATE default sysdate,
@@ -313,12 +357,13 @@ alter table TBL_CODE
 create table TBL_DATAMAPPING
 (
   id              NUMBER(10) not null,
-  name            VARCHAR2(50) not null,
+  name            VARCHAR2(200) not null,
   mappingcolumn   VARCHAR2(128) not null,
   protocoltype    NUMBER(1),
   calcolumn       VARCHAR2(128),
   repetitiontimes NUMBER(2),
-  mappingmode     NUMBER(1)
+  mappingmode     NUMBER(1) default 1,
+  calculateenable NUMBER(1) default 0
 )
 tablespace AP_DATA
   storage
@@ -365,9 +410,10 @@ alter table TBL_RUNSTATUSCONFIG add constraint PK_RUNSTATUSCONFIG primary key (I
 create table TBL_ACQ_UNIT_CONF
 (
   id        NUMBER(10) not null,
-  unit_code VARCHAR2(50) not null,
-  unit_name VARCHAR2(50),
-  protocol  VARCHAR2(50),
+  unit_code VARCHAR2(200) not null,
+  unit_name VARCHAR2(200),
+  protocol  VARCHAR2(200),
+  sort      NUMBER(10),
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -415,8 +461,8 @@ create table TBL_ACQ_ITEM2GROUP_CONF
 (
   id                      NUMBER(10) not null,
   itemid                  NUMBER(10),
-  itemname                NVARCHAR2(100),
-  itemcode                VARCHAR2(100),
+  itemname                NVARCHAR2(200),
+  itemcode                VARCHAR2(200),
   groupid                 NUMBER(10) not null,
   bitindex                NUMBER(3),
   dailytotalcalculate     NUMBER(1) default 0,
@@ -462,11 +508,12 @@ alter table TBL_ACQ_GROUP2UNIT_CONF add constraint PK_ACQ_UNIT_GROUP primary key
 create table TBL_ALARM_UNIT_CONF
 (
   id            NUMBER(10) not null,
-  unit_code     VARCHAR2(50) not null,
-  unit_name     VARCHAR2(50),
-  protocol      VARCHAR2(50),
-  remark        VARCHAR2(2000),
-  calculatetype NUMBER(2) default 0
+  unit_code     VARCHAR2(200) not null,
+  unit_name     VARCHAR2(200),
+  protocol      VARCHAR2(200),
+  calculatetype NUMBER(2) default 0,
+  sort          NUMBER(10),
+  remark        VARCHAR2(2000)
 )
 tablespace AP_DATA
   storage
@@ -488,8 +535,8 @@ create table TBL_ALARM_ITEM2UNIT_CONF
   id            NUMBER(10) not null,
   unitid        NUMBER(10) not null,
   itemid        NUMBER(10),
-  itemname      VARCHAR2(100),
-  itemcode      VARCHAR2(100),
+  itemname      VARCHAR2(200),
+  itemcode      VARCHAR2(200),
   itemaddr      NUMBER(10),
   value         NUMBER(10,3),
   upperlimit    NUMBER(10,3),
@@ -521,11 +568,12 @@ alter table TBL_ALARM_ITEM2UNIT_CONF add constraint PK_ALARM_ITEM2UNIT_CONF prim
 create table TBL_DISPLAY_UNIT_CONF
 (
   id        NUMBER(10) not null,
-  unit_code VARCHAR2(50) not null,
-  unit_name VARCHAR2(50),
-  protocol  VARCHAR2(50),
+  unit_code     VARCHAR2(200) not null,
+  unit_name     VARCHAR2(200),
+  protocol      VARCHAR2(200),
   acqunitid NUMBER(10),
   calculatetype NUMBER(2) default 0,
+  sort          NUMBER(10),
   remark    VARCHAR2(2000)
 )
 tablespace AP_DATA
@@ -546,8 +594,8 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
 (
   id                NUMBER(10) not null,
   itemid            NUMBER(10),
-  itemname          VARCHAR2(100),
-  itemcode          VARCHAR2(100),
+  itemname          VARCHAR2(200),
+  itemcode          VARCHAR2(200),
   unitid            NUMBER(10) not null,
   realtimesort      NUMBER(10),
   realtimecolor     VARCHAR2(50),
@@ -585,12 +633,12 @@ alter table TBL_DISPLAY_ITEMS2UNIT_CONF add constraint PK_DISPLAY_ITEMS2UNIT_CON
 create table TBL_REPORT_UNIT_CONF
 (
   id                            NUMBER(10) not null,
-  unit_code                     VARCHAR2(50) not null,
-  unit_name                     VARCHAR2(50),
-  singlewellrangereporttemplate VARCHAR2(50),
-  productionreporttemplate      VARCHAR2(50),
+  unit_code                     VARCHAR2(200) not null,
+  unit_name                     VARCHAR2(200),
+  singlewellrangereporttemplate VARCHAR2(200),
+  productionreporttemplate      VARCHAR2(200),
   sort                          NUMBER(10),
-  singlewelldailyreporttemplate VARCHAR2(50),
+  singlewelldailyreporttemplate VARCHAR2(200),
   calculatetype                 NUMBER(2) default 0
 )
 tablespace AP_DATA
@@ -611,8 +659,8 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
 (
   id              NUMBER(10) not null,
   itemid          NUMBER(10),
-  itemname        VARCHAR2(100),
-  itemcode        VARCHAR2(100),
+  itemname        VARCHAR2(200),
+  itemcode        VARCHAR2(200),
   unitid          NUMBER(10),
   sort            NUMBER(10),
   showlevel       NUMBER(10),
@@ -644,17 +692,17 @@ alter table TBL_REPORT_ITEMS2UNIT_CONF add constraint PK_REPORT_ITEMS2UNIT_CONF 
 create table TBL_PROTOCOLINSTANCE
 (
   id                       NUMBER(10) not null,
-  name                     VARCHAR2(50),
-  code                     VARCHAR2(50),
-  acqprotocoltype          VARCHAR2(50),
-  ctrlprotocoltype         VARCHAR2(50),
+  name                     VARCHAR2(200),
+  code                     VARCHAR2(200),
+  acqprotocoltype          VARCHAR2(200),
+  ctrlprotocoltype         VARCHAR2(200),
   signinprefixsuffixhex    NUMBER(1) default 1,
-  signinprefix             VARCHAR2(50),
-  signinsuffix             VARCHAR2(50),
+  signinprefix             VARCHAR2(200),
+  signinsuffix             VARCHAR2(200),
   signinidhex              NUMBER(1) default 1,
   heartbeatprefixsuffixhex NUMBER(1) default 1,
-  heartbeatprefix          VARCHAR2(50),
-  heartbeatsuffix          VARCHAR2(50),
+  heartbeatprefix          VARCHAR2(200),
+  heartbeatsuffix          VARCHAR2(200),
   packetsendinterval       NUMBER(10) default 100,
   unitid                   NUMBER(10),
   sort                     NUMBER(10)
@@ -676,8 +724,8 @@ alter table TBL_PROTOCOLINSTANCE  add constraint PK_PROTOCOLINSTANCE primary key
 create table TBL_PROTOCOLALARMINSTANCE
 (
   id          NUMBER(10) not null,
-  name        VARCHAR2(50),
-  code        VARCHAR2(50),
+  name        VARCHAR2(200),
+  code        VARCHAR2(200),
   alarmunitid NUMBER(10),
   sort        NUMBER(10)
 )
@@ -698,8 +746,8 @@ alter table TBL_PROTOCOLALARMINSTANCE add constraint PK_PROTOCOLALARMINSTANCE pr
 create table TBL_PROTOCOLDISPLAYINSTANCE
 (
   id            NUMBER(10) not null,
-  name          VARCHAR2(50),
-  code          VARCHAR2(50),
+  name          VARCHAR2(200),
+  code          VARCHAR2(200),
   displayunitid NUMBER(10),
   sort          NUMBER(10)
 )
@@ -720,8 +768,8 @@ alter table TBL_PROTOCOLDISPLAYINSTANCE add constraint PK_PROTOCOLDISPLAYINSTANC
 create table TBL_PROTOCOLREPORTINSTANCE
 (
   id     NUMBER(10) not null,
-  name   VARCHAR2(50),
-  code   VARCHAR2(50),
+  name   VARCHAR2(200),
+  code   VARCHAR2(200),
   unitid NUMBER(10),
   sort   NUMBER(10)
 )
@@ -742,10 +790,10 @@ alter table TBL_PROTOCOLREPORTINSTANCE add constraint PK_PROTOCOLREPORTINSTANCE 
 create table TBL_PROTOCOLSMSINSTANCE
 (
   id               NUMBER(10) not null,
-  name             VARCHAR2(50),
-  code             VARCHAR2(50),
-  acqprotocoltype  VARCHAR2(50),
-  ctrlprotocoltype VARCHAR2(50),
+  name             VARCHAR2(200),
+  code             VARCHAR2(200),
+  acqprotocoltype  VARCHAR2(200),
+  ctrlprotocoltype VARCHAR2(200),
   sort             NUMBER(10)
 )
 tablespace AP_DATA
@@ -790,7 +838,9 @@ create table TBL_DEVICE
   balanceinfo              VARCHAR2(400),
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999,
-  calculatetype            NUMBER(2) default 0
+  calculatetype            NUMBER(2) default 0,
+  constructiondata         VARCHAR2(4000) default '{}',
+  commissioningdate        DATE
 )
 tablespace AP_DATA
   storage
@@ -836,7 +886,9 @@ create table TBL_DEVICEADDINFO
   deviceid  NUMBER(10) not null,
   itemname  VARCHAR2(200) not null,
   itemvalue VARCHAR2(200),
-  itemunit  VARCHAR2(200)
+  itemunit  VARCHAR2(200),
+  overview     NUMBER(1) default 0,
+  overviewsort NUMBER(10)
 )
 tablespace AP_DATA
   storage
@@ -861,7 +913,8 @@ create table TBL_AUXILIARYDEVICE
   sort         NUMBER(10) not null,
   remark       VARCHAR2(2000),
   manufacturer VARCHAR2(200),
-  specifictype NUMBER(2) default 0
+  specifictype NUMBER(2) default 0,
+  prtf         CLOB
 )
 tablespace AP_DATA
   storage
@@ -1009,7 +1062,8 @@ create table TBL_ACQRAWDATA
   id       NUMBER(10) not null,
   deviceid NUMBER(10) not null,
   acqtime  DATE not null,
-  rawdata  VARCHAR2(4000)
+  rawdata  VARCHAR2(4000),
+  acqgroupdata CLOB
 )
 tablespace AP_DATA
   storage
@@ -1097,7 +1151,7 @@ create table TBL_DAILYTOTALCALCULATE_LATEST
   itemcolumn VARCHAR2(4000),
   totalvalue NUMBER(12,3),
   todayvalue NUMBER(12,3),
-  itemname   VARCHAR2(50)
+  itemname   VARCHAR2(200)
 )
 tablespace AP_DATA
   storage
@@ -1123,7 +1177,7 @@ create table TBL_DAILYTOTALCALCULATE_HIST
   itemcolumn VARCHAR2(4000),
   totalvalue NUMBER(12,3),
   todayvalue NUMBER(12,3),
-  itemname   VARCHAR2(50)
+  itemname   VARCHAR2(200)
 )
 tablespace AP_DATA
   storage
@@ -1155,6 +1209,11 @@ create table TBL_DAILYCALCULATIONDATA
   runrange           CLOB,
   caldata            CLOB,
   headerlabelinfo    VARCHAR2(4000),
+  reservedcol1       VARCHAR2(4000),
+  reservedcol2       VARCHAR2(4000),
+  reservedcol3       VARCHAR2(4000),
+  reservedcol4       VARCHAR2(4000),
+  reservedcol5       VARCHAR2(4000),
   remark             VARCHAR2(4000)
 )
 tablespace AP_DATA
@@ -1187,6 +1246,11 @@ create table TBL_TIMINGCALCULATIONDATA
   runrange           CLOB,
   caldata            CLOB,
   headerlabelinfo    VARCHAR2(4000),
+  reservedcol1       VARCHAR2(4000),
+  reservedcol2       VARCHAR2(4000),
+  reservedcol3       VARCHAR2(4000),
+  reservedcol4       VARCHAR2(4000),
+  reservedcol5       VARCHAR2(4000),
   remark             VARCHAR2(4000)
 )
 tablespace AP_DATA
@@ -1576,6 +1640,11 @@ create table TBL_SRPDAILYCALCULATIONDATA
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
+  reservedcol1                   VARCHAR2(4000),
+  reservedcol2                   VARCHAR2(4000),
+  reservedcol3                   VARCHAR2(4000),
+  reservedcol4                   VARCHAR2(4000),
+  reservedcol5                   VARCHAR2(4000),
   remark                         VARCHAR2(4000),
   rpm                            NUMBER(8,2)
 )
@@ -1884,6 +1953,11 @@ create table TBL_PCPDAILYCALCULATIONDATA
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
+  reservedcol1                   VARCHAR2(4000),
+  reservedcol2                   VARCHAR2(4000),
+  reservedcol3                   VARCHAR2(4000),
+  reservedcol4                   VARCHAR2(4000),
+  reservedcol5                   VARCHAR2(4000),
   remark                         VARCHAR2(4000)
 )
 tablespace AP_DATA

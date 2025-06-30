@@ -26,12 +26,27 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
             var arrColumns = get_rawData.columns;
             var gridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id");
             if (!isNotVal(gridPanel)) {
-                var gridPanel = Ext.create('Ext.grid.Panel', {
+                gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "dataDictionaryItemGridPanel_Id",
                     selModel: 'cellmodel',//cellmodel rowmodel
                     plugins: [{
                         ptype: 'cellediting',//cellediting rowediting
-                        clicksToEdit: 2
+                        clicksToEdit: 2,
+                        listeners: {
+                            beforeedit: function(editor, context) {
+                                return context.record.get('columnDataSource') == 0;
+                            },
+                            // 额外保险：如果编辑器被激活，立即关闭
+                            edit: function(editor, context) {
+                                if (context.record.get('columnDataSource') != 0) {
+                                    // 取消编辑并关闭编辑器
+                                    context.cancel = true;
+                                    editor.cancelEdit();
+                                    // 焦点回到网格
+                                    context.grid.getView().focus();
+                                }
+                            }
+                        }
                     }],
                     border: false,
                     stateful: true,
@@ -65,27 +80,6 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             allowBlank: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
                         }:"",
-                        
-//                    	editor: function (editorContext) {
-//                    		if (loginUserDataDictionaryManagementModuleRight.editFlag==1) {
-//                    			var record = editorContext.record;
-//                                if(record.data.columnDataSource == 0){
-//                                	return {
-//                                        allowBlank: false,
-//                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-//                                        readOnly: false
-//                                    };
-//                                }else{
-//                                	return {
-//                                        allowBlank: false,
-//                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-//                                        readOnly: true
-//                                    };
-//                                }
-//                            }else{
-//                            	return "";
-//                            }
-//                    	},
                         renderer: function (value,o,p,e) {
                         	if(!p.data.status){
                         		o.style='color:gray;';
@@ -170,6 +164,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
                         },
+                        renderer: function(value, meta, record) {
+                            var disabled = record.get('columnDataSource') != 0;
+                            if (disabled) {
+                                meta.tdCls = (meta.tdCls || '') + ' disabled-checkcolumn';
+                            }
+                            return Ext.grid.column.Check.prototype.defaultRenderer.apply(this, arguments);
+                        },
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
@@ -192,6 +193,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
+                        },
+                        renderer: function(value, meta, record) {
+                            var disabled = record.get('columnDataSource') != 0;
+                            if (disabled) {
+                                meta.tdCls = (meta.tdCls || '') + ' disabled-checkcolumn';
+                            }
+                            return Ext.grid.column.Check.prototype.defaultRenderer.apply(this, arguments);
                         },
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
@@ -216,6 +224,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
                         },
+                        renderer: function(value, meta, record) {
+                            var disabled = record.get('columnDataSource') != 0;
+                            if (disabled) {
+                                meta.tdCls = (meta.tdCls || '') + ' disabled-checkcolumn';
+                            }
+                            return Ext.grid.column.Check.prototype.defaultRenderer.apply(this, arguments);
+                        },
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
                     			
@@ -235,7 +250,17 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             editable: false,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             minValue: 1
-                        }:""
+                        }:"",
+                        renderer: function (value,meta,record,e) {
+                        	if (record.get('columnDataSource') != 0) {
+                        		meta.tdCls = (meta.tdCls || '') + ' disabled-numbercell';
+                            }else if(!record.data.status){
+                            	meta.style='color:gray;';
+                        	}
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
                     },{
                     	xtype: 'checkcolumn',
                     	align: 'center',
@@ -247,6 +272,13 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
+                        },
+                        renderer: function(value, meta, record) {
+                            var disabled = record.get('columnDataSource') != 0;
+                            if (disabled) {
+                                meta.tdCls = (meta.tdCls || '') + ' disabled-checkcolumn';
+                            }
+                            return Ext.grid.column.Check.prototype.defaultRenderer.apply(this, arguments);
                         },
                     	listeners: {
                     		checkchange: function (sm, e, ival, o, n) {
@@ -281,6 +313,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                     },{
                 		text: loginUserLanguageResource.config, 
                 		align:'center',
+                		itemId:'dataDictionaryItemGridConfigColumn_ItemId',
                 		width: (getLabelWidth(loginUserLanguageResource.config+"...",loginUserLanguage)),
                 		renderer :function(value,e,o){
                 			return iconDictItemConfig(value,e,o)
@@ -316,8 +349,27 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                 });
                 Ext.getCmp("dataDictionaryItemPanel_Id").add(gridPanel);
             }
-            
-            
+            const column = gridPanel.down('#dataDictionaryItemGridConfigColumn_ItemId');
+            if (column) {
+            	var dictionarySelection= Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+            	const isVisible = column.isVisible();
+            	if(dictionarySelection.length>0){
+            		var dictionaryCode = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection()[0].data.code;
+            		if(dictionaryCode=='realTimeMonitoring_Overview' || dictionaryCode=='historyQuery_Overview'){
+            			if(!isVisible){
+            				column.setVisible(true);  // 显示
+            			}
+                	}else{
+                		if(isVisible){
+                			column.setVisible(false); // 隐藏
+                		}
+                	}
+            	}else{
+            		if(isVisible){
+            			column.setVisible(false); // 隐藏
+            		}
+            	}
+            }
             
         },
     	beforeload: function(store, options) {

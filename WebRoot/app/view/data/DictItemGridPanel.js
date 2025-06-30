@@ -57,6 +57,7 @@ Ext.define('AP.view.data.DictItemGridPanel', {
                     iconCls: 'add',
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     tooltip: loginUserLanguageResource.addDataItem,
+                    id:'addDictionaryItemBtn_Id',
                     handler: function () {
                     	addfindtattxtInfo();
                     }

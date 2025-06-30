@@ -22,12 +22,12 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var column = createRealTimeMonitoringColumn(arrColumns);
-            Ext.getCmp("RealTimeMonitoringColumnStr_Id").setValue(column);
+            var column = createRealTimeMonitoringColumnObject(arrColumns);
+            Ext.getCmp("RealTimeMonitoringColumnStr_Id").setValue(JSON.stringify(column));
             Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
             var gridPanel = Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
-                var newColumns = Ext.JSON.decode(column);
+                var newColumns = column;
                 var bbar = new Ext.PagingToolbar({
                 	id:'RealTimeMonitoringListGridPagingToolbar',
                 	store: store,

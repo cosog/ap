@@ -333,45 +333,112 @@ function createRealTimeMonitoringStatColumn(columnInfo) {
     return myColumns;
 };
 
+function createRealTimeMonitoringColumnObject(columnInfo) {
+    var myArr = columnInfo;
+    var myColumns = [];
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var thisColumn={};
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+        	thisColumn.hidden=true;
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+//        	thisColumn.locked=attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            thisColumn.width=attr.width;
+        }
+        
+        thisColumn.text=attr.header;
+        thisColumn.lockable=true;
+        thisColumn.align='center';
+        
+        if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
+        	thisColumn.xtype='rownumberer';
+        	thisColumn.sortable=false;
+        	thisColumn.locked=false;
+        }
+        else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceCommStatusColor(value,o,p,e);
+        	};
+        }
+        else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceRunStatusColor(value,o,p,e);
+        	};
+        }
+        else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.locked=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceTimeFormat(value,o,p,e);
+        	};
+        } 
+        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceResultStatusColor(value,o,p,e);
+        	};
+        }
+        else {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceRealtimeMonitoringDataColor(value,o,p,e);
+        	};
+        }
+        
+        myColumns.push(thisColumn);
+    }
+    return myColumns;
+};
+
 function createRealTimeMonitoringColumn(columnInfo) {
     var myArr = columnInfo;
-
-    var myColumns = "[";
+    var myColumns = '[';
     for (var i = 0; i < myArr.length; i++) {
         var attr = myArr[i];
         var width_ = "";
         var lock_ = "";
         var hidden_ = "";
         if (attr.hidden == true) {
-            hidden_ = ",hidden:true";
+            hidden_ = ',"hidden":true';
         }
         if (isNotVal(attr.lock)) {
             //lock_ = ",locked:" + attr.lock;
         }
         if (isNotVal(attr.width)) {
-            width_ = ",width:" + attr.width;
+            width_ = ',"width":' + attr.width;
         }
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        myColumns += '{"text":"' + attr.header + '","lockable":true,"align":"center"'+width_;
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
-            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
-        }
-        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+            myColumns += ',"xtype":"rownumberer","sortable":false,"locked":false';
         }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}';
         }
         else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
+            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}';
         }
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+            myColumns += ',"sortable":false,"locked":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}';
         } 
         else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";
+            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}';
         }
         else {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRealtimeMonitoringDataColor(value,o,p,e);}";
+            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceRealtimeMonitoringDataColor(value,o,p,e);}';
         }
         myColumns += "}";
         if (i < myArr.length - 1) {

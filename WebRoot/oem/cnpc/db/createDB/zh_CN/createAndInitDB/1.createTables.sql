@@ -31,6 +31,8 @@ create table TBL_PROTOCOL
   code       VARCHAR2(50),
   devicetype NUMBER(10),
   items      CLOB,
+  extendedfield CLOB,
+  language   NUMBER(1)
   sort       NUMBER(10)
 )
 tablespace AP_DATA
@@ -121,6 +123,40 @@ alter table TBL_DEVICETYPE2ROLE
 alter table TBL_DEVICETYPE2ROLE
   add constraint FK_RT_TABID foreign key (RD_DEVICETYPEID)
   references TBL_DEVICETYPEINFO (ID) on delete cascade
+/
+
+/*==============================================================*/
+/* Table: TBL_LANGUAGE2ROLE                                    */
+/*==============================================================*/
+create table TBL_LANGUAGE2ROLE
+(
+  id       NUMBER(10) not null,
+  language NUMBER(1),
+  roleid   NUMBER(10),
+  matrix   VARCHAR2(8)
+)
+tablespace AP_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+/
+-- Create/Recreate indexes 
+create index IDX_LANGUAGE2ROLE_LANGUAGE on TBL_LANGUAGE2ROLE (LANGUAGE);
+create index IDX_LANGUAGE2ROLE_ROLE on TBL_LANGUAGE2ROLE (ROLEID);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table TBL_LANGUAGE2ROLE
+  add constraint PK_LANGUAGE2ROLE primary key (ID)
+/
+alter table TBL_LANGUAGE2ROLE
+  add constraint FK_ROLEID foreign key (ROLEID)
+  references TBL_ROLE (ROLE_ID) on delete cascade
 /
 
 /*==============================================================*/
@@ -261,6 +297,14 @@ create table TBL_DIST_ITEM
   datavalue  VARCHAR2(200),
   sorts      NUMBER,
   status     NUMBER,
+  columndatasource VARCHAR2(1) default 0,
+  devicetype       NUMBER(10),
+  datasource       VARCHAR2(1),
+  dataunit         VARCHAR2(50),
+  status_cn        NUMBER default 1,
+  status_en        NUMBER default 1,
+  status_ru        NUMBER default 1,
+  configitemname   VARCHAR2(200),
   creator    VARCHAR2(200),
   updateuser VARCHAR2(200),
   updatetime DATE default sysdate,
@@ -795,7 +839,8 @@ create table TBL_DEVICE
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999,
   calculatetype            NUMBER(2) default 0,
-  constructiondata         VARCHAR2(4000) default '{}'
+  constructiondata         VARCHAR2(4000) default '{}',
+  commissioningdate        DATE
 )
 tablespace AP_DATA
   storage
@@ -841,7 +886,9 @@ create table TBL_DEVICEADDINFO
   deviceid  NUMBER(10) not null,
   itemname  VARCHAR2(200) not null,
   itemvalue VARCHAR2(200),
-  itemunit  VARCHAR2(200)
+  itemunit  VARCHAR2(200),
+  overview     NUMBER(1) default 0,
+  overviewsort NUMBER(10)
 )
 tablespace AP_DATA
   storage
@@ -1162,6 +1209,11 @@ create table TBL_DAILYCALCULATIONDATA
   runrange           CLOB,
   caldata            CLOB,
   headerlabelinfo    VARCHAR2(4000),
+  reservedcol1       VARCHAR2(4000),
+  reservedcol2       VARCHAR2(4000),
+  reservedcol3       VARCHAR2(4000),
+  reservedcol4       VARCHAR2(4000),
+  reservedcol5       VARCHAR2(4000),
   remark             VARCHAR2(4000)
 )
 tablespace AP_DATA
@@ -1194,6 +1246,11 @@ create table TBL_TIMINGCALCULATIONDATA
   runrange           CLOB,
   caldata            CLOB,
   headerlabelinfo    VARCHAR2(4000),
+  reservedcol1       VARCHAR2(4000),
+  reservedcol2       VARCHAR2(4000),
+  reservedcol3       VARCHAR2(4000),
+  reservedcol4       VARCHAR2(4000),
+  reservedcol5       VARCHAR2(4000),
   remark             VARCHAR2(4000)
 )
 tablespace AP_DATA
@@ -1583,6 +1640,11 @@ create table TBL_SRPDAILYCALCULATIONDATA
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
+  reservedcol1                   VARCHAR2(4000),
+  reservedcol2                   VARCHAR2(4000),
+  reservedcol3                   VARCHAR2(4000),
+  reservedcol4                   VARCHAR2(4000),
+  reservedcol5                   VARCHAR2(4000),
   remark                         VARCHAR2(4000),
   rpm                            NUMBER(8,2)
 )
@@ -1891,6 +1953,11 @@ create table TBL_PCPDAILYCALCULATIONDATA
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
+  reservedcol1                   VARCHAR2(4000),
+  reservedcol2                   VARCHAR2(4000),
+  reservedcol3                   VARCHAR2(4000),
+  reservedcol4                   VARCHAR2(4000),
+  reservedcol5                   VARCHAR2(4000),
   remark                         VARCHAR2(4000)
 )
 tablespace AP_DATA

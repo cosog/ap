@@ -68,7 +68,7 @@ Ext.define('AP.store.data.DictItemSourceStore', {
                     			Ext.getCmp(itemNameId).setValue(setName);
                     		}
                     		
-                    		
+                    		Ext.getCmp("dictItemConfigItemName_Id").setValue(record.data.itemName);
                     	}
                     }
                 });

@@ -212,10 +212,6 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     xtype: "hidden",
                     id: 'dictItemAddOrUpdate_Id',
                     value: '0'
-                },{
-                    xtype: "hidden",
-                    id: 'dictItemConfigItemName_Id',
-                    value: ''
                 }, {
                     xtype: "hidden",
                     id: 'dictItemDataItemId_Id',
@@ -268,6 +264,13 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     id: 'dictItemDataSource_Id',
                     value: '',
                     name: "dataitemsInfo.dataSource"
+                },{
+                	id: "dictItemConfigItemName_Id",
+                    fieldLabel: loginUserLanguageResource.configureField,
+                    anchor: '95%',
+                    msgTarget: 'side',
+                    readOnly: true,
+                    disabled: true
                 },
                 sysdata_code, {
                     id: 'dictItemDataUnit_Id',

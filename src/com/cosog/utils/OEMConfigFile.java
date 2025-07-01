@@ -11,6 +11,8 @@ public class OEMConfigFile {
 	
 	private Email email;
 	
+	private ModuleContentConfig moduleContent;
+	
 	private Others others;
 	
 	public Oem getOem() {
@@ -253,16 +255,12 @@ public class OEMConfigFile {
 	    private int resourceMonitoringSaveData;
 	    
 	    private int resourceMonitoringVacuateThreshold;
-	    
-	    private boolean deviceAdditionalInformation;
 
 	    private boolean iot;
 
 	    private String scene;
 	    
 	    private String module;
-	    
-	    private boolean showVideo;
 
 	    private boolean showLogo;
 
@@ -399,12 +397,6 @@ public class OEMConfigFile {
 		public void setDeviceShowName(String deviceShowName) {
 			this.deviceShowName = deviceShowName;
 		}
-		public boolean getShowVideo() {
-			return showVideo;
-		}
-		public void setShowVideo(boolean showVideo) {
-			this.showVideo = showVideo;
-		}
 		public boolean getExportAdInitData() {
 			return exportAdInitData;
 		}
@@ -446,12 +438,6 @@ public class OEMConfigFile {
 		}
 		public void setSaveAcqRawData(boolean saveAcqRawData) {
 			this.saveAcqRawData = saveAcqRawData;
-		}
-		public boolean isDeviceAdditionalInformation() {
-			return deviceAdditionalInformation;
-		}
-		public void setDeviceAdditionalInformation(boolean deviceAdditionalInformation) {
-			this.deviceAdditionalInformation = deviceAdditionalInformation;
 		}
 	}
 	
@@ -673,5 +659,179 @@ public class OEMConfigFile {
 		public void setTableConfig(TableConfig tableConfig) {
 			this.tableConfig = tableConfig;
 		}
+	}
+	
+	public static class DataDictionaryContentConfig{
+		
+		private int calculateData;
+		
+		private int inputData;
+
+		public int getCalculateData() {
+			return calculateData;
+		}
+
+		public void setCalculateData(int calculateData) {
+			this.calculateData = calculateData;
+		}
+
+		public int getInputData() {
+			return inputData;
+		}
+
+		public void setInputData(int inputData) {
+			this.inputData = inputData;
+		}
+	}
+	
+	public static class RealTimeMonitoringContentConfig{
+		
+		private boolean FESDiagramResultData;
+
+		public boolean getFESDiagramResultData() {
+			return FESDiagramResultData;
+		}
+
+		public void setFESDiagramResultData(boolean fESDiagramResultData) {
+			FESDiagramResultData = fESDiagramResultData;
+		}
+	}
+	
+	public static class HistoryQueryContentConfig{
+		
+		private boolean FESDiagramResultData;
+
+		public boolean getFESDiagramResultData() {
+			return FESDiagramResultData;
+		}
+
+		public void setFESDiagramResultData(boolean fESDiagramResultData) {
+			FESDiagramResultData = fESDiagramResultData;
+		}
+	}
+	
+	public static class PrimaryDeviceContentConfig{
+		
+		private boolean deviceExtendInformation;
+		
+		private boolean additionalInformation;
+		
+		private boolean auxiliaryDevice;
+		
+		private boolean videoConfig;
+		
+		private boolean calculateDataConfig;
+		
+		private boolean FSDiagramConstruction;
+		
+		private boolean systemParameterConfiguration;
+
+		public boolean getDeviceExtendInformation() {
+			return deviceExtendInformation;
+		}
+
+		public void setDeviceExtendInformation(boolean deviceExtendInformation) {
+			this.deviceExtendInformation = deviceExtendInformation;
+		}
+
+		public boolean getAdditionalInformation() {
+			return additionalInformation;
+		}
+
+		public void setAdditionalInformation(boolean additionalInformation) {
+			this.additionalInformation = additionalInformation;
+		}
+
+		public boolean getAuxiliaryDevice() {
+			return auxiliaryDevice;
+		}
+
+		public void setAuxiliaryDevice(boolean auxiliaryDevice) {
+			this.auxiliaryDevice = auxiliaryDevice;
+		}
+
+		public boolean getVideoConfig() {
+			return videoConfig;
+		}
+
+		public void setVideoConfig(boolean videoConfig) {
+			this.videoConfig = videoConfig;
+		}
+
+		public boolean getCalculateDataConfig() {
+			return calculateDataConfig;
+		}
+
+		public void setCalculateDataConfig(boolean calculateDataConfig) {
+			this.calculateDataConfig = calculateDataConfig;
+		}
+
+		public boolean getFSDiagramConstruction() {
+			return FSDiagramConstruction;
+		}
+
+		public void setFSDiagramConstruction(boolean FSDiagramConstruction) {
+			this.FSDiagramConstruction = FSDiagramConstruction;
+		}
+
+		public boolean getSystemParameterConfiguration() {
+			return systemParameterConfiguration;
+		}
+
+		public void setSystemParameterConfiguration(boolean systemParameterConfiguration) {
+			this.systemParameterConfiguration = systemParameterConfiguration;
+		}
+	}
+	
+	public static class ModuleContentConfig{
+		
+		private DataDictionaryContentConfig dataDictionary;
+		
+		private RealTimeMonitoringContentConfig realTimeMonitoring;
+		
+		private HistoryQueryContentConfig historyQuery;
+		
+		private PrimaryDeviceContentConfig primaryDevice;
+
+		public DataDictionaryContentConfig getDataDictionary() {
+			return dataDictionary;
+		}
+
+		public void setDataDictionary(DataDictionaryContentConfig dataDictionary) {
+			this.dataDictionary = dataDictionary;
+		}
+
+		public RealTimeMonitoringContentConfig getRealTimeMonitoring() {
+			return realTimeMonitoring;
+		}
+
+		public void setRealTimeMonitoring(RealTimeMonitoringContentConfig realTimeMonitoring) {
+			this.realTimeMonitoring = realTimeMonitoring;
+		}
+
+		public HistoryQueryContentConfig getHistoryQuery() {
+			return historyQuery;
+		}
+
+		public void setHistoryQuery(HistoryQueryContentConfig historyQuery) {
+			this.historyQuery = historyQuery;
+		}
+
+		public PrimaryDeviceContentConfig getPrimaryDevice() {
+			return primaryDevice;
+		}
+
+		public void setPrimaryDevice(PrimaryDeviceContentConfig primaryDevice) {
+			this.primaryDevice = primaryDevice;
+		}
+		
+	}
+
+	public ModuleContentConfig getModuleContent() {
+		return moduleContent;
+	}
+
+	public void setModuleContent(ModuleContentConfig moduleContent) {
+		this.moduleContent = moduleContent;
 	}
 }

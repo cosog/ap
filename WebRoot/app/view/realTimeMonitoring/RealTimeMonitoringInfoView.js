@@ -1794,7 +1794,7 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 }
 
 function createVideo(deviceType,data,videoNo,isNew){
-	if(showVideoConfig){
+	if(moduleContentConfig.primaryDevice.videoConfig){
 		var panelId1='RealTimeMonitoringRightVideoPanel1';
 		var divId1='RealTimeMonitoringRightVideoDiv1_Id';
 		

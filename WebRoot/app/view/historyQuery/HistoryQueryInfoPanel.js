@@ -2,8 +2,8 @@ var historyStatTabItems=[{
 	title:loginUserLanguageResource.workType,
 	layout: 'fit',
 	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
-	hidden: onlyMonitor,
-	iconCls: onlyMonitor?null:'check3',
+	hidden: !moduleContentConfig.historyQuery.FESDiagramResultData,
+	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?null:'check3',
 	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -24,8 +24,8 @@ var historyStatTabItems=[{
 },{
 	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
-	hidden: onlyFESDiagramCal,
 	id:'HistoryQueryStatGraphPanel_Id',
+	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?'check3':null,
 	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -47,7 +47,6 @@ var historyStatTabItems=[{
 	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	id:'HistoryQueryRunStatusStatGraphPanel_Id',
-	iconCls: onlyMonitor?'check3':null,
 	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -123,7 +122,7 @@ var historyQueryCenterTabPanelItems=[{
     }]
 },{
 	title: loginUserLanguageResource.tiledDiagram,
-	hidden:onlyMonitor,
+	hidden:!moduleContentConfig.historyQuery.FESDiagramResultData,
 	id:"HistoryQueryTiledDiagramPanel",
 	layout: 'border',
     border: false,
@@ -317,7 +316,7 @@ var historyQueryCenterTabPanelItems=[{
 },{
 	title: loginUserLanguageResource.diagramOverlay,
 	id:"HistoryDiagramOverlayTabPanel",
-	hidden:onlyMonitor,
+	hidden:!moduleContentConfig.historyQuery.FESDiagramResultData,
 	layout: 'border',
     items: [{
     	region: 'west',
@@ -674,7 +673,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     	height: '50%',
                     	xtype: 'tabpanel',
                     	id:'HistoryQueryStatTabPanel',
-                    	activeTab: onlyMonitor?1:0,
+                    	activeTab: (!moduleContentConfig.historyQuery.FESDiagramResultData)?1:0,
                         header: false,
                 		tabPosition: 'top',
                 		items: historyStatTabItems,

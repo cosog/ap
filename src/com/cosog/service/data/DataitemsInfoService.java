@@ -939,11 +939,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					}
 				}
 			}else if(StringManagerUtils.stringToInteger(dataSource)==1){
+				int calculateDataConfig=Config.getInstance().configFile.getAp().getModuleContent().getDataDictionary().getCalculateData();
 				Map<String,CalItem> addedItemMap=new LinkedHashMap<>();
 				List<CalItem> acqCalItemList= MemoryDataManagerTask.getAcqCalculateItem(language);
-				List<CalItem> SRPCalItemList= MemoryDataManagerTask.getSRPCalculateItem(language);
-				List<CalItem> PCPCalItemList= MemoryDataManagerTask.getPCPCalculateItem(language);
-				
 				int index=1;
 				for(CalItem calItem:acqCalItemList){
 					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
@@ -959,66 +957,79 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						index++;
 					}
 				}
-				for(CalItem calItem:SRPCalItemList){
-					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
-						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
-						result_json.append("{\"id\":\""+index+"\",");
-						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
-						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
-						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
-						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
-						result_json.append("\"dataSource\":\""+dataSource+"\",");
-						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
-						totalCount++;
-						index++;
+				
+				if(calculateDataConfig==1 || calculateDataConfig==3){
+					List<CalItem> SRPCalItemList= MemoryDataManagerTask.getSRPCalculateItem(language);
+					for(CalItem calItem:SRPCalItemList){
+						if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+							addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+							result_json.append("{\"id\":\""+index+"\",");
+							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
+							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+							result_json.append("\"dataSource\":\""+dataSource+"\",");
+							result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+							totalCount++;
+							index++;
+						}
 					}
 				}
-				for(CalItem calItem:PCPCalItemList){
-					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
-						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
-						result_json.append("{\"id\":\""+index+"\",");
-						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
-						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
-						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
-						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
-						result_json.append("\"dataSource\":\""+dataSource+"\",");
-						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
-						totalCount++;
-						index++;
+				
+				if(calculateDataConfig==2 || calculateDataConfig==3){
+					List<CalItem> PCPCalItemList= MemoryDataManagerTask.getPCPCalculateItem(language);
+					for(CalItem calItem:PCPCalItemList){
+						if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+							addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+							result_json.append("{\"id\":\""+index+"\",");
+							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
+							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+							result_json.append("\"dataSource\":\""+dataSource+"\",");
+							result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+							totalCount++;
+							index++;
+						}
 					}
 				}
 			}else if(StringManagerUtils.stringToInteger(dataSource)==2){
+				int inputDataConfig=Config.getInstance().configFile.getAp().getModuleContent().getDataDictionary().getInputData();
 				Map<String,CalItem> addedItemMap=new LinkedHashMap<>();
-				List<CalItem> SRPInputItemList= MemoryDataManagerTask.getSRPInputItem(language);
-				List<CalItem> PCPInputItemList= MemoryDataManagerTask.getPCPInputItem(language);
-				
 				int index=1;
-				for(CalItem calItem:SRPInputItemList){
-					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
-						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
-						result_json.append("{\"id\":\""+index+"\",");
-						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
-						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
-						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
-						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
-						result_json.append("\"dataSource\":\""+dataSource+"\",");
-						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
-						totalCount++;
-						index++;
+				if(inputDataConfig==1 || inputDataConfig==3){
+					List<CalItem> SRPInputItemList= MemoryDataManagerTask.getSRPInputItem(language);
+					for(CalItem calItem:SRPInputItemList){
+						if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+							addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+							result_json.append("{\"id\":\""+index+"\",");
+							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
+							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+							result_json.append("\"dataSource\":\""+dataSource+"\",");
+							result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+							totalCount++;
+							index++;
+						}
 					}
 				}
-				for(CalItem calItem:PCPInputItemList){
-					if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
-						addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
-						result_json.append("{\"id\":\""+index+"\",");
-						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
-						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
-						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
-						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
-						result_json.append("\"dataSource\":\""+dataSource+"\",");
-						result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
-						totalCount++;
-						index++;
+				
+				if(inputDataConfig==2 || inputDataConfig==3){
+					List<CalItem> PCPInputItemList= MemoryDataManagerTask.getPCPInputItem(language);
+					for(CalItem calItem:PCPInputItemList){
+						if(!addedItemMap.containsKey(calItem.getName()+"_"+calItem.getCode())){
+							addedItemMap.put(calItem.getName()+"_"+calItem.getCode(), calItem);
+							result_json.append("{\"id\":\""+index+"\",");
+							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
+							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
+							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+							result_json.append("\"dataSource\":\""+dataSource+"\",");
+							result_json.append("\"unit\":\""+calItem.getUnit()+"\"},");
+							totalCount++;
+							index++;
+						}
 					}
 				}
 			}

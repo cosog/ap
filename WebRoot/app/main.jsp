@@ -104,8 +104,6 @@
         var sceneConfig = ${ configFile}.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
         var moduleConfig = ${ configFile}.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
         
-        var showDeviceAdditionalInformation = ${ configFile}.ap.others.deviceAdditionalInformation;
-        
         var pcpHidden = true;
         if(moduleConfig=='all' || moduleConfig=='pcp'){
         	pcpHidden = false
@@ -116,14 +114,7 @@
         	onlyMonitor=true;
         }
         
-        var onlyFESDiagramCal=false;
-        if(!IoTConfig){
-        	onlyFESDiagramCal=true;
-        }
-        
         var exportAdInitData = ${configFile}.ap.others.exportAdInitData;
-        
-        var showVideoConfig = ${configFile}.ap.others.showVideo;
         
         var showLogo = ${configFile}.ap.others.showLogo;
         
@@ -138,8 +129,8 @@
         var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
         
+		var moduleContentConfig=${configFile}.ap.moduleContent;
         
-
         var defaultPageSize = ${configFile}.ap.others.pageSize;
         var tabInfo=${tabInfo};
         

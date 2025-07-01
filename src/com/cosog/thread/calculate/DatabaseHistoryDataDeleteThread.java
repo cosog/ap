@@ -22,7 +22,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	}
 
 
-	@SuppressWarnings({"static-access" })
+	@SuppressWarnings({"static-access", "unused" })
 	@Override
 	public void run(){
 		if(StringManagerUtils.isNotNull(acqTime)){
@@ -85,17 +85,21 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}
 			}
 		}
+		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
 		DatabaseMaintenanceCounterUtils.countDown();
 	}
 	
+	@SuppressWarnings("static-access")
 	public void deleteData(String table,String timeColumn,String deviceColumn,int deviceId,String newestTime,String timeFormat){
+		int delCount=0;
+		int r=0;
 		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 		int singleDeleteTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteTime();
 		String oldestTimeSql="select to_char(min(t."+timeColumn+"),'yyyy-mm-dd') from "+table+" t where t."+deviceColumn+"="+deviceId;
 		String newestDate=newestTime.split(" ")[0];
 		List<Object[]> oldestTimeList=OracleJdbcUtis.query(oldestTimeSql);
 		if(oldestTimeList.size()>0){
-			String oldestDate=oldestTimeList.get(0)+"";
+			String oldestDate=oldestTimeList.get(0)[0]+"";
 			if(StringManagerUtils.isNotNull(oldestDate)){
 				String delSql="";
 				do{
@@ -104,17 +108,26 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 						range = StringManagerUtils.daysBetween(oldestDate, newestDate, "yyyy-MM-dd");
 					} catch (ParseException e) {
 						range=0;
-						e.printStackTrace();
 					}
 					
 					try {
-						if(range-retentionTime>singleDeleteTime){
-							delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','"+timeFormat+"')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
-							OracleJdbcUtis.executeSqlUpdate(delSql);
-							oldestDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(oldestDate,"yyyy-MM-dd"), singleDeleteTime);
+						if(range>retentionTime){
+							if(range-retentionTime>singleDeleteTime){
+								delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','"+timeFormat+"')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
+								r=OracleJdbcUtis.executeSqlUpdate(delSql);
+								oldestDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(oldestDate,"yyyy-MM-dd"), singleDeleteTime);
+								if(r>0){
+									delCount+=r;
+								}
+							}else {
+								delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestTime+"','"+timeFormat+"')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
+								r=OracleJdbcUtis.executeSqlUpdate(delSql);
+								if(r>0){
+									delCount+=r;
+								}
+								break;
+							}
 						}else{
-							delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestTime+"','"+timeFormat+"')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
-							OracleJdbcUtis.executeSqlUpdate(delSql);
 							break;
 						}
 					} catch (Exception e) {
@@ -125,6 +138,8 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 			}
 			
 		}
+		
+		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
 	}
 
 	public int getDeviceId() {

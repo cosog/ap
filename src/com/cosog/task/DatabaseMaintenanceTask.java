@@ -36,7 +36,7 @@ public class DatabaseMaintenanceTask {
 		String startTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getStartTime();
 		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 		
-		long interval=cycle * 60 * 60 * 1000;
+		long interval=cycle * 24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(startTime) - System.currentTimeMillis();
 		while(initDelay<0){
         	initDelay=interval + initDelay;
@@ -57,9 +57,11 @@ public class DatabaseMaintenanceTask {
 	}
 	
 	public static void timingDeleteDatabaseHistoryData(){
+		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData start!");
 		String sql="select t.deviceid,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
 				+ " from TBL_ACQDATA_LATEST t,tbl_device t2 "
 				+ " where t.deviceid=t2.id and t.acqtime is not null "
+//				+ " and t2.id=62"
 				+ " order by t2.devicetype,t2.sortnum,t2.id";
 		
 		ThreadPool threadPoolexecutor = new ThreadPool("timingDeleteDatabaseHistoryData",
@@ -78,7 +80,7 @@ public class DatabaseMaintenanceTask {
 			int deviceId=StringManagerUtils.stringToInteger(obj[0]+"");
 			int calculateType=StringManagerUtils.stringToInteger(obj[1]+"");
 			String acqTime=obj[2]+"";
-			executor.execute(new DatabaseHistoryDataDeleteThread(deviceId, calculateType,acqTime));
+			threadPoolexecutor.execute(new DatabaseHistoryDataDeleteThread(deviceId, calculateType,acqTime));
 		}
 		try {
 			DatabaseMaintenanceCounterUtils.await();//等待所有线程执行完毕
@@ -86,7 +88,7 @@ public class DatabaseMaintenanceTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData finished!");
 	}
 	
 	

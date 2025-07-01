@@ -43,6 +43,22 @@ email:                #邮件发送账号配置
       password: WYWHZENVGKLPZWIR       #邮箱授权码或独立密码
       smtpHost: smtp.126.com           #邮箱服务器地址，不同服务器地址不同
       smtpPort: 465                    #邮箱SMTP端口，以实际为准
+moduleContent: 
+   realTimeMonitoring: 
+      FESDiagramResultData: false
+   historyQuery: 
+      FESDiagramResultData: false
+   primaryDevice: 
+      deviceExtendInformation: true
+      additionalInformation: true
+      auxiliaryDevice: true
+      videoConfig: false
+      calculateDataConfig: false
+      FSDiagramConstruction: false
+      systemParameterConfiguration: false
+   dataDictionary: 
+      calculateData: 0                 #0-时率计算 1-时率计算和功图计算 2-时率计算和转速计产 3-全部
+      inputData: 0                     #0-无 1-功图计算录入数据 2-转速计产录入数据 3-全部
 others:
    deviceShowName: 设备名称
    timeEfficiencyUnit: 2               #时率单位 1-小数 2-百分数
@@ -57,11 +73,9 @@ others:
    productionUnit: stere           #产量单位 stere-立方米 ton-吨
    resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
    resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值
-   deviceAdditionalInformation: true
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: ""                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
-   showVideo: false                     #是否含视频
    showLogo: true                  #是否显示图标
    printLog: false                  #是否打印日志
    exportAdInitData: false         #是否可导出ad初始化数据

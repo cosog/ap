@@ -163,9 +163,14 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             autoLoad: true,
             listeners: {
                 beforeload: function (store, options) {
+                	var values='0,1,5';
+                	if(moduleContentConfig.dataDictionary.inputData!=0){
+                		values='0,1,2,5';
+                	}
+                	
                     var new_params = {
                         itemCode: 'DATASOURCE',
-                        values: '0,1,2,5'
+                        values: values
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }

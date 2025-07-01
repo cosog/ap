@@ -5,8 +5,8 @@ var realtimeStatTabItems=[{
 	closable:false,
 	closeAction:'hide',
 	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
-	hidden: onlyMonitor,
-	iconCls: onlyMonitor?null:'check3',
+	hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
 	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -30,7 +30,7 @@ var realtimeStatTabItems=[{
 	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
 	closable:false,
-	hidden: onlyFESDiagramCal,
+	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	id:'RealTimeMonitoringStatGraphPanel_Id',
 	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
@@ -55,7 +55,6 @@ var realtimeStatTabItems=[{
 	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	closable:false,
-	iconCls: onlyMonitor?'check3':null,
 	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
 	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
@@ -109,8 +108,8 @@ var realtimeCurveAndTableTabPanelItems=[{
     autoScroll:false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
-    hidden: onlyMonitor,
-    iconCls: onlyMonitor?null:'check3',
+    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+    iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
     layout: {
         type: 'vbox',
         pack: 'start',
@@ -200,7 +199,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     autoScroll:false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
-    hidden: onlyMonitor,
+    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
     layout: {
         type: 'vbox',
         pack: 'start',
@@ -293,7 +292,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 	title:loginUserLanguageResource.trendCurve,
 	id:"RealTimeMonitoringCurveTabPanel_Id",
 	layout: 'border',
-	iconCls: onlyMonitor?'check3':null,
+	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	items: [{
 		region: 'center',
 		layout: 'fit',
@@ -367,8 +366,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 var RealTimeMonitoringRightTabPanelItems=[{
 	title:loginUserLanguageResource.deviceControl,
 	border: false,
-	hidden: onlyFESDiagramCal,
-	iconCls: onlyFESDiagramCal?null:'check3',
+	iconCls: 'check3',
     layout: 'border',
     hideMode:'offsets',
     id:'RealTimeMonitoringRightControlAndVideoPanel',
@@ -436,7 +434,6 @@ var RealTimeMonitoringRightTabPanelItems=[{
 	title:loginUserLanguageResource.deviceInformation,
 	layout: 'border',
 	id:'RealTimeMonitoringRightDeviceInfoPanel',
-	iconCls: onlyFESDiagramCal?'check3':null,
 	items:[{
 		region: 'center',
 		id: 'RealTimeMonitoringRightDeviceAddInfoPanel',
@@ -627,7 +624,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     	height: '50%',
                     	xtype: 'tabpanel',
                     	id:'RealTimeMonitoringStatTabPanel',
-                    	activeTab: onlyMonitor?1:0,
+                    	activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?1:0,
                         header: false,
                         closable:true,
             			closeAction:'hide',
@@ -667,7 +664,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         region: 'center',
                         xtype: 'tabpanel',
                 		id:"RealTimeMonitoringCurveAndTableTabPanel",
-                		activeTab: onlyMonitor?2:0,
+                		activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?2:0,
                 		border: false,
                 		tabPosition: 'top',
                 		items: realtimeCurveAndTableTabPanelItems,
@@ -697,7 +694,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     	width: '31%',
                     	xtype: 'tabpanel',
                     	id:"RealTimeMonitoringRightTabPanel",
-                		activeTab: onlyFESDiagramCal?1:0,
+                		activeTab: 0,
                 		border: false,
                 		split: true,
                         collapsible: true,

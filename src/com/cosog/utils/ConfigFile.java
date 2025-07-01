@@ -261,6 +261,8 @@ public class ConfigFile {
 
 	    private OEMConfigFile.Email email;
 	    
+	    private OEMConfigFile.ModuleContentConfig moduleContent;
+	    
 	    private OEMConfigFile.Others others;
 
 	    public void setDatasource(Datasource datasource){
@@ -316,6 +318,12 @@ public class ConfigFile {
 		}
 		public void setDatabaseMaintenance(OEMConfigFile.DatabaseMaintenance databaseMaintenance) {
 			this.databaseMaintenance = databaseMaintenance;
+		}
+		public OEMConfigFile.ModuleContentConfig getModuleContent() {
+			return moduleContent;
+		}
+		public void setModuleContent(OEMConfigFile.ModuleContentConfig moduleContent) {
+			this.moduleContent = moduleContent;
 		}
 	}
 	

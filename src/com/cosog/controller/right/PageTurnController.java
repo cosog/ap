@@ -131,11 +131,11 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
 		session.setAttribute("bannerCSS", bannerCSS);
 		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
-		session.setAttribute("showVideo", configFile.getAp().getOthers().getShowVideo());
 		session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
 		session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
 		session.setAttribute("loadingUI", loadingUI);
 		session.setAttribute("helpDocumentUrl", helpDocumentUrl);
+		session.setAttribute("showVideo", configFile.getAp().getModuleContent().getPrimaryDevice().getVideoConfig());
 		return "app/main";
 //		return "forward:/app/main.jsp";
 //		return "redirect:/app/main.jsp";

@@ -5139,14 +5139,20 @@ public class MemoryDataManagerTask {
 			}
 		}
 		if(StringManagerUtils.isNotNull(values) && valueArr!=null && valueArr.length>0){
-			Iterator<Map.Entry<String,Code>> it = code.entrySet().iterator();
-			while(it.hasNext()){
-				Map.Entry<String,Code> entry = it.next();
-				Code c=entry.getValue();
-				if(StringManagerUtils.existOrNot(valueArr, c.getItemvalue()+"")){
-					resultCodeMap.put(c.getItemvalue()+"", c);
+			for(int i=0;i<valueArr.length;i++){
+				if(code.containsKey(valueArr[i])){
+					resultCodeMap.put(valueArr[i], code.get(valueArr[i]));
 				}
 			}
+			
+//			Iterator<Map.Entry<String,Code>> it = code.entrySet().iterator();
+//			while(it.hasNext()){
+//				Map.Entry<String,Code> entry = it.next();
+//				Code c=entry.getValue();
+//				if(StringManagerUtils.existOrNot(valueArr, c.getItemvalue()+"")){
+//					resultCodeMap.put(c.getItemvalue()+"", c);
+//				}
+//			}
 		}else{
 			resultCodeMap=code;
 		}

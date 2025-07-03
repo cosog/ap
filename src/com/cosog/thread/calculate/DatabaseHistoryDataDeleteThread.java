@@ -95,6 +95,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 		int r=0;
 		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 		int singleDeleteTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteTime();
+		int singleDeleteRecord=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteRecord();
 		String oldestTimeSql="select to_char(min(t."+timeColumn+"),'yyyy-mm-dd') from "+table+" t where t."+deviceColumn+"="+deviceId;
 		String newestDate=newestTime.split(" ")[0];
 		List<Object[]> oldestTimeList=OracleJdbcUtis.query(oldestTimeSql);
@@ -113,17 +114,61 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 					try {
 						if(range>retentionTime){
 							if(range-retentionTime>singleDeleteTime){
-								delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','"+timeFormat+"')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
-								r=OracleJdbcUtis.executeSqlUpdate(delSql);
-								oldestDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(oldestDate,"yyyy-MM-dd"), singleDeleteTime);
-								if(r>0){
-									delCount+=r;
+								String sql="select count(1) from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','yyyy-mm-dd')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
+								List<Object[]> list=OracleJdbcUtis.query(sql);
+								int count=StringManagerUtils.stringToInteger(list.get(0)[0]+"");
+								if(count>singleDeleteRecord){
+									do{
+										int delRecord=count<singleDeleteRecord?count:singleDeleteRecord;
+										delSql="delete from "+table+" t where t.id in ( "
+												+ "select v.id from (select t2.id from "+table+" t2 "
+												+ " where t2."+timeColumn+"<to_date('"+oldestDate+"','yyyy-mm-dd')+"+singleDeleteTime+" "
+												+ " and t2."+deviceColumn+"="+deviceId 
+												+ " order by t2."+timeColumn+") v"
+												+ " where rownum<="+delRecord
+												+ " )";
+										r=OracleJdbcUtis.executeSqlUpdate(delSql);
+										if(r>0){
+											delCount+=r;
+										}
+										count-=delRecord;
+										Thread.yield();
+									}while(count>0);
+								}else{
+									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','yyyy-mm-dd')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
+									r=OracleJdbcUtis.executeSqlUpdate(delSql);
+									if(r>0){
+										delCount+=r;
+									}
 								}
+								oldestDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(oldestDate,"yyyy-MM-dd"), singleDeleteTime);
 							}else {
-								delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestTime+"','"+timeFormat+"')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
-								r=OracleJdbcUtis.executeSqlUpdate(delSql);
-								if(r>0){
-									delCount+=r;
+								String sql="select count(1) from "+table+" t where t."+timeColumn+"<to_date('"+newestDate+"','yyyy-mm-dd')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
+								List<Object[]> list=OracleJdbcUtis.query(sql);
+								int count=StringManagerUtils.stringToInteger(list.get(0)[0]+"");
+								if(count>singleDeleteRecord){
+									do{
+										int delRecord=count<singleDeleteRecord?count:singleDeleteRecord;
+										delSql="delete from "+table+" t where t.id in ( "
+												+ "select v.id from (select t2.id from "+table+" t2 "
+												+ " where t2."+timeColumn+"<to_date('"+newestDate+"','yyyy-mm-dd')-"+retentionTime+" "
+												+ " and t2."+deviceColumn+"="+deviceId 
+												+ " order by t2."+timeColumn+") v"
+												+ " where rownum<="+delRecord
+												+ " )";
+										r=OracleJdbcUtis.executeSqlUpdate(delSql);
+										if(r>0){
+											delCount+=r;
+										}
+										count-=delRecord;
+										Thread.yield();
+									}while(count>0);
+								}else{
+									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestDate+"','yyyy-mm-dd')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
+									r=OracleJdbcUtis.executeSqlUpdate(delSql);
+									if(r>0){
+										delCount+=r;
+									}
 								}
 								break;
 							}
@@ -134,6 +179,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 						e.printStackTrace();
 						break;
 					}
+					Thread.yield();
 				}while(true);
 			}
 			

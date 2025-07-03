@@ -141,6 +141,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 							clobDataList.add(acqData);
 							OracleJdbcUtis.executeSqlUpdateClob(insertSql, clobDataList);
 							HeiChaoCounterUtils.incr();//计数器加一
+							Thread.yield();
 						}catch(Exception e){
 							e.printStackTrace();
 							continue;
@@ -349,6 +350,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 						} 
 						
 						HeiChaoCounterUtils.incr();//计数器加一
+						Thread.yield();
 					}catch(Exception e){
 						e.printStackTrace();
 						continue;
@@ -580,6 +582,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 						} 
 						
 						HeiChaoCounterUtils.incr();//计数器加一
+						Thread.yield();
 					}catch(Exception e){
 						e.printStackTrace();
 						continue;

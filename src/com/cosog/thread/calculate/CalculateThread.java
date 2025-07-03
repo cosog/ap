@@ -110,6 +110,7 @@ public class CalculateThread extends Thread{
 							minAcqTime=calculateResponseData.getFESDiagram().getAcqTime();
 						}
 					}
+					Thread.yield();
 				}catch(Exception e){
 					continue;
 				}

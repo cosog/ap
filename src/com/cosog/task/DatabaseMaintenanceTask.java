@@ -61,7 +61,7 @@ public class DatabaseMaintenanceTask {
 		String sql="select t.deviceid,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
 				+ " from TBL_ACQDATA_LATEST t,tbl_device t2 "
 				+ " where t.deviceid=t2.id and t.acqtime is not null "
-//				+ " and t2.id=62"
+//				+ " and t2.id=64"
 				+ " order by t2.devicetype,t2.sortnum,t2.id";
 		
 		ThreadPool threadPoolexecutor = new ThreadPool("timingDeleteDatabaseHistoryData",

@@ -618,6 +618,8 @@ public class OEMConfigFile {
 		
 		private int singleDeleteTime;
 		
+		private int singleDeleteRecord;
+		
 		private TableConfig tableConfig;
 		
 		public int getCycle() {
@@ -658,6 +660,14 @@ public class OEMConfigFile {
 
 		public void setTableConfig(TableConfig tableConfig) {
 			this.tableConfig = tableConfig;
+		}
+
+		public int getSingleDeleteRecord() {
+			return singleDeleteRecord;
+		}
+
+		public void setSingleDeleteRecord(int singleDeleteRecord) {
+			this.singleDeleteRecord = singleDeleteRecord;
 		}
 	}
 	

@@ -507,7 +507,7 @@ public class HistoryQueryController extends BaseController  {
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 				String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -556,7 +556,7 @@ public class HistoryQueryController extends BaseController  {
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 				String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -605,7 +605,7 @@ public class HistoryQueryController extends BaseController  {
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 				String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -656,7 +656,7 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -710,7 +710,7 @@ public class HistoryQueryController extends BaseController  {
 		try {
 			if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 				String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 				List list = this.service.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();
@@ -757,7 +757,7 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -827,7 +827,7 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_srpacqdata_hist";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(t.fesdiagramacqtime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.deviceId= "+deviceId+")";
+					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.resultstatus=1 and t2.fesdiagramacqtime is not null and t2.deviceId= "+deviceId+")";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

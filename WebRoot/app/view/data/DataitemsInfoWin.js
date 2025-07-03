@@ -163,9 +163,9 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             autoLoad: true,
             listeners: {
                 beforeload: function (store, options) {
-                	var values='0,1,5';
+                	var values='0,5,1';
                 	if(moduleContentConfig.dataDictionary.inputData!=0){
-                		values='0,1,2,5';
+                		values='0,5,1,2';
                 	}
                 	
                     var new_params = {

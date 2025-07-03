@@ -174,6 +174,7 @@ public class FBHistoryDataSyncThread implements Runnable{
 //							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 //						}
 						FeiZhouCounterUtils.incr();//计数器加一
+						Thread.yield();
 					}catch(Exception e){
 						e.printStackTrace();
 						continue;

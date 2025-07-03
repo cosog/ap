@@ -259,6 +259,7 @@ public class OracleJdbcUtis {
 		} catch (SQLException e) {
 			r=-1;
 			e.printStackTrace();
+			StringManagerUtils.printLog(sql);
 		}finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt);
 		} 

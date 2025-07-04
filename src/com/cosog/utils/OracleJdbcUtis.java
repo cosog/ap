@@ -248,6 +248,26 @@ public class OracleJdbcUtis {
 		return n;
 	}
 	
+	public static int executeSqlUpdateClob(String sql,List<String> values,int timeOut) throws SQLException {
+		int n = 0;
+		Connection conn=null;
+		PreparedStatement ps = null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			ps=conn.prepareStatement(sql);
+			ps.setQueryTimeout(timeOut);
+			for(int i=0;i<values.size();i++){ 
+				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+			}
+			n=ps.executeUpdate();  
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, ps);
+		}
+		return n;
+	}
+	
 	public static int executeSqlUpdate(String sql){
 		int r=0;
 		Connection conn=null;
@@ -255,6 +275,25 @@ public class OracleJdbcUtis {
 		try {
 			conn=OracleJdbcUtis.getConnection();
 			pstmt = conn.prepareStatement(sql);
+			r = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			r=-1;
+			e.printStackTrace();
+			StringManagerUtils.printLog(sql);
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt);
+		} 
+		return r;
+	}
+	
+	public static int executeSqlUpdate(String sql,int timeOut){
+		int r=0;
+		Connection conn=null;
+		PreparedStatement pstmt = null;
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setQueryTimeout(timeOut);
 			r = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			r=-1;

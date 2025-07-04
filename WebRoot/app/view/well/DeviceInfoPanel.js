@@ -377,8 +377,6 @@ var deviceAdditionalInformationTabPanelItems=[{
 	
 }];
 
-
-
 Ext.define('AP.view.well.DeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.deviceInfoPanel',

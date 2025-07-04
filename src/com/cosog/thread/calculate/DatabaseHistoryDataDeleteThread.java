@@ -25,6 +25,24 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	@SuppressWarnings({"static-access", "unused" })
 	@Override
 	public void run(){
+//		int index=0;
+//		while(index<100000){
+//			index++;
+//			System.out.println("DatabaseHistoryDataDeleteThread,deviceId:"+deviceId+",index:"+index);
+//			if (Thread.interrupted()) {
+//                System.out.println("线程"+deviceId + " 检测到中断请求");
+//                break;
+//            }
+//			try {
+//				Thread.sleep(5000);
+//			} catch (InterruptedException e) {
+//				System.out.println("线程"+deviceId + " 阻塞时检测到中断请求");
+//				Thread.currentThread().interrupt();
+//				break;
+//			}
+//		}
+		
+		
 		if(StringManagerUtils.isNotNull(acqTime)){
 			int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 			String startTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getStartTime();
@@ -35,53 +53,73 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 			int r=0;
 			String delSql="";
 			
-			if(tableConfig.getAcqdata_hist()){
-				deleteData("tbl_acqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getAcqdata_hist()){
+					deleteData("tbl_acqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
 			
-			if(tableConfig.getAcqrawdata()){
-				deleteData("tbl_acqrawdata", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getAcqrawdata()){
+					deleteData("tbl_acqrawdata", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
 			
-			if(tableConfig.getAlarminfo_hist()){
-				deleteData("tbl_alarminfo_hist", "alarmtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getAlarminfo_hist()){
+					deleteData("tbl_alarminfo_hist", "alarmtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
 			
-			if(tableConfig.getDailytotalcalculate_hist()){
-				deleteData("tbl_dailytotalcalculate_hist", "acqtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getDailytotalcalculate_hist()){
+					deleteData("tbl_dailytotalcalculate_hist", "acqtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
 			
-			if(tableConfig.getDailycalculationdata()){
-				deleteData("tbl_dailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getDailycalculationdata()){
+					deleteData("tbl_dailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
 			
-			if(tableConfig.getTimingcalculationdata()){
-				deleteData("tbl_timingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+			if (!Thread.interrupted()) {
+				if(tableConfig.getTimingcalculationdata()){
+					deleteData("tbl_timingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				}
 			}
+			
 			if(calculateType==1){
-				if(tableConfig.getSrpacqdata_hist()){
-					deleteData("tbl_srpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getSrpacqdata_hist()){
+						deleteData("tbl_srpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
-				
-				if(tableConfig.getSrpdailycalculationdata()){
-					deleteData("tbl_srpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getSrpdailycalculationdata()){
+						deleteData("tbl_srpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
-				
-				if(tableConfig.getSrptimingcalculationdata()){
-					deleteData("tbl_srptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getSrptimingcalculationdata()){
+						deleteData("tbl_srptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
-				
 			}else if(calculateType==2){
-				if(tableConfig.getPcpacqdata_hist()){
-					deleteData("tbl_pcpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getPcpacqdata_hist()){
+						deleteData("tbl_pcpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
-				
-				if(tableConfig.getPcpdailycalculationdata()){
-					deleteData("tbl_pcpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getPcpdailycalculationdata()){
+						deleteData("tbl_pcpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
-				
-				if(tableConfig.getPcptimingcalculationdata()){
-					deleteData("tbl_pcptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if (!Thread.interrupted()) {
+					if(tableConfig.getPcptimingcalculationdata()){
+						deleteData("tbl_pcptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					}
 				}
 			}
 		}
@@ -133,7 +171,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 										}
 										count-=delRecord;
 										Thread.yield();
-									}while(count>0);
+									}while(!Thread.interrupted() && count>0);
 								}else{
 									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','yyyy-mm-dd')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
 									r=OracleJdbcUtis.executeSqlUpdate(delSql);
@@ -162,7 +200,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 										}
 										count-=delRecord;
 										Thread.yield();
-									}while(count>0);
+									}while(!Thread.interrupted() && count>0);
 								}else{
 									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestDate+"','yyyy-mm-dd')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
 									r=OracleJdbcUtis.executeSqlUpdate(delSql);
@@ -180,11 +218,9 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 						break;
 					}
 					Thread.yield();
-				}while(true);
+				}while(!Thread.interrupted());
 			}
-			
 		}
-		
 		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
 	}
 
@@ -204,11 +240,9 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 		this.calculateType = calculateType;
 	}
 
-
 	public String getAcqTime() {
 		return acqTime;
 	}
-
 
 	public void setAcqTime(String acqTime) {
 		this.acqTime = acqTime;

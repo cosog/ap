@@ -20,6 +20,9 @@ import com.cosog.utils.StringManagerUtils;
 @Component("databaseMaintenanceTask")
 public class DatabaseMaintenanceTask {
 	public static ScheduledExecutorService executor=null;
+	public static ScheduledExecutorService endExecutor=null;
+	
+	public static ThreadPool threadPoolexecutor=null;
 	
 	@SuppressWarnings("static-access")
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
@@ -27,6 +30,7 @@ public class DatabaseMaintenanceTask {
 		int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 		if(cycle>0){
 			timingDatabaseMaintenance();
+			stopTimingDatabaseMaintenance();
 		}
 	}
 	
@@ -58,13 +62,13 @@ public class DatabaseMaintenanceTask {
 	
 	public static void timingDeleteDatabaseHistoryData(){
 		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData start!");
-		String sql="select t.deviceid,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
-				+ " from TBL_ACQDATA_LATEST t,tbl_device t2 "
-				+ " where t.deviceid=t2.id and t.acqtime is not null "
-//				+ " and t2.id=64"
+		String sql="select t2.id,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
+				+ " from tbl_device t2 "
+				+ " left outer join TBL_ACQDATA_LATEST t on t.deviceid=t2.id "
+				+ " where 1=1 "
 				+ " order by t2.devicetype,t2.sortnum,t2.id";
 		
-		ThreadPool threadPoolexecutor = new ThreadPool("timingDeleteDatabaseHistoryData",
+		threadPoolexecutor = new ThreadPool("timingDeleteDatabaseHistoryData",
 				10, 
 				20, 
 				5, 
@@ -93,10 +97,59 @@ public class DatabaseMaintenanceTask {
 	
 	
 	
+	@SuppressWarnings({ "static-access", "unused" })
+	public static void stopTimingDatabaseMaintenance(){
+		int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		String endTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getEndTime();
+		
+		long interval=cycle * 24 * 60 * 60 * 1000;
+		long initDelay = StringManagerUtils.getTimeMillis(endTime) - System.currentTimeMillis();
+		while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+		
+		endExecutor = Executors.newScheduledThreadPool(1);
+		endExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {
+            		stopTimingDeleteDatabaseHistoryData();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
+	
+	public static void stopTimingDeleteDatabaseHistoryData(){
+		StringManagerUtils.printLog("stopTimingDeleteDatabaseHistoryData！");
+		if(threadPoolexecutor!=null && DatabaseMaintenanceCounterUtils.getCount()>0){
+			List<Runnable> list=threadPoolexecutor.shutdown();
+			for(int i=0;i<list.size();i++){
+				DatabaseMaintenanceCounterUtils.countDown();
+			}
+			try {
+				Thread.sleep(1000*10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+//			while(DatabaseMaintenanceCounterUtils.getCount()>0){
+//				DatabaseMaintenanceCounterUtils.countDown();
+//			}
+		}
+		StringManagerUtils.printLog("stopTimingDeleteDatabaseHistoryData finished！");
+	}
+	
 	public static void scheduledDestory(){
 		if(executor!=null && !executor.isShutdown()){
 			executor.shutdownNow();
 		}
+		if(endExecutor!=null && !endExecutor.isShutdown()){
+			endExecutor.shutdownNow();
+		}
+		
 		StringManagerUtils.printLog("DatabaseMaintenanceTask scheduled destory!");
 	}
 }

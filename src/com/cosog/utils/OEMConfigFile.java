@@ -614,6 +614,8 @@ public class OEMConfigFile {
 		
 		private String startTime;
 		
+		private String endTime;
+		
 		private int retentionTime;
 		
 		private int singleDeleteTime;
@@ -668,6 +670,14 @@ public class OEMConfigFile {
 
 		public void setSingleDeleteRecord(int singleDeleteRecord) {
 			this.singleDeleteRecord = singleDeleteRecord;
+		}
+
+		public String getEndTime() {
+			return endTime;
+		}
+
+		public void setEndTime(String endTime) {
+			this.endTime = endTime;
 		}
 	}
 	

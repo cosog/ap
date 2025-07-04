@@ -33,6 +33,10 @@ public class DatabaseMaintenanceCounterUtils {
     	countDownLatch.countDown();
     }
     
+    public static long getCount(){
+    	return countDownLatch.getCount();
+    }
+    
     public static void await() throws InterruptedException{
     	countDownLatch.await();
     }

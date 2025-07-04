@@ -65,10 +65,10 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD
 values (23, 9999, 'œµÕ≥≈‰÷√', 'œµÕ≥≈‰÷√', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl', 'SystemManagement', 'œµÕ≥≈‰÷√', 'SystemManagement', 'œµÕ≥≈‰÷√');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (26, 23, 'ƒ£øÈ≈‰÷√', 'ƒ£øÈ≈‰÷√', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090100, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl', 'ModuleManagement', 'ƒ£øÈ≈‰÷√', 'ModuleManagement', 'ƒ£øÈ≈‰÷√');
+values (26, 23, 'ƒ£øÈ≈‰÷√', 'ƒ£øÈ≈‰÷√', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090200, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl', 'ModuleManagement', 'ƒ£øÈ≈‰÷√', 'ModuleManagement', 'ƒ£øÈ≈‰÷√');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (894, 23, '◊÷µ‰≈‰÷√', '◊÷µ‰≈‰÷√', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090200, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'DataDictionaryManagement', '◊÷µ‰≈‰÷√', 'DataDictionaryManagement', '◊÷µ‰≈‰÷√');
+values (894, 23, '◊÷µ‰≈‰÷√', '◊÷µ‰≈‰÷√', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090100, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'DataDictionaryManagement', '◊÷µ‰≈‰÷√', 'DataDictionaryManagement', '◊÷µ‰≈‰÷√');
 
 /*==============================================================*/
 /* ≥ı ºªØtbl_role ˝æ›                                          */

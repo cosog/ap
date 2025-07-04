@@ -68,10 +68,10 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD
 values (23, 9999, 'ÏµÍ³ÅäÖÃ', 'ÏµÍ³ÅäÖÃ', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl', 'System management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §ã§Ú§ã§ä§Ö§Þ§í', 'System management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §ã§Ú§ã§ä§Ö§Þ§í');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (26, 23, 'Ä£¿éÅäÖÃ', 'Ä£¿éÅäÖÃ', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090100, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl', 'Module management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §Þ§à§Õ§å§Ý§ñ', 'Module management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §Þ§à§Õ§å§Ý§ñ');
+values (26, 23, 'Ä£¿éÅäÖÃ', 'Ä£¿éÅäÖÃ', 'AP.view.module.ModuleInfoView', 'ModuleManagement', 2090200, null, null, 'module', 0, 'AP.controller.module.ModuleInfoControl', 'Module management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §Þ§à§Õ§å§Ý§ñ', 'Module management', '§¬§à§ß§æ§Ú§Ô§å§â§Ñ§è§Ú§ñ §Þ§à§Õ§å§Ý§ñ');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (894, 23, '×ÖµäÅäÖÃ', '×ÖµäÅäÖÃ', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090200, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'Data dictionary management', '§¯§Ñ§ã§ä§â§à§Û§Ü§Ñ §ã§Ý§à§Ó§Ñ§â§ñ', 'Data dictionary management', '§¯§Ñ§ã§ä§â§à§Û§Ü§Ñ §ã§Ý§à§Ó§Ñ§â§ñ');
+values (894, 23, '×ÖµäÅäÖÃ', '×ÖµäÅäÖÃ', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090100, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'Data dictionary management', '§¯§Ñ§ã§ä§â§à§Û§Ü§Ñ §ã§Ý§à§Ó§Ñ§â§ñ', 'Data dictionary management', '§¯§Ñ§ã§ä§â§à§Û§Ü§Ñ §ã§Ý§à§Ó§Ñ§â§ñ');
 
 /*==============================================================*/
 /* ³õÊ¼»¯tbl_roleÊý¾Ý                                          */

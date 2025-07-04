@@ -1,6 +1,7 @@
 package com.cosog.thread.calculate;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -176,5 +177,9 @@ public class ThreadPool {
 
 	public void setExecutor(ThreadPoolExecutor executor) {
 		this.executor = executor;
+	}
+	
+	public List<Runnable> shutdown() {
+		return this.executor.shutdownNow();
 	}
 }

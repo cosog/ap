@@ -339,7 +339,6 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
 				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','',true);
 			}else{
-//				protocolItemsConfigHandsontableHelper.hot.selectRows(0);
 				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
 				
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
@@ -356,6 +355,8 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
             		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,true);
         		}
 			}
+			protocolItemsConfigHandsontableHelper.initTitleDataMap(protocolItemsConfigHandsontableHelper.Data);
+			protocolItemsConfigHandsontableHelper.initAddressDataMap(protocolItemsConfigHandsontableHelper.Data);
 		},
 		failure:function(){
 			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
@@ -379,6 +380,107 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        protocolItemsConfigHandsontableHelper.columns=[];
 	        protocolItemsConfigHandsontableHelper.AllData=[];
 	        protocolItemsConfigHandsontableHelper.Data=[];
+	        protocolItemsConfigHandsontableHelper.titleDataMap=new Map();
+	        protocolItemsConfigHandsontableHelper.addressDataMap=new Map();
+	        
+	        protocolItemsConfigHandsontableHelper.initTitleDataMap= function (data){
+	        	protocolItemsConfigHandsontableHelper.titleDataMap.clear();
+                data.forEach((row, index) => {
+                    const value = row.title;
+                    if (!value) return;
+                    
+                    if (!protocolItemsConfigHandsontableHelper.titleDataMap.has(value)) {
+                        protocolItemsConfigHandsontableHelper.titleDataMap.set(value, [index]);
+                    } else {
+                        protocolItemsConfigHandsontableHelper.titleDataMap.get(value).push(index);
+                    }
+                });
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.getDuplicateCount= function(){
+	        	var duplicateCount = 0;
+	        	for (const [value, indexes] of protocolItemsConfigHandsontableHelper.titleDataMap.entries()) {
+                    if (indexes.length > 1) {
+                        duplicateCount += indexes.length;
+                    }
+                }
+	        	return duplicateCount;
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.getDuplicateRowList= function(){
+	        	var duplicateList = [];
+	        	for (const [value, indexes] of protocolItemsConfigHandsontableHelper.titleDataMap.entries()) {
+                    if (indexes.length > 1) {
+                    	for(var i=0;i<indexes.length;i++){
+                    		duplicateList.push(indexes[i]);
+                    	}
+                    }
+                }
+	        	return duplicateList;
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.initAddressDataMap= function (data){
+	        	protocolItemsConfigHandsontableHelper.addressDataMap.clear();
+                data.forEach((row, index) => {
+                    const value = row.addr+"";
+                    if (!value) return;
+                    
+                    if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(value)) {
+                        protocolItemsConfigHandsontableHelper.addressDataMap.set(value, [index]);
+                    } else {
+                        protocolItemsConfigHandsontableHelper.addressDataMap.get(value).push(index);
+                    }
+                });
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.getAddrDuplicateCount= function(){
+	        	var duplicateCount = 0;
+	        	for (const [value, indexes] of protocolItemsConfigHandsontableHelper.addressDataMap.entries()) {
+                    if (indexes.length > 1) {
+                        duplicateCount += indexes.length;
+                    }
+                }
+	        	return duplicateCount;
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList= function(){
+	        	var duplicateList = [];
+	        	for (const [value, indexes] of protocolItemsConfigHandsontableHelper.addressDataMap.entries()) {
+                    if (indexes.length > 1) {
+                    	for(var i=0;i<indexes.length;i++){
+                    		duplicateList.push(indexes[i]);
+                    	}
+                    }
+                }
+	        	return duplicateList;
+	        }
+	        
+	        protocolItemsConfigHandsontableHelper.uniqueTitleRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+                td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+                if (prop === 'title') {
+                    // 检查重复
+                    if (value && protocolItemsConfigHandsontableHelper.titleDataMap.has(value)) {
+                        const rows = protocolItemsConfigHandsontableHelper.titleDataMap.get(value);
+                        if (rows.length > 1 && rows.includes(row)) {
+                            td.style.backgroundColor = '#FF4C42';
+                        }
+                    }
+                }else if (prop === 'addr') {
+                    // 检查重复
+                    if (value+"" && protocolItemsConfigHandsontableHelper.addressDataMap.has(value+"")) {
+                        const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(value+"");
+                        if (rows.length > 1 && rows.includes(row)) {
+                            td.style.backgroundColor = '#FF4C42';
+                        }
+                    }
+                }
+            }
+	        
+	        
+	        
 	        
 	        protocolItemsConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -480,10 +582,97 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    	cellProperties.renderer = protocolItemsConfigHandsontableHelper.addBoldBg;
 	                    }else{
 	                    	if(protocolItemsConfigHandsontableHelper.columns[visualColIndex].type == undefined || protocolItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
+//	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
+	                    		
+	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.uniqueTitleRenderer;
+	                    		
 	                    	}
 	                    }
 	                    return cellProperties;
+	                },
+	                afterChange: function (changes, source) {
+	                	if (!changes) return;
+	                	let needUpdateMap = false;
+	                	changes.forEach(([row, prop, oldValue, newValue]) => {
+	                        if (prop === 'title') {
+	                            // 从映射中移除旧值
+	                            if (oldValue && protocolItemsConfigHandsontableHelper.titleDataMap.has(oldValue)) {
+	                                const rows = protocolItemsConfigHandsontableHelper.titleDataMap.get(oldValue);
+	                                const index = rows.indexOf(row);
+	                                if (index !== -1) {
+	                                    rows.splice(index, 1);
+	                                    if (rows.length === 0) {
+	                                        protocolItemsConfigHandsontableHelper.titleDataMap.delete(oldValue);
+	                                    }
+	                                }
+	                            }
+
+	                            // 添加新值到映射
+	                            if (newValue) {
+	                                if (!protocolItemsConfigHandsontableHelper.titleDataMap.has(newValue)) {
+	                                    protocolItemsConfigHandsontableHelper.titleDataMap.set(newValue, [row]);
+	                                } else {
+	                                    const rows = protocolItemsConfigHandsontableHelper.titleDataMap.get(newValue);
+	                                    if (!rows.includes(row)) {
+	                                        rows.push(row);
+	                                    }
+	                                }
+	                            }
+	                            if (oldValue !== newValue) {
+	                            	needUpdateMap = true;
+	                            }
+	                            
+	                            
+	                            // 重绘受影响的行（仅当值改变时）
+//	                            if (oldValue !== newValue) {
+//	                                protocolItemsConfigHandsontableHelper.hot.renderCell(row, 1);
+//
+//	                                // 如果新值重复，重绘所有重复行
+//	                                if (newValue && protocolItemsConfigHandsontableHelper.titleDataMap.has(newValue) && protocolItemsConfigHandsontableHelper.titleDataMap.get(newValue).length > 1) {
+//	                                    protocolItemsConfigHandsontableHelper.titleDataMap.get(newValue).forEach(r => {
+//	                                        if (r !== row) protocolItemsConfigHandsontableHelper.hot.renderCell(r, 1);
+//	                                    });
+//	                                }
+//
+//	                                // 如果旧值重复，重绘所有重复行
+//	                                if (oldValue && protocolItemsConfigHandsontableHelper.titleDataMap.has(oldValue) && protocolItemsConfigHandsontableHelper.titleDataMap.get(oldValue).length > 0) {
+//	                                    protocolItemsConfigHandsontableHelper.titleDataMap.get(oldValue).forEach(r => {
+//	                                        if (r !== row) protocolItemsConfigHandsontableHelper.hot.renderCell(r, 1);
+//	                                    });
+//	                                }
+//	                            }
+	                        }else if (prop === 'addr') {
+	                            // 从映射中移除旧值
+	                            if (oldValue && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldValue+"")) {
+	                                const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(oldValue+"");
+	                                const index = rows.indexOf(row);
+	                                if (index !== -1) {
+	                                    rows.splice(index, 1);
+	                                    if (rows.length === 0) {
+	                                        protocolItemsConfigHandsontableHelper.addressDataMap.delete(oldValue+"");
+	                                    }
+	                                }
+	                            }
+
+	                            // 添加新值到映射
+	                            if (newValue) {
+	                                if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(newValue+"")) {
+	                                    protocolItemsConfigHandsontableHelper.addressDataMap.set(newValue+"", [row]);
+	                                } else {
+	                                    const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(newValue+"");
+	                                    if (!rows.includes(row)) {
+	                                        rows.push(row);
+	                                    }
+	                                }
+	                            }
+	                            if (oldValue !== newValue) {
+	                            	needUpdateMap = true;
+	                            }
+	                        }
+	                    });
+	                	if(needUpdateMap){
+	                		protocolItemsConfigHandsontableHelper.hot.render();
+	                	}
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
 	                	if(row<0 && row2<0){//只选中表头
@@ -765,6 +954,10 @@ var ProtocolPropertiesHandsontableHelper = {
 };
 
 function SaveModbusProtocolAddrMappingConfigTreeData(){
+//	var duplicateRowList=protocolItemsConfigHandsontableHelper.getDuplicateRowList();
+//	var addrDuplicateRowList=protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList();
+	
+	
 	var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 	var AddrMappingItemsSelectRow= Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
 	if(protocolTreeGridPanelSelectRow!=''){

@@ -2481,8 +2481,11 @@ public class DriverAPIController extends BaseController{
 					
 					//添加新采集数据至内存
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
+					everyDataMap.put("deviceId", deviceInfo.getId()+"");
+					everyDataMap.put("acqTime", acqTime);
 					everyDataMap.put("commStatus", "1");
 					everyDataMap.put("checkSign", checkSign+"");
+					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
 					}

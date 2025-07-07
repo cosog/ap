@@ -1329,6 +1329,56 @@ public class MemoryDataManagerTask {
 		return realtimeDataTimeMap;
 	}
 	
+	public static List<Map<String,String>> getDeviceRealtimeAcqDataListById(String deviceId,String language,int sortType){
+		Jedis jedis=null;
+		List<Map<String,String>> realtimeDataList=new ArrayList<>();
+		Map<String,Map<String,String>> realtimeDataTimeMap=new TreeMap<>();//默认升序
+		if(sortType==1){//降序
+			realtimeDataTimeMap=new TreeMap<>(Collections.reverseOrder());
+		}
+		
+		String key="DeviceRealtimeAcqData_"+deviceId;
+		if(!existsKey(key)){
+			List<String> deviceIdList=new ArrayList<>();
+			deviceIdList.add(deviceId);
+			long t1=System.nanoTime();
+			loadDeviceRealtimeAcqData(deviceIdList,language);
+			long t2=System.nanoTime();
+			String memoryUsage =getMemoryUsage(key);
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,数据大小:"+memoryUsage+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.exists(key.getBytes())){
+				Map<byte[], byte[]> memDataMap= jedis.hgetAll(key.getBytes());
+				if(memDataMap!=null && memDataMap.size()>0){
+					Iterator<Map.Entry<byte[], byte[]>> it = memDataMap.entrySet().iterator();
+					while(it.hasNext()){
+						Map.Entry<byte[], byte[]> entry = it.next();
+						String acqTime=new String(entry.getKey());
+						Map<String,String> everyDataMap=(Map<String,String>) SerializeObjectUnils.unserizlize(entry.getValue());
+						if(everyDataMap.containsKey("commStatus") && StringManagerUtils.stringToInteger(everyDataMap.get("commStatus"))==1 && everyDataMap.containsKey("acqTime")){
+							realtimeDataTimeMap.put(everyDataMap.get("acqTime"), everyDataMap);
+							
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		Iterator<Map.Entry<String,Map<String,String>>> iterator = realtimeDataTimeMap.entrySet().iterator();
+		while(iterator.hasNext()){
+			Map.Entry<String,Map<String,String>> entry = iterator.next();
+			realtimeDataList.add(entry.getValue());
+		}
+		return realtimeDataList;
+	}
+	
 	public static void loadDeviceRealtimeAcqData(List<String> deviceIdList,String language){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1339,7 +1389,7 @@ public class MemoryDataManagerTask {
 			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
 			String date=StringManagerUtils.getCurrentTime();
 			
-			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata,t.commStatus,t.checksign";
+			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata,t.commStatus,t.checksign,t.id";
 			sql+=" from tbl_acqdata_hist t "
 				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
@@ -1358,7 +1408,7 @@ public class MemoryDataManagerTask {
 				String acqTime=obj[1]+"";
 				String acqData=obj[2]+"";
 				String commStatus=obj[3]+"";
-				String checkSign=obj[3]+"";
+				String checkSign=obj[4]+"";
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
@@ -1366,6 +1416,8 @@ public class MemoryDataManagerTask {
 				String key="DeviceRealtimeAcqData_"+deviceId;
 				
 				Map<String,String> everyDataMap =new HashMap<>();
+				everyDataMap.put("deviceId", deviceId+"");
+				everyDataMap.put("acqTime", acqTime);
 				everyDataMap.put("commStatus", commStatus);
 				everyDataMap.put("checkSign", checkSign);
 				if(acqDataList!=null){
@@ -1374,7 +1426,6 @@ public class MemoryDataManagerTask {
 					}
 				}
 				jedis.hset(key.getBytes(), acqTime.getBytes(), SerializeObjectUnils.serialize(everyDataMap));
-				
 			}
 			
 			//加载功图计算数据

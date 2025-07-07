@@ -50,6 +50,9 @@ moduleContent:
       FESDiagramResultData: true
    historyQuery: 
       FESDiagramResultData: true
+   dataMaintaining: 
+      FESDiagramResultData: true
+      RPMResultData: true
    primaryDevice: 
       deviceExtendInformation: true
       additionalInformation: true

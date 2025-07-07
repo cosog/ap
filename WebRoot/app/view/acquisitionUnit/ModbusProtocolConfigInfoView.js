@@ -954,10 +954,6 @@ var ProtocolPropertiesHandsontableHelper = {
 };
 
 function SaveModbusProtocolAddrMappingConfigTreeData(){
-//	var duplicateRowList=protocolItemsConfigHandsontableHelper.getDuplicateRowList();
-//	var addrDuplicateRowList=protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList();
-	
-	
 	var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 	var AddrMappingItemsSelectRow= Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
 	if(protocolTreeGridPanelSelectRow!=''){
@@ -1065,7 +1061,26 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						}
 					}
 				}
-				saveModbusProtocolAddrMappingConfigData(configInfo,saveType);
+				
+
+				var duplicateRowList=protocolItemsConfigHandsontableHelper.getDuplicateRowList();
+				var addrDuplicateRowList=protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList();
+				if(duplicateRowList.length>0 || addrDuplicateRowList.length>0){
+					Ext.MessageBox.confirm({
+			            title: loginUserLanguageResource.confirm,
+			            message: loginUserLanguageResource.protocolSaveConfirm,
+			            buttons: Ext.MessageBox.YESNO,
+			            icon: Ext.MessageBox.QUESTION,
+			            callback: (btnId) => {
+			                if (btnId === 'yes') {
+			                	saveModbusProtocolAddrMappingConfigData(configInfo,saveType);
+			                }
+			            }
+			        });
+				}else{
+					saveModbusProtocolAddrMappingConfigData(configInfo,saveType);
+				}
+				
 			}else{
 				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.protocolName+','+loginUserLanguageResource.canNotBeEmpty+"!");
 			}

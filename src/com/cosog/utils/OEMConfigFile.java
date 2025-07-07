@@ -730,6 +730,29 @@ public class OEMConfigFile {
 		}
 	}
 	
+	public static class DataMaintainingContentConfig{
+		
+		private boolean FESDiagramResultData;
+		
+		private boolean RPMResultData;
+
+		public boolean getFESDiagramResultData() {
+			return FESDiagramResultData;
+		}
+
+		public void setFESDiagramResultData(boolean fESDiagramResultData) {
+			FESDiagramResultData = fESDiagramResultData;
+		}
+
+		public boolean getRPMResultData() {
+			return RPMResultData;
+		}
+
+		public void setRPMResultData(boolean rPMResultData) {
+			RPMResultData = rPMResultData;
+		}
+	}
+	
 	public static class PrimaryDeviceContentConfig{
 		
 		private boolean deviceExtendInformation;
@@ -812,6 +835,8 @@ public class OEMConfigFile {
 		private HistoryQueryContentConfig historyQuery;
 		
 		private PrimaryDeviceContentConfig primaryDevice;
+		
+		private DataMaintainingContentConfig dataMaintaining;
 
 		public DataDictionaryContentConfig getDataDictionary() {
 			return dataDictionary;
@@ -843,6 +868,14 @@ public class OEMConfigFile {
 
 		public void setPrimaryDevice(PrimaryDeviceContentConfig primaryDevice) {
 			this.primaryDevice = primaryDevice;
+		}
+
+		public DataMaintainingContentConfig getDataMaintaining() {
+			return dataMaintaining;
+		}
+
+		public void setDataMaintaining(DataMaintainingContentConfig dataMaintaining) {
+			this.dataMaintaining = dataMaintaining;
 		}
 		
 	}

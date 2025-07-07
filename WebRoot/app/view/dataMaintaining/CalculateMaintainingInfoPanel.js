@@ -7,6 +7,7 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         var me = this;
         var SRPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.SRPCalculateMaintainingInfoView');
         var PCPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.PCPCalculateMaintainingInfoView');
+        var AcquisitionDataMaintainingInfoView = Ext.create('AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView');
         Ext.apply(me, {
         	items: [{
         		xtype: 'tabpanel',
@@ -15,19 +16,25 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         		border: false,
         		tabPosition: 'top',
         		items: [{
-//        				title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">功图计算</div>',
-        				title: loginUserLanguageResource.SRPCalculate,
-        				id:'SRPCalculateMaintainingInfoPanel_Id',
-        				items: [SRPCalculateMaintainingInfoView],
+        				title: loginUserLanguageResource.acquisitionData,
+        				id:'AcquisitionDataMaintainingInfoPanel_Id',
+        				items: [AcquisitionDataMaintainingInfoView],
         				iconCls: 'check3',
         				layout: "fit",
         				border: false
         			},{
-//        				title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">转速计产</div>',
+        				title: loginUserLanguageResource.SRPCalculate,
+        				id:'SRPCalculateMaintainingInfoPanel_Id',
+        				items: [SRPCalculateMaintainingInfoView],
+        				layout: "fit",
+        				hidden: !moduleContentConfig.dataMaintaining.FESDiagramResultData,
+        				border: false
+        			},{
         				title: loginUserLanguageResource.PCPCalculate,
         				id:'PCPCalculateMaintainingInfoPanel_Id',
         				items: [PCPCalculateMaintainingInfoView],
         				layout: "fit",
+        				hidden: !moduleContentConfig.dataMaintaining.RPMResultData,
         				border: false
         			}],
         			listeners: {
@@ -37,7 +44,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
             			},
             			tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        					if(newCard.id=="SRPCalculateMaintainingInfoPanel_Id"){
+        					if(newCard.id=="AcquisitionDataMaintainingInfoPanel_Id"){
+        						refreshAcquisitionDataMaintainingData();
+        					}else if(newCard.id=="SRPCalculateMaintainingInfoPanel_Id"){
         						refreshSRPCalculateMaintainingData();
         					}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
         						refreshPCPCalculateMaintainingData();

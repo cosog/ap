@@ -77,6 +77,41 @@ public class ResourceMonitoringTask {
     
     private static String tableSpaceName="";
     
+    private static TableSpaceInfo tableSpaceInfo=null;
+    
+    @Scheduled(cron = "0 30 23 * * ?")
+	public void checkAndSendDBMonitoring(){
+    	tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
+		try{
+			tableSpaceInfo= getTableSpaceInfo();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		if(tableSpaceInfo.getConnStatus()==1){
+			String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent) "
+					+ "values "
+					+ "(to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+")";
+			int r=OracleJdbcUtis.executeSqlUpdate(sql);
+		}
+		
+		String sendData="{"
+				+ "\"functionCode\":\"DBMonitoringData\","
+				+ "\"dbConnStatus\":"+tableSpaceInfo.getConnStatus()+","
+				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
+				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
+				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
+				+ "}";
+		try {
+			infoHandler().sendMessageToBy("ApWebSocketClient", sendData);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    
+    
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/2 * * * * ?")
 	public void checkAndSendResourceMonitoring(){
@@ -102,13 +137,15 @@ public class ResourceMonitoringTask {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
-		try{
-			tableSpaceInfo= getTableSpaceInfo();
-		}catch(Exception e){
-			e.printStackTrace();
+		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0){
+			tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
+			try{
+				tableSpaceInfo= getTableSpaceInfo();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
+		
 		
 		RedisInfo redisInfo=MemoryDataManagerTask.getJedisInfo();
 		redisVersion=redisInfo.getVersion();
@@ -315,6 +352,7 @@ public class ResourceMonitoringTask {
         try{
         	conn=OracleJdbcUtis.getConnection();
             if(conn==null){
+            	tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0, 0,0);
             	return tableSpaceInfo;
             }
             tableSpaceInfo.setConnStatus(1);
@@ -580,5 +618,9 @@ public class ResourceMonitoringTask {
 
 	public static void setRedisVersion(String redisVersion) {
 		ResourceMonitoringTask.redisVersion = redisVersion;
+	}
+
+	public static void setTableSpaceInfo(TableSpaceInfo tableSpaceInfo) {
+		ResourceMonitoringTask.tableSpaceInfo = tableSpaceInfo;
 	}
 }

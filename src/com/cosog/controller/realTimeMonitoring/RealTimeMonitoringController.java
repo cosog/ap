@@ -687,7 +687,12 @@ public class RealTimeMonitoringController extends BaseController {
 		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from tbl_resourcemonitoring t ";
+			String tableName="tbl_resourcemonitoring";
+			if("tableSpaceSize".equalsIgnoreCase(itemCode)){
+				tableName="tbl_dbmonitoring";
+			}
+			
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -697,7 +702,11 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addHour(StringManagerUtils.stringToDate(endDate,"yyyy-MM-dd HH:mm:ss"),-1);
+			if("tableSpaceSize".equalsIgnoreCase(itemCode)){
+				startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate,"yyyy-MM-dd"),-10)+" 00:00:00";
+			}else{
+				startDate=StringManagerUtils.addHour(StringManagerUtils.stringToDate(endDate,"yyyy-MM-dd HH:mm:ss"),-1);
+			}
 		}
 		
 		pager.setStart_date(startDate);

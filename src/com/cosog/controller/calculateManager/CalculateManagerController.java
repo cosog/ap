@@ -124,6 +124,69 @@ public class CalculateManagerController extends BaseController {
 	}
 	
 	
+	@RequestMapping("/getHistoryAcquisitionData")
+	public String getHistoryAcquisitionData() throws Exception {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
+		
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		int userNo=0;
+		if(user!=null){
+			language=user.getLanguageName();
+			userNo=user.getUserNo();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		String tableName="tbl_acqdata_hist";
+		String timeCol="acqTime";
+		
+		if(!StringManagerUtils.isNotNull(endDate)){
+			endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String sql = " select to_char(t."+timeCol+"+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+					+ " where t.id=( select max(t2.id) from "+tableName+" t2 where t2.commstatus=1 and t2.deviceId= "+deviceId+" )";
+			List<?> list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=endDate.split(" ")[0]+" 00:00:00";
+		}
+//		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		String json = calculateManagerService.getHistoryAcquisitionData(orgId,deviceId,deviceName,deviceType,calculateType,pager,userNo,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	@RequestMapping("/getCalculateResultData")
 	public String getCalculateResultData() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -606,6 +669,48 @@ public class CalculateManagerController extends BaseController {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String recordIds = ParamUtils.getParameter(request, "recordIds");
 		String json = calculateManagerService.deleteCalculateData(deviceId,calculateType,recordIds);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/deleteRealtimeAcquisitionData")
+	public String deleteRealtimeAcquisitionData() throws Exception {
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String acqTimeList = ParamUtils.getParameter(request, "acqTimeList");
+		String json = calculateManagerService.deleteRealtimeAcquisitionData(deviceId,calculateType,acqTimeList);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/deleteHistoryAcquisitionData")
+	public String deleteHistoryAcquisitionData() throws Exception {
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String recordIds = ParamUtils.getParameter(request, "recordIds");
+		String json = calculateManagerService.deleteHistoryAcquisitionData(deviceId,calculateType,recordIds);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

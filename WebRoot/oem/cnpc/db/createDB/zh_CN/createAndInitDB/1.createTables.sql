@@ -2122,6 +2122,28 @@ tablespace AP_DATA
 alter table TBL_RESOURCEMONITORING add constraint PK_TBL_RESOURCEMONITORING primary key (ID)
 /
 
+/*==============================================================*/
+/* Table: TBL_DBMONITORING                                    */
+/*==============================================================*/
+create table TBL_DBMONITORING
+(
+  id          NUMBER(10) not null,
+  acqtime     DATE,
+  connstatus  NUMBER(2),
+  tablespaceusedsize    NUMBER(10,2),
+  tablespaceusedpercent NUMBER(10,2)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_DBMONITORING  add constraint PK_DBMONITORING primary key (ID)
+/
+
 
 /*==============================================================*/
 /* Table: TBL_VIDEOKEY                                    */

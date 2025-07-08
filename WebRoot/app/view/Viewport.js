@@ -543,6 +543,22 @@ function websocketOnMessage(evt) {
                 }
             }
         }
+    } else if (data.functionCode.toUpperCase() == "DBMonitoringData".toUpperCase()) {
+    	if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
+    		if (data.dbConnStatus == 1) {
+                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
+                if (data.tableSpaceUsedPercentAlarmLevel == 1) {
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                } else {
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent);
+                }
+            } else {
+                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
+                Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces);
+            }
+    	}
     } else if (data.functionCode.toUpperCase() == "ResourceMonitoringData".toUpperCase()) { //接收到资源监测数据
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
             if (data.cpuUsedPercentAlarmLevel == 1) {

@@ -1284,6 +1284,33 @@ public class MemoryDataManagerTask {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			r=-1;
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return r;
+	}
+	
+	public static int delDeviceRealtimeAcqData(String deviceId,String[] acqTimeArr){
+		Jedis jedis=null;
+		int r=0;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			String key="DeviceRealtimeAcqData_"+deviceId;
+			Set<byte[]> keySet=jedis.hkeys(key.getBytes());
+			if(keySet!=null && keySet.size()>0){
+				for(byte[] arr:keySet){
+					String acqTime=new String(arr);
+					if(StringManagerUtils.existOrNot(acqTimeArr, acqTime, false)){
+						jedis.hdel(key.getBytes(), acqTime.getBytes());
+						r++;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally{
 			if(jedis!=null){
 				jedis.close();

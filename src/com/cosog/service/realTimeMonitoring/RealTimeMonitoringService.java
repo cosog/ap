@@ -5256,20 +5256,32 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		String tableName="tbl_resourcemonitoring";
+		String code=itemCode;
 		if("jedisStatus".equalsIgnoreCase(itemCode)){
-			itemCode="round(t.cachemaxmemory/(1024*1024),2)||';'|| round(t.cacheusedmemory/(1024*1024),2) as jedisStatus";
+			code="round(t.cachemaxmemory/(1024*1024),2)||';'|| round(t.cacheusedmemory/(1024*1024),2) as jedisStatus";
+		}else if("tableSpaceSize".equalsIgnoreCase(itemCode)){
+			code="tablespaceusedpercent";
+			tableName="tbl_dbmonitoring";
 		}
-		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode
-				+" from tbl_resourcemonitoring t "
-				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " order by t.acqTime";
+		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+code
+				+" from "+tableName+" t "
+				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+		if("tableSpaceSize".equalsIgnoreCase(itemCode)){
+			sql+=" and t.tablespaceusedpercent>0";
+		}
+		sql+= " order by t.acqTime";
 		int resourceMonitoringVacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringVacuateThreshold();
 		int total = getTotalCountRows(sql);//获取总记录数
-		int rarefy=total/resourceMonitoringVacuateThreshold+1;
+		
 		String finalSql=sql;
-		if(rarefy>1){
-			finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+resourceMonitoringVacuateThreshold+","+total+")<"+resourceMonitoringVacuateThreshold+"";
+		if(!"tableSpaceSize".equalsIgnoreCase(itemCode)){
+			int rarefy=total/resourceMonitoringVacuateThreshold+1;
+			if(rarefy>1){
+				finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+resourceMonitoringVacuateThreshold+","+total+")<"+resourceMonitoringVacuateThreshold+"";
+			}
 		}
+		
 		List<?> list=this.findCallSql(finalSql);
 		String minAcqTime="";
 		String maxAcqTime="";

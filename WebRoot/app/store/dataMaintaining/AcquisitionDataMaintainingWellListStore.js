@@ -26,10 +26,16 @@ Ext.define('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore', {
             if (!isNotVal(gridPanel)) {
                 var column = createCalculateManagerWellListColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
+                var bbar = new Ext.PagingToolbar({
+                	id:'AcquisitionDataMaintainingDeviceListGridPagingToolbar',
+                	store: store,
+                	displayInfo: true
+    	        });
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "AcquisitionDataMaintainingDeviceListGridPanel_Id",
                     border: false,
                     autoLoad: false,
+                    bbar: bbar,
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {
@@ -101,32 +107,32 @@ Ext.define('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore', {
             }else{
             	Ext.getCmp("AcquisitionDataMaintainingDeviceListSelectRow_Id").setValue(-1);
             	
-//            	var activeId = Ext.getCmp("AcquisitionDataMaintainingTabPanel").getActiveTab().id;
-//    			if(activeId=="RealtimeAcquisitionDataMaintainingPanel"){
-//    				var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
-//    				if (isNotVal(bbar)) {
-//    					if(bbar.getStore().isEmptyStore){
-//    						var RealtimeAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
-//    						bbar.setStore(RealtimeAcquisitionDataMaintainingDataStore);
-//    					}else{
-//    						bbar.getStore().loadPage(1);
-//    					}
-//    				}else{
-//    					Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
-//    				}
-//    			}else if(activeId=="HistoryAcquisitionDataMaintainingPanel"){
-//    				var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
-//    				if (isNotVal(bbar)) {
-//    					if(bbar.getStore().isEmptyStore){
-//    						var HistoryAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
-//    						bbar.setStore(HistoryAcquisitionDataMaintainingDataStore);
-//    					}else{
-//    						bbar.getStore().loadPage(1);
-//    					}
-//    				}else{
-//    					Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
-//    				}
-//    			}
+            	var activeId = Ext.getCmp("AcquisitionDataMaintainingTabPanel").getActiveTab().id;
+    			if(activeId=="RealtimeAcquisitionDataMaintainingPanel"){
+    				var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
+    				if (isNotVal(bbar)) {
+    					if(bbar.getStore().isEmptyStore){
+    						var RealtimeAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
+    						bbar.setStore(RealtimeAcquisitionDataMaintainingDataStore);
+    					}else{
+    						bbar.getStore().loadPage(1);
+    					}
+    				}else{
+    					Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
+    				}
+    			}else if(activeId=="HistoryAcquisitionDataMaintainingPanel"){
+    				var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
+    				if (isNotVal(bbar)) {
+    					if(bbar.getStore().isEmptyStore){
+    						var HistoryAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
+    						bbar.setStore(HistoryAcquisitionDataMaintainingDataStore);
+    					}else{
+    						bbar.getStore().loadPage(1);
+    					}
+    				}else{
+    					Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
+    				}
+    			}
             }
             Ext.getCmp("CalculateMaintainingRootTabPanel").getEl().unmask();
         },

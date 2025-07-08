@@ -403,3 +403,17 @@ maxvalue 9999999999999999999999999
 start with 21
 increment by 1
 cache 20;
+
+create sequence SEQ_LANGUAGE2ROLE
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
+create sequence SEQ_DBMONITORING
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;

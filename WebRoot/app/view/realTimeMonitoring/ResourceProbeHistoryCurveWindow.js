@@ -223,7 +223,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     }
                 },'->',{
                 	xtype: 'label',
-                	hidden:false,
+                	hidden: Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue()=="tableSpaceSize",
                 	html: loginUserLanguageResource.resourcesMonitoringHistoryCountTip+':<font color=red>'+resourceMonitoringSaveData+'</font>'
                 }
         	],

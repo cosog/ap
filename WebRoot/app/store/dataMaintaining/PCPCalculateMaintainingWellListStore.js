@@ -26,10 +26,16 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
             if (!isNotVal(gridPanel)) {
                 var column = createCalculateManagerWellListColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
+                var bbar = new Ext.PagingToolbar({
+                	id:'PCPCalculateMaintainingDeviceListGridPagingToolbar',
+                	store: store,
+                	displayInfo: true
+    	        });
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "PCPCalculateMaintainingWellListGridPanel_Id",
                     border: false,
                     autoLoad: false,
+                    bbar: bbar,
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {

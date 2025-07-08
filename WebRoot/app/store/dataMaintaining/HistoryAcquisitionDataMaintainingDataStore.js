@@ -1,12 +1,12 @@
-Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore', {
+Ext.define('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.RealtimeAcquisitionDataMaintainingDataStore',
+    alias: 'widget.HistoryAcquisitionDataMaintainingDataStore',
     remoteSort: true,
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
-        url: context + '/calculateManagerController/getRealtimeAcquisitionData',
+        url: context + '/calculateManagerController/getHistoryAcquisitionData',
         actionMethods: {
             read: 'POST'
         },
@@ -21,16 +21,16 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").getEl().unmask();
+        	Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").getEl().unmask();
         	var get_rawData = store.proxy.reader.rawData;
-        	var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
+        	var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
 			if (isNotVal(bbar)) {
 				if(bbar.getStore().isEmptyStore){
 					bbar.setStore(store);
 				}
 			}
         	
-        	CreateAndLoadRealtimeAcquisitionDataMaintainingTable(true,get_rawData,"AcquisitionDataMaintainingDiv_id");
+        	CreateAndLoadHistoryAcquisitionDataMaintainingTable(true,get_rawData,"HistoryAcquisitionDataMaintainingDiv_id");
         	
         	var startDate=Ext.getCmp('AcquisitionDataMaintainingStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
@@ -90,7 +90,7 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
         },
         datachanged: function (v, o) {
 //            onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

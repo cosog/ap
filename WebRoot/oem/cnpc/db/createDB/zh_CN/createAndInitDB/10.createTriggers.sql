@@ -343,3 +343,15 @@ BEGIN
   SELECT SEQ_VIDEOKEY.nextval INTO :new.id FROM dual;
 END;
 /
+
+CREATE OR REPLACE TRIGGER trg_b_language2role_i   before  insert  on TBL_LANGUAGE2ROLE FOR EACH ROW
+BEGIN
+       SELECT SEQ_LANGUAGE2ROLE.nextval INTO :new.ID FROM dual;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_dbmonitoring_i   before  insert  on TBL_DBMONITORING FOR EACH ROW
+BEGIN
+       SELECT SEQ_DBMONITORING.nextval INTO :new.ID FROM dual;
+END;
+/

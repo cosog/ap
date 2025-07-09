@@ -155,8 +155,10 @@ public class CalculateManagerController extends BaseController {
 		
 		if(!StringManagerUtils.isNotNull(endDate)){
 			endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//			String sql = " select to_char(t."+timeCol+"+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+//					+ " where t.id=( select max(t2.id) from "+tableName+" t2 where t2.commstatus=1 and t2.deviceId= "+deviceId+" )";
 			String sql = " select to_char(t."+timeCol+"+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=( select max(t2.id) from "+tableName+" t2 where t2.commstatus=1 and t2.deviceId= "+deviceId+" )";
+					+ " where t.id=( select v.id from (select t2.id from "+tableName+" t2 where t2.commstatus=1 and t2.deviceId= "+deviceId+" order by t2.id desc) v where rownum=1 )";
 			List<?> list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

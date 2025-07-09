@@ -1,27 +1,13 @@
 package com.cosog.task;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,21 +23,13 @@ import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
-import com.cosog.utils.RedisUtil;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import redis.clients.jedis.Jedis;
-
 @Component("ResourceMonitoringTask")  
 public class ResourceMonitoringTask {
-	private static Connection conn = null;
-    private static PreparedStatement pstmt = null;
-    private static ResultSet rs = null;
-	
-    private static CallableStatement cs= null;
     
     private static int deviceAmount=0;
 	
@@ -133,11 +111,11 @@ public class ResourceMonitoringTask {
 		int resourceMonitoringSaveData=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringSaveData();
 		
 		try{
-			deviceAmount=getDeviceAmount();
+			deviceAmount=MemoryDataManagerTask.getDeviceInfoCount();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0){
+		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0 || tableSpaceInfo.getUsedPercent()==0){
 			tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
 			try{
 				tableSpaceInfo= getTableSpaceInfo();
@@ -262,8 +240,12 @@ public class ResourceMonitoringTask {
 				memUsedPercentAlarmLevel=0;
 			}
 		}
+		
+		Connection conn = null;
+		CallableStatement cs= null;
 		try{
 			conn=OracleJdbcUtis.getConnection();
+			cs= null;
 			if(conn!=null){
 				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?)}");
 				cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
@@ -348,6 +330,9 @@ public class ResourceMonitoringTask {
     }
 	
 	public static  TableSpaceInfo getTableSpaceInfo(){
+		Connection conn=null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0, 0,0);
         try{
         	conn=OracleJdbcUtis.getConnection();
@@ -357,15 +342,22 @@ public class ResourceMonitoringTask {
             }
             tableSpaceInfo.setConnStatus(1);
     		if(!StringManagerUtils.isNotNull(tableSpaceName)){
-    			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
-    			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
-    			pstmt = conn.prepareStatement(tableSpaceSql); 
-    			pstmt.setQueryTimeout(10);
-    			rs=pstmt.executeQuery();
-    			while(rs.next()){
-    				tableSpaceName=rs.getString(1);
-    				break;
-    			}
+    			try{
+    				String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
+        			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
+        			pstmt = conn.prepareStatement(tableSpaceSql); 
+        			pstmt.setQueryTimeout(10);
+        			rs=pstmt.executeQuery();
+        			while(rs.next()){
+        				tableSpaceName=rs.getString(1);
+        				break;
+        			}
+    			}catch(Exception e){
+    	        	e.printStackTrace();
+    	        }finally{
+    	        	OracleJdbcUtis.closeDBConnection(pstmt, rs);
+    	        }
+    			
     		}
     		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
     				+ "FROM dba_data_files t "
@@ -425,8 +417,6 @@ public class ResourceMonitoringTask {
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		return deviceAmount;
 	}

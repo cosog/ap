@@ -254,8 +254,10 @@ public class HistoryQueryController extends BaseController  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
+//			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+//					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
 			String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
-					+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId= "+deviceId+")";
+					+ " where t.id=( select v.id from (select t2.id from "+tableName+" t2 where t2.deviceId= "+deviceId+" order by t2.id desc) v where rownum=1 )";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

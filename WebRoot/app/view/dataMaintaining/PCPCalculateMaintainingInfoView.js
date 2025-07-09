@@ -883,13 +883,13 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
     	pcpRPMCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		pcpRPMCalculateMaintainingHandsontableHelper.createTable([{}]);
+    		pcpRPMCalculateMaintainingHandsontableHelper.createTable([]);
         }else{
         	pcpRPMCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
+			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([]);
     	}else{
     		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}

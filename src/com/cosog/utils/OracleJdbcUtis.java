@@ -175,6 +175,27 @@ public class OracleJdbcUtis {
         }  
     }
 	
+	public static void closeDBConnection(PreparedStatement pstmt,ResultSet rs){  
+		try{           
+        	if(pstmt!=null)
+        		pstmt.close();  
+        	if(rs!=null)
+        		rs.close();  
+        }catch(SQLException e){  
+            StringManagerUtils.printLog("closeDBConnectionError!");  
+            e.printStackTrace();  
+        }finally{  
+            try{
+            	if(pstmt!=null)
+            		pstmt.close();  
+            	if(rs!=null)
+            		rs.close();
+            }catch(SQLException e){  
+                e.printStackTrace();  
+            }
+        } 
+    }
+	
 	public static void closeDBConnection(Connection conn,Statement stmt,PreparedStatement pstmt,ResultSet rs){  
         if(conn != null){  
             try{

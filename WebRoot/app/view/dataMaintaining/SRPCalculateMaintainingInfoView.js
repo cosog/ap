@@ -1071,13 +1071,13 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
     	srpFESDiagramCalculateMaintainingHandsontableHelper.columns=columns;
     	
     	if(result.totalRoot.length==0){
-        	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable([{}]);
+        	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable([]);
         }else{
         	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
+			srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData([]);
     	}else{
     		srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}

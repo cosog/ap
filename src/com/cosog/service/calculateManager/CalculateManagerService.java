@@ -2154,16 +2154,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			columns.append("]");
 			
 			
-			List<Map<String,String>> realtimeDataList= MemoryDataManagerTask.getDeviceRealtimeAcqDataListById(deviceId,language,1);
+			List<Map<String,String>> realtimeDataList= MemoryDataManagerTask.getDeviceRealtimeAcqDataListById(deviceId,pager.getStart_date(),pager.getEnd_date(),language,1);
 			int maxvalue=pager.getLimit()+pager.getStart();
 			int totals=realtimeDataList.size();
-			
-//			String startTime=pager.getStart_date();
-//			String endTime=pager.getEnd_date();
-//			if(list!=null && list.size()>0){
-//				startTime=((Object[])list.get(list.size()-1))[2]+"";
-//				endTime=((Object[])list.get(0))[2]+"";
-//			}
 			
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"start_date\":\""+pager.getStart_date()+"\",");

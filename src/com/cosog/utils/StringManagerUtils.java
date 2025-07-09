@@ -4324,7 +4324,7 @@ public class StringManagerUtils {
 				Date currentTime = (Date) format.parse(timeStr);
 				Date startTime=(Date) format.parse(startStr);
 		    	Date endTime=(Date) format.parse(endStr);
-		    	if(currentTime.getTime()>=startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+		    	if(currentTime.getTime()>=startTime.getTime() && currentTime.getTime()<=endTime.getTime()){
 		    		result=true;
 		    	}
 			}

@@ -643,13 +643,13 @@ function CreateAndLoadRealtimeAcquisitionDataMaintainingTable(isNew,result,divid
     	realtimeAcquisitionDataMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		realtimeAcquisitionDataMaintainingHandsontableHelper.createTable([{}]);
+    		realtimeAcquisitionDataMaintainingHandsontableHelper.createTable([]);
         }else{
         	realtimeAcquisitionDataMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData([{}]);
+			realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData([]);
     	}else{
     		realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
@@ -866,13 +866,13 @@ function CreateAndLoadHistoryAcquisitionDataMaintainingTable(isNew,result,divid)
     	historyAcquisitionDataMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		historyAcquisitionDataMaintainingHandsontableHelper.createTable([{}]);
+    		historyAcquisitionDataMaintainingHandsontableHelper.createTable([]);
         }else{
         	historyAcquisitionDataMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData([{}]);
+			historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData([]);
     	}else{
     		historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}

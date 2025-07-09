@@ -952,6 +952,26 @@ public class MemoryDataManagerTask {
 		return list;
 	}
 	
+	public static int getDeviceInfoCount(){
+		Jedis jedis=null;
+		int r=0;
+		if(!existsKey("DeviceInfo")){
+			MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+			r=deviceInfoByteList.size();
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return r;
+	}
+	
 	public static void loadDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1356,7 +1376,7 @@ public class MemoryDataManagerTask {
 		return realtimeDataTimeMap;
 	}
 	
-	public static List<Map<String,String>> getDeviceRealtimeAcqDataListById(String deviceId,String language,int sortType){
+	public static List<Map<String,String>> getDeviceRealtimeAcqDataListById(String deviceId,String startTime,String endTime,String language,int sortType){
 		Jedis jedis=null;
 		List<Map<String,String>> realtimeDataList=new ArrayList<>();
 		Map<String,Map<String,String>> realtimeDataTimeMap=new TreeMap<>();//默认升序
@@ -1383,11 +1403,14 @@ public class MemoryDataManagerTask {
 					while(it.hasNext()){
 						Map.Entry<byte[], byte[]> entry = it.next();
 						String acqTime=new String(entry.getKey());
-						Map<String,String> everyDataMap=(Map<String,String>) SerializeObjectUnils.unserizlize(entry.getValue());
-						if(everyDataMap.containsKey("commStatus") && StringManagerUtils.stringToInteger(everyDataMap.get("commStatus"))==1 && everyDataMap.containsKey("acqTime")){
-							realtimeDataTimeMap.put(everyDataMap.get("acqTime"), everyDataMap);
-							
+						if(StringManagerUtils.timeMatchDate(acqTime,startTime,endTime,"yyyy-MM-dd HH:mm:ss")){
+							Map<String,String> everyDataMap=(Map<String,String>) SerializeObjectUnils.unserizlize(entry.getValue());
+							if(everyDataMap.containsKey("commStatus") && StringManagerUtils.stringToInteger(everyDataMap.get("commStatus"))==1 && everyDataMap.containsKey("acqTime")){
+								realtimeDataTimeMap.put(everyDataMap.get("acqTime"), everyDataMap);
+								
+							}
 						}
+						
 					}
 				}
 			}

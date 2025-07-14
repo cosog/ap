@@ -68,9 +68,6 @@ public class TimingTotalCalculateThread extends Thread {
         "unused"
     })
     public void run() {
-        if (deviceId == 1) {
-            System.out.println("");
-        }
         long calculateStartTime = System.nanoTime();
         long time1 = 0, time2 = 0;
 

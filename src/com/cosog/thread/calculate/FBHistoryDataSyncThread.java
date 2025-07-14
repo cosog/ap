@@ -95,13 +95,13 @@ public class FBHistoryDataSyncThread implements Runnable{
 				
 				
 //				if(deviceId>10000){
-//					System.out.println("查询sql:"+sql);
+//					StringManagerUtils.printLog("查询sql:"+sql);
 //				}
 				long t1=System.nanoTime();
 				List<Object[]> queryDataList=OracleJdbcUtis.query(sql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_fb", "ap123#");
 				long t2=System.nanoTime();
 				if(deviceId>10000){
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 				}
 				
 				String updateSql="";
@@ -159,7 +159,7 @@ public class FBHistoryDataSyncThread implements Runnable{
 //						int r=OracleJdbcUtis.executeSqlUpdate(insertSql);
 //						t2=System.nanoTime();
 //						if(deviceId>10000){
-//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 //						}
 //						
 //						updateClobSql="update tbl_acqdata_hist t set t.commRange=?,t.runRange=?,t.acqData=? where t.acqtime=to_date('"+acqtime+"','yyyy-mm-dd hh24:mi:ss') and t.deviceId="+saveDeviceId;
@@ -171,7 +171,7 @@ public class FBHistoryDataSyncThread implements Runnable{
 						OracleJdbcUtis.executeSqlUpdateClob(insertSql, clobDataList);
 						t2=System.nanoTime();
 //						if(deviceId>10000){
-//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+//							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"插入历史数据耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 //						}
 						FeiZhouCounterUtils.incr();//计数器加一
 						Thread.yield();
@@ -187,6 +187,6 @@ public class FBHistoryDataSyncThread implements Runnable{
 			
 		}
 		FeiZhouCounterUtils.countDown();
-		System.out.println("设备id:"+deviceId+"执行完毕！");
+		StringManagerUtils.printLog("设备id:"+deviceId+"执行完毕！");
 	}
 }

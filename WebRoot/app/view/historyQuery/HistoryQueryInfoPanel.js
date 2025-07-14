@@ -190,8 +190,15 @@ var historyQueryCenterTabPanelItems=[{
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
                         if (diagramPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id");
-                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                            if (hRatio > 0.5) {
+                            
+                            let scroller = HistoryDiagramTabPanel.getScrollable();
+                            let position = scroller.getPosition(); // {x:0, y: scrollTop}
+                            let scrollHeight = scroller.getSize().y; // 内容总高度
+                            let clientHeight = scroller.getClientSize().y; // 可视区域高度
+//                          然后，最大滚动距离为：scrollHeight - clientHeight
+                            var hRatio = (position.y / (scrollHeight - clientHeight));
+//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.8) {
                                 diagramPage++;
                                 loadHistoryDiagramTiledList(diagramPage);
                             }
@@ -242,8 +249,20 @@ var historyQueryCenterTabPanelItems=[{
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
                         if (diagramPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id");
-                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("PSDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                            if (hRatio > 0.5) {
+//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("PSDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+//                            if (hRatio > 0.5) {
+//                                diagramPage++;
+//                                loadHistoryDiagramTiledList(diagramPage);
+//                            }
+                            
+                            let scroller = HistoryDiagramTabPanel.getScrollable();
+                            let position = scroller.getPosition(); // {x:0, y: scrollTop}
+                            let scrollHeight = scroller.getSize().y; // 内容总高度
+                            let clientHeight = scroller.getClientSize().y; // 可视区域高度
+//                          然后，最大滚动距离为：scrollHeight - clientHeight
+                            var hRatio = (position.y / (scrollHeight - clientHeight));
+//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.8) {
                                 diagramPage++;
                                 loadHistoryDiagramTiledList(diagramPage);
                             }
@@ -293,8 +312,20 @@ var historyQueryCenterTabPanelItems=[{
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
                         if (diagramPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id");
-                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("ISDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                            if (hRatio > 0.5) {
+//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("ISDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+//                            if (hRatio > 0.5) {
+//                                diagramPage++;
+//                                loadHistoryDiagramTiledList(diagramPage);
+//                            }
+                            
+                            let scroller = HistoryDiagramTabPanel.getScrollable();
+                            let position = scroller.getPosition(); // {x:0, y: scrollTop}
+                            let scrollHeight = scroller.getSize().y; // 内容总高度
+                            let clientHeight = scroller.getClientSize().y; // 可视区域高度
+//                          然后，最大滚动距离为：scrollHeight - clientHeight
+                            var hRatio = (position.y / (scrollHeight - clientHeight));
+//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                            if (hRatio > 0.8) {
                                 diagramPage++;
                                 loadHistoryDiagramTiledList(diagramPage);
                             }
@@ -928,9 +959,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calculateType,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),hours,fileName,title,columnStr);
                                 }
                             },'->',{
-                                id: 'SurfaceCardTotalCount_Id',
+                                id: 'HistoryQueryVacuateCount_Id',
                                 xtype: 'component',
-                                tpl: loginUserLanguageResource.totalCount + ': {count}', // 总记录数
+                                tpl: loginUserLanguageResource.vacuateCount + ':{vacuateCount} '+loginUserLanguageResource.totalCount + ':{totalCount}', // 抽稀记录数
                                 hidden: false,
                                 style: 'margin-right:15px'
                             }]
@@ -1224,7 +1255,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 id: 'HistoryFESDiagramTotalCount_Id',
                                 xtype: 'component',
                                 tpl: loginUserLanguageResource.totalCount + ': {count}', // 总记录数
-                                hidden: false,
+                                hidden: true,
+                                style: 'margin-right:15px'
+                            },{
+                                id: 'HistoryFESDiagramVacuateCount_Id',
+                                xtype: 'component',
+                                tpl: loginUserLanguageResource.vacuateCount + ':{vacuateCount} '+loginUserLanguageResource.totalCount + ':{totalCount}', // 抽稀记录数
+                                hidden: true,
                                 style: 'margin-right:15px'
                             }, {
                                 id: 'SurfaceCardTotalPages_Id', // 记录总页数
@@ -1384,6 +1421,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
         						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
         						
+        						Ext.getCmp("HistoryFESDiagramVacuateCount_Id").hide();
+        						Ext.getCmp("HistoryFESDiagramTotalCount_Id").show();
+        						
         						var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
                                 if (isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
                                 	HistoryQueryFSdiagramTiledStatGrid.getStore().load();
@@ -1393,6 +1433,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
         					}else if(newCard.id=="HistoryDiagramOverlayTabPanel"){
         						Ext.getCmp("HistoryQueryCenterToolbar1_id").hide();
         						Ext.getCmp("HistoryQueryCenterToolbar2_id").show();
+        						
+        						Ext.getCmp("HistoryFESDiagramVacuateCount_Id").show();
+        						Ext.getCmp("HistoryFESDiagramTotalCount_Id").hide();
         						
 //        						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
         						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").hide();

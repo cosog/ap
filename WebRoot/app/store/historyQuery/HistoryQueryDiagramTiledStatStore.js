@@ -18,7 +18,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryTiledDiagramStatPanel").getEl().unmask();
+        	Ext.getCmp("HistoryQueryTiledDiagramPanel").getEl().unmask();
             var get_rawData = store.proxy.reader.rawData;
             
             var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
@@ -113,7 +113,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
         	
-        	Ext.getCmp("HistoryQueryTiledDiagramStatPanel").el.mask(loginUserLanguageResource.loading).show();
+        	Ext.getCmp("HistoryQueryTiledDiagramPanel").el.mask(loginUserLanguageResource.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

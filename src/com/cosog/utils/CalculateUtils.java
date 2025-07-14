@@ -404,14 +404,8 @@ public class CalculateUtils {
 			dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
 			dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 			dataSbf.append("}");
-			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
-				System.out.println("d1e3643c110d11d4汇总数据长度："+dataSbf.length());
-			}
 		}catch(Exception e){
 			e.printStackTrace();
-			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
-				System.out.println("异常时，d1e3643c110d11d4汇总数据长度："+dataSbf.length());
-			}
 		}
 		return dataSbf.toString();
 	}

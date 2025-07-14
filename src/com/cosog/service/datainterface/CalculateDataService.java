@@ -1649,7 +1649,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 												+ " and t.deviceId in ( select t3.id from "+deviceTableName+" t3 where t3.reportinstancecode='"+instanceCode+"'   )";
 										try {
 											int r=this.getBaseDao().updateOrDeleteBySql(updateSql);
-											System.out.println(updateSql);
 										} catch (Exception e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();

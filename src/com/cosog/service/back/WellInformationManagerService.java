@@ -3365,7 +3365,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.substring(0,result_json.length()-1);
 		}
 		result_json+="],\"totalCount\":"+totals+",\"acqTime\":\""+acqTime+"\"}";
-		System.out.println("result_json长度:"+result_json.length());
 		return result_json.replaceAll("\"null\"", "\"\"");
 	}
 	

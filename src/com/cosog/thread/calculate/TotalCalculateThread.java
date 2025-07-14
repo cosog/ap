@@ -410,7 +410,7 @@ public class TotalCalculateThread extends Thread{
 			}
 		}
 		long endTime=new Date().getTime();
-		System.out.println((deviceType==0?"抽油机井":"螺杆泵井")+ deviceName+"，日期："+calDate+"，数据汇总完成,共用时:"+(endTime-startTime)+"ms");
+		StringManagerUtils.printLog((deviceType==0?"抽油机井":"螺杆泵井")+ deviceName+"，日期："+calDate+"，数据汇总完成,共用时:"+(endTime-startTime)+"ms");
 	}
 
 	

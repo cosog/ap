@@ -1835,7 +1835,6 @@ public class WellInformationManagerController extends BaseController {
 		}
 		result_json.append("]}");
 		json=result_json.toString();
-		System.out.println(json);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2255,9 +2254,6 @@ public class WellInformationManagerController extends BaseController {
 			downstreamBuff.append("{\"ID\":\""+signinId+"\",");
 			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
 		}
-		
-		
-		System.out.println(downstreamBuff);
 		
 		String result="";
 		String json="{success:false,msg:0}";
@@ -3360,7 +3356,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				System.out.println(itemName+":"+ctrlJson);
+				StringManagerUtils.printLog(itemName+":"+ctrlJson);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){
@@ -3827,7 +3823,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+item.getAddr()+""
 						+ "}";
-				System.out.println(item.getTitle()+":"+readJson);
+				StringManagerUtils.printLog(item.getTitle()+":"+readJson);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){

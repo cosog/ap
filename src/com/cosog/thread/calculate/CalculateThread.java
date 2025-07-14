@@ -41,7 +41,7 @@ public class CalculateThread extends Thread{
 
 	@SuppressWarnings("static-access")
 	public void run(){
-		System.out.println("线程"+threadId+"开始计算"+(calculateType==1?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
+		StringManagerUtils.printLog("线程"+threadId+"开始计算"+(calculateType==1?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
 		long startTime=new Date().getTime();
 		int count=0;
 		int totalCount=0;
@@ -102,7 +102,7 @@ public class CalculateThread extends Thread{
 						SRPCalculateResponseData calculateResponseData=CalculateUtils.fesDiagramCalculate(requestData);
 						int recordId=Integer.parseInt(obj[obj.length-1].toString());
 						if(calculateResponseData==null){
-							System.out.println("记录:"+recordId+"计算无数据返回");
+							StringManagerUtils.printLog("记录:"+recordId+"计算无数据返回");
 						}
 						calculateDataService.getBaseDao().saveFESDiagramCalculateResult(recordId,calculateResponseData);
 						
@@ -393,7 +393,7 @@ public class CalculateThread extends Thread{
 						PCPCalculateResponseData calculateResponseData=CalculateUtils.rpmCalculate(requestData);
 						int recordId=Integer.parseInt(obj[obj.length-1].toString());
 						if(calculateResponseData==null){
-							System.out.println("记录:"+recordId+"计算无数据返回");
+							StringManagerUtils.printLog("记录:"+recordId+"计算无数据返回");
 						}
 						calculateDataService.getBaseDao().saveRPMCalculateResult(recordId,calculateResponseData);
 						
@@ -591,7 +591,7 @@ public class CalculateThread extends Thread{
 			}
 		}
 		long endTime=new Date().getTime();
-		System.out.println("计算单条记录数:"+count+",汇总记录数:"+totalCount+",共用时:"+(endTime-startTime)+"ms");
+		StringManagerUtils.printLog("计算单条记录数:"+count+",汇总记录数:"+totalCount+",共用时:"+(endTime-startTime)+"ms");
 	}
 	
 

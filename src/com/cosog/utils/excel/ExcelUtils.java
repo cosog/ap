@@ -523,7 +523,7 @@ public class ExcelUtils {
      */
     public static void exportFile(File file, List<List<Object>> sheetData,int titleSize) {
         if (file == null) {
-            System.out.println("文件创建失败");
+            StringManagerUtils.printLog("文件创建失败");
             return;
         }
         if (sheetData == null) {
@@ -578,7 +578,6 @@ public class ExcelUtils {
                 fileFullPath = dirPath + LEAN_LINE + fileName + XLSX;
             }
         }
-        System.out.println(fileFullPath);
         File file = new File(fileFullPath);
         if (!file.exists()) {
             boolean result = file.createNewFile();

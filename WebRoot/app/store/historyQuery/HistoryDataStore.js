@@ -77,8 +77,6 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                 panel.add(gridPanel);
             }
             
-            updateTotalRecords(get_rawData.totalCount,"SurfaceCardTotalCount_Id");
-            
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
             if(startDate.rawValue==''||null==startDate.rawValue){
             	startDate.setValue(get_rawData.start_date.split(' ')[0]);
@@ -91,11 +89,12 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
             	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
             	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
             }
-            var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-            deviceHistoryQueryCurve(deviceType);
+            if(store.currentPage==1){
+            	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                deviceHistoryQueryCurve(deviceType);
+            }
         },
         beforeload: function (store, options) {
-        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceName='';
         	var deviceId=0;
@@ -103,7 +102,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	var calculateType=0;
         	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
         	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
-        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
         	}
@@ -121,6 +120,11 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	
         	var hours=getHistoryQueryHours();
         	
+        	var totalCount=0;
+        	if(store.totalCount!=undefined){
+        		totalCount=store.totalCount;
+        	}
+        	
             var new_params = {
             		orgId: orgId,
             		deviceType:deviceType,
@@ -129,7 +133,8 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                     calculateType:calculateType,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
-                    hours:hours
+                    hours:hours,
+                    totalCount:totalCount
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

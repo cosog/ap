@@ -409,7 +409,7 @@ public class BaseDao extends HibernateDaoSupport {
 			return query.list();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
 			return new ArrayList<>();
 		}
 		
@@ -807,7 +807,7 @@ public class BaseDao extends HibernateDaoSupport {
 			rows= Integer.parseInt(query.uniqueResult() + "");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+allsql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+allsql);
 		}
 		
 		return rows;

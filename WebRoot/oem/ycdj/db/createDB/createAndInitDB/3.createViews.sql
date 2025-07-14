@@ -149,10 +149,11 @@ left outer join viw_devicetypeinfo t10 on t.devicetype=t10.id;
 /*==============================================================*/
 /* View: viw_deviceoperationlog                                         */
 /*==============================================================*/
-create or replace force view viw_deviceoperationlog as
+create or replace view viw_deviceoperationlog as
 select t.id,t.devicetype,
 t5.name_zh_cn as deviceTypeName_zh_CN,t5.name_en as deviceTypeName_en,t5.name_ru as deviceTypeName_ru,
-t.devicename,t.createtime,u.user_no,t.user_id,r.role_id,r.role_level,t.loginip,t.action,t.remark ,
+t.devicename,t.createtime,u.user_no,t.user_id,r.role_id,r.role_level,t.loginip,t.action,
+decode(t.action,2,'',t.remark) as  remark,
 decode(t.action,2,t.remark,(case when t.devicetype>=300 then t4.orgid else t2.orgid end)) as orgid
 from tbl_deviceoperationlog t
 left outer join tbl_user u on u.user_id=t.user_id

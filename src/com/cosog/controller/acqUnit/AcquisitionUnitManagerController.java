@@ -2839,7 +2839,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String data = ParamUtils.getParameter(request, "data");
 		int saveType =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "saveType"));
 		data = StringManagerUtils.superscriptToNormal(data);
-		System.out.println(data);
 		try{
 			java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 			ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);

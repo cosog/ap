@@ -73,7 +73,7 @@ public class CalculateDataManagerTask {
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
-				System.out.println("发现未计算数据");
+				StringManagerUtils.printLog("发现未计算数据");
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
@@ -91,7 +91,7 @@ public class CalculateDataManagerTask {
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
-				System.out.println("发现未计算数据");
+				StringManagerUtils.printLog("发现未计算数据");
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}

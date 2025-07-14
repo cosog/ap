@@ -1829,7 +1829,13 @@ color16ToRgba = function(sColor,Opacity){
 		  cmp.update({count: total});
 	  }
   }
-      
+    
+  var updateVacuateRecords=function (totalCount,vacuateCount,conId) {
+	  var cmp=Ext.getCmp(conId);
+	  if(isNotVal(cmp)){
+		  cmp.update({totalCount: totalCount,vacuateCount:vacuateCount});
+	  }
+  }
   
   var onLabelSizeChange=function (v,o,conId) {
       //Ext.getCmp(conId).update({count: v.getTotalCount()});

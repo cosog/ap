@@ -1098,7 +1098,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		System.out.println(result_json.toString().replaceAll("\"null\"", "\"\""));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	public boolean exportHistoryQueryDeviceListData(User user,HttpServletResponse response,String fileName,String sheetName,String head,String field,
@@ -1776,8 +1775,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceType,String calculateType,
 			Page pager,
 			String hours,
+			String totalCount,
 			int userNo,
 			String language) throws IOException, SQLException{
+		long start=System.nanoTime();
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer columns = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
@@ -2128,8 +2129,21 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
+			long t1=System.nanoTime();
 			List<?> list = this.findCallSql(finalSql);
-			int totals=this.getTotalCountRows(sql);
+			long t2=System.nanoTime();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql);
+			
+			int totals=0;
+			if(pager.getStart()>0){
+				totals=StringManagerUtils.stringToInteger(totalCount);
+			}else{
+				t1=System.nanoTime();
+				totals=this.getTotalCountRows(sql);
+				t2=System.nanoTime();
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+			}
+			
 			String startTime=pager.getStart_date();
 			String endTime=pager.getEnd_date();
 			if(list!=null && list.size()>0){
@@ -2185,6 +2199,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"totalCount\":"+totals+",");
 			result_json.append("\"totalRoot\":[");
 			
+			t1=System.nanoTime();
 			for(int i=0;i<list.size();i++){
 				List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
 				
@@ -2730,6 +2745,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append(",\"alarmInfo\":"+alarmInfo+"");
 				result_json.append("},");
 			}
+			t2=System.nanoTime();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
@@ -2738,6 +2755,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		long end=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据总耗时:"+StringManagerUtils.getTimeDiff(start, end));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -5216,6 +5235,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,String hours,int userNo,String language)throws Exception {
+		long start=System.nanoTime();
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -5235,6 +5255,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		java.lang.reflect.Type reflectType=null;
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+//		String totalShow="";
+		int totalCount=0;
+		int vacuateCount=0;
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -5588,29 +5611,29 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 				}
 				if(acqItemColumnList.size()>0 || extendedFieldColumnList.size()>0){
-					columns+=",t.acqdata";
+					columns+=",h1.acqdata";
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)>0){
 					for(int i=0;i<calItemColumnList.size();i++){
-						calAndInputColumn+=",t3."+calItemColumnList.get(i);
+						calAndInputColumn+=",h3."+calItemColumnList.get(i);
 					}
 					if(inputItemColumnList.size()>0){
-						calAndInputColumn+=",t3.productiondata";
+						calAndInputColumn+=",h3.productiondata";
 					}
 				}else{
 					for(int i=0;i<calItemColumnList.size();i++){
-						calAndInputColumn+=",t."+calItemColumnList.get(i);
+						calAndInputColumn+=",h."+calItemColumnList.get(i);
 					}
 				}
 				
-				String sql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"+columns+calAndInputColumn
-						+ " from "+tableName +" t"
-						+ " left outer join "+deviceTableName+" t2 on t.deviceid=t2.id";
-				if(StringManagerUtils.stringToInteger(calculateType)>0){
-					sql+= " left outer join "+calAndInputDataTable+" t3 on t.deviceid=t3.deviceid and t.acqtime=t3.acqtime";
-				}	
-				sql+= " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+				String queryIdSql="select t.id "
+						+ " from tbl_acqdata_hist t "
+						+ " where t.deviceId="+deviceId;
+				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getCommData()) ){
+					queryIdSql+=" and t.commStatus=1";
+				}
+				queryIdSql+= " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 				if(StringManagerUtils.isNotNull(hours)){
 					if(!"all".equalsIgnoreCase(hours)){
 						String[] hourArr=hours.split(",");
@@ -5629,32 +5652,38 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							hourBuff.append(")");
 							
 							if(!"()".equalsIgnoreCase(hourBuff.toString())){
-								sql+="and "+hourBuff.toString();
+								queryIdSql+="and "+hourBuff.toString();
 							}
 						}
 					}
 				}else{
-					sql+=" and 1=2";
+					queryIdSql+=" and 1=2";
 				}
+				queryIdSql+=" order by t.id";
 				
-				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getCommData()) ){
-					sql+=" and t.commStatus=1";
-				}
+				totalCount=this.getTotalCountRows(queryIdSql);
+				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totalCount+")<"+vacuateThreshold+"";
 				
-//				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getExceptionData()) ){
-//					sql+=" and t.checksign=1";
-//				}
 				
-				sql+= " and t2.id="+deviceId;
-				int total=this.getTotalCountRows(sql);
-				int rarefy=total/vacuateThreshold+1;
-				sql+= " order by t.acqtime";
+				String sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss')"+columns+calAndInputColumn
+						+ " from "+tableName +" h1";
+				if(StringManagerUtils.stringToInteger(calculateType)>0){
+					sql+= ","+calAndInputDataTable+" h3 where h1.deviceid=h3.deviceid and h1.acqtime=h3.acqtime";
+				}else{
+					sql+=" where 1=1";
+				}	
+				sql+=" and h1.id in ("+queryIdSql+")";
+				sql+=" order by h1.id";
 				
 				String finalSql=sql;
-				if(rarefy>1){
-					finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
-				}
+				long t1=System.nanoTime();
 				List<?> list = this.findCallSql(finalSql);
+				long t2=System.nanoTime();
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史曲线数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql);
+				
+				vacuateCount=list.size();
+				
+				t1=System.nanoTime();
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					acqTimeList.add(obj[0]+"");
@@ -5710,9 +5739,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					
 					if(inputItemColumnList.size()>0){
 						String productionData=(obj[obj.length-1]+"").replaceAll("null", "");
-						if(rarefy>1){
-							productionData=(obj[obj.length-2]+"").replaceAll("null", "");
-						}
+//						if(rarefy>1){
+//							String productionData=(obj[obj.length-2]+"").replaceAll("null", "");
+//						}
 						if(StringManagerUtils.stringToInteger(calculateType)==1){
 							reflectType = new TypeToken<SRPCalculateRequestData>() {}.getType();
 							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, reflectType);
@@ -5800,6 +5829,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 					}
 				}
+				t2=System.nanoTime();
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史曲线数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 			}
 			
 			String minAcqTime=acqTimeList.size()>0?acqTimeList.get(0):"";
@@ -5812,6 +5843,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveItemCodes\":"+itemsCodeBuff+","
 					+ "\"curveConf\":"+curveConfBuff+","
+					+ "\"totalCount\":\""+totalCount+"\","
+					+ "\"vacuateCount\":\""+vacuateCount+"\","
 					+ "\"graphicSet\":"+graphicSet+","
 					+ "\"list\":[");
 			
@@ -5833,6 +5866,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		long end=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史曲线总耗时:"+StringManagerUtils.getTimeDiff(start, end));
 		return result_json.toString();
 	}
 	
@@ -6102,16 +6137,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
 		
-		int rarefy=totals/vacuateThreshold+1;
-		if(rarefy>1){
-			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-			totals = getTotalCountRows(totalSql);
-		}
-		totalShow=totals+"/"+totalShow;
+//		int rarefy=totals/vacuateThreshold+1;
+//		if(rarefy>1){
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totals = getTotalCountRows(totalSql);
+//		}
+//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-		if(rarefy>1){
-			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-		}
+//		if(rarefy>1){
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
@@ -6241,14 +6276,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) "
 					+ " order by t.fesdiagramacqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-			int totals = getTotalCountRows(sql);//获取总记录数
-			int rarefy=0;
-			if(vacuate && vacuateThreshold>0){
-				rarefy=totals/vacuateThreshold+1;
-				if(rarefy>1){
-					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-				}
-			}
+//			int totals = getTotalCountRows(sql);//获取总记录数
+//			int rarefy=0;
+//			if(vacuate && vacuateThreshold>0){
+//				rarefy=totals/vacuateThreshold+1;
+//				if(rarefy>1){
+//					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//				}
+//			}
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
@@ -6386,16 +6421,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
 		
-		int rarefy=totals/vacuateThreshold+1;
-		if(rarefy>1){
-			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-			totals = getTotalCountRows(totalSql);
-		}
-		totalShow=totals+"/"+totalShow;
+//		int rarefy=totals/vacuateThreshold+1;
+//		if(rarefy>1){
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totals = getTotalCountRows(totalSql);
+//		}
+//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-		if(rarefy>1){
-			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-		}
+//		if(rarefy>1){
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
@@ -6500,16 +6535,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
-		int rarefy=totals/vacuateThreshold+1;
-		if(rarefy>1){
-			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-			totals = getTotalCountRows(totalSql);
-		}
-		totalShow=totals+"/"+totalShow;
+//		int rarefy=totals/vacuateThreshold+1;
+//		if(rarefy>1){
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totals = getTotalCountRows(totalSql);
+//		}
+//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-		if(rarefy>1){
-			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
-		}
+//		if(rarefy>1){
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
@@ -6681,8 +6716,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String[] ddicColumns=ddic.getSql().split(",");
 			dynSbf.append("{\"success\":true,"
-					+ "\"totalCount\":\"" + list.size()+ "\","
-					+ "\"totalShow\":\"" + list.size()+"/"+total + "\","
+					+ "\"totalCount\":\"" + total+ "\","
+					+ "\"vacuateCount\":\"" + list.size() + "\","
 					+ "\"deviceName\":\""+deviceName+"\","
 					+ "\"start_date\":\""+pager.getStart_date()+"\","
 					+ "\"end_date\":\""+pager.getEnd_date()+"\","

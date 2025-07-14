@@ -256,7 +256,6 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								acqGroup.getValue().add(kwattValueList);
 								
 								String pushData=gson.toJson(acqGroup);
-								System.out.println(pushData);
 								if(StringManagerUtils.isNotNull(pushData)){
 									StringManagerUtils.sendPostMethod(pushUrl, pushData,"utf-8",0,0);
 								}

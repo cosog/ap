@@ -107,7 +107,7 @@ public class CalculateDataController extends BaseController{
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
 		json="计算完成，共用时:"+allTime+"毫秒";
-		System.out.println(json);
+		StringManagerUtils.printLog(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -154,7 +154,7 @@ public class CalculateDataController extends BaseController{
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
 		json="计算完成，共用时:"+allTime+"毫秒";
-		System.out.println(json);
+		StringManagerUtils.printLog(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -184,7 +184,7 @@ public class CalculateDataController extends BaseController{
 		
 		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,deviceId);
 		
-		System.out.println("采集数据汇总完成");
+		StringManagerUtils.printLog("采集数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -226,7 +226,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("功图数据汇总error:"+requestDataList.get(i));
+					StringManagerUtils.printLog("功图数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -234,7 +234,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("功图数据隔天汇总完成");
+		StringManagerUtils.printLog("功图数据隔天汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -263,7 +263,7 @@ public class CalculateDataController extends BaseController{
 		long t1 = System.nanoTime();
 		calculateDataService.AcquisitionDataTimingTotalCalculation(timeStr,deviceId);
 		long t2 = System.nanoTime();
-		System.out.println("采集数据定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2));
+		StringManagerUtils.printLog("采集数据定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2));
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -287,7 +287,7 @@ public class CalculateDataController extends BaseController{
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
 		calculateDataService.SRPTimingTotalCalculation(timeStr);
 		
-		System.out.println("功图定时汇总完成");
+		StringManagerUtils.printLog("功图定时汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -331,7 +331,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("转速数据汇总error:"+requestDataList.get(i));
+					StringManagerUtils.printLog("转速数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -339,7 +339,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("转速数据隔天汇总完成");
+		StringManagerUtils.printLog("转速数据隔天汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -363,7 +363,7 @@ public class CalculateDataController extends BaseController{
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
 //		timeStr="2024-11-04 18:00:00";
 		calculateDataService.PCPTimingTotalCalculation(timeStr);
-		System.out.println("转速数据定时汇总完成");
+		StringManagerUtils.printLog("转速数据定时汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -392,7 +392,7 @@ public class CalculateDataController extends BaseController{
 			deviceTypeName="螺杆泵井";
 		}
 		calculateDataService.initDailyReportData(calculateType);
-		System.out.println(deviceTypeName+"报表数据初始化完成-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+		StringManagerUtils.printLog(deviceTypeName+"报表数据初始化完成-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

@@ -121,11 +121,11 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             slectModel.deselectAll(true);
             slectModel.selectAll(true);
             
+            updateVacuateRecords(get_rawData.totalCount,get_rawData.vacuateCount,"HistoryFESDiagramVacuateCount_Id");
+            
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",true,0);
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
             showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
-            
-            updateTotalRecords(get_rawData.totalShow,"HistoryFESDiagramTotalCount_Id");
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

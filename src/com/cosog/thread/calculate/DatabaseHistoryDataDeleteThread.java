@@ -28,15 +28,15 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 //		int index=0;
 //		while(index<100000){
 //			index++;
-//			System.out.println("DatabaseHistoryDataDeleteThread,deviceId:"+deviceId+",index:"+index);
+//			StringManagerUtils.printLog("DatabaseHistoryDataDeleteThread,deviceId:"+deviceId+",index:"+index);
 //			if (Thread.interrupted()) {
-//                System.out.println("线程"+deviceId + " 检测到中断请求");
+//                StringManagerUtils.printLog("线程"+deviceId + " 检测到中断请求");
 //                break;
 //            }
 //			try {
 //				Thread.sleep(5000);
 //			} catch (InterruptedException e) {
-//				System.out.println("线程"+deviceId + " 阻塞时检测到中断请求");
+//				StringManagerUtils.printLog("线程"+deviceId + " 阻塞时检测到中断请求");
 //				Thread.currentThread().interrupt();
 //				break;
 //			}

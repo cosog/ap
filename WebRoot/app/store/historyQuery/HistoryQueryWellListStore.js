@@ -68,6 +68,11 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                         		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
                     		}
                     		
+                    		var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
+                            if (isNotVal(gridPanel)) {
+                            	Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
+                            }
+                    		
                     		
                     		var removeCenterCalDataPanel=false;
                     		var centerTabPanelChange=false;
@@ -126,6 +131,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             						Ext.getCmp("HistoryQueryCenterToolbar1_id").hide();
             						Ext.getCmp("HistoryQueryCenterToolbar2_id").show();
             						
+            						Ext.getCmp("HistoryFESDiagramVacuateCount_Id").hide();
+            						Ext.getCmp("HistoryFESDiagramTotalCount_Id").show();
+            						
+            						
             						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").hide();
 //            						Ext.getCmp("HistoryQueryResultNameComBox_Id").show();
             						Ext.getCmp("HistoryFESDiagramDataExportBtn_Id").show();
@@ -141,6 +150,9 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             					}else if(activeId=="HistoryDiagramOverlayTabPanel"){
             						Ext.getCmp("HistoryQueryCenterToolbar1_id").hide();
             						Ext.getCmp("HistoryQueryCenterToolbar2_id").show();
+            						
+            						Ext.getCmp("HistoryFESDiagramVacuateCount_Id").show();
+            						Ext.getCmp("HistoryFESDiagramTotalCount_Id").hide();
             						
 //            						Ext.getCmp("HistoryQueryResultNameComBox_Id").hide();
             						Ext.getCmp("HistoryDiagramOverlayExportBtn_Id").show();

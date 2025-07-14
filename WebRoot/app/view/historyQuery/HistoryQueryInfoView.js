@@ -547,6 +547,10 @@ function deviceHistoryQueryCurve(deviceType){
 		    var graphicSet=result.graphicSet;
 		    var hiddenExceptionData=result.hiddenExceptionData;
 		    
+		    updateVacuateRecords(result.totalCount,result.vacuateCount,"HistoryQueryVacuateCount_Id");
+		    
+		    
+		    
 		    var timeFormat='%m-%d';
 		    if(data.length>0 && result.minAcqTime.split(' ')[0]==result.maxAcqTime.split(' ')[0]){
 			    timeFormat='%H:%M';
@@ -1463,9 +1467,18 @@ loadSurfaceCardList = function (page) {
             var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
             var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
+            
+            var scroller = HistoryDiagramTabPanel.getScrollable();
+            
+            var scrollSize = scroller.getSize().y;      // 内容高度
+            var clientSize = scroller.getClientSize().y; // 可视高度
+            var hasVerticalScroll = scrollSize > clientSize;
+            
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+            
+            
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';

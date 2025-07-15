@@ -6133,8 +6133,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String totalSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-		
+		long t1=System.nanoTime();
 		int totals = getTotalCountRows(totalSql);//获取总记录数
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql);
 		String totalShow=totals+"";
 		
 //		int rarefy=totals/vacuateThreshold+1;
@@ -6148,8 +6150,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 //			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 //		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
-		
+		t1=System.nanoTime();
 		List<?> list=this.findCallSql(sql);
+		t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺分页查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
@@ -6635,8 +6639,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+					+ " where deviceId="+deviceId+" and resultstatus=1 "
+					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
 					String[] hourArr=hours.split(",");
@@ -6660,15 +6665,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 			}else{
 				distinctSql+=" and 1=2";
-			}	
-			
-			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
+			}
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
 			}else{
 				distinctSql+=" and 1=2";
 			}
-			distinctSql+=" group by deviceid,fesdiagramacqtime";
+			distinctSql+=" group by fesdiagramacqtime";
+			
+			String countSql="select count(1) from ("+distinctSql+") ";
+			
+			long t1=System.nanoTime();
+			int total=this.getTotalCountRows(countSql);
+			long t2=System.nanoTime();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图叠加总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+countSql);
+			
+			
+			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
@@ -6694,19 +6707,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.todayKWattH,"//44
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//45~48
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
-					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-			
-			String countSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
-					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
 			
-			int total=this.getTotalCountRows(countSql);
-			int rarefy=total/vacuateThreshold+1;
-			String finalSql=sql;
-			if(rarefy>1){
-				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
-			}
-			List<?> list=this.findCallSql(finalSql);
+			t1=System.nanoTime();
+			List<?> list=this.findCallSql(sql);
+			t2=System.nanoTime();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图叠加数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql);
+			
+			
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay",dictDeviceType,language);
 			String columns = ddic.getTableHeader();
 			if(timeEfficiencyUnitType==2){
@@ -6931,8 +6940,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,liquidWeightProduction_L";
 			}
 			
-			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
-					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+					+ " where deviceId="+deviceId+" and resultstatus=1 "
+					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
 					String[] hourArr=hours.split(",");
@@ -6958,14 +6968,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
 				distinctSql+=" and resultcode in ("+resultCodeStr+")";
 			}else{
 				distinctSql+=" and 1=2";
 			}
-			distinctSql+=" group by deviceid,fesdiagramacqtime";
+			distinctSql+=" group by fesdiagramacqtime";
 			
+			String countSql="select count(1) from ("+distinctSql+") ";
+			int total=this.getTotalCountRows(countSql);
+			
+			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
@@ -6989,19 +7002,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.deltaradius*100 as deltaradius,"//43
 					+ " t.todayKWattH"//44
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
-					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-			
-			String countSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
-					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
-			
-			int total=this.getTotalCountRows(countSql);
-			int rarefy=total/vacuateThreshold+1;
-			String finalSql=sql;
-			if(rarefy>1){
-				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
-			}
-			List<?> list=this.findCallSql(finalSql);
+			List<?> list=this.findCallSql(sql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
@@ -7120,7 +7123,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		data_json.append("[");
 		
 		
-		String distinctSql="select deviceid,resultcode,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
 				+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -7148,20 +7151,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}	
 		
 		distinctSql+=" and deviceId="+deviceId+" and resultstatus=1";
-		distinctSql+=" group by deviceid,resultcode,fesdiagramacqtime";
+		distinctSql+=" group by fesdiagramacqtime";
 		
-		String sql="select t.deviceid,t.resultcode,count(1) "
+		String sql="select t.resultcode,count(1) "
 				+ " from tbl_srpacqdata_hist t"
 				+ " where t.id in (select v.id from ("+distinctSql+") v ) ";
-		sql+= " group by t.deviceid,t.resultcode";
+		sql+= " group by t.resultcode";
 		sql+= " order by t.resultcode";
+		long t1=System.nanoTime();
 		List<?> list = this.findCallSql(sql);
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺统计查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql);
 		count=list.size();
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String resultCode=obj[1]+"";
+			String resultCode=obj[0]+"";
 			WorkType w=workTypeMap.get(resultCode);
-			data_json.append("{\"id\":"+(i+1)+",\"resultCode\":"+resultCode+",\"resultName\":\""+(w!=null?w.getResultName():languageResourceMap.get("emptyMsg"))+"\",\"count\":\""+obj[2]+"\"},");
+			data_json.append("{\"id\":"+(i+1)+",\"resultCode\":"+resultCode+",\"resultName\":\""+(w!=null?w.getResultName():languageResourceMap.get("emptyMsg"))+"\",\"count\":\""+obj[1]+"\"},");
 		}
 		
 		if(data_json.toString().endsWith(",")){

@@ -145,6 +145,18 @@ public class ExportDisplayUnitData {
 	    private String HistoryColor;
 	    
 	    private String HistoryBgColor;
+	    
+	    private int RealtimeOverview;
+	    
+	    private int RealtimeOverviewSort;
+	    
+	    private int RealtimeData;
+	    
+	    private int HistoryOverview;
+	    
+	    private int HistoryOverviewSort;
+	    
+	    private int HistoryData;
 
 	    public void setId(int Id){
 	        this.Id = Id;
@@ -241,6 +253,42 @@ public class ExportDisplayUnitData {
 		}
 		public void setHistoryBgColor(String historyBgColor) {
 			HistoryBgColor = historyBgColor;
+		}
+		public int getRealtimeOverview() {
+			return RealtimeOverview;
+		}
+		public void setRealtimeOverview(int realtimeOverview) {
+			RealtimeOverview = realtimeOverview;
+		}
+		public int getRealtimeOverviewSort() {
+			return RealtimeOverviewSort;
+		}
+		public void setRealtimeOverviewSort(int realtimeOverviewSort) {
+			RealtimeOverviewSort = realtimeOverviewSort;
+		}
+		public int getRealtimeData() {
+			return RealtimeData;
+		}
+		public void setRealtimeData(int realtimeData) {
+			RealtimeData = realtimeData;
+		}
+		public int getHistoryOverview() {
+			return HistoryOverview;
+		}
+		public void setHistoryOverview(int historyOverview) {
+			HistoryOverview = historyOverview;
+		}
+		public int getHistoryOverviewSort() {
+			return HistoryOverviewSort;
+		}
+		public void setHistoryOverviewSort(int historyOverviewSort) {
+			HistoryOverviewSort = historyOverviewSort;
+		}
+		public int getHistoryData() {
+			return HistoryData;
+		}
+		public void setHistoryData(int historyData) {
+			HistoryData = historyData;
 		}
 	}
 

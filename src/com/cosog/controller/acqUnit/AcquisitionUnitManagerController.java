@@ -2306,7 +2306,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportAcqUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportAcqUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2325,7 +2325,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportAlarmUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportAlarmUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2363,7 +2363,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportDisplayUnitTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportDisplayUnitTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2401,7 +2401,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if (user != null) {
 			language = "" + user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportProtocolTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportProtocolTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2564,7 +2564,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportProtocolAcqInstanceTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2656,7 +2656,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportProtocolDisplayInstanceTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2730,7 +2730,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceTypeIds,language);
+		String json = acquisitionUnitItemManagerService.exportProtocolAlarmInstanceTreeData(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

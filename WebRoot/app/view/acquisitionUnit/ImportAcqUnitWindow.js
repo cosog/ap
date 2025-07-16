@@ -240,9 +240,9 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 				importAcqUnitContentHandsontableHelper.columns=Ext.JSON.decode(columns);
 				
 				if(classes==2 && groupType==0){
-					importAcqUnitContentHandsontableHelper.hiddenColumns=[6];
+					importAcqUnitContentHandsontableHelper.hiddenColumns=[2,3,4,5,6];
 				}else{
-					importAcqUnitContentHandsontableHelper.hiddenColumns=[6,7,8];
+					importAcqUnitContentHandsontableHelper.hiddenColumns=[2,3,4,5,6,7,8];
 				}
 				
 				if(result.totalRoot.length==0){

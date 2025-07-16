@@ -165,7 +165,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			jedisStatus=MemoryDataManagerTask.getJedisStatus();
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
-			deviceList =MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
@@ -179,9 +178,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String tableName="tbl_acqdata_latest";
 				String deviceTableName="viw_device";
 				
-				String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
+				String sql="select t2.commstatus,count(1) "
+						+ " from "+deviceTableName+" t "
 						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id "
-						+ " where t.orgid in("+orgId+") ";
+						+ " where t.orgid in("+orgId+") "
+						+ " and t.deviceType in ("+deviceType+")";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 					sql+=" and t.devicetypename_"+language+"='"+deviceTypeStatValue+"'";
 				}
@@ -199,6 +200,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 			}else{
+				deviceList =MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 				if(deviceList!=null){
 					for(int i=0;i<deviceList.size();i++){
 						int commStatus=0;
@@ -273,7 +275,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				String sql="select decode(t2.commstatus,0,-1,2,-2,decode(t2.runstatus,null,2,t2.runstatus)) as runstatus,count(1) from "+deviceTableName+" t "
 						+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id "
-						+ " where t.orgid in("+orgId+") ";
+						+ " where t.orgid in("+orgId+") "
+						+ " and t.deviceType in ("+deviceType+")";
 				if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 					sql+=" and t.devicetypename_"+language+"='"+deviceTypeStatValue+"'";
 				}
@@ -379,7 +382,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String sql="select t.devicetypename_"+language+",t.devicetype,count(1) from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t.id=t2.deviceid "
-					+ " where t.orgid in("+orgId+") ";
+					+ " where t.orgid in("+orgId+") "
+					+ " and t.deviceType in ("+deviceType+")";
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}

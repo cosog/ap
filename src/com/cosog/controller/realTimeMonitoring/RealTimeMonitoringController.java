@@ -566,7 +566,7 @@ public class RealTimeMonitoringController extends BaseController {
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
-						+ " and t.wellname='"+deviceName+"' ";
+						+ " and t.id="+deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);

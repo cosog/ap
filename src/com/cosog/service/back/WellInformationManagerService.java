@@ -1502,6 +1502,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String deviceType=(String) map.get("deviceType");
 			String dictDeviceType=(String) map.get("dictDeviceType");
 			String orgId = (String) map.get("orgId");
+			String language=user!=null?user.getLanguageName():"";
 			
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -1513,16 +1514,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
-			
-		    String sql = "select id,orgName_"+user.getLanguageName()+",deviceName,deviceTypeName_"+user.getLanguageName()+","
+		    
+		    String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 					+ " applicationScenarios,"
 					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
-					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,allpath_"+user.getLanguageName()+","
+					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"
+					+ " allpath_"+language+","
 					+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
+					+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
+					+ " calculatetype,decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 					+ " sortNum"
 					+ " from "+tableName+" t "
 					+ " where 1=1";
+		    
 			if (StringManagerUtils.isNotNull(deviceName)) {
 				sql += " and t.devicename like '%" + deviceName+ "%'";
 			}
@@ -1548,20 +1553,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"applicationScenarios\":\""+obj[4]+"\",");
 				result_json.append("\"applicationScenariosName\":\""+MemoryDataManagerTask.getCodeName("APPLICATIONSCENARIOS",obj[4]+"", user.getLanguageName())+"\",");
 				
-				result_json.append("\"instanceName\":\""+obj[6]+"\",");
-				result_json.append("\"displayInstanceName\":\""+obj[7]+"\",");
-				result_json.append("\"alarmInstanceName\":\""+obj[8]+"\",");
-				result_json.append("\"reportInstanceName\":\""+obj[9]+"\",");
-				result_json.append("\"tcpType\":\""+(obj[10]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
-				result_json.append("\"signInId\":\""+obj[11]+"\",");
-				result_json.append("\"ipPort\":\""+obj[12]+"\",");
-				result_json.append("\"slave\":\""+obj[13]+"\",");
-				result_json.append("\"peakDelay\":\""+obj[14]+"\",");
-				result_json.append("\"status\":\""+obj[15]+"\",");
-				result_json.append("\"statusName\":\""+obj[16]+"\",");
-				result_json.append("\"allPath\":\""+obj[17]+"\",");
-				result_json.append("\"productionDataUpdateTime\":\""+obj[18]+"\",");
-				result_json.append("\"sortNum\":\""+obj[19]+"\"}");
+				result_json.append("\"instanceName\":\""+obj[5]+"\",");
+				result_json.append("\"displayInstanceName\":\""+obj[6]+"\",");
+				result_json.append("\"alarmInstanceName\":\""+obj[7]+"\",");
+				result_json.append("\"reportInstanceName\":\""+obj[8]+"\",");
+				result_json.append("\"tcpType\":\""+(obj[9]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+				result_json.append("\"signInId\":\""+obj[10]+"\",");
+				result_json.append("\"ipPort\":\""+obj[11]+"\",");
+				result_json.append("\"slave\":\""+obj[12]+"\",");
+				result_json.append("\"peakDelay\":\""+obj[13]+"\",");
+				result_json.append("\"status\":\""+obj[14]+"\",");
+				result_json.append("\"statusName\":\""+obj[15]+"\",");
+				result_json.append("\"allPath\":\""+obj[16]+"\",");
+				result_json.append("\"productionDataUpdateTime\":\""+obj[17]+"\",");
+				result_json.append("\"commissioningDate\":\""+obj[18]+"\",");
+				result_json.append("\"calculateType\":\""+obj[19]+"\",");
+				result_json.append("\"calculateTypeName\":\""+obj[20]+"\",");
+				result_json.append("\"sortNum\":\""+obj[21]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

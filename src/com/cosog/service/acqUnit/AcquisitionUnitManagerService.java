@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,9 @@ import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
+import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
@@ -5934,7 +5938,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -11012,27 +11016,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t2.id in ("+unitListStr+")"
 				+ " order by t2.id,t.type,t.id";
 		
-//		String sql="select "
-//				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-//				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
-//				+ "  "
-//				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-//				+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
-//				+ " order by t.realtimeSort";
-//		
-//		String sql="select t.id,t.itemid,t.itemname,t.itemcode,"
-//				+ " t.bitindex,t.realtimeSort,t.historySort,"
-//				+ " t.showlevel,t.realtimeCurveConf,historyCurveConf,"
-//				+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-//				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-//				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
-//				+ " t.matrix,t.type,t.unitId "
-//				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-//				+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
-//				+ " order by t.realtimeSort";
-		
-		
-		
 		List<?> displayUnitQueryList = this.findCallSql(displayUnitSql);
 		List<?> displayItemQueryList = this.findCallSql(displayItemSql);
 		
@@ -11504,7 +11487,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("+protocolList+")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();
@@ -11583,12 +11566,56 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getUploadedProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList,String language){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String columns = "[]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		
+		ModbusProtocolConfig.Protocol protocolConfig=null;
+		if(protocolList!=null){
+			for(ModbusProtocolConfig.Protocol protocol:protocolList){
+				if(protocolName.equalsIgnoreCase(protocol.getName())){
+					protocolConfig=protocol;
+				}
+			}
+		}
+		if(protocolConfig!=null){
+			for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
+				result_json.append("{\"id\":"+(j+1)+","
+						+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
+						+ "\"title1\":\""+protocolConfig.getExtendedFields().get(j).getTitle1()+"\","
+						+ "\"operation\":\""+MemoryDataManagerTask.getCodeName("FOUROPERATION", protocolConfig.getExtendedFields().get(j).getOperation()+"", language)+"\","
+						+ "\"title2\":\""+protocolConfig.getExtendedFields().get(j).getTitle2()+"\","
+						+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
+						+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
+						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+						+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
+						+ "},");
+			}
+		}
+	
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public int updateProtocol(ModbusProtocolConfig.Protocol protocol,User user){
 		int r=0;
 		if(protocol!=null){
 			Gson gson = new Gson();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			String updateSql="update TBL_PROTOCOL t "
 					+ " set t.sort="+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","
 					+ " t.deviceType="+protocol.getDeviceType()+","
@@ -11599,6 +11626,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			clobCont.add(gson.toJson(protocol.getItems()));
 			clobCont.add(gson.toJson(protocol.getExtendedFields()));
 			r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
+			if(r>0){
+				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(003);
+				dataSynchronizationThread.setParam1(protocol.getName());
+				dataSynchronizationThread.setMethod("update");
+				executor.execute(dataSynchronizationThread);
+			}
 			if(r==0){
 				String insertSql="insert into TBL_PROTOCOL (name,sort,deviceType,language,items,extendedfield) "
 						+ " values ('"+protocol.getName()+"',"+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","+protocol.getDeviceType()+","+protocol.getLanguage()+",?,?)";
@@ -11606,10 +11641,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				clobCont.add(gson.toJson(protocol.getItems()));
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
 				r=service.getBaseDao().executeSqlUpdateClob(insertSql,clobCont);
+				if(r>0){
+					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(001);
+					dataSynchronizationThread.setParam1(protocol.getName());
+					dataSynchronizationThread.setMethod("update");
+					executor.execute(dataSynchronizationThread);
+				}
 			}
 			
 			if(r>0){
-				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
 				if(user!=null){
 					try {
 						this.service.saveSystemLog(user,2,languageResourceMap.get("importProtocol")+":"+protocol.getName());
@@ -12289,6 +12331,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
 		}else if("2".equalsIgnoreCase(calculateType)){
 			calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+		}else{
+			calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
 		}
 		
 		List<CalItem> inputItemList=new ArrayList<>();
@@ -12305,7 +12349,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						&& unitName.equalsIgnoreCase(exportDisplayUnitData.getUnitName())){
 					if(exportDisplayUnitData.getItemList()!=null){
 						for(ExportDisplayUnitData.DisplayItem displayItem:exportDisplayUnitData.getItemList()){
-							if(StringManagerUtils.stringToInteger(type)==displayItem.getType()){
+							if((StringManagerUtils.stringToInteger(type)==0 && displayItem.getType()!=2) ||(StringManagerUtils.stringToInteger(type)==2 && displayItem.getType()==2)){
 								displayItemList.add(displayItem);
 							}
 						}
@@ -12320,20 +12364,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String realtimeCurveConfShowValue="";
 			String historyCurveConfShowValue="";
 			if(displayItemList.get(i).getType()==0 || displayItemList.get(i).getType()==2){
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","0",language);
 				ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItemList.get(i).getItemName());
 				if(item!=null){
 					unit=item.getUnit();
 				}
-			}else if(displayItemList.get(i).getType()==1){
-				CalItem item=MemoryDataManagerTask.getSingleCalItem(displayItemList.get(i).getItemName(), calItemList);
+			}if(displayItemList.get(i).getType()==5){
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","5",language);
+				ModbusProtocolConfig.ExtendedField item=MemoryDataManagerTask.getProtocolExtendedField(protocol, displayItemList.get(i).getItemName());
 				if(item!=null){
 					unit=item.getUnit();
-					dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE",item.getDataSource()+"",language);
+				}
+			}else if(displayItemList.get(i).getType()==1){
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","1",language);
+				CalItem item=MemoryDataManagerTask.getSingleCalItemByCode(displayItemList.get(i).getItemCode(), calItemList);
+				if(item!=null){
+					unit=item.getUnit();
+					displayItemList.get(i).setItemName(item.getName());
 				}
 			}else if(displayItemList.get(i).getType()==3){
-				CalItem item=MemoryDataManagerTask.getSingleCalItem(displayItemList.get(i).getItemName(), inputItemList);
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","2",language);
+				CalItem item=MemoryDataManagerTask.getSingleCalItemByCode(displayItemList.get(i).getItemCode(), inputItemList);
 				if(item!=null){
 					unit=item.getUnit();
+					displayItemList.get(i).setItemName(item.getName());
 				}
 			}
 			
@@ -12350,17 +12404,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"unit\":\""+unit+"\","
 					+ "\"dataSource\":\""+dataSource+"\","
 					+ "\"showLevel\":\""+(displayItemList.get(i).getShowLevel()>0?displayItemList.get(i).getShowLevel():"")+"\","
+					+ "\"realtimeData\":"+(displayItemList.get(i).getRealtimeData()==1)+","
 					+ "\"realtimeSort\":\""+(displayItemList.get(i).getShowLevel()>0?displayItemList.get(i).getRealtimeSort():"")+"\","
 					+ "\"realtimeColor\":\""+displayItemList.get(i).getRealtimeColor()+"\","
 					+ "\"realtimeBgColor\":\""+displayItemList.get(i).getRealtimeBgColor()+"\","
 					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
+					
+					+ "\"historyData\":"+(displayItemList.get(i).getHistoryData()==1)+","
 					+ "\"historySort\":\""+(displayItemList.get(i).getShowLevel()>0?displayItemList.get(i).getHistorySort():"")+"\","
 					+ "\"historyColor\":\""+displayItemList.get(i).getHistoryColor()+"\","
 					+ "\"historyBgColor\":\""+displayItemList.get(i).getHistoryBgColor()+"\","
-					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
+					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
+					+ "\"realtimeOverview\":"+(displayItemList.get(i).getRealtimeOverview()==1)+","
+					+ "\"realtimeOverviewSort\":\""+(displayItemList.get(i).getRealtimeOverviewSort()>0?displayItemList.get(i).getRealtimeOverviewSort():"")+"\","
+					+ "\"historyOverview\":"+(displayItemList.get(i).getHistoryOverview())+","
+					+ "\"historyOverviewSort\":\""+(displayItemList.get(i).getHistoryOverviewSort()>0?displayItemList.get(i).getHistoryOverviewSort():"")+"\""
 					+ "},");
 		}
-		
 		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -12390,7 +12450,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			unitCode=obj[1]+"";
 			String delItemSql="delete from TBL_DISPLAY_ITEMS2UNIT_CONF t where t.unitid="+unitId;
 			r=this.getBaseDao().updateOrDeleteBySql(delItemSql);
-			String updateUnitSql="update tbl_alarm_unit_conf t set t.remark='"+exportDisplayUnitData.getRemark()+"' ,t.calculatetype="+exportDisplayUnitData.getCalculateType()
+			String updateUnitSql="update tbl_display_unit_conf t set t.remark='"+exportDisplayUnitData.getRemark()+"' ,t.calculatetype="+exportDisplayUnitData.getCalculateType()
 					+ " where t.id="+unitId;
 			r=this.getBaseDao().updateOrDeleteBySql(updateUnitSql);
 		}else{
@@ -12406,8 +12466,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					acqUnidId=acqUnitList.get(0)+"";
 				}
 				if(StringManagerUtils.isNotNull(acqUnidId)){
-					String insertUnitSql="insert into tbl_display_unit_conf (unit_code,unit_name,protocol,acqunitid,calculatetype,remark) "
-							+ "values ('"+exportDisplayUnitData.getUnitName()+"','"+exportDisplayUnitData.getUnitName()+"','"+exportDisplayUnitData.getProtocol()+"',"+acqUnidId+","+exportDisplayUnitData.getCalculateType()+",'"+exportDisplayUnitData.getRemark()+"')";
+					String insertUnitSql="insert into tbl_display_unit_conf (unit_name,protocol,acqunitid,calculatetype,remark) "
+							+ "values ('"+exportDisplayUnitData.getUnitName()+"','"+exportDisplayUnitData.getProtocol()+"',"+acqUnidId+","+exportDisplayUnitData.getCalculateType()+",'"+exportDisplayUnitData.getRemark()+"')";
 					r=this.getBaseDao().updateOrDeleteBySql(insertUnitSql);
 					unitsql="select t.id,t.unit_code from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
 							+ " where t.acqunitid=t2.id "
@@ -12438,9 +12498,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					displayUnitItem.setItemName(exportDisplayUnitData.getItemList().get(i).getItemName());
 					displayUnitItem.setItemCode(exportDisplayUnitData.getItemList().get(i).getItemCode());
 					displayUnitItem.setType(exportDisplayUnitData.getItemList().get(i).getType());
+					displayUnitItem.setRealtimeData(exportDisplayUnitData.getItemList().get(i).getRealtimeData()>0?exportDisplayUnitData.getItemList().get(i).getRealtimeData():null);
 					displayUnitItem.setRealtimeSort(exportDisplayUnitData.getItemList().get(i).getRealtimeSort()>0?exportDisplayUnitData.getItemList().get(i).getRealtimeSort():null);
 					displayUnitItem.setRealtimeColor(exportDisplayUnitData.getItemList().get(i).getRealtimeColor());
 					displayUnitItem.setRealtimeBgColor(exportDisplayUnitData.getItemList().get(i).getRealtimeBgColor());
+					displayUnitItem.setHistoryData(exportDisplayUnitData.getItemList().get(i).getHistoryData()>0?exportDisplayUnitData.getItemList().get(i).getHistoryData():null);
 					displayUnitItem.setHistorySort(exportDisplayUnitData.getItemList().get(i).getHistorySort()>0?exportDisplayUnitData.getItemList().get(i).getHistorySort():null);
 					displayUnitItem.setHistoryColor(exportDisplayUnitData.getItemList().get(i).getHistoryColor());
 					displayUnitItem.setHistoryBgColor(exportDisplayUnitData.getItemList().get(i).getHistoryBgColor());
@@ -12449,6 +12511,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					displayUnitItem.setRealtimeCurveConf(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()==null?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()));
 					displayUnitItem.setHistoryCurveConf(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()==null?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()));
 					displayUnitItem.setMatrix(exportDisplayUnitData.getItemList().get(i).getMatrix());
+					
+					displayUnitItem.setRealtimeOverview(exportDisplayUnitData.getItemList().get(i).getRealtimeOverview()>0?exportDisplayUnitData.getItemList().get(i).getRealtimeOverview():null);
+					displayUnitItem.setRealtimeOverviewSort(exportDisplayUnitData.getItemList().get(i).getRealtimeOverviewSort()>0?exportDisplayUnitData.getItemList().get(i).getRealtimeOverviewSort():null);
+
+					displayUnitItem.setHistoryOverview(exportDisplayUnitData.getItemList().get(i).getHistoryOverview()>0?exportDisplayUnitData.getItemList().get(i).getHistoryOverview():null);
+					displayUnitItem.setHistoryOverviewSort(exportDisplayUnitData.getItemList().get(i).getHistoryOverviewSort()>0?exportDisplayUnitData.getItemList().get(i).getHistoryOverviewSort():null);
+					
 					this.grantDisplayItemsPermission(displayUnitItem);
 				} catch (Exception e) {
 					e.printStackTrace();

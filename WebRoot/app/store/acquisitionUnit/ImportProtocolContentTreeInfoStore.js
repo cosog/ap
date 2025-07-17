@@ -96,16 +96,28 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                         	
                         },
                         select( v, record, index, eOpts ){
-                        	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateUploadedProtocolContentInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        		}else{
-                        			if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
-                        				importProtocolContentHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
-                        		}
-                        	}else if(record.data.classes==1){
-                        		CreateUploadedProtocolContentInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	if(Ext.getCmp("importedProtocolRightTabPanel_Id").getActiveTab().id=='importedProtocolItemInfoTablePanel_Id'){
+                        		if(record.data.classes==0){
+                            		if(importProtocolContentHandsontableHelper!=null){
+                    					if(importProtocolContentHandsontableHelper.hot!=undefined){
+                    						importProtocolContentHandsontableHelper.hot.destroy();
+                    					}
+                    					importProtocolContentHandsontableHelper=null;
+                    				}
+                            	}else if(record.data.classes==1){
+                            		CreateUploadedProtocolContentInfoTable(record.data.text,record.data.classes,record.data.code);
+                            	}
+                        	}else if(Ext.getCmp("importedProtocolRightTabPanel_Id").getActiveTab().id=='importedProtocolExtendedFieldTabPanel_Id'){
+                        		if(record.data.classes==0){
+                            		if(importProtocolExtendedFieldHandsontableHelper!=null){
+                    					if(importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
+                    						importProtocolExtendedFieldHandsontableHelper.hot.destroy();
+                    					}
+                    					importProtocolExtendedFieldHandsontableHelper=null;
+                    				}
+                            	}else if(record.data.classes==1){
+                            		CreateUploadedProtocolExtendedFieldInfoTable(record.data.text,record.data.classes,record.data.code);
+                            	}
                         	}
                         },
                         beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {

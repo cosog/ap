@@ -82,21 +82,9 @@ Ext.define('AP.store.acquisitionUnit.ImportDisplayUnitContentTreeInfoStore', {
                     listeners: {
                         select( v, record, index, eOpts ){
                         	if(record.data.classes==0){//选中设备类型deviceType
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateImportDisplayUnitAcqItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnit,record.data.children[0].text,record.data.children[0].calculateType);
-                        			CreateImportDisplayUnitCalItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnit,record.data.children[0].text,record.data.children[0].calculateType);
-                        			CreateImportDisplayUnitInputItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnit,record.data.children[0].text,record.data.children[0].calculateType);
-                        			CreateImportDisplayUnitCtrlItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnit,record.data.children[0].text,record.data.children[0].calculateType);
-                        		}else{
-                        			CreateImportDisplayUnitAcqItemsInfoTable('','','',0);
-                        			CreateImportDisplayUnitCalItemsInfoTable('','','',0);
-                        			CreateImportDisplayUnitInputItemsInfoTable('','','',0);
-                        			CreateImportDisplayUnitCtrlItemsInfoTable('','','',0);
-                        		}
+                        		clearImportDisplayUnitHandsontable();
                         	}else if(record.data.classes==1){//选中显示单元
                         		CreateImportDisplayUnitAcqItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
-                        		CreateImportDisplayUnitCalItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
-                        		CreateImportDisplayUnitInputItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
                         		CreateImportDisplayUnitCtrlItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
                         	}
                         }

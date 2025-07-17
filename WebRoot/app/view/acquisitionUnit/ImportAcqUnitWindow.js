@@ -349,34 +349,68 @@ adviceImportAcqUnitCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAcqUnit(unitName,protocolName){
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
-		method : "POST",
-		params : {
-			unitName : unitName,
-			protocolName : protocolName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
+function saveSingelImportedAcqUnit(unitName,protocolName,saveSign,msg){
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
+					method : "POST",
+					params : {
+						unitName : unitName,
+						protocolName : protocolName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 
-			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
-    		if(isNotVal(treePanel)){
-    			treePanel.getStore().load();
-    		}else{
-    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
-    		}
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+						var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
+			    		if(isNotVal(treePanel)){
+			    			treePanel.getStore().load();
+			    		}else{
+			    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
+			    		}
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqUnit',
+			method : "POST",
+			params : {
+				unitName : unitName,
+				protocolName : protocolName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
+
+				var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
+	    		if(isNotVal(treePanel)){
+	    			treePanel.getStore().load();
+	    		}else{
+	    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
+	    		}
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
 }
 
 function saveAllImportedAcqUnit(){
@@ -423,10 +457,12 @@ iconImportSingleAcqUnitAction = function(value, e, record) {
 	var resultstring='';
 	var unitName=record.data.text;
 	var protocolName=record.data.protocol;
-
+	var saveSign=record.data.saveSign;
+	var msg=record.data.msg;
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
+	
 	return resultstring;
 }

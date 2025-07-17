@@ -1,4 +1,5 @@
 var importProtocolContentHandsontableHelper=null;
+var importProtocolExtendedFieldHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
     extend: 'Ext.window.Window',
     id:'ImportProtocolWindow_Id',
@@ -116,26 +117,95 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
             	id:"importProtocolTreePanel_Id"
             },{
             	region: 'center',
-            	id:"importedProtocolItemInfoTablePanel_Id",
-            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
-            	layout: "fit",
-            	html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolItemInfoTableDiv_Id"></div></div>',
+            	border: false,
+            	header: false,
+            	xtype: 'tabpanel',
+                id:"importedProtocolRightTabPanel_Id",
+                activeTab: 0,
+                items:[{
+                	id:"importedProtocolItemInfoTablePanel_Id",
+                	title:loginUserLanguageResource.config,
+                	layout: "fit",
+                	iconCls: 'check3',
+                	html:'<div class="importedProtocolItemInfoTableContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolItemInfoTableDiv_Id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		importProtocolContentHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
+                        }
+                    }
+                },{
+                	id:"importedProtocolExtendedFieldTabPanel_Id",
+                	title:loginUserLanguageResource.extendedField,
+                	layout: "fit",
+                	html:'<div class="importedProtocolExtendedFieldInfoTableContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolExtendedFieldInfoTableDiv_Id"></div></div>',
+                    listeners: {
+                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if(importProtocolExtendedFieldHandsontableHelper!=null && importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
+                        		var newWidth=width;
+                        		var newHeight=height;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		importProtocolExtendedFieldHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
+                        }
+                    }
+                }],
                 listeners: {
-                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
-                    		var newWidth=width;
-                    		var newHeight=height;
-                    		var header=thisPanel.getHeader();
-                    		if(header){
-                    			newHeight=newHeight-header.lastBox.height-2;
-                    		}
-                    		importProtocolContentHandsontableHelper.hot.updateSettings({
-                    			width:newWidth,
-                    			height:newHeight
-                    		});
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                		}
+                		if(newCard!=undefined){
+                			newCard.setIconCls('check3');
+                		}
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
+        				var record= Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getSelectionModel().getSelection()[0];
+                    	if(newCard.id=="importedProtocolItemInfoTablePanel_Id"){
+                    		if(record.data.classes==0){
+                        		if(importProtocolContentHandsontableHelper!=null){
+                					if(importProtocolContentHandsontableHelper.hot!=undefined){
+                						importProtocolContentHandsontableHelper.hot.destroy();
+                					}
+                					importProtocolContentHandsontableHelper=null;
+                				}
+                        	}else if(record.data.classes==1){
+                        		CreateUploadedProtocolContentInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	}
+                    	}else if(newCard.id=="importedProtocolExtendedFieldTabPanel_Id"){
+                    		if(record.data.classes==0){
+                        		if(importProtocolExtendedFieldHandsontableHelper!=null){
+                					if(importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
+                						importProtocolExtendedFieldHandsontableHelper.hot.destroy();
+                					}
+                					importProtocolExtendedFieldHandsontableHelper=null;
+                				}
+                        	}else if(record.data.classes==1){
+                        		CreateUploadedProtocolExtendedFieldInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	}
                     	}
                     }
                 }
+            	
+            	
+            	
+            	
             }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
@@ -219,7 +289,6 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 		url:context + '/acquisitionUnitManagerController/getUploadedProtocolItemsConfigData',
 		success:function(response) {
 			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").setTitle(protocolName);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolContentHandsontableHelper==null || importProtocolContentHandsontableHelper.hot==undefined){
 				importProtocolContentHandsontableHelper = ImportProtocolContentHandsontableHelper.createNew("importedProtocolItemInfoTableDiv_Id");
@@ -319,6 +388,46 @@ var ImportProtocolContentHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
 	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && importProtocolContentHandsontableHelper!=null&&importProtocolContentHandsontableHelper.hot!=''&&importProtocolContentHandsontableHelper.hot!=undefined && importProtocolContentHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importProtocolContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
 	                }
 	        	});
 	        }
@@ -327,6 +436,209 @@ var ImportProtocolContentHandsontableHelper = {
 	        	importProtocolContentHandsontableHelper.AllData = [];
 	        }
 	        return importProtocolContentHandsontableHelper;
+	    }
+};
+
+function CreateUploadedProtocolExtendedFieldInfoTable(protocolName,classes,code){
+	Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(importProtocolExtendedFieldHandsontableHelper!=null){
+		if(importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
+			importProtocolExtendedFieldHandsontableHelper.hot.destroy();
+		}
+		importProtocolExtendedFieldHandsontableHelper=null;
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getUploadedProtocolExtendedFieldsConfigData',
+		success:function(response) {
+			Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(importProtocolExtendedFieldHandsontableHelper==null || importProtocolExtendedFieldHandsontableHelper.hot==undefined){
+				importProtocolExtendedFieldHandsontableHelper = ImportProtocolExtendedFieldHandsontableHelper.createNew("importedProtocolExtendedFieldInfoTableDiv_Id");
+				var operationList=result.operationList;
+				var additionalConditionsList=result.additionalConditionsList;
+				var colHeaders=[
+					loginUserLanguageResource.idx,
+					loginUserLanguageResource.name,
+					loginUserLanguageResource.dataColumn+'1',
+					loginUserLanguageResource.fourOperation,
+					loginUserLanguageResource.dataColumn+'2',
+					loginUserLanguageResource.prec,
+					loginUserLanguageResource.ratio,
+					loginUserLanguageResource.unit,
+					loginUserLanguageResource.additionalConditions
+					];
+				
+				var columns=[{
+				    data: 'id'
+				}, {
+				    data: 'title'
+				}, {
+				    data: 'title1',
+				    renderer: importProtocolExtendedFieldHandsontableHelper.placeholderRenderer
+				}, {
+				    data: 'operation',
+				    type: 'dropdown',
+				    strict: true,
+				    allowInvalid: false,
+				    source: operationList
+				}, {
+				    data: 'title2',
+				    renderer: importProtocolExtendedFieldHandsontableHelper.placeholderRenderer
+				}, {
+				    data: 'prec',
+				    type: 'text',
+				    allowInvalid: true,
+				    validator: function (val, callback) {
+				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, importProtocolExtendedFieldHandsontableHelper);
+				    }
+				}, {
+					data: 'ratio',
+				    type: 'text',
+				    allowInvalid: true,
+				    validator: function (val, callback) {
+				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, importProtocolExtendedFieldHandsontableHelper);
+				    }
+				}, {
+				    data: 'unit'
+				}, {
+				    data: 'additionalConditions',
+				    type: 'dropdown',
+				    strict: true,
+				    allowInvalid: false,
+				    source: additionalConditionsList
+				}];
+				
+				importProtocolExtendedFieldHandsontableHelper.colHeaders=colHeaders;
+				importProtocolExtendedFieldHandsontableHelper.columns=columns;
+				if(result.totalRoot.length==0){
+					importProtocolExtendedFieldHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolExtendedFieldHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					importProtocolExtendedFieldHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					importProtocolExtendedFieldHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			protocolName:protocolName,
+			classes:classes,
+			code:code
+        }
+	});
+};
+
+var ImportProtocolExtendedFieldHandsontableHelper = {
+		createNew: function (divid) {
+	        var importProtocolExtendedFieldHandsontableHelper = {};
+	        importProtocolExtendedFieldHandsontableHelper.hot1 = '';
+	        importProtocolExtendedFieldHandsontableHelper.divid = divid;
+	        importProtocolExtendedFieldHandsontableHelper.validresult=true;//数据校验
+	        importProtocolExtendedFieldHandsontableHelper.colHeaders=[];
+	        importProtocolExtendedFieldHandsontableHelper.columns=[];
+	        importProtocolExtendedFieldHandsontableHelper.AllData=[];
+	        
+	        importProtocolExtendedFieldHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importProtocolExtendedFieldHandsontableHelper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value === null || value === '') {
+	                td.style.color = 'gray'; // 设置灰色文本作为占位符样式
+	                td.style.fontStyle = 'italic'; // 可以添加其他样式如斜体
+	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip+'...'; // 显示占位符文本
+	            }
+	        }
+	        
+	        importProtocolExtendedFieldHandsontableHelper.createTable = function (data) {
+	        	$('#'+importProtocolExtendedFieldHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+importProtocolExtendedFieldHandsontableHelper.divid);
+	        	importProtocolExtendedFieldHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		colWidths: [50,200,200,80,200,80,80,80,150],
+	                columns:importProtocolExtendedFieldHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:importProtocolExtendedFieldHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    cellProperties.readOnly = true;
+	                    return cellProperties;
+	                },
+	                afterBeginEditing: function (row, column) {
+	                	
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && importProtocolExtendedFieldHandsontableHelper!=null&&importProtocolExtendedFieldHandsontableHelper.hot!=''&&importProtocolExtendedFieldHandsontableHelper.hot!=undefined && importProtocolExtendedFieldHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=importProtocolExtendedFieldHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        //保存数据
+	        importProtocolExtendedFieldHandsontableHelper.saveData = function () {}
+	        importProtocolExtendedFieldHandsontableHelper.clearContainer = function () {
+	        	importProtocolExtendedFieldHandsontableHelper.AllData = [];
+	        }
+	        return importProtocolExtendedFieldHandsontableHelper;
 	    }
 };
 
@@ -346,28 +658,56 @@ adviceDataInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedProtocol(protocolName,deviceType){
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
-		method : "POST",
-		params : {
-			protocolName : protocolName,
-			deviceType : deviceType
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+function saveSingelImportedProtocol(protocolName,deviceType,saveSign,msg){
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
+					method : "POST",
+					params : {
+						protocolName : protocolName,
+						deviceType : deviceType
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
+						Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
 			}
-			Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
-			Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
+			method : "POST",
+			params : {
+				protocolName : protocolName,
+				deviceType : deviceType
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
+				Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
 }
 
 function saveAllImportedProtocol(){
@@ -413,10 +753,12 @@ function saveAllImportedProtocol(){
 iconImportSingleProtocolAction = function(value, e, record) {
 	var resultstring='';
 	var protocolName=record.data.text;
+	var saveSign=record.data.saveSign;
+	var msg=record.data.msg;
 	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	
 	

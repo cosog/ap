@@ -1,7 +1,5 @@
 var importDisplayUnitAcqItemsHandsontableHelper=null;
 var importDisplayUnitCtrlItemsHandsontableHelper=null;
-var importDisplayUnitCalItemsHandsontableHelper=null;
-var importDisplayUnitInputItemsHandsontableHelper=null;
 Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
     extend: 'Ext.window.Window',
     id: 'ImportDisplayUnitWindow_Id',
@@ -172,61 +170,6 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                             }
                         }
                 	}]
-            	},{
-            		region: 'east',
-            		width:'50%',
-            		layout: "border",
-            		header: false,
-            		split: true,
-                    collapsible: true,
-                	items: [{
-                		region: 'center',
-                    	layout: 'fit',
-                    	title:loginUserLanguageResource.inputItemConfig,
-                		id:"importDisplayUnitInputItemsConfigTableInfoPanel_Id",
-                        html:'<div class="importDisplayUnitInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitInputItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importDisplayUnitInputItemsHandsontableHelper!=null && importDisplayUnitInputItemsHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importDisplayUnitInputItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
-                            }
-                        }
-                	},{
-                		region: 'south',
-                    	height:'50%',
-                    	layout: 'fit',
-                        collapsible: true,
-                        split: true,
-                    	title:loginUserLanguageResource.calculateItemConfig,
-                    	id:"importDisplayUnitCalItemsConfigTableInfoPanel_Id",
-                        html:'<div class="importDisplayUnitCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitCalItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importDisplayUnitCalItemsHandsontableHelper!=null && importDisplayUnitCalItemsHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importDisplayUnitCalItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
-                            }
-                        }
-                	}]
             	}] 
             }],
             listeners: {
@@ -255,20 +198,6 @@ function clearImportDisplayUnitHandsontable(){
 			importDisplayUnitCtrlItemsHandsontableHelper.hot.destroy();
 		}
 		importDisplayUnitCtrlItemsHandsontableHelper=null;
-	}
-	
-	if(importDisplayUnitCalItemsHandsontableHelper!=null){
-		if(importDisplayUnitCalItemsHandsontableHelper.hot!=undefined){
-			importDisplayUnitCalItemsHandsontableHelper.hot.destroy();
-		}
-		importDisplayUnitCalItemsHandsontableHelper=null;
-	}
-	
-	if(importDisplayUnitInputItemsHandsontableHelper!=null){
-		if(importDisplayUnitInputItemsHandsontableHelper.hot!=undefined){
-			importDisplayUnitInputItemsHandsontableHelper.hot.destroy();
-		}
-		importDisplayUnitInputItemsHandsontableHelper=null;
 	}
 }
 
@@ -327,43 +256,80 @@ iconImportSingleDisplayUnitAction = function(value, e, record) {
 	var unitName=record.data.text;
 	var acqUnit=record.data.acqUnit;
 	var protocolName=record.data.protocol;
-
+	var saveSign=record.data.saveSign;
+	var msg=record.data.msg;
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedDisplayUnit(\""+unitName+"\",\""+acqUnit+"\",\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedDisplayUnit(\""+unitName+"\",\""+acqUnit+"\",\""+protocolName+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
-function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName){
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayUnit',
-		method : "POST",
-		params : {
-			unitName : unitName,
-			acqUnit : acqUnit,
-			protocolName : protocolName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
+function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,saveSign,msg){
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayUnit',
+					method : "POST",
+					params : {
+						unitName : unitName,
+						acqUnit : acqUnit,
+						protocolName : protocolName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
 
-    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
-    		if(isNotVal(treePanel)){
-    			treePanel.getStore().load();
-    		}else{
-    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
-    		}
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+			    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
+			    		if(isNotVal(treePanel)){
+			    			treePanel.getStore().load();
+			    		}else{
+			    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
+			    		}
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayUnit',
+			method : "POST",
+			params : {
+				unitName : unitName,
+				acqUnit : acqUnit,
+				protocolName : protocolName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportDisplayUnitContentTreeGridPanel_Id").getStore().load();
+
+	    		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
+	    		if(isNotVal(treePanel)){
+	    			treePanel.getStore().load();
+	    		}else{
+	    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoStore');
+	    		}
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedDisplayUnit(){
@@ -420,25 +386,50 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 			if(importDisplayUnitAcqItemsHandsontableHelper==null || importDisplayUnitAcqItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitAcqItemsHandsontableHelper = ImportDisplayUnitAcqItemsHandsontableHelper.createNew("importDisplayUnitAcqItemsConfigTableInfoDiv_id");
 				var colHeaders = "[" 
-                	+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4}]," 
-                	+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-                	+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']"
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','']," 
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','']," 
+                	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
+                	
+                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
+                	+"'"+loginUserLanguageResource.dynamicData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	
+                	
+                	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
+                	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	+"'','','','','','','']"
                 	+"]";
-				var columns="["
-						+"{data:'id'}," 
-						+"{data:'title'},"
-						+"{data:'unit'},"
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}},"
-						+"{data:'realtimeColor'}," 
-	                    +"{data:'realtimeBgColor'}," 
-						+"{data:'realtimeCurveConfShowValue'},"
-						+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-						+"{data:'historyColor'}," 
-	                    +"{data:'historyBgColor'}," 
-						+"{data:'historyCurveConfShowValue'}"
-						+"]";
+                var columns = "[" 
+                    +"{data:'checked',type:'checkbox'}," 
+                    +"{data:'id'}," 
+                    +"{data:'title'}," 
+                    +"{data:'dataSource'}," 
+                    +"{data:'unit'}," 
+                    +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    
+                    +"{data:'realtimeOverview',type:'checkbox'}," 
+                    +"{data:'realtimeOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    
+                    +"{data:'realtimeData',type:'checkbox'}," 
+                    +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    +"{data:'realtimeColor'}," 
+                    +"{data:'realtimeBgColor'}," 
+                    +"{data:'realtimeCurveConfShowValue'}," //12
+                    
+                    +"{data:'historyOverview',type:'checkbox'}," 
+                    +"{data:'historyOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    +"{data:'historyData',type:'checkbox'}," 
+                    +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    +"{data:'historyColor'}," 
+                    +"{data:'historyBgColor'}," 
+                    +"{data:'historyCurveConfShowValue'}," //19
+                    +"{data:'realtimeCurveConf'}," 
+                    +"{data:'historyCurveConf'}," 
+                    +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
+                    +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importDisplayUnitAcqItemsHandsontableHelper);}}," 
+                    +"{data:'bitIndex'}," 
+                    +"{data:'type'}," 
+                    +"{data:'code'}" 
+                    +"]";
 				importDisplayUnitAcqItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importDisplayUnitAcqItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -469,33 +460,56 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 };
 
 var ImportDisplayUnitAcqItemsHandsontableHelper = {
-		createNew: function (divid) {
+	    createNew: function (divid) {
 	        var importDisplayUnitAcqItemsHandsontableHelper = {};
 	        importDisplayUnitAcqItemsHandsontableHelper.hot1 = '';
 	        importDisplayUnitAcqItemsHandsontableHelper.divid = divid;
-	        importDisplayUnitAcqItemsHandsontableHelper.validresult=true;//数据校验
-	        importDisplayUnitAcqItemsHandsontableHelper.colHeaders=[];
-	        importDisplayUnitAcqItemsHandsontableHelper.columns=[];
-	        importDisplayUnitAcqItemsHandsontableHelper.AllData=[];
-	        
+	        importDisplayUnitAcqItemsHandsontableHelper.validresult = true; //数据校验
+	        importDisplayUnitAcqItemsHandsontableHelper.colHeaders = [];
+	        importDisplayUnitAcqItemsHandsontableHelper.columns = [];
+	        importDisplayUnitAcqItemsHandsontableHelper.AllData = [];
+
 	        importDisplayUnitAcqItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            var bg='rgb(245, 245, 245)';
-	            if(value!=null && value!=""){
-	            	var arr=value.split(';');
-	            	if(arr.length==3){
-	            		bg = '#'+arr[2];
-	            	}
+	            if (value!=null && value!="") {
+	                var arr = (value+"").split(';');
+	                if (arr.length == 3) {
+	                    td.style.backgroundColor = '#' + arr[2];
+	                }
 	            }
-	            td.style.backgroundColor = bg;
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            var bg='rgb(245, 245, 245)';
+	            if (value!=null && value!="") {
+	                var arr = (value+"").split(';');
+	                if (arr.length == 3) {
+	                	bg = '#' + arr[2];
+	                }
+	            }
+	            td.style.backgroundColor = bg;
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+
 	        importDisplayUnitAcqItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null && value!="") {
+	            if (value!=null && value!="") {
+	                td.style.backgroundColor = '#' + value;
+	            }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if (value!=null && value!="") {
 	                td.style.backgroundColor = '#' + value;
 	            }else{
 	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -504,107 +518,137 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	            td.style.overflow = 'hidden'; //超出部分隐藏
 	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
 	        }
-	        
+
 	        importDisplayUnitAcqItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='checkbox'){
-	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        	}else if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='dropdown'){
-		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
-		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-		            td.style.whiteSpace='nowrap'; //文本不换行
-	            	td.style.overflow='hidden';//超出部分隐藏
-	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-		        }else{
-		            Handsontable.renderers.TextRenderer.apply(this, arguments);
-		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-		            td.style.whiteSpace='nowrap'; //文本不换行
-	            	td.style.overflow='hidden';//超出部分隐藏
-	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-		        }
+	            td.style.whiteSpace = 'nowrap'; //文本不换行
+	            td.style.overflow = 'hidden'; //超出部分隐藏
+	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		importDisplayUnitAcqItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		importDisplayUnitAcqItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		importDisplayUnitAcqItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+	        	td.style.overflow='hidden';//超出部分隐藏
+	        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayUnitAcqItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+	        	td.style.overflow='hidden';//超出部分隐藏
+	        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
 	        importDisplayUnitAcqItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+importDisplayUnitAcqItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importDisplayUnitAcqItemsHandsontableHelper.divid);
-	        	importDisplayUnitAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80],
-	                columns:importDisplayUnitAcqItemsHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	            $('#' + importDisplayUnitAcqItemsHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + importDisplayUnitAcqItemsHandsontableHelper.divid);
+	            importDisplayUnitAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	                data: data,
+	                hiddenColumns: {
+	                    columns: [0,6,7,13,14,20, 21, 22, 23, 24, 25, 26],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                colWidths: [25, 50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100],
+	                columns: importDisplayUnitAcqItemsHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-//	                colHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
+	                rowHeaders: false, //显示行头
+//	                colHeaders: importDisplayUnitAcqItemsHandsontableHelper.colHeaders, //显示列头
 	                nestedHeaders:importDisplayUnitAcqItemsHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
+	                columnSorting: true, //允许排序
 	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
 	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
+	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==7||visualColIndex==11){
-		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCurveBg;
-		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
-                            cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCellBgColor;
-                        }else{
-		                	cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addCellStyle;
-		                }
+                        cellProperties.readOnly = true;
+                        if (visualColIndex == 12 || visualColIndex == 19) {
+                            cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyCurveBg;
+                        } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
+                            cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyCellBgColor;
+                        } else {
+                        	cellProperties.renderer=importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyBg;
+                        }
+
 	                    return cellProperties;
 	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>=0 && coords.row>=0 
-			                	&& importDisplayUnitAcqItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
-	                		&& importDisplayUnitAcqItemsHandsontableHelper!=null
-	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=''
-	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined 
-	                		&& importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
+	                afterBeginEditing: function (row, column) {
+	                	
+	                },
+	                afterOnCellMouseOver: function (event, coords, TD) {
+	                    if (coords.col>=0 && coords.row>=0 && importDisplayUnitAcqItemsHandsontableHelper.columns[coords.col].type != 'checkbox' &&
+	                        importDisplayUnitAcqItemsHandsontableHelper != null &&
+	                        importDisplayUnitAcqItemsHandsontableHelper.hot != '' &&
+	                        importDisplayUnitAcqItemsHandsontableHelper.hot != undefined &&
+	                        importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell != undefined) {
+	                        var rawValue = importDisplayUnitAcqItemsHandsontableHelper.hot.getDataAtCell(coords.row, coords.col);
+	                        if (isNotVal(rawValue)) {
+	                            var showValue = rawValue;
+	                            var rowChar = 90;
+	                            var maxWidth = rowChar * 10;
+	                            if (rawValue.length > rowChar) {
+	                                showValue = '';
+	                                let arr = [];
+	                                let index = 0;
+	                                while (index < rawValue.length) {
+	                                    arr.push(rawValue.slice(index, index += rowChar));
+	                                }
+	                                for (var i = 0; i < arr.length; i++) {
+	                                    showValue += arr[i];
+	                                    if (i < arr.length - 1) {
+	                                        showValue += '<br>';
+	                                    }
+	                                }
+	                            }
+	                            if (!isNotVal(TD.tip)) {
+	                                var height = 28;
+	                                TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                                    target: event.target,
+	                                    maxWidth: maxWidth,
+	                                    html: showValue,
+	                                    listeners: {
+	                                        hide: function (thisTip, eOpts) {},
+	                                        close: function (thisTip, eOpts) {}
+	                                    }
+	                                });
+	                            } else {
+	                                TD.tip.setHtml(showValue);
+	                            }
+	                        }
+	                    }
 	                }
-	        	});
+	            });
+	        }
+	        //保存数据
+	        importDisplayUnitAcqItemsHandsontableHelper.saveData = function () {}
+	        importDisplayUnitAcqItemsHandsontableHelper.clearContainer = function () {
+	            importDisplayUnitAcqItemsHandsontableHelper.AllData = [];
 	        }
 	        return importDisplayUnitAcqItemsHandsontableHelper;
 	    }
@@ -679,6 +723,37 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        importDisplayUnitCtrlItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if(importDisplayUnitCtrlItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        		importDisplayUnitCtrlItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else if(importDisplayUnitCtrlItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        		importDisplayUnitCtrlItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}else{
+	        		importDisplayUnitCtrlItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+	        	}
+	        }
+	        
+	        importDisplayUnitCtrlItemsHandsontableHelper.addCheckboxReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        importDisplayUnitCtrlItemsHandsontableHelper.addDropdownReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+	        	td.style.overflow='hidden';//超出部分隐藏
+	        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        importDisplayUnitCtrlItemsHandsontableHelper.addTextReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+	        	td.style.overflow='hidden';//超出部分隐藏
+	        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
 	        importDisplayUnitCtrlItemsHandsontableHelper.createTable = function (data) {
 	        	$('#'+importDisplayUnitCtrlItemsHandsontableHelper.divid).empty();
 	        	var hotElement = document.querySelector('#'+importDisplayUnitCtrlItemsHandsontableHelper.divid);
@@ -703,10 +778,7 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.readOnly = true;
-	                    if(importDisplayUnitCtrlItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-	    	            	&& importDisplayUnitCtrlItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-	                    	cellProperties.renderer = importDisplayUnitCtrlItemsHandsontableHelper.addCellStyle;
-	    	            }
+	                    cellProperties.renderer = importDisplayUnitCtrlItemsHandsontableHelper.addReadOnlyBg;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
@@ -757,396 +829,5 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	        	});
 	        }
 	        return importDisplayUnitCtrlItemsHandsontableHelper;
-	    }
-};
-
-function CreateImportDisplayUnitCalItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
-		success:function(response) {
-			Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.calculateItem);
-			}else{
-				Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.calculateItem);
-			}
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importDisplayUnitCalItemsHandsontableHelper==null || importDisplayUnitCalItemsHandsontableHelper.hot==undefined){
-				importDisplayUnitCalItemsHandsontableHelper = ImportDisplayUnitCalItemsHandsontableHelper.createNew("importDisplayUnitCalItemsConfigTableInfoDiv_id");
-				
-				var colHeaders="[" 
-					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'']," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'"+loginUserLanguageResource.dataSource+"']" 
-					+"]";
-				
-				var columns="["
-					+"{data:'id'}," 
-					+"{data:'title'},"
-					+"{data:'unit'},"
-					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-					+"{data:'realtimeColor'}," 
-                    +"{data:'realtimeBgColor'}," 
-					+"{data:'realtimeCurveConfShowValue'},"
-					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitCalItemsHandsontableHelper);}}," 
-					+"{data:'historyColor'}," 
-                    +"{data:'historyBgColor'}," 
-					+"{data:'historyCurveConfShowValue'},"
-					+"{data:'dataSource'}"
-					+"]";
-				importDisplayUnitCalItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importDisplayUnitCalItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importDisplayUnitCalItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayUnitCalItemsHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					importDisplayUnitCalItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayUnitCalItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-		},
-		params: {
-			protocolName: protocolName,
-			acqUnitName: acqUnitName,
-			unitName: unitName,
-			calculateType: calculateType,
-			type: 1
-        }
-	});
-};
-
-var ImportDisplayUnitCalItemsHandsontableHelper = {
-		createNew: function (divid) {
-	        var importDisplayUnitCalItemsHandsontableHelper = {};
-	        importDisplayUnitCalItemsHandsontableHelper.hot1 = '';
-	        importDisplayUnitCalItemsHandsontableHelper.divid = divid;
-	        importDisplayUnitCalItemsHandsontableHelper.validresult=true;//数据校验
-	        importDisplayUnitCalItemsHandsontableHelper.colHeaders=[];
-	        importDisplayUnitCalItemsHandsontableHelper.columns=[];
-	        importDisplayUnitCalItemsHandsontableHelper.AllData=[];
-	        
-	        importDisplayUnitCalItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
-	            	var arr=value.split(';');
-	            	if(arr.length==3){
-	            		td.style.backgroundColor = '#'+arr[2];
-	            	}
-	            }
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitCalItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
-	                td.style.backgroundColor = '#' + value;
-	            }
-	            td.style.whiteSpace = 'nowrap'; //文本不换行
-	            td.style.overflow = 'hidden'; //超出部分隐藏
-	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitCalItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitCalItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+importDisplayUnitCalItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importDisplayUnitCalItemsHandsontableHelper.divid);
-	        	importDisplayUnitCalItemsHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80,80],
-	                columns:importDisplayUnitCalItemsHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-//	                colHeaders:importDisplayUnitCalItemsHandsontableHelper.colHeaders,//显示列头
-	                nestedHeaders:importDisplayUnitCalItemsHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-
-	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==7||visualColIndex==11){
-		                	cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCurveBg;
-		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
-                            cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCellBgColor;
-                        }else{
-		                	if(importDisplayUnitCalItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& importDisplayUnitCalItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = importDisplayUnitCalItemsHandsontableHelper.addCellStyle;
-		    	            }
-		                }
-	                    return cellProperties;
-	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>=0 && coords.row>=0 
-			                	&& importDisplayUnitCalItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
-	                		&& importDisplayUnitCalItemsHandsontableHelper!=null
-	                		&& importDisplayUnitCalItemsHandsontableHelper.hot!=''
-	                		&& importDisplayUnitCalItemsHandsontableHelper.hot!=undefined 
-	                		&& importDisplayUnitCalItemsHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=importDisplayUnitCalItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
-	                }
-	        	});
-	        }
-	        return importDisplayUnitCalItemsHandsontableHelper;
-	    }
-};
-
-function CreateImportDisplayUnitInputItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
-		success:function(response) {
-			Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
-			if(unitName!=''){
-				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.inputItem);
-			}else{
-				Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.inputItem);
-			}
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importDisplayUnitInputItemsHandsontableHelper==null || importDisplayUnitInputItemsHandsontableHelper.hot==undefined){
-				importDisplayUnitInputItemsHandsontableHelper = ImportDisplayUnitInputItemsHandsontableHelper.createNew("importDisplayUnitInputItemsConfigTableInfoDiv_id");
-				var colHeaders="[" 
-					+"['','','','',{label: '实时动态数据', colspan: 4},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4}]," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线'," 
-					+"'顺序','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','曲线']" 
-					+"]";
-				
-				var columns="["
-					+"{data:'id'}," 
-					+"{data:'title'},"
-					+"{data:'unit'},"
-					+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-					+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-					+"{data:'realtimeColor'}," 
-                    +"{data:'realtimeBgColor'}," 
-					+"{data:'realtimeCurveConfShowValue'},"
-					+"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDisplayUnitInputItemsHandsontableHelper);}}," 
-					+"{data:'historyColor'}," 
-                    +"{data:'historyBgColor'}," 
-					+"{data:'historyCurveConfShowValue'}"
-					+"]";
-				importDisplayUnitInputItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importDisplayUnitInputItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importDisplayUnitInputItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayUnitInputItemsHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					importDisplayUnitInputItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importDisplayUnitInputItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importDisplayUnitInputItemsConfigTableInfoPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-		},
-		params: {
-			protocolName: protocolName,
-			acqUnitName: acqUnitName,
-			unitName: unitName,
-			calculateType: calculateType,
-			type: 3
-        }
-	});
-};
-
-var ImportDisplayUnitInputItemsHandsontableHelper = {
-		createNew: function (divid) {
-	        var importDisplayUnitInputItemsHandsontableHelper = {};
-	        importDisplayUnitInputItemsHandsontableHelper.hot1 = '';
-	        importDisplayUnitInputItemsHandsontableHelper.divid = divid;
-	        importDisplayUnitInputItemsHandsontableHelper.validresult=true;//数据校验
-	        importDisplayUnitInputItemsHandsontableHelper.colHeaders=[];
-	        importDisplayUnitInputItemsHandsontableHelper.columns=[];
-	        importDisplayUnitInputItemsHandsontableHelper.AllData=[];
-	        
-	        importDisplayUnitInputItemsHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(value!=null){
-	            	var arr=value.split(';');
-	            	if(arr.length==3){
-	            		td.style.backgroundColor = '#'+arr[2];
-	            	}
-	            }
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitInputItemsHandsontableHelper.addCellBgColor = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if (value != null) {
-	                td.style.backgroundColor = '#' + value;
-	            }
-	            td.style.whiteSpace = 'nowrap'; //文本不换行
-	            td.style.overflow = 'hidden'; //超出部分隐藏
-	            td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitInputItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        importDisplayUnitInputItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+importDisplayUnitInputItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importDisplayUnitInputItemsHandsontableHelper.divid);
-	        	importDisplayUnitInputItemsHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		colWidths: [50,140,80,60,80,80,80,80,80,80,80,80],
-	                columns:importDisplayUnitInputItemsHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-//	                colHeaders:importDisplayUnitInputItemsHandsontableHelper.colHeaders,//显示列头
-	                nestedHeaders:importDisplayUnitInputItemsHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-
-	                    cellProperties.readOnly = true;
-	                    if(visualColIndex==7||visualColIndex==11){
-		                	cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCurveBg;
-		                }else if (visualColIndex == 5 || visualColIndex == 6 || visualColIndex == 9 || visualColIndex == 10) {
-                            cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCellBgColor;
-                        }else{
-		                	if(importDisplayUnitInputItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    	            	&& importDisplayUnitInputItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		                    	cellProperties.renderer = importDisplayUnitInputItemsHandsontableHelper.addCellStyle;
-		    	            }
-		                }
-	                    return cellProperties;
-	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>=0 && coords.row>=0 
-			                	&& importDisplayUnitInputItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
-	                		&& importDisplayUnitInputItemsHandsontableHelper!=null
-	                		&& importDisplayUnitInputItemsHandsontableHelper.hot!=''
-	                		&& importDisplayUnitInputItemsHandsontableHelper.hot!=undefined 
-	                		&& importDisplayUnitInputItemsHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=importDisplayUnitInputItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
-	                }
-	        	});
-	        }
-	        return importDisplayUnitInputItemsHandsontableHelper;
 	    }
 };

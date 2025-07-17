@@ -5760,6 +5760,39 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getUploadedProtocolExtendedFieldsConfigData")
+	public String getUploadedProtocolExtendedFieldsConfigData() throws Exception {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String code = ParamUtils.getParameter(request, "code");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		try{
+			if(session.getAttribute("uploadProtocolFile")!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		String json = "";
+		json = acquisitionUnitItemManagerService.getUploadedProtocolExtendedFieldsConfigData(protocolName,classes,code,protocolList,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveSingelImportedProtocol")
 	public String saveSingelImportedProtocol() throws Exception {
 		HttpSession session=request.getSession();

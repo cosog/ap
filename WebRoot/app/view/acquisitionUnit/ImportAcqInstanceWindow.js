@@ -197,6 +197,9 @@ adviceImportAcqInstanceCollisionInfoColor = function(val,o,p,e) {
 }
 
 function saveSingelImportedAcqInstance(instanceName,unitName,protocolName){
+	instanceName = decodeURIComponent(instanceName);
+	unitName = decodeURIComponent(unitName);
+	protocolName = decodeURIComponent(protocolName);
 	Ext.Ajax.request({
 		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqInstance',
 		method : "POST",
@@ -273,10 +276,14 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 	var instanceName=record.data.text;
 	var unitName=record.data.unitName;
 	var protocolName=record.data.protocol;
+	
+	instanceName = encodeURIComponent(instanceName || '');
+	unitName = encodeURIComponent(unitName || '');
+	protocolName = protocolName(unitName || '');
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+unitName+"\,\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqInstance('"+instanceName+"','"+unitName+"','"+protocolName+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

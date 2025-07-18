@@ -77,7 +77,7 @@ Ext.define('AP.store.acquisitionUnit.ImportReportUnitContentTreeInfoStore', {
                 		width:50,
                 		renderer :function(value,e,o){
                 			return iconImportSingleReportUnitAction(value,e,o)
-                		} 
+                		}
                     }],
                     listeners: {
                         select( v, record, index, eOpts ){

@@ -258,14 +258,26 @@ iconImportSingleDisplayUnitAction = function(value, e, record) {
 	var protocolName=record.data.protocol;
 	var saveSign=record.data.saveSign;
 	var msg=record.data.msg;
+	
+	unitName = encodeURIComponent(unitName || '');
+	acqUnit = encodeURIComponent(acqUnit || '');
+	protocolName = encodeURIComponent(protocolName || '');
+	saveSign = encodeURIComponent(saveSign || '');
+	msg = encodeURIComponent(msg || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedDisplayUnit(\""+unitName+"\",\""+acqUnit+"\",\""+protocolName+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedDisplayUnit('"+unitName+"','"+acqUnit+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
 function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,saveSign,msg){
+	unitName = decodeURIComponent(unitName);
+	acqUnit = decodeURIComponent(acqUnit);
+	protocolName = decodeURIComponent(protocolName);
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
 		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
 			if (btn == "yes") {

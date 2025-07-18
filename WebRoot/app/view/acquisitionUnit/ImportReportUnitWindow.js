@@ -514,41 +514,86 @@ adviceImportReportUnitCollisionInfoColor = function(val,o,p,e) {
 iconImportSingleReportUnitAction = function(value, e, record) {
 	var resultstring='';
 	var unitName=record.data.text;
-
+	var saveSign=record.data.saveSign;
+	var msg=record.data.msg;
+	
+	var encodedUnitName = encodeURIComponent(unitName || '');
+    var encodedSaveSign = encodeURIComponent(saveSign || '');
+    var encodedMsg = encodeURIComponent(msg || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedReportUnit(\""+unitName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedReportUnit('"+encodedUnitName+"','"+encodedSaveSign+"','"+encodedMsg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
-function saveSingelImportedReportUnit(unitName){
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedReportUnit',
-		method : "POST",
-		params : {
-			unitName : unitName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
+function saveSingelImportedReportUnit(unitName,saveSign,msg){
+	unitName = decodeURIComponent(unitName);
+    saveSign = decodeURIComponent(saveSign);   // 对于数字，解码后还是字符串，需要时再转换
+    msg = decodeURIComponent(msg);
+	
+	
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedReportUnit',
+					method : "POST",
+					params : {
+						unitName : unitName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-                treeGridPanel.getStore().load();
-            } else {
-                Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
-            }
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+						var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
+			            if (isNotVal(treeGridPanel)) {
+			                treeGridPanel.getStore().load();
+			            } else {
+			                Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
+			            }
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedReportUnit',
+			method : "POST",
+			params : {
+				unitName : unitName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
+
+				var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
+	            if (isNotVal(treeGridPanel)) {
+	                treeGridPanel.getStore().load();
+	            } else {
+	                Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
+	            }
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedReportUnit(){

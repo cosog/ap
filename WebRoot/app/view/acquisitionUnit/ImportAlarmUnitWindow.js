@@ -1,11 +1,160 @@
 var importAlarmUnitConfigNumItemsHandsontableHelper=null;
-var importAlarmUnitConfigCalNumItemsHandsontableHelper=null;
 var importAlarmUnitConfigSwitchItemsHandsontableHelper=null
 var importAlarmUnitConfigEnumItemsHandsontableHelper=null;
 
 var importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper=null;
 var importAlarmUnitConfigRunStatusItemsHandsontableHelper=null;
 var importAlarmUnitConfigCommStatusItemsHandsontableHelper=null;
+
+var importAlarmUnitConfigRightTabPanelItems=[{
+    title: loginUserLanguageResource.numericValue,
+    region: 'center',
+    layout: "border",
+    id: "importAlarmUnitNumItemsConfigTableInfoPanel_Id",
+    iconCls: 'check3',
+    items: [{
+        region: 'center',
+        title: loginUserLanguageResource.acquisitionItemConfig,
+        layout: 'fit',
+        id: 'importAlarmUnitNumItemsConfigTableInfoPanel_id',
+        html: '<div class="importAlarmUnitNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitNumItemsConfigTableInfoDiv_id"></div></div>',
+        listeners: {
+            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+             	if(importAlarmUnitConfigNumItemsHandsontableHelper!=null && importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+             		var newWidth=width;
+            		var newHeight=height;
+            		var header=thisPanel.getHeader();
+            		if(header){
+            			newHeight=newHeight-header.lastBox.height-2;
+            		}
+            		importAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings({
+            			width:newWidth,
+            			height:newHeight
+            		});
+             	}
+             }
+        }
+	}]
+}, {
+    title: loginUserLanguageResource.switchingValue,
+    id: "importAlarmUnitSwitchItemsConfigTableInfoPanel_Id",
+    layout: "border",
+    border: true,
+    items: [{
+        region: 'center',
+        title: loginUserLanguageResource.alarmItemConfig,
+        layout: 'fit',
+        id: 'importAlarmUnitSwitchItemsConfigHandsontablePanel_id',
+        html: '<div class="importAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
+        listeners: {
+            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+             	if(importAlarmUnitConfigSwitchItemsHandsontableHelper!=null && importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+             		var newWidth=width;
+            		var newHeight=height;
+            		var header=thisPanel.getHeader();
+            		if(header){
+            			newHeight=newHeight-header.lastBox.height-2;
+            		}
+            		importAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings({
+            			width:newWidth,
+            			height:newHeight
+            		});
+             	}
+             }
+        }
+  }]
+}, {
+    title: loginUserLanguageResource.enumValue,
+    id: "importAlarmUnitEnumItemsConfigTableInfoPanel_Id",
+    layout: "border",
+    border: true,
+    items: [{
+        region: 'center',
+        title: loginUserLanguageResource.alarmItemConfig,
+        layout: 'fit',
+        id: 'importAlarmUnitEnumItemsConfigHandsontablePanel_id',
+        html: '<div class="importAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
+        listeners: {
+            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+             	if(importAlarmUnitConfigEnumItemsHandsontableHelper!=null && importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+             		var newWidth=width;
+            		var newHeight=height;
+            		var header=thisPanel.getHeader();
+            		if(header){
+            			newHeight=newHeight-header.lastBox.height-2;
+            		}
+            		importAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings({
+            			width:newWidth,
+            			height:newHeight
+            		});
+             	}
+             }
+        }
+  }]
+}, {
+    title: loginUserLanguageResource.workType,
+    id: "importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
+    layout: 'fit',
+    html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+         	if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper!=null && importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+         		var newWidth=width;
+        		var newHeight=height;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+         	}
+         }
+    }
+}, {
+    title: loginUserLanguageResource.runStatus,
+    id: "importAlarmUnitRunStatusConfigTableInfoPanel_Id",
+    layout: 'fit',
+    html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+         	if(importAlarmUnitConfigRunStatusItemsHandsontableHelper!=null && importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+         		var newWidth=width;
+        		var newHeight=height;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+         	}
+         }
+    }
+}, {
+    title: loginUserLanguageResource.commStatus,
+    id: "importAlarmUnitCommStatusConfigTableInfoPanel_Id",
+    layout: 'fit',
+    html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+         	if(importAlarmUnitConfigCommStatusItemsHandsontableHelper!=null && importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+         		var newWidth=width;
+        		var newHeight=height;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+         	}
+         }
+    }
+}];
 Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
     extend: 'Ext.window.Window',
     id: 'ImportAlarmUnitWindow_Id',
@@ -124,255 +273,42 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
             }, {
                 border: true,
                 region: 'center',
-                title: '报警项',
                 xtype: 'tabpanel',
                 id: "importAlarmUnitItemsConfigTabPanel_Id",
                 activeTab: 0,
                 border: false,
                 tabPosition: 'top',
-                items: [{
-                    title: loginUserLanguageResource.numericValue,
-                    region: 'center',
-                    layout: "border",
-                    id: "importAlarmUnitNumItemsConfigTableInfoPanel_Id",
-                    items: [{
-                        region: 'center',
-                        title: loginUserLanguageResource.acquisitionItemConfig,
-                        layout: 'fit',
-                        id: 'importAlarmUnitNumItemsConfigTableInfoPanel_id',
-                        html: '<div class="importAlarmUnitNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitNumItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmUnitConfigNumItemsHandsontableHelper!=null && importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-              	}, {
-                        region: 'south',
-                        height: '50%',
-                        title: loginUserLanguageResource.calculateItemConfig,
-                        collapsible: true,
-                        split: true,
-                        layout: 'fit',
-                        id: 'importAlarmUnitCalNumItemsConfigTableInfoPanel_id',
-                        html: '<div class="importAlarmUnitCalNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCalNumItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmUnitConfigCalNumItemsHandsontableHelper!=null && importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-              	}]
-              }, {
-                    title: loginUserLanguageResource.switchingValue,
-                    id: "importAlarmUnitSwitchItemsConfigTableInfoPanel_Id",
-                    layout: "border",
-                    border: true,
-                    items: [{
-                        region: 'center',
-                        title: loginUserLanguageResource.alarmItemConfig,
-                        layout: 'fit',
-                        id: 'importAlarmUnitSwitchItemsConfigHandsontablePanel_id',
-                        html: '<div class="importAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmUnitConfigSwitchItemsHandsontableHelper!=null && importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-                  }]
-              }, {
-                    title: loginUserLanguageResource.enumValue,
-                    id: "importAlarmUnitEnumItemsConfigTableInfoPanel_Id",
-                    layout: "border",
-                    border: true,
-                    items: [{
-                        region: 'center',
-                        title: loginUserLanguageResource.alarmItemConfig,
-                        layout: 'fit',
-                        id: 'importAlarmUnitEnumItemsConfigHandsontablePanel_id',
-                        html: '<div class="importAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmUnitConfigEnumItemsHandsontableHelper!=null && importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-                  }]
-              }, {
-                    title: loginUserLanguageResource.workType,
-                    id: "importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id",
-                    layout: 'fit',
-                    html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                         	if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper!=null && importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
-                         		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                         	}
-                         }
-                    }
-              }, {
-                    title: loginUserLanguageResource.runStatus,
-                    id: "importAlarmUnitRunStatusConfigTableInfoPanel_Id",
-                    layout: 'fit',
-                    html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                         	if(importAlarmUnitConfigRunStatusItemsHandsontableHelper!=null && importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-                         		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                         	}
-                         }
-                    }
-              }, {
-                    title: loginUserLanguageResource.commStatus,
-                    id: "importAlarmUnitCommStatusConfigTableInfoPanel_Id",
-                    layout: 'fit',
-                    html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                         	if(importAlarmUnitConfigCommStatusItemsHandsontableHelper!=null && importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-                         		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                         	}
-                         }
-                    }
-              }],
+                header:false,
+                items: importAlarmUnitConfigRightTabPanelItems,
                 listeners: {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            			oldCard.setIconCls(null);
+            			newCard.setIconCls('check3');
+            		},
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	var selection=Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getSelectionModel().getSelection();
                     	if(selection.length>0){
                     		var record = selection[0];
-                        	var activeId = newCard.id;
-                        	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitNumItemsConfigInfoTable('','');
-                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            		CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitEnumItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
+                    		if(record.data.classes!=1){
+                        		clearImportAlarmUnitHandsontable();
+                        	}else{
+                        		var activeId = newCard.id;
+                            	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
                             	}
                         	}
+                    	}else{
+                    		clearImportAlarmUnitHandsontable();
                     	}
                     }
                 }
@@ -396,13 +332,6 @@ function clearImportAlarmUnitHandsontable(){
 			importAlarmUnitConfigNumItemsHandsontableHelper.hot.destroy();
 		}
 		importAlarmUnitConfigNumItemsHandsontableHelper=null;
-	}
-	
-	if(importAlarmUnitConfigCalNumItemsHandsontableHelper!=null){
-		if(importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined){
-			importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.destroy();
-		}
-		importAlarmUnitConfigCalNumItemsHandsontableHelper=null;
 	}
 	
 	if(importAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
@@ -497,14 +426,24 @@ iconImportSingleAlarmUnitAction = function(value, e, record) {
 	var protocolName=record.data.protocol;
 	var saveSign=record.data.saveSign;
 	var msg=record.data.msg;
+	
+	unitName = encodeURIComponent(unitName || '');
+	protocolName = encodeURIComponent(protocolName || '');
+	saveSign = encodeURIComponent(saveSign || '');
+	msg = encodeURIComponent(msg || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAlarmUnit(\""+unitName+"\",\""+protocolName+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAlarmUnit('"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
 function saveSingelImportedAlarmUnit(unitName,protocolName,saveSign,msg){
+	unitName = decodeURIComponent(unitName);
+	protocolName = decodeURIComponent(protocolName);
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
 		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
 			if (btn == "yes") {
@@ -605,7 +544,7 @@ function saveAllImportedAlarmUnit(){
 	});
 }
 
-function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -617,19 +556,30 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigNumItemsHandsontableHelper==null || importAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigNumItemsHandsontableHelper = ImportAlarmUnitConfigNumItemsHandsontableHelper.createNew("importAlarmUnitNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.address+"','"+loginUserLanguageResource.upperLimit+"','"+loginUserLanguageResource.lowerLimit+"','"+loginUserLanguageResource.hystersis+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'addr'},"
-						+"{data:'upperLimit'},"
-						+"{data:'lowerLimit'}," 
-						+"{data:'hystersis'}," 
-						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
-						+"]";
-				importAlarmUnitConfigNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				var colHeaders=[loginUserLanguageResource.idx,loginUserLanguageResource.name,
+					loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,
+					loginUserLanguageResource.upperLimit,loginUserLanguageResource.lowerLimit,loginUserLanguageResource.hystersis,
+					loginUserLanguageResource.delay+"(s)",
+					loginUserLanguageResource.retriggerTime+"(s)",
+					loginUserLanguageResource.alarmLevel,loginUserLanguageResource.alarmSign,
+					loginUserLanguageResource.isSendMessage,loginUserLanguageResource.isSendEmail];
+				var columns="[{data:'id'}," 
+					+"{data:'title'},"
+					+"{data:'unit'},"
+					+"{data:'dataSource'},"
+					+"{data:'upperLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}},"
+					+"{data:'lowerLimit',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}}," 
+					
+					+"{data:'hystersis',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}}," 
+					+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}}," 
+					+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigNumItemsHandsontableHelper);}}," 
+					
+					+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
+					+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
+					+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+					+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
+					+"]";
+				importAlarmUnitConfigNumItemsHandsontableHelper.colHeaders=colHeaders;
 				importAlarmUnitConfigNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
 					importAlarmUnitConfigNumItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
@@ -651,7 +601,8 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName){
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:2
+			alarmType:2,
+			calculateType:calculateType
         }
 	});
 };
@@ -679,7 +630,7 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	        	importAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
+	        		colWidths: [50,120,80,80,80,80,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigNumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -757,159 +708,7 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitCalNumItemsConfigInfoTable(protocolName,unitName){
-	Ext.getCmp("importAlarmUnitCalNumItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
-		success:function(response) {
-			Ext.getCmp("importAlarmUnitCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.numericValue);
-			
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importAlarmUnitConfigCalNumItemsHandsontableHelper==null || importAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
-				importAlarmUnitConfigCalNumItemsHandsontableHelper = ImportAlarmUnitConfigCalNumItemsHandsontableHelper.createNew("importAlarmUnitCalNumItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.upperLimit+"','"+loginUserLanguageResource.lowerLimit+"','"+loginUserLanguageResource.hystersis+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'unit'},"
-						+"{data:'upperLimit'},"
-						+"{data:'lowerLimit'}," 
-						+"{data:'hystersis'}," 
-						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']},"
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
-						+"]";
-				importAlarmUnitConfigCalNumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importAlarmUnitConfigCalNumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importAlarmUnitConfigCalNumItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importAlarmUnitConfigCalNumItemsHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importAlarmUnitCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-		},
-		params: {
-			protocolName:protocolName,
-			unitName:unitName,
-			alarmType:5
-        }
-	});
-};
-
-var ImportAlarmUnitConfigCalNumItemsHandsontableHelper = {
-		createNew: function (divid) {
-	        var importAlarmUnitConfigCalNumItemsHandsontableHelper = {};
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.hot1 = '';
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.divid = divid;
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.validresult=true;//数据校验
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.colHeaders=[];
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.columns=[];
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.AllData=[];
-	        
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
-	        }
-	        
-	        importAlarmUnitConfigCalNumItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+importAlarmUnitConfigCalNumItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigCalNumItemsHandsontableHelper.divid);
-	        	importAlarmUnitConfigCalNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
-	                columns:importAlarmUnitConfigCalNumItemsHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-	                colHeaders:importAlarmUnitConfigCalNumItemsHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-
-	                    cellProperties.readOnly = true;
-	                    
-	                    if(importAlarmUnitConfigCalNumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-	    	            	&& importAlarmUnitConfigCalNumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-	                    	cellProperties.renderer = importAlarmUnitConfigCalNumItemsHandsontableHelper.addCellStyle;
-	    	            }
-	                    
-	                    return cellProperties;
-	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>=0 && coords.row>=0 
-		                	&& importAlarmUnitConfigCalNumItemsHandsontableHelper.columns[coords.col].type!='checkbox' 
-	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper!=null
-	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=''
-	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper.hot!=undefined 
-	                		&& importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=importAlarmUnitConfigCalNumItemsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
-	                }
-	        	});
-	        }
-	        return importAlarmUnitConfigCalNumItemsHandsontableHelper;
-	    }
-};
-
-function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -920,18 +719,18 @@ function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigSwitchItemsHandsontableHelper==null || importAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigSwitchItemsHandsontableHelper = ImportAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("importAlarmUnitSwitchItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.address+"','"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.switchItemAlarmValue+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'addr'},"
-						+"{data:'bitIndex'},"
-						+"{data:'meaning'}," 
-						+"{data:'value'}," 
-						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
-						+"]";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.switchItemAlarmValue+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var columns="[{data:'id'}," 
+					+"{data:'bitIndex',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
+					+"{data:'meaning'},"
+					+"{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:['开','关']},"
+					+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
+					+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
+					+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
+					+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
+					+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+					+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
+					+"]";
 				importAlarmUnitConfigSwitchItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAlarmUnitConfigSwitchItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -954,7 +753,8 @@ function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName){
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:0
+			alarmType:0,
+			calculateType:calculateType
         }
 	});
 };
@@ -982,7 +782,7 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	importAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,80,80,80,80,80],
+	        		colWidths: [50,50,120,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1060,7 +860,7 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1071,17 +871,17 @@ function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigEnumItemsHandsontableHelper==null || importAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigEnumItemsHandsontableHelper = ImportAlarmUnitConfigEnumItemsHandsontableHelper.createNew("importAlarmUnitEnumItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.address+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'addr'},"
-					 	+"{data:'value'}," 
-						+"{data:'meaning'},"
-						+"{data:'delay'}," 
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
-						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
-						+"]";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var columns="[{data:'id'}," 
+					+"{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
+					+"{data:'meaning'},"
+					+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
+					+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigEnumItemsHandsontableHelper);}}," 
+					+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
+					+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
+					+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+					+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
+					+"]";
 				importAlarmUnitConfigEnumItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAlarmUnitConfigEnumItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -1104,7 +904,8 @@ function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName){
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:1
+			alarmType:1,
+			calculateType:calculateType
         }
 	});
 };
@@ -1132,7 +933,7 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	importAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,120,80,80,80,80,80,80,80,80],
+	        		colWidths: [50,50,120,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1210,7 +1011,7 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1221,13 +1022,14 @@ function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper==null || importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.createNew("importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
 						+"]";
 				importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1251,7 +1053,8 @@ function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:4
+			alarmType:4,
+			calculateType:calculateType
         }
 	});
 };
@@ -1279,7 +1082,7 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	        	importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,80,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1357,7 +1160,7 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1368,13 +1171,14 @@ function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitNam
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigRunStatusItemsHandsontableHelper==null || importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigRunStatusItemsHandsontableHelper = ImportAlarmUnitConfigRunStatusItemsHandsontableHelper.createNew("importAlarmUnitRunStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
 				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}},"
+					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigRunStatusItemsHandsontableHelper);}}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}"
 						+"]";
 				importAlarmUnitConfigRunStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1398,7 +1202,8 @@ function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitNam
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:6
+			alarmType:6,
+			calculateType:calculateType
         }
 	});
 };
@@ -1426,7 +1231,7 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        	importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,80,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1504,7 +1309,7 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitName){
+function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1515,13 +1320,15 @@ function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitNa
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigCommStatusItemsHandsontableHelper==null || importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				importAlarmUnitConfigCommStatusItemsHandsontableHelper = ImportAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("importAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
-				var columns="[{data:'id'},{data:'title'},"
-					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper);}},"
-						+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"',"+loginUserLanguageResource.alarmLevel1+","+loginUserLanguageResource.alarmLevel2+","+loginUserLanguageResource.alarmLevel3+"]}," 
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.delay+"(s)','"+loginUserLanguageResource.retriggerTime+"(s)','"+loginUserLanguageResource.alarmLevel+"','"+loginUserLanguageResource.alarmSign+"','"+loginUserLanguageResource.isSendMessage+"','"+loginUserLanguageResource.isSendEmail+"']";
+				var columns="[{data:'id'}," 
+						+"{data:'title'},"
+					 	+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}},"
+					 	+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigCommStatusItemsHandsontableHelper);}}," 
+					 	+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
 						+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
-						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}," 
-						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:["+loginUserLanguageResource.yes+","+loginUserLanguageResource.no+"]}" 
+						+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+						+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
 						+"]";
 				importAlarmUnitConfigCommStatusItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1545,7 +1352,8 @@ function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitNa
 		params: {
 			protocolName:protocolName,
 			unitName:unitName,
-			alarmType:3
+			alarmType:3,
+			calculateType
         }
 	});
 };
@@ -1573,7 +1381,7 @@ var ImportAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        	importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,80,80,80,80,80,80],
+	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

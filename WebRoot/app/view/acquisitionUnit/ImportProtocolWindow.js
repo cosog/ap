@@ -659,6 +659,10 @@ adviceDataInfoColor = function(val,o,p,e) {
 }
 
 function saveSingelImportedProtocol(protocolName,deviceType,saveSign,msg){
+	protocolName = decodeURIComponent(protocolName);
+	deviceType = decodeURIComponent(deviceType);
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
 		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
 			if (btn == "yes") {
@@ -756,9 +760,15 @@ iconImportSingleProtocolAction = function(value, e, record) {
 	var saveSign=record.data.saveSign;
 	var msg=record.data.msg;
 	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+	
+	protocolName = encodeURIComponent(protocolName || '');
+	saveSign = encodeURIComponent(saveSign || '');
+	msg = encodeURIComponent(msg || '');
+	deviceType = encodeURIComponent(deviceType || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedProtocol(\""+protocolName+"\",\""+deviceType+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedProtocol('"+protocolName+"','"+deviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	
 	

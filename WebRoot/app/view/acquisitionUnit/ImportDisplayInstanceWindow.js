@@ -293,14 +293,24 @@ iconImportSingleDisplayInstanceAction = function(value, e, record) {
 	var acqUnitName=record.data.acqUnitName;
 	var protocolName=record.data.protocol;
 
+	instanceName = encodeURIComponent(instanceName || '');
+	displayUnitName = encodeURIComponent(displayUnitName || '');
+	acqUnitName = encodeURIComponent(acqUnitName || '');
+	protocolName = encodeURIComponent(protocolName || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance(\""+instanceName+"\",\""+displayUnitName+"\,\""+acqUnitName+"\,\""+protocolName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedDisplayInstance('"+instanceName+"','"+displayUnitName+"','"+acqUnitName+"','"+protocolName+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
 function saveSingelImportedDisplayInstance(instanceName,displayUnitName,acqUnitName,protocolName){
+	instanceName = decodeURIComponent(instanceName);
+	displayUnitName = decodeURIComponent(displayUnitName);
+	acqUnitName = decodeURIComponent(acqUnitName);
+	protocolName = decodeURIComponent(protocolName);
+	
 	Ext.Ajax.request({
 		url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayInstance',
 		method : "POST",

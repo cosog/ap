@@ -350,6 +350,10 @@ adviceImportAcqUnitCollisionInfoColor = function(val,o,p,e) {
 }
 
 function saveSingelImportedAcqUnit(unitName,protocolName,saveSign,msg){
+	unitName = decodeURIComponent(unitName);
+	protocolName = decodeURIComponent(protocolName);
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
 		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
 			if (btn == "yes") {
@@ -459,9 +463,14 @@ iconImportSingleAcqUnitAction = function(value, e, record) {
 	var protocolName=record.data.protocol;
 	var saveSign=record.data.saveSign;
 	var msg=record.data.msg;
+	
+	unitName = encodeURIComponent(unitName || '');
+	protocolName = encodeURIComponent(protocolName || '');
+	saveSign = encodeURIComponent(saveSign || '');
+	msg = encodeURIComponent(msg || '');
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqUnit(\""+unitName+"\",\""+protocolName+"\",\""+saveSign+"\",\""+msg+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqUnit('"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	
 	return resultstring;

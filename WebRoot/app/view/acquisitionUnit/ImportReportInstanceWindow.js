@@ -346,6 +346,8 @@ adviceImportReportInstanceCollisionInfoColor = function(val,o,p,e) {
 }
 
 function saveSingelImportedReportInstance(instanceName,unitName){
+	instanceName = decodeURIComponent(instanceName);
+	unitName = decodeURIComponent(unitName);
 	Ext.Ajax.request({
 		url : context + '/acquisitionUnitManagerController/saveSingelImportedReportInstance',
 		method : "POST",
@@ -421,9 +423,12 @@ iconImportSingleReportInstanceAction = function(value, e, record) {
 	var instanceName=record.data.text;
 	var unitName=record.data.unitName;
 
+	instanceName = encodeURIComponent(instanceName || '');
+	unitName = encodeURIComponent(unitName || '');
+	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedReportInstance(\""+instanceName+"\",\""+unitName+"\")>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedReportInstance('"+instanceName+"','"+unitName+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

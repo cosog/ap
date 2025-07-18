@@ -211,17 +211,49 @@ iconDictItemConfig = function(value, e, record) {
 		var status_ru=record.data.status_ru;
 		var configItemName=record.data.configItemName;
 		
+		
+		dataitemid = encodeURIComponent(dataitemid || '');
+		name = encodeURIComponent(name || '');
+		code = encodeURIComponent(code || '');
+		datavalue = encodeURIComponent(datavalue || '');
+		sorts = encodeURIComponent(sorts || '');
+		columnDataSource = encodeURIComponent(columnDataSource || '');
+		deviceType = encodeURIComponent(deviceType || '');
+		dataSource = encodeURIComponent(dataSource || '');
+		dataUnit = encodeURIComponent(dataUnit || '');
+		status = encodeURIComponent(status || '');
+		status_cn = encodeURIComponent(status_cn || '');
+		status_en = encodeURIComponent(status_en || '');
+		status_ru = encodeURIComponent(status_ru || '');
+		configItemName = encodeURIComponent(configItemName || '');
+		
 		var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " 
 			+"onclick=callBackDictItemConfig(" 
-			+"\""+dataitemid+"\",\""+name+"\",\""+code+"\",\""+datavalue+"\",\""+sorts+"\"," 
-			+"\""+columnDataSource+"\",\""+deviceType+"\",\""+dataSource+"\",\""+dataUnit+"\"," 
-			+"\""+status+"\",\""+status_cn+"\",\""+status_en+"\",\""+status_ru+"\",\""+configItemName+"\")>"
+			+"'"+dataitemid+"','"+name+"','"+code+"','"+datavalue+"','"+sorts+"'," 
+			+"'"+columnDataSource+"','"+deviceType+"','"+dataSource+"','"+dataUnit+"'," 
+			+"'"+status+"','"+status_cn+"','"+status_en+"','"+status_ru+"','"+configItemName+"')>"
 			+loginUserLanguageResource.config+"...</a>";
 	}
 	return resultstring;
 }
 
 var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName) {
+	dataitemid = decodeURIComponent(dataitemid);
+	name = decodeURIComponent(name);
+	code = decodeURIComponent(code);
+	datavalue = decodeURIComponent(datavalue);
+	sorts = decodeURIComponent(sorts);
+	columnDataSource = decodeURIComponent(columnDataSource);
+	deviceType = decodeURIComponent(deviceType);
+	dataSource = decodeURIComponent(dataSource);
+	dataUnit = decodeURIComponent(dataUnit);
+	status = decodeURIComponent(status);
+	status_cn = decodeURIComponent(status_cn);
+	status_en = decodeURIComponent(status_en);
+	status_ru = decodeURIComponent(status_ru);
+	configItemName = decodeURIComponent(configItemName);
+	
+	
 	var adddataitemwin = Ext.create("AP.view.data.DataitemsInfoWin", {
         title: loginUserLanguageResource.editDataItem
     });

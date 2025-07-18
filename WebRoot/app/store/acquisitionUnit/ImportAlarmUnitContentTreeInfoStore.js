@@ -81,69 +81,22 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmUnitContentTreeInfoStore', {
                     }],
                     listeners: {
                         select( v, record, index, eOpts ){
-                        	var activeId = Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
-                        	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitNumItemsConfigInfoTable('','');
-                            			CreateImportAlarmUnitCalNumItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            		CreateImportAlarmUnitCalNumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitSwitchItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitEnumItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitRunStatusItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmUnitCommStatusItemsConfigInfoTable('','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text);
+                        	if(record.data.classes!=1){
+                        		clearImportAlarmUnitHandsontable();
+                        	}else{
+                        		var activeId = Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
+                            	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
+                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
                             	}
                         	}
                         }

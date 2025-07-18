@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3099,6 +3100,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			List<String> dataTypeList=new ArrayList<String>();
 			
+			List<String> itemsUnitList=new ArrayList<String>();
+			
 			if("1".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
 						+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
@@ -3114,22 +3117,35 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 					String itemName=obj[0]+"";
 					String itemCode=obj[1]+"";
-					
+					String unit="";
 					if(itemCode.toUpperCase().startsWith("C_")){
 						if(loadProtocolMappingColumnMap.containsKey(itemCode)){
 							itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
 						}
 					}else{
 						if(StringManagerUtils.stringToInteger(reportType)==2){
-							itemName=MemoryDataManagerTask.getTimingTotalCalItemNameByCode(itemName,itemCode,language);
+//							itemName=MemoryDataManagerTask.getTimingTotalCalItemNameByCode(itemName,itemCode,language);
+							CalItem calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(itemCode, language);
+							if(calItem!=null){
+								itemName=calItem.getName();
+								unit=calItem.getUnit();
+							}
+							
 						}else{
-							itemName=MemoryDataManagerTask.getTotalCalItemNameByCode(itemName,itemCode,language);
+//							itemName=MemoryDataManagerTask.getTotalCalItemNameByCode(itemName,itemCode,language);
+							
+							CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(itemCode, language);
+							if(calItem!=null){
+								itemName=calItem.getName();
+								unit=calItem.getUnit();
+							}
 						}
 					}
 					
 					
 					itemsList.add(itemName);
 					itemsCodeList.add(itemCode);
+					itemsUnitList.add(unit);
 					itemsSortList.add(obj[2]+"");
 					itemsShowLevelList.add(obj[3]+"");
 					
@@ -3199,6 +3215,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
 						itemName=itemsList.get(k);
 						itemCode=itemsCodeList.get(k);
+						
+						unit=itemsUnitList.get(k);
 						
 						sort=itemsSortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
@@ -10934,9 +10952,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolAlarmUnitExportData(String unitListStr){
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
-		String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ALARM_UNIT_CONF t where t.id in("+unitListStr+")";
+		String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark,decode(t.calculatetype,null,0,t.calculatetype) as calculatetype "
+				+ " from TBL_ALARM_UNIT_CONF t where t.id in("+unitListStr+")";
 		String alarmItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.itemaddr,t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
-				+ " t.alarmlevel,t.alarmsign,t.type,t.bitindex,t.issendmessage,t.issendmail,t.unitid "
+				+ " t.alarmlevel,t.alarmsign,t.type,t.bitindex,t.issendmessage,t.issendmail,"
+				+ " t.retriggertime,"
+				+ " t.unitid "
 				+ " from tbl_alarm_item2unit_conf t,  TBL_ALARM_UNIT_CONF t2 "
 				+ " where t.unitid=t2.id "
 				+ " and t2.id in("+unitListStr+") "
@@ -10953,10 +10974,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"UnitName\":\""+alarmUnitObj[2]+"\",");
 			result_json.append("\"Protocol\":\""+alarmUnitObj[3]+"\",");
 			result_json.append("\"Remark\":\""+alarmUnitObj[4]+"\",");
+			result_json.append("\"CalculateType\":\""+alarmUnitObj[5]+"\",");
 			result_json.append("\"ItemList\":[");
 			for(int j=0;j<alarmItemQueryList.size();j++){
 				Object[] alarmItemObj=(Object[])alarmItemQueryList.get(j);
-				if(StringManagerUtils.stringToInteger(alarmItemObj[16]+"")==unitId){
+				if(StringManagerUtils.stringToInteger(alarmItemObj[alarmItemObj.length-1]+"")==unitId){
 					result_json.append("{");
 					result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(alarmItemObj[0]+"")+",");
 					result_json.append("\"ItemId\":\""+(StringManagerUtils.isInteger(alarmItemObj[1]+"")?StringManagerUtils.stringToInteger(alarmItemObj[1]+""):"")+"\",");
@@ -10978,7 +11000,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"BitIndex\":\""+(StringManagerUtils.isInteger(alarmItemObj[13]+"")?StringManagerUtils.stringToInteger(alarmItemObj[13]+""):"")+"\",");
 					
 					result_json.append("\"SendMessage\":"+StringManagerUtils.stringToInteger(alarmItemObj[14]+"")+",");
-					result_json.append("\"SendMail\":"+StringManagerUtils.stringToInteger(alarmItemObj[15]+"")+"");
+					result_json.append("\"SendMail\":"+StringManagerUtils.stringToInteger(alarmItemObj[15]+"")+",");
+					result_json.append("\"RetriggerTime\":\""+(StringManagerUtils.isNum(alarmItemObj[16]+"")?StringManagerUtils.stringToFloat(alarmItemObj[16]+""):"")+"\"");
 					result_json.append("},");
 				}
 			}
@@ -10995,7 +11018,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getProtocolDisplayUnitExportData(String unitListStr){
@@ -12035,6 +12058,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				tree_json.append("\"text\":\""+uploadUnitList.get(i).getUnitName()+"\",");
 				tree_json.append("\"code\":\""+uploadUnitList.get(i).getUnitCode()+"\",");
 				tree_json.append("\"protocol\":\""+uploadUnitList.get(i).getProtocol()+"\",");
+				tree_json.append("\"calculateType\":\""+uploadUnitList.get(i).getCalculateType()+"\",");
 				tree_json.append("\"msg\":\""+msg+"\",");
 				tree_json.append("\"saveSign\":\""+saveSign+"\",");
 				tree_json.append("\"iconCls\": \"acqUnit\",");
@@ -12055,11 +12079,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getImportAlarmUnitItemsData(List<ExportAlarmUnitData> uploadUnitList,String protocolName,String unitName,String alarmType,User user){
+	public String getImportAlarmUnitItemsData(List<ExportAlarmUnitData> uploadUnitList,String protocolName,String unitName,String alarmTypeStr,String calculateType,User user){
 		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		int alarmType=StringManagerUtils.stringToInteger(alarmTypeStr);
 		result_json.append("{ \"success\":true,\"columns\":[],");
 		result_json.append("\"totalRoot\":[");
+		
+		List<CalItem> calItemList=null;
+		if(StringManagerUtils.stringToInteger(calculateType)==1){
+			calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
+		}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+			calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
+		}else{
+			calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
+		}
 		
 		Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
 		
@@ -12070,7 +12105,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(protocolName.equalsIgnoreCase(uploadUnitList.get(i).getProtocol()) && unitName.equalsIgnoreCase(uploadUnitList.get(i).getUnitName())){
 					if(uploadUnitList.get(i).getItemList()!=null && uploadUnitList.get(i).getItemList().size()>0){
 						for(int j=0;j<uploadUnitList.get(i).getItemList().size();j++){
-							if(StringManagerUtils.stringToInteger(alarmType)==uploadUnitList.get(i).getItemList().get(j).getType()){
+							boolean a= (alarmType==2 &&( StringManagerUtils.existOrNot( Arrays.asList(2,5,7), uploadUnitList.get(i).getItemList().get(j).getType())));
+							if((alarmType==2 &&( StringManagerUtils.existOrNot( Arrays.asList(2,5,7), uploadUnitList.get(i).getItemList().get(j).getType())))
+									|| alarmType==uploadUnitList.get(i).getItemList().get(j).getType()){
 								alarmItemList.add(uploadUnitList.get(i).getItemList().get(j));
 							}
 						}
@@ -12089,8 +12126,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				alarmLevel=languageResourceMap.get("alarmLevel2");
 			}else if(alarmItemList.get(i).getAlarmLevel()==300){
 				alarmLevel=languageResourceMap.get("alarmLevel3");
-			}else if(alarmItemList.get(i).getAlarmLevel()==400){
-				alarmLevel=languageResourceMap.get("alarmLevel4");
+			}else{
+				alarmLevel=languageResourceMap.get("normal");
 			}
 			
 			if(alarmItemList.get(i).getType()==0 && protocol!=null && protocol.getItems()!=null){
@@ -12129,16 +12166,39 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				value="1".equalsIgnoreCase(value)?languageResourceMap.get("switchingOpenValue"):languageResourceMap.get("switchingCloseValue");
 			}
 
+			String unit="";
+			String dataSource="";
+			if(alarmItemList.get(i).getType()==2){
+				ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, alarmItemList.get(i).getItemName());
+				unit=item!=null?item.getUnit():"";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","0", user.getLanguageName());
+			}else if(alarmItemList.get(i).getType()==7){
+				ModbusProtocolConfig.ExtendedField item=MemoryDataManagerTask.getProtocolExtendedField(protocol, alarmItemList.get(i).getItemName());
+				unit=item!=null?item.getUnit():"";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","5", user.getLanguageName());
+			}else if(alarmItemList.get(i).getType()==5){
+				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(alarmItemList.get(i).getItemCode(), language);
+				unit=calItem!=null?calItem.getUnit():"";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","1", user.getLanguageName());
+			}else if(alarmItemList.get(i).getType()==4){
+				WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(alarmItemList.get(i).getItemCode(), language);
+				if(workType!=null){
+					alarmItemList.get(i).setItemName(workType.getResultName());
+				}
+			}
+			
 			result_json.append("{\"id\":"+(i+1)+","
 					+ "\"title\":\""+alarmItemList.get(i).getItemName()+"\","
 					+ "\"code\":\""+alarmItemList.get(i).getItemCode()+"\","
-					+ "\"addr\":\""+alarmItemList.get(i).getItemAddr()+"\","
+					+ "\"unit\":\""+unit+"\","
+					+ "\"dataSource\":\""+dataSource+"\","
 					+ "\"bitIndex\":\""+alarmItemList.get(i).getBitIndex()+"\","
 					+ "\"value\":\""+value+"\","
 					+ "\"upperLimit\":\""+alarmItemList.get(i).getUpperLimit()+"\","
 					+ "\"lowerLimit\":\""+alarmItemList.get(i).getLowerLimit()+"\","
 					+ "\"hystersis\":\""+alarmItemList.get(i).getHystersis()+"\","
-					+ "\"delay\":\""+alarmItemList.get(i).getDelay()+"\","
+					+ "\"delay\":\""+(StringManagerUtils.stringToInteger(alarmItemList.get(i).getDelay())>0?alarmItemList.get(i).getDelay():"")+"\","
+					+ "\"retriggerTime\":\""+(StringManagerUtils.stringToInteger(alarmItemList.get(i).getRetriggerTime())>0?alarmItemList.get(i).getRetriggerTime():"")+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
 					+ "\"alarmSign\":\""+(alarmItemList.get(i).getAlarmSign()==1?languageResourceMap.get("enable"):languageResourceMap.get("disable"))+"\","
 					+ "\"meaning\":\""+meaning+"\","
@@ -12643,7 +12703,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(uploadUnitList!=null && uploadUnitList.size()>0){
 			for(int i=0;i<uploadUnitList.size();i++){
 				if(unitName.equalsIgnoreCase(uploadUnitList.get(i).getUnitName()) ){
-					if(uploadUnitList.get(i).getCalculateType()==2){
+					if(StringManagerUtils.stringToInteger(reportType)==2){
 						if(uploadUnitList.get(i).getCalculateType()==1){
 							calItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
 						}else if(uploadUnitList.get(i).getCalculateType()==2){
@@ -12689,6 +12749,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if((reportItemList.get(i).getItemCode()).equalsIgnoreCase(calItem.getCode()) ){
 					unit=calItem.getUnit();
 					dataType=calItem.getDataType()+"";
+					reportItemList.get(i).setItemName(calItem.getName());
 					break;
 				}
 			}
@@ -12698,7 +12759,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sumSignStr=reportItemList.get(i).getSumSign();
 			String averageSignStr=reportItemList.get(i).getAverageSign();
 			String reportCurveConfShowValue="";
-			if(reportItemList.get(i).getReportCurveConf()!=null){
+			if(reportItemList.get(i).getReportCurveConf()!=null && StringManagerUtils.isNotNull(reportItemList.get(i).getReportCurveConf().getColor())){
 				reportCurveConfShowValue=reportItemList.get(i).getReportCurveConf().getSort()+";"+(reportItemList.get(i).getReportCurveConf().getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportItemList.get(i).getReportCurveConf().getColor();
 			}
 			
@@ -12731,11 +12792,32 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"dataType\":"+dataType+","
 					+ "\"prec\":\""+reportItemList.get(i).getPrec()+""+"\","
 					+ "\"totalType\":\""+reportItemList.get(i).getTotalType()+"\","
-					+ "\"dataSource\":\""+reportItemList.get(i).getDataSource()+"\","
+					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",reportItemList.get(i).getDataSource(), language)+"\","
 					+ "\"unit\":\""+unit+"\","
 					+ "\"sort\":\""+reportItemList.get(i).getSort()+""+"\","
 					+ "\"matrix\":\""+reportItemList.get(i).getMatrix()+""+"\""
 					+ "},");
+			
+//			result_json.append("{"
+//					+ "\"id\":"+(index)+","
+//					+ "\"headerName\":\""+headerName+"\","
+//					+ "\"itemName\":\""+itemName+"\","
+//					+ "\"unit\":\""+unit+"\","
+//					+ "\"dataSource\":\""+dataSource+"\","
+//					+ "\"totalType\":\""+totalType+"\","
+//					+ "\"showLevel\":\""+showLevel+"\","
+//					+ "\"sort\":\""+sort+"\","
+//					+ "\"prec\":\""+prec+"\","
+//					+ "\"sumSign\":"+sumSign+","
+//					+ "\"averageSign\":"+averageSign+","
+//					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+//					+ "\"reportCurveConf\":"+reportCurveConf+","
+//					+ "\"curveStatType\":\""+curveStatType+"\","
+//					+ "\"dataType\":\""+dataType+"\","
+//					+ "\"itemCode\":\""+itemCode+"\","
+//					+ "\"remark\":\"\","
+//					+ "\"action\":\""+action+"\""
+//					+ "},");
 		}
 		
 		if(result_json.toString().endsWith(",")){

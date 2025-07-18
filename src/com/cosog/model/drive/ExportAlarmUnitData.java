@@ -13,6 +13,8 @@ public class ExportAlarmUnitData {
     private String Protocol;
 
     private String Remark;
+    
+    private int CalculateType;
 
     private List<AlarmItem> ItemList;
 
@@ -74,6 +76,8 @@ public class ExportAlarmUnitData {
 	    private String Hystersis;
 
 	    private String Delay;
+	    
+	    private String RetriggerTime;
 
 	    private int AlarmLevel;
 
@@ -183,5 +187,18 @@ public class ExportAlarmUnitData {
 	    public int getSendMail(){
 	        return this.SendMail;
 	    }
+		public String getRetriggerTime() {
+			return RetriggerTime;
+		}
+		public void setRetriggerTime(String retriggerTime) {
+			RetriggerTime = retriggerTime;
+		}
+	}
+
+	public int getCalculateType() {
+		return CalculateType;
+	}
+	public void setCalculateType(int calculateType) {
+		CalculateType = calculateType;
 	}
 }

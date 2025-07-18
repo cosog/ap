@@ -6111,7 +6111,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String alarmType=ParamUtils.getParameter(request, "alarmType");
-		
+		String calculateType=ParamUtils.getParameter(request, "calculateType");
 		
 		List<ExportAlarmUnitData> uploadUnitList=null;
 		User user = (User) session.getAttribute("userLogin");
@@ -6123,7 +6123,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 			
 		}
-		String json = acquisitionUnitItemManagerService.getImportAlarmUnitItemsData(uploadUnitList,protocolName,unitName,alarmType,user);
+		String json = acquisitionUnitItemManagerService.getImportAlarmUnitItemsData(uploadUnitList,protocolName,unitName,alarmType,calculateType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

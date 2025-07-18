@@ -526,8 +526,14 @@ iconHistoryQueryDetailsData = function(value, e, o) {
 	var deviceId=o.data.deviceId;
 	var details=o.data.details;
 	var calculateType=o.data.calculateType;
+	
+	recordId = encodeURIComponent(recordId || '');
+	deviceName = encodeURIComponent(deviceName || '');
+	deviceId = encodeURIComponent(deviceId || '');
+	calculateType = encodeURIComponent(calculateType || '');
+	
 	var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-			"onclick=callBackHistoryData(\""+recordId+"\",\""+deviceId+"\",\""+deviceName+"\",\""+calculateType+"\")>"+details+"...</a>";
+			"onclick=callBackHistoryData('"+recordId+"','"+deviceId+"','"+deviceName+"','"+calculateType+"')>"+details+"...</a>";
 	return resultstring;
 }
 
@@ -551,6 +557,11 @@ var callBackGraphical = function(type,id) {
 }
 
 var callBackHistoryData = function(recordId,deviceId,deviceName,calculateType) {
+	recordId = decodeURIComponent(recordId);
+	deviceId = decodeURIComponent(deviceId);
+	deviceName = decodeURIComponent(deviceName);
+	calculateType = decodeURIComponent(calculateType);
+	
 	var HistoryQueryDataDetailsWindow = Ext.create("AP.view.historyQuery.HistoryQueryDataDetailsWindow");
 	Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").setValue(recordId);
 	Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").setValue(deviceId);

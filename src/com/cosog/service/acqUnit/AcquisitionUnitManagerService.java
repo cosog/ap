@@ -13232,7 +13232,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getName()) 
 										&& (obj[1]+"").equalsIgnoreCase(uploadInstanceList.get(i).getDisplayUnitName())
 										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getAcqUnitName())
-										&& (obj[2]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
+										&& (obj[3]+"").equalsIgnoreCase(uploadInstanceList.get(i).getProtocol())
 										){
 									saveSign=1;//覆盖
 									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");

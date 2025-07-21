@@ -13,8 +13,8 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1500,
-    minWidth: 1500,
+    width: 500,
+    minWidth: 500,
     height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -104,182 +104,191 @@ Ext.define("AP.view.acquisitionUnit.ImportReportInstanceWindow", {
                 	}
                 }
     	    }],
-            layout: 'border',
+    	    layout: 'border',
             items: [{
-            	region: 'west',
-            	width:'25%',
+            	region: 'center',
             	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
             	id:"importReportInstanceTreePanel_Id"
-            },{
-            	region: 'center',
-            	xtype: 'tabpanel',
-            	id:"importReportInstanceReportTemplateTabPanel_Id",
-                activeTab: 0,
-                border: false,
-                tabPosition: 'top',
-                items: [{
-                	title:loginUserLanguageResource.singleDeviceReport,
-                	iconCls: 'check3',
-                	id:'importReportInstanceSingleWellReportTemplatePanel_Id',
-                	xtype: 'tabpanel',
-                	activeTab: 0,
-                    border: false,
-                    tabPosition: 'top',
-                    items: [{
-                    	id:'importReportInstanceSingleWellDailyReportTemplatePanel_Id',
-                    	title:loginUserLanguageResource.hourlyReport,
-                    	iconCls: 'check3',
-                    	border: false,
-                    	region: 'center',
-                    	layout: "border",
-                    	items: [{
-                    		region: 'center',
-                    		layout: "border",
-                    		items: [{
-                        		region: 'center',
-                        		title:loginUserLanguageResource.deviceHourlyReportTemplate,
-                        		id:"ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id",
-                                layout: 'fit',
-                                border: false,
-                                html:'<div class="ReportInstanceSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	
-                                    }
-                                }
-                        	},{
-                        		region: 'south',
-                            	height:'50%',
-                            	title:loginUserLanguageResource.deviceHourlyReportContent,
-                            	border: false,
-                            	collapsible: true,
-                                split: true,
-                            	layout: 'fit',
-                            	id:"ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id",
-                                layout: 'fit',
-                                html:'<div class="ReportInstanceSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	
-                                    }
-                                }
-                        	}]
-                    	}]
-                    },{
-                    	id:'importReportInstanceSingleWellRangeReportTemplatePanel_Id',
-                    	title:loginUserLanguageResource.dailyReport,
-                    	border: false,
-                    	region: 'center',
-                    	layout: "border",
-                    	items: [{
-                    		region: 'center',
-                    		layout: "border",
-                    		items: [{
-                        		region: 'center',
-                        		title:loginUserLanguageResource.deviceDailyReportTemplate,
-                        		id:"ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id",
-                                layout: 'fit',
-                                border: false,
-                                html:'<div class="ReportInstanceSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	
-                                    }
-                                }
-                        	},{
-                        		region: 'south',
-                            	height:'50%',
-                            	title:loginUserLanguageResource.deviceDailyReportContent,
-                            	border: false,
-                            	collapsible: true,
-                                split: true,
-                            	layout: 'fit',
-                            	id:"ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id",
-                                layout: 'fit',
-                                html:'<div class="ReportInstanceSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
-                                listeners: {
-                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	
-                                    }
-                                }
-                        	}]
-                    	}]
-                    }],
-                    listeners: {
-                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-            				oldCard.setIconCls(null);
-            				newCard.setIconCls('check3');
-            			},
-            			tabchange: function (tabPanel, newCard, oldCard, obj) {
-            				
-            			}
-                    }
-                },{
-                	title:loginUserLanguageResource.areaReport,
-                	id:'importReportInstanceProductionReportTemplatePanel_Id',
-                	xtype: 'tabpanel',
-                	activeTab: 0,
-                    border: false,
-                    tabPosition: 'top',
-                    items: [{
-                    	id:'importReportInstanceProductionRangeReportTemplatePanel_Id',
-                    	title:loginUserLanguageResource.dailyReport,
-                    	iconCls: 'check3',
-                    	border: false,
-                		layout: "border",
-                		items: [{
-                    		region: 'center',
-                    		title:loginUserLanguageResource.areaDailyReportTemplate,
-                    		id:"importReportInstanceProductionTemplateTableInfoPanel_Id",
-                            layout: 'fit',
-                            border: false,
-                            html:'<div class="importReportInstanceProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportInstanceProductionTemplateTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	
-                                }
-                            }
-                    	},{
-                    		region: 'south',
-                        	height:'50%',
-                        	title:loginUserLanguageResource.areaDailyReportContent,
-                        	border: false,
-                        	collapsible: true,
-                            split: true,
-                        	layout: 'fit',
-                        	id:"ProductionReportInstanceContentConfigTableInfoPanel_Id",
-                            layout: 'fit',
-                            html:'<div class="ProductionReportInstanceContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProductionReportInstanceContentConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	
-                                }
-                            }
-                    	}]
-                    }],
-                    listeners: {
-                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-            				oldCard.setIconCls(null);
-            				newCard.setIconCls('check3');
-            			},
-            			tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    		
-                    	}
-                    }
-                }],
-                listeners: {
-                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check3');
-        			},
-        			tabchange: function (tabPanel, newCard, oldCard, obj) {
-        				
-        			}
-                }
             }],
+//            layout: 'border',
+//            items: [{
+//            	region: 'west',
+//            	width:'25%',
+//            	title:loginUserLanguageResource.instanceList,
+//            	layout: 'fit',
+//            	split: true,
+//                collapsible: true,
+//            	id:"importReportInstanceTreePanel_Id"
+//            },{
+//            	region: 'center',
+//            	xtype: 'tabpanel',
+//            	id:"importReportInstanceReportTemplateTabPanel_Id",
+//                activeTab: 0,
+//                border: false,
+//                tabPosition: 'top',
+//                items: [{
+//                	title:loginUserLanguageResource.singleDeviceReport,
+//                	iconCls: 'check3',
+//                	id:'importReportInstanceSingleWellReportTemplatePanel_Id',
+//                	xtype: 'tabpanel',
+//                	activeTab: 0,
+//                    border: false,
+//                    tabPosition: 'top',
+//                    items: [{
+//                    	id:'importReportInstanceSingleWellDailyReportTemplatePanel_Id',
+//                    	title:loginUserLanguageResource.hourlyReport,
+//                    	iconCls: 'check3',
+//                    	border: false,
+//                    	region: 'center',
+//                    	layout: "border",
+//                    	items: [{
+//                    		region: 'center',
+//                    		layout: "border",
+//                    		items: [{
+//                        		region: 'center',
+//                        		title:loginUserLanguageResource.deviceHourlyReportTemplate,
+//                        		id:"ReportInstanceSingleWellDailyReportTemplateTableInfoPanel_Id",
+//                                layout: 'fit',
+//                                border: false,
+//                                html:'<div class="ReportInstanceSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
+//                                listeners: {
+//                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                    	
+//                                    }
+//                                }
+//                        	},{
+//                        		region: 'south',
+//                            	height:'50%',
+//                            	title:loginUserLanguageResource.deviceHourlyReportContent,
+//                            	border: false,
+//                            	collapsible: true,
+//                                split: true,
+//                            	layout: 'fit',
+//                            	id:"ReportInstanceSingleWellDailyReportContentConfigTableInfoPanel_Id",
+//                                layout: 'fit',
+//                                html:'<div class="ReportInstanceSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
+//                                listeners: {
+//                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                    	
+//                                    }
+//                                }
+//                        	}]
+//                    	}]
+//                    },{
+//                    	id:'importReportInstanceSingleWellRangeReportTemplatePanel_Id',
+//                    	title:loginUserLanguageResource.dailyReport,
+//                    	border: false,
+//                    	region: 'center',
+//                    	layout: "border",
+//                    	items: [{
+//                    		region: 'center',
+//                    		layout: "border",
+//                    		items: [{
+//                        		region: 'center',
+//                        		title:loginUserLanguageResource.deviceDailyReportTemplate,
+//                        		id:"ReportInstanceSingleWellRangeReportTemplateTableInfoPanel_Id",
+//                                layout: 'fit',
+//                                border: false,
+//                                html:'<div class="ReportInstanceSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
+//                                listeners: {
+//                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                    	
+//                                    }
+//                                }
+//                        	},{
+//                        		region: 'south',
+//                            	height:'50%',
+//                            	title:loginUserLanguageResource.deviceDailyReportContent,
+//                            	border: false,
+//                            	collapsible: true,
+//                                split: true,
+//                            	layout: 'fit',
+//                            	id:"ReportInstanceSingleWellRangeReportContentConfigTableInfoPanel_Id",
+//                                layout: 'fit',
+//                                html:'<div class="ReportInstanceSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportInstanceSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
+//                                listeners: {
+//                                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                    	
+//                                    }
+//                                }
+//                        	}]
+//                    	}]
+//                    }],
+//                    listeners: {
+//                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+//            				oldCard.setIconCls(null);
+//            				newCard.setIconCls('check3');
+//            			},
+//            			tabchange: function (tabPanel, newCard, oldCard, obj) {
+//            				
+//            			}
+//                    }
+//                },{
+//                	title:loginUserLanguageResource.areaReport,
+//                	id:'importReportInstanceProductionReportTemplatePanel_Id',
+//                	xtype: 'tabpanel',
+//                	activeTab: 0,
+//                    border: false,
+//                    tabPosition: 'top',
+//                    items: [{
+//                    	id:'importReportInstanceProductionRangeReportTemplatePanel_Id',
+//                    	title:loginUserLanguageResource.dailyReport,
+//                    	iconCls: 'check3',
+//                    	border: false,
+//                		layout: "border",
+//                		items: [{
+//                    		region: 'center',
+//                    		title:loginUserLanguageResource.areaDailyReportTemplate,
+//                    		id:"importReportInstanceProductionTemplateTableInfoPanel_Id",
+//                            layout: 'fit',
+//                            border: false,
+//                            html:'<div class="importReportInstanceProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportInstanceProductionTemplateTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	
+//                                }
+//                            }
+//                    	},{
+//                    		region: 'south',
+//                        	height:'50%',
+//                        	title:loginUserLanguageResource.areaDailyReportContent,
+//                        	border: false,
+//                        	collapsible: true,
+//                            split: true,
+//                        	layout: 'fit',
+//                        	id:"ProductionReportInstanceContentConfigTableInfoPanel_Id",
+//                            layout: 'fit',
+//                            html:'<div class="ProductionReportInstanceContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProductionReportInstanceContentConfigTableInfoDiv_id"></div></div>',
+//                            listeners: {
+//                                resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                                	
+//                                }
+//                            }
+//                    	}]
+//                    }],
+//                    listeners: {
+//                    	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+//            				oldCard.setIconCls(null);
+//            				newCard.setIconCls('check3');
+//            			},
+//            			tabchange: function (tabPanel, newCard, oldCard, obj) {
+//                    		
+//                    	}
+//                    }
+//                }],
+//                listeners: {
+//                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+//        				oldCard.setIconCls(null);
+//        				newCard.setIconCls('check3');
+//        			},
+//        			tabchange: function (tabPanel, newCard, oldCard, obj) {
+//        				
+//        			}
+//                }
+//            }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
                 	clearImportReportInstanceHandsontable();
@@ -345,36 +354,73 @@ adviceImportReportInstanceCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedReportInstance(instanceName,unitName){
+function saveSingelImportedReportInstance(instanceName,unitName,saveSign,msg){
 	instanceName = decodeURIComponent(instanceName);
 	unitName = decodeURIComponent(unitName);
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedReportInstance',
-		method : "POST",
-		params : {
-			instanceName : instanceName,
-			unitName : unitName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id").getStore().load();
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedReportInstance',
+					method : "POST",
+					params : {
+						instanceName : instanceName,
+						unitName : unitName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id").getStore().load();
 
-			var treeGridPanel = Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
-            if (isNotVal(treeGridPanel)) {
-            	treeGridPanel.getStore().load();
-            }else{
-            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore');
-            }
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+						var treeGridPanel = Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
+			            if (isNotVal(treeGridPanel)) {
+			            	treeGridPanel.getStore().load();
+			            }else{
+			            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore');
+			            }
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedReportInstance',
+			method : "POST",
+			params : {
+				instanceName : instanceName,
+				unitName : unitName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportReportInstanceContentTreeGridPanel_Id").getStore().load();
+
+				var treeGridPanel = Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
+	            if (isNotVal(treeGridPanel)) {
+	            	treeGridPanel.getStore().load();
+	            }else{
+	            	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore');
+	            }
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedReportInstance(){
@@ -420,15 +466,18 @@ function saveAllImportedReportInstance(){
 
 iconImportSingleReportInstanceAction = function(value, e, record) {
 	var resultstring='';
-	var instanceName=record.data.text;
-	var unitName=record.data.unitName;
-
-	instanceName = encodeURIComponent(instanceName || '');
-	unitName = encodeURIComponent(unitName || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var instanceName=record.data.text;
+		var unitName=record.data.unitName;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		instanceName = encodeURIComponent(instanceName || '');
+		unitName = encodeURIComponent(unitName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
+		
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedReportInstance('"+instanceName+"','"+unitName+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedReportInstance('"+instanceName+"','"+unitName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

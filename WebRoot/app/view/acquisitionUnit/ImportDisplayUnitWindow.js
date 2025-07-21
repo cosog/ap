@@ -253,19 +253,18 @@ adviceImportDisplayUnitCollisionInfoColor = function(val,o,p,e) {
 
 iconImportSingleDisplayUnitAction = function(value, e, record) {
 	var resultstring='';
-	var unitName=record.data.text;
-	var acqUnit=record.data.acqUnit;
-	var protocolName=record.data.protocol;
-	var saveSign=record.data.saveSign;
-	var msg=record.data.msg;
-	
-	unitName = encodeURIComponent(unitName || '');
-	acqUnit = encodeURIComponent(acqUnit || '');
-	protocolName = encodeURIComponent(protocolName || '');
-	saveSign = encodeURIComponent(saveSign || '');
-	msg = encodeURIComponent(msg || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var unitName=record.data.text;
+		var acqUnit=record.data.acqUnit;
+		var protocolName=record.data.protocol;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		
+		unitName = encodeURIComponent(unitName || '');
+		acqUnit = encodeURIComponent(acqUnit || '');
+		protocolName = encodeURIComponent(protocolName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
 		"onclick=saveSingelImportedDisplayUnit('"+unitName+"','"+acqUnit+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}

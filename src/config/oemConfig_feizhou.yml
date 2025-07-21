@@ -23,9 +23,9 @@ databaseMaintenance:                      #数据库维护
    cycle: 1                               #删除历史数据执行周期，单位：天 ，0-执行定期删除
    startTime: 01:10:00                    #删除历史数据执行时间，cycle非0时生效
    endTime: 01:50:00                      #删除历史数据执行结束时间，到时间未执行完毕，将强制停止
-   retentionTime: 330                     #历史数据保留时间，单位：天， cycle非0时生效
+   retentionTime: 180                     #历史数据保留时间，单位：天， cycle非0时生效
    singleDeleteTime: 10                   #单次删除时间，单位：天
-   singleDeleteRecord: 10000              #单次删除记录数
+   singleDeleteRecord: 1000               #单次删除记录数
    tableConfig:
       acqdata_hist: true              #采集数据历史表
       acqrawdata: true                #采集原始数据历史表

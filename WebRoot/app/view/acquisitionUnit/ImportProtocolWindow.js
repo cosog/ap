@@ -756,17 +756,16 @@ function saveAllImportedProtocol(){
 
 iconImportSingleProtocolAction = function(value, e, record) {
 	var resultstring='';
-	var protocolName=record.data.text;
-	var saveSign=record.data.saveSign;
-	var msg=record.data.msg;
-	var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
-	
-	protocolName = encodeURIComponent(protocolName || '');
-	saveSign = encodeURIComponent(saveSign || '');
-	msg = encodeURIComponent(msg || '');
-	deviceType = encodeURIComponent(deviceType || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var protocolName=record.data.text;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		var deviceType=Ext.getCmp("ImportProtocolWinDeviceType_Id").getValue();
+		
+		protocolName = encodeURIComponent(protocolName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
+		deviceType = encodeURIComponent(deviceType || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
 		"onclick=saveSingelImportedProtocol('"+protocolName+"','"+deviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}

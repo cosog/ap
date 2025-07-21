@@ -81,15 +81,15 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqInstanceContentTreeInfoStore', {
                     }],
                     listeners: {
                         select( v, record, index, eOpts ){
-                        	if(record.data.classes==0){
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateImportAcqInstanceItemsInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                        		}else{
-                        			CreateImportAcqInstanceItemsInfoTable('','','');
-                        		}
-                        	}else{
-                        		CreateImportAcqInstanceItemsInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                        	}
+//                        	if(record.data.classes==0){
+//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                        			CreateImportAcqInstanceItemsInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                        		}else{
+//                        			CreateImportAcqInstanceItemsInfoTable('','','');
+//                        		}
+//                        	}else{
+//                        		CreateImportAcqInstanceItemsInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                        	}
                         }
                     }
 

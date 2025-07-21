@@ -300,7 +300,8 @@ public class OracleJdbcUtis {
 		} catch (SQLException e) {
 			r=-1;
 			e.printStackTrace();
-			StringManagerUtils.printLog(sql);
+//			StringManagerUtils.printLog(sql);
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",sql:"+sql);
 		}finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt);
 		} 

@@ -490,45 +490,47 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
-                    var fields = "";
-                    var heads = "";
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-                    
-                    var dictDeviceType=deviceType;
-                	if(dictDeviceType.includes(",")){
-                		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
-                	}
-                    
-                    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
-                    
-                    var url = context + '/wellInformationManagerController/exportWellInformationData';
-                    for (var i = 0; i < deviceInfoHandsontableHelper.colHeaders.length; i++) {
-                        fields += deviceInfoHandsontableHelper.columns[i].data + ",";
-                        heads += deviceInfoHandsontableHelper.colHeaders[i] + ","
-                    }
-                    if (isNotVal(fields)) {
-                        fields = fields.substring(0, fields.length - 1);
-                        heads = heads.substring(0, heads.length - 1);
-                    }
-                    
-                    var timestamp=new Date().getTime();
-                	var key='exportWellInformationData'+deviceType+'_'+timestamp;
-                	var maskPanelId='DeviceTablePanel_id';
-
-                    var param = "&fields=" + fields 
-                    + "&heads=" + URLencode(URLencode(heads)) 
-                    + "&orgId=" + leftOrg_Id 
-                    + "&deviceType="+deviceType
-                    + "&dictDeviceType="+dictDeviceType
-                    + "&deviceName=" + URLencode(URLencode(deviceName)) 
-                    + "&recordCount=10000" 
-                    + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
-                    + "&title=" + URLencode(URLencode(deviceTypeName))
-                    + '&key='+key;
-                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
-                    openExcelWindow(url + '?flag=true' + param);
+                	exportDeviceCompleteData();
+                	
+//                	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
+//                    var fields = "";
+//                    var heads = "";
+//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+//                    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+//                    
+//                    var dictDeviceType=deviceType;
+//                	if(dictDeviceType.includes(",")){
+//                		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+//                	}
+//                    
+//                    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
+//                    
+//                    var url = context + '/wellInformationManagerController/exportWellInformationData';
+//                    for (var i = 0; i < deviceInfoHandsontableHelper.colHeaders.length; i++) {
+//                        fields += deviceInfoHandsontableHelper.columns[i].data + ",";
+//                        heads += deviceInfoHandsontableHelper.colHeaders[i] + ","
+//                    }
+//                    if (isNotVal(fields)) {
+//                        fields = fields.substring(0, fields.length - 1);
+//                        heads = heads.substring(0, heads.length - 1);
+//                    }
+//                    
+//                    var timestamp=new Date().getTime();
+//                	var key='exportWellInformationData'+deviceType+'_'+timestamp;
+//                	var maskPanelId='DeviceTablePanel_id';
+//
+//                    var param = "&fields=" + fields 
+//                    + "&heads=" + URLencode(URLencode(heads)) 
+//                    + "&orgId=" + leftOrg_Id 
+//                    + "&deviceType="+deviceType
+//                    + "&dictDeviceType="+dictDeviceType
+//                    + "&deviceName=" + URLencode(URLencode(deviceName)) 
+//                    + "&recordCount=10000" 
+//                    + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
+//                    + "&title=" + URLencode(URLencode(deviceTypeName))
+//                    + '&key='+key;
+//                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//                    openExcelWindow(url + '?flag=true' + param);
                 }
             },'-',{
                 id: 'DeviceTotalCount_Id',

@@ -422,17 +422,16 @@ adviceImportAlarmUnitCollisionInfoColor = function(val,o,p,e) {
 
 iconImportSingleAlarmUnitAction = function(value, e, record) {
 	var resultstring='';
-	var unitName=record.data.text;
-	var protocolName=record.data.protocol;
-	var saveSign=record.data.saveSign;
-	var msg=record.data.msg;
-	
-	unitName = encodeURIComponent(unitName || '');
-	protocolName = encodeURIComponent(protocolName || '');
-	saveSign = encodeURIComponent(saveSign || '');
-	msg = encodeURIComponent(msg || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var unitName=record.data.text;
+		var protocolName=record.data.protocol;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		
+		unitName = encodeURIComponent(unitName || '');
+		protocolName = encodeURIComponent(protocolName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
 		"onclick=saveSingelImportedAlarmUnit('"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}

@@ -513,15 +513,13 @@ adviceImportReportUnitCollisionInfoColor = function(val,o,p,e) {
 
 iconImportSingleReportUnitAction = function(value, e, record) {
 	var resultstring='';
-	var unitName=record.data.text;
-	var saveSign=record.data.saveSign;
-	var msg=record.data.msg;
-	
-	var encodedUnitName = encodeURIComponent(unitName || '');
-    var encodedSaveSign = encodeURIComponent(saveSign || '');
-    var encodedMsg = encodeURIComponent(msg || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var unitName=record.data.text;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		var encodedUnitName = encodeURIComponent(unitName || '');
+	    var encodedSaveSign = encodeURIComponent(saveSign || '');
+	    var encodedMsg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
 		"onclick=saveSingelImportedReportUnit('"+encodedUnitName+"','"+encodedSaveSign+"','"+encodedMsg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}

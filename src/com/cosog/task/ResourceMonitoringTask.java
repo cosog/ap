@@ -122,6 +122,13 @@ public class ResourceMonitoringTask {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			if(tableSpaceInfo.getConnStatus()==1){
+				String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent) "
+						+ "values "
+						+ "(to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+")";
+				int r=OracleJdbcUtis.executeSqlUpdate(sql);
+			}
 		}
 		
 		

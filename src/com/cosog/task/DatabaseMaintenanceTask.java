@@ -61,7 +61,8 @@ public class DatabaseMaintenanceTask {
 	}
 	
 	public static void timingDeleteDatabaseHistoryData(){
-		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData start!");
+//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData start!");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData start!");
 		String sql="select t2.id,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
 				+ " from tbl_device t2 "
 				+ " left outer join TBL_ACQDATA_LATEST t on t.deviceid=t2.id "
@@ -92,7 +93,8 @@ public class DatabaseMaintenanceTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData finished!");
+//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData finished!");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!");
 	}
 	
 	

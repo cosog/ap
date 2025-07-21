@@ -91,5 +91,29 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
         });
         me.callParent(arguments);
     }
-
 });
+
+function exportAuxiliaryDeviceCompleteData(){
+	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
+    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
+    
+    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
+    var title=fileName;
+	
+	var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportAuxiliaryDeviceCompleteData'+deviceType+'_'+timestamp;
+	var maskPanelId='AuxiliaryDeviceInfoPanel_Id';
+	
+	
+	var param = "&orgId=" + leftOrg_Id 
+    + "&deviceType="+deviceType
+    + "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}

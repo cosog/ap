@@ -81,24 +81,24 @@ Ext.define('AP.store.acquisitionUnit.ImportDisplayInstanceContentTreeInfoStore',
                     }],
                     listeners: {
                         select( v, record, index, eOpts ){
-                        	if(record.data.classes==0){//选中设备类型deviceType
-                        		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateImportDisplayInstanceAcqItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
-                        			CreateImportDisplayInstanceCalItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
-                        			CreateImportDisplayInstanceInputItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
-                        			CreateImportDisplayInstanceCtrlItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
-                        		}else{
-                        			CreateImportDisplayInstanceAcqItemsInfoTable('','','','');
-                        			CreateImportDisplayInstanceCalItemsInfoTable('','','','');
-                        			CreateImportDisplayInstanceInputItemsInfoTable('','','','');
-                        			CreateImportDisplayInstanceCtrlItemsInfoTable('','','','');
-                        		}
-                        	}else{
-                        		CreateImportDisplayInstanceAcqItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
-                        		CreateImportDisplayInstanceCalItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
-                        		CreateImportDisplayInstanceInputItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
-                        		CreateImportDisplayInstanceCtrlItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
-                        	}
+//                        	if(record.data.classes==0){//选中设备类型deviceType
+//                        		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                        			CreateImportDisplayInstanceAcqItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
+//                        			CreateImportDisplayInstanceCalItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
+//                        			CreateImportDisplayInstanceInputItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
+//                        			CreateImportDisplayInstanceCtrlItemsInfoTable(record.data.children[0].protocol,record.data.children[0].acqUnitName,record.data.children[0].displayUnitName,record.data.children[0].text);
+//                        		}else{
+//                        			CreateImportDisplayInstanceAcqItemsInfoTable('','','','');
+//                        			CreateImportDisplayInstanceCalItemsInfoTable('','','','');
+//                        			CreateImportDisplayInstanceInputItemsInfoTable('','','','');
+//                        			CreateImportDisplayInstanceCtrlItemsInfoTable('','','','');
+//                        		}
+//                        	}else{
+//                        		CreateImportDisplayInstanceAcqItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
+//                        		CreateImportDisplayInstanceCalItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
+//                        		CreateImportDisplayInstanceInputItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
+//                        		CreateImportDisplayInstanceCtrlItemsInfoTable(record.data.protocol,record.data.acqUnitName,record.data.displayUnitName,record.data.text);
+//                        	}
                         }
                     }
 

@@ -1596,6 +1596,173 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
+	public String exportDeviceCompleteData(String orgId,String deviceType,String deviceName,User user) {
+		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
+		String ddicCode="deviceInfo_DeviceManager";
+		
+		
+		String sql = "select t.id,t.orgid,o.org_name_"+language+" as orgName,t.devicetype,d.name_"+language+" as deviceTypeName,"//0~4
+				+ " t.devicename,t.applicationscenarios,t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"//5~11
+				+ " t.instancecode,t2.name as instanceName,t.displayinstancecode,t3.name as displayinstanceName,t.alarminstancecode,t4.name as alarminstanceName,t.reportinstancecode,t5.code as reportinstanceName," //12~19
+				+ " t.videokeyid1,t.videourl1,t.videokeyid2,t.videourl2," //20~23
+				+ " t.status,t.calculatetype,t.sortnum,to_char(t.commissioningdate,'yyyy-mm-dd hh24:mi:ss'),"//24~27
+				+ " t.productiondata,t.balanceinfo,t.stroke,t.constructiondata"
+				
+				+ " from tbl_device t,tbl_org o,tbl_devicetypeinfo d,"
+				+ " tbl_protocolinstance t2,tbl_protocoldisplayinstance t3,tbl_protocolalarminstance t4,tbl_protocolreportinstance t5"
+				+ " where t.orgid=o.org_id and t.devicetype=d.id"
+				+ " and t.instancecode=t2.code and t.displayinstancecode=t3.code and t.alarminstancecode=t4.code and t.reportinstancecode=t5.code"
+				+ " and t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		
+		String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit "
+				+ " from tbl_device t,tbl_deviceaddinfo t2 "
+				+ " where t.id=t2.deviceid"
+				+ " and t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		
+		String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.id as auxiliaryDeviceId"
+				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
+				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
+				+ " and t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			sql += " and t.devicename like '%" + deviceName+ "%'";
+			addInfoSql += " and t.devicename like '%" + deviceName+ "%'";
+			auxiliaryDeviceSql += " and t.devicename like '%" + deviceName+ "%'";
+		};
+		sql+= " order by t.sortnum,t.devicename ";
+		addInfoSql+= " order by t.sortnum,t.devicename ";
+		auxiliaryDeviceSql+= " order by t.sortnum,t.devicename ";
+		
+		String json = "";
+		List<?> list = this.findCallSql(sql);
+		List<?> addInfoList = this.findCallSql(addInfoSql);
+		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String deviceId=obj[0]+"";
+			String calculateType=obj[25]+"";
+			String productiondata=obj[28]+"";
+			String balanceinfo=obj[29]+"";
+			String constructiondata=obj[31]+"";
+			
+			result_json.append("{\"Id\":"+deviceId+",");
+			result_json.append("\"OrgId\":"+obj[1]+",");
+			result_json.append("\"OrgName\":\""+obj[2]+"\",");
+			result_json.append("\"DeviceType\":"+obj[3]+",");
+			result_json.append("\"DeviceTypeName\":\""+obj[4]+"\",");
+			
+			result_json.append("\"DeviceName\":\""+obj[5]+"\",");
+			result_json.append("\"ApplicationScenarios\":\""+obj[6]+"\",");
+			result_json.append("\"ApplicationScenariosName\":\""+(codeMap.get(obj[6]+"")!=null?codeMap.get(obj[6]+"").getItemname():"")+"\",");
+			result_json.append("\"TCPType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+			result_json.append("\"SignInId\":\""+obj[8]+"\",");
+			result_json.append("\"IPPort\":\""+obj[9]+"\",");
+			result_json.append("\"Slave\":\""+obj[10]+"\",");
+			result_json.append("\"PeakDelay\":\""+obj[11]+"\",");
+			
+			result_json.append("\"InstanceCode\":\""+obj[12]+"\",");
+			result_json.append("\"InstanceName\":\""+obj[13]+"\",");
+			
+			result_json.append("\"DisplayInstanceCode\":\""+obj[14]+"\",");
+			result_json.append("\"DisplayInstanceName\":\""+obj[15]+"\",");
+			
+			result_json.append("\"AlarmInstanceCode\":\""+obj[16]+"\",");
+			result_json.append("\"AlarmInstanceName\":\""+obj[17]+"\",");
+			
+			result_json.append("\"ReportInstanceCode\":\""+obj[18]+"\",");
+			result_json.append("\"ReportInstanceName\":\""+obj[19]+"\",");
+			
+			result_json.append("\"VideoKeyId1\":\""+obj[20]+"\",");
+			result_json.append("\"VideoUrl1\":\""+obj[21]+"\",");
+			result_json.append("\"VideoKeyId2\":\""+obj[22]+"\",");
+			result_json.append("\"VideoUrl2\":\""+obj[23]+"\",");
+			
+			result_json.append("\"Status\":\""+obj[24]+"\",");
+			result_json.append("\"CalculateType\":\""+calculateType+"\",");
+			result_json.append("\"SortNum\":\""+obj[26]+"\",");
+			result_json.append("\"CommissioningDate\":\""+obj[27]+"\"");
+			
+			
+			
+			if(StringManagerUtils.stringToInteger(calculateType)==1){
+				if(StringManagerUtils.isNotNull(productiondata)){
+					result_json.append(",\"SRPProductionData\":"+productiondata+"");
+				}else{
+					result_json.append(",\"SRPProductionData\":{}");
+				}
+				
+				if(StringManagerUtils.isNotNull(balanceinfo)){
+					result_json.append(",\"BalanceInfo\":"+balanceinfo+"");
+				}else{
+					result_json.append(",\"BalanceInfo\":{}");
+				}
+				
+				if(StringManagerUtils.isNotNull(constructiondata)){
+					result_json.append(",\"ConstructionData\":"+constructiondata+"");
+				}else{
+					result_json.append(",\"ConstructionData\":{}");
+				}
+				
+				result_json.append(",\"Stroke\":\""+obj[30]+"\"");
+			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
+				if(StringManagerUtils.isNotNull(productiondata)){
+					result_json.append(",\"PCPProductionData\":"+productiondata+"");
+				}else{
+					result_json.append(",\"PCPProductionData\":{}");
+				}
+			}
+			
+			result_json.append(",\"AdditionalInformationList\":[");
+			for(int j=0;j<addInfoList.size();j++){
+				Object[] addInfoObj = (Object[]) addInfoList.get(j);
+				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(addInfoObj[0]+"")){
+					result_json.append("{");
+					result_json.append("\"ItemName\":\""+addInfoObj[1]+"\",");
+					result_json.append("\"ItemValue\":\""+addInfoObj[2]+"\",");
+					result_json.append("\"ItemUnit\":\""+addInfoObj[3]+"\"");
+					result_json.append("},");
+				}
+			}
+			
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			
+			result_json.append(",\"AuxiliaryDeviceList\":[");
+			for(int j=0;j<auxiliaryDeviceList.size();j++){
+				Object[] auxiliaryDeviceObj = (Object[]) auxiliaryDeviceList.get(j);
+				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(auxiliaryDeviceObj[0]+"")){
+					result_json.append("{");
+					result_json.append("\"Name\":\""+auxiliaryDeviceObj[1]+"\",");
+					result_json.append("\"Manufacturer\":\""+auxiliaryDeviceObj[2]+"\",");
+					result_json.append("\"Model\":\""+auxiliaryDeviceObj[3]+"\"");
+					result_json.append("},");
+				}
+			}
+			
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			
+			result_json.append("},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		json=result_json.toString().replaceAll("null", "");
+		
+		return json;
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount,String language) {
 		StringBuffer result_json = new StringBuffer();
@@ -3802,6 +3969,83 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	public String exportAuxiliaryDeviceCompleteData(String deviceType,User user) {
+		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String sql = "select t.id,t.type,t2.name_"+language+" as typeName,t.name,t.manufacturer,t.model,t.remark,t.sort,t.specifictype,t.prtf"
+				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
+				+ " where t.type=t2.id"
+				+ " and t.type in ("+deviceType+")";
+		String addInfoSql="select t.id,t2.itemname,t2.itemcode,t2.itemvalue,t2.itemunit "
+				+ " from tbl_auxiliarydevice t,tbl_auxiliarydeviceaddinfo t2"
+				+ " where t.id=t2.deviceid"
+				+ " and t.type in ("+deviceType+")";
+		sql+= " order by t.manufacturer,t.model,t.name";
+		addInfoSql+= " order by t2.deviceid,t2.id";
+		
+		String json = "";
+		List<?> list = this.findCallSql(sql);
+		List<?> addInfoList = this.findCallSql(addInfoSql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String deviceId=obj[0]+"";
+			String specificType=obj[8]+"";
+			String prtf="[]";
+			if(StringManagerUtils.stringToInteger(specificType)==1 && obj[9]!=null){
+				try {
+					SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
+					CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+					prtf=StringManagerUtils.CLOBtoString(realClob);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if(!StringManagerUtils.isNotNull(prtf)){
+				prtf="[]";
+			}
+			result_json.append("{\"Id\":"+deviceId+",");
+			result_json.append("\"DeviceType\":"+obj[1]+",");
+			result_json.append("\"DeviceTypeName\":\""+obj[2]+"\",");
+			result_json.append("\"DeviceName\":\""+obj[3]+"\",");
+			result_json.append("\"Manufacturer\":\""+obj[4]+"\",");
+			result_json.append("\"Model\":\""+obj[5]+"\",");
+			result_json.append("\"Remark\":\""+obj[6]+"\",");
+			result_json.append("\"Sort\":\""+obj[7]+"\",");
+			result_json.append("\"SpecificType\":\""+specificType+"\"");
+			if(StringManagerUtils.stringToInteger(specificType)==1){
+				result_json.append(",\"PRTF\":"+prtf+"");
+			}
+			
+			result_json.append(",\"AdditionalInformationList\":[");
+			for(int j=0;j<addInfoList.size();j++){
+				Object[] addInfoObj = (Object[]) addInfoList.get(j);
+				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(addInfoObj[0]+"")){
+					result_json.append("{");
+					result_json.append("\"ItemName\":\""+addInfoObj[1]+"\",");
+					result_json.append("\"ItemCode\":\""+addInfoObj[2]+"\",");
+					result_json.append("\"ItemValue\":\""+addInfoObj[3]+"\",");
+					result_json.append("\"ItemUnit\":\""+addInfoObj[4]+"\"");
+					result_json.append("},");
+				}
+			}
+			
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		json=result_json.toString().replaceAll("null", "");
+		
 		return json;
 	}
 	

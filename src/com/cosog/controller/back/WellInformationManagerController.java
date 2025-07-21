@@ -1,8 +1,13 @@
 package com.cosog.controller.back;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -805,6 +810,73 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportAuxiliaryDeviceCompleteData")
+	public String exportAuxiliaryDeviceCompleteData() throws Exception {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		String json=this.wellInformationManagerService.exportAuxiliaryDeviceCompleteData(deviceType,user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		fileName+=".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			if(user!=null){
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
 	@RequestMapping("/getAuxiliaryDevice")
 	public String getAuxiliaryDevice() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1328,6 +1400,74 @@ public class WellInformationManagerController extends BaseController {
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}
+		return null;
+	}
+	
+	@RequestMapping("/exportDeviceCompleteData")
+	public String exportDeviceCompleteData() throws Exception {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		String json=this.wellInformationManagerService.exportDeviceCompleteData(orgId,deviceType,deviceName,user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		fileName+=".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			if(user!=null){
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
 		return null;
 	}
 	

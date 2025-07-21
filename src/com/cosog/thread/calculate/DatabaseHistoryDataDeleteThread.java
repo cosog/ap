@@ -123,7 +123,8 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}
 			}
 		}
-		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
+//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
 		DatabaseMaintenanceCounterUtils.countDown();
 	}
 	
@@ -221,7 +222,8 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}while(!Thread.interrupted());
 			}
 		}
-		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
+//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
 	}
 
 	public int getDeviceId() {

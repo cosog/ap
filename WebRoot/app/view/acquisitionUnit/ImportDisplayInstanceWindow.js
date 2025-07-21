@@ -17,8 +17,8 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1500,
-    minWidth: 1500,
+    width: 500,
+    minWidth: 500,
     height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -108,94 +108,105 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayInstanceWindow", {
                     }
                 }
     	    }],
-            layout: 'border',
+    	    
+    	    layout: 'border',
             items: [{
-                region: 'west',
-                width: '25%',
+                region: 'center',
                 title: loginUserLanguageResource.instanceList,
                 layout: 'fit',
                 split: true,
                 collapsible: true,
                 id: "importDisplayInstanceTreePanel_Id"
-            }, {
-            	border: true,
-            	region: 'center',
-            	layout: "border",
-            	items: [{
-            		region: 'center',
-            		layout: "border",
-            		items: [{
-                		region: 'center',
-                		title:loginUserLanguageResource.acquisitionItemConfig,
-                		id:"importDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
-                        layout: 'fit',
-                        html:'<div class="importDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importDisplayInstanceAcqItemsHandsontableHelper!=null && importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importDisplayInstanceAcqItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                            	}
-                            }
-                        }
-                	},{
-                		region: 'south',
-                    	height:'50%',
-                    	title:loginUserLanguageResource.controlItemConfig,
-                		id:"importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
-                        layout: 'fit',
-                        collapsible: true,
-                        split: true,
-                        html:'<div class="importDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
-                            }
-                        }
-                	}]
-            	},{
-            		region: 'east',
-            		width:'50%',
-            		layout: "border",
-            		header: false,
-            		split: true,
-                    collapsible: true,
-                	items: [{
-                		region: 'center',
-                    	layout: 'fit',
-                    	title:loginUserLanguageResource.inputItemConfig,
-                		id:"importDisplayInstanceInputItemsConfigTableInfoPanel_Id",
-                        html:'<div class="importDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
-                            }
-                        }
-                	},{
-                		region: 'south',
-                    	height:'50%',
-                    	layout: 'fit',
-                        collapsible: true,
-                        split: true,
-                    	title:loginUserLanguageResource.calculateItemConfig,
-                    	id:"importDisplayInstanceCalItemsConfigTableInfoPanel_Id",
-                        html:'<div class="importDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	
-                            }
-                        }
-                	}]
-            	}] 
             }],
+    	    
+//            layout: 'border',
+//            items: [{
+//                region: 'west',
+//                width: '25%',
+//                title: loginUserLanguageResource.instanceList,
+//                layout: 'fit',
+//                split: true,
+//                collapsible: true,
+//                id: "importDisplayInstanceTreePanel_Id"
+//            }, {
+//            	border: true,
+//            	region: 'center',
+//            	layout: "border",
+//            	items: [{
+//            		region: 'center',
+//            		layout: "border",
+//            		items: [{
+//                		region: 'center',
+//                		title:loginUserLanguageResource.acquisitionItemConfig,
+//                		id:"importDisplayInstanceAcqItemsConfigTableInfoPanel_Id",
+//                        layout: 'fit',
+//                        html:'<div class="importDisplayInstanceAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceAcqItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	if(importDisplayInstanceAcqItemsHandsontableHelper!=null && importDisplayInstanceAcqItemsHandsontableHelper.hot!=undefined){
+//                            		var newWidth=width;
+//                            		var newHeight=height;
+//                            		var header=thisPanel.getHeader();
+//                            		if(header){
+//                            			newHeight=newHeight-header.lastBox.height-2;
+//                            		}
+//                            		importDisplayInstanceAcqItemsHandsontableHelper.hot.updateSettings({
+//                            			width:newWidth,
+//                            			height:newHeight
+//                            		});
+//                            	}
+//                            }
+//                        }
+//                	},{
+//                		region: 'south',
+//                    	height:'50%',
+//                    	title:loginUserLanguageResource.controlItemConfig,
+//                		id:"importDisplayInstanceCtrlItemsConfigTableInfoPanel_Id",
+//                        layout: 'fit',
+//                        collapsible: true,
+//                        split: true,
+//                        html:'<div class="importDisplayInstanceCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceCtrlItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	
+//                            }
+//                        }
+//                	}]
+//            	},{
+//            		region: 'east',
+//            		width:'50%',
+//            		layout: "border",
+//            		header: false,
+//            		split: true,
+//                    collapsible: true,
+//                	items: [{
+//                		region: 'center',
+//                    	layout: 'fit',
+//                    	title:loginUserLanguageResource.inputItemConfig,
+//                		id:"importDisplayInstanceInputItemsConfigTableInfoPanel_Id",
+//                        html:'<div class="importDisplayInstanceInputItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceInputItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	
+//                            }
+//                        }
+//                	},{
+//                		region: 'south',
+//                    	height:'50%',
+//                    	layout: 'fit',
+//                        collapsible: true,
+//                        split: true,
+//                    	title:loginUserLanguageResource.calculateItemConfig,
+//                    	id:"importDisplayInstanceCalItemsConfigTableInfoPanel_Id",
+//                        html:'<div class="importDisplayInstanceCalItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayInstanceCalItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	
+//                            }
+//                        }
+//                	}]
+//            	}] 
+//            }],
             listeners: {
                 beforeclose: function (panel, eOpts) {
                 	clearImportDisplayInstanceHandsontable();
@@ -288,58 +299,100 @@ adviceImportDisplayInstanceCollisionInfoColor = function(val,o,p,e) {
 
 iconImportSingleDisplayInstanceAction = function(value, e, record) {
 	var resultstring='';
-	var instanceName=record.data.text;
-	var displayUnitName=record.data.displayUnitName;
-	var acqUnitName=record.data.acqUnitName;
-	var protocolName=record.data.protocol;
-
-	instanceName = encodeURIComponent(instanceName || '');
-	displayUnitName = encodeURIComponent(displayUnitName || '');
-	acqUnitName = encodeURIComponent(acqUnitName || '');
-	protocolName = encodeURIComponent(protocolName || '');
-	
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var instanceName=record.data.text;
+		var displayUnitName=record.data.displayUnitName;
+		var acqUnitName=record.data.acqUnitName;
+		var protocolName=record.data.protocol;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+
+		instanceName = encodeURIComponent(instanceName || '');
+		displayUnitName = encodeURIComponent(displayUnitName || '');
+		acqUnitName = encodeURIComponent(acqUnitName || '');
+		protocolName = encodeURIComponent(protocolName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
+		
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedDisplayInstance('"+instanceName+"','"+displayUnitName+"','"+acqUnitName+"','"+protocolName+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedDisplayInstance('"+instanceName+"','"+displayUnitName+"','"+acqUnitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
-function saveSingelImportedDisplayInstance(instanceName,displayUnitName,acqUnitName,protocolName){
+function saveSingelImportedDisplayInstance(instanceName,displayUnitName,acqUnitName,protocolName,saveSign,msg){
 	instanceName = decodeURIComponent(instanceName);
 	displayUnitName = decodeURIComponent(displayUnitName);
 	acqUnitName = decodeURIComponent(acqUnitName);
 	protocolName = decodeURIComponent(protocolName);
-	
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayInstance',
-		method : "POST",
-		params : {
-			instanceName : instanceName,
-			displayUnitName : displayUnitName,
-			acqUnitName:acqUnitName,
-			protocolName : protocolName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore().load();
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayInstance',
+					method : "POST",
+					params : {
+						instanceName : instanceName,
+						displayUnitName : displayUnitName,
+						acqUnitName:acqUnitName,
+						protocolName : protocolName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore().load();
 
-    		var treePanel=Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id");
-    		if(isNotVal(treePanel)){
-    			treePanel.getStore().load();
-    		}else{
-    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeInfoStore');
-    		}
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+			    		var treePanel=Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id");
+			    		if(isNotVal(treePanel)){
+			    			treePanel.getStore().load();
+			    		}else{
+			    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeInfoStore');
+			    		}
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedDisplayInstance',
+			method : "POST",
+			params : {
+				instanceName : instanceName,
+				displayUnitName : displayUnitName,
+				acqUnitName:acqUnitName,
+				protocolName : protocolName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportDisplayInstanceContentTreeGridPanel_Id").getStore().load();
+
+	    		var treePanel=Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id");
+	    		if(isNotVal(treePanel)){
+	    			treePanel.getStore().load();
+	    		}else{
+	    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeInfoStore');
+	    		}
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedDisplayInstance(){

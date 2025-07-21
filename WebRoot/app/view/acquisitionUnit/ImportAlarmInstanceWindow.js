@@ -22,8 +22,8 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1500,
-    minWidth: 1500,
+    width: 500,
+    minWidth: 500,
     height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -113,262 +113,272 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmInstanceWindow", {
                 	}
                 }
     	    }],
-            layout: 'border',
+    	    layout: 'border',
             items: [{
-            	region: 'west',
-            	width:'25%',
+            	region: 'center',
             	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: true,
             	id:"importAlarmInstanceTreePanel_Id"
-            },{
-            	border: true,
-            	region: 'center',
-                title:'报警项',
-                xtype: 'tabpanel',
-                id:"importAlarmInstanceItemsConfigTabPanel_Id",
-                activeTab: 0,
-                border: false,
-                tabPosition: 'top',
-                items: [{
-                	title:loginUserLanguageResource.numericValue,
-                	iconCls: 'check3',
-                	id:"importAlarmInstanceNumItemsTableInfoPanel_Id",
-                	region: 'center',
-            		layout: "border",
-            		items: [{
-                		region: 'center',
-                		title:loginUserLanguageResource.acquisitionItem,
-                		layout: 'fit',
-                		id:'importAlarmInstanceNumItemsConfigTableInfoPanel_id',
-                        html:'<div class="importAlarmInstanceNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceNumItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmInstanceConfigNumItemsHandsontableHelper!=null && importAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmInstanceConfigNumItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-                	},{
-                		region: 'south',
-                    	height:'50%',
-                    	title:loginUserLanguageResource.calculateItem,
-                    	collapsible: true,
-                        split: true,
-                        layout: 'fit',
-                        id:'importAlarmInstanceCalNumItemsConfigTableInfoPanel_id',
-                        html:'<div class="importAlarmInstanceCalNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceCalNumItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                             	if(importAlarmInstanceConfigCalNumItemsHandsontableHelper!=null && importAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
-                             		var newWidth=width;
-                            		var newHeight=height;
-                            		var header=thisPanel.getHeader();
-                            		if(header){
-                            			newHeight=newHeight-header.lastBox.height-2;
-                            		}
-                            		importAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.updateSettings({
-                            			width:newWidth,
-                            			height:newHeight
-                            		});
-                             	}
-                             }
-                        }
-                	}]
-                },{
-                	title:loginUserLanguageResource.switchingValue,
-                	id:"importAlarmInstanceSwitchItemsTableInfoPanel_Id",
-                    layout: 'fit',
-                    html:'<div class="importAlarmInstanceSwitchItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceSwitchItemsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                         	if(importAlarmInstanceConfigSwitchItemsHandsontableHelper!=null && importAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
-                         		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		importAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                         	}
-                         }
-                    }
-                },{
-                	title:loginUserLanguageResource.enumValue,
-                	id:"importAlarmInstanceEnumItemsTableInfoPanel_Id",
-                    layout: 'fit',
-                    html:'<div class="importAlarmInstanceEnumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceEnumItemsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                         	if(importAlarmInstanceConfigEnumItemsHandsontableHelper!=null && importAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
-                         		var newWidth=width;
-                        		var newHeight=height;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		importAlarmInstanceConfigEnumItemsHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                         	}
-                         }
-                    }
-                },{
-                	title:loginUserLanguageResource.workType,
-                	id:"importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id",
-                	 layout: 'fit',
-                     html:'<div class="importAlarmInstanceFESDiagramResultItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id"></div></div>',
-                     listeners: {
-                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                          	if(importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null && importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
-                          		var newWidth=width;
-                         		var newHeight=height;
-                         		var header=thisPanel.getHeader();
-                         		if(header){
-                         			newHeight=newHeight-header.lastBox.height-2;
-                         		}
-                         		importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings({
-                         			width:newWidth,
-                         			height:newHeight
-                         		});
-                          	}
-                          }
-                     }
-                },{
-                	title:loginUserLanguageResource.runStatus,
-                	id:"importAlarmInstanceRunStatusItemsTableInfoPanel_Id",
-                	 layout: 'fit',
-                     html:'<div class="importAlarmInstanceRunStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceRunStatusItemsConfigTableInfoDiv_id"></div></div>',
-                     listeners: {
-                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                           	if(importAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null && importAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
-                           		var newWidth=width;
-                          		var newHeight=height;
-                          		var header=thisPanel.getHeader();
-                          		if(header){
-                          			newHeight=newHeight-header.lastBox.height-2;
-                          		}
-                          		importAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
-                          			width:newWidth,
-                          			height:newHeight
-                          		});
-                           	 }
-                          }
-                      }
-                },{
-                	title:loginUserLanguageResource.commStatus,
-                	id:"importAlarmInstanceCommStatusItemsTableInfoPanel_Id",
-                	 layout: 'fit',
-                     html:'<div class="importAlarmInstanceCommStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceCommStatusItemsConfigTableInfoDiv_id"></div></div>',
-                     listeners: {
-                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null && importAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
-                            		var newWidth=width;
-                           		var newHeight=height;
-                           		var header=thisPanel.getHeader();
-                           		if(header){
-                           			newHeight=newHeight-header.lastBox.height-2;
-                           		}
-                           		importAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
-                           			width:newWidth,
-                           			height:newHeight
-                           		});
-                            }
-                         }
-                     }
-                }],
-                listeners: {
-                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check3');
-        			},
-        			tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    	var selection=Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getSelectionModel().getSelection();
-                    	if(selection.length>0){
-                    		var record = selection[0];
-                        	var activeId = newCard.id;
-                        	if(activeId=="importAlarmInstanceNumItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceNumItemsConfigInfoTable('','','');
-                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            		CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmInstanceSwitchItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmInstanceEnumItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}else if(activeId=="importAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
-                        		if(record.data.classes==0){
-                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-                            		}else{
-                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable('','','');
-                            		}
-                            	}else{
-                            		CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-                            	}
-                        	}
-                    	}
-                    }
-                }
             }],
+    	    
+//            layout: 'border',
+//            items: [{
+//            	region: 'west',
+//            	width:'25%',
+//            	title:loginUserLanguageResource.instanceList,
+//            	layout: 'fit',
+//            	split: true,
+//                collapsible: true,
+//            	id:"importAlarmInstanceTreePanel_Id"
+//            },{
+//            	border: true,
+//            	region: 'center',
+//                title:'报警项',
+//                xtype: 'tabpanel',
+//                id:"importAlarmInstanceItemsConfigTabPanel_Id",
+//                activeTab: 0,
+//                border: false,
+//                tabPosition: 'top',
+//                items: [{
+//                	title:loginUserLanguageResource.numericValue,
+//                	iconCls: 'check3',
+//                	id:"importAlarmInstanceNumItemsTableInfoPanel_Id",
+//                	region: 'center',
+//            		layout: "border",
+//            		items: [{
+//                		region: 'center',
+//                		title:loginUserLanguageResource.acquisitionItem,
+//                		layout: 'fit',
+//                		id:'importAlarmInstanceNumItemsConfigTableInfoPanel_id',
+//                        html:'<div class="importAlarmInstanceNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceNumItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                             	if(importAlarmInstanceConfigNumItemsHandsontableHelper!=null && importAlarmInstanceConfigNumItemsHandsontableHelper.hot!=undefined){
+//                             		var newWidth=width;
+//                            		var newHeight=height;
+//                            		var header=thisPanel.getHeader();
+//                            		if(header){
+//                            			newHeight=newHeight-header.lastBox.height-2;
+//                            		}
+//                            		importAlarmInstanceConfigNumItemsHandsontableHelper.hot.updateSettings({
+//                            			width:newWidth,
+//                            			height:newHeight
+//                            		});
+//                             	}
+//                             }
+//                        }
+//                	},{
+//                		region: 'south',
+//                    	height:'50%',
+//                    	title:loginUserLanguageResource.calculateItem,
+//                    	collapsible: true,
+//                        split: true,
+//                        layout: 'fit',
+//                        id:'importAlarmInstanceCalNumItemsConfigTableInfoPanel_id',
+//                        html:'<div class="importAlarmInstanceCalNumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceCalNumItemsConfigTableInfoDiv_id"></div></div>',
+//                        listeners: {
+//                            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                             	if(importAlarmInstanceConfigCalNumItemsHandsontableHelper!=null && importAlarmInstanceConfigCalNumItemsHandsontableHelper.hot!=undefined){
+//                             		var newWidth=width;
+//                            		var newHeight=height;
+//                            		var header=thisPanel.getHeader();
+//                            		if(header){
+//                            			newHeight=newHeight-header.lastBox.height-2;
+//                            		}
+//                            		importAlarmInstanceConfigCalNumItemsHandsontableHelper.hot.updateSettings({
+//                            			width:newWidth,
+//                            			height:newHeight
+//                            		});
+//                             	}
+//                             }
+//                        }
+//                	}]
+//                },{
+//                	title:loginUserLanguageResource.switchingValue,
+//                	id:"importAlarmInstanceSwitchItemsTableInfoPanel_Id",
+//                    layout: 'fit',
+//                    html:'<div class="importAlarmInstanceSwitchItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceSwitchItemsConfigTableInfoDiv_id"></div></div>',
+//                    listeners: {
+//                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                         	if(importAlarmInstanceConfigSwitchItemsHandsontableHelper!=null && importAlarmInstanceConfigSwitchItemsHandsontableHelper.hot!=undefined){
+//                         		var newWidth=width;
+//                        		var newHeight=height;
+//                        		var header=thisPanel.getHeader();
+//                        		if(header){
+//                        			newHeight=newHeight-header.lastBox.height-2;
+//                        		}
+//                        		importAlarmInstanceConfigSwitchItemsHandsontableHelper.hot.updateSettings({
+//                        			width:newWidth,
+//                        			height:newHeight
+//                        		});
+//                         	}
+//                         }
+//                    }
+//                },{
+//                	title:loginUserLanguageResource.enumValue,
+//                	id:"importAlarmInstanceEnumItemsTableInfoPanel_Id",
+//                    layout: 'fit',
+//                    html:'<div class="importAlarmInstanceEnumItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceEnumItemsConfigTableInfoDiv_id"></div></div>',
+//                    listeners: {
+//                        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                         	if(importAlarmInstanceConfigEnumItemsHandsontableHelper!=null && importAlarmInstanceConfigEnumItemsHandsontableHelper.hot!=undefined){
+//                         		var newWidth=width;
+//                        		var newHeight=height;
+//                        		var header=thisPanel.getHeader();
+//                        		if(header){
+//                        			newHeight=newHeight-header.lastBox.height-2;
+//                        		}
+//                        		importAlarmInstanceConfigEnumItemsHandsontableHelper.hot.updateSettings({
+//                        			width:newWidth,
+//                        			height:newHeight
+//                        		});
+//                         	}
+//                         }
+//                    }
+//                },{
+//                	title:loginUserLanguageResource.workType,
+//                	id:"importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id",
+//                	 layout: 'fit',
+//                     html:'<div class="importAlarmInstanceFESDiagramResultItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceFESDiagramResultItemsConfigTableInfoDiv_id"></div></div>',
+//                     listeners: {
+//                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                          	if(importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper!=null && importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+//                          		var newWidth=width;
+//                         		var newHeight=height;
+//                         		var header=thisPanel.getHeader();
+//                         		if(header){
+//                         			newHeight=newHeight-header.lastBox.height-2;
+//                         		}
+//                         		importAlarmInstanceConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings({
+//                         			width:newWidth,
+//                         			height:newHeight
+//                         		});
+//                          	}
+//                          }
+//                     }
+//                },{
+//                	title:loginUserLanguageResource.runStatus,
+//                	id:"importAlarmInstanceRunStatusItemsTableInfoPanel_Id",
+//                	 layout: 'fit',
+//                     html:'<div class="importAlarmInstanceRunStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceRunStatusItemsConfigTableInfoDiv_id"></div></div>',
+//                     listeners: {
+//                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                           	if(importAlarmInstanceConfigRunStatusItemsHandsontableHelper!=null && importAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+//                           		var newWidth=width;
+//                          		var newHeight=height;
+//                          		var header=thisPanel.getHeader();
+//                          		if(header){
+//                          			newHeight=newHeight-header.lastBox.height-2;
+//                          		}
+//                          		importAlarmInstanceConfigRunStatusItemsHandsontableHelper.hot.updateSettings({
+//                          			width:newWidth,
+//                          			height:newHeight
+//                          		});
+//                           	 }
+//                          }
+//                      }
+//                },{
+//                	title:loginUserLanguageResource.commStatus,
+//                	id:"importAlarmInstanceCommStatusItemsTableInfoPanel_Id",
+//                	 layout: 'fit',
+//                     html:'<div class="importAlarmInstanceCommStatusItemsTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmInstanceCommStatusItemsConfigTableInfoDiv_id"></div></div>',
+//                     listeners: {
+//                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                            	if(importAlarmInstanceConfigCommStatusItemsHandsontableHelper!=null && importAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+//                            		var newWidth=width;
+//                           		var newHeight=height;
+//                           		var header=thisPanel.getHeader();
+//                           		if(header){
+//                           			newHeight=newHeight-header.lastBox.height-2;
+//                           		}
+//                           		importAlarmInstanceConfigCommStatusItemsHandsontableHelper.hot.updateSettings({
+//                           			width:newWidth,
+//                           			height:newHeight
+//                           		});
+//                            }
+//                         }
+//                     }
+//                }],
+//                listeners: {
+//                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+//        				oldCard.setIconCls(null);
+//        				newCard.setIconCls('check3');
+//        			},
+//        			tabchange: function (tabPanel, newCard, oldCard, obj) {
+//                    	var selection=Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getSelectionModel().getSelection();
+//                    	if(selection.length>0){
+//                    		var record = selection[0];
+//                        	var activeId = newCard.id;
+//                        	if(activeId=="importAlarmInstanceNumItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceNumItemsConfigInfoTable('','','');
+//                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            		CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}else if(activeId=="importAlarmInstanceSwitchItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}else if(activeId=="importAlarmInstanceEnumItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}else if(activeId=="importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}else if(activeId=="importAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}else if(activeId=="importAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
+//                        		if(record.data.classes==0){
+//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+//                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
+//                            		}else{
+//                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable('','','');
+//                            		}
+//                            	}else{
+//                            		CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
+//                            	}
+//                        	}
+//                    	}
+//                    }
+//                }
+//            }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
                 	clearImportAlarmInstanceHandsontable();
@@ -481,38 +491,76 @@ adviceImportAlarmInstanceCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAlarmInstance(instanceName,unitName,protocolName){
+function saveSingelImportedAlarmInstance(instanceName,unitName,protocolName,saveSign,msg){
 	instanceName = decodeURIComponent(instanceName);
 	unitName = decodeURIComponent(unitName);
 	protocolName = decodeURIComponent(protocolName);
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedAlarmInstance',
-		method : "POST",
-		params : {
-			instanceName : instanceName,
-			unitName : unitName,
-			protocolName : protocolName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedAlarmInstance',
+					method : "POST",
+					params : {
+						instanceName : instanceName,
+						unitName : unitName,
+						protocolName : protocolName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
 
-    		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
-    		if(isNotVal(treePanel)){
-    			treePanel.getStore().load();
-    		}else{
-    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
-    		}
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+			    		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
+			    		if(isNotVal(treePanel)){
+			    			treePanel.getStore().load();
+			    		}else{
+			    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
+			    		}
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedAlarmInstance',
+			method : "POST",
+			params : {
+				instanceName : instanceName,
+				unitName : unitName,
+				protocolName : protocolName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportAlarmInstanceContentTreeGridPanel_Id").getStore().load();
+
+	    		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
+	    		if(isNotVal(treePanel)){
+	    			treePanel.getStore().load();
+	    		}else{
+	    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
+	    		}
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedAlarmInstance(){
@@ -558,17 +606,22 @@ function saveAllImportedAlarmInstance(){
 
 iconImportSingleAlarmInstanceAction = function(value, e, record) {
 	var resultstring='';
-	var instanceName=record.data.text;
-	var unitName=record.data.unitName;
-	var protocolName=record.data.protocol;
-	
-	instanceName = encodeURIComponent(instanceName || '');
-	unitName = encodeURIComponent(unitName || '');
-	protocolName = encodeURIComponent(protocolName || '');
 
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var instanceName=record.data.text;
+		var unitName=record.data.unitName;
+		var protocolName=record.data.protocol;
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		
+		instanceName = encodeURIComponent(instanceName || '');
+		unitName = encodeURIComponent(unitName || '');
+		protocolName = encodeURIComponent(protocolName || '');
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
+		
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAlarmInstance('"+instanceName+"','"+unitName+"','"+protocolName+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAlarmInstance('"+instanceName+"','"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

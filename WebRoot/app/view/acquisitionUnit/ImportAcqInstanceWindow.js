@@ -14,8 +14,8 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1500,
-    minWidth: 1500,
+    width: 500,
+    minWidth: 500,
     height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -105,27 +105,39 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqInstanceWindow", {
                 	}
                 }
     	    }],
-            layout: 'border',
-            items: [{
-            	region: 'west',
-            	width:'25%',
-            	title:loginUserLanguageResource.instanceList,
-            	layout: 'fit',
-            	split: true,
-                collapsible: true,
-            	id:"importAcqInstanceTreePanel_Id"
-            },{
-            	region: 'center',
-            	id:"importedAcqInstanceItemInfoTablePanel_Id",
-            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
-            	layout: "fit",
-            	html:'<div class="importedAcqInstanceItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqInstanceItemInfoTableDiv_Id"></div></div>',
-                listeners: {
-                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	
-                    }
-                }
-            }],
+    	    
+          layout: 'border',
+          items: [{
+          	region: 'center',
+          	title:loginUserLanguageResource.instanceList,
+          	layout: 'fit',
+          	split: true,
+              collapsible: true,
+          	id:"importAcqInstanceTreePanel_Id"
+          }],
+    	    
+//            layout: 'border',
+//            items: [{
+//            	region: 'west',
+//            	width:'25%',
+//            	title:loginUserLanguageResource.instanceList,
+//            	layout: 'fit',
+//            	split: true,
+//                collapsible: true,
+//            	id:"importAcqInstanceTreePanel_Id"
+//            },{
+//            	region: 'center',
+//            	id:"importedAcqInstanceItemInfoTablePanel_Id",
+//            	title:loginUserLanguageResource.acqAndCtrlItemConfig,
+//            	layout: "fit",
+//            	hidden: true,
+//            	html:'<div class="importedAcqInstanceItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqInstanceItemInfoTableDiv_Id"></div></div>',
+//                listeners: {
+//                    resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+//                    	
+//                    }
+//                }
+//            }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
                 	clearImportAcqInstanceHandsontable();
@@ -196,38 +208,76 @@ adviceImportAcqInstanceCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAcqInstance(instanceName,unitName,protocolName){
+function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,saveSign,msg){
 	instanceName = decodeURIComponent(instanceName);
 	unitName = decodeURIComponent(unitName);
 	protocolName = decodeURIComponent(protocolName);
-	Ext.Ajax.request({
-		url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqInstance',
-		method : "POST",
-		params : {
-			instanceName : instanceName,
-			unitName : unitName,
-			protocolName : protocolName
-		},
-		success : function(response) {
-			var result = Ext.JSON.decode(response.responseText);
-			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
-			}
-			Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
+	saveSign = decodeURIComponent(saveSign);
+	msg = decodeURIComponent(msg);
+	if(parseInt(saveSign)>0){
+		Ext.Msg.confirm(loginUserLanguageResource.tip, msg,function (btn) {
+			if (btn == "yes") {
+				Ext.Ajax.request({
+					url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqInstance',
+					method : "POST",
+					params : {
+						instanceName : instanceName,
+						unitName : unitName,
+						protocolName : protocolName
+					},
+					success : function(response) {
+						var result = Ext.JSON.decode(response.responseText);
+						if (result.success==true) {
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+						}else{
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+						}
+						Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 
-        	var treePanel=Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id");
-    		if(isNotVal(treePanel)){
-    			treePanel.getStore().load();
-    		}else{
-    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoStore');
-    		}
-		},
-		failure : function() {
-			Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
-		}
-	});
+			        	var treePanel=Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id");
+			    		if(isNotVal(treePanel)){
+			    			treePanel.getStore().load();
+			    		}else{
+			    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoStore');
+			    		}
+					},
+					failure : function() {
+						Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+					}
+				});
+			}
+		});
+	}else{
+		Ext.Ajax.request({
+			url : context + '/acquisitionUnitManagerController/saveSingelImportedAcqInstance',
+			method : "POST",
+			params : {
+				instanceName : instanceName,
+				unitName : unitName,
+				protocolName : protocolName
+			},
+			success : function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				}else{
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				}
+				Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
+
+	        	var treePanel=Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id");
+	    		if(isNotVal(treePanel)){
+	    			treePanel.getStore().load();
+	    		}else{
+	    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoStore');
+	    		}
+			},
+			failure : function() {
+				Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.exceptionThrow+"</font>】"+loginUserLanguageResource.contactAdmin);
+			}
+		});
+	}
+	
 }
 
 function saveAllImportedAcqInstance(){
@@ -273,17 +323,23 @@ function saveAllImportedAcqInstance(){
 
 iconImportSingleAcqInstanceAction = function(value, e, record) {
 	var resultstring='';
-	var instanceName=record.data.text;
-	var unitName=record.data.unitName;
-	var protocolName=record.data.protocol;
-	
-	instanceName = encodeURIComponent(instanceName || '');
-	unitName = encodeURIComponent(unitName || '');
-	protocolName = protocolName(unitName || '');
-
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
+		var instanceName=record.data.text;
+		var unitName=record.data.unitName;
+		var protocolName=record.data.protocol;
+		
+		var saveSign=record.data.saveSign;
+		var msg=record.data.msg;
+		
+		instanceName = encodeURIComponent(instanceName || '');
+		unitName = encodeURIComponent(unitName || '');
+		protocolName = encodeURIComponent(protocolName || '');
+		
+		saveSign = encodeURIComponent(saveSign || '');
+		msg = encodeURIComponent(msg || '');
+		
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance('"+instanceName+"','"+unitName+"','"+protocolName+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqInstance('"+instanceName+"','"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }

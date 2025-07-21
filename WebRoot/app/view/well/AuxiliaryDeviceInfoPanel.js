@@ -33,32 +33,33 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
-                    var fields = "";
-                    var heads = "";
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
-                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
-                    var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
-                    for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-                        fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
-                        heads += auxiliaryDeviceInfoHandsontableHelper.colHeaders[i] + ","
-                    }
-                    if (isNotVal(fields)) {
-                        fields = fields.substring(0, fields.length - 1);
-                        heads = heads.substring(0, heads.length - 1);
-                    }
-                    
-                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
-                    var title=fileName;
-
-                    var param = "&fields=" + fields 
-                    + "&heads=" + URLencode(URLencode(heads)) 
-                    + "&orgId=" + leftOrg_Id 
-                    + "&deviceType=" + deviceType 
-                    + "&recordCount=10000" 
-                    + "&fileName=" + URLencode(URLencode(fileName)) 
-                    + "&title=" + URLencode(URLencode(title));
-                    openExcelWindow(url + '?flag=true' + param);
+                	exportAuxiliaryDeviceCompleteData();
+//                    var fields = "";
+//                    var heads = "";
+//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+//                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
+//                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
+//                    var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
+//                    for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
+//                        fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
+//                        heads += auxiliaryDeviceInfoHandsontableHelper.colHeaders[i] + ","
+//                    }
+//                    if (isNotVal(fields)) {
+//                        fields = fields.substring(0, fields.length - 1);
+//                        heads = heads.substring(0, heads.length - 1);
+//                    }
+//                    
+//                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
+//                    var title=fileName;
+//
+//                    var param = "&fields=" + fields 
+//                    + "&heads=" + URLencode(URLencode(heads)) 
+//                    + "&orgId=" + leftOrg_Id 
+//                    + "&deviceType=" + deviceType 
+//                    + "&recordCount=10000" 
+//                    + "&fileName=" + URLencode(URLencode(fileName)) 
+//                    + "&title=" + URLencode(URLencode(title));
+//                    openExcelWindow(url + '?flag=true' + param);
                 }
             },'-', {
                 id: 'AuxiliaryDeviceTotalCount_Id',

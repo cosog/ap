@@ -88,9 +88,17 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                         Ext.create("AP.store.orgAndUser.OrgParentChangeCurrentOrgListStore");
                         Ext.create("AP.store.orgAndUser.OrgParentChangeDestinationOrgListStore");
         			}
-        		}]
+        		},"-", {
+                    xtype: 'button',
+                    text: loginUserLanguageResource.exportData,
+                    iconCls: 'export',
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    hidden: false,
+                    handler: function (v, o) {
+                    	exportOrganizationCompleteData();
+                    }
+                }]
         	},{
-        		
         		region:'center',
         		id:'OrgAndUserUserInfoPanel_Id',
         		title:loginUserLanguageResource.userList,
@@ -145,7 +153,16 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                         Ext.create("AP.store.orgAndUser.UserOrgChangeUserListStore");
                         Ext.create("AP.store.orgAndUser.UserOrgChangeOrgListStore");
         			}
-        		}]
+        		},"-", {
+                    xtype: 'button',
+                    text: loginUserLanguageResource.exportData,
+                    iconCls: 'export',
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    hidden: false,
+                    handler: function (v, o) {
+                    	exportUserCompleteData();
+                    }
+                }]
         	}]
         });
         me.callParent(arguments);
@@ -239,3 +256,36 @@ adviceCurrentUserName = function(val,o,p,e) {
  		return '<span data-qtip="'+val+'" data-dismissDelay=10000>'+showVal+'</span>';
  	}
 };
+
+function exportOrganizationCompleteData(){
+	var url = context + '/orgManagerController/exportOrganizationCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportOrganizationCompleteData'+'_'+timestamp;
+	var maskPanelId='OrgAndUserOrgInfoPanel_Id';
+	
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.organizationExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportUserCompleteData(){
+	var url = context + '/userManagerController/exportUserCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportUserCompleteData'+'_'+timestamp;
+	var maskPanelId='OrgAndUserUserInfoPanel_Id';
+	
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.userExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}
+

@@ -77,7 +77,7 @@ private CommonDataService service;
 				+ " showLevel,remark"
 				+ " from  viw_role t"
 				+ " where 1=1 "
-				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
+				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
 				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )";
 		if (StringManagerUtils.isNotNull(roleName)) {
@@ -120,6 +120,92 @@ private CommonDataService service;
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	
+	public String exportRoleCompleteData(User user) {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
+				+ " role_videokeyedit as roleVideoKeyEdit,"
+				+ " role_languageedit as roleLanguageEdit,"
+				+ " showLevel,remark"
+				+ " from  viw_role t"
+				+ " where 1=1 "
+				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+user.getDeviceTypeIds()+") )"
+				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )"
+				+ " order by t.role_id ";
+		
+		String moduleSql="select t.rm_roleid,t.rm_moduleid,t.rm_matrix "
+				+ " from tbl_module2role t "
+				+ " order by t.rm_roleid,t.rm_id";
+		String deviceTypeSql="select t.rd_roleid,t.rd_devicetypeid,t.rd_matrix "
+				+ " from tbl_devicetype2role t "
+				+ " order by t.rd_roleid,t.rd_devicetypeid";
+		String languageSql="select t.roleid,t.language,t.matrix "
+				+ " from tbl_language2role t "
+				+ " order by t.roleid,t.language";
+		
+		List<?> list=this.findCallSql(sql);
+		List<?> moduleRightList=this.findCallSql(moduleSql);
+		List<?> deviceTypeRightList=this.findCallSql(deviceTypeSql);
+		List<?> languageRightList=this.findCallSql(languageSql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String roleId=obj[0]+"";
+			result_json.append("{\"RoleId\":"+roleId+",");
+			result_json.append("\"RoleName\":\""+obj[1]+"\",");
+			result_json.append("\"RoleLevel\":"+obj[2]+",");
+			result_json.append("\"RoleVideoKeyEdit\":"+obj[3]+",");
+			result_json.append("\"RoleLanguageEdit\":"+obj[4]+",");
+			result_json.append("\"ShowLevel\":"+obj[5]+",");
+			result_json.append("\"Remark\":\""+obj[6]+"\",");
+			result_json.append("\"ModuleRight\":[");
+			for(int j=0;j<moduleRightList.size();j++){
+				Object[] moduleRightObj = (Object[]) moduleRightList.get(j);
+				if(roleId.equalsIgnoreCase(moduleRightObj[0]+"")){
+					result_json.append("{\"Id\":"+moduleRightObj[1]+",");
+					result_json.append("\"Matrix\":\""+moduleRightObj[2]+"\"},");
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("],");
+			
+			result_json.append("\"DeviceTypeRight\":[");
+			for(int j=0;j<deviceTypeRightList.size();j++){
+				Object[] deviceTypeRightObj = (Object[]) deviceTypeRightList.get(j);
+				if(roleId.equalsIgnoreCase(deviceTypeRightObj[0]+"")){
+					result_json.append("{\"Id\":"+deviceTypeRightObj[1]+",");
+					result_json.append("\"Matrix\":\""+deviceTypeRightObj[2]+"\"},");
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("],");
+			
+			result_json.append("\"LanguageRight\":[");
+			for(int j=0;j<languageRightList.size();j++){
+				Object[] languageRightObj = (Object[]) languageRightList.get(j);
+				if(roleId.equalsIgnoreCase(languageRightObj[0]+"")){
+					result_json.append("{\"Id\":"+languageRightObj[1]+",");
+					result_json.append("\"Matrix\":\""+languageRightObj[2]+"\"},");
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
 	}
 

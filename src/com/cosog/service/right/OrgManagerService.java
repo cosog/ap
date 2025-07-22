@@ -9,6 +9,7 @@ import org.jfree.util.Log;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.Org;
+import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.PagingConstants;
@@ -247,6 +248,32 @@ public class OrgManagerService<T> extends BaseService<T> {
 		}
 		sqlBuffer.append(" order by t.org_seq,t.org_id");
 		return this.findCallSql(sqlBuffer.toString());
+	}
+	
+	public String exportOrganizationCompleteData(User user) {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.org_id,t.org_code,t.org_name_zh_cn,t.org_name_en,t.org_name_ru,t.org_memo,t.org_parent,t.org_seq "
+				+ " from tbl_org t"
+				+ " where t.org_id in ("+(user!=null?user.getUserorgids():"0")+")"
+				+ " order by t.org_id ";
+		List<?> list=this.findCallSql(sql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"OrgId\":"+obj[0]+",");
+			result_json.append("\"OrgCode\":\""+obj[1]+"\",");
+			result_json.append("\"OrgName_zh_CN\":\""+obj[2]+"\",");
+			result_json.append("\"OrgName_en\":\""+obj[3]+"\",");
+			result_json.append("\"OrgName_ru\":\""+obj[4]+"\",");
+			result_json.append("\"OrgMemo\":\""+obj[5]+"\",");
+			result_json.append("\"OrgParentId\":"+obj[6]+",");
+			result_json.append("\"OrgSeq\":\""+obj[7]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public List<T> findloadOrgTreeListById2(Class<T> clazz, String tid,int orgid,String parentNodeIds,String childNodeIds) {

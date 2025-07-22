@@ -817,10 +817,8 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
-		orgId=ParamUtils.getParameter(request, "orgId");
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -833,13 +831,8 @@ public class WellInformationManagerController extends BaseController {
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
 		}
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
 		
-		String json=this.wellInformationManagerService.exportAuxiliaryDeviceCompleteData(deviceType,user);
+		String json=this.wellInformationManagerService.exportAuxiliaryDeviceCompleteData(user);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		fileName+=".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
@@ -1407,33 +1400,24 @@ public class WellInformationManagerController extends BaseController {
 	public String exportDeviceCompleteData() throws Exception {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
-		int offset = (intPage - 1) * pageSize + 1;
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String key = ParamUtils.getParameter(request, "key");
-		orgId=ParamUtils.getParameter(request, "orgId");
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
+			orgId = "" + user.getUserorgids();
 		}
 		
 		if(session!=null){
 			session.removeAttribute(key);
 			session.setAttribute(key, 0);
 		}
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
 		
-		String json=this.wellInformationManagerService.exportDeviceCompleteData(orgId,deviceType,deviceName,user);
+		String json=this.wellInformationManagerService.exportDeviceCompleteData(orgId,deviceName,user);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		fileName+=".json";
 		String path=stringManagerUtils.getFilePath(fileName,"download/");

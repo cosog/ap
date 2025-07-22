@@ -225,6 +225,52 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String exportUserCompleteData(User user) {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,"
+				+ " u.user_id as userId,u.user_pwd as userPwd,"
+				+ " u.user_type as userType,"
+				+ " u.user_phone as userPhone,u.user_in_email as userInEmail,"
+				+ " to_char(u.user_regtime,'YYYY-MM-DD hh24:mi:ss') as userRegtime,"
+				+ " u.user_quicklogin as userQuickLogin,"
+				+ " u.user_receivesms as receiveSMS,"
+				+ " u.user_receivemail as receiveMail,"
+				+ " u.user_enable as userEnable,"
+				+ " u.user_language as userLanguage"
+				+ " from tbl_user u"
+				+ " left outer join tbl_role r on u.user_type=r.role_id"
+				+ " where u.user_orgid in (" + user.getUserorgids() + ")"
+				+ " and ("
+				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or u.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ ")";
+		sql+=" order by r.role_level,user_no,u.user_no";
+		List<?> list=this.findCallSql(sql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"UserNo\":"+obj[0]+",");
+			result_json.append("\"UserName\":\""+obj[1]+"\",");
+			result_json.append("\"UserOrgid\":"+obj[2]+",");
+			result_json.append("\"UserId\":\""+obj[3]+"\",");
+			result_json.append("\"UserPwd\":\""+obj[4]+"\",");
+			result_json.append("\"UserType\":"+obj[5]+",");
+			result_json.append("\"UserPhone\":\""+obj[6]+"\",");
+			result_json.append("\"UserInEmail\":\""+obj[7]+"\",");
+			result_json.append("\"UserRegtime\":\""+obj[8]+"\",");
+			result_json.append("\"UserQuickLogin\":"+obj[9]+",");
+			result_json.append("\"ReceiveSMS\":"+obj[10]+",");
+			result_json.append("\"ReceiveMail\":"+obj[11]+",");
+			result_json.append("\"UserEnable\":"+obj[12]+",");
+			result_json.append("\"userLanguage\":"+obj[13]+"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	/**<p>描述：获取用户类型的下拉菜单数据信息</p>
 	 * 
 	 * @param type 下拉菜单数据信息

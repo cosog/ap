@@ -98,7 +98,7 @@ function exportAuxiliaryDeviceCompleteData(){
 	var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
     var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
     
-    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
+    var fileName=loginUserLanguageResource.auxiliaryDdeviceExportFileName;
     var title=fileName;
 	
 	var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceCompleteData';

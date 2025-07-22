@@ -27,40 +27,6 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 handler: function (v, o) {
                     CreateAndLoadAuxiliaryDeviceInfoTable();
                 }
-            }, '-', {
-                xtype: 'button',
-                text: loginUserLanguageResource.exportData,
-                iconCls: 'export',
-                hidden: false,
-                handler: function (v, o) {
-                	exportAuxiliaryDeviceCompleteData();
-//                    var fields = "";
-//                    var heads = "";
-//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-//                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
-//                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
-//                    var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
-//                    for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-//                        fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
-//                        heads += auxiliaryDeviceInfoHandsontableHelper.colHeaders[i] + ","
-//                    }
-//                    if (isNotVal(fields)) {
-//                        fields = fields.substring(0, fields.length - 1);
-//                        heads = heads.substring(0, heads.length - 1);
-//                    }
-//                    
-//                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
-//                    var title=fileName;
-//
-//                    var param = "&fields=" + fields 
-//                    + "&heads=" + URLencode(URLencode(heads)) 
-//                    + "&orgId=" + leftOrg_Id 
-//                    + "&deviceType=" + deviceType 
-//                    + "&recordCount=10000" 
-//                    + "&fileName=" + URLencode(URLencode(fileName)) 
-//                    + "&title=" + URLencode(URLencode(title));
-//                    openExcelWindow(url + '?flag=true' + param);
-                }
             },'-', {
                 id: 'AuxiliaryDeviceTotalCount_Id',
                 xtype: 'component',
@@ -71,6 +37,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			xtype: 'button',
                 text: loginUserLanguageResource.addDevie,
                 iconCls: 'add',
+                disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.AuxiliaryDeviceInfoWindow", {
                         title: loginUserLanguageResource.addDevie
@@ -86,6 +53,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			xtype: 'button',
     			text: loginUserLanguageResource.deleteDevice,
     			iconCls: 'delete',
+    			disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
     			handler: function (v, o) {
     				var startRow= Ext.getCmp("AuxiliaryDeviceSelectRow_Id").getValue();
     				var endRow= Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").getValue();
@@ -144,6 +112,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 hidden: false,
                 text: loginUserLanguageResource.save,
                 iconCls: 'save',
+                disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
                     auxiliaryDeviceInfoHandsontableHelper.saveData();
                 }
@@ -151,6 +120,7 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     			xtype: 'button',
                 text: loginUserLanguageResource.batchAdd,
                 iconCls: 'batchAdd',
+                disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                 hidden: false,
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.BatchAddAuxiliaryDeviceWindow", {
@@ -159,7 +129,42 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     window.show();
                     return false;
     			}
-    		}],
+    		}, '-', {
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
+                hidden: false,
+                handler: function (v, o) {
+                	exportAuxiliaryDeviceCompleteData();
+//                    var fields = "";
+//                    var heads = "";
+//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+//                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
+//                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
+//                    var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
+//                    for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
+//                        fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
+//                        heads += auxiliaryDeviceInfoHandsontableHelper.colHeaders[i] + ","
+//                    }
+//                    if (isNotVal(fields)) {
+//                        fields = fields.substring(0, fields.length - 1);
+//                        heads = heads.substring(0, heads.length - 1);
+//                    }
+//                    
+//                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
+//                    var title=fileName;
+//
+//                    var param = "&fields=" + fields 
+//                    + "&heads=" + URLencode(URLencode(heads)) 
+//                    + "&orgId=" + leftOrg_Id 
+//                    + "&deviceType=" + deviceType 
+//                    + "&recordCount=10000" 
+//                    + "&fileName=" + URLencode(URLencode(fileName)) 
+//                    + "&title=" + URLencode(URLencode(title));
+//                    openExcelWindow(url + '?flag=true' + param);
+                }
+            }],
     		layout: 'border',
     		items: [{
     			region: 'center',

@@ -1,7 +1,12 @@
 package com.cosog.controller.right;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +37,7 @@ import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
@@ -76,7 +82,8 @@ public class UserManagerController extends BaseController {
 	private OrgManagerService<Org> orgService;
 	@Autowired
 	private ModuleManagerService<Module> modService;
-
+	@Autowired
+	private CommonDataService service;
 	
 	//添加绑定前缀 
 	@InitBinder("user")
@@ -483,6 +490,63 @@ public class UserManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/exportUserCompleteData")
+	public String exportUserCompleteData() throws IOException {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
+		String json = this.userService.exportUserCompleteData(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		fileName+=".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			if(user!=null){
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
+		return null;
+	}
+	
 	/** <P>判断在用户表中是否存在当前新加的用户账号</p>	 
 	 * @author  gao 2014-05-08
 	 * @return

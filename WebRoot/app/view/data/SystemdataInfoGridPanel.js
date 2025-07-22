@@ -84,7 +84,16 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
-    		}
+    		},"-", {
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                hidden: false,
+                handler: function (v, o) {
+                	exportDataDictionaryCompleteData();
+                }
+            }
 //    		, '-', {
 //                xtype: 'button',
 //                itemId: 'editBtnId',
@@ -111,3 +120,19 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
     }
 
 });
+
+function exportDataDictionaryCompleteData(){
+	var url = context + '/systemdataInfoController/exportDataDictionaryCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportDataDictionaryCompleteData'+'_'+timestamp;
+	var maskPanelId='SystemdataInfoGridPanelViewId';
+	
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.dataDictionaryExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}

@@ -1596,7 +1596,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return true;
 	}
 	
-	public String exportDeviceCompleteData(String orgId,String deviceType,String deviceName,User user) {
+	public String exportDeviceCompleteData(String orgId,String deviceName,User user) {
 		StringBuffer result_json = new StringBuffer();
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1615,20 +1615,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " tbl_protocolinstance t2,tbl_protocoldisplayinstance t3,tbl_protocolalarminstance t4,tbl_protocolreportinstance t5"
 				+ " where t.orgid=o.org_id and t.devicetype=d.id"
 				+ " and t.instancecode=t2.code and t.displayinstancecode=t3.code and t.alarminstancecode=t4.code and t.reportinstancecode=t5.code"
-				+ " and t.orgid in ("+orgId+")"
-				+ " and t.devicetype in ("+deviceType+")";
+				+ " and t.orgid in ("+orgId+")";
 		
 		String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit "
 				+ " from tbl_device t,tbl_deviceaddinfo t2 "
 				+ " where t.id=t2.deviceid"
-				+ " and t.orgid in ("+orgId+")"
-				+ " and t.devicetype in ("+deviceType+")";
+				+ " and t.orgid in ("+orgId+")";
 		
 		String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.id as auxiliaryDeviceId"
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
-				+ " and t.orgid in ("+orgId+")"
-				+ " and t.devicetype in ("+deviceType+")";
+				+ " and t.orgid in ("+orgId+")";
 		if (StringManagerUtils.isNotNull(deviceName)) {
 			sql += " and t.devicename like '%" + deviceName+ "%'";
 			addInfoSql += " and t.devicename like '%" + deviceName+ "%'";
@@ -3972,18 +3969,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String exportAuxiliaryDeviceCompleteData(String deviceType,User user) {
+	public String exportAuxiliaryDeviceCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
 		String language=user!=null?user.getLanguageName():"";
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String sql = "select t.id,t.type,t2.name_"+language+" as typeName,t.name,t.manufacturer,t.model,t.remark,t.sort,t.specifictype,t.prtf"
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
-				+ " where t.type=t2.id"
-				+ " and t.type in ("+deviceType+")";
+				+ " where t.type=t2.id";
 		String addInfoSql="select t.id,t2.itemname,t2.itemcode,t2.itemvalue,t2.itemunit "
 				+ " from tbl_auxiliarydevice t,tbl_auxiliarydeviceaddinfo t2"
-				+ " where t.id=t2.deviceid"
-				+ " and t.type in ("+deviceType+")";
+				+ " where t.id=t2.deviceid";
 		sql+= " order by t.manufacturer,t.model,t.name";
 		addInfoSql+= " order by t2.deviceid,t2.id";
 		

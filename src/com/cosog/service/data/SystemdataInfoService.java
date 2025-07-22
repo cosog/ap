@@ -115,6 +115,70 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
 	}
+	
+	public String exportDataDictionaryCompleteData(User user) {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,t.sorts,t.status,t.moduleid  "
+				+ "from tbl_dist_name t "
+				+ "where t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+") "
+				+ "order by t.sorts";
+		String itemSql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,"
+				+ "t.devicetype,t.datavalue,t.sorts,"
+				+ "t.columndatasource,t.datasource,t.dataunit,t.configitemname,"
+				+ "t.status,t.status_cn,t.status_en,t.status_ru "
+				+ " from tbl_dist_item t,tbl_dist_name t2 "
+				+ " where t.sysdataid=t2.sysdataid "
+				+ " order by t2.sorts,t.devicetype,t.sorts";
+		List<?> list=this.findCallSql(sql);
+		List<?> itemList=this.findCallSql(itemSql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String dictionaryid=obj[0]+"";
+			result_json.append("{\"Dictionaryid\":\""+dictionaryid+"\",");
+			result_json.append("\"Name_zh_CN\":\""+obj[1]+"\",");
+			result_json.append("\"Name_en\":\""+obj[2]+"\",");
+			result_json.append("\"Name_ru\":\""+obj[3]+"\",");
+			result_json.append("\"Code\":\""+obj[4]+"\",");
+			result_json.append("\"Sort\":"+obj[5]+",");
+			result_json.append("\"Status\":"+obj[6]+",");
+			result_json.append("\"ModuleId\":"+obj[7]+",");
+			result_json.append("Item:[");
+			
+			for(int j=0;j<itemList.size();j++){
+				Object[] itemObj = (Object[]) itemList.get(j);
+				if(dictionaryid.equalsIgnoreCase(itemObj[0]+"")){
+					result_json.append("{\"Name_zh_CN\":\""+itemObj[1]+"\",");
+					result_json.append("\"Name_en\":\""+itemObj[2]+"\",");
+					result_json.append("\"Name_ru\":\""+itemObj[3]+"\",");
+					result_json.append("\"Code\":\""+itemObj[4]+"\",");
+					result_json.append("\"DeviceType\":"+itemObj[5]+",");
+					result_json.append("\"DataValue\":\""+itemObj[6]+"\",");
+					result_json.append("\"Sort\":"+itemObj[7]+",");
+					result_json.append("\"ColumnDataSource\":"+itemObj[8]+",");
+					result_json.append("\"DataSource\":"+(StringManagerUtils.isNum(itemObj[9]+"")?StringManagerUtils.stringToInteger(itemObj[9]+""):-99 )+",");
+					result_json.append("\"SataUnit\":\""+itemObj[10]+"\",");
+					result_json.append("\"ConfigItemName\":\""+itemObj[11]+"\",");
+					result_json.append("\"Status\":"+itemObj[12]+",");
+					result_json.append("\"Status_zh_CN\":"+itemObj[13]+",");
+					result_json.append("\"Status_en\":"+itemObj[14]+",");
+					result_json.append("\"Status_ru\":"+itemObj[15]+"},");
+				}
+			}
+			
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		System.out.println(result_json.toString().replaceAll("null", ""));
+		return result_json.toString().replaceAll("null", "");
+	}
 
 	/**
 	 * 检索是否有重复的英文名称

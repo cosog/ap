@@ -68,9 +68,32 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                 iconCls: 'add'
-    		}]
+    		},"-", {
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                hidden: false,
+                handler: function (v, o) {
+                	exportRoleCompleteData();
+                }
+            }]
         });
         this.callParent(arguments);
     }
-
 });
+
+function exportRoleCompleteData(){
+	var url = context + '/roleManagerController/exportRoleCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportRoleCompleteData'+'_'+timestamp;
+	var maskPanelId='RoleInfoGridPanelView_id';
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}

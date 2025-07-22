@@ -204,11 +204,6 @@ function deviceManagerDataRefresh(){
 }
 
 function exportDeviceCompleteData(){
-	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-	var deviceTypeName=getTabPanelActiveName("DeviceManagerTabPanel");
-	var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
-	
 	var url = context + '/wellInformationManagerController/exportDeviceCompleteData';
 	
 	var timestamp=new Date().getTime();
@@ -216,11 +211,8 @@ function exportDeviceCompleteData(){
 	var maskPanelId='DeviceTablePanel_id';
 	
 	
-	var param = "&orgId=" + leftOrg_Id 
-    + "&deviceType="+deviceType
-    + "&deviceName=" + URLencode(URLencode(deviceName)) 
-    + "&recordCount=10000" 
-    + "&fileName=" + URLencode(URLencode(deviceTypeName+loginUserLanguageResource.deviceList)) 
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.primaryDdeviceExportFileName)) 
     + '&key='+key;
     exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
 //    openExcelWindow(url + '?flag=true' + param);

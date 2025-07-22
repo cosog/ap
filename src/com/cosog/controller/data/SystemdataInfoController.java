@@ -1,9 +1,15 @@
 package com.cosog.controller.data;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -22,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.User;
 import com.cosog.model.data.SystemdataInfo;
+import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Constants;
@@ -50,6 +58,8 @@ public class SystemdataInfoController extends BaseController {
 	 * 实体类
 	 */
 	private SystemdataInfo systemdataInfo;
+	@Autowired
+	private CommonDataService service;
 
 	public SystemdataInfo getSystemdataInfo() {
 		return systemdataInfo;
@@ -122,6 +132,61 @@ public class SystemdataInfoController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportDataDictionaryCompleteData")
+	public String exportDataDictionaryCompleteData() throws IOException {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
+		String json = this.systemdataInfoService.exportDataDictionaryCompleteData(user);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		fileName+=".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		InputStream in=null;
+		OutputStream out=null;
+		try {
+			if(user!=null){
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+        	if(in!=null){
+        		in.close();
+        	}
+        	if(out!=null){
+        		out.close();
+        	}
+        	if(session!=null){
+    			session.setAttribute(key, 1);
+    		}
+        }
+		StringManagerUtils.deleteFile(path);
 		return null;
 	}
 

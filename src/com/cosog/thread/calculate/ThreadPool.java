@@ -133,6 +133,13 @@ public class ThreadPool {
 		return result.toString();
 	}
 	
+	public void removeThreadPoolExecutor(String key){
+		if (map.containsKey(key)) {
+			map.remove(key);
+			this.executor = null;
+		}
+	} 
+	
 	/**
 	* 添加任务到线程池(execute)中
 	* @param runnable the task to execute
@@ -141,6 +148,7 @@ public class ThreadPool {
 	public void execute(Runnable runnable) {
 		checkQueneSize();
 		executor.execute(runnable);
+//		executor.submit(runnable);
 	}
 
 	private void checkQueneSize() {

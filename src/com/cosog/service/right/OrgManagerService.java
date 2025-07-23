@@ -8,10 +8,12 @@ import java.util.Map;
 import org.jfree.util.Log;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.ExportOrganizationData;
 import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.OrgRecursion;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.StringManagerUtils;
@@ -402,5 +404,19 @@ public class OrgManagerService<T> extends BaseService<T> {
 			}
 		}
 		return result;
+	}
+	
+	public String getUploadedOrganizationTreeData(List<ExportOrganizationData> uploadOrganizationList,User user){
+		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
+		if(uploadOrganizationList!=null && uploadOrganizationList.size()>0){
+//			for(int i=0;i<uploadOrganizationList.size();i++){
+//				a
+//			}
+		}
+		
+		
+		
+		return result_json.toString().replaceAll("null", "");
 	}
 }

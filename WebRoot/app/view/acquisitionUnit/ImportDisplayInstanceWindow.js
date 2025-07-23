@@ -255,7 +255,7 @@ function submitImportedDisplayInstanceFile() {
             url: context + '/acquisitionUnitManagerController/uploadImportedDisplayInstanceFile',
             timeout: 1000*60*10,
             method:'post',
-            waitMsg: '文件上传中...',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
             success: function(response, action) {
             	var result = action.result;
             	if (result.flag == true) {

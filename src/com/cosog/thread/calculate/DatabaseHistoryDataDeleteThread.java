@@ -25,6 +25,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	@SuppressWarnings({"static-access", "unused" })
 	@Override
 	public void run(){
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,device id:"+deviceId+" start!");
 //		int index=0;
 //		while(index<100000){
 //			index++;
@@ -41,7 +42,6 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 //				break;
 //			}
 //		}
-		
 		
 		if(StringManagerUtils.isNotNull(acqTime)){
 			int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
@@ -123,13 +123,14 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}
 			}
 		}
-//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
 		DatabaseMaintenanceCounterUtils.countDown();
 	}
 	
 	@SuppressWarnings("static-access")
 	public void deleteData(String table,String timeColumn,String deviceColumn,int deviceId,String newestTime,String timeFormat){
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,table:"+table+",device id:"+deviceId+" start!");
+		int timeOut=60*10;//sql执行超时时间
 		int delCount=0;
 		int r=0;
 		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
@@ -166,7 +167,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 												+ " order by t2."+timeColumn+") v"
 												+ " where rownum<="+delRecord
 												+ " )";
-										r=OracleJdbcUtis.executeSqlUpdate(delSql);
+										r=OracleJdbcUtis.executeSqlUpdate(delSql,timeOut);
 										if(r>0){
 											delCount+=r;
 										}
@@ -175,7 +176,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 									}while(!Thread.interrupted() && count>0);
 								}else{
 									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+oldestDate+"','yyyy-mm-dd')+"+singleDeleteTime+" and t."+deviceColumn+"="+deviceId;
-									r=OracleJdbcUtis.executeSqlUpdate(delSql);
+									r=OracleJdbcUtis.executeSqlUpdate(delSql,timeOut);
 									if(r>0){
 										delCount+=r;
 									}
@@ -195,7 +196,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 												+ " order by t2."+timeColumn+") v"
 												+ " where rownum<="+delRecord
 												+ " )";
-										r=OracleJdbcUtis.executeSqlUpdate(delSql);
+										r=OracleJdbcUtis.executeSqlUpdate(delSql,timeOut);
 										if(r>0){
 											delCount+=r;
 										}
@@ -204,7 +205,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 									}while(!Thread.interrupted() && count>0);
 								}else{
 									delSql="delete from "+table+" t where t."+timeColumn+"<to_date('"+newestDate+"','yyyy-mm-dd')-"+retentionTime+" and t."+deviceColumn+"="+deviceId;
-									r=OracleJdbcUtis.executeSqlUpdate(delSql);
+									r=OracleJdbcUtis.executeSqlUpdate(delSql,timeOut);
 									if(r>0){
 										delCount+=r;
 									}

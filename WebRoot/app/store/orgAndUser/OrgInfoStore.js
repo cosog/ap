@@ -24,9 +24,6 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var treeGridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
             if (!isNotVal(treeGridPanel)) {
-//                var arrColumns = get_rawData.columns;
-//                var cloums = createOrgTreeHeadColumns(arrColumns);
-//                var newColumns = Ext.JSON.decode(cloums);
                 var treeGridPanel = Ext.create('Ext.tree.Panel', {
                     id: "OrgInfoTreeGridView_Id",
                     border: false,

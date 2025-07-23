@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -24,6 +25,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
@@ -32,6 +35,7 @@ import com.cosog.model.OrgGridPanelData;
 import com.cosog.model.OrgParent;
 import com.cosog.model.OrgWellInfoBean;
 import com.cosog.model.User;
+import com.cosog.model.ExportOrganizationData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
@@ -663,6 +667,83 @@ public class OrgManagerController extends BaseController {
 		String selectedDestinationOrgId=ParamUtils.getParameter(request, "selectedDestinationOrgId");
 		int result=this.orgService.changeOrgParent(selectedCurrentOrgId,selectedDestinationOrgId);
 		String json = "{\"success\":true,\"resultStatus\":"+result+"}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedOrganizationFile")
+	public String uploadImportedOrganizationFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadOrganizationFile";
+		
+		HttpSession session=request.getSession();
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportOrganizationData>>() {}.getType();
+		List<ExportOrganizationData> uploadOrganizationList=gson.fromJson(fileContent, type);
+		if(uploadOrganizationList!=null){
+			flag=true;
+			session.setAttribute(key, uploadOrganizationList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedOrganizationTreeData")
+	public String getUploadedOrganizationTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		String key="uploadOrganizationFile";
+		List<ExportOrganizationData> uploadOrganizationList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadOrganizationList=(List<ExportOrganizationData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = "";
+		OrgRecursion r = new OrgRecursion();
+		if (uploadOrganizationList != null) {
+			for (ExportOrganizationData e : uploadOrganizationList) {
+				if (!r.hasParent(uploadOrganizationList, e)) {
+					json = r.recursionOrgFn(uploadOrganizationList, e,language);
+				}
+			}
+		}
+		json = r.modifyOrgStr(json);
+		json = this.getArrayTojsonPage(json, "","0",language);
+		
+//		String json = orgService.getUploadedOrganizationTreeData(uploadOrganizationList,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

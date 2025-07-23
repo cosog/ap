@@ -60,8 +60,9 @@ public class DatabaseMaintenanceTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
 	}
 	
+	
+//	@Scheduled(cron = "0 0/5 * * * ?")
 	public static void timingDeleteDatabaseHistoryData(){
-//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData start!");
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData start!");
 		String sql="select t2.id,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
 				+ " from tbl_device t2 "
@@ -77,7 +78,6 @@ public class DatabaseMaintenanceTask {
 				0);
 		
 		DatabaseMaintenanceCounterUtils.reset();//加法计数器清零
-		
 		List<Object[]> deviceList=OracleJdbcUtis.query(sql);
 		DatabaseMaintenanceCounterUtils.initCountDownLatch(deviceList.size());
 		
@@ -93,11 +93,8 @@ public class DatabaseMaintenanceTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData finished!");
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!");
 	}
-	
-	
 	
 	@SuppressWarnings({ "static-access", "unused" })
 	public static void stopTimingDatabaseMaintenance(){
@@ -123,25 +120,31 @@ public class DatabaseMaintenanceTask {
         }), initDelay, interval, TimeUnit.MILLISECONDS);
 	}
 	
+//	@Scheduled(cron = "30 0/5 * * * ?")
 	public static void stopTimingDeleteDatabaseHistoryData(){
-		StringManagerUtils.printLog("stopTimingDeleteDatabaseHistoryData！");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",stopTimingDeleteDatabaseHistoryData!");
 		if(threadPoolexecutor!=null && DatabaseMaintenanceCounterUtils.getCount()>0){
 			List<Runnable> list=threadPoolexecutor.shutdown();
 			for(int i=0;i<list.size();i++){
 				DatabaseMaintenanceCounterUtils.countDown();
 			}
+//			try {
+//				Thread.sleep(1000*10);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
 			try {
-				Thread.sleep(1000*10);
+				DatabaseMaintenanceCounterUtils.await();//等待所有线程执行完毕
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-//			while(DatabaseMaintenanceCounterUtils.getCount()>0){
-//				DatabaseMaintenanceCounterUtils.countDown();
-//			}
+			threadPoolexecutor.removeThreadPoolExecutor("timingDeleteDatabaseHistoryData");
 		}
-		StringManagerUtils.printLog("stopTimingDeleteDatabaseHistoryData finished！");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",stopTimingDeleteDatabaseHistoryData finished！");
 	}
 	
 	public static void scheduledDestory(){

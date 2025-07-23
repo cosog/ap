@@ -26,7 +26,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
             }],
         	items: [{
         		region:'west',
-        		width:'25%',
+        		width:'30%',
         		layout: "fit",
         		title:'组织列表',
         		header:false,
@@ -97,6 +97,15 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function (v, o) {
                     	exportOrganizationCompleteData();
                     }
+                },"-",{
+                	xtype: 'button',
+        			text: loginUserLanguageResource.importData,
+        			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+        			iconCls: 'import',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.orgAndUser.ImportOrganizationWindow");
+                        window.show();
+        			}
                 }]
         	},{
         		region:'center',

@@ -201,7 +201,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, deviceName,deviceType,calculateType,language);
@@ -314,7 +314,7 @@ public class WellInformationManagerController extends BaseController {
 		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String json = this.wellInformationManagerService.getDeviceOrgChangeDeviceList(pager,orgId, deviceName,deviceType,language);
@@ -397,7 +397,7 @@ public class WellInformationManagerController extends BaseController {
 		user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		this.wellInformationManagerService.changeDeviceOrg(selectedDeviceId,selectedOrgId,selectedOrgName,deviceType);
@@ -426,7 +426,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -618,7 +618,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -1368,7 +1368,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -1409,7 +1409,7 @@ public class WellInformationManagerController extends BaseController {
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
-			orgId = "" + user.getUserorgids();
+			orgId = "" + user.getUserOrgIds();
 		}
 		
 		if(session!=null){
@@ -2292,7 +2292,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = wellInformationManagerService.getUpstreamAndDownstreamInteractionDeviceList(orgId,deviceName,deviceType,pager,language);

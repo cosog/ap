@@ -350,7 +350,7 @@
             var user_Name = "${userLogin.userName}";
             user_Type = "${userLogin.userType}";
             userOrg_Id = "${userLogin.userOrgid}";
-            userOrg_Ids = "${userLogin.userorgids}";
+            userOrg_Ids = "${userLogin.userOrgIds}";
             userOrg_Names = "${userLogin.userOrgNames}";
             userParentOrg_Ids = "${userLogin.userParentOrgids}";
             userSyncOrAsync = "${userLogin.syncOrAsync}";

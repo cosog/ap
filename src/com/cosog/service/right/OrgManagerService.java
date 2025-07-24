@@ -2,8 +2,10 @@ package com.cosog.service.right;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.jfree.util.Log;
 import org.springframework.stereotype.Service;
@@ -254,10 +256,16 @@ public class OrgManagerService<T> extends BaseService<T> {
 	
 	public String exportOrganizationCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
+//		String sql="select t.org_id,t.org_code,t.org_name_zh_cn,t.org_name_en,t.org_name_ru,t.org_memo,t.org_parent,t.org_seq "
+//				+ " from tbl_org t"
+//				+ " where t.org_id in ("+(user!=null?user.getUserOrgIds():"0")+")"
+//				+ " order by t.org_id ";
 		String sql="select t.org_id,t.org_code,t.org_name_zh_cn,t.org_name_en,t.org_name_ru,t.org_memo,t.org_parent,t.org_seq "
-				+ " from tbl_org t"
-				+ " where t.org_id in ("+(user!=null?user.getUserorgids():"0")+")"
-				+ " order by t.org_id ";
+				+ " from tbl_org t "
+				+ " START WITH t.org_id =  "+user.getUserOrgid()
+				+ " CONNECT BY t.org_parent = PRIOR t.org_id "
+				+ " ORDER SIBLINGS BY t.org_seq,t.org_id";
+		
 		List<?> list=this.findCallSql(sql);
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){
@@ -324,6 +332,14 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public void addOrg(T Org) throws Exception {
 		getBaseDao().addObject(Org);
 	}
+	
+	public void addOrganization(Org org) throws Exception {
+		getBaseDao().addObject(org);
+	}
+	
+	public Integer addOrg2(Org org) throws Exception {
+		return getBaseDao().saveEntity(org);
+	}
 
 	/**
 	 * <p>
@@ -337,6 +353,10 @@ public class OrgManagerService<T> extends BaseService<T> {
 	 */
 	public void modifyOrg(T Org) throws Exception {
 		getBaseDao().updateObject(Org);
+	}
+	
+	public void modifyOrganization(Org org) throws Exception {
+		getBaseDao().updateObject(org);
 	}
 
 	public void deleteOrg(int id, Class<T> clazz) throws Exception {
@@ -406,17 +426,198 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public String getUploadedOrganizationTreeData(List<ExportOrganizationData> uploadOrganizationList,User user){
-		StringBuffer result_json = new StringBuffer();
-		String language=user!=null?user.getLanguageName():"";
-		if(uploadOrganizationList!=null && uploadOrganizationList.size()>0){
-//			for(int i=0;i<uploadOrganizationList.size();i++){
-//				a
-//			}
+	
+	public List<ExportOrganizationData> getUploadedOrganizationTreeData(List<ExportOrganizationData> uploadOrganizationList,User user){
+		String language=user!=null?user.getLanguageName():"zh_CN";
+		int orgId=user!=null?user.getUserOrgid():0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		List<ExportOrganizationData> list=getUploadedOrganizationList(uploadOrganizationList,user);
+		String sql="select t.org_id,t.org_code,"
+				+ " t.org_name_"+language+",substr(sys_connect_by_path(t.org_name_"+language+",'/'),2) as allpath,"
+				+ " t.org_memo,t.org_parent,t.org_seq"
+				+ " from tbl_org t"
+				+ " start with t.org_id="+orgId
+				+ " connect by   t.org_parent= prior t.org_id";
+		List<?> currentOrgList=this.findCallSql(sql);
+		if(currentOrgList.size()>0){
+			for(ExportOrganizationData e:list){
+				for(int i=0;i<currentOrgList.size();i++){
+					Object[] obj = (Object[]) currentOrgList.get(i);
+					if(e.getOrgId()==StringManagerUtils.stringToInteger(obj[0]+"")){
+						e.setSaveSign(1);
+						e.setMsg(obj[3]+","+languageResourceMap.get("uploadCollisionInfo1"));
+						break;
+					}
+				}
+			}
+		}
+		return list;
+	}
+	
+	public List<ExportOrganizationData> getUploadedOrganizationList(List<ExportOrganizationData> uploadOrganizationList,User user){
+		List<ExportOrganizationData> list =new ArrayList<>();
+		list=getUploadedOrganizationIds(uploadOrganizationList,user.getUserOrgid());
+		if(list.size()==0){
+			String orgIds=user!=null?user.getUserOrgIds():"";
+			String[] orgIdArr=orgIds.split(",");
+			if(uploadOrganizationList!=null && uploadOrganizationList.size()>0){
+				for(int i=0;i<uploadOrganizationList.size();i++){
+					if(StringManagerUtils.existOrNot(orgIdArr, uploadOrganizationList.get(i).getOrgId()+"", false)){
+						list.add(uploadOrganizationList.get(i));
+					}
+				}
+			}
+		}
+		return list;
+	}
+	
+	public List<ExportOrganizationData> getUploadedOrganizationIds(List<ExportOrganizationData> uploadOrganizationList,int targetOrgId){
+		List<ExportOrganizationData> result =new ArrayList<>();
+		
+		Map<Integer, ExportOrganizationData> idToOrgMap = new HashMap<>();
+        Map<Integer, List<ExportOrganizationData>> parentToChildrenMap = new HashMap<>();
+        
+		for(ExportOrganizationData e:uploadOrganizationList){
+			idToOrgMap.put(e.getOrgId(), e);
+			if(parentToChildrenMap.containsKey(e.getOrgParentId())){
+				parentToChildrenMap.get(e.getOrgParentId()).add(e);
+			}else{
+				List<ExportOrganizationData> parentToChildrenList=new ArrayList<>();
+				parentToChildrenList.add(e);
+				parentToChildrenMap.put(e.getOrgParentId(), parentToChildrenList);
+			}
 		}
 		
-		
-		
-		return result_json.toString().replaceAll("null", "");
+		if(idToOrgMap.containsKey(targetOrgId)){
+			Queue<Integer> queue = new LinkedList<>();
+	        queue.add(targetOrgId);
+	        
+	        while (!queue.isEmpty()) {
+	            int currentId = queue.poll();
+	            ExportOrganizationData currentOrg = idToOrgMap.get(currentId);
+	            if (currentOrg != null) {
+	                result.add(currentOrg);
+	                // 添加所有直接子节点到队列
+	                List<ExportOrganizationData> children = parentToChildrenMap.get(currentId);
+	                if (children != null) {
+	                    for (ExportOrganizationData child : children) {
+	                        int childId = (int) child.getOrgId();
+	                        queue.add(childId);
+	                    }
+	                }
+	            }
+	        }
+		}else{
+			
+		}
+		return result;
+	}
+	
+	public int saveAllImportedOrganization(List<ExportOrganizationData> uploadOrganizationList,User user){
+		int r=0;
+		String language=user!=null?user.getLanguageName():"zh_CN";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		List<ExportOrganizationData> list =new ArrayList<>();
+		list=getUploadedOrganizationIds(uploadOrganizationList,user.getUserOrgid());
+		if(list.size()==0){
+			String orgIds=user!=null?user.getUserOrgIds():"";
+			String[] orgIdArr=orgIds.split(",");
+			if(uploadOrganizationList!=null && uploadOrganizationList.size()>0){
+				for(int i=0;i<uploadOrganizationList.size();i++){
+					if(StringManagerUtils.existOrNot(orgIdArr, uploadOrganizationList.get(i).getOrgId()+"", false)){
+						list.add(uploadOrganizationList.get(i));
+					}
+				}
+			}
+		}
+		if(list.size()>0){
+			Map<Integer, ExportOrganizationData> idToOrgMap = new HashMap<>();
+	        Map<Integer, List<ExportOrganizationData>> parentToChildrenMap = new HashMap<>();
+	        
+			for(ExportOrganizationData e:uploadOrganizationList){
+				idToOrgMap.put(e.getOrgId(), e);
+				if(parentToChildrenMap.containsKey(e.getOrgParentId())){
+					parentToChildrenMap.get(e.getOrgParentId()).add(e);
+				}else{
+					List<ExportOrganizationData> parentToChildrenList=new ArrayList<>();
+					parentToChildrenList.add(e);
+					parentToChildrenMap.put(e.getOrgParentId(), parentToChildrenList);
+				}
+			}
+			
+			
+			for(ExportOrganizationData e:uploadOrganizationList){
+				if(e.getSaveSign()!=2){
+					if(e.getSaveSign()==0){
+						ExportOrganizationData parentNode=idToOrgMap.get(e.getOrgParentId());
+						if(parentNode==null){
+							e.setMsg(languageResourceMap.get("parentNodeNoExist"));
+						}else{
+							Org org=new Org();
+							org.setOrgCode(e.getOrgId()+"");
+							org.setOrgName_zh_CN(e.getOrgName_zh_CN());
+							org.setOrgName_en(e.getOrgName_en());
+							org.setOrgName_ru(e.getOrgName_ru());
+							org.setOrgMemo(e.getOrgMemo());
+							org.setOrgSeq(StringManagerUtils.isNum(e.getOrgSeq())?StringManagerUtils.stringToInteger(e.getOrgSeq()):null);
+							if(e.getOrgParentId()==0){//根节点
+								org.setOrgParent(e.getOrgParentId());
+							}else{
+								String parentSql="select t.org_id from tbl_org t "
+										+ "where t.org_code='"+e.getOrgParentId()+"' "
+										+ "or (t.org_name_zh_cn='"+e.getOrgName_zh_CN()+"' and t.org_name_en='"+e.getOrgName_en()+"' and t.org_name_ru='"+e.getOrgName_ru()+"')";
+								List<?> parentOrgList=this.findCallSql(parentSql);
+								if(parentOrgList.size()>0){
+									org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
+								}else{
+									org.setOrgParent(-1);
+								}
+							}
+							if(org.getOrgParent()>0){
+								try {
+									this.addOrganization(org);
+								} catch (Exception e1) {
+									e1.printStackTrace();
+								}
+							}else{
+								e.setMsg(languageResourceMap.get("parentNodeNoExist"));
+							}
+						}
+					}else{
+						Org org=new Org();
+						org.setOrgId(e.getOrgId());
+						org.setOrgCode(e.getOrgId()+"");
+						org.setOrgName_zh_CN(e.getOrgName_zh_CN());
+						org.setOrgName_en(e.getOrgName_en());
+						org.setOrgName_ru(e.getOrgName_ru());
+						org.setOrgMemo(e.getOrgMemo());
+						org.setOrgSeq(StringManagerUtils.isNum(e.getOrgSeq())?StringManagerUtils.stringToInteger(e.getOrgSeq()):null);
+						if(e.getOrgParentId()==0){//根节点
+							org.setOrgParent(e.getOrgParentId());
+						}else{
+							String parentSql="select t.org_id from tbl_org t "
+									+ "where t.org_code='"+e.getOrgParentId()+"' "
+									+ "or (t.org_name_zh_cn='"+e.getOrgName_zh_CN()+"' and t.org_name_en='"+e.getOrgName_en()+"' and t.org_name_ru='"+e.getOrgName_ru()+"')";
+							List<?> parentOrgList=this.findCallSql(parentSql);
+							if(parentOrgList.size()>0){
+								org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
+							}else{
+								org.setOrgParent(-1);
+							}
+						}
+						if(org.getOrgParent()>0){
+							try {
+								this.modifyOrganization(org);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+						}else{
+							e.setMsg(languageResourceMap.get("parentNodeNoExist"));
+						}
+					}
+				}
+			}
+		}
+		return r;
 	}
 }

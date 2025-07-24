@@ -68,7 +68,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = historyQueryService.getHistoryQueryCommStatusStatData(orgId,deviceType,deviceTypeStatValue,language);
@@ -96,7 +96,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = historyQueryService.getHistoryQueryDeviceTypeStatData(orgId,deviceType,commStatusStatValue,language);
@@ -131,7 +131,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		dataPage = historyQueryService.getHistoryQueryDeviceListDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit,language);
@@ -165,7 +165,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
@@ -216,7 +216,7 @@ public class HistoryQueryController extends BaseController  {
 		this.pager = new Page("pagerForm", request);
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -248,7 +248,7 @@ public class HistoryQueryController extends BaseController  {
 		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -316,7 +316,7 @@ public class HistoryQueryController extends BaseController  {
 		this.pager = new Page("pagerForm", request);
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		
@@ -832,7 +832,7 @@ public class HistoryQueryController extends BaseController  {
 		this.pager = new Page("pagerForm", request);
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		

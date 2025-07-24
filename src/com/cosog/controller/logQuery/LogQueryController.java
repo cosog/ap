@@ -61,7 +61,7 @@ public class LogQueryController extends BaseController{
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 				if(user.getUserOrgid()==0){
 					orgId+=",0";
 				}
@@ -130,7 +130,7 @@ public class LogQueryController extends BaseController{
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 				if(user.getUserOrgid()==0){
 					orgId+=",0";
 				}
@@ -190,7 +190,7 @@ public class LogQueryController extends BaseController{
 		}
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 				if(user.getUserOrgid()==0){
 					orgId+=",0";
 				}
@@ -245,7 +245,7 @@ public class LogQueryController extends BaseController{
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 				if(user.getUserOrgid()==0){
 					orgId+=",0";
 				}

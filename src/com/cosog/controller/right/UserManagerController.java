@@ -101,7 +101,7 @@ public class UserManagerController extends BaseController {
 		user = (User) session.getAttribute("userLogin");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String json = this.userService.loadUserComboxList(pager,orgId,userId, user);
@@ -471,7 +471,7 @@ public class UserManagerController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
-			orgId = "" + user.getUserorgids();
+			orgId = "" + user.getUserOrgIds();
 		}
 		int offset = (intPage - 1) * pageSize;
 		map.put(PagingConstants.PAGE_NO, intPage);
@@ -646,7 +646,7 @@ public class UserManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String json = this.userService.getUserOrgChangeUserList(pager,orgId, userName,user,language);

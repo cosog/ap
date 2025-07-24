@@ -21,6 +21,8 @@ public class ExportOrganizationData {
 	private int saveSign=0;
 	
 	private String msg="";
+	
+	private int saveId=0;
 
 	public int getOrgId() {
 		return OrgId;
@@ -100,5 +102,13 @@ public class ExportOrganizationData {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public int getSaveId() {
+		return saveId;
+	}
+
+	public void setSaveId(int saveId) {
+		this.saveId = saveId;
 	}
 }

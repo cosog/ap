@@ -96,7 +96,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = realTimeMonitoringService.getRealTimeMonitoringFESDiagramResultStatData(orgId,deviceType,commStatusStatValue,deviceTypeStatValue,language);
@@ -124,7 +124,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = realTimeMonitoringService.getRealTimeMonitoringCommStatusStatData(orgId,deviceType,deviceTypeStatValue,language);
@@ -152,7 +152,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = realTimeMonitoringService.getRealTimeMonitoringRunStatusStatData(orgId,deviceType,deviceTypeStatValue,language);
@@ -180,7 +180,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = realTimeMonitoringService.getRealTimeMonitoringDeviceTypeStatData(orgId,deviceType,commStatusStatValue,language);
@@ -214,7 +214,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 
@@ -251,7 +251,7 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit,language);
@@ -303,7 +303,7 @@ public class RealTimeMonitoringController extends BaseController {
 		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 

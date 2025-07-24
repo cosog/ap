@@ -56,6 +56,13 @@ Ext.define('AP.store.orgAndUser.ImportOrganizationContentTreeInfoStore', {
                         align: 'left',
                         flex: 1,
                         dataIndex: 'orgSeq'
+                    },{
+                    	header: loginUserLanguageResource.collisionInfo,
+                    	flex: 5,
+                    	dataIndex: 'msg',
+                    	renderer:function(value,o,p,e){
+                    		return adviceImportOrganizationCollisionInfoColor(value,o,p,e);
+                    	}
                     }],
                     listeners: {
                         selectionchange: function (sm, selected) {

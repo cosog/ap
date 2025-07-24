@@ -1047,7 +1047,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = reportDataManagerService.getDeviceList(orgId,deviceName,deviceType,language);
@@ -1076,7 +1076,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = reportDataManagerService.getReportTemplateList(orgId,deviceName,deviceType,reportType,language);
@@ -1107,7 +1107,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		json = reportDataManagerService.getReportInstanceList(orgId,deviceName,deviceType,language);

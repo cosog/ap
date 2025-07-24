@@ -239,7 +239,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_language as userLanguage"
 				+ " from tbl_user u"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
-				+ " where u.user_orgid in (" + user.getUserorgids() + ")"
+				+ " where u.user_orgid in (" + user.getUserOrgIds() + ")"
 				+ " and ("
 				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " or u.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"

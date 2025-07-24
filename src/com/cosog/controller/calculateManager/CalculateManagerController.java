@@ -84,7 +84,7 @@ public class CalculateManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_acqdata_hist";
@@ -147,7 +147,7 @@ public class CalculateManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_acqdata_hist";
@@ -213,7 +213,7 @@ public class CalculateManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_srpacqdata_hist";
@@ -283,7 +283,7 @@ public class CalculateManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String json = calculateManagerService.getWellList(orgId, deviceName, pager,deviceType,calculateSign,calculateType,language);
@@ -311,7 +311,7 @@ public class CalculateManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String orgid=user.getUserorgids();
+		String orgid=user.getUserOrgIds();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
@@ -601,7 +601,7 @@ public class CalculateManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_srpdailycalculationdata";

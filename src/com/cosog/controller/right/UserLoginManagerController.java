@@ -211,7 +211,7 @@ public class UserLoginManagerController extends BaseController {
 				user.setDefaultGraghSize(defaultGraghSize+"");
 				user.setOrgtreeid(findUserToOrgString(user.getUserOrgid()));
 				user.setUserParentOrgids(orgService.findParentIds(user.getUserOrgid()));
-				user.setUserorgids(orgService.findChildIds(user.getUserOrgid()));
+				user.setUserOrgIds(orgService.findChildIds(user.getUserOrgid()));
 				user.setUserOrgNames(orgService.findChildNames(user.getUserOrgid(),user.getLanguageName()));
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());

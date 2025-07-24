@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import com.cosog.model.OrgGridPanelData;
 import com.cosog.model.OrgParent;
 import com.cosog.model.OrgWellInfoBean;
 import com.cosog.model.User;
+import com.cosog.model.drive.ExportAcqInstanceData;
 import com.cosog.model.ExportOrganizationData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
@@ -120,7 +122,7 @@ public class OrgManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		list = this.orgService.loadOrgs(Org.class,"",orgId,currentOrgId);
@@ -192,7 +194,7 @@ public class OrgManagerController extends BaseController {
 			}
 			if (StringManagerUtils.isNotNull(orgIdString.toString())) {
 				orgIdString.deleteCharAt(orgIdString.length() - 1);
-				user.setUserorgids(orgIdString.toString());
+				user.setUserOrgIds(orgIdString.toString());
 			}
 		}
 		String json = "";
@@ -239,7 +241,7 @@ public class OrgManagerController extends BaseController {
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserorgids();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		List<?> list = this.orgService.queryOrgs(Org.class, orgName,orgId,language);
@@ -363,12 +365,12 @@ public class OrgManagerController extends BaseController {
 			Map<String, Object> map = DataModelMap.getMapObject();
 			
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
-			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
+			userInfo.setUserOrgIds(orgService.findChildIds(userInfo.getUserOrgid()));
 			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
 			
-			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserorgids());
+			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserOrgIds());
 			map.put("oldUser", "");
 			map.put("oldUser", userInfo);
 			map.put("orgTree", list);
@@ -406,11 +408,11 @@ public class OrgManagerController extends BaseController {
 			HttpSession session=request.getSession();
 			User userInfo = this.findCurrentUserInfo();
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
-			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
+			userInfo.setUserOrgIds(orgService.findChildIds(userInfo.getUserOrgid()));
 			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
-			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserorgids());
+			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserOrgIds());
 			map.put("oldUser", "");
 			map.put("oldUser", userInfo);
 			map.put("orgTree", list);
@@ -460,11 +462,11 @@ public class OrgManagerController extends BaseController {
 			Map<String, Object> map = DataModelMap.getMapObject();
 			
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
-			userInfo.setUserorgids(orgService.findChildIds(userInfo.getUserOrgid()));
+			userInfo.setUserOrgIds(orgService.findChildIds(userInfo.getUserOrgid()));
 			userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
 			userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			session.setAttribute("userLogin", userInfo);
-			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserorgids());
+			list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserOrgIds());
 			map.put("oldUser", "");
 			map.put("oldUser", userInfo);
 			map.put("orgTree", list);
@@ -734,6 +736,7 @@ public class OrgManagerController extends BaseController {
 		String json = "";
 		OrgRecursion r = new OrgRecursion();
 		if (uploadOrganizationList != null) {
+			uploadOrganizationList=orgService.getUploadedOrganizationTreeData(uploadOrganizationList,user);//冲突校验
 			for (ExportOrganizationData e : uploadOrganizationList) {
 				if (!r.hasParent(uploadOrganizationList, e)) {
 					json = r.recursionOrgFn(uploadOrganizationList, e,language);
@@ -745,6 +748,33 @@ public class OrgManagerController extends BaseController {
 		
 //		String json = orgService.getUploadedOrganizationTreeData(uploadOrganizationList,user);
 		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedOrganization")
+	public String saveAllImportedOrganization() throws Exception {
+		HttpSession session=request.getSession();
+		String key="uploadOrganizationFile";
+		List<ExportOrganizationData> uploadOrganizationList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadOrganizationList=(List<ExportOrganizationData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		int r=orgService.saveAllImportedOrganization(uploadOrganizationList,user);
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

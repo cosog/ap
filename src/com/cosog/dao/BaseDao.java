@@ -167,7 +167,12 @@ public class BaseDao extends HibernateDaoSupport {
 	public <T> Serializable addObject(T clazz) {
 		return this.save(clazz);
 	}
-
+	
+	@Transactional
+	public Integer saveEntity(Org entity) {
+        // 调用 HibernateTemplate 的 save() 方法
+        return (Integer) getHibernateTemplate().save(entity);
+    }
 
 	/**
 	 * <p>

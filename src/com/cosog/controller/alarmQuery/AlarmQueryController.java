@@ -73,7 +73,7 @@ public class AlarmQueryController extends BaseController{
 		
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId=user.getUserorgids();
+				orgId=user.getUserOrgIds();
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
@@ -140,7 +140,7 @@ public class AlarmQueryController extends BaseController{
 		
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId=user.getUserorgids();
+				orgId=user.getUserOrgIds();
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
@@ -190,7 +190,7 @@ public class AlarmQueryController extends BaseController{
 		
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId=user.getUserorgids();
+				orgId=user.getUserOrgIds();
 			}
 		}
 		json = alarmQueryService.getAlarmOverviewData(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
@@ -231,7 +231,7 @@ public class AlarmQueryController extends BaseController{
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
-				orgId=user.getUserorgids();
+				orgId=user.getUserOrgIds();
 			}
 		}
 		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);

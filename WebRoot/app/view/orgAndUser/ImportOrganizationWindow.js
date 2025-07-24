@@ -13,8 +13,8 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 500,
-    minWidth: 500,
+    width: 700,
+    minWidth: 700,
     height: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -63,38 +63,27 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
                 iconCls: 'save',
                 disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                 handler: function (v, o) {
-//                    var treeStore = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore();
-//                    var count = treeStore.getCount();
-//                    var overlayCount = 0;
-//                    var collisionCount = 0;
-//                    for (var i = 0; i < count; i++) {
-//                        if (treeStore.getAt(i).data.classes == 1 && treeStore.getAt(i).data.saveSign == 1) {
-//                            overlayCount++;
-//                        } else if (treeStore.getAt(i).data.classes == 1 && treeStore.getAt(i).data.saveSign == 2) {
-//                            collisionCount++;
-//                        }
-//                    }
-//                    if (overlayCount > 0 || collisionCount > 0) {
-//                        var info = "";
-//                        if (overlayCount > 0) {
-//                            info += overlayCount + "个实例已存在";
-//                            if (collisionCount > 0) {
-//                                info += "，";
-//                            }
-//                        }
-//                        if (collisionCount > 0) {
-//                            info += overlayCount + "个实例无权限修改";
-//                        }
-//                        info += "！是否执行全部保存？";
-//
-//                        Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
-//                            if (btn == "yes") {
-//                                saveAllImportedOrganization();
-//                            }
-//                        });
-//                    } else {
-//                        saveAllImportedOrganization();
-//                    }
+                    var treeStore = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore();
+                    var count = treeStore.getCount();
+                    var overlayCount = 0;
+                    var collisionCount = 0;
+                    for (var i = 0; i < count; i++) {
+                        if (treeStore.getAt(i).data.saveSign == 1) {
+                            overlayCount++;
+                        } else if (treeStore.getAt(i).data.saveSign == 2) {
+                            collisionCount++;
+                        }
+                    }
+                    if (overlayCount > 0 || collisionCount > 0) {
+                        var info = "数据存在冲突，是否继续保存？";
+                        Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
+                            if (btn == "yes") {
+                                saveAllImportedOrganization();
+                            }
+                        });
+                    } else {
+                        saveAllImportedOrganization();
+                    }
                 }
     	    }],
             layout: 'border',
@@ -167,117 +156,33 @@ adviceImportOrganizationCollisionInfoColor = function (val, o, p, e) {
     }
 }
 
-function saveSingelImportedOrganization(instanceName, unitName, protocolName, saveSign, msg) {
-    instanceName = decodeURIComponent(instanceName);
-    unitName = decodeURIComponent(unitName);
-    protocolName = decodeURIComponent(protocolName);
-    saveSign = decodeURIComponent(saveSign);
-    msg = decodeURIComponent(msg);
-    if (parseInt(saveSign) > 0) {
-        Ext.Msg.confirm(loginUserLanguageResource.tip, msg, function (btn) {
-            if (btn == "yes") {
-                Ext.Ajax.request({
-                    url: context + '/acquisitionUnitManagerController/saveSingelImportedOrganization',
-                    method: "POST",
-                    params: {
-                        instanceName: instanceName,
-                        unitName: unitName,
-                        protocolName: protocolName
-                    },
-                    success: function (response) {
-                        var result = Ext.JSON.decode(response.responseText);
-                        if (result.success == true) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-                        } else {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
-                        }
-                        Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore().load();
-
-                        var treePanel = Ext.getCmp("OrganizationProtocolTreeGridPanel_Id");
-                        if (isNotVal(treePanel)) {
-                            treePanel.getStore().load();
-                        } else {
-                            Ext.create('AP.store.acquisitionUnit.ModbusProtocolOrganizationProtocolTreeInfoStore');
-                        }
-                    },
-                    failure: function () {
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
-                    }
-                });
-            }
-        });
-    } else {
-        Ext.Ajax.request({
-            url: context + '/acquisitionUnitManagerController/saveSingelImportedOrganization',
-            method: "POST",
-            params: {
-                instanceName: instanceName,
-                unitName: unitName,
-                protocolName: protocolName
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.success == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-                } else {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
-                }
-                Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore().load();
-
-                var treePanel = Ext.getCmp("OrganizationProtocolTreeGridPanel_Id");
-                if (isNotVal(treePanel)) {
-                    treePanel.getStore().load();
-                } else {
-                    Ext.create('AP.store.acquisitionUnit.ModbusProtocolOrganizationProtocolTreeInfoStore');
-                }
-            },
-            failure: function () {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
-            }
-        });
-    }
-
-}
-
 function saveAllImportedOrganization() {
-    var unitNameList = [];
-    var treeStore = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore();
-    var count = treeStore.getCount();
-    for (var i = 0; i < count; i++) {
-        if (treeStore.getAt(i).data.classes == 1 && treeStore.getAt(i).data.saveSign != 2) {
-            unitNameList.push(treeStore.getAt(i).data.text);
-        }
-    }
-    if (unitNameList.length > 0) {
-        Ext.Ajax.request({
-            url: context + '/acquisitionUnitManagerController/saveAllImportedOrganization',
-            method: "POST",
-            params: {
-                unitName: unitNameList.join(",")
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.success == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
-                } else {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
-                }
-                Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore().load();
-
-                var treePanel = Ext.getCmp("OrganizationProtocolTreeGridPanel_Id");
-                if (isNotVal(treePanel)) {
-                    treePanel.getStore().load();
-                } else {
-                    Ext.create('AP.store.acquisitionUnit.ModbusProtocolOrganizationProtocolTreeInfoStore');
-                }
-            },
-            failure: function () {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+	Ext.Ajax.request({
+        url: context + '/orgManagerController/saveAllImportedOrganization',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
-        });
-    } else {
-        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.noDataCanBeSaved + "</font>");
-    }
+            Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore().load();
+
+            var treePanel = Ext.getCmp("OrgInfoTreeGridView_Id");
+            if (isNotVal(treePanel)) {
+                treePanel.getStore().load();
+            } else {
+                Ext.create('AP.store.orgAndUser.OrgInfoStore');
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
 }
 
 iconImportSingleOrganizationAction = function (value, e, record) {

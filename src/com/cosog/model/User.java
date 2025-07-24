@@ -45,7 +45,6 @@ public class User implements java.io.Serializable {
 	private Integer receiveMail;
 	private Integer language;
 	private String languageName;
-	private String userOrgids;
 	private String userOrgNames;
 	private String userParentOrgids;
 	private String allOrgPatentNodeIds;//组织表中所有父节点
@@ -76,7 +75,7 @@ public class User implements java.io.Serializable {
 	/**
 	 * 组织节点ID集合
 	 */
-	private String userorgids;
+	private String userOrgIds;
 	
 	private String moduleList;
 	
@@ -258,24 +257,6 @@ public class User implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getUserorgids() {
-		return userorgids;
-	}
-
-	public void setUserorgids(String userorgids) {
-		this.userorgids = userorgids;
-	}
-
-	@Transient
-	public String getUserOrgids() {
-		return userOrgids;
-	}
-
-	public void setUserOrgids(String userOrgids) {
-		this.userOrgids = userOrgids;
-	}
-
-	@Transient
 	public String getUserParentOrgids() {
 		return userParentOrgids;
 	}
@@ -453,5 +434,14 @@ public class User implements java.io.Serializable {
 
 	public void setLanguageList(List<Integer> languageList) {
 		this.languageList = languageList;
+	}
+
+	@Transient
+	public String getUserOrgIds() {
+		return userOrgIds;
+	}
+
+	public void setUserOrgIds(String userOrgIds) {
+		this.userOrgIds = userOrgIds;
 	}
 }

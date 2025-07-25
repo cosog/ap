@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +28,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
@@ -36,6 +39,7 @@ import com.cosog.model.RoleDeviceType;
 import com.cosog.model.RoleLanguage;
 import com.cosog.model.Code;
 import com.cosog.model.DeviceTypeInfo;
+import com.cosog.model.ExportRoleData;
 import com.cosog.model.User;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.RoleManagerService;
@@ -49,6 +53,7 @@ import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /** <p>描述：角色维护管理Action</p>
  * 
@@ -621,6 +626,100 @@ public class RoleManagerController extends BaseController {
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		log.debug("constructProtocolConfigTabTreeGridTree json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedRoleFile")
+	public String uploadImportedRoleFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadRoleFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportRoleData>>() {}.getType();
+		List<ExportRoleData> uploadFileList=gson.fromJson(fileContent, type);
+		if(uploadFileList!=null){
+			flag=true;
+			session.setAttribute(key, uploadFileList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedRoleTreeData")
+	public String getUploadedRoleTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportRoleData> uploadRoleList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		String key="uploadRoleFile"+(user!=null?user.getUserNo():0);
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadRoleList=(List<ExportRoleData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = this.roleService.getUploadedRoleTreeData(uploadRoleList,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedRole")
+	public String saveAllImportedRole() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadRoleFile"+(user!=null?user.getUserNo():0);
+		List<ExportRoleData> uploadRoleList=null;
+		
+		String language=user!=null?user.getLanguageName():"";
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadRoleList=(List<ExportRoleData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		int r=this.roleService.saveAllImportedRole(uploadRoleList,user);
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
 		pw.flush();
 		pw.close();
 		return null;

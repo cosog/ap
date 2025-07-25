@@ -77,6 +77,15 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 handler: function (v, o) {
                 	exportRoleCompleteData();
                 }
+            },"-",{
+            	xtype: 'button',
+    			text: loginUserLanguageResource.importData,
+    			disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+    			iconCls: 'import',
+    			handler: function (v, o) {
+    				var window = Ext.create("AP.view.role.ImportRoleWindow");
+                    window.show();
+    			}
             }]
         });
         this.callParent(arguments);

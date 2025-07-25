@@ -21,6 +21,9 @@ public class DatabaseMaintenanceCounterUtils {
     public static void reset() {
     	count.reset();
     }
+    public static void add(long x) {
+        count.add(x);
+    }
     public static long sum(){
     	return count.sum();
     }

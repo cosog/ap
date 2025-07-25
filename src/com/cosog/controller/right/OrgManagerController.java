@@ -680,13 +680,14 @@ public class OrgManagerController extends BaseController {
 	
 	@RequestMapping("/uploadImportedOrganizationFile")
 	public String uploadImportedOrganizationFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringBuffer result_json = new StringBuffer();
 		boolean flag=false;
-		String key="uploadOrganizationFile";
+		String key="uploadOrganizationFile"+(user!=null?user.getUserNo():0);
 		
-		HttpSession session=request.getSession();
 		session.removeAttribute(key);
 		
 		String json = "";
@@ -721,10 +722,10 @@ public class OrgManagerController extends BaseController {
 	@RequestMapping("/getUploadedOrganizationTreeData")
 	public String getUploadedOrganizationTreeData() throws IOException {
 		HttpSession session=request.getSession();
-		String key="uploadOrganizationFile";
 		List<ExportOrganizationData> uploadOrganizationList=null;
 		User user = (User) session.getAttribute("userLogin");
 		String language=user!=null?user.getLanguageName():"";
+		String key="uploadOrganizationFile"+(user!=null?user.getUserNo():0);
 		try{
 			if(session.getAttribute(key)!=null){
 				uploadOrganizationList=(List<ExportOrganizationData>) session.getAttribute(key);
@@ -759,9 +760,10 @@ public class OrgManagerController extends BaseController {
 	@RequestMapping("/saveAllImportedOrganization")
 	public String saveAllImportedOrganization() throws Exception {
 		HttpSession session=request.getSession();
-		String key="uploadOrganizationFile";
-		List<ExportOrganizationData> uploadOrganizationList=null;
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadOrganizationFile"+(user!=null?user.getUserNo():0);
+		List<ExportOrganizationData> uploadOrganizationList=null;
+		
 		String language=user!=null?user.getLanguageName():"";
 		try{
 			if(session.getAttribute(key)!=null){

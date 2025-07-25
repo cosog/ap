@@ -64,6 +64,8 @@ public class DatabaseMaintenanceTask {
 //	@Scheduled(cron = "0 0/5 * * * ?")
 	public static void timingDeleteDatabaseHistoryData(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData start!");
+		long countBeforeDelete=getDataBaseTableCount("tbl_acqdata_hist");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",The count of tbl_acqdata_hist before delete:"+countBeforeDelete);
 		String sql="select t2.id,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
 				+ " from tbl_device t2 "
 				+ " left outer join TBL_ACQDATA_LATEST t on t.deviceid=t2.id "
@@ -94,6 +96,9 @@ public class DatabaseMaintenanceTask {
 			e.printStackTrace();
 		}
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!");
+		long countAfterDelete=getDataBaseTableCount("tbl_acqdata_hist");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",The count of tbl_acqdata_hist after delete:"+countAfterDelete+",The count of tbl_acqdata_hist before delete:"+countBeforeDelete+",difference:"+(countBeforeDelete-countAfterDelete));
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",tbl_acqdata_hist table deleted count:"+DatabaseMaintenanceCounterUtils.sum());
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
@@ -157,4 +162,15 @@ public class DatabaseMaintenanceTask {
 		
 		StringManagerUtils.printLog("DatabaseMaintenanceTask scheduled destory!");
 	}
+	
+	public static long getDataBaseTableCount(String table){
+		long r=0;
+		String sql="select count(1) from "+table+" t";
+		List<Object[]> list=OracleJdbcUtis.query(sql);
+		if(list.size()>0){
+			r=StringManagerUtils.stringToLong(list.get(0)[0]+"");
+		}
+		return r;
+	}
+	
 }

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
+import com.cosog.model.ExportOrganizationData;
+import com.cosog.model.ExportUserData;
 import com.cosog.model.Org;
 import com.cosog.model.RoleModule;
 import com.cosog.model.User;
@@ -236,7 +238,9 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_receivesms as receiveSMS,"
 				+ " u.user_receivemail as receiveMail,"
 				+ " u.user_enable as userEnable,"
-				+ " u.user_language as userLanguage"
+				+ " u.user_language as userLanguage,"
+				+ " r.role_level,"
+				+ " r.role_name"
 				+ " from tbl_user u"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
 				+ " where u.user_orgid in (" + user.getUserOrgIds() + ")"
@@ -262,7 +266,9 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"ReceiveSMS\":"+obj[10]+",");
 			result_json.append("\"ReceiveMail\":"+obj[11]+",");
 			result_json.append("\"UserEnable\":"+obj[12]+",");
-			result_json.append("\"userLanguage\":"+obj[13]+"},");
+			result_json.append("\"UserLanguage\":"+obj[13]+",");
+			result_json.append("\"RoleLevel\":"+obj[14]+",");
+			result_json.append("\"RoleName\":\""+obj[15]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -400,12 +406,20 @@ public class UserManagerService<T> extends BaseService<T> {
 	public void addUser(T user) throws Exception {
 		this.getBaseDao().addObject(user);
 	}
+	
+	public void addUserInfo(User user) throws Exception {
+		this.getBaseDao().addObject(user);
+	}
 
 	/** <p>用户信息修改方法</p>
 	 * @param user 当前要修改的用户对象
 	 * @throws Exception
 	 */
 	public void modifyUser(T user) throws Exception {
+		this.getBaseDao().updateObject(user);
+	}
+	
+	public void modifyUserInfo(User user) throws Exception {
 		this.getBaseDao().updateObject(user);
 	}
 
@@ -746,6 +760,206 @@ public class UserManagerService<T> extends BaseService<T> {
 			r=this.getBaseDao().updateOrDeleteBySql(updateSql);
 			user.setLanguage(StringManagerUtils.stringToInteger(languageValue));
 			setUserLanguage(user);
+		}
+		return r;
+	}
+	
+	public String getUploadedUserTreeData(List<ExportUserData> uploadUserList,User user) throws IOException {
+		StringBuffer result_json = new StringBuffer();
+		String orgIds=user!=null?user.getUserOrgIds():"";
+		String language=user!=null?user.getLanguageName():"";
+		int userNo=user!=null?user.getUserNo():0;
+		int userRoleLevel=user!=null?user.getRoleLevel():0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		String[] orgIdArr=orgIds.split(",");
+		
+		String columns=	"[]";
+		List<ExportUserData> userList=new ArrayList<>();
+		
+		for(ExportUserData exportUserData:uploadUserList){
+			if( StringManagerUtils.existOrNot(orgIdArr, exportUserData.getUserOrgid()+"", false) && ( (exportUserData.getRoleLevel()>userRoleLevel) || (exportUserData.getUserNo()==userNo) )  ){
+				userList.add(exportUserData);
+			}
+		}
+		
+		List<String> overlayUserList=new ArrayList<>();
+		List<String> collisionUserList=new ArrayList<>();
+		
+		
+		String overlaySql="select u.user_id as userId"
+				+ " from tbl_user u"
+				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
+				+ " left outer join tbl_role r on u.user_type=r.role_id"
+				+ " where u.user_orgid in (" + orgIds + ")"
+				+ " and ("
+				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or u.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ ")";
+		
+		String collisionSql="select t.user_id "
+				+ " from tbl_user t "
+				+ " where t.user_id not in ("
+				+ " select u.user_id"
+				+ " from tbl_user u"
+				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
+				+ " left outer join tbl_role r on u.user_type=r.role_id"
+				+ " where u.user_orgid in (" + orgIds + ")"
+				+ " and ("
+				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or u.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ ")"
+				+ ")";
+		
+		Map<String,Integer> roleMap=new HashMap<>();
+		String roleSql="select t.role_name,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
+		List<?> roleList = this.findCallSql(roleSql);
+		for(int i=0;i<roleList.size();i++){
+			Object[] obj = (Object[]) roleList.get(i);
+			roleMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
+		
+		List<?> overlayList = this.findCallSql(overlaySql);
+		List<?> collisionList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayList.size();i++){
+			overlayUserList.add(overlayList.get(i).toString());
+		}
+		for(int i=0;i<collisionList.size();i++){
+			collisionUserList.add(collisionList.get(i).toString());
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+userList.size()+",\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		for (ExportUserData exportUserData:userList) {
+			
+			if(StringManagerUtils.existOrNot(overlayUserList, exportUserData.getUserId(), true)){
+				exportUserData.setSaveSign(1);
+				exportUserData.setMsg(exportUserData.getUserId()+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionUserList, exportUserData.getUserId(), true)){
+				exportUserData.setSaveSign(2);
+				exportUserData.setMsg(exportUserData.getUserId()+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+			
+			result_json.append("{\"userNo\":"+exportUserData.getUserNo()+",");
+			result_json.append("\"userName\":\""+exportUserData.getUserName()+"\",");
+			result_json.append("\"userOrgid\":\""+exportUserData.getUserOrgid()+"\",");
+			result_json.append("\"userId\":\""+exportUserData.getUserId()+"\",");
+			result_json.append("\"userPwd\":\""+exportUserData.getUserPwd()+"\",");
+			result_json.append("\"userType\":\""+exportUserData.getUserType()+"\",");
+			
+			if(roleMap.containsKey(exportUserData.getRoleName())){
+				result_json.append("\"userTypeName\":\""+exportUserData.getRoleName()+"\",");
+			}else{
+				result_json.append("\"userTypeName\":\"\",");
+			}
+			
+			result_json.append("\"userPhone\":\""+exportUserData.getUserPhone()+"\",");
+			result_json.append("\"userInEmail\":\""+exportUserData.getUserInEmail()+"\",");
+			result_json.append("\"userRegtime\":\""+exportUserData.getUserRegtime()+"\",");
+			result_json.append("\"userQuickLogin\":\""+exportUserData.getUserQuickLogin()+"\",");
+			result_json.append("\"userQuickLoginName\":"+(exportUserData.getUserQuickLogin()==1)+",");
+			result_json.append("\"receiveSMS\":\""+exportUserData.getReceiveSMS()+"\",");
+			result_json.append("\"receiveSMSName\":"+(exportUserData.getReceiveSMS()==1)+",");
+			result_json.append("\"receiveMail\":\""+exportUserData.getReceiveMail()+"\",");
+			result_json.append("\"receiveMailName\":"+(exportUserData.getReceiveMail()==1)+",");
+			result_json.append("\"userEnable\":\""+exportUserData.getUserEnable()+"\",");
+			result_json.append("\"userEnableName\":"+(exportUserData.getUserEnable()==1)+",");
+			result_json.append("\"userLanguage\":\""+exportUserData.getUserLanguage()+"\",");
+			result_json.append("\"userLanguageName\":\""+(languageCodeMap.get(exportUserData.getUserLanguage()+"")!=null?languageCodeMap.get(exportUserData.getUserLanguage()+"").getItemname():"")+"\",");
+			result_json.append("\"msg\":\""+exportUserData.getMsg()+"\",");
+			result_json.append("\"saveSign\":\""+exportUserData.getSaveSign()+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int saveAllImportedUser(List<ExportUserData> uploadUserList,User user){
+		int r=0;
+		String orgIds=user!=null?user.getUserOrgIds():"";
+		String language=user!=null?user.getLanguageName():"";
+		int userNo=user!=null?user.getUserNo():0;
+		int userRoleLevel=user!=null?user.getRoleLevel():0;
+		String[] orgIdArr=orgIds.split(",");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		List<ExportUserData> userList=new ArrayList<>();
+		for(ExportUserData exportUserData:uploadUserList){
+			if( StringManagerUtils.existOrNot(orgIdArr, exportUserData.getUserOrgid()+"", false) && ( (exportUserData.getRoleLevel()>userRoleLevel) || (exportUserData.getUserNo()==userNo) )  ){
+				userList.add(exportUserData);
+			}
+		}
+		
+		Map<String,Integer> roleMap=new HashMap<>();
+		String roleSql="select t.role_name,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
+		List<?> roleList = this.findCallSql(roleSql);
+		for(int i=0;i<roleList.size();i++){
+			Object[] obj = (Object[]) roleList.get(i);
+			roleMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
+		
+		Map<String,Integer> currentUserMap=new HashMap<>();
+		String userSql="select t.user_id,t.user_no,t.role_id from tbl_user t ";
+		List<?> currentUserList = this.findCallSql(userSql);
+		for(int i=0;i<currentUserList.size();i++){
+			Object[] obj = (Object[]) currentUserList.get(i);
+			currentUserMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
+		
+		for(ExportUserData exportUserData:userList){
+			User u=new User();
+			u.setUserId(exportUserData.getUserId());
+			u.setUserPwd(exportUserData.getUserPwd());
+			u.setUserName(exportUserData.getUserName());
+			u.setUserOrgid(exportUserData.getUserOrgid());
+			u.setUserInEmail(exportUserData.getUserInEmail());
+			u.setUserPhone(exportUserData.getUserPhone());
+			u.setUserQuickLogin(exportUserData.getUserQuickLogin());
+			u.setUserEnable(exportUserData.getUserEnable());
+			u.setReceiveMail(exportUserData.getReceiveMail());
+			u.setReceiveSMS(exportUserData.getReceiveSMS());
+			u.setLanguage(exportUserData.getUserLanguage());
+			if(exportUserData.getUserId().equals(user.getUserId())){//当前登录用户
+				u.setUserType(user.getUserType());
+				u.setUserNo(user.getUserNo());
+			}else if(exportUserData.getSaveSign()==0){
+				if(roleMap.containsKey(exportUserData.getRoleName())){
+					u.setUserType(roleMap.get(exportUserData.getRoleName()));
+				}else{
+					u.setUserType(0);
+				}
+			}else if(exportUserData.getSaveSign()==1){
+				if(currentUserMap.containsKey(exportUserData.getUserId())){
+					u.setUserNo(currentUserMap.get(exportUserData.getUserId()));
+				}else{
+					u.setUserNo(exportUserData.getUserNo());
+				}
+				
+				if(roleMap.containsKey(exportUserData.getRoleName())){
+					u.setUserType(roleMap.get(exportUserData.getRoleName()));
+				}else{
+					u.setUserType(0);
+				}
+			}
+			
+			if(exportUserData.getSaveSign()==0){
+				try {
+					this.addUserInfo(u);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else if(exportUserData.getSaveSign()==1){
+				try {
+					this.modifyUserInfo(u);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			List<String> userNoList=new ArrayList<String>();
+			userNoList.add(user.getUserNo()+"");
+			MemoryDataManagerTask.loadUserInfo(userNoList,0,"update");
 		}
 		return r;
 	}

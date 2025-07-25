@@ -1,6 +1,7 @@
 package com.cosog.service.right;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
+import com.cosog.model.ExportRoleData;
+import com.cosog.model.ExportUserData;
 import com.cosog.model.Role;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
+import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
@@ -28,7 +34,13 @@ import com.cosog.utils.StringManagerUtils;
 @SuppressWarnings("rawtypes")
 public class RoleManagerService<T> extends BaseService<T> {
 	@Autowired
-private CommonDataService service;
+	private CommonDataService service;
+	@Autowired
+	private ModuleManagerService<RoleModule> moduleService;
+	@Autowired
+	private ModuleManagerService<RoleDeviceType> roleTabService;
+	@Autowired
+	private ModuleManagerService<RoleLanguage> roleLanguageService;
 
 	public List<T> loadRoles(Class<T> clazz) {
 		String queryString = "SELECT u FROM Role u order by u.roleId ";
@@ -212,8 +224,16 @@ private CommonDataService service;
 	public void addRole(T role) throws Exception {
 		getBaseDao().addObject(role);
 	}
+	
+	public void addRoleInfo(Role role) throws Exception {
+		getBaseDao().addObject(role);
+	}
 
 	public void modifyRole(T role) throws Exception {
+		getBaseDao().updateObject(role);
+	}
+	
+	public void modifyRoleInfo(Role role) throws Exception {
 		getBaseDao().updateObject(role);
 	}
 
@@ -365,5 +385,239 @@ private CommonDataService service;
 		json.append("]");
 		
 		return json.toString();
+	}
+	
+	public String getUploadedRoleTreeData(List<ExportRoleData> uploadRoleList,User user) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String currentTabs=user.getDeviceTypeIds();
+		String[] currentTabArr=currentTabs.split(",");
+		String currentId="";
+		String currentLevel="";
+		String currentShowLevel="";
+		String currentVideoKeyEdit="";
+		String currentLanguageEdit="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit,t3.role_languageedit "
+				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
+		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
+		if(currentUserLevelList.size()>0){
+			Object[] obj = (Object[]) currentUserLevelList.get(0);
+			currentId=obj[0]+"";
+			currentLevel=obj[1]+"";
+			currentShowLevel=obj[2]+"";
+			currentVideoKeyEdit=obj[3]+"";
+			currentLanguageEdit=obj[4]+"";
+		}
+		
+		
+		String overlaySql="select role_name as roleName"
+				+ " from  viw_role t"
+				+ " where 1=1 "
+				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
+				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )";
+		
+		String collisionSql="select role_name "
+				+ " from viw_role "
+				+ " where role_name not in("
+				+ " select role_name"
+				+ " from  viw_role t"
+				+ " where 1=1 "
+				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
+				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )"
+				+ ")";
+		
+		
+		List<ExportRoleData> roleList=new ArrayList<>();
+		
+		for(ExportRoleData exportRoleData:uploadRoleList){
+			boolean deviceTypeRight=true;
+			for(int i=0;i<exportRoleData.getDeviceTypeRight().size();i++){
+				if(!StringManagerUtils.existOrNot(currentTabArr, exportRoleData.getDeviceTypeRight().get(i).getId()+"", false)){
+					deviceTypeRight=false;
+					break;
+				}
+			}
+			
+			if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
+				roleList.add(exportRoleData);
+			}
+		}
+		
+		List<String> overlayRoleList=new ArrayList<>();
+		List<String> collisionRoleList=new ArrayList<>();
+		List<?> overlayList = this.findCallSql(overlaySql);
+		List<?> collisionList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayList.size();i++){
+			overlayRoleList.add(overlayList.get(i).toString());
+		}
+		for(int i=0;i<collisionList.size();i++){
+			collisionRoleList.add(collisionList.get(i).toString());
+		}
+		
+		String columns="[]";
+//		List<?> list = this.findCallSql(sql);
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+roleList.size()+","
+		+ "\"columns\":"+columns+","
+		+ "\"totalRoot\":[");
+		
+		for(ExportRoleData exportRoleData:roleList){
+			
+			if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleName(), true)){
+				exportRoleData.setSaveSign(1);
+				exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleName(), true)){
+				exportRoleData.setSaveSign(2);
+				exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+			
+			
+			result_json.append("{\"roleId\":"+exportRoleData.getRoleId()+",");
+			result_json.append("\"roleName\":\""+exportRoleData.getRoleName()+"\",");
+			result_json.append("\"roleLevel\":\""+exportRoleData.getRoleLevel()+"\",");
+			result_json.append("\"roleVideoKeyEdit\":\""+exportRoleData.getRoleVideoKeyEdit()+"\",");
+			result_json.append("\"roleVideoKeyEditName\":"+(exportRoleData.getRoleVideoKeyEdit()==1)+",");
+			result_json.append("\"roleLanguageEdit\":\""+exportRoleData.getRoleLanguageEdit()+"\",");
+			result_json.append("\"roleLanguageEditName\":"+(exportRoleData.getRoleLanguageEdit()==1)+",");
+			result_json.append("\"showLevel\":\""+exportRoleData.getShowLevel()+"\",");
+			result_json.append("\"remark\":\""+exportRoleData.getRemark()+"\",");
+			result_json.append("\"msg\":\""+exportRoleData.getMsg()+"\",");
+			result_json.append("\"saveSign\":\""+exportRoleData.getSaveSign()+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int saveAllImportedRole(List<ExportRoleData> uploadRoleList,User user) {
+		int result=0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String currentTabs=user.getDeviceTypeIds();
+		String[] currentTabArr=currentTabs.split(",");
+		String currentId="";
+		String currentLevel="";
+		String currentShowLevel="";
+		String currentVideoKeyEdit="";
+		String currentLanguageEdit="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit,t3.role_languageedit "
+				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
+		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
+		if(currentUserLevelList.size()>0){
+			Object[] obj = (Object[]) currentUserLevelList.get(0);
+			currentId=obj[0]+"";
+			currentLevel=obj[1]+"";
+			currentShowLevel=obj[2]+"";
+			currentVideoKeyEdit=obj[3]+"";
+			currentLanguageEdit=obj[4]+"";
+		}
+		List<ExportRoleData> roleList=new ArrayList<>();
+		for(ExportRoleData exportRoleData:uploadRoleList){
+			boolean deviceTypeRight=true;
+			for(int i=0;i<exportRoleData.getDeviceTypeRight().size();i++){
+				if(!StringManagerUtils.existOrNot(currentTabArr, exportRoleData.getDeviceTypeRight().get(i).getId()+"", false)){
+					deviceTypeRight=false;
+					break;
+				}
+			}
+			
+			if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
+				roleList.add(exportRoleData);
+			}
+		}
+		
+		Map<String,Integer> roleMap=new HashMap<>();
+		String roleSql="select t.role_name,t.role_id from TBL_ROLE t ";
+		List<?> currentRoleList = this.findCallSql(roleSql);
+		for(int i=0;i<roleList.size();i++){
+			Object[] obj = (Object[]) currentRoleList.get(i);
+			roleMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+		}
+		
+		for(ExportRoleData exportRoleData:roleList){
+			if(exportRoleData.getSaveSign()!=1){
+				Role role=new Role();
+				role.setRoleName(exportRoleData.getRoleName());
+				role.setRoleLevel(exportRoleData.getRoleLevel());
+				role.setShowLevel(exportRoleData.getShowLevel());
+				role.setRoleVideoKeyEdit(exportRoleData.getRoleVideoKeyEdit());
+				role.setRoleLanguageEdit(exportRoleData.getRoleLanguageEdit());
+				role.setRemark(exportRoleData.getRemark());
+				if(exportRoleData.getRoleName().equals(user.getUserTypeName())){
+					role.setRoleId(StringManagerUtils.stringToInteger(currentId));
+				}else if(exportRoleData.getSaveSign()==1 && roleMap.containsKey(exportRoleData.getRoleName())){
+					role.setRoleId(roleMap.get(exportRoleData.getRoleName()));
+				}
+				
+				if(exportRoleData.getSaveSign()==0){
+					try {
+						this.addRoleInfo(role);
+						String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
+						List<?> list=findCallSql(sql);
+						if(list.size()>0){
+							int addRoleId=StringManagerUtils.stringToInteger(list.get(0)+"");
+							role.setRoleId(addRoleId);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else if(exportRoleData.getSaveSign()==1){
+					try {
+						this.modifyRoleInfo(role);
+						
+						this.moduleService.deleteCurrentModuleByRoleCode(role.getRoleId()+"");
+						this.moduleService.deleteCurrentTabByRoleCode(role.getRoleId()+"");
+						this.moduleService.deleteCurrentLanguageByRoleCode(role.getRoleId()+"");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				for (int i = 0; i < exportRoleData.getModuleRight().size(); i++) {
+					RoleModule r = new RoleModule();
+					r.setRmRoleId(role.getRoleId());
+					r.setRmModuleid(exportRoleData.getModuleRight().get(i).getId());
+					r.setRmMatrix(exportRoleData.getModuleRight().get(i).getMatrix());
+					try {
+						this.moduleService.saveOrUpdateModule(r);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				for (int i = 0; i < exportRoleData.getDeviceTypeRight().size(); i++) {
+					RoleDeviceType r = new RoleDeviceType();
+					r.setRdRoleId(role.getRoleId());
+					r.setRdDeviceTypeId(exportRoleData.getDeviceTypeRight().get(i).getId());
+					r.setRdMatrix(exportRoleData.getDeviceTypeRight().get(i).getMatrix());
+					try {
+						this.roleTabService.saveOrUpdateRoleDeviceType(r);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				for (int i = 0; i < exportRoleData.getLanguageRight().size(); i++) {
+					RoleLanguage r = new RoleLanguage();
+					r.setRoleId(role.getRoleId());
+					r.setLanguage(exportRoleData.getLanguageRight().get(i).getId());
+					r.setMatrix(exportRoleData.getLanguageRight().get(i).getMatrix());
+					try {
+						this.roleLanguageService.saveOrUpdateRoleLanguage(r);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				if(exportRoleData.getRoleName().equals(user.getUserTypeName())){
+					MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
+				}
+			}
+			
+		}
+		
+		return result;
 	}
 }

@@ -1,9 +1,9 @@
-Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
+Ext.define("AP.view.role.ImportRoleWindow", {
     extend: 'Ext.window.Window',
-    id: 'ImportOrganizationWindow',
-    alias: 'widget.ImportOrganizationWindow',
+    id: 'ImportRoleWindow',
+    alias: 'widget.ImportRoleWindow',
     layout: 'fit',
-    title: loginUserLanguageResource.importOrganization,
+    title: loginUserLanguageResource.importRole,
     border: false,
     hidden: false,
     collapsible: true,
@@ -13,9 +13,9 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 700,
-    minWidth: 700,
-    height: 700,
+    width: 1200,
+    minWidth: 1200,
+    height: 800,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {
@@ -23,14 +23,14 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
         Ext.apply(me, {
             tbar: [{
                 xtype: 'form',
-                id: 'OrganizationImportForm_Id',
+                id: 'RoleImportForm_Id',
                 width: 300,
                 bodyPadding: 0,
                 frame: true,
                 items: [{
                     xtype: 'filefield',
-                    id: 'OrganizationImportFilefield_Id',
-                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    id: 'RoleImportFilefield_Id',
+                    disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                     name: 'file',
                     fieldLabel: loginUserLanguageResource.uploadFile,
                     labelWidth: (getLabelWidth(loginUserLanguageResource.uploadFile, loginUserLanguage)),
@@ -43,27 +43,27 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
                     accept: '.json',
                     listeners: {
                         change: function (cmp) {
-                        	submitImportedOrganizationFile();
+                        	submitImportedRoleFile();
                         }
                     }
         	    }, {
-                    id: 'ImportOrganizationSelectItemId_Id',
+                    id: 'ImportRoleSelectItemId_Id',
                     xtype: 'textfield',
                     value: '-99',
                     hidden: true
                 }]
     		}, {
                 xtype: 'label',
-                id: 'ImportOrganizationWinTabLabel_Id',
+                id: 'ImportRoleWinTabLabel_Id',
                 hidden: true,
                 html: ''
             }, '->', {
                 xtype: 'button',
                 text: loginUserLanguageResource.save,
                 iconCls: 'save',
-                disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
-                    var treeStore = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore();
+                    var treeStore = Ext.getCmp("ImportRoleContentTreeGridPanel_Id").getStore();
                     var count = treeStore.getCount();
                     var overlayCount = 0;
                     var collisionCount = 0;
@@ -75,25 +75,25 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
                         }
                     }
                     if (overlayCount > 0 || collisionCount > 0) {
-                    	var info = loginUserLanguageResource.collisionInfo4+"?";
+                        var info = loginUserLanguageResource.collisionInfo4+"?";
                         Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
                             if (btn == "yes") {
-                                saveAllImportedOrganization();
+                                saveAllImportedRole();
                             }
                         });
                     } else {
-                        saveAllImportedOrganization();
+                        saveAllImportedRole();
                     }
                 }
     	    }],
             layout: 'border',
             items: [{
                 region: 'center',
-                title: loginUserLanguageResource.organizationList,
+                title: loginUserLanguageResource.roleList,
                 layout: 'fit',
                 split: true,
                 collapsible: true,
-                id: "importOrganizationTreePanel_Id"
+                id: "importRoleTreePanel_Id"
             }],
             listeners: {
                 beforeclose: function (panel, eOpts) {
@@ -109,11 +109,11 @@ Ext.define("AP.view.orgAndUser.ImportOrganizationWindow", {
 });
 
 
-function submitImportedOrganizationFile() {
-    var form = Ext.getCmp("OrganizationImportForm_Id");
+function submitImportedRoleFile() {
+    var form = Ext.getCmp("RoleImportForm_Id");
     if (form.isValid()) {
         form.submit({
-            url: context + '/orgManagerController/uploadImportedOrganizationFile',
+            url: context + '/roleManagerController/uploadImportedRoleFile',
             timeout: 1000 * 60 * 10,
             method: 'post',
             waitMsg: loginUserLanguageResource.uploadingFile+'...',
@@ -125,11 +125,11 @@ function submitImportedOrganizationFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importOrganizationContentTreeGridPanel = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id");
-                if (isNotVal(importOrganizationContentTreeGridPanel)) {
-                    importOrganizationContentTreeGridPanel.getStore().load();
+                var importRoleContentTreeGridPanel = Ext.getCmp("ImportRoleContentTreeGridPanel_Id");
+                if (isNotVal(importRoleContentTreeGridPanel)) {
+                    importRoleContentTreeGridPanel.getStore().load();
                 } else {
-                    Ext.create('AP.store.orgAndUser.ImportOrganizationContentTreeInfoStore');
+                    Ext.create('AP.store.role.ImportRoleContentTreeInfoStore');
                 }
             },
             failure: function () {
@@ -140,7 +140,7 @@ function submitImportedOrganizationFile() {
     return false;
 };
 
-adviceImportOrganizationCollisionInfoColor = function (val, o, p, e) {
+adviceImportRoleCollisionInfoColor = function (val, o, p, e) {
     var saveSign = p.data.saveSign;
     var tipval = val;
     var backgroundColor = '#FFFFFF';
@@ -156,9 +156,9 @@ adviceImportOrganizationCollisionInfoColor = function (val, o, p, e) {
     }
 }
 
-function saveAllImportedOrganization() {
+function saveAllImportedRole() {
 	Ext.Ajax.request({
-        url: context + '/orgManagerController/saveAllImportedOrganization',
+        url: context + '/roleManagerController/saveAllImportedRole',
         method: "POST",
         params: {
         	
@@ -170,13 +170,13 @@ function saveAllImportedOrganization() {
             } else {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
-            Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id").getStore().load();
+            Ext.getCmp("ImportRoleContentTreeGridPanel_Id").getStore().load();
 
-            var treePanel = Ext.getCmp("OrgInfoTreeGridView_Id");
+            var treePanel = Ext.getCmp("RoleInfoGridPanel_Id");
             if (isNotVal(treePanel)) {
                 treePanel.getStore().load();
             } else {
-                Ext.create('AP.store.orgAndUser.OrgInfoStore');
+                Ext.create('AP.store.role.RoleInfoStore');
             }
         },
         failure: function () {
@@ -185,7 +185,7 @@ function saveAllImportedOrganization() {
     });
 }
 
-iconImportSingleOrganizationAction = function (value, e, record) {
+iconImportSingleUserAction = function (value, e, record) {
     var resultstring = '';
     if (record.data.classes == 1 && record.data.saveSign != 2) {
         var instanceName = record.data.text;
@@ -203,7 +203,7 @@ iconImportSingleOrganizationAction = function (value, e, record) {
         msg = encodeURIComponent(msg || '');
 
         resultstring = "<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-            "onclick=saveSingelImportedOrganization('" + instanceName + "','" + unitName + "','" + protocolName + "','" + saveSign + "','" + msg + "')>" + loginUserLanguageResource.save + "...</a>";
+            "onclick=saveSingelImportedUser('" + instanceName + "','" + unitName + "','" + protocolName + "','" + saveSign + "','" + msg + "')>" + loginUserLanguageResource.save + "...</a>";
     }
     return resultstring;
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -30,9 +31,13 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.common.exception.ActionException;
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.ExportOrganizationData;
+import com.cosog.model.ExportUserData;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.User;
@@ -46,6 +51,7 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Message;
+import com.cosog.utils.OrgRecursion;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
@@ -53,6 +59,7 @@ import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * <p>
@@ -724,6 +731,100 @@ public class UserManagerController extends BaseController {
 		}
 		String json = "{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/uploadImportedUserFile")
+	public String uploadImportedUserFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadUserFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportUserData>>() {}.getType();
+		List<ExportUserData> uploadUserList=gson.fromJson(fileContent, type);
+		if(uploadUserList!=null){
+			flag=true;
+			session.setAttribute(key, uploadUserList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedUserTreeData")
+	public String getUploadedUserTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportUserData> uploadUserList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		String key="uploadUserFile"+(user!=null?user.getUserNo():0);
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadUserList=(List<ExportUserData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = userService.getUploadedUserTreeData(uploadUserList,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedUser")
+	public String saveAllImportedUser() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadUserFile"+(user!=null?user.getUserNo():0);
+		List<ExportUserData> uploadUserList=null;
+		
+		String language=user!=null?user.getLanguageName():"";
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadUserList=(List<ExportUserData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		int r=userService.saveAllImportedUser(uploadUserList,user);
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

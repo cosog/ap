@@ -171,6 +171,15 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function (v, o) {
                     	exportUserCompleteData();
                     }
+                },"-",{
+                	xtype: 'button',
+        			text: loginUserLanguageResource.importData,
+        			disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+        			iconCls: 'import',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.orgAndUser.ImportUserWindow");
+                        window.show();
+        			}
                 }]
         	}]
         });

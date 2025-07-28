@@ -1211,6 +1211,7 @@ public class MemoryDataManagerTask {
 					
 					deviceInfo.setAcqTime(rs.getString(34));
 					deviceInfo.setSaveTime("");
+					deviceInfo.setVacuateDataSaveTime("");
 					
 					deviceInfo.setCommStatus(rs.getInt(35));
 					deviceInfo.setCommTime(rs.getFloat(36));

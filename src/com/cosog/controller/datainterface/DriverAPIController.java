@@ -2191,6 +2191,7 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		boolean save=false;
+		boolean saveVacuateData=false;
 		boolean alarm=false;
 		try{
 			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -2202,6 +2203,7 @@ public class DriverAPIController extends BaseController{
 			String rawDataTable="tbl_acqrawdata";
 			String totalDataTable="tbl_dailycalculationdata";
 			String functionCode="deviceRealTimeMonitoringData";
+			String vacuateTable="tbl_acqdata_vacuate";
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			int timeEfficiencyZoom=1;
@@ -2223,6 +2225,9 @@ public class DriverAPIController extends BaseController{
 				
 				if(protocol!=null){
 					String lastSaveTime=deviceInfo.getSaveTime();
+					String lastVacuateDataSaveTime=deviceInfo.getVacuateDataSaveTime();
+					
+					
 					int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 					int acq_cycle=acqInstanceOwnItem.getGroupTimingInterval();
 					
@@ -2240,6 +2245,13 @@ public class DriverAPIController extends BaseController{
 					if(save_cycle<=acq_cycle || timeDiff>=save_cycle*1000){
 						save=true;
 					}
+					
+					timeDiff=StringManagerUtils.getTimeDifference(lastVacuateDataSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+					if(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000){
+						saveVacuateData=true;
+					}
+					
+					
 					CommResponseData commResponseData=null;
 					TimeEffResponseData timeEffResponseData=null;
 					
@@ -2437,14 +2449,14 @@ public class DriverAPIController extends BaseController{
 						srpCalculateRequestData=new SRPCalculateRequestData();
 						srpCalculateRequestData.init();
 						srpCalculateResponseData=SRPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
-								acqTime,calItemResolutionDataList,runStatus,srpCalculateRequestData,save,checkSign);
+								acqTime,calItemResolutionDataList,runStatus,srpCalculateRequestData,save,saveVacuateData,checkSign);
 						inputItemItemResolutionDataList=getSRPInputItemData(deviceInfo);
 						if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 						}
 					}else if(deviceInfo.getCalculateType()==2){
 						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
-								acqTime,calItemResolutionDataList,runStatus,save,checkSign);
+								acqTime,calItemResolutionDataList,runStatus,save,saveVacuateData,checkSign);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -2603,14 +2615,26 @@ public class DriverAPIController extends BaseController{
 						if(alarm){
 							calculateDataService.saveAndSendAlarmInfo(deviceInfo.getId(),deviceInfo.getDeviceName(),deviceInfo.getDeviceType()+"",deviceTypeName,acqTime,acquisitionItemInfoList);
 						}
+					}
+					
+					if(saveVacuateData){
+						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, vacuateTable));
 						
-						//保存计算数据
-						if(srpCalculateResponseData!=null){
-							
-						}
-						if(pcpCalculateResponseData!=null){
-							
-						}
+						clobCont=new ArrayList<String>();
+						clobCont.add(new Gson().toJson(acqDataList));
+						String updateHistoryClobSql="update "+vacuateTable+" t set t.acqdata=? ";
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							updateHistoryClobSql+=",t.commrange=?";
+							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+								updateHistoryClobSql+=", t.runrange=?";
+								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+							}
+						}		
+						updateHistoryClobSql+="where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+						commonDataService.getBaseDao().executeSqlUpdateClob(updateHistoryClobSql,clobCont);
+						
+						deviceInfo.setVacuateDataSaveTime(acqTime);
 					}
 					
 					//放入内存数据库中
@@ -2759,7 +2783,7 @@ public class DriverAPIController extends BaseController{
 	
 	public SRPCalculateResponseData SRPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
 			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,SRPCalculateRequestData srpCalculateRequestData,
-			boolean save,int checkSign){
+			boolean save,boolean saveVacuateData,int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
@@ -2774,6 +2798,7 @@ public class DriverAPIController extends BaseController{
 			String realtimeTable="tbl_srpacqdata_latest";
 			String historyTable="tbl_srpacqdata_hist";
 			String totalDataTable="tbl_srpdailycalculationdata";
+			String vacuateTable="tbl_srpacqdata_vacuate";
 			if(acqGroup!=null){
 				String protocolName="";
 				String acqProtocolType="";
@@ -3470,6 +3495,7 @@ public class DriverAPIController extends BaseController{
 						
 						updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
 						insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
+						
 						updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 						
 						if(save 
@@ -3513,6 +3539,30 @@ public class DriverAPIController extends BaseController{
 								commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
 							}
 						}
+						
+						if(saveVacuateData){
+							insertHistSql=insertHistSql.replaceAll(historyTable, vacuateTable);
+							commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
+							
+							
+							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+								List<String> clobCont=new ArrayList<String>();
+								String updateHisRangeClobSql="update "+vacuateTable+" t set t.commrange=?";
+								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+								if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+									updateHisRangeClobSql+=", t.runrange=?";
+									clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+								}
+								updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+								commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+							}
+							
+							if(FESDiagramCalculate || isAcqCalResultData){
+								commonDataService.getBaseDao().saveVacuateFESDiagramAndCalculateData(deviceInfo,srpCalculateRequestData,srpCalculateResponseData,fesDiagramEnabled);
+							}
+							
+						}
+						
 						//放入内存数据库中
 						MemoryDataManagerTask.updateSRPDeviceTodayDataDeviceInfo(deviceTodayData);
 					}
@@ -3528,7 +3578,8 @@ public class DriverAPIController extends BaseController{
 	
 	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
 			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,
-			boolean save,int checkSign){
+			boolean save,boolean saveVacuateData,
+			int checkSign){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		PCPDeviceTodayData deviceTodayData=null;
@@ -3539,6 +3590,7 @@ public class DriverAPIController extends BaseController{
 			String realtimeTable="tbl_pcpacqdata_latest";
 			String historyTable="tbl_pcpacqdata_hist";
 			String totalDataTable="tbl_pcpdailycalculationdata";
+			String vacuateTable="tbl_pcpacqdata_vacuate";
 			if(acqGroup!=null){
 //				List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				String protocolName="";
@@ -3838,6 +3890,22 @@ public class DriverAPIController extends BaseController{
 							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
 							commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
 						}
+					}
+					if(saveVacuateData){
+						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, vacuateTable));
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+							List<String> clobCont=new ArrayList<String>();
+							String updateHisRangeClobSql="update "+vacuateTable+" t set t.commrange=?";
+							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+								updateHisRangeClobSql+=", t.runrange=?";
+								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+							}
+							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+						}
+						commonDataService.getBaseDao().saveVacuateRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
+						
 					}
 					MemoryDataManagerTask.updatePCPDeviceTodayDataDeviceInfo(deviceTodayData);
 				}

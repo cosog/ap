@@ -367,24 +367,23 @@ public class ResourceMonitoringTask {
     			
     		}
     		String sql="select usedsize_mb,maxsize_mb,used_percent2 from ( "
-    				+ "select tablespace_name, "
-    				+ "round(sum(maxbytes)/1024/1024，2) AS maxsize_mb, "
-    				+ "round(sum(bytes)/1024/1024，2) AS size_mb, "
-    				+ "round(sum(freebytes)/1024/1024，2) AS freesize_mb, "
-    				+ "round(sum(bytes)/1024/1024-sum(freebytes)/1024/1024，2) as usedsize_mb, "
-    				+ "round( ( round(sum(bytes)/1024/1024，2)-round(sum(freebytes)/1024/1024，2) )/round(sum(bytes)/1024/1024，2)*100，2) as used_percent, "
-    				+ "round( ( round(sum(bytes)/1024/1024，2)-round(sum(freebytes)/1024/1024，2) )/round(sum(maxbytes)/1024/1024，2)*100，2) as used_percent2 "
-    				+ "from( "
-    				+ "select t1.file_name,t1.file_id,t1.tablespace_name,t1.bytes,t1.status,t1.autoextensible, "
-    				+ "decode(t1.autoextensible,'YES',t1.maxbytes,t1.bytes) as maxbytes,t1.user_bytes,t2.bytes as freebytes "
-    				+ "from dba_data_files t1, "
-    				+ "(select file_id,sum(bytes) as bytes from dba_free_space group by file_Id) t2 "
-    				+ "where t1.file_id=t2.file_id "
-//    				+ "and t1.bytes<t1.maxbytes"
-    				+ ") v "
-    				+ "group by v.tablespace_name "
-    				+ ") "
-    				+ "where upper(tablespace_name) = upper('"+tableSpaceName+"')";
+    				+ " select tablespace_name, "
+    				+ " round(sum(maxbytes)/1024/1024，2) AS maxsize_mb, "
+    				+ " round(sum(bytes)/1024/1024，2) AS size_mb, "
+    				+ " round(sum(freebytes)/1024/1024，2) AS freesize_mb, "
+    				+ " round(sum(bytes)/1024/1024-sum(freebytes)/1024/1024，2) as usedsize_mb, "
+    				+ " round( ( round(sum(bytes)/1024/1024，2)-round(sum(freebytes)/1024/1024，2) )/round(sum(bytes)/1024/1024，2)*100，2) as used_percent, "
+    				+ " round( ( round(sum(bytes)/1024/1024，2)-round(sum(freebytes)/1024/1024，2) )/round(sum(maxbytes)/1024/1024，2)*100，2) as used_percent2 "
+    				+ " from( "
+    				+ " select t1.file_name,t1.file_id,t1.tablespace_name,t1.bytes,t1.status,t1.autoextensible, "
+    				+ " decode(t1.autoextensible,'YES',t1.maxbytes,t1.bytes) as maxbytes,t1.user_bytes,t2.bytes as freebytes "
+    				+ " from dba_data_files t1 "
+    				+ " left outer join (select file_id,sum(bytes) as bytes from dba_free_space group by file_Id) t2 on t1.file_id=t2.file_id"
+//    				+ " where t1.bytes<t1.maxbytes"
+    				+ " ) v "
+    				+ " group by v.tablespace_name "
+    				+ " ) "
+    				+ " where upper(tablespace_name) = upper('"+tableSpaceName+"')";
             
     		pstmt = conn.prepareStatement(sql); 
     		pstmt.setQueryTimeout(10);

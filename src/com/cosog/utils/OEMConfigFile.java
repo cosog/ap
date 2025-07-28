@@ -13,6 +13,8 @@ public class OEMConfigFile {
 	
 	private ModuleContentConfig moduleContent;
 	
+	private DataVacuate dataVacuate;
+	
 	private Others others;
 	
 	public Oem getOem() {
@@ -248,7 +250,7 @@ public class OEMConfigFile {
 
 	    private int defaultGraghSize;
 	    
-	    private int vacuateThreshold;
+//	    private int vacuateThreshold;
 
 	    private String productionUnit;
 	    
@@ -361,12 +363,12 @@ public class OEMConfigFile {
 		public void setExportLimit(int exportLimit) {
 			this.exportLimit = exportLimit;
 		}
-		public int getVacuateThreshold() {
-			return vacuateThreshold;
-		}
-		public void setVacuateThreshold(int vacuateThreshold) {
-			this.vacuateThreshold = vacuateThreshold;
-		}
+//		public int getVacuateThreshold() {
+//			return vacuateThreshold;
+//		}
+//		public void setVacuateThreshold(int vacuateThreshold) {
+//			this.vacuateThreshold = vacuateThreshold;
+//		}
 		public String getOtherStaticResourceTimestamp() {
 			return otherStaticResourceTimestamp;
 		}
@@ -879,6 +881,39 @@ public class OEMConfigFile {
 		}
 		
 	}
+	
+	public static class DataVacuate{
+		
+		private int vacuateRecord;
+		
+		private int saveInterval;
+		
+		private int vacuateThreshold;
+
+		public int getVacuateRecord() {
+			return vacuateRecord;
+		}
+
+		public void setVacuateRecord(int vacuateRecord) {
+			this.vacuateRecord = vacuateRecord;
+		}
+
+		public int getSaveInterval() {
+			return saveInterval;
+		}
+
+		public void setSaveInterval(int saveInterval) {
+			this.saveInterval = saveInterval;
+		}
+
+		public int getVacuateThreshold() {
+			return vacuateThreshold;
+		}
+
+		public void setVacuateThreshold(int vacuateThreshold) {
+			this.vacuateThreshold = vacuateThreshold;
+		}
+	}
 
 	public ModuleContentConfig getModuleContent() {
 		return moduleContent;
@@ -886,5 +921,13 @@ public class OEMConfigFile {
 
 	public void setModuleContent(ModuleContentConfig moduleContent) {
 		this.moduleContent = moduleContent;
+	}
+
+	public DataVacuate getDataVacuate() {
+		return dataVacuate;
+	}
+
+	public void setDataVacuate(DataVacuate dataVacuate) {
+		this.dataVacuate = dataVacuate;
 	}
 }

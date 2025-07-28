@@ -41,6 +41,7 @@ public class Config {
 					configFile.getAp().setReport(oemConfigFile.getReport());
 					configFile.getAp().setEmail(oemConfigFile.getEmail());
 					configFile.getAp().setModuleContent(oemConfigFile.getModuleContent());
+					configFile.getAp().setDataVacuate(oemConfigFile.getDataVacuate());
 					configFile.getAp().setOthers(oemConfigFile.getOthers());
 					
 					String loginLanguage=configFile.getAp().getOthers().getLoginLanguage().toLowerCase().replace("zh_cn", "zh_CN");
@@ -52,8 +53,8 @@ public class Config {
 				if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){
 					configFile.getAp().getOthers().setExportLimit(65534);
 				}
-				if(configFile.getAp().getOthers().getVacuateThreshold()<=0){
-					configFile.getAp().getOthers().setVacuateThreshold(500);
+				if(configFile.getAp().getDataVacuate().getVacuateRecord()<=0){
+					configFile.getAp().getDataVacuate().setVacuateRecord(500);
 				}
 				if(configFile.getAp()!=null && configFile.getAp().getReport()!=null){
 					if(configFile.getAp().getReport().getInterval()<=0){

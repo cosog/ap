@@ -44,6 +44,8 @@ public class DeviceInfo implements Serializable {
 	
 	private String saveTime;
 	
+	private String vacuateDataSaveTime;
+	
 	private Integer commStatus;
 	
 	private float commTime;
@@ -535,6 +537,14 @@ public class DeviceInfo implements Serializable {
 
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
+	}
+
+	public String getVacuateDataSaveTime() {
+		return vacuateDataSaveTime;
+	}
+
+	public void setVacuateDataSaveTime(String vacuateDataSaveTime) {
+		this.vacuateDataSaveTime = vacuateDataSaveTime;
 	}
 
 }

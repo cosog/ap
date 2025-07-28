@@ -5240,7 +5240,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
-		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
 		UserInfo userInfo=null;
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
@@ -5662,7 +5662,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				queryIdSql+=" order by t.id";
 				
 				totalCount=this.getTotalCountRows(queryIdSql);
-				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totalCount+")<"+vacuateThreshold+"";
+				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totalCount+")<"+vacuateRecord+"";
 				
 				
 				String sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss')"+columns+calAndInputColumn
@@ -6080,7 +6080,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -6139,15 +6139,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql);
 		String totalShow=totals+"";
 		
-//		int rarefy=totals/vacuateThreshold+1;
+//		int rarefy=totals/vacuateRecord+1;
 //		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //			totals = getTotalCountRows(totalSql);
 //		}
 //		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 //		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		t1=System.nanoTime();
@@ -6217,7 +6217,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+			int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
@@ -6282,10 +6282,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 //			int totals = getTotalCountRows(sql);//获取总记录数
 //			int rarefy=0;
-//			if(vacuate && vacuateThreshold>0){
-//				rarefy=totals/vacuateThreshold+1;
+//			if(vacuate && vacuateRecord>0){
+//				rarefy=totals/vacuateRecord+1;
 //				if(rarefy>1){
-//					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //				}
 //			}
 			List<?> list=this.findCallSql(finalSql);
@@ -6371,7 +6371,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getPSDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -6425,15 +6425,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
 		
-//		int rarefy=totals/vacuateThreshold+1;
+//		int rarefy=totals/vacuateRecord+1;
 //		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //			totals = getTotalCountRows(totalSql);
 //		}
 //		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 //		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
@@ -6487,7 +6487,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getISDiagramTiledData(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -6539,15 +6539,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
-//		int rarefy=totals/vacuateThreshold+1;
+//		int rarefy=totals/vacuateRecord+1;
 //		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //			totals = getTotalCountRows(totalSql);
 //		}
 //		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
 //		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
+//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
 //		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
@@ -6610,7 +6610,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
-		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		DeviceInfo deviceInfo=null;
@@ -6681,7 +6681,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图叠加总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+countSql);
 			
 			
-			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
@@ -6905,7 +6905,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			java.lang.reflect.Type type=null;
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+			int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -6978,7 +6978,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String countSql="select count(1) from ("+distinctSql+") ";
 			int total=this.getTotalCountRows(countSql);
 			
-			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7

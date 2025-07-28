@@ -263,6 +263,8 @@ public class ConfigFile {
 	    
 	    private OEMConfigFile.ModuleContentConfig moduleContent;
 	    
+	    private OEMConfigFile.DataVacuate dataVacuate;
+	    
 	    private OEMConfigFile.Others others;
 
 	    public void setDatasource(Datasource datasource){
@@ -324,6 +326,12 @@ public class ConfigFile {
 		}
 		public void setModuleContent(OEMConfigFile.ModuleContentConfig moduleContent) {
 			this.moduleContent = moduleContent;
+		}
+		public OEMConfigFile.DataVacuate getDataVacuate() {
+			return dataVacuate;
+		}
+		public void setDataVacuate(OEMConfigFile.DataVacuate dataVacuate) {
+			this.dataVacuate = dataVacuate;
 		}
 	}
 	

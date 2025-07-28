@@ -4445,7 +4445,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
-		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
 		UserInfo userInfo=null;
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
@@ -4706,12 +4706,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					sql+= " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
 							+ " and t2.id="+deviceId;
 					int total=this.getTotalCountRows(sql);
-					int rarefy=total/vacuateThreshold+1;
+					int rarefy=total/vacuateRecord+1;
 					sql+= " order by t.acqtime";
 					
 					String finalSql=sql;
 					if(rarefy>1){
-						finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+						finalSql="select * from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 					}
 					List<?> list = this.findCallSql(finalSql);
 					for(int i=0;i<list.size();i++){
@@ -4911,7 +4911,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
-		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
+		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
 		UserInfo userInfo=null;
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
@@ -5116,12 +5116,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+= " where t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
-				int rarefy=total/vacuateThreshold+1;
+				int rarefy=total/vacuateRecord+1;
 				sql+= " order by t.acqtime";
 				
 				String finalSql=sql;
 				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
+					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 				}
 				List<?> list = this.findCallSql(finalSql);
 				for(int i=0;i<list.size();i++){

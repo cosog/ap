@@ -430,7 +430,7 @@ public class DriverAPIController extends BaseController{
 							
 							
 							String commAlarm="";
-							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,delay=0;
+							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,retriggerTime=0;
 							String key="";
 							String alarmInfo="";
 							String alarmSMSContent="";
@@ -450,7 +450,7 @@ public class DriverAPIController extends BaseController{
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
-										delay=alarmInstanceOwnItem.getItemList().get(j).getDelay();
+										retriggerTime=alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime();
 										break;
 									}
 								}
@@ -460,7 +460,7 @@ public class DriverAPIController extends BaseController{
 								
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
-								if(commAlarmLevel>0&&timeDiff>delay*1000){
+								if(commAlarmLevel>0&&timeDiff>retriggerTime*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
@@ -702,7 +702,7 @@ public class DriverAPIController extends BaseController{
 							
 							
 							String commAlarm="";
-							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,delay=0;
+							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,retriggerTime=0;
 							String key="";
 							String alarmInfo="";
 							String alarmSMSContent="";
@@ -722,7 +722,7 @@ public class DriverAPIController extends BaseController{
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
-										delay=alarmInstanceOwnItem.getItemList().get(j).getDelay();
+										retriggerTime=alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime();
 										break;
 									}
 								}
@@ -732,7 +732,7 @@ public class DriverAPIController extends BaseController{
 								
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
-								if(commAlarmLevel>0&&timeDiff>delay*1000){
+								if(commAlarmLevel>0&&timeDiff>retriggerTime*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
@@ -1239,6 +1239,7 @@ public class DriverAPIController extends BaseController{
 						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+						acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 					}
 					break;
 				}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
@@ -1253,6 +1254,7 @@ public class DriverAPIController extends BaseController{
 						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+						acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 					}
 					break;
 				}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
@@ -1277,6 +1279,7 @@ public class DriverAPIController extends BaseController{
 							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 						}
 					}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
 						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
@@ -1289,6 +1292,7 @@ public class DriverAPIController extends BaseController{
 							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 						}
 					}
 					break;

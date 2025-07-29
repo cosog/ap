@@ -886,7 +886,7 @@ public class OEMConfigFile {
 		
 		private int vacuateRecord;
 		
-		private int saveInterval;
+		private float saveInterval;
 		
 		private int vacuateThreshold;
 
@@ -898,11 +898,11 @@ public class OEMConfigFile {
 			this.vacuateRecord = vacuateRecord;
 		}
 
-		public int getSaveInterval() {
+		public float getSaveInterval() {
 			return saveInterval;
 		}
 
-		public void setSaveInterval(int saveInterval) {
+		public void setSaveInterval(float saveInterval) {
 			this.saveInterval = saveInterval;
 		}
 

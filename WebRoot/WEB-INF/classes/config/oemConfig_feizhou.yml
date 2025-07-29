@@ -64,6 +64,10 @@ moduleContent:
    dataDictionary: 
       calculateData: 0                 #0-时率计算 1-时率计算和功图计算 2-时率计算和转速计产 3-全部
       inputData: 0                     #0-无 1-功图计算录入数据 2-转速计产录入数据 3-全部
+dataVacuate:
+   vacuateRecord: 300              #进行抽稀时，保留的记录数
+   saveInterval: 1                 #抽稀表数据保存间隔 单位：小时
+   vacuateThreshold: 50000         #抽稀阈值,总记录数据超过该值，将从抽稀表中查询数据
 others:
    deviceShowName: 设备名称
    timeEfficiencyUnit: 2               #时率单位 1-小数 2-百分数
@@ -74,7 +78,6 @@ others:
    expandedAll: true
    defaultComboxSize: 10000
    defaultGraghSize: 30            #图形平铺每页图形数量
-   vacuateThreshold: 300           #历史曲线、图形抽稀阈值
    productionUnit: stere           #产量单位 stere-立方米 ton-吨
    resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
    resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值

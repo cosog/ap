@@ -5241,6 +5241,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
+		int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
 		UserInfo userInfo=null;
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
@@ -5251,6 +5252,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String tableName="tbl_acqdata_hist";
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
+		String vacuateTableName="tbl_acqdata_vacuate";
 		Gson gson = new Gson();
 		java.lang.reflect.Type reflectType=null;
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
@@ -5258,6 +5260,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 //		String totalShow="";
 		int totalCount=0;
 		int vacuateCount=0;
+		int vacuateTotalCount=0;
 		try{
 			try{
 				userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -5605,10 +5608,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String columns="";
 				String calAndInputColumn="";
 				String calAndInputDataTable="";
+				String vacuateCalAndInputDataTable="";
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
 					calAndInputDataTable="tbl_srpacqdata_hist";
+					vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
+					vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
 				}
 				if(acqItemColumnList.size()>0 || extendedFieldColumnList.size()>0){
 					columns+=",h1.acqdata";
@@ -5628,7 +5634,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				
 				String queryIdSql="select t.id "
-						+ " from tbl_acqdata_hist t "
+						+ " from "+tableName+" t "
 						+ " where t.deviceId="+deviceId;
 				if( !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && graphicSetData.getHistoryDataFilter().getCommData()) ){
 					queryIdSql+=" and t.commStatus=1";
@@ -5662,7 +5668,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				queryIdSql+=" order by t.id";
 				
 				totalCount=this.getTotalCountRows(queryIdSql);
-				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totalCount+")<"+vacuateRecord+"";
+				if(totalCount>vacuateThreshold){
+					queryIdSql=queryIdSql.replaceAll(tableName, vacuateTableName);
+					vacuateTotalCount=this.getTotalCountRows(queryIdSql);
+					queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
+				}else{
+					queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totalCount+")<"+vacuateRecord+"";
+				}
 				
 				
 				String sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss')"+columns+calAndInputColumn
@@ -5674,6 +5686,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}	
 				sql+=" and h1.id in ("+queryIdSql+")";
 				sql+=" order by h1.id";
+				if(totalCount>vacuateThreshold){
+					sql=sql.replaceAll(tableName, vacuateTableName).replaceAll(calAndInputDataTable, vacuateCalAndInputDataTable);
+				}
+				
 				
 				String finalSql=sql;
 				long t1=System.nanoTime();
@@ -6080,7 +6096,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,String resultCodeStr,Page pager,String hours,String language) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -6139,16 +6154,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql);
 		String totalShow=totals+"";
 		
-//		int rarefy=totals/vacuateRecord+1;
-//		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//			totals = getTotalCountRows(totalSql);
-//		}
-//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-//		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		t1=System.nanoTime();
 		List<?> list=this.findCallSql(sql);
@@ -6611,10 +6617,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
 		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
+		int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		DeviceInfo deviceInfo=null;
 		String alarmInstanceCode="";
+		
+		String tableName="tbl_srpacqdata_hist";
+		String vacuateTableName="tbl_srpacqdata_vacuate";
 		try{
 			try{
 				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -6639,7 +6649,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+			String distinctSql="select fesdiagramacqtime,max(id) as id from "+tableName+" "
 					+ " where deviceId="+deviceId+" and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
@@ -6680,8 +6690,16 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			long t2=System.nanoTime();
 			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图叠加总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+countSql);
 			
+			if(total>vacuateThreshold){
+				distinctSql=distinctSql.replaceAll(tableName, vacuateTableName);
+				countSql="select count(1) from ("+distinctSql+") ";
+				int vacuateTotalCount=this.getTotalCountRows(countSql);
+				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
+			}else{
+				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
+			}
 			
-			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
+			
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
@@ -6709,6 +6727,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
+			
+			if(total>vacuateThreshold){
+				sql=sql.replaceAll(tableName, vacuateTableName);
+			}
 			
 			t1=System.nanoTime();
 			List<?> list=this.findCallSql(sql);
@@ -6906,7 +6928,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
+			int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			
+			String tableName="tbl_srpacqdata_hist";
+			String vacuateTableName="tbl_srpacqdata_vacuate";
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
@@ -6940,7 +6966,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				prodCol="liquidWeightProduction,liquidWeightProduction_L";
 			}
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+			String distinctSql="select fesdiagramacqtime,max(id) as id from "+tableName+" "
 					+ " where deviceId="+deviceId+" and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
@@ -6978,6 +7004,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String countSql="select count(1) from ("+distinctSql+") ";
 			int total=this.getTotalCountRows(countSql);
 			
+			if(total>vacuateThreshold){
+				distinctSql=distinctSql.replaceAll(tableName, vacuateTableName);
+				countSql="select count(1) from ("+distinctSql+") ";
+				int vacuateTotalCount=this.getTotalCountRows(countSql);
+				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
+			}else{
+				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
+			}
+			
+			
+			
 			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
@@ -7004,6 +7041,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
+			if(total>vacuateThreshold){
+				sql=sql.replaceAll(tableName, vacuateTableName);
+			}
 			List<?> list=this.findCallSql(sql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;

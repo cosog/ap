@@ -202,6 +202,7 @@ public class DeviceAlarmInfo {
 	}
 	
 	public static class AlarmInfo{
+		public String alarmStartTime;
 		
 		public String alarmTime;
 		
@@ -242,6 +243,8 @@ public class DeviceAlarmInfo {
 		public int isSendMessage;
 		
 		public int isSendMail;
+		
+		public boolean triggerAlarm;
 		
 		public String getAlarmTime() {
 			return alarmTime;
@@ -362,6 +365,18 @@ public class DeviceAlarmInfo {
 		}
 		public void setAddr(int addr) {
 			this.addr = addr;
+		}
+		public String getAlarmStartTime() {
+			return alarmStartTime;
+		}
+		public void setAlarmStartTime(String alarmStartTime) {
+			this.alarmStartTime = alarmStartTime;
+		}
+		public boolean getTriggerAlarm() {
+			return triggerAlarm;
+		}
+		public void setTriggerAlarm(boolean triggerAlarm) {
+			this.triggerAlarm = triggerAlarm;
 		}
 	}
 

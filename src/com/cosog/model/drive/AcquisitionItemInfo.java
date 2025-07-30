@@ -29,6 +29,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public int retriggerTime;
 	public int isSendMessage;
 	public int isSendMail;
+	public boolean triggerAlarm;
 	
 	public int type;
 	public AcquisitionItemInfo() {
@@ -265,6 +266,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public boolean getTriggerAlarm() {
+		return triggerAlarm;
+	}
+
+	public void setTriggerAlarm(boolean triggerAlarm) {
+		this.triggerAlarm = triggerAlarm;
 	}
 	
 }

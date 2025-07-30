@@ -93,6 +93,15 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 handler: function (v, o) {
                 	exportDataDictionaryCompleteData();
                 }
+            },"-",{
+            	xtype: 'button',
+    			text: loginUserLanguageResource.importData,
+    			disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+    			iconCls: 'import',
+    			handler: function (v, o) {
+    				var window = Ext.create("AP.view.data.ImportDataDictionaryWindow");
+                    window.show();
+    			}
             }
 //    		, '-', {
 //                xtype: 'button',

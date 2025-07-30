@@ -1109,6 +1109,19 @@ public class DriverAPIController extends BaseController{
 					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
 				}
 			}else{
+				String alarmStartTime =alarmInfo.getAlarmStartTime();
+				int retriggerTime=acquisitionItemInfo.getRetriggerTime();
+				
+				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>retriggerTime*1000) ){
+					alarmInfo.setAlarmStartTime(acqTime);
+					alarmInfo.setTriggerAlarm(true);
+					acquisitionItemInfo.setTriggerAlarm(true);
+				}else{
+					alarmInfo.setTriggerAlarm(false);
+					acquisitionItemInfo.setTriggerAlarm(false);
+				}
+				
 				alarmInfo.setAlarmTime(acqTime);
 				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
 				alarmInfo.setColumn(acquisitionItemInfo.getColumn());
@@ -1184,11 +1197,9 @@ public class DriverAPIController extends BaseController{
 		
 		WorkType workType=null;
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-//			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"");
 			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 		}
 		for(int i=0;i<calItemResolutionDataList.size();i++){
-
 			int alarmLevel=0;
 			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
 			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getAddr()));
@@ -1214,7 +1225,6 @@ public class DriverAPIController extends BaseController{
 			}else{
 				alarmInfo=new DeviceAlarmInfo.AlarmInfo();
 			}
-			
 			
 			if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
 				if(workType!=null){
@@ -1310,6 +1320,18 @@ public class DriverAPIController extends BaseController{
 					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
 				}
 			}else{
+				String alarmStartTime =alarmInfo.getAlarmStartTime();
+				int retriggerTime=acquisitionItemInfo.getRetriggerTime();
+				
+				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>retriggerTime*1000) ){
+					alarmInfo.setAlarmStartTime(acqTime);
+					alarmInfo.setTriggerAlarm(true);
+					acquisitionItemInfo.setTriggerAlarm(true);
+				}else{
+					alarmInfo.setTriggerAlarm(false);
+					acquisitionItemInfo.setTriggerAlarm(false);
+				}
 				alarmInfo.setAlarmTime(acqTime);
 				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
 				alarmInfo.setColumn(acquisitionItemInfo.getColumn());
@@ -1331,6 +1353,7 @@ public class DriverAPIController extends BaseController{
 				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
 				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+				
 				if(alarmInfo.getDelay()>0){
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 						
@@ -1348,6 +1371,11 @@ public class DriverAPIController extends BaseController{
 			}
 			
 			acquisitionItemInfoList.add(acquisitionItemInfo);
+		}
+		if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
+			deviceAlarmInfoMap.remove(deviceInfo.getId());
+		}else {
+			deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
 		}
 		return acquisitionItemInfoList;
 	}
@@ -2489,7 +2517,7 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getAlarmDelay()==0){
+						if(acquisitionItemInfo.getTriggerAlarm() && acquisitionItemInfo.getAlarmDelay()==0){
 							alarm=true;
 							break;
 						}

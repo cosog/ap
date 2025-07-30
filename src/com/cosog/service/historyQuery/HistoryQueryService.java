@@ -2065,6 +2065,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.stringToInteger(calculateType)>0){
 				for(int i=0;i<displayCalItemList.size();i++){
 					String column=displayCalItemList.get(i).getCode();
+					String rawColumn=column;
 					if("resultName".equalsIgnoreCase(column)){
 						column="resultCode";
 					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -2072,7 +2073,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}else if("runstatusName".equalsIgnoreCase(column)){
 						column="runstatus";
 					}
-					sql+=",t3."+column;
+					
+					if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+						sql+=",t2."+column;
+					}else{
+						sql+=",t3."+column;
+					}
 				}
 				if(displayInputItemList.size()>0){
 					sql+=",t3.productiondata";
@@ -2141,7 +2147,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				t1=System.nanoTime();
 				totals=this.getTotalCountRows(sql);
 				t2=System.nanoTime();
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史数据总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql);
 			}
 			
 			String startTime=pager.getStart_date();
@@ -3046,6 +3052,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.stringToInteger(calculateType)>0){
 				for(int i=0;i<displayCalItemList.size();i++){
 					String column=displayCalItemList.get(i).getCode();
+					String rawColumn=column;
 					if("resultName".equalsIgnoreCase(column)){
 						column="resultCode";
 					}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -3053,7 +3060,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}else if("runstatusName".equalsIgnoreCase(column)){
 						column="runstatus";
 					}
-					sql+=",t3."+column;
+					if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+						sql+=",t2."+column;
+					}else{
+						sql+=",t3."+column;
+					}
 				}
 				if(displayInputItemList.size()>0){
 					sql+=",t3.productiondata";
@@ -3817,6 +3828,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					
 					for(int i=0;i<displayCalItemList.size();i++){
 						String column=displayCalItemList.get(i).getCode();
+						String rawColumn=column;
 						if(StringManagerUtils.stringToInteger(calculateType)>0){
 							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
@@ -3825,7 +3837,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}else if("runstatusName".equalsIgnoreCase(column)){
 								column="runstatus";
 							}
-							sql+=",t3."+column;
+							if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+								sql+=",t2."+column;
+							}else{
+								sql+=",t3."+column;
+							}
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
@@ -4642,6 +4658,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					
 					for(int i=0;i<displayCalItemList.size();i++){
 						String column=displayCalItemList.get(i).getCode();
+						String rawColumn=column;
 						if(StringManagerUtils.stringToInteger(calculateType)>0){
 							if("resultName".equalsIgnoreCase(displayCalItemList.get(i).getCode())){
 								column="resultCode";
@@ -4650,7 +4667,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}else if("runstatusName".equalsIgnoreCase(column)){
 								column="runstatus";
 							}
-							sql+=",t3."+column;
+							if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
+								sql+=",t2."+column;
+							}else{
+								sql+=",t3."+column;
+							}
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
@@ -5622,7 +5643,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				if(StringManagerUtils.stringToInteger(calculateType)>0){
 					for(int i=0;i<calItemColumnList.size();i++){
-						calAndInputColumn+=",h3."+calItemColumnList.get(i);
+						if(StringManagerUtils.generalCalColumnFiter(calItemColumnList.get(i))){
+							calAndInputColumn+=",h."+calItemColumnList.get(i);
+						}else{
+							calAndInputColumn+=",h3."+calItemColumnList.get(i);
+						}
 					}
 					if(inputItemColumnList.size()>0){
 						calAndInputColumn+=",h3.productiondata";
@@ -5666,8 +5691,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					queryIdSql+=" and 1=2";
 				}
 				queryIdSql+=" order by t.id";
-				
+				long t1=System.nanoTime();
 				totalCount=this.getTotalCountRows(queryIdSql);
+				long t2=System.nanoTime();
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史曲线数据总点数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",queryIdSql:"+queryIdSql);
 				if(totalCount>vacuateThreshold){
 					queryIdSql=queryIdSql.replaceAll(tableName, vacuateTableName);
 					vacuateTotalCount=this.getTotalCountRows(queryIdSql);
@@ -5692,9 +5719,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				
 				String finalSql=sql;
-				long t1=System.nanoTime();
+				t1=System.nanoTime();
 				List<?> list = this.findCallSql(finalSql);
-				long t2=System.nanoTime();
+				t2=System.nanoTime();
 				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceName+"历史曲线数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql);
 				
 				vacuateCount=list.size();

@@ -34,11 +34,33 @@ public class DatabaseMaintenanceTask {
 		}
 	}
 	
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	public void timingShrinkSpace(){
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start！");
+		long t1=System.nanoTime();
+		shrinkSpace("TBL_ACQDATA_HIST");
+		shrinkSpace("TBL_ACQRAWDATA");
+		shrinkSpace("TBL_ALARMINFO_HIST");
+		shrinkSpace("TBL_DAILYTOTALCALCULATE_HIST");
+		shrinkSpace("TBL_DAILYCALCULATIONDATA");
+		shrinkSpace("TBL_TIMINGCALCULATIONDATA");
+		shrinkSpace("TBL_SRPACQDATA_HIST");
+		shrinkSpace("TBL_SRPDAILYCALCULATIONDATA");
+		shrinkSpace("TBL_SRPTIMINGCALCULATIONDATA");
+		shrinkSpace("TBL_PCPACQDATA_HIST");
+		shrinkSpace("TBL_PCPDAILYCALCULATIONDATA");
+		shrinkSpace("TBL_PCPTIMINGCALCULATIONDATA");
+		shrinkSpace("TBL_ACQDATA_VACUATE");
+		shrinkSpace("TBL_SRPACQDATA_VACUATE");
+		shrinkSpace("TBL_PCPACQDATA_VACUATE");
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space end,总耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+	}
+	
 	@SuppressWarnings({ "static-access", "unused" })
 	public static void timingDatabaseMaintenance(){
 		int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 		String startTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getStartTime();
-		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 		
 		long interval=cycle * 24 * 60 * 60 * 1000;
 		long initDelay = StringManagerUtils.getTimeMillis(startTime) - System.currentTimeMillis();
@@ -173,4 +195,25 @@ public class DatabaseMaintenanceTask {
 		return r;
 	}
 	
+	public int shrinkSpace(String tableName){
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start:"+tableName+"！");
+		long t1=System.nanoTime();
+		@SuppressWarnings("static-access")
+		String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
+		String enableRowMovementCommand="ALTER TABLE "+userName+"."+tableName+" ENABLE ROW MOVEMENT";
+		String shrinkSpaceCommand="ALTER TABLE "+userName+"."+tableName+" SHRINK SPACE CASCADE";
+		String disableRowMovementCommand="ALTER TABLE "+userName+"."+tableName+" DISABLE ROW MOVEMENT";
+		
+		
+		int result=OracleJdbcUtis.executeSqlUpdate(enableRowMovementCommand);
+		Thread.yield();
+		result=OracleJdbcUtis.executeSqlUpdate(shrinkSpaceCommand);
+		Thread.yield();
+		result=OracleJdbcUtis.executeSqlUpdate(disableRowMovementCommand);
+		
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space end:"+tableName+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+		
+		return result;
+	}
 }

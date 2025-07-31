@@ -83,6 +83,24 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 text: loginUserLanguageResource.deleteData,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'delete'
+            },"-", {
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                disabled:loginUserModuleManagementModuleRight.editFlag!=1,
+                hidden: false,
+                handler: function (v, o) {
+                	exportModuleCompleteData();
+                }
+            },"-",{
+            	xtype: 'button',
+    			text: loginUserLanguageResource.importData,
+    			disabled:loginUserModuleManagementModuleRight.editFlag!=1,
+    			iconCls: 'import',
+    			handler: function (v, o) {
+//    				var window = Ext.create("AP.view.data.ImportModuleWindow");
+//                    window.show();
+    			}
             }]
         });
 
@@ -90,3 +108,19 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
     },
     listeners: {}
 });
+
+function exportModuleCompleteData(){
+	var url = context + '/moduleManagerController/exportModuleCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportModuleCompleteData'+'_'+timestamp;
+	var maskPanelId='ModuleInfoTreeGridViewPanel_Id';
+	
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.ModuleExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}

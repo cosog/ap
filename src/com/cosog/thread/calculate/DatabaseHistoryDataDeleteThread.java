@@ -46,7 +46,6 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 		if(StringManagerUtils.isNotNull(acqTime)){
 			int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 			String startTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getStartTime();
-			int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 			int singleDeleteTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteTime();
 			OEMConfigFile.TableConfig tableConfig=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig();
 			
@@ -54,71 +53,88 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 			String delSql="";
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getAcqdata_hist()){
-					deleteData("tbl_acqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getAcqdata_hist().getEnabled()){
+					deleteData("tbl_acqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getAcqdata_hist().getRetentionTime());
 				}
 			}
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getAcqrawdata()){
-					deleteData("tbl_acqrawdata", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getAcqrawdata().getEnabled()){
+					deleteData("tbl_acqrawdata", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getAcqrawdata().getRetentionTime());
 				}
 			}
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getAlarminfo_hist()){
-					deleteData("tbl_alarminfo_hist", "alarmtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getAlarminfo_hist().getEnabled()){
+					deleteData("tbl_alarminfo_hist", "alarmtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getAlarminfo_hist().getRetentionTime());
 				}
 			}
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getDailytotalcalculate_hist()){
-					deleteData("tbl_dailytotalcalculate_hist", "acqtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getDailytotalcalculate_hist().getEnabled()){
+					deleteData("tbl_dailytotalcalculate_hist", "acqtime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getDailytotalcalculate_hist().getRetentionTime());
 				}
 			}
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getDailycalculationdata()){
-					deleteData("tbl_dailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getDailycalculationdata().getEnabled()){
+					deleteData("tbl_dailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getDailycalculationdata().getRetentionTime());
 				}
 			}
 			
 			if (!Thread.interrupted()) {
-				if(tableConfig.getTimingcalculationdata()){
-					deleteData("tbl_timingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+				if(tableConfig.getTimingcalculationdata().getEnabled()){
+					deleteData("tbl_timingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getTimingcalculationdata().getRetentionTime());
+				}
+			}
+			
+			
+			if (!Thread.interrupted()) {
+				if(tableConfig.getAcqdata_vacuate().getEnabled()){
+					deleteData("tbl_acqdata_vacuate", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getAcqdata_vacuate().getRetentionTime());
 				}
 			}
 			
 			if(calculateType==1){
 				if (!Thread.interrupted()) {
-					if(tableConfig.getSrpacqdata_hist()){
-						deleteData("tbl_srpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getSrpacqdata_hist().getEnabled()){
+						deleteData("tbl_srpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getSrpacqdata_hist().getRetentionTime());
 					}
 				}
 				if (!Thread.interrupted()) {
-					if(tableConfig.getSrpdailycalculationdata()){
-						deleteData("tbl_srpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getSrpdailycalculationdata().getEnabled()){
+						deleteData("tbl_srpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getSrpdailycalculationdata().getRetentionTime());
 					}
 				}
 				if (!Thread.interrupted()) {
-					if(tableConfig.getSrptimingcalculationdata()){
-						deleteData("tbl_srptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getSrptimingcalculationdata().getEnabled()){
+						deleteData("tbl_srptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getSrptimingcalculationdata().getRetentionTime());
+					}
+				}
+				if (!Thread.interrupted()) {
+					if(tableConfig.getSrpacqdata_vacuate().getEnabled()){
+						deleteData("tbl_srpacqdata_vacuate", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getSrpacqdata_vacuate().getRetentionTime());
 					}
 				}
 			}else if(calculateType==2){
 				if (!Thread.interrupted()) {
-					if(tableConfig.getPcpacqdata_hist()){
-						deleteData("tbl_pcpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getPcpacqdata_hist().getEnabled()){
+						deleteData("tbl_pcpacqdata_hist", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getPcpacqdata_hist().getRetentionTime());
 					}
 				}
 				if (!Thread.interrupted()) {
-					if(tableConfig.getPcpdailycalculationdata()){
-						deleteData("tbl_pcpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getPcpdailycalculationdata().getEnabled()){
+						deleteData("tbl_pcpdailycalculationdata", "caldate","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getPcpdailycalculationdata().getRetentionTime());
 					}
 				}
 				if (!Thread.interrupted()) {
-					if(tableConfig.getPcptimingcalculationdata()){
-						deleteData("tbl_pcptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss");
+					if(tableConfig.getPcptimingcalculationdata().getEnabled()){
+						deleteData("tbl_pcptimingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getPcptimingcalculationdata().getRetentionTime());
+					}
+				}
+				if (!Thread.interrupted()) {
+					if(tableConfig.getPcpacqdata_vacuate().getEnabled()){
+						deleteData("tbl_pcpacqdata_vacuate", "acqTime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getPcpacqdata_vacuate().getRetentionTime());
 					}
 				}
 			}
@@ -128,12 +144,11 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	}
 	
 	@SuppressWarnings("static-access")
-	public void deleteData(String table,String timeColumn,String deviceColumn,int deviceId,String newestTime,String timeFormat){
+	public void deleteData(String table,String timeColumn,String deviceColumn,int deviceId,String newestTime,String timeFormat,int retentionTime){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,table:"+table+",device id:"+deviceId+" start!");
 		int timeOut=60*10;//sql执行超时时间
 		int delCount=0;
 		int r=0;
-		int retentionTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getRetentionTime();
 		int singleDeleteTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteTime();
 		int singleDeleteRecord=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getSingleDeleteRecord();
 		String oldestTimeSql="select to_char(min(t."+timeColumn+"),'yyyy-mm-dd') from "+table+" t where t."+deviceColumn+"="+deviceId;

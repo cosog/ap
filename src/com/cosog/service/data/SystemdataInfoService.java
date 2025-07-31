@@ -1,6 +1,8 @@
 package com.cosog.service.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.ExportDataDictionary;
+import com.cosog.model.ExportDataDictionary.DataDictionaryItem;
+import com.cosog.model.ExportRoleData;
+import com.cosog.model.Role;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
+import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.data.DataitemsInfo;
@@ -118,10 +127,11 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	
 	public String exportDataDictionaryCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,t.sorts,t.status,t.moduleid  "
-				+ "from tbl_dist_name t "
-				+ "where t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+") "
-				+ "order by t.sorts";
+		String sql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,t.sorts,t.status,t.moduleid,m.md_code  "
+				+ " from tbl_dist_name t,tbl_module m "
+				+ " where t.moduleid=m.md_id"
+				+ " and t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+") "
+				+ " order by t.sorts";
 		String itemSql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,"
 				+ "t.devicetype,t.datavalue,t.sorts,"
 				+ "t.columndatasource,t.datasource,t.dataunit,t.configitemname,"
@@ -143,6 +153,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			result_json.append("\"Sort\":"+obj[5]+",");
 			result_json.append("\"Status\":"+obj[6]+",");
 			result_json.append("\"ModuleId\":"+obj[7]+",");
+			result_json.append("\"ModuleCode\":\""+obj[8]+"\",");
 			result_json.append("Item:[");
 			
 			for(int j=0;j<itemList.size();j++){
@@ -157,7 +168,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 					result_json.append("\"Sort\":"+itemObj[7]+",");
 					result_json.append("\"ColumnDataSource\":"+itemObj[8]+",");
 					result_json.append("\"DataSource\":"+(StringManagerUtils.isNum(itemObj[9]+"")?StringManagerUtils.stringToInteger(itemObj[9]+""):-99 )+",");
-					result_json.append("\"SataUnit\":\""+itemObj[10]+"\",");
+					result_json.append("\"DataUnit\":\""+itemObj[10]+"\",");
 					result_json.append("\"ConfigItemName\":\""+itemObj[11]+"\",");
 					result_json.append("\"Status\":"+itemObj[12]+",");
 					result_json.append("\"Status_zh_CN\":"+itemObj[13]+",");
@@ -425,5 +436,152 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	public String findCurrentUserOrgIdInfo(String orgId,String language) {
 		return this.getCurrentUserOrgIds(Integer.parseInt(orgId),language);
 
+	}
+	
+	
+	public String getUploadedDataDictionaryTreeData(List<ExportDataDictionary> uploadDataDictionaryList,User user){
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String columns="[]";
+		String overlaySql="select t.sysdataid from tbl_dist_name t where t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
+		String collisionSql="select t.sysdataid from tbl_dist_name t where t.moduleid not in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
+		
+		List<String> overlayObjectList=new ArrayList<>();
+		List<String> collisionObjectList=new ArrayList<>();
+		List<?> overlayList = this.findCallSql(overlaySql);
+		List<?> collisionList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayList.size();i++){
+			overlayObjectList.add(overlayList.get(i).toString());
+		}
+		for(int i=0;i<collisionList.size();i++){
+			collisionObjectList.add(collisionList.get(i).toString());
+		}
+		
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+uploadDataDictionaryList.size()+",");
+		result_json.append("\"totalRoot\":[");
+		for(ExportDataDictionary exportDataDictionary:uploadDataDictionaryList){
+			String name="";
+			if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+				name=exportDataDictionary.getName_zh_CN();
+			}else if("en".equalsIgnoreCase(user.getLanguageName())){
+				name=exportDataDictionary.getName_en();
+			}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+				name=exportDataDictionary.getName_ru();
+			}
+			
+			if(StringManagerUtils.existOrNot(overlayObjectList, exportDataDictionary.getDictionaryid(), true)){
+				exportDataDictionary.setSaveSign(1);
+				exportDataDictionary.setMsg(name+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionObjectList, exportDataDictionary.getDictionaryid(), true)){
+				exportDataDictionary.setSaveSign(2);
+				exportDataDictionary.setMsg(name+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+			
+			result_json.append("{\"sysdataid\":\""+exportDataDictionary.getDictionaryid()+"\",");
+			result_json.append("\"name\":\""+name+"\",");
+			result_json.append("\"code\":\""+exportDataDictionary.getCode()+"\",");
+			result_json.append("\"sorts\":"+exportDataDictionary.getSort()+",");
+			result_json.append("\"status\":"+exportDataDictionary.getStatus()+",");
+			result_json.append("\"moduleId\":"+exportDataDictionary.getModuleId()+",");
+			result_json.append("\"name_zh_CN\":\""+exportDataDictionary.getName_zh_CN()+"\",");
+			result_json.append("\"name_en\":\""+exportDataDictionary.getName_en()+"\",");
+			result_json.append("\"name_ru\":\""+exportDataDictionary.getName_ru()+"\",");
+			result_json.append("\"msg\":\""+exportDataDictionary.getMsg()+"\",");
+			result_json.append("\"saveSign\":\""+exportDataDictionary.getSaveSign()+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int saveAllImportedDataDictionary(List<ExportDataDictionary> uploadDataDictionaryList,User user) {
+		int result=0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		
+		for(ExportDataDictionary exportDataDictionary:uploadDataDictionaryList){
+			if(exportDataDictionary.getSaveSign()!=2){
+				SystemdataInfo systemdataInfo=new SystemdataInfo();
+				systemdataInfo.setSysdataid(exportDataDictionary.getDictionaryid());
+				systemdataInfo.setTenantid(user.getUserId());
+				systemdataInfo.setStatus(0);
+				systemdataInfo.setUpdateuser(user.getUserId());
+				systemdataInfo.setCreator(user.getUserId());
+				systemdataInfo.setUpdatetime(DateUtils.getTime());
+				systemdataInfo.setCreatedate(DateUtils.getTime());
+				systemdataInfo.setName_zh_CN(exportDataDictionary.getName_en());
+				systemdataInfo.setName_en(exportDataDictionary.getName_en());
+				systemdataInfo.setName_ru(exportDataDictionary.getName_ru());
+				
+				
+				if(exportDataDictionary.getSaveSign()==1){
+					try {
+						this.modifyDataDictionaryInfo(systemdataInfo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else if(exportDataDictionary.getSaveSign()==0){
+					try {
+						this.addDataDictionaryInfo(systemdataInfo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					this.deleteCurrentDictionaryItem(exportDataDictionary.getDictionaryid());
+					if(exportDataDictionary.getItem()!=null){
+						for(DataDictionaryItem dataDictionaryItem:exportDataDictionary.getItem()){
+							DataitemsInfo dinfo = new DataitemsInfo();
+							dinfo.setSysdataid(exportDataDictionary.getDictionaryid());
+							dinfo.setName_zh_CN(dataDictionaryItem.getName_zh_CN());
+							dinfo.setName_en(dataDictionaryItem.getName_en());
+							dinfo.setName_ru(dataDictionaryItem.getName_ru());
+							dinfo.setCode(dataDictionaryItem.getCode());
+							dinfo.setDeviceType(dataDictionaryItem.getDeviceType());
+							dinfo.setDatavalue(dataDictionaryItem.getDataValue());
+							dinfo.setSorts(dataDictionaryItem.getSort());
+							dinfo.setColumnDataSource(dataDictionaryItem.getColumnDataSource());
+							dinfo.setDataSource(dataDictionaryItem.getDataSource()>=0?dataDictionaryItem.getDataSource():null);
+							dinfo.setDataUnit(dataDictionaryItem.getDataUnit());
+							dinfo.setConfigItemName(dataDictionaryItem.getConfigItemName());
+							dinfo.setStatus(dataDictionaryItem.getStatus());
+							dinfo.setStatus_cn(dataDictionaryItem.getStatus_zh_CN());
+							dinfo.setStatus_en(dataDictionaryItem.getStatus_en());
+							dinfo.setStatus_ru(dataDictionaryItem.getStatus_ru());
+							dinfo.setTenantid(user.getUserId());
+							dinfo.setCreator(user.getUserId());
+							dinfo.setCreatedate(DateUtils.getTime());
+							dinfo.setUpdateuser(user.getUserId());
+							dinfo.setUpdatetime(DateUtils.getTime());
+							try {
+								dataitemsInfoService.saveDataitemsInfo(dinfo);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public void addDataDictionaryInfo(SystemdataInfo systemdataInfo) throws Exception {
+		getBaseDao().addObject(systemdataInfo);
+	}
+	
+	public void modifyDataDictionaryInfo(SystemdataInfo systemdataInfo) throws Exception {
+		getBaseDao().updateObject(systemdataInfo);
+	}
+	
+	public void deleteCurrentDictionaryItem(final String dictionaryId) throws Exception {
+		final String hql = "DELETE DataitemsInfo u where u.sysdataid = " + dictionaryId + "";
+		getBaseDao().bulkObjectDelete(hql);
 	}
 }

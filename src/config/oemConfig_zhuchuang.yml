@@ -23,22 +23,54 @@ databaseMaintenance:                      #数据库维护
    cycle: 0                               #删除历史数据执行周期，单位：天 ，0-不执行定期删除
    startTime: 01:10:00                    #删除历史数据执行时间，cycle非0时生效
    endTime: 01:50:00                      #删除历史数据执行结束时间，到时间未执行完毕，将强制停止
-   retentionTime: 365                     #历史数据保留时间，单位：天， cycle非0时生效
    singleDeleteTime: 10                   #单次删除时间，单位：天
-   singleDeleteRecord: 10000              #单次删除记录数
+   singleDeleteRecord: 1000               #单次删除记录数
    tableConfig:
-      acqdata_hist: true              #采集数据历史表
-      acqrawdata: true                #采集原始数据历史表
-      alarminfo_hist: true            #报警数据历史表
-      dailytotalcalculate_hist: true  #日累计计算历史表
-      dailycalculationdata: true      #采集数据全天汇总表
-      timingcalculationdata: true     #采集数据定时汇总表
-      srpacqdata_hist: true           #抽油机井计算数据历史表
-      srpdailycalculationdata: true   #抽油机井全天汇总计算数据表
-      srptimingcalculationdata: true  #抽油机井定时汇总计算数据表
-      pcpacqdata_hist: true           #螺杆泵井计算数据历史表
-      pcpdailycalculationdata: true   #螺杆泵井全天汇总计算数据表
-      pcptimingcalculationdata: true  #螺杆泵井定时汇总计算数据表
+      acqdata_hist:                       #采集数据历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      acqrawdata:                         #采集原始数据历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      alarminfo_hist:                     #报警数据历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      dailytotalcalculate_hist:           #日累计计算历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      dailycalculationdata:               #采集数据全天汇总表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      timingcalculationdata:              #采集数据定时汇总表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      srpacqdata_hist:                    #抽油机井计算数据历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      srpdailycalculationdata:            #抽油机井全天汇总计算数据表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      srptimingcalculationdata:           #抽油机井定时汇总计算数据表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      pcpacqdata_hist:                    #螺杆泵井计算数据历史表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      pcpdailycalculationdata:            #螺杆泵井全天汇总计算数据表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      pcptimingcalculationdata:           #螺杆泵井定时汇总计算数据表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 60                #数据保留时间，单位：天
+      acqdata_vacuate:                    #采集数据抽稀表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 360               #数据保留时间，单位：天
+      srpacqdata_vacuate:                 #抽油机井计算数据抽稀表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 360               #数据保留时间，单位：天
+      pcpacqdata_vacuate:                 #螺杆泵井计算数据抽稀表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 360               #数据保留时间，单位：天
 email:                #邮件发送账号配置
    snedAccount:
       account: 123456@126.com          #邮箱账号

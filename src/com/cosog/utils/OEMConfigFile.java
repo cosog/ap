@@ -486,128 +486,180 @@ public class OEMConfigFile {
 		}
 	}
 	
+	public static class DatabaseMaintenanceTableConfig{
+		
+		private boolean enabled;
+		
+		private int retentionTime;
+
+		public boolean getEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
+
+		public int getRetentionTime() {
+			return retentionTime;
+		}
+
+		public void setRetentionTime(int retentionTime) {
+			this.retentionTime = retentionTime;
+		}
+	}
+	
 	public static class TableConfig{
 		
-		private boolean acqdata_hist;
+		private DatabaseMaintenanceTableConfig acqdata_hist;
 		
-		private boolean acqrawdata;
+		private DatabaseMaintenanceTableConfig acqrawdata;
 		
-		private boolean alarminfo_hist;
+		private DatabaseMaintenanceTableConfig alarminfo_hist;
 		
-		private boolean dailytotalcalculate_hist;
+		private DatabaseMaintenanceTableConfig dailytotalcalculate_hist;
 		
-		private boolean dailycalculationdata;
+		private DatabaseMaintenanceTableConfig dailycalculationdata;
 		
-		private boolean timingcalculationdata;
+		private DatabaseMaintenanceTableConfig timingcalculationdata;
 		
-		private boolean srpacqdata_hist;
+		private DatabaseMaintenanceTableConfig srpacqdata_hist;
 		
-		private boolean srpdailycalculationdata;
+		private DatabaseMaintenanceTableConfig srpdailycalculationdata;
 		
-		private boolean srptimingcalculationdata;
+		private DatabaseMaintenanceTableConfig srptimingcalculationdata;
 		
-		private boolean pcpacqdata_hist;
+		private DatabaseMaintenanceTableConfig pcpacqdata_hist;
 		
-		private boolean pcpdailycalculationdata;
+		private DatabaseMaintenanceTableConfig pcpdailycalculationdata;
 		
-		private boolean pcptimingcalculationdata;
+		private DatabaseMaintenanceTableConfig pcptimingcalculationdata;
+		
+		private DatabaseMaintenanceTableConfig acqdata_vacuate;
+		
+		private DatabaseMaintenanceTableConfig srpacqdata_vacuate;
+		
+		private DatabaseMaintenanceTableConfig pcpacqdata_vacuate;
 
-		public boolean getAcqdata_hist() {
+		public DatabaseMaintenanceTableConfig getAcqdata_hist() {
 			return acqdata_hist;
 		}
 
-		public void setAcqdata_hist(boolean acqdata_hist) {
+		public void setAcqdata_hist(DatabaseMaintenanceTableConfig acqdata_hist) {
 			this.acqdata_hist = acqdata_hist;
 		}
 
-		public boolean getAcqrawdata() {
+		public DatabaseMaintenanceTableConfig getAcqrawdata() {
 			return acqrawdata;
 		}
 
-		public void setAcqrawdata(boolean acqrawdata) {
+		public void setAcqrawdata(DatabaseMaintenanceTableConfig acqrawdata) {
 			this.acqrawdata = acqrawdata;
 		}
 
-		public boolean getAlarminfo_hist() {
+		public DatabaseMaintenanceTableConfig getAlarminfo_hist() {
 			return alarminfo_hist;
 		}
 
-		public void setAlarminfo_hist(boolean alarminfo_hist) {
+		public void setAlarminfo_hist(DatabaseMaintenanceTableConfig alarminfo_hist) {
 			this.alarminfo_hist = alarminfo_hist;
 		}
 
-		public boolean getDailytotalcalculate_hist() {
+		public DatabaseMaintenanceTableConfig getDailytotalcalculate_hist() {
 			return dailytotalcalculate_hist;
 		}
 
-		public void setDailytotalcalculate_hist(boolean dailytotalcalculate_hist) {
+		public void setDailytotalcalculate_hist(DatabaseMaintenanceTableConfig dailytotalcalculate_hist) {
 			this.dailytotalcalculate_hist = dailytotalcalculate_hist;
 		}
 
-		public boolean getDailycalculationdata() {
+		public DatabaseMaintenanceTableConfig getDailycalculationdata() {
 			return dailycalculationdata;
 		}
 
-		public void setDailycalculationdata(boolean dailycalculationdata) {
+		public void setDailycalculationdata(DatabaseMaintenanceTableConfig dailycalculationdata) {
 			this.dailycalculationdata = dailycalculationdata;
 		}
 
-		public boolean getTimingcalculationdata() {
+		public DatabaseMaintenanceTableConfig getTimingcalculationdata() {
 			return timingcalculationdata;
 		}
 
-		public void setTimingcalculationdata(boolean timingcalculationdata) {
+		public void setTimingcalculationdata(DatabaseMaintenanceTableConfig timingcalculationdata) {
 			this.timingcalculationdata = timingcalculationdata;
 		}
 
-		public boolean getSrpacqdata_hist() {
+		public DatabaseMaintenanceTableConfig getSrpacqdata_hist() {
 			return srpacqdata_hist;
 		}
 
-		public void setSrpacqdata_hist(boolean srpacqdata_hist) {
+		public void setSrpacqdata_hist(DatabaseMaintenanceTableConfig srpacqdata_hist) {
 			this.srpacqdata_hist = srpacqdata_hist;
 		}
 
-		public boolean getSrpdailycalculationdata() {
+		public DatabaseMaintenanceTableConfig getSrpdailycalculationdata() {
 			return srpdailycalculationdata;
 		}
 
-		public void setSrpdailycalculationdata(boolean srpdailycalculationdata) {
+		public void setSrpdailycalculationdata(DatabaseMaintenanceTableConfig srpdailycalculationdata) {
 			this.srpdailycalculationdata = srpdailycalculationdata;
 		}
 
-		public boolean getSrptimingcalculationdata() {
+		public DatabaseMaintenanceTableConfig getSrptimingcalculationdata() {
 			return srptimingcalculationdata;
 		}
 
-		public void setSrptimingcalculationdata(boolean srptimingcalculationdata) {
+		public void setSrptimingcalculationdata(DatabaseMaintenanceTableConfig srptimingcalculationdata) {
 			this.srptimingcalculationdata = srptimingcalculationdata;
 		}
 
-		public boolean getPcpacqdata_hist() {
+		public DatabaseMaintenanceTableConfig getPcpacqdata_hist() {
 			return pcpacqdata_hist;
 		}
 
-		public void setPcpacqdata_hist(boolean pcpacqdata_hist) {
+		public void setPcpacqdata_hist(DatabaseMaintenanceTableConfig pcpacqdata_hist) {
 			this.pcpacqdata_hist = pcpacqdata_hist;
 		}
 
-		public boolean getPcpdailycalculationdata() {
+		public DatabaseMaintenanceTableConfig getPcpdailycalculationdata() {
 			return pcpdailycalculationdata;
 		}
 
-		public void setPcpdailycalculationdata(boolean pcpdailycalculationdata) {
+		public void setPcpdailycalculationdata(DatabaseMaintenanceTableConfig pcpdailycalculationdata) {
 			this.pcpdailycalculationdata = pcpdailycalculationdata;
 		}
 
-		public boolean getPcptimingcalculationdata() {
+		public DatabaseMaintenanceTableConfig getPcptimingcalculationdata() {
 			return pcptimingcalculationdata;
 		}
 
-		public void setPcptimingcalculationdata(boolean pcptimingcalculationdata) {
+		public void setPcptimingcalculationdata(DatabaseMaintenanceTableConfig pcptimingcalculationdata) {
 			this.pcptimingcalculationdata = pcptimingcalculationdata;
 		}
-		
+
+		public DatabaseMaintenanceTableConfig getAcqdata_vacuate() {
+			return acqdata_vacuate;
+		}
+
+		public void setAcqdata_vacuate(DatabaseMaintenanceTableConfig acqdata_vacuate) {
+			this.acqdata_vacuate = acqdata_vacuate;
+		}
+
+		public DatabaseMaintenanceTableConfig getSrpacqdata_vacuate() {
+			return srpacqdata_vacuate;
+		}
+
+		public void setSrpacqdata_vacuate(DatabaseMaintenanceTableConfig srpacqdata_vacuate) {
+			this.srpacqdata_vacuate = srpacqdata_vacuate;
+		}
+
+		public DatabaseMaintenanceTableConfig getPcpacqdata_vacuate() {
+			return pcpacqdata_vacuate;
+		}
+
+		public void setPcpacqdata_vacuate(DatabaseMaintenanceTableConfig pcpacqdata_vacuate) {
+			this.pcpacqdata_vacuate = pcpacqdata_vacuate;
+		}
 	}
 	
 	public static class DatabaseMaintenance{
@@ -617,8 +669,6 @@ public class OEMConfigFile {
 		private String startTime;
 		
 		private String endTime;
-		
-		private int retentionTime;
 		
 		private int singleDeleteTime;
 		
@@ -640,14 +690,6 @@ public class OEMConfigFile {
 		
 		public void setStartTime(String startTime) {
 			this.startTime = startTime;
-		}
-		
-		public int getRetentionTime() {
-			return retentionTime;
-		}
-		
-		public void setRetentionTime(int retentionTime) {
-			this.retentionTime = retentionTime;
 		}
 
 		public int getSingleDeleteTime() {

@@ -20,6 +20,8 @@ public class ExportDataDictionary {
 	
 	private int ModuleId;
 	
+	private String ModuleCode;
+	
 	List<DataDictionaryItem> Item;
 	
 	private int saveSign=0;
@@ -48,7 +50,7 @@ public class ExportDataDictionary {
 		
 		private int DataSource;
 		
-		private String SataUnit;
+		private String DataUnit;
 		
 		private String ConfigItemName;
 		
@@ -132,12 +134,12 @@ public class ExportDataDictionary {
 			DataSource = dataSource;
 		}
 
-		public String getSataUnit() {
-			return SataUnit;
+		public String getDataUnit() {
+			return DataUnit;
 		}
 
-		public void setSataUnit(String sataUnit) {
-			SataUnit = sataUnit;
+		public void setDataUnit(String dataUnit) {
+			DataUnit = dataUnit;
 		}
 
 		public String getConfigItemName() {
@@ -275,5 +277,13 @@ public class ExportDataDictionary {
 
 	public void setSaveId(int saveId) {
 		this.saveId = saveId;
+	}
+
+	public String getModuleCode() {
+		return ModuleCode;
+	}
+
+	public void setModuleCode(String moduleCode) {
+		ModuleCode = moduleCode;
 	}
 }

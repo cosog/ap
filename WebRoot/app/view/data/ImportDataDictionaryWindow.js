@@ -129,7 +129,7 @@ function submitImportedDataDictionaryFile() {
                 if (isNotVal(importDataDictionaryContentTreeGridPanel)) {
                     importDataDictionaryContentTreeGridPanel.getStore().load();
                 } else {
-                    Ext.create('AP.store.role.ImportDataDictionaryContentTreeInfoStore');
+                    Ext.create('AP.store.data.ImportDataDictionaryContentTreeInfoStore');
                 }
             },
             failure: function () {

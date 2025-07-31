@@ -538,7 +538,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 		}
 		
 		for(ExportRoleData exportRoleData:roleList){
-			if(exportRoleData.getSaveSign()!=1){
+			if(exportRoleData.getSaveSign()!=2){
 				Role role=new Role();
 				role.setRoleName(exportRoleData.getRoleName());
 				role.setRoleLevel(exportRoleData.getRoleLevel());

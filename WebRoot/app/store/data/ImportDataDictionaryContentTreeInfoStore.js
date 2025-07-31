@@ -45,69 +45,32 @@ Ext.define('AP.store.data.ImportDataDictionaryContentTreeInfoStore', {
                     },
                     store: store,
                     columns: [{
-                        header: loginUserLanguageResource.idx,
-                        lockable: true,
+                        text: loginUserLanguageResource.idx,
+                        width: 50,
+                        xtype: 'rownumberer',
+                        sortable: false,
                         align: 'center',
-                        sortable: true,
-                        width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
-                        xtype: 'rownumberer'
+                        locked: false
                     }, {
-                        header: loginUserLanguageResource.roleName,
-                        lockable: true,
+                    	text: loginUserLanguageResource.dataModuleName,
+                        flex: 2,
                         align: 'center',
-                        sortable: true,
-                        flex: 1,
-                        dataIndex: 'roleName'
+                        dataIndex: 'name',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
                     }, {
-                        header: loginUserLanguageResource.roleLevel,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        flex: 1,
-                        dataIndex: 'roleLevel'
-                    }, {
-                        header: loginUserLanguageResource.dataShowLevel,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        flex: 1,
-                        dataIndex: 'showLevel'
-                    }, {
-                        header: loginUserLanguageResource.roleVideoKeyEdit,
-                        xtype: 'checkcolumn',
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                        width: getLabelWidth(loginUserLanguageResource.roleVideoKeyEdit,loginUserLanguage)+'px',
-                        dataIndex: 'roleVideoKeyEditName',
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	return false;
-                    	    }
-                    	}
-                    }, {
-                        header: loginUserLanguageResource.roleLanguageEdit,
-                        xtype: 'checkcolumn',
-                        hidden: true,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
-                        width: getLabelWidth(loginUserLanguageResource.roleLanguageEdit,loginUserLanguage)+'px',
-                        dataIndex: 'roleLanguageEditName',
-                    	listeners: {
-                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
-                    	    	return false;
-                    	    }
-                    	}
-                    },{
-                        header: loginUserLanguageResource.roleRemark,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
+                    	text: loginUserLanguageResource.dataModuleCode,
                         flex: 3,
-                        dataIndex: 'remark'
+                        align: 'center',
+                        dataIndex: 'code',
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
                     },{
                     	header: loginUserLanguageResource.collisionInfo,
                     	flex: 5,

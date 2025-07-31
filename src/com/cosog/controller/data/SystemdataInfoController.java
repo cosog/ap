@@ -24,9 +24,12 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.apache.commons.lang.StringUtils;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.ExportDataDictionary;
 import com.cosog.model.User;
 import com.cosog.model.data.SystemdataInfo;
 import com.cosog.service.base.CommonDataService;
@@ -37,6 +40,8 @@ import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 系统数据字典表
@@ -296,4 +301,97 @@ public class SystemdataInfoController extends BaseController {
 		pw.close();
 	}
 
+	@RequestMapping("/uploadImportedDataDictionaryFile")
+	public String uploadImportedDataDictionaryFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadImportedDataDictionaryFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		type = new TypeToken<List<ExportDataDictionary>>() {}.getType();
+		List<ExportDataDictionary> uploadFileList=gson.fromJson(fileContent, type);
+		if(uploadFileList!=null){
+			flag=true;
+			session.setAttribute(key, uploadFileList);
+		}
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedDataDictionaryTreeData")
+	public String getUploadedDataDictionaryTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportDataDictionary> uploadDataDictionaryList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		String key="uploadImportedDataDictionaryFile"+(user!=null?user.getUserNo():0);
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadDataDictionaryList=(List<ExportDataDictionary>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = this.systemdataInfoService.getUploadedDataDictionaryTreeData(uploadDataDictionaryList,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAllImportedDataDictionary")
+	public String saveAllImportedDataDictionary() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadImportedDataDictionaryFile"+(user!=null?user.getUserNo():0);
+		List<ExportDataDictionary> uploadDataDictionaryList=null;
+		
+		String language=user!=null?user.getLanguageName():"";
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadDataDictionaryList=(List<ExportDataDictionary>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		int r=this.systemdataInfoService.saveAllImportedDataDictionary(uploadDataDictionaryList,user);
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

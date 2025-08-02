@@ -359,11 +359,13 @@ public class HistoryQueryController extends BaseController  {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo(),user.getLanguageName());
+			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo(),user.getLanguageName(),startDate,endDate);
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -385,6 +387,8 @@ public class HistoryQueryController extends BaseController  {
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
 		String key = ParamUtils.getParameter(request, "key");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -393,7 +397,7 @@ public class HistoryQueryController extends BaseController  {
 			session.setAttribute(key, 0);
 			user = (User) session.getAttribute("userLogin");
 		}
-		bool = historyQueryService.exportDeviceHistoryQueryDetailsData(user,response,recordId,deviceId,deviceName,calculateType);
+		bool = historyQueryService.exportDeviceHistoryQueryDetailsData(user,response,recordId,deviceId,deviceName,calculateType,startDate,endDate);
 		if(session!=null){
 			session.setAttribute(key, 1);
 		}

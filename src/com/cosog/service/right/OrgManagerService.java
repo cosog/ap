@@ -456,7 +456,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 	
 	public List<ExportOrganizationData> getUploadedOrganizationList(List<ExportOrganizationData> uploadOrganizationList,User user){
 		List<ExportOrganizationData> list =new ArrayList<>();
-		list=getUploadedOrganizationIds(uploadOrganizationList,user.getUserOrgid());
+		list=getUploadedOrganizationChildrenIds(uploadOrganizationList,user.getUserOrgid());
 		if(list.size()==0){
 			String orgIds=user!=null?user.getUserOrgIds():"";
 			String[] orgIdArr=orgIds.split(",");
@@ -471,7 +471,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return list;
 	}
 	
-	public List<ExportOrganizationData> getUploadedOrganizationIds(List<ExportOrganizationData> uploadOrganizationList,int targetOrgId){
+	public List<ExportOrganizationData> getUploadedOrganizationChildrenIds(List<ExportOrganizationData> uploadOrganizationList,int targetOrgId){
 		List<ExportOrganizationData> result =new ArrayList<>();
 		
 		Map<Integer, ExportOrganizationData> idToOrgMap = new HashMap<>();
@@ -518,7 +518,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		String language=user!=null?user.getLanguageName():"zh_CN";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		List<ExportOrganizationData> list =new ArrayList<>();
-		list=getUploadedOrganizationIds(uploadOrganizationList,user.getUserOrgid());
+		list=getUploadedOrganizationChildrenIds(uploadOrganizationList,user.getUserOrgid());
 		if(list.size()==0){
 			String orgIds=user!=null?user.getUserOrgIds():"";
 			String[] orgIdArr=orgIds.split(",");

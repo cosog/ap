@@ -1771,6 +1771,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
+	@SuppressWarnings("static-access")
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,
 			String deviceType,String calculateType,
 			Page pager,
@@ -1849,12 +1850,34 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String calAndInputTableName="tbl_srpacqdata_hist";
 			
+			String vacuateTableName="tbl_acqdata_vacuate";
+			String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calAndInputTableName="tbl_srpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
 			}
+			
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						hisTableName=vacuateTableName;
+						calAndInputTableName=vacuateCalAndInputDataTable;
+						orerRetentionTime=true;
+					}
+				}
+			}		
+					
 			
 			
 			List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
@@ -2843,10 +2866,32 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String calAndInputTableName="tbl_srpacqdata_hist";
 			
+			String vacuateTableName="tbl_acqdata_vacuate";
+			String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calAndInputTableName="tbl_srpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
+			}
+			
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						hisTableName=vacuateTableName;
+						calAndInputTableName=vacuateCalAndInputDataTable;
+						orerRetentionTime=true;
+					}
+				}
 			}
 			
 			List<ModbusProtocolConfig.Items> protocolItems=new ArrayList<ModbusProtocolConfig.Items>();
@@ -3644,7 +3689,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String calculateType,int userNo,String language){
+	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String calculateType,int userNo,String language,String startDate,String endDate){
 		StringBuffer result_json = new StringBuffer();
 		try{
 			int items=3;
@@ -3679,12 +3724,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			DeviceInfo deviceInfo=null;
 			
+			String vacuateTableName="tbl_acqdata_vacuate";
+			String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calAndInputTableName="tbl_srpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
 			}
 
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(endDate.split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						tableName=vacuateTableName;
+						calAndInputTableName=vacuateCalAndInputDataTable;
+						orerRetentionTime=true;
+					}
+				}
+			}
 			
 			deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
@@ -4467,7 +4533,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	
-	public boolean exportDeviceHistoryQueryDetailsData(User user,HttpServletResponse response,String recordId,String deviceId,String deviceName,String calculateType){
+	public boolean exportDeviceHistoryQueryDetailsData(User user,HttpServletResponse response,String recordId,String deviceId,String deviceName,String calculateType,String startDate,String endDate){
 		ConfigFile configFile=Config.getInstance().configFile;
 		String language=user.getLanguageName();
 		int userNo=user.getUserNo();
@@ -4494,14 +4560,35 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String deviceTableName="tbl_device";
 			String acqInstanceCode="";
 			String displayInstanceCode="";
+			String vacuateTableName="tbl_acqdata_vacuate";
+			String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			
 			DeviceInfo deviceInfo=null;
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
 				calAndInputTableName="tbl_srpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
 			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 				calAndInputTableName="tbl_pcpacqdata_hist";
+				vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
 			}
+			
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(endDate.split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						tableName=vacuateTableName;
+						calAndInputTableName=vacuateCalAndInputDataTable;
+						orerRetentionTime=true;
+					}
+				}
+			}	
 			
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
@@ -5255,6 +5342,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
+	@SuppressWarnings("static-access")
 	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String calculateType,String startDate,String endDate,String hours,int userNo,String language)throws Exception {
 		long start=System.nanoTime();
 		StringBuffer result_json = new StringBuffer();
@@ -5263,6 +5351,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer curveConfBuff = new StringBuffer();
 		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		
 		UserInfo userInfo=null;
 		List<CalItem> calItemList=null;
 		List<CalItem> inputItemList=null;
@@ -5274,6 +5365,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String deviceTableName="tbl_device";
 		String graphicSetTableName="tbl_devicegraphicset";
 		String vacuateTableName="tbl_acqdata_vacuate";
+		boolean orerRetentionTime=false;
+		
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(endDate.split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					tableName=vacuateTableName;
+					orerRetentionTime=true;
+				}
+			}
+		}
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type reflectType=null;
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
@@ -5636,6 +5743,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}else if(StringManagerUtils.stringToInteger(calculateType)==2){
 					calAndInputDataTable="tbl_pcpacqdata_hist";
 					vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
+				}
+				if(orerRetentionTime){
+					calAndInputDataTable=vacuateCalAndInputDataTable;
 				}
 				if(acqItemColumnList.size()>0 || extendedFieldColumnList.size()>0){
 					columns+=",h1.acqdata";
@@ -6128,7 +6238,32 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String hisTableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
+		String calAndInputTableName="tbl_srpacqdata_hist";
+		
+		String vacuateTableName="tbl_acqdata_vacuate";
+		String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		boolean orerRetentionTime=false;
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					calAndInputTableName=vacuateCalAndInputDataTable;
+					orerRetentionTime=true;
+				}
+			}
+		}	
+		
+		
+		
+		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -6170,10 +6305,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
 				+ " t.resultcode,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
-				+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		
-		String totalSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		long t1=System.nanoTime();
 		int totals = getTotalCountRows(totalSql);//获取总记录数
@@ -6270,7 +6405,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    sheetDataList.add(headRow);
 		    
 		    
-		    String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		    String hisTableName="tbl_acqdata_hist";
+			String deviceTableName="tbl_device";
+			String calAndInputTableName="tbl_srpacqdata_hist";
+			
+			String vacuateTableName="tbl_acqdata_vacuate";
+			String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+			
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						calAndInputTableName=vacuateCalAndInputDataTable;
+						orerRetentionTime=true;
+					}
+				}
+			}
+		    
+		    String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
 					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -6309,7 +6467,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.stroke,t.spm,"
 					+ " t.fmax,t.fmin,"
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
-					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+					+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) "
 					+ " order by t.fesdiagramacqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
@@ -6410,8 +6568,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		
+		String hisTableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
+		String calAndInputTableName="tbl_srpacqdata_hist";
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String vacuateTableName="tbl_acqdata_vacuate";
+		String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		boolean orerRetentionTime=false;
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					calAndInputTableName=vacuateCalAndInputDataTable;
+					orerRetentionTime=true;
+				}
+			}
+		}
+		
+		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -6449,10 +6629,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.upStrokeWattMax,t.downStrokeWattMax,t.wattDegreeBalance,t.deltaRadius,"
 				+ " t.position_curve,t.power_curve"
-				+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		
-		String totalSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
@@ -6526,7 +6706,30 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String hisTableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
+		String calAndInputTableName="tbl_srpacqdata_hist";
+		
+		String vacuateTableName="tbl_acqdata_vacuate";
+		String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		boolean orerRetentionTime=false;
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					calAndInputTableName=vacuateCalAndInputDataTable;
+					orerRetentionTime=true;
+				}
+			}
+		}
+		
+		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -6564,10 +6767,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.upStrokeIMax,t.downStrokeIMax,t.iDegreeBalance,t.deltaRadius,"
 				+ " t.position_curve,t.current_curve"
-				+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		
-		String totalSql="select count(1) from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
@@ -6639,7 +6842,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
-		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
+		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L,oilVolumetricProduction,oilVolumetricProduction_L,waterVolumetricProduction,waterVolumetricProduction_L";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
@@ -6652,6 +6855,24 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String tableName="tbl_srpacqdata_hist";
 		String vacuateTableName="tbl_srpacqdata_vacuate";
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		boolean orerRetentionTime=false;
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					tableName=vacuateTableName;
+					orerRetentionTime=true;
+				}
+			}
+		}
+		
+		
 		try{
 			try{
 				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
@@ -6738,19 +6959,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.fmax,t.fmin,"//16~17
 					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//18~20
 					+ " t.upperloadline,t.lowerloadline,"//21~22
-					+ prodCol+", "//23~24
-					+ " t.productiondata,t.submergence,"//25~26
-					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//27~28
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
-					+ " t.pumpEff*100 as pumpEff,"//36
-					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//37~39
-					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//40~42
-					+ " t.deltaradius*100 as deltaradius,"//43
-					+ " t.todayKWattH,"//44
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//45~48
+					+ " t.liquidVolumetricProduction,t.liquidVolumetricProduction_L,t.oilVolumetricProduction,t.oilVolumetricProduction_L,t.waterVolumetricProduction,t.waterVolumetricProduction_L," //23~28
+					+ " t.liquidWeightProduction,t.liquidWeightProduction_L,t.oilWeightProduction,t.oilWeightProduction_L,t.waterWeightProduction,t.waterWeightProduction_L," //29~34
+					+ " t.productiondata,t.submergence,"//35~36
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//37~38
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//39~41
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//42
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//43
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//44~45
+					+ " t.pumpEff*100 as pumpEff,"//46
+					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//47~49
+					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//50~52
+					+ " t.deltaradius*100 as deltaradius,"//53
+					+ " t.todayKWattH,"//54
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//55~58
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
@@ -6793,7 +7015,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						String runStatusName=(obj[9]+"").replaceAll("null", "");
 						String resultCode=(obj[13]+"").replaceAll("null", "");
 						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-						String productionDataStr=(obj[25]+"").replaceAll("null", "");
+						String productionDataStr=(obj[35]+"").replaceAll("null", "");
 						
 						WorkType workType=workTypeMap.get(resultCode);
 						
@@ -6812,10 +7034,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[45]);
-						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[46]);
-						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[47]);
-						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[48]);
+						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[55]);
+						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[56]);
+						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[57]);
+						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[58]);
 						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
 						dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
@@ -6849,38 +7071,48 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
 						dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
-						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
 						
+						dataBuff.append("\"liquidVolumetricProduction\":\""+obj[23]+"\",");
+						dataBuff.append("\"liquidVolumetricProduction_L\":\""+obj[24]+"\",");
+						dataBuff.append("\"oilVolumetricProduction\":\""+obj[25]+"\",");
+						dataBuff.append("\"oilVolumetricProduction_L\":\""+obj[26]+"\",");
+						dataBuff.append("\"waterVolumetricProduction\":\""+obj[27]+"\",");
+						dataBuff.append("\"waterVolumetricProduction_L\":\""+obj[28]+"\",");
+						dataBuff.append("\"liquidWeightProduction\":\""+obj[29]+"\",");
+						dataBuff.append("\"liquidWeightProduction_L\":\""+obj[30]+"\",");
+						dataBuff.append("\"oilWeightProduction\":\""+obj[31]+"\",");
+						dataBuff.append("\"oilWeightProduction_L\":\""+obj[32]+"\",");
+						dataBuff.append("\"waterWeightProduction\":\""+obj[33]+"\",");
+						dataBuff.append("\"waterWeightProduction_L\":\""+obj[34]+"\",");
 						
 						dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
 						dataBuff.append("\"producingfluidLevel\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getProducingfluidLevel():"")+"\",");
 						dataBuff.append("\"levelCorrectValue\":\""+(productionData!=null&&productionData.getManualIntervention()!=null?productionData.getManualIntervention().getLevelCorrectValue():"")+"\",");
-						dataBuff.append("\"calcProducingfluidLevel\":\""+obj[28]+"\",");
-						dataBuff.append("\"levelDifferenceValue\":\""+obj[27]+"\",");
-						dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+						dataBuff.append("\"calcProducingfluidLevel\":\""+obj[38]+"\",");
+						dataBuff.append("\"levelDifferenceValue\":\""+obj[37]+"\",");
+						dataBuff.append("\"submergence\":\""+obj[36]+"\",");
 						
-						dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
-						dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
-						dataBuff.append("\"waterPower\":\""+obj[31]+"\",");
+						dataBuff.append("\"averageWatt\":\""+obj[39]+"\",");
+						dataBuff.append("\"polishrodPower\":\""+obj[40]+"\",");
+						dataBuff.append("\"waterPower\":\""+obj[41]+"\",");
 						
-						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-						dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+						dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[42]+"\",");
+						dataBuff.append("\"welldownSystemEfficiency\":\""+obj[43]+"\",");
+						dataBuff.append("\"systemEfficiency\":\""+obj[44]+"\",");
 						
-						dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
-						dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+						dataBuff.append("\"energyper100mlift\":\""+obj[45]+"\",");
+						dataBuff.append("\"pumpEff\":\""+obj[46]+"\",");
 						
-						dataBuff.append("\"upStrokeIMax\":\""+obj[37]+"\",");
-						dataBuff.append("\"downStrokeIMax\":\""+obj[38]+"\",");
-						dataBuff.append("\"iDegreeBalance\":\""+obj[39]+"\",");
+						dataBuff.append("\"upStrokeIMax\":\""+obj[47]+"\",");
+						dataBuff.append("\"downStrokeIMax\":\""+obj[48]+"\",");
+						dataBuff.append("\"iDegreeBalance\":\""+obj[49]+"\",");
 						
-						dataBuff.append("\"upStrokeWattMax\":\""+obj[40]+"\",");
-						dataBuff.append("\"downStrokeWattMax\":\""+obj[41]+"\",");
-						dataBuff.append("\"wattDegreeBalance\":\""+obj[42]+"\",");
+						dataBuff.append("\"upStrokeWattMax\":\""+obj[50]+"\",");
+						dataBuff.append("\"downStrokeWattMax\":\""+obj[51]+"\",");
+						dataBuff.append("\"wattDegreeBalance\":\""+obj[52]+"\",");
 						
-						dataBuff.append("\"deltaradius\":\""+obj[43]+"\",");
-						dataBuff.append("\"todayKWattH\":\""+obj[44]+"\",");
+						dataBuff.append("\"deltaradius\":\""+obj[53]+"\",");
+						dataBuff.append("\"todayKWattH\":\""+obj[54]+"\",");
 						
 						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
@@ -6961,6 +7193,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String tableName="tbl_srpacqdata_hist";
 			String vacuateTableName="tbl_srpacqdata_vacuate";
 			
+			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+			boolean orerRetentionTime=false;
+			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(pager.getEnd_date().split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+				int diffDays=0;
+				List<?> list = this.findCallSql(rangeSql);
+				if(list.size()>0 && list.get(0)!=null){
+					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+						tableName=vacuateTableName;
+						orerRetentionTime=true;
+					}
+				}
+			}
+			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 			
@@ -6987,11 +7235,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
-			
-			String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				prodCol="liquidWeightProduction,liquidWeightProduction_L";
-			}
 			
 			String distinctSql="select fesdiagramacqtime,max(id) as id from "+tableName+" "
 					+ " where deviceId="+deviceId+" and resultstatus=1 "
@@ -7053,18 +7296,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.fmax,t.fmin,"//16~17
 					+ " t.fullnessCoefficient,t.plungerStroke,t.availablePlungerStroke,"//18~20
 					+ " t.upperloadline,t.lowerloadline,"//21~22
-					+ prodCol+", "//23~24
-					+ " t.productiondata,t.submergence,"//25~26
-					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//27~28
-					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//29~31
-					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//32
-					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//33
-					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//34~35
-					+ " t.pumpEff*100 as pumpEff,"//36
-					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//37~39
-					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//40~42
-					+ " t.deltaradius*100 as deltaradius,"//43
-					+ " t.todayKWattH"//44
+					+ " t.liquidVolumetricProduction,t.liquidVolumetricProduction_L,t.oilVolumetricProduction,t.oilVolumetricProduction_L,t.waterVolumetricProduction,t.waterVolumetricProduction_L," //23~28
+					+ " t.liquidWeightProduction,t.liquidWeightProduction_L,t.oilWeightProduction,t.oilWeightProduction_L,t.waterWeightProduction,t.waterWeightProduction_L," //29~34
+					+ " t.productiondata,t.submergence,"//35~36
+					+ " t.levelDifferenceValue,t.calcProducingfluidLevel,"//37~38
+					+ " t.averageWatt,t.polishrodPower,t.waterPower,"//39~41
+					+ " t.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"//42
+					+ " t.welldownSystemEfficiency*100 as welldownSystemEfficiency,"//43
+					+ " t.systemEfficiency*100 as systemEfficiency,t.energyper100mlift,"//44~45
+					+ " t.pumpEff*100 as pumpEff,"//46
+					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//47~49
+					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//50~52
+					+ " t.deltaradius*100 as deltaradius,"//53
+					+ " t.todayKWattH"//54
 					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
@@ -7083,14 +7327,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String runStatusName=(obj[9]+"").replaceAll("null", "");
 				String resultCode=(obj[13]+"").replaceAll("null", "");
 				int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-				String productionDataStr=(obj[25]+"").replaceAll("null", "");
+				String productionDataStr=(obj[35]+"").replaceAll("null", "");
 				
 				WorkType workType=workTypeMap.get(resultCode);
 				
 				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 				SRPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				
-				dataBuff.append("{ \"id\":\"" + (1+i) + "\",");
+				dataBuff.append("{\"id\":\"" + (1+i) + "\",");
 				dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
 				dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
 				dataBuff.append("\"commStatus\":"+obj[3]+",");
@@ -7122,38 +7366,48 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				dataBuff.append("\"upperLoadLine\":\""+obj[21]+"\",");
 				dataBuff.append("\"lowerLoadLine\":\""+obj[22]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[23]+"\",");
-				dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[24]+"\",");
 				
+				dataBuff.append("\"liquidVolumetricProduction\":\""+obj[23]+"\",");
+				dataBuff.append("\"liquidVolumetricProduction_L\":\""+obj[24]+"\",");
+				dataBuff.append("\"oilVolumetricProduction\":\""+obj[25]+"\",");
+				dataBuff.append("\"oilVolumetricProduction_L\":\""+obj[26]+"\",");
+				dataBuff.append("\"waterVolumetricProduction\":\""+obj[27]+"\",");
+				dataBuff.append("\"waterVolumetricProduction_L\":\""+obj[28]+"\",");
+				dataBuff.append("\"liquidWeightProduction\":\""+obj[29]+"\",");
+				dataBuff.append("\"liquidWeightProduction_L\":\""+obj[30]+"\",");
+				dataBuff.append("\"oilWeightProduction\":\""+obj[31]+"\",");
+				dataBuff.append("\"oilWeightProduction_L\":\""+obj[32]+"\",");
+				dataBuff.append("\"waterWeightProduction\":\""+obj[33]+"\",");
+				dataBuff.append("\"waterWeightProduction_L\":\""+obj[34]+"\",");
 				
 				dataBuff.append("\"pumpSettingDepth\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getPumpSettingDepth():"")+"\",");
 				dataBuff.append("\"producingfluidLevel\":\""+(productionData!=null&&productionData.getProduction()!=null?productionData.getProduction().getProducingfluidLevel():"")+"\",");
 				dataBuff.append("\"levelCorrectValue\":\""+(productionData!=null&&productionData.getManualIntervention()!=null?productionData.getManualIntervention().getLevelCorrectValue():"")+"\",");
-				dataBuff.append("\"calcProducingfluidLevel\":\""+obj[28]+"\",");
-				dataBuff.append("\"levelDifferenceValue\":\""+obj[27]+"\",");
-				dataBuff.append("\"submergence\":\""+obj[26]+"\",");
+				dataBuff.append("\"calcProducingfluidLevel\":\""+obj[38]+"\",");
+				dataBuff.append("\"levelDifferenceValue\":\""+obj[37]+"\",");
+				dataBuff.append("\"submergence\":\""+obj[36]+"\",");
 				
-				dataBuff.append("\"averageWatt\":\""+obj[29]+"\",");
-				dataBuff.append("\"polishrodPower\":\""+obj[30]+"\",");
-				dataBuff.append("\"waterPower\":\""+obj[31]+"\",");
+				dataBuff.append("\"averageWatt\":\""+obj[39]+"\",");
+				dataBuff.append("\"polishrodPower\":\""+obj[40]+"\",");
+				dataBuff.append("\"waterPower\":\""+obj[41]+"\",");
 				
-				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-				dataBuff.append("\"systemEfficiency\":\""+obj[34]+"\",");
+				dataBuff.append("\"surfaceSystemEfficiency\":\""+obj[42]+"\",");
+				dataBuff.append("\"welldownSystemEfficiency\":\""+obj[43]+"\",");
+				dataBuff.append("\"systemEfficiency\":\""+obj[44]+"\",");
 				
-				dataBuff.append("\"energyper100mlift\":\""+obj[35]+"\",");
-				dataBuff.append("\"pumpEff\":\""+obj[36]+"\",");
+				dataBuff.append("\"energyper100mlift\":\""+obj[45]+"\",");
+				dataBuff.append("\"pumpEff\":\""+obj[46]+"\",");
 				
-				dataBuff.append("\"upStrokeIMax\":\""+obj[37]+"\",");
-				dataBuff.append("\"downStrokeIMax\":\""+obj[38]+"\",");
-				dataBuff.append("\"iDegreeBalance\":\""+obj[39]+"\",");
+				dataBuff.append("\"upStrokeIMax\":\""+obj[47]+"\",");
+				dataBuff.append("\"downStrokeIMax\":\""+obj[48]+"\",");
+				dataBuff.append("\"iDegreeBalance\":\""+obj[49]+"\",");
 				
-				dataBuff.append("\"upStrokeWattMax\":\""+obj[40]+"\",");
-				dataBuff.append("\"downStrokeWattMax\":\""+obj[41]+"\",");
-				dataBuff.append("\"wattDegreeBalance\":\""+obj[42]+"\",");
+				dataBuff.append("\"upStrokeWattMax\":\""+obj[50]+"\",");
+				dataBuff.append("\"downStrokeWattMax\":\""+obj[51]+"\",");
+				dataBuff.append("\"wattDegreeBalance\":\""+obj[52]+"\",");
 				
-				dataBuff.append("\"deltaradius\":\""+obj[43]+"\",");
-				dataBuff.append("\"todayKWattH\":\""+obj[44]+"\"}");
+				dataBuff.append("\"deltaradius\":\""+obj[53]+"\",");
+				dataBuff.append("\"todayKWattH\":\""+obj[54]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(dataBuff.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -7189,8 +7443,32 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		data_json.append("[");
 		
+		String hisTableName="tbl_acqdata_hist";
+		String deviceTableName="tbl_device";
+		String calAndInputTableName="tbl_srpacqdata_hist";
 		
-		String distinctSql="select fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+		String vacuateTableName="tbl_acqdata_vacuate";
+		String vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
+		
+		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+		boolean orerRetentionTime=false;
+		if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
+			int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
+			String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(endDate.split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
+			int diffDays=0;
+			List<?> list = this.findCallSql(rangeSql);
+			if(list.size()>0 && list.get(0)!=null){
+				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
+				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
+					hisTableName=vacuateTableName;
+					calAndInputTableName=vacuateCalAndInputDataTable;
+					orerRetentionTime=true;
+				}
+			}
+		}	
+		
+		
+		String distinctSql="select fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -7221,7 +7499,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		distinctSql+=" group by fesdiagramacqtime";
 		
 		String sql="select t.resultcode,count(1) "
-				+ " from tbl_srpacqdata_hist t"
+				+ " from "+calAndInputTableName+" t"
 				+ " where t.id in (select v.id from ("+distinctSql+") v ) ";
 		sql+= " group by t.resultcode";
 		sql+= " order by t.resultcode";

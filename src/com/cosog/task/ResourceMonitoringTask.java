@@ -386,7 +386,7 @@ public class ResourceMonitoringTask {
     				+ " where upper(tablespace_name) = upper('"+tableSpaceName+"')";
             
     		pstmt = conn.prepareStatement(sql); 
-    		pstmt.setQueryTimeout(10);
+    		pstmt.setQueryTimeout(300);
     		rs=pstmt.executeQuery();
     		while(rs.next()){
     			tableSpaceInfo.setTableSpaceName(tableSpaceName);

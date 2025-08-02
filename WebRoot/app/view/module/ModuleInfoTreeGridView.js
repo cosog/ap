@@ -98,8 +98,8 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
     			disabled:loginUserModuleManagementModuleRight.editFlag!=1,
     			iconCls: 'import',
     			handler: function (v, o) {
-//    				var window = Ext.create("AP.view.data.ImportModuleWindow");
-//                    window.show();
+    				var window = Ext.create("AP.view.module.ImportModuleWindow");
+                    window.show();
     			}
             }]
         });
@@ -118,7 +118,7 @@ function exportModuleCompleteData(){
 	
 	
 	var param = "&recordCount=10000" 
-    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.ModuleExportFileName)) 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.moduleExportFileName)) 
     + '&key='+key;
     exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
 //    openExcelWindow(url + '?flag=true' + param);

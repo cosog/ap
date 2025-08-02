@@ -3,7 +3,8 @@ Ext.define('AP.store.module.ModuleInfoStore', {
     alias: 'widget.moduleInfoStore',
     model: 'AP.model.module.ModuleInfoModel',
     autoLoad: true,
-    folderSort: true,
+    folderSort: false,
+    defaultRootId: '0',
     proxy: {
         type: 'ajax',
         url: context + '/moduleManagerController/constructModuleTreeGridTree',
@@ -22,9 +23,6 @@ Ext.define('AP.store.module.ModuleInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var ResHeadInfoGridPanel_Id = Ext.getCmp("moduleInfoTreeGridView_Id");
             if (!isNotVal(ResHeadInfoGridPanel_Id)) {
-//                var arrColumns = get_rawData.columns;
-//                var cloums = createTreeHeadColumns(arrColumns);
-//                var newColumns = Ext.JSON.decode(cloums);
                 var ResHeadrInfoGridViewPanelGrid = Ext.create('Ext.tree.Panel', {
                     id: "moduleInfoTreeGridView_Id",
                     border: false,

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cosog.model.ExportModuleData;
 import com.cosog.model.RoleModule;
 import com.cosog.task.MemoryDataManagerTask;
 
@@ -79,6 +80,80 @@ public class BackModuleTreePanelRecursion {
 		data = returnStr.toString();
 		return data;
 	}
+	
+	public String recursionModuleTreeFn(List<ExportModuleData> uploadModuleList, ExportModuleData exportModuleData,String language) {
+		String data = "";
+		String name="";
+		String showName="";
+		if("zh_CN".equalsIgnoreCase(language)){
+			name=exportModuleData.getModuleName_zh_CN();
+			showName=exportModuleData.getModuleShowName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			name=exportModuleData.getModuleName_en();
+			showName=exportModuleData.getModuleShowName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			name=exportModuleData.getModuleName_ru();
+			showName=exportModuleData.getModuleShowName_ru();
+		}
+		
+		if (hasChild(uploadModuleList, exportModuleData)) {
+			returnStr.append("{\"text\":\"" + name + "\"");
+			returnStr.append(",\"mdShowname\":\"" + showName + "\"");
+			returnStr.append(",\"mdUrl\":\"" + exportModuleData.getModuleUrl() + "\"");
+			returnStr.append(",\"mdParentid\":\"" + exportModuleData.getModuleParentId() + "\"");
+			returnStr.append(",\"mdControl\":\"" + exportModuleData.getModuleControl() + "\"");
+			returnStr.append(",\"mdIcon\":\"" + exportModuleData.getModuleIcon() + "\"");
+			returnStr.append(",\"iconCls\":\"" + exportModuleData.getModuleIcon() + "\"");
+			returnStr.append(",\"mdCode\":\"" + exportModuleData.getModuleCode() + "\"");
+			returnStr.append(",\"mdType\":\"" + exportModuleData.getModuleType() + "\"");
+			returnStr.append(",\"mdTypeName\":\"" + MemoryDataManagerTask.getCodeName("MD_TYPE",exportModuleData.getModuleType()+"", language) + "\"");
+			returnStr.append(",\"mdSeq\":\"" + exportModuleData.getModuleSeq() + "\"");
+			returnStr.append(",\"mdId\":\"" + exportModuleData.getModuleId() + "\"");
+			
+			returnStr.append(",\"mdName_zh_CN\":\"" + exportModuleData.getModuleName_zh_CN() + "\"");
+			returnStr.append(",\"mdName_en\":\"" + exportModuleData.getModuleName_en() + "\"");
+			returnStr.append(",\"mdName_ru\":\"" + exportModuleData.getModuleName_ru() + "\"");
+			
+			returnStr.append(",\"mdShowname_zh_CN\":\"" + exportModuleData.getModuleShowName_zh_CN() + "\"");
+			returnStr.append(",\"mdShowname_en\":\"" + exportModuleData.getModuleShowName_en() + "\"");
+			returnStr.append(",\"mdShowname_ru\":\"" + exportModuleData.getModuleShowName_ru() + "\"");
+			
+			returnStr.append(",\"msg\":\"" + exportModuleData.getMsg() + "\"");
+			returnStr.append(",\"saveSign\":" + exportModuleData.getSaveSign() + "");
+			
+			returnStr.append(",\"expanded\":true");
+			returnStr.append(",\"children\":[");
+			List<ExportModuleData> childList = getChildList(uploadModuleList, exportModuleData);
+			for (ExportModuleData n:childList) {
+				recursionModuleTreeFn(uploadModuleList, n,language);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"mdId\":\""+exportModuleData.getModuleId()+"\",");
+			returnStr.append("\"text\":\""+name+"\",");
+			returnStr.append("\"mdShowname\":\""+showName+"\",");
+			returnStr.append("\"mdParentid\":\""+exportModuleData.getModuleParentId()+"\",");
+			returnStr.append("\"mdIcon\":\""+exportModuleData.getModuleIcon()+"\",");
+			returnStr.append("\"iconCls\":\""+exportModuleData.getModuleIcon()+"\",");
+			returnStr.append("\"mdUrl\":\""+exportModuleData.getModuleUrl()+"\",");
+			returnStr.append("\"mdControl\":\""+exportModuleData.getModuleControl()+"\",");
+			returnStr.append("\"mdCode\":\""+exportModuleData.getModuleCode()+"\",");
+			returnStr.append("\"mdType\":\""+exportModuleData.getModuleType()+"\",");
+			returnStr.append("\"mdTypeName\":\""+MemoryDataManagerTask.getCodeName("MD_TYPE",exportModuleData.getModuleType()+"", language)+"\",");
+			returnStr.append("\"mdSeq\":\""+exportModuleData.getModuleSeq()+"\",");
+			returnStr.append("\"mdName_zh_CN\":\"" + exportModuleData.getModuleName_zh_CN() + "\",");
+			returnStr.append("\"mdName_en\":\"" + exportModuleData.getModuleName_en() + "\",");
+			returnStr.append("\"mdName_ru\":\"" + exportModuleData.getModuleName_ru() + "\",");
+			returnStr.append("\"mdShowname_zh_CN\":\"" + exportModuleData.getModuleShowName_zh_CN() + "\",");
+			returnStr.append("\"mdShowname_en\":\"" + exportModuleData.getModuleShowName_en() + "\",");
+			returnStr.append("\"mdShowname_ru\":\"" + exportModuleData.getModuleShowName_ru() + "\",");
+			returnStr.append("\"msg\":\"" + exportModuleData.getMsg() + "\",");
+			returnStr.append("\"saveSign\":" + exportModuleData.getSaveSign() + ",");
+			returnStr.append("\"leaf\":true},");
+		}
+		data = returnStr.toString();
+		return data;
+	}
 
 	public boolean roleOwnModules(int curMdId, List<RoleModule> ownModules) {
 		boolean flag = false;
@@ -121,6 +196,37 @@ public class BackModuleTreePanelRecursion {
 		}
 		return li;
 	}
+	
+	public boolean hasChild(List<ExportModuleData> uploadModuleList, ExportModuleData exportModuleData) { // 判断是否有子节点
+		return getChildList(uploadModuleList, exportModuleData).size() > 0 ? true : false;
+	}
+
+	public List<ExportModuleData> getChildList(List<ExportModuleData> uploadModuleList, ExportModuleData exportModuleData) { // 得到子节点列表
+		List<ExportModuleData> li = new ArrayList();
+		Iterator it = uploadModuleList.iterator();
+		for(ExportModuleData e:uploadModuleList){
+			if(e.getModuleParentId()==exportModuleData.getModuleId()){
+				li.add(e);
+			}
+		}
+		return li;
+	}
+
+	public boolean hasParent(List<ExportModuleData> uploadModuleList, ExportModuleData exportModuleData) { // 判断是否有父节点
+		return getParentList(uploadModuleList, exportModuleData).size() > 0 ? true : false;
+	}
+
+	public List<ExportModuleData> getParentList(List<ExportModuleData> uploadModuleList, ExportModuleData exportModuleData) { // 得到子节点列表
+		List<ExportModuleData> li = new ArrayList();
+		for(ExportModuleData e:uploadModuleList){
+			if(e.getModuleId()==exportModuleData.getModuleParentId()){
+				li.add(e);
+			}
+		}
+		return li;
+	}
+	
+	
 
 	public String modifyStr(String returnStr) {// 修饰一下才能满足Extjs的Json格式
 		return ("[" + returnStr + "]").replaceAll(",]", "]");

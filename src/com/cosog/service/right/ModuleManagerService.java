@@ -1,5 +1,6 @@
 package com.cosog.service.right;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,10 +10,17 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
+import com.cosog.model.ExportModuleData;
+import com.cosog.model.ExportRoleData;
 import com.cosog.model.Module;
+import com.cosog.model.Role;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
+import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.LicenseMap;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.StringManagerUtils;
@@ -33,6 +41,14 @@ public class ModuleManagerService<T> extends BaseService<T> {
 
 	public void modifyModule(T Module) throws Exception {
 		getBaseDao().updateObject(Module);
+	}
+	
+	public void addImportedModule(Module m) throws Exception {
+		getBaseDao().addObject(m);
+	}
+	
+	public void modifyImportedModule(Module m) throws Exception {
+		getBaseDao().updateObject(m);
 	}
 
 	public void deleteModule(int id, Class<T> clazz) throws Exception {
@@ -264,6 +280,46 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		return this.findCallSql(sqlBuffer.toString());
 	}
 	
+	public String exportModuleCompleteData(User user) {
+		StringBuffer result_json = new StringBuffer();
+		
+		
+		String sql="SELECT t.md_id,t.md_parentid,"
+				+ " t.md_name_zh_cn,t.md_showname_zh_cn,t.md_name_en,t.md_showname_en,t.md_name_ru,t.md_showname_ru,"
+				+ " t.md_url,t.md_code,t.md_seq,t.md_icon,t.md_type,t.md_control"
+				+ " FROM tbl_module t"
+				+ " where t.md_id in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")"
+				+ " START WITH t.md_parentid = 0"
+				+ " CONNECT BY t.md_parentid = PRIOR t.md_id"
+				+ " ORDER SIBLINGS BY t.md_seq";
+		
+		List<?> list=this.findCallSql(sql);
+		result_json.append("[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"ModuleId\":"+obj[0]+",");
+			result_json.append("\"ModuleParentId\":"+obj[1]+",");
+			result_json.append("\"ModuleName_zh_CN\":\""+obj[2]+"\",");
+			result_json.append("\"ModuleShowName_zh_CN\":\""+obj[3]+"\",");
+			result_json.append("\"ModuleName_en\":\""+obj[4]+"\",");
+			result_json.append("\"ModuleShowName_en\":\""+obj[5]+"\",");
+			result_json.append("\"ModuleName_ru\":\""+obj[6]+"\",");
+			result_json.append("\"ModuleShowName_ru\":\""+obj[7]+"\",");
+			result_json.append("\"ModuleUrl\":\""+obj[8]+"\",");
+			result_json.append("\"ModuleCode\":\""+obj[9]+"\",");
+			result_json.append("\"ModuleSeq\":"+obj[10]+",");
+			result_json.append("\"ModuleIcon\":\""+obj[11]+"\",");
+			result_json.append("\"ModuleType\":"+obj[12]+",");
+			result_json.append("\"ModuleControl\":\""+obj[13]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	
 	/**
 	 * <p>描述：权限分配时，给角色分配权限时，创建的模块 treepanel 所需要的数据集合</p>
 	 * 
@@ -334,5 +390,112 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		return result_json.toString();
+	}
+	
+	public List<ExportModuleData> getUploadedModuleTreeData(List<ExportModuleData> uploadModuleList,User user){
+		String language=user!=null?user.getLanguageName():"zh_CN";
+		int orgId=user!=null?user.getUserOrgid():0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String overlaySql="SELECT t.md_code"
+				+ " FROM tbl_module t"
+				+ " where t.md_id in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
+		String collisionSql="select md_code "
+				+ " from tbl_module m "
+				+ " where m.md_code not in ("
+				+ " SELECT t.md_code"
+				+ " FROM tbl_module t"
+				+ " where t.md_id in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")"
+				+ " )";
+		
+		
+		List<String> overlayRoleList=new ArrayList<>();
+		List<String> collisionRoleList=new ArrayList<>();
+		List<?> overlayList = this.findCallSql(overlaySql);
+		List<?> collisionList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayList.size();i++){
+			overlayRoleList.add(overlayList.get(i).toString());
+		}
+		for(int i=0;i<collisionList.size();i++){
+			collisionRoleList.add(collisionList.get(i).toString());
+		}
+		
+		for(ExportModuleData exportModuleData:uploadModuleList){
+			String showName="";
+			if("zh_CN".equalsIgnoreCase(language)){
+				showName=exportModuleData.getModuleName_zh_CN();
+			}else if("en".equalsIgnoreCase(language)){
+				showName=exportModuleData.getModuleName_en();
+			}else if("ru".equalsIgnoreCase(language)){
+				showName=exportModuleData.getModuleName_ru();
+			}
+			if(StringManagerUtils.existOrNot(overlayRoleList, exportModuleData.getModuleCode(), true)){
+				exportModuleData.setSaveSign(1);
+				exportModuleData.setMsg(showName+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionRoleList, exportModuleData.getModuleCode(), true)){
+				exportModuleData.setSaveSign(2);
+				exportModuleData.setMsg(showName+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+		}
+		
+		return uploadModuleList;
+	}
+	
+	public int saveAllImportedModule(List<ExportModuleData> uploadModuleList,User user) {
+		int result=0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		String dbUser=Config.getInstance().configFile.getAp().getDatasource().getUser().toUpperCase();
+		
+		List<String> triggerNameList=new ArrayList<>();
+		String triggerSql="select t.trigger_name from all_triggers t where t.OWNER='"+dbUser+"' and t.table_name='TBL_MODULE'";
+		List<?> triggerQueryList=this.findCallSql(triggerSql);
+		for(int i=0;i<triggerQueryList.size();i++){
+			triggerNameList.add(triggerQueryList.get(i).toString());
+		}
+		
+		for(String triggerName:triggerNameList){
+			String triggerDisableSql="ALTER TRIGGER "+triggerName+" DISABLE";
+			result=this.getBaseDao().updateOrDeleteBySql(triggerDisableSql);
+		}
+		
+		
+		for(ExportModuleData exportModuleData:uploadModuleList){
+			if(exportModuleData.getSaveSign()!=2){
+				Module module=new Module();
+				module.setMdId(exportModuleData.getModuleId());
+				module.setMdParentid(exportModuleData.getModuleParentId());
+				module.setMdName_zh_CN(exportModuleData.getModuleName_zh_CN());
+				module.setMdShowname_zh_CN(exportModuleData.getModuleShowName_zh_CN());
+				module.setMdName_en(exportModuleData.getModuleName_en());
+				module.setMdShowname_en(exportModuleData.getModuleShowName_en());
+				module.setMdName_ru(exportModuleData.getModuleName_ru());
+				module.setMdShowname_ru(exportModuleData.getModuleShowName_ru());
+				module.setMdUrl(exportModuleData.getModuleUrl());
+				module.setMdCode(exportModuleData.getModuleCode());
+				module.setMdSeq(exportModuleData.getModuleSeq());
+				module.setMdIcon(exportModuleData.getModuleIcon());
+				module.setMdType(exportModuleData.getModuleType());
+				module.setMdControl(exportModuleData.getModuleControl());
+				if(exportModuleData.getSaveSign()==0){
+					try {
+						this.addImportedModule(module);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else if(exportModuleData.getSaveSign()==1){
+					try {
+						this.modifyImportedModule(module);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		for(String triggerName:triggerNameList){
+			String triggerEnableSql="ALTER TRIGGER "+triggerName+" ENABLE";
+			result=this.getBaseDao().updateOrDeleteBySql(triggerEnableSql);
+		}
+		
+		return result;
 	}
 }

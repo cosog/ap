@@ -99,6 +99,15 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
 
 function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType){
 	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+	var startTime_Second=0;
+
+    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+    var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+	var endTime_Second=0;
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getDeviceHistoryDetailsData',
@@ -149,7 +158,9 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			deviceType: deviceType,
 			deviceId: deviceId,
 			deviceName: deviceName,
-			calculateType: calculateType
+			calculateType: calculateType,
+			startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+            endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
         }
 	});
 };
@@ -357,6 +368,16 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 };
 
 function exportDeviceHistoryQueryDetailsData(recordId,deviceId,deviceName,deviceType,calculateType) {
+	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
+	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
+	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+	var startTime_Second=0;
+
+    var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
+    var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
+	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+	var endTime_Second=0;
+	
 	var timestamp=new Date().getTime();
 	var key='exportDeviceHistoryQueryDetailsData_'+deviceId+'_'+timestamp;
 	var maskPanelId='HistoryQueryDataDetailsPanel_Id';
@@ -366,6 +387,8 @@ function exportDeviceHistoryQueryDetailsData(recordId,deviceId,deviceName,device
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&deviceType=" + deviceType
     + '&calculateType='+calculateType
+    + "&startDate=" + getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)
+    + "&endDate=" + getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
     + '&key='+key;
     exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     openExcelWindow(url + '?flag=true' + param);

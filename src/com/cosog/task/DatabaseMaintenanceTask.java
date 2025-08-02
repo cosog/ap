@@ -35,7 +35,7 @@ public class DatabaseMaintenanceTask {
 	}
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
-	public void timingShrinkSpace(){
+	public static void timingShrinkSpace(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start！");
 		long t1=System.nanoTime();
 		shrinkSpace("TBL_ACQDATA_HIST");
@@ -121,6 +121,8 @@ public class DatabaseMaintenanceTask {
 		long countAfterDelete=getDataBaseTableCount("tbl_acqdata_hist");
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",The count of tbl_acqdata_hist after delete:"+countAfterDelete+",The count of tbl_acqdata_hist before delete:"+countBeforeDelete+",difference:"+(countBeforeDelete-countAfterDelete));
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",tbl_acqdata_hist table deleted count:"+DatabaseMaintenanceCounterUtils.sum());
+		
+		timingShrinkSpace();
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
@@ -195,11 +197,11 @@ public class DatabaseMaintenanceTask {
 		return r;
 	}
 	
-	public int shrinkSpace(String tableName){
+	public static int shrinkSpace(String tableName){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start:"+tableName+"！");
 		long t1=System.nanoTime();
 		@SuppressWarnings("static-access")
-		String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
+		String userName=Config.getInstance().configFile.getAp().getDatasource().getUser().toUpperCase();
 		String enableRowMovementCommand="ALTER TABLE "+userName+"."+tableName+" ENABLE ROW MOVEMENT";
 		String shrinkSpaceCommand="ALTER TABLE "+userName+"."+tableName+" SHRINK SPACE CASCADE";
 		String disableRowMovementCommand="ALTER TABLE "+userName+"."+tableName+" DISABLE ROW MOVEMENT";

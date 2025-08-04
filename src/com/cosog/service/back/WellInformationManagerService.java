@@ -1598,6 +1598,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public String exportDeviceCompleteData(String orgId,String deviceName,User user) {
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"PrimaryDevice\",");
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
@@ -1639,7 +1640,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(sql);
 		List<?> addInfoList = this.findCallSql(addInfoSql);
 		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String deviceId=obj[0]+"";
@@ -1755,6 +1756,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		json=result_json.toString().replaceAll("null", "");
 		
 		return json;
@@ -3971,6 +3973,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public String exportAuxiliaryDeviceCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"AuxiliaryDevice\",");
 		String language=user!=null?user.getLanguageName():"";
 		String sql = "select t.id,t.type,t2.name_"+language+" as typeName,t.name,t.manufacturer,t.model,t.remark,t.sort,t.specifictype,t.prtf"
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
@@ -3984,7 +3987,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String json = "";
 		List<?> list = this.findCallSql(sql);
 		List<?> addInfoList = this.findCallSql(addInfoSql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String deviceId=obj[0]+"";
@@ -4038,6 +4041,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		json=result_json.toString().replaceAll("null", "");
 		
 		return json;

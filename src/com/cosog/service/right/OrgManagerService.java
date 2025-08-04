@@ -256,10 +256,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 	
 	public String exportOrganizationCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
-//		String sql="select t.org_id,t.org_code,t.org_name_zh_cn,t.org_name_en,t.org_name_ru,t.org_memo,t.org_parent,t.org_seq "
-//				+ " from tbl_org t"
-//				+ " where t.org_id in ("+(user!=null?user.getUserOrgIds():"0")+")"
-//				+ " order by t.org_id ";
+		result_json.append("{\"Code\":\"Organization\",");
 		String sql="select t.org_id,t.org_code,t.org_name_zh_cn,t.org_name_en,t.org_name_ru,t.org_memo,t.org_parent,t.org_seq "
 				+ " from tbl_org t "
 				+ " START WITH t.org_id =  "+user.getUserOrgid()
@@ -267,7 +264,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 				+ " ORDER SIBLINGS BY t.org_seq,t.org_id";
 		
 		List<?> list=this.findCallSql(sql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"OrgId\":"+obj[0]+",");
@@ -283,6 +280,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

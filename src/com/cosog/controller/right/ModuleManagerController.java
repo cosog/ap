@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +44,9 @@ import com.cosog.utils.OrgRecursion;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+
 
 /**
  * <p>描述：模块维护action</p>
@@ -442,6 +444,7 @@ public class ModuleManagerController extends BaseController {
 		return null;
 	}
 	
+	@SuppressWarnings("unused")
 	@RequestMapping("/uploadImportedModuleFile")
 	public String uploadImportedModuleFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
 		HttpSession session=request.getSession();
@@ -451,9 +454,7 @@ public class ModuleManagerController extends BaseController {
 		StringBuffer result_json = new StringBuffer();
 		boolean flag=false;
 		String key="uploadModuleFile"+(user!=null?user.getUserNo():0);
-		
 		session.removeAttribute(key);
-		
 		String json = "";
 		String fileContent="";
 		if(files.length>0 && (!files[0].isEmpty())){
@@ -465,12 +466,32 @@ public class ModuleManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportModuleData>>() {}.getType();
-		List<ExportModuleData> uploadModuleList=gson.fromJson(fileContent, type);
-		if(uploadModuleList!=null){
-			flag=true;
-			session.setAttribute(key, uploadModuleList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("Module".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportModuleData> uploadModuleList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportModuleData module = gson.fromJson(itemJson, ExportModuleData.class);
+			            uploadModuleList.add(module);
+			        } 
+			        
+			        if(uploadModuleList!=null){
+						flag=true;
+						session.setAttribute(key, uploadModuleList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();

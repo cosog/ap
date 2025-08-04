@@ -9,25 +9,20 @@ import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.net.URLEncoder;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.ServletActionContext;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -40,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
-import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.AuxiliaryDeviceDetailsSaveData;
 import com.cosog.model.AuxiliaryDeviceInformation;
@@ -48,7 +42,6 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceInformation;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
-import com.cosog.model.Org;
 import com.cosog.model.PcpDeviceInformation;
 import com.cosog.model.DeviceAddInfo;
 import com.cosog.model.SRPDeviceInformation;
@@ -90,22 +83,14 @@ import com.cosog.utils.MarkdownEntity;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
-import com.cosog.utils.RedisUtil;
-import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import jxl.Cell;
-import jxl.CellType;
-import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
-import redis.clients.jedis.Jedis;
 
 @Controller
 @RequestMapping("/wellInformationManagerController")

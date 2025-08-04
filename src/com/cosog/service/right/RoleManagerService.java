@@ -138,6 +138,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 	
 	public String exportRoleCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"Role\",");
 		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
 				+ " role_videokeyedit as roleVideoKeyEdit,"
 				+ " role_languageedit as roleLanguageEdit,"
@@ -163,7 +164,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 		List<?> moduleRightList=this.findCallSql(moduleSql);
 		List<?> deviceTypeRightList=this.findCallSql(deviceTypeSql);
 		List<?> languageRightList=this.findCallSql(languageSql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String roleId=obj[0]+"";
@@ -218,6 +219,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 

@@ -32,11 +32,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
-import com.cosog.model.OrgGridPanelData;
 import com.cosog.model.OrgParent;
 import com.cosog.model.OrgWellInfoBean;
 import com.cosog.model.User;
-import com.cosog.model.drive.ExportAcqInstanceData;
 import com.cosog.model.ExportOrganizationData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
@@ -701,12 +699,32 @@ public class OrgManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportOrganizationData>>() {}.getType();
-		List<ExportOrganizationData> uploadOrganizationList=gson.fromJson(fileContent, type);
-		if(uploadOrganizationList!=null){
-			flag=true;
-			session.setAttribute(key, uploadOrganizationList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("Organization".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportOrganizationData> uploadOrganizationList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportOrganizationData exportOrganizationData = gson.fromJson(itemJson, ExportOrganizationData.class);
+			            uploadOrganizationList.add(exportOrganizationData);
+			        } 
+			        
+			        if(uploadOrganizationList!=null){
+						flag=true;
+						session.setAttribute(key, uploadOrganizationList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();

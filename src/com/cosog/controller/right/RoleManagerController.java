@@ -654,12 +654,32 @@ public class RoleManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportRoleData>>() {}.getType();
-		List<ExportRoleData> uploadFileList=gson.fromJson(fileContent, type);
-		if(uploadFileList!=null){
-			flag=true;
-			session.setAttribute(key, uploadFileList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("Role".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportRoleData> uploadFileList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportRoleData exportRoleData = gson.fromJson(itemJson, ExportRoleData.class);
+			            uploadFileList.add(exportRoleData);
+			        } 
+			        
+			        if(uploadFileList!=null){
+						flag=true;
+						session.setAttribute(key, uploadFileList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();

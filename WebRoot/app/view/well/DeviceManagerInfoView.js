@@ -207,7 +207,7 @@ function exportDeviceCompleteData(){
 	var url = context + '/wellInformationManagerController/exportDeviceCompleteData';
 	
 	var timestamp=new Date().getTime();
-	var key='exportWellInformationData'+deviceType+'_'+timestamp;
+	var key='exportWellInformationData'+'_'+timestamp;
 	var maskPanelId='DeviceTablePanel_id';
 	
 	

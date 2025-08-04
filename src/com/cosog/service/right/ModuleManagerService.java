@@ -282,7 +282,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	
 	public String exportModuleCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
-		
+		result_json.append("{\"Code\":\"Module\",");
 		
 		String sql="SELECT t.md_id,t.md_parentid,"
 				+ " t.md_name_zh_cn,t.md_showname_zh_cn,t.md_name_en,t.md_showname_en,t.md_name_ru,t.md_showname_ru,"
@@ -294,7 +294,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				+ " ORDER SIBLINGS BY t.md_seq";
 		
 		List<?> list=this.findCallSql(sql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"ModuleId\":"+obj[0]+",");
@@ -316,6 +316,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

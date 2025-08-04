@@ -56,6 +56,10 @@ public class EquipmentDriverServerTask {
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
 		
+		Config.getInstance().oemConfigFile.getOthers().setPrintLog(false);
+		Config.updateConfig();
+		Config.updateConfigFile2();
+		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		

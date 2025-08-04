@@ -127,6 +127,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	
 	public String exportDataDictionaryCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"DataDictionary\",");
 		String sql="select t.sysdataid,t.name_zh_cn,t.name_en,t.name_ru,t.code,t.sorts,t.status,t.moduleid,m.md_code  "
 				+ " from tbl_dist_name t,tbl_module m "
 				+ " where t.moduleid=m.md_id"
@@ -141,7 +142,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				+ " order by t2.sorts,t.devicetype,t.sorts";
 		List<?> list=this.findCallSql(sql);
 		List<?> itemList=this.findCallSql(itemSql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String dictionaryid=obj[0]+"";
@@ -187,7 +188,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		System.out.println(result_json.toString().replaceAll("null", ""));
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 

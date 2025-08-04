@@ -324,12 +324,30 @@ public class SystemdataInfoController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportDataDictionary>>() {}.getType();
-		List<ExportDataDictionary> uploadFileList=gson.fromJson(fileContent, type);
-		if(uploadFileList!=null){
-			flag=true;
-			session.setAttribute(key, uploadFileList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("DataDictionary".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportDataDictionary> uploadFileList=new ArrayList<>();
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportDataDictionary exportDataDictionary = gson.fromJson(itemJson, ExportDataDictionary.class);
+			            uploadFileList.add(exportDataDictionary);
+			        }
+			        if(uploadFileList!=null){
+						flag=true;
+						session.setAttribute(key, uploadFileList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();

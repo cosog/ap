@@ -36,14 +36,12 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.common.exception.ActionException;
 import com.cosog.controller.base.BaseController;
-import com.cosog.model.ExportOrganizationData;
 import com.cosog.model.ExportUserData;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.base.CommonDataService;
-import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.service.right.UserManagerService;
@@ -51,13 +49,11 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Message;
-import com.cosog.utils.OrgRecursion;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
-import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -762,12 +758,32 @@ public class UserManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportUserData>>() {}.getType();
-		List<ExportUserData> uploadUserList=gson.fromJson(fileContent, type);
-		if(uploadUserList!=null){
-			flag=true;
-			session.setAttribute(key, uploadUserList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("User".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportUserData> uploadUserList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportUserData exportUserData = gson.fromJson(itemJson, ExportUserData.class);
+			            uploadUserList.add(exportUserData);
+			        } 
+			        
+			        if(uploadUserList!=null){
+						flag=true;
+						session.setAttribute(key, uploadUserList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();

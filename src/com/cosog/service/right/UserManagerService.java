@@ -229,6 +229,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	
 	public String exportUserCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"User\",");
 		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,"
 				+ " u.user_id as userId,u.user_pwd as userPwd,"
 				+ " u.user_type as userType,"
@@ -250,7 +251,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ ")";
 		sql+=" order by r.role_level,user_no,u.user_no";
 		List<?> list=this.findCallSql(sql);
-		result_json.append("[");
+		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"UserNo\":"+obj[0]+",");
@@ -274,6 +275,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

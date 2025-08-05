@@ -11,12 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
 import com.cosog.model.ExportModuleData;
-import com.cosog.model.ExportRoleData;
 import com.cosog.model.Module;
-import com.cosog.model.Role;
-import com.cosog.model.RoleDeviceType;
-import com.cosog.model.RoleLanguage;
-import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.MemoryDataManagerTask;

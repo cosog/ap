@@ -8082,6 +8082,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getProtocolExportData(String protocolListStr){
 		Gson gson=new Gson();
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"Code\":\"Protocol\",");
 		List<ModbusProtocolConfig.Protocol> protocolList=new ArrayList<>();
 		String[] protocolArr=protocolListStr.split(",");
 		for(int i=0;i<protocolArr.length;i++){
@@ -8090,7 +8092,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				protocolList.add(protocol);
 			}
 		}
-		return gson.toJson(protocolList);
+		
+		result_json.append("\"List\":"+gson.toJson(protocolList));
+		result_json.append("}");
+		
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String exportProtocolInitData(String protocolListStr){
@@ -10867,7 +10873,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getProtocolAcqUnitExportData(String unitListStr){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"AcqUnit\",");
+		result_json.append("\"List\":[");
 		String acqUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark from TBL_ACQ_UNIT_CONF t where t.id in ("+unitListStr+") order by t.id";
 		List<?> acqUnitQueryList = this.findCallSql(acqUnitSql);
 		
@@ -10946,12 +10953,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
 	public String getProtocolAlarmUnitExportData(String unitListStr){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"AlarmUnit\",");
+		result_json.append("\"List\":[");
 		String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark,decode(t.calculatetype,null,0,t.calculatetype) as calculatetype "
 				+ " from TBL_ALARM_UNIT_CONF t where t.id in("+unitListStr+")";
 		String alarmItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.itemaddr,t.value,t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
@@ -11018,12 +11027,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getProtocolDisplayUnitExportData(String unitListStr){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"DisplayUnit\",");
+		result_json.append("\"List\":[");
 		String displayUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t2.unit_name as acqUnit,t.remark,t.calculatetype "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
 				+ " where t.acqunitid=t2.id and t.id in ("+unitListStr+") "
@@ -11100,13 +11111,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
 	public String getProtocolReportUnitExportData(String unitListStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		result_json.append("[");
+		result_json.append("{\"Code\":\"ReportUnit\",");
+		result_json.append("\"List\":[");
 		String reportUnitSql="select t.id,t.unit_code,t.unit_name,t.calculatetype,"
 				+ "t.singlewelldailyreporttemplate,t.singlewellrangereporttemplate,t.productionreporttemplate,"
 				+ "t.sort "
@@ -11184,12 +11197,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
 	public String getProtocolAcqInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"AcqInstance\",");
+		result_json.append("\"List\":[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"//0~4
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
@@ -11236,6 +11251,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
@@ -11356,7 +11372,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getProtocolDisplayInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"DisplayInstance\",");
+		result_json.append("\"List\":[");
 		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t3.protocol  "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3"
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id "
@@ -11380,12 +11397,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
 	public String getProtocolAlarmInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"AlarmInstance\",");
+		result_json.append("\"List\":[");
 		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t2.protocol"
 				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2"
 				+ " where t.alarmunitid=t2.id and t.id in("+instanceList+")"
@@ -11407,12 +11426,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	
 	public String getProtocolReportInstanceExportData(String instanceList){
 		StringBuffer result_json = new StringBuffer();
-		result_json.append("[");
+		result_json.append("{\"Code\":\"ReportInstance\",");
+		result_json.append("\"List\":[");
 		String displayInstanceSql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort "
 				+ " from TBL_PROTOCOLREPORTINSTANCE t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id and t.id in("+instanceList+")"
@@ -11433,6 +11454,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
 		return result_json.toString();
 	}
 	

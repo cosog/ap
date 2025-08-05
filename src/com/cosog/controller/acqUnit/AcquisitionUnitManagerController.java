@@ -5665,14 +5665,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/uploadImportedProtocolFile")
 	public String uploadImportedProtocolFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringBuffer result_json = new StringBuffer();
 		boolean flag=false;
 		String protocolName="";
-		
-		HttpSession session=request.getSession();
-		session.removeAttribute("uploadProtocolFile");
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -5685,11 +5686,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ModbusProtocolConfig.Protocol>>() {}.getType();
-		List<ModbusProtocolConfig.Protocol> protocolList=gson.fromJson(fileContent, type);
-		if(protocolList!=null && protocolList.size()>0){
-			flag=true;
-			session.setAttribute("uploadProtocolFile", protocolList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("Protocol".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ModbusProtocolConfig.Protocol> protocolList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ModbusProtocolConfig.Protocol protocol = gson.fromJson(itemJson, ModbusProtocolConfig.Protocol.class);
+			            protocolList.add(protocol);
+			        } 
+			        
+			        if(protocolList!=null){
+						flag=true;
+						session.setAttribute(key, protocolList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -5709,9 +5729,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadProtocolFile")!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -5738,11 +5759,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		try{
-			if(session.getAttribute("uploadProtocolFile")!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -5771,11 +5793,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		try{
-			if(session.getAttribute("uploadProtocolFile")!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -5799,11 +5821,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		try{
-			if(session.getAttribute("uploadProtocolFile")!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
 				if(protocolList!=null && protocolList.size()>0){
 					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
 					while(it.hasNext()){
@@ -5839,11 +5861,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String[] protocolNameList=protocolName.split(",");
-		
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		List<ModbusProtocolConfig.Protocol> protocolList=null;
 		try{
-			if(session.getAttribute("uploadProtocolFile")!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute("uploadProtocolFile");
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
 				if(protocolList!=null && protocolList.size()>0){
 					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
 					while(it.hasNext()){
@@ -5878,7 +5900,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadAcqUnitFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -5891,11 +5916,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportAcqUnitData>>() {}.getType();
-		List<ExportAcqUnitData> uploadAcqUnitList=gson.fromJson(fileContent, type);
-		if(uploadAcqUnitList!=null){
-			flag=true;
-			session.setAttribute("uploadAcqUnitFile", uploadAcqUnitList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("AcqUnit".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportAcqUnitData> uploadAcqUnitList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportAcqUnitData exportAcqUnitData = gson.fromJson(itemJson, ExportAcqUnitData.class);
+			            uploadAcqUnitList.add(exportAcqUnitData);
+			        } 
+			        
+			        if(uploadAcqUnitList!=null){
+						flag=true;
+						session.setAttribute(key, uploadAcqUnitList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -5916,9 +5960,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportAcqUnitData> uploadAcqUnitList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAcqUnitFile")!=null){
-				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -5948,11 +5993,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
 		String json = "";
 		List<ExportAcqUnitData> uploadAcqUnitList=null;
 		try{
-			if(session.getAttribute("uploadAcqUnitFile")!=null){
-				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -5975,11 +6021,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportAcqUnitData> uploadAcqUnitList=null;
 		try{
-			if(session.getAttribute("uploadAcqUnitFile")!=null){
-				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute(key);
 				if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
 					Iterator<ExportAcqUnitData> it = uploadAcqUnitList.iterator();
 					while(it.hasNext()){
@@ -6013,11 +6059,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String[] unitNameList=unitName.split(",");
-		
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportAcqUnitData> uploadAcqUnitList=null;
 		try{
-			if(session.getAttribute("uploadAcqUnitFile")!=null){
-				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute("uploadAcqUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute(key);
 				if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
 					Iterator<ExportAcqUnitData> it = uploadAcqUnitList.iterator();
 					while(it.hasNext()){
@@ -6050,7 +6096,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadAlarmUnitFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6063,11 +6111,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportAlarmUnitData>>() {}.getType();
-		List<ExportAlarmUnitData> uploadUnitList=gson.fromJson(fileContent, type);
-		if(uploadUnitList!=null){
-			flag=true;
-			session.setAttribute("uploadAlarmUnitFile", uploadUnitList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("AlarmUnit".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportAlarmUnitData> uploadUnitList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportAlarmUnitData exportAlarmUnitData = gson.fromJson(itemJson, ExportAlarmUnitData.class);
+			            uploadUnitList.add(exportAlarmUnitData);
+			        } 
+			        
+			        if(uploadUnitList!=null){
+						flag=true;
+						session.setAttribute(key, uploadUnitList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -6087,9 +6154,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportAlarmUnitData> uploadUnitList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAlarmUnitFile")!=null){
-				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6115,9 +6183,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 		List<ExportAlarmUnitData> uploadUnitList=null;
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAlarmUnitFile")!=null){
-				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6139,11 +6208,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportAlarmUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadAlarmUnitFile")!=null){
-				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportAlarmUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6177,11 +6246,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String[] unitNameList=unitName.split(",");
-		
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportAlarmUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadAlarmUnitFile")!=null){
-				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute("uploadAlarmUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportAlarmUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6215,7 +6284,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadDisplayUnitFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6228,12 +6299,32 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportDisplayUnitData>>() {}.getType();
-		List<ExportDisplayUnitData> uploadUnitList=gson.fromJson(fileContent, type);
-		if(uploadUnitList!=null){
-			flag=true;
-			session.setAttribute("uploadDisplayUnitFile", uploadUnitList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("DisplayUnit".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportDisplayUnitData> uploadUnitList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportDisplayUnitData exportDisplayUnitData = gson.fromJson(itemJson, ExportDisplayUnitData.class);
+			            uploadUnitList.add(exportDisplayUnitData);
+			        } 
+			        
+			        if(uploadUnitList!=null){
+						flag=true;
+						session.setAttribute(key, uploadUnitList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();
@@ -6252,9 +6343,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportDisplayUnitData> uploadUnitList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadDisplayUnitFile")!=null){
-				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute("uploadDisplayUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6283,11 +6375,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportDisplayUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadDisplayUnitFile")!=null){
-				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute("uploadDisplayUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6310,11 +6402,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String acqUnit=ParamUtils.getParameter(request, "acqUnit");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportDisplayUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadDisplayUnitFile")!=null){
-				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute("uploadDisplayUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportDisplayUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6349,11 +6441,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedDisplayUnit() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportDisplayUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadDisplayUnitFile")!=null){
-				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute("uploadDisplayUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportDisplayUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6387,7 +6479,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadReportUnitFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6400,11 +6494,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportReportUnitData>>() {}.getType();
-		List<ExportReportUnitData> uploadUnitList=gson.fromJson(fileContent, type);
-		if(uploadUnitList!=null){
-			flag=true;
-			session.setAttribute("uploadReportUnitFile", uploadUnitList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("ReportUnit".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportReportUnitData> uploadUnitList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportReportUnitData exportReportUnitData = gson.fromJson(itemJson, ExportReportUnitData.class);
+			            uploadUnitList.add(exportReportUnitData);
+			        } 
+			        
+			        if(uploadUnitList!=null){
+						flag=true;
+						session.setAttribute(key, uploadUnitList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -6424,9 +6537,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportReportUnitData> uploadUnitList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadReportUnitFile")!=null){
-				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6448,9 +6562,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportReportUnitData> uploadUnitList=null;
 		String reportType=ParamUtils.getParameter(request, "reportType");
 		String unitName=ParamUtils.getParameter(request, "unitName");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadReportUnitFile")!=null){
-				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6474,12 +6590,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportReportUnitData> uploadUnitList=null;
 		String reportType=ParamUtils.getParameter(request, "reportType");
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		try{
-			if(session.getAttribute("uploadReportUnitFile")!=null){
-				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6500,11 +6617,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportReportUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadReportUnitFile")!=null){
-				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportReportUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6536,11 +6653,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedReportUnit() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
 		List<ExportReportUnitData> uploadUnitList=null;
 		try{
-			if(session.getAttribute("uploadReportUnitFile")!=null){
-				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute("uploadReportUnitFile");
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
 				if(uploadUnitList!=null && uploadUnitList.size()>0){
 					Iterator<ExportReportUnitData> it = uploadUnitList.iterator();
 					while(it.hasNext()){
@@ -6574,7 +6691,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadAcqInstanceFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6587,12 +6706,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportAcqInstanceData>>() {}.getType();
-		List<ExportAcqInstanceData> uploadInstanceList=gson.fromJson(fileContent, type);
-		if(uploadInstanceList!=null){
-			flag=true;
-			session.setAttribute("uploadAcqInstanceFile", uploadInstanceList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("AcqInstance".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportAcqInstanceData> uploadInstanceList=new ArrayList<>();
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportAcqInstanceData exportAcqInstanceData = gson.fromJson(itemJson, ExportAcqInstanceData.class);
+			            uploadInstanceList.add(exportAcqInstanceData);
+			        } 
+			        
+			        if(uploadInstanceList!=null){
+						flag=true;
+						session.setAttribute(key, uploadInstanceList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();
@@ -6611,9 +6749,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportAcqInstanceData> uploadInstanceList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAcqInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6641,9 +6780,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAcqInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6667,11 +6807,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportAcqInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadAcqInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportAcqInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -6706,11 +6846,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedAcqInstance() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportAcqInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadAcqInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute("uploadAcqInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportAcqInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -6745,7 +6885,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadDisplayInstanceFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6758,11 +6900,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportDisplayInstanceData>>() {}.getType();
-		List<ExportDisplayInstanceData> uploadInstanceList=gson.fromJson(fileContent, type);
-		if(uploadInstanceList!=null){
-			flag=true;
-			session.setAttribute("uploadDisplayInstanceFile", uploadInstanceList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("DisplayInstance".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportDisplayInstanceData> uploadInstanceList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportDisplayInstanceData exportDisplayInstanceData = gson.fromJson(itemJson, ExportDisplayInstanceData.class);
+			            uploadInstanceList.add(exportDisplayInstanceData);
+			        } 
+			        
+			        if(uploadInstanceList!=null){
+						flag=true;
+						session.setAttribute(key, uploadInstanceList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -6782,9 +6943,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportDisplayInstanceData> uploadInstanceList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
-				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6815,9 +6977,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
-				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6841,11 +7004,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportDisplayInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
-				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportDisplayInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -6881,11 +7044,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedDisplayInstance() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportDisplayInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadDisplayInstanceFile")!=null){
-				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute("uploadDisplayInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportDisplayInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -6920,7 +7083,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadAlarmInstanceFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -6933,11 +7098,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportAlarmInstanceData>>() {}.getType();
-		List<ExportAlarmInstanceData> uploadInstanceList=gson.fromJson(fileContent, type);
-		if(uploadInstanceList!=null){
-			flag=true;
-			session.setAttribute("uploadAlarmInstanceFile", uploadInstanceList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("AlarmInstance".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportAlarmInstanceData> uploadInstanceList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportAlarmInstanceData exportAlarmInstanceData = gson.fromJson(itemJson, ExportAlarmInstanceData.class);
+			            uploadInstanceList.add(exportAlarmInstanceData);
+			        } 
+			        
+			        if(uploadInstanceList!=null){
+						flag=true;
+						session.setAttribute(key, uploadInstanceList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
@@ -6957,9 +7141,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute("uploadAlarmInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6986,9 +7171,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute("uploadAlarmInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -7011,11 +7197,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute("uploadAlarmInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportAlarmInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -7050,11 +7236,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedAlarmInstance() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportAlarmInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadAlarmInstanceFile")!=null){
-				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute("uploadAlarmInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportAlarmInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -7089,7 +7275,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		
 		HttpSession session=request.getSession();
-		session.removeAttribute("uploadReportInstanceFile");
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportInstanceFile"+(user!=null?user.getUserNo():0);
+		session.removeAttribute(key);
 		
 		String json = "";
 		String fileContent="";
@@ -7102,12 +7290,32 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 		}
 		
-		type = new TypeToken<List<ExportReportInstanceData>>() {}.getType();
-		List<ExportReportInstanceData> uploadInstanceList=gson.fromJson(fileContent, type);
-		if(uploadInstanceList!=null){
-			flag=true;
-			session.setAttribute("uploadReportInstanceFile", uploadInstanceList);
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("ReportInstance".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportReportInstanceData> uploadInstanceList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportReportInstanceData exportReportInstanceData = gson.fromJson(itemJson, ExportReportInstanceData.class);
+			            uploadInstanceList.add(exportReportInstanceData);
+			        } 
+			        
+			        if(uploadInstanceList!=null){
+						flag=true;
+						session.setAttribute(key, uploadInstanceList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
 		}
+		
 		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
 		
 		json=result_json.toString();
@@ -7126,9 +7334,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		List<ExportReportInstanceData> uploadInstanceList=null;
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportInstanceFile"+(user!=null?user.getUserNo():0);
 		try{
-			if(session.getAttribute("uploadReportInstanceFile")!=null){
-				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute("uploadReportInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -7150,11 +7359,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadReportInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportReportInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadReportInstanceFile")!=null){
-				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute("uploadReportInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportReportInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){
@@ -7188,11 +7397,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveAllImportedReportInstance() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
+		String key="uploadReportInstanceFile"+(user!=null?user.getUserNo():0);
 		List<ExportReportInstanceData> uploadInstanceList=null;
 		try{
-			if(session.getAttribute("uploadReportInstanceFile")!=null){
-				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute("uploadReportInstanceFile");
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute(key);
 				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 					Iterator<ExportReportInstanceData> it = uploadInstanceList.iterator();
 					while(it.hasNext()){

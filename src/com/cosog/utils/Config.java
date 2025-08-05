@@ -164,7 +164,7 @@ public class Config {
 	}
 	
 	// 使用SnakeYAML回写配置
-    private static void writeYaml(Path path, Map<String, Object> data) throws IOException {
+    private static void writeYaml(Path path) throws IOException {
         // 配置YAML输出格式
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // 块状格式
@@ -178,7 +178,7 @@ public class Config {
         try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
             // 使用SnakeYAML写入数据
             Yaml yaml = new Yaml(options);
-            yaml.dump(data, writer);
+            yaml.dump(oemConfigFile, writer);
         }
         
         // 原子替换原文件
@@ -191,6 +191,7 @@ public class Config {
     }
 	
 	public static void updateConfigFile2(){
+		YamlConfigManager.test();
 		Yaml yaml=new Yaml();
 		String oemConfigFileName=configFile.getAp().getOemConfigFile();
 		if(StringManagerUtils.isNotNull(oemConfigFileName)){

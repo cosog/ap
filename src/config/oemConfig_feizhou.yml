@@ -64,13 +64,13 @@ databaseMaintenance:                      #数据库维护
          retentionTime: 180                #数据保留时间，单位：天
       acqdata_vacuate:                    #采集数据抽稀表
          enabled: true                    #是否启用定时删除
-         retentionTime: 720               #数据保留时间，单位：天
+         retentionTime: 1200               #数据保留时间，单位：天
       srpacqdata_vacuate:                 #抽油机井计算数据抽稀表
          enabled: true                    #是否启用定时删除
-         retentionTime: 720               #数据保留时间，单位：天
+         retentionTime: 1200               #数据保留时间，单位：天
       pcpacqdata_vacuate:                 #螺杆泵井计算数据抽稀表
          enabled: true                    #是否启用定时删除
-         retentionTime: 720               #数据保留时间，单位：天
+         retentionTime: 1200               #数据保留时间，单位：天
 email:                #邮件发送账号配置
    snedAccount:
       account: shfzby@126.com          #邮箱账号

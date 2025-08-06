@@ -39,6 +39,7 @@ public final class LicenseMap {
 		moduleList0.add(23);//系统配置
 		moduleList0.add(26);//模块配置
 		moduleList0.add(894);//字典配置
+		moduleList0.add(2278);//运维配置
 		moduleList0.add(47);//报警配置
 		
 		moduleList0.add(1777);//驱动配置

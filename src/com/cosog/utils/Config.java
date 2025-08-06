@@ -52,15 +52,37 @@ public class Config {
 				if(oemConfigFile==null){
 					try{
 						if(configFile!=null && configFile.getAp()!=null){
-							String oemConfigFileName=configFile.getAp().getOemConfigFile();
-							if(StringManagerUtils.isNotNull(oemConfigFileName)){
-								if(!oemConfigFileName.endsWith(".yml")){
-									oemConfigFileName+=".yml";
-								}
-								Yaml oemYaml = new Yaml(new Constructor(OEMConfigFile.class));
-								oemInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/"+oemConfigFileName+"");
-								oemConfigFile = oemYaml.load(oemInputStream);
-							}
+							String oemConfig=configFile.getAp().getOemConfigFile();
+							
+							StringManagerUtils stringManagerUtils=new StringManagerUtils();
+					    	String path=stringManagerUtils.getFilePath2(oemConfig);
+					    	Path configPath = Paths.get(path);
+					    	
+					    	
+					    	InputStream in=null;
+					    	try{
+					    		in = Files.newInputStream(configPath);
+					    		Yaml oemYaml = new Yaml(new Constructor(OEMConfigFile.class));
+					            oemConfigFile=oemYaml.load(in);
+					        }catch(Exception e){
+								e.printStackTrace();
+							}finally{
+					        	if(in!=null){
+					        		in.close();
+					        	}
+					        	
+					        }
+					    	
+							
+//							String oemConfigFileName=configFile.getAp().getOemConfigFile();
+//							if(StringManagerUtils.isNotNull(oemConfigFileName)){
+//								if(!oemConfigFileName.endsWith(".yml")){
+//									oemConfigFileName+=".yml";
+//								}
+//								Yaml oemYaml = new Yaml(new Constructor(OEMConfigFile.class));
+//								oemInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/"+oemConfigFileName+"");
+//								oemConfigFile = oemYaml.load(oemInputStream);
+//							}
 						}
 					}catch(Exception e){
 						e.printStackTrace();
@@ -190,92 +212,15 @@ public class Config {
         );
     }
 	
-	public static void updateConfigFile2(){
-		YamlConfigManager.test();
-		Yaml yaml=new Yaml();
-		String oemConfigFileName=configFile.getAp().getOemConfigFile();
-		if(StringManagerUtils.isNotNull(oemConfigFileName)){
-			if(!oemConfigFileName.endsWith(".yml")){
-				oemConfigFileName+=".yml";
-			}
-		}
-		try(OutputStream outputStream=new FileOutputStream(oemConfigFileName)){
-			yaml.dump(oemConfigFile, new OutputStreamWriter(outputStream));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static boolean updateConfigFile(){
-		GLOBAL_LOCK.lock();
-		
+	@SuppressWarnings("static-access")
+	public static boolean updateOemConfigFile(String keyPath, Object newValue){
 		boolean r=true;
-		if(oemConfigFile!=null){
-			try {
-	        	
-				String oemConfigFileName=configFile.getAp().getOemConfigFile();
-	    		if(StringManagerUtils.isNotNull(oemConfigFileName)){
-	    			if(!oemConfigFileName.endsWith(".yml")){
-	    				oemConfigFileName+=".yml";
-	    			}
-	    		}
-	    		Path configPath = Paths.get("config/"+oemConfigFileName+"");
-	    		
-	    		// 1. 创建备份
-//	            Path backupPath = createTimestampedBackup(configPath);
-	            // 2. 获取文件锁
-	            try (RandomAccessFile raf = new RandomAccessFile(configPath.toFile(), "rw");
-	                 FileLock fileLock = raf.getChannel().tryLock()) {
-	                
-	                if (fileLock == null) {
-	                    throw new IOException("配置文件被其他进程锁定");
-	                }
-	                
-//	                // 3. 安全读取配置
-//	                Map<String, Object> configMap = loadYaml(configPath);
-//	                
-//	                // 4. 验证修改权限
-//	                if (!isKeyWritable(keyPath)) {
-//	                    throw new SecurityException("禁止修改敏感配置项: " + keyPath);
-//	                }
-	                
-//	                // 5. 记录旧值用于审计
-//	                Object oldValue = getNestedProperty(configMap, keyPath);
-	                
-//	                // 6. 更新配置
-//	                updateNestedProperty(configMap, keyPath, newValue);
-	                
-	                // 7. 原子写入
-	                writeYamlAtomically(configPath);
-	                
-//	                // 8. 审计日志
-//	                auditLog(keyPath, oldValue, newValue);
-//	                
-//	                // 9. 通知配置刷新
-//	                reloadConfiguration(keyPath);
-	                
-	            } catch (Exception ex) {
-	                // 10. 失败时恢复备份
-//	                restoreBackup(backupPath, configPath);
-	                throw ex;
-	            } finally {
-	                // 11. 清理旧备份
-	                cleanupOldBackups();
-	            }
-	    		
-	    		
-			} catch (IOException e) {
-				r=false;
-				e.printStackTrace();
-			}
-		}else{
+		try {
+			YamlConfigManager.getInstance().updateConfig(keyPath,newValue);
+		} catch (Exception e) {
 			r=false;
+			e.printStackTrace();
 		}
-		GLOBAL_LOCK.unlock();
 		return r;
 	}
 	

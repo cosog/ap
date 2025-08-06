@@ -15,7 +15,8 @@ ap:
       timeOut: 10000     #连接超时时间（毫秒）
       maxMemory: 2048    #最大内存 单位mb
       maxMemoryPolicy: allkeys-random #达到最大内存后，淘汰策略
-   oemConfigFile: oemConfig_cnpc
+   #oemConfigFile: oemConfig_cnpc
+   oemConfigFile: "oem/cnpc/config/oemConfig.yml"    #OEM配置
    threadPool: 
       initIdAndIpPort:
          corePoolSize: 100

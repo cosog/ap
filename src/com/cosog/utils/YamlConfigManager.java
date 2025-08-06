@@ -14,8 +14,20 @@ import java.util.concurrent.locks.ReentrantLock;
 public class YamlConfigManager {
 
     private static final ReentrantLock GLOBAL_LOCK = new ReentrantLock(true);
-    private static String CONFIG_PATH = "config/oemConfig_cnpc.yml"; // 默认相对路径
-    private static String BACKUP_DIR = "config/backups"; // 备份目录相对路径
+    private static String CONFIG_PATH = ""; // 默认相对路径
+    private static String BACKUP_DIR = ""; // 备份目录相对路径
+    private static YamlConfigManager instance=new YamlConfigManager();
+    
+    public static YamlConfigManager getInstance(){
+    	if(!StringManagerUtils.isNotNull(CONFIG_PATH)){
+    		String filePath=Config.getInstance().configFile.getAp().getOemConfigFile();
+        	String backupsPath=filePath.substring(0,filePath.lastIndexOf("/"))+"/backups";
+        	
+            // 初始化配置路径
+            init(filePath, backupsPath);
+    	}
+    	return instance;
+    }
     
     // 初始化配置路径
     public static void init(String configPath, String backupDir) {
@@ -30,7 +42,6 @@ public class YamlConfigManager {
     // 读取整个配置文件
     public static Map<String, Object> loadConfig() throws IOException {
         Path configPath = getAbsolutePath(CONFIG_PATH);
-        
         return loadYaml(configPath);
     }
 
@@ -133,7 +144,7 @@ public class YamlConfigManager {
     // 获取绝对路径（基于工作目录）
     private static Path getAbsolutePath(String relativePath) {
     	StringManagerUtils stringManagerUtils=new StringManagerUtils();
-    	String path=stringManagerUtils.getFilePath2(relativePath,"WEB-INF/classes/");
+    	String path=stringManagerUtils.getFilePath2(relativePath);
     	Path configPath = Paths.get(path);
     	return configPath;
     	
@@ -249,10 +260,18 @@ public class YamlConfigManager {
         // 创建临时文件
         Path tempFile = Files.createTempFile(path.getParent(), "oemConfig", ".tmp");
         
-        try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
+        BufferedWriter writer=null;
+        try {
+        	writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8);
             // 使用SnakeYAML写入数据
             Yaml yaml = new Yaml(options);
             yaml.dump(data, writer);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }finally{
+        	if(writer!=null){
+        		writer.close();
+        	}
         }
         
         // 原子替换原文件
@@ -320,8 +339,12 @@ public class YamlConfigManager {
     // 使用示例
     public static void test() {
         try {
+        	String filePath=Config.getInstance().configFile.getAp().getOemConfigFile();
+        	String backupsPath=filePath.substring(0,filePath.lastIndexOf("/"))+"/backups";
+        	
+        	
             // 初始化配置路径
-            init("config/oemConfig_cnpc.yml", "config/backups");
+            init(filePath, backupsPath);
             
             // 示例1: 读取整个配置
             Map<String, Object> config = loadConfig();

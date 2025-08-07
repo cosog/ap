@@ -140,6 +140,68 @@ public class YamlConfigManager {
             GLOBAL_LOCK.unlock();
         }
     }
+    
+    //更新整个配置文件
+    public static void updateConfig(OEMConfigFile oemConfigFile) throws Exception {
+        GLOBAL_LOCK.lock();
+        Path configPath = null;
+        Path tempFile = null;
+        Path backupPath = null;
+        
+        try {
+            configPath = getAbsolutePath(CONFIG_PATH);
+            
+            // 确保配置文件存在
+            if (!Files.exists(configPath)) {
+                createDefaultConfig(configPath);
+            }
+            
+            //创建备份目录
+            Path backupDirPath = getAbsolutePath(BACKUP_DIR);
+            createDirectoryIfNotExists(backupDirPath);
+            
+            //创建备份文件
+            backupPath = createTimestampedBackup(configPath, backupDirPath);
+            
+            //创建临时文件
+            tempFile = Files.createTempFile("oemConfig", ".tmp");
+            
+            //将配置写入临时文件
+            writeYaml(tempFile, oemConfigFile);
+            
+            try (FileChannel channel = FileChannel.open(configPath, 
+                    StandardOpenOption.READ, 
+                    StandardOpenOption.WRITE);
+            		FileLock fileLock = channel.tryLock()) {
+
+            	if (fileLock == null) {
+            		throw new IOException("配置文件被其他进程锁定");
+            	}
+
+            	// 将临时文件内容直接写入锁定通道（避免文件占用）
+            	try (FileInputStream tempStream = new FileInputStream(tempFile.toFile())) {
+            		channel.truncate(0); // 清空原文件内容
+            		tempStream.getChannel().transferTo(0, tempFile.toFile().length(), channel);
+            	}
+            }
+            
+        } catch (Exception ex) {
+            //失败时恢复备份
+            if (backupPath != null && Files.exists(backupPath)) {
+                restoreBackup(backupPath, configPath);
+            }
+            throw ex;
+        } finally {
+            //清理临时文件
+            if (tempFile != null && Files.exists(tempFile)) {
+                Files.deleteIfExists(tempFile);
+            }
+            //清理旧备份
+            Path backupDirPath = getAbsolutePath(BACKUP_DIR);
+            cleanupOldBackups(backupDirPath);
+            GLOBAL_LOCK.unlock();
+        }
+    }
 
     // 获取绝对路径（基于工作目录）
     private static Path getAbsolutePath(String relativePath) {
@@ -266,6 +328,40 @@ public class YamlConfigManager {
             // 使用SnakeYAML写入数据
             Yaml yaml = new Yaml(options);
             yaml.dump(data, writer);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }finally{
+        	if(writer!=null){
+        		writer.close();
+        	}
+        }
+        
+        // 原子替换原文件
+        Files.move(
+            tempFile, 
+            path, 
+            StandardCopyOption.REPLACE_EXISTING,
+            StandardCopyOption.ATOMIC_MOVE
+        );
+    }
+    
+    private static void writeYaml(Path path, OEMConfigFile oemConfigFile) throws IOException {
+        // 配置YAML输出格式
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // 块状格式
+        options.setIndent(2); // 缩进2空格
+        options.setPrettyFlow(true); // 美化输出
+        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN); // 纯文本标量
+        
+        // 创建临时文件
+        Path tempFile = Files.createTempFile(path.getParent(), "oemConfig", ".tmp");
+        
+        BufferedWriter writer=null;
+        try {
+        	writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8);
+            // 使用SnakeYAML写入数据
+            Yaml yaml = new Yaml(options);
+            yaml.dump(oemConfigFile, writer);
         } catch (Exception e) {
         	e.printStackTrace();
         }finally{

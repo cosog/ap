@@ -185,38 +185,22 @@ public class Config {
 		return r;
 	}
 	
-	// 使用SnakeYAML回写配置
-    private static void writeYaml(Path path) throws IOException {
-        // 配置YAML输出格式
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // 块状格式
-        options.setIndent(2); // 缩进2空格
-        options.setPrettyFlow(true); // 美化输出
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN); // 纯文本标量
-        
-        // 创建临时文件
-        Path tempFile = Files.createTempFile(path.getParent(), "config", ".tmp");
-        
-        try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
-            // 使用SnakeYAML写入数据
-            Yaml yaml = new Yaml(options);
-            yaml.dump(oemConfigFile, writer);
-        }
-        
-        // 原子替换原文件
-        Files.move(
-            tempFile, 
-            path, 
-            StandardCopyOption.REPLACE_EXISTING,
-            StandardCopyOption.ATOMIC_MOVE
-        );
-    }
-	
 	@SuppressWarnings("static-access")
 	public static boolean updateOemConfigFile(String keyPath, Object newValue){
 		boolean r=true;
 		try {
 			YamlConfigManager.getInstance().updateConfig(keyPath,newValue);
+		} catch (Exception e) {
+			r=false;
+			e.printStackTrace();
+		}
+		return r;
+	}
+	
+	public static boolean updateOemConfigFile(OEMConfigFile oemConfigFile){
+		boolean r=true;
+		try {
+			YamlConfigManager.getInstance().updateConfig(oemConfigFile);
 		} catch (Exception e) {
 			r=false;
 			e.printStackTrace();

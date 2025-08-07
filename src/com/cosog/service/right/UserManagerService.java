@@ -335,6 +335,26 @@ public class UserManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String loadLanguageNameList(User user) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",user!=null?user.getLanguageName():"");
+		result_json.append("[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			if(StringManagerUtils.existOrNot(user.getLanguageList(), c.getItemvalue())){
+				result_json.append("{boxkey:\"" + c.getItemname() + "\",");
+				result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			}
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString();
+	}
+	
 	public String getUserRoleModules(User user){
 		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name "
 				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "

@@ -3977,7 +3977,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String language=user!=null?user.getLanguageName():"";
 		String sql = "select t.id,t.type,t2.name_"+language+" as typeName,t.name,t.manufacturer,t.model,t.remark,t.sort,t.specifictype,t.prtf"
 				+ " from tbl_auxiliarydevice t,tbl_devicetypeinfo t2"
-				+ " where t.type=t2.id";
+				+ " where t.type=t2.id"
+				+ " and t2.id in ( "
+				+ " select t3.rd_devicetypeid from tbl_devicetype2role t3 where t3.rd_roleid="+user.getUserType()
+				+ " )";
 		String addInfoSql="select t.id,t2.itemname,t2.itemcode,t2.itemvalue,t2.itemunit "
 				+ " from tbl_auxiliarydevice t,tbl_auxiliarydeviceaddinfo t2"
 				+ " where t.id=t2.deviceid";

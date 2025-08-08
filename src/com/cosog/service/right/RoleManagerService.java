@@ -432,18 +432,19 @@ public class RoleManagerService<T> extends BaseService<T> {
 		
 		
 		List<ExportRoleData> roleList=new ArrayList<>();
-		
-		for(ExportRoleData exportRoleData:uploadRoleList){
-			boolean deviceTypeRight=true;
-			for(int i=0;i<exportRoleData.getDeviceTypeRight().size();i++){
-				if(!StringManagerUtils.existOrNot(currentTabArr, exportRoleData.getDeviceTypeRight().get(i).getId()+"", false)){
-					deviceTypeRight=false;
-					break;
+		if(uploadRoleList!=null){
+			for(ExportRoleData exportRoleData:uploadRoleList){
+				boolean deviceTypeRight=true;
+				for(int i=0;i<exportRoleData.getDeviceTypeRight().size();i++){
+					if(!StringManagerUtils.existOrNot(currentTabArr, exportRoleData.getDeviceTypeRight().get(i).getId()+"", false)){
+						deviceTypeRight=false;
+						break;
+					}
 				}
-			}
-			
-			if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
-				roleList.add(exportRoleData);
+				
+				if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
+					roleList.add(exportRoleData);
+				}
 			}
 		}
 		
@@ -464,30 +465,32 @@ public class RoleManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":"+roleList.size()+","
 		+ "\"columns\":"+columns+","
 		+ "\"totalRoot\":[");
-		
-		for(ExportRoleData exportRoleData:roleList){
-			
-			if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleName(), true)){
-				exportRoleData.setSaveSign(1);
-				exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo1"));
-			}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleName(), true)){
-				exportRoleData.setSaveSign(2);
-				exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo2"));
+		if(uploadRoleList!=null){
+			for(ExportRoleData exportRoleData:roleList){
+				
+				if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleName(), true)){
+					exportRoleData.setSaveSign(1);
+					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo1"));
+				}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleName(), true)){
+					exportRoleData.setSaveSign(2);
+					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo2"));
+				}
+				
+				
+				result_json.append("{\"roleId\":"+exportRoleData.getRoleId()+",");
+				result_json.append("\"roleName\":\""+exportRoleData.getRoleName()+"\",");
+				result_json.append("\"roleLevel\":\""+exportRoleData.getRoleLevel()+"\",");
+				result_json.append("\"roleVideoKeyEdit\":\""+exportRoleData.getRoleVideoKeyEdit()+"\",");
+				result_json.append("\"roleVideoKeyEditName\":"+(exportRoleData.getRoleVideoKeyEdit()==1)+",");
+				result_json.append("\"roleLanguageEdit\":\""+exportRoleData.getRoleLanguageEdit()+"\",");
+				result_json.append("\"roleLanguageEditName\":"+(exportRoleData.getRoleLanguageEdit()==1)+",");
+				result_json.append("\"showLevel\":\""+exportRoleData.getShowLevel()+"\",");
+				result_json.append("\"remark\":\""+exportRoleData.getRemark()+"\",");
+				result_json.append("\"msg\":\""+exportRoleData.getMsg()+"\",");
+				result_json.append("\"saveSign\":\""+exportRoleData.getSaveSign()+"\"},");
 			}
-			
-			
-			result_json.append("{\"roleId\":"+exportRoleData.getRoleId()+",");
-			result_json.append("\"roleName\":\""+exportRoleData.getRoleName()+"\",");
-			result_json.append("\"roleLevel\":\""+exportRoleData.getRoleLevel()+"\",");
-			result_json.append("\"roleVideoKeyEdit\":\""+exportRoleData.getRoleVideoKeyEdit()+"\",");
-			result_json.append("\"roleVideoKeyEditName\":"+(exportRoleData.getRoleVideoKeyEdit()==1)+",");
-			result_json.append("\"roleLanguageEdit\":\""+exportRoleData.getRoleLanguageEdit()+"\",");
-			result_json.append("\"roleLanguageEditName\":"+(exportRoleData.getRoleLanguageEdit()==1)+",");
-			result_json.append("\"showLevel\":\""+exportRoleData.getShowLevel()+"\",");
-			result_json.append("\"remark\":\""+exportRoleData.getRemark()+"\",");
-			result_json.append("\"msg\":\""+exportRoleData.getMsg()+"\",");
-			result_json.append("\"saveSign\":\""+exportRoleData.getSaveSign()+"\"},");
 		}
+		
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}

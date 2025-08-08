@@ -55,33 +55,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                 });
         
         Ext.apply(me, {
-//        	tbar:['->', {
-//        		xtype: 'button',
-//                text: loginUserLanguageResource.save,
-//                iconCls: 'save',
-//                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-//                hidden: false,
-//                handler: function (v, o) {
-//                	
-//                }
-//            },"-", {
-//                xtype: 'button',
-//                text: loginUserLanguageResource.exportData,
-//                iconCls: 'export',
-//                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-//                hidden: false,
-//                handler: function (v, o) {
-//                	
-//                }
-//            },"-",{
-//            	xtype: 'button',
-//    			text: loginUserLanguageResource.importData,
-//    			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-//    			iconCls: 'import',
-//    			handler: function (v, o) {
-//    				
-//    			}
-//            }],
         	items:[{
         		xtype: 'tabpanel',
         		id:"OperationMaintenanceTabPanel_Id",
@@ -476,7 +449,8 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '抽稀阈值',
+    				                        	fieldLabel: '查询限值',
+    				                        	tpl:'查询总记录数超过该值，将从抽稀表中查询数据',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateThreshold',
@@ -493,18 +467,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 //    				        formBind: true, // 表单验证通过时启用按钮
     				        iconCls: 'save',
     				        handler: function() {
-//    				            var form = this.up('panel').down('form').getForm();
-//    				            if (form.isValid()) {
-//    				                form.submit({
-//    				                    success: function(form, action) {
-//    				                        Ext.Msg.alert('成功', action.result.message);
-//    				                    },
-//    				                    failure: function(form, action) {
-//    				                        Ext.Msg.alert('失败', action.result.message);
-//    				                    }
-//    				                });
-//    				            }
-    				        	
     				        	var OperationMaintenanceBasicInfoSubForm = Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").down('form');
     				        	if (OperationMaintenanceBasicInfoSubForm.isValid()) {
     				        		var configFile={};
@@ -557,8 +519,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				        		configFile.dataVacuate.saveInterval=Ext.getCmp('operationMaintenance_vacuateSaveInterval_Id').getValue();
     				        		configFile.dataVacuate.vacuateThreshold=Ext.getCmp('operationMaintenance_vacuateThreshold_Id').getValue();
     				        		
-    				        		
-    				        		
     				        		OperationMaintenanceBasicInfoSubForm.getForm().submit({
         				                url: context + '/operationMaintenanceController/updateOemConfigInfo',
         				                clientValidation: false, // 进行客户端验证
@@ -588,7 +548,443 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	            }]
         		},{
         			title: '备份与恢复',
-        			id:'OperationMaintenanceBackupsInfoPanel_Id'
+        			id:'OperationMaintenanceBackupsInfoPanel_Id',
+                	tbar:['->', {
+                        xtype: 'button',
+                        text: '一键导出',
+                        iconCls: 'export',
+                        disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                        hidden: false,
+                        handler: function (v, o) {
+                        	oneKeyBackupData();
+                        }
+                    }],
+                    layout: 'border',
+                    items:[{
+                    	region: 'center',
+                    	title:'数据导入',
+    					border: false,
+//    		            id: "OperationMaintenanceBasicInfoSubFormId",
+    					layout: 'fit',
+                    	items: [{
+                            xtype: 'form',
+                            baseCls: 'x-plain',
+                            border:false,
+                            defaults: {
+                            	border: false,
+                                baseCls: 'x-plain',
+                                flex: 1,
+                                defaultType: 'colorfield',
+                                layout: 'anchor'
+                            },
+                            style: {
+                                padding: '10px 10px'
+                            },
+                            layout:'hbox',
+                            items: [{
+                            	items:[{
+                            		xtype: 'form',
+                                    id: 'ModuleBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '模块',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+                                            	submitBackupModuleFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'DataDictionaryBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '字典',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+                                            	submitBackupDataDictionaryFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'OrganizationBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '组织',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+                                            	submitBackupOrganizationFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'RoleBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                		xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '角色',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+                                            	submitBackupImportedRoleFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'UserBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '用户',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+                                            	submitBackupUserFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'ProtocolBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+                                        name: 'file',
+                                        fieldLabel: '协议',
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'AcqUnitBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '采控单元',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'DisplayUnitBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '显示单元',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            	},{
+                            		xtype: 'form',
+                                    id: 'AlarmUnitBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '报警单元',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'ReportUnitBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '报表单元',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'AcqInstanceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '采控实例',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'DisplayInstanceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '显示实例',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'AlarmInstanceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '报警实例',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'ReportInstanceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '报表实例',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'PrimaryDeviceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '主设备',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	},{
+                            		xtype: 'form',
+                                    id: 'AuxiliaryDeviceBackupImportForm_Id',
+                                    bodyPadding: 0,
+                                    frame: true,
+                                    items: [{
+                                    	xtype: 'filefield',
+//                                    	id:'ProtocolImportFilefield_Id',
+                                        name: 'file',
+                                        fieldLabel: '辅件设备',
+//                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: true,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: loginUserLanguageResource.selectUploadFile,
+                                        accept:'.json',
+                                        listeners:{
+                                            change:function(cmp){
+//                                            	submitImportedProtocolFile();
+                                            }
+                                        }
+                                    }]
+                            		
+                            	}]
+                            }]
+                        }]
+                    },{
+                    	region: 'east',
+                    	width:'50%',
+                    	split: true,
+                        collapsible: true,
+                        layout:'fit',
+                        id:'importBackupDataContentPanel_Id',
+                        bbar:['->', {
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            hidden: false,
+                            disabled:true,
+                            handler: function (v, o) {
+//                            	oneKeyBackupData();
+                            }
+                        }],
+                    }]
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -741,4 +1137,319 @@ function initOemConfigData(configFile){
 		Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').enable();
 	}
 	
+}
+function oneKeyBackupData(){
+	exportModuleBackupData();
+	exportDataDictionaryBackupData();
+	exportOrganizationBackupData();
+	exportRoleBackupData();
+	exportUserBackupData();
+	
+	exportPrimaryDeviceBackupData();
+	exportAuxiliaryDeviceBackupData();
+}
+function exportModuleBackupData(){
+	var url = context + '/moduleManagerController/exportModuleCompleteData';
+	var timestamp=new Date().getTime();
+	var key='exportModuleCompleteData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.moduleExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportDataDictionaryBackupData(){
+	var url = context + '/systemdataInfoController/exportDataDictionaryCompleteData';
+	var timestamp=new Date().getTime();
+	var key='exportDataDictionaryCompleteData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.dataDictionaryExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportOrganizationBackupData(){
+	var url = context + '/orgManagerController/exportOrganizationCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportOrganizationCompleteData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.organizationExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportUserBackupData(){
+	var url = context + '/userManagerController/exportUserCompleteData';
+	var timestamp=new Date().getTime();
+	var key='exportUserCompleteData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.userExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportRoleBackupData(){
+	var url = context + '/roleManagerController/exportRoleCompleteData';
+	var timestamp=new Date().getTime();
+	var key='exportRoleCompleteData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportProtocolBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportProtocolData';
+	var timestamp=new Date().getTime();
+	var key='exportProtocolData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+//	document.location.href = url;
+    
+    
+    
+    var timestamp=new Date().getTime();
+	var key='exportProtocolData'+'_'+timestamp;
+	var maskPanelId='ExportProtocolWindow_Id';
+	
+	var url=context + '/acquisitionUnitManagerController/exportProtocolData?key='+key+'&protocolList='+exportProtocolList.join(",");
+	if(type==2){
+		key='exportProtocolInitData'+'_'+timestamp;
+		url=context + '/acquisitionUnitManagerController/exportProtocolInitData?key='+key+'&protocolList='+exportProtocolList.join(",");
+	}
+	exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    openExcelWindow(url);
+//	document.location.href = url;
+}
+
+function exportPrimaryDeviceBackupData(){
+	var url = context + '/wellInformationManagerController/exportDeviceCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportPrimaryDeviceBackupData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	
+	
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.primaryDdeviceExportFileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportAuxiliaryDeviceBackupData(){
+    var fileName=loginUserLanguageResource.auxiliaryDdeviceExportFileName;
+    var title=fileName;
+	
+	var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceCompleteData';
+	
+	var timestamp=new Date().getTime();
+	var key='exportAuxiliaryDeviceBackupData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	
+	var param = "&orgId=" + leftOrg_Id 
+    + "&deviceType="+deviceType
+    + "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+//    openExcelWindow(url + '?flag=true' + param);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function submitBackupModuleFile() {
+	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importModule);
+	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
+    var form = Ext.getCmp("ModuleBackupImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/moduleManagerController/uploadImportedModuleFile',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var importBackupModuleContentTreeGridPanel = Ext.getCmp("ImportBackupModuleContentTreeGridPanel_Id");
+                if (isNotVal(importBackupModuleContentTreeGridPanel)) {
+                	importBackupModuleContentTreeGridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupModuleContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+            }
+        });
+    }
+    return false;
+};
+
+function submitBackupDataDictionaryFile() {
+	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importDataDictionary);
+	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
+    var form = Ext.getCmp("DataDictionaryBackupImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/systemdataInfoController/uploadImportedDataDictionaryFile',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var importBackupDataDictionaryContentTreeGridPanel = Ext.getCmp("ImportBackupDataDictionaryContentTreeGridPanel_Id");
+                if (isNotVal(importBackupDataDictionaryContentTreeGridPanel)) {
+                	importBackupDataDictionaryContentTreeGridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+            }
+        });
+    }
+    return false;
+};
+
+function submitBackupOrganizationFile() {
+	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importOrganization);
+	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
+    var form = Ext.getCmp("OrganizationBackupImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/orgManagerController/uploadImportedOrganizationFile',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var importBackupOrganizationContentTreeGridPanel = Ext.getCmp("ImportBackupOrganizationContentTreeGridPanel_Id");
+                if (isNotVal(importBackupOrganizationContentTreeGridPanel)) {
+                	importBackupOrganizationContentTreeGridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupOrganizationContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+            }
+        });
+    }
+    return false;
+};
+
+function submitBackupImportedRoleFile() {
+	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importRole);
+	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
+    var form = Ext.getCmp("RoleBackupImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/roleManagerController/uploadImportedRoleFile',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var importBackupRoleContentTreeGridPanel = Ext.getCmp("ImportBackupRoleContentTreeGridPanel_Id");
+                if (isNotVal(importBackupRoleContentTreeGridPanel)) {
+                	importBackupRoleContentTreeGridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupRoleContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+            }
+        });
+    }
+    return false;
+};
+
+function submitBackupUserFile() {
+	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importUser);
+	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
+    var form = Ext.getCmp("UserBackupImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/userManagerController/uploadImportedUserFile',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var importBackupUserContentTreeGridPanel = Ext.getCmp("ImportBackupUserContentTreeGridPanel_Id");
+                if (isNotVal(importBackupUserContentTreeGridPanel)) {
+                	importBackupUserContentTreeGridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupUserContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+            }
+        });
+    }
+    return false;
+};
+
+adviceImportBackupDataCollisionInfoColor = function (val, o, p, e) {
+    var saveSign = p.data.saveSign;
+    var tipval = val;
+    var backgroundColor = '#FFFFFF';
+    var color = '#DC2828';
+    if (saveSign == 0) {
+        color = '#000000';
+    }
+    var opacity = 0;
+    var rgba = color16ToRgba(backgroundColor, opacity);
+    o.style = 'background-color:' + rgba + ';color:' + color + ';';
+    if (isNotVal(tipval)) {
+        return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+    }
 }

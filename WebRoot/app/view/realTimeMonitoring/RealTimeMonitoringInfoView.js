@@ -1422,7 +1422,11 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		        var yAxisOpposite=curveConf[i].yAxisOpposite;
         		    
         		    var series = "[";
-    		        series += "{\"name\":\"" + legendName[i] + "\",\"lineWidth\":"+curveConf[i].lineWidth+",\"dashStyle\":\""+curveConf[i].dashStyle+"\",\"marker\":{\"enabled\": true},";
+    		        series += "{\"name\":\"" + legendName[i] + "\"," 
+    		        +"\"lineWidth\":"+curveConf[i].lineWidth+"," 
+    		        +"\"dashStyle\":\""+curveConf[i].dashStyle+"\"," 
+    		        +"\"marker\":{\"enabled\": true}," 
+    		        +"\"dataGrouping\":{\"enabled\": false},";
     		        series += "\"data\":[";
     		        for (var j = 0; j < data.length; j++) {
     		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";

@@ -2279,9 +2279,20 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					timeDiff=StringManagerUtils.getTimeDifference(lastVacuateDataSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-					if(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000){
-						saveVacuateData=true;
+					
+					int vacuateSaveIntervalWaveRange=Config.getInstance().configFile.getAp().getDataVacuate().getSaveIntervalWaveRange();
+					if(vacuateSaveIntervalWaveRange>0){
+						int waveRange=StringManagerUtils.getRandomData(vacuateSaveIntervalWaveRange);//获取范围内随机数
+						saveVacuateData=(timeDiff>= (Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000+waveRange*60*1000));
+					}else{
+						saveVacuateData=(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000);
 					}
+					
+					
+					
+//					if(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000){
+//						saveVacuateData=true;
+//					}
 					
 					
 					CommResponseData commResponseData=null;

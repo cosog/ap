@@ -4684,4 +4684,10 @@ public class StringManagerUtils {
         }
         return true;
     }
+    
+    public static int getRandomData(int range){
+    	Random random = new Random();
+    	int randomInt = random.nextInt(range*2+1) - range;
+    	return randomInt;
+    }
 }

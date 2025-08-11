@@ -99,6 +99,7 @@ moduleContent:
 dataVacuate:
    vacuateRecord: 300              #进行抽稀时，保留的记录数
    saveInterval: 1                 #抽稀表数据保存间隔 单位：小时
+   saveIntervalWaveRange: 5        #抽稀表数据保存间隔波动范围 单位：分钟
    vacuateThreshold: 50000         #抽稀阈值,总记录数据超过该值，将从抽稀表中查询数据
 others:
    deviceShowName: 设备名称

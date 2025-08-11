@@ -1,5 +1,6 @@
 package com.cosog.controller.operationMaintenance;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.User;
 import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.service.base.CommonDataService;
+import com.cosog.service.operationMaintenance.OperationMaintenanceService;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.OEMConfigFile;
@@ -33,6 +35,8 @@ public class OperationMaintenanceController  extends BaseController {
 	private static Log log = LogFactory.getLog(OperationMaintenanceController.class);
 	@Autowired
 	private CommonDataService service;
+	@Autowired
+	private OperationMaintenanceService operationMaintenanceService;
 	
 	@RequestMapping("/loadOemConfigInfo")
 	public String loadOemConfigInfo() throws Exception {
@@ -158,6 +162,24 @@ public class OperationMaintenanceController  extends BaseController {
 		OEMConfigFile configFile=Config.getInstance().oemConfigFile;
 		json = "{success:true,msg:"+r+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/batchExportModuleList")
+	public String batchExportModuleList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = operationMaintenanceService.batchExportModuleList(user);
+		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

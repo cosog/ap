@@ -930,6 +930,8 @@ public class OEMConfigFile {
 		
 		private float saveInterval;
 		
+		private int saveIntervalWaveRange;
+		
 		private int vacuateThreshold;
 
 		public int getVacuateRecord() {
@@ -954,6 +956,14 @@ public class OEMConfigFile {
 
 		public void setVacuateThreshold(int vacuateThreshold) {
 			this.vacuateThreshold = vacuateThreshold;
+		}
+
+		public int getSaveIntervalWaveRange() {
+			return saveIntervalWaveRange;
+		}
+
+		public void setSaveIntervalWaveRange(int saveIntervalWaveRange) {
+			this.saveIntervalWaveRange = saveIntervalWaveRange;
 		}
 	}
 

@@ -90,37 +90,7 @@ public class Config {
 				}
 				
 				
-				if(configFile!=null && configFile.getAp()!=null && oemConfigFile!=null ){
-					configFile.getAp().setOem(oemConfigFile.getOem());
-					configFile.getAp().setReport(oemConfigFile.getReport());
-					configFile.getAp().setEmail(oemConfigFile.getEmail());
-					configFile.getAp().setModuleContent(oemConfigFile.getModuleContent());
-					configFile.getAp().setDataVacuate(oemConfigFile.getDataVacuate());
-					configFile.getAp().setOthers(oemConfigFile.getOthers());
-					
-					String loginLanguage=configFile.getAp().getOthers().getLoginLanguage().toLowerCase().replace("zh_cn", "zh_CN");
-					configFile.getAp().getOthers().setLoginLanguage(loginLanguage);
-					
-					configFile.getAp().setDatabaseMaintenance(oemConfigFile.getDatabaseMaintenance());
-				}
-				
-				if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){
-					configFile.getAp().getOthers().setExportLimit(65534);
-				}
-				if(configFile.getAp().getDataVacuate().getVacuateRecord()<=0){
-					configFile.getAp().getDataVacuate().setVacuateRecord(500);
-				}
-				if(configFile.getAp()!=null && configFile.getAp().getReport()!=null){
-					if(configFile.getAp().getReport().getInterval()<=0){
-						configFile.getAp().getReport().setInterval(2);
-					}
-					if(configFile.getAp().getReport().getOffsetHour()<0 || configFile.getAp().getReport().getOffsetHour()>12){
-						configFile.getAp().getReport().setOffsetHour(0);
-					}
-					if(configFile.getAp().getReport().getDelay()<0 || configFile.getAp().getReport().getDelay()>30){
-						configFile.getAp().getReport().setDelay(5);
-					}
-				}
+				updateConfig();
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{

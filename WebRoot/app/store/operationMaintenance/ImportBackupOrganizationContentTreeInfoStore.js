@@ -77,7 +77,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupOrganizationContentTreeInf
                     }
 
                 });
-                var panel = Ext.getCmp("importBackupDataContentPanel_Id");
+                var panel = Ext.getCmp("OperationMaintenanceDataImportPanel_Id");
                 panel.add(treeGridPanel);
             }
         }

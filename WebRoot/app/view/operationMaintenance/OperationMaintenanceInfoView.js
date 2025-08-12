@@ -457,7 +457,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '查询限值',
+    				                        	fieldLabel: '抽稀表启用限值(记录数大于)',
     				                        	tpl:'查询总记录数超过该值，将从抽稀表中查询数据',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
@@ -564,7 +564,23 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         				title:"导出",
         				width:'20%',
         				id:'BatchExportModuleTreePanel_Id',
-                    	tbar:['->', {
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.selectAll,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	backupDataSelectAll(true);
+                            }
+                        },{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.deselectAll,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            pressed: false,
+                            handler: function (v, o) {
+                            	backupDataSelectAll(false);
+                            }
+                        },'->', {
                     		xtype: 'button',
                     		text: '一键导出',
                     		iconCls: 'export',
@@ -573,450 +589,87 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     		handler: function (v, o) {
                     			oneKeyBackupData();
                     		}
-                    	}],
+                    	},{
+                        	id: 'BatchExportModuleDataListSelectRow_Id',
+                        	xtype: 'textfield',
+                            value: -1,
+                            hidden: true
+                        },{
+                        	id: 'BatchExportModuleDataListSelectCode_Id',
+                        	xtype: 'textfield',
+                            value: '',
+                            hidden: true
+                        }],
         			},{
         				region: 'center',
-        				title:'导入'
+        				title:'导入',
+        				layout: 'fit',
+        				id:'OperationMaintenanceDataImportPanel_Id',
+        				tbar:[{
+                            xtype: 'button',
+                            text: '上一步',
+                            iconCls: 'forward',
+                            id:'OperationMaintenanceImportDataForwardBtn_Id',
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            handler: function (v, o) {
+                            	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
+                            	var gridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
+                            	if(parseInt(selectRow)>0){
+                            		gridPanel.getSelectionModel().deselectAll(true);
+                                	gridPanel.getSelectionModel().select(parseInt(selectRow)-1, true);
+                            	}
+                            }
+                        },{
+                            xtype: 'form',
+                            id: 'OperationMaintenanceImportForm_Id',
+                            width: 500,
+                            bodyPadding: 0,
+                            frame: true,
+                            items: [{
+                                xtype: 'filefield',
+                                id: 'OperationMaintenanceImportFilefield_Id',
+                                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                                name: 'file',
+                                fieldLabel: loginUserLanguageResource.uploadFile,
+                                labelWidth: (getLabelWidth(loginUserLanguageResource.uploadFile, loginUserLanguage)),
+                                width: '100%',
+                                msgTarget: 'side',
+                                allowBlank: true,
+                                anchor: '100%',
+                                draggable: true,
+                                buttonText: loginUserLanguageResource.selectUploadFile,
+                                accept: '.json',
+                                listeners: {
+                                    change: function (cmp) {
+                                    	submitOperationMaintenanceImportedFile();
+                                    }
+                                }
+                    	    }]
+                		},'->',{
+                			xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            id:'OperationMaintenanceImportDataSaveBtn_Id',
+                            disabled: true,
+                            handler: function (v, o) {
+                            	
+                            }
+                		},{
+                            xtype: 'button',
+                            text: '下一步',
+                            iconCls: 'backwards',
+                            id:'OperationMaintenanceImportDataBackwardBtn_Id',
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            handler: function (v, o) {
+                            	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
+                            	var gridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
+                            	if(parseInt(selectRow)>=0){
+                            		gridPanel.getSelectionModel().deselectAll(true);
+                                	gridPanel.getSelectionModel().select(parseInt(selectRow)+1, true);
+                            	}
+                            }
+                        }]
         			}]
-        			
-        			
-        			
-//                	tbar:['->', {
-//                        xtype: 'button',
-//                        text: '一键导出',
-//                        iconCls: 'export',
-//                        disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-//                        hidden: false,
-//                        handler: function (v, o) {
-//                        	oneKeyBackupData();
-//                        }
-//                    }],
-//                    layout: 'border',
-//                    items:[{
-//                    	region: 'center',
-//                    	title:'数据导入',
-//    					border: false,
-////    		            id: "OperationMaintenanceBasicInfoSubFormId",
-//    					layout: 'fit',
-//                    	items: [{
-//                            xtype: 'form',
-//                            baseCls: 'x-plain',
-//                            border:false,
-//                            defaults: {
-//                            	border: false,
-//                                baseCls: 'x-plain',
-//                                flex: 1,
-//                                defaultType: 'colorfield',
-//                                layout: 'anchor'
-//                            },
-//                            style: {
-//                                padding: '10px 10px'
-//                            },
-//                            layout:'hbox',
-//                            items: [{
-//                            	items:[{
-//                            		xtype: 'form',
-//                                    id: 'ModuleBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '模块',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-//                                            	submitBackupModuleFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'DataDictionaryBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '字典',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-//                                            	submitBackupDataDictionaryFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'OrganizationBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '组织',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-//                                            	submitBackupOrganizationFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'RoleBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                		xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '角色',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-//                                            	submitBackupImportedRoleFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'UserBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '用户',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-//                                            	submitBackupUserFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'ProtocolBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-//                                        name: 'file',
-//                                        fieldLabel: '协议',
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'AcqUnitBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '采控单元',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'DisplayUnitBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '显示单元',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'AlarmUnitBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '报警单元',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'ReportUnitBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '报表单元',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'AcqInstanceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '采控实例',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'DisplayInstanceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '显示实例',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'AlarmInstanceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '报警实例',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'ReportInstanceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '报表实例',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'PrimaryDeviceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '主设备',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	},{
-//                            		xtype: 'form',
-//                                    id: 'AuxiliaryDeviceBackupImportForm_Id',
-//                                    bodyPadding: 0,
-//                                    frame: true,
-//                                    items: [{
-//                                    	xtype: 'filefield',
-////                                    	id:'ProtocolImportFilefield_Id',
-//                                        name: 'file',
-//                                        fieldLabel: '辅件设备',
-////                                        labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
-//                                        width:'100%',
-//                                        msgTarget: 'side',
-//                                        allowBlank: true,
-//                                        anchor: '100%',
-//                                        draggable:true,
-//                                        buttonText: loginUserLanguageResource.selectUploadFile,
-//                                        accept:'.json',
-//                                        listeners:{
-//                                            change:function(cmp){
-////                                            	submitImportedProtocolFile();
-//                                            }
-//                                        }
-//                                    }]
-//                            		
-//                            	}]
-//                            }]
-//                        }]
-//                    },{
-//                    	region: 'east',
-//                    	width:'50%',
-//                    	split: true,
-//                        collapsible: true,
-//                        layout:'fit',
-//                        id:'importBackupDataContentPanel_Id',
-//                        bbar:['->', {
-//                            xtype: 'button',
-//                            text: loginUserLanguageResource.save,
-//                            iconCls: 'save',
-//                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-//                            hidden: false,
-//                            disabled:true,
-//                            handler: function (v, o) {
-////                            	oneKeyBackupData();
-//                            }
-//                        }],
-//                    }]
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -1176,14 +829,42 @@ function initOemConfigData(configFile){
 	}
 	
 }
+
+function submitOperationMaintenanceImportedFile(){
+	var code=Ext.getCmp("BatchExportModuleDataListSelectCode_Id").getValue();
+	if(code.toUpperCase()=='module'.toUpperCase()){
+		submitBackupModuleFile();
+    }else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
+    	submitBackupDataDictionaryFile();
+    }else if(code.toUpperCase()=='organization'.toUpperCase()){
+    	submitBackupOrganizationFile();
+    }else if(code.toUpperCase()=='role'.toUpperCase()){
+    	submitBackupImportedRoleFile();
+    }else if(code.toUpperCase()=='user'.toUpperCase()){
+    	submitBackupUserFile();
+    }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
+    	exportAuxiliaryDeviceBackupData();
+    }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
+    	exportPrimaryDeviceBackupData();
+    }
+}
+
 function oneKeyBackupData(){
-	var treeGridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
-	var selectedRecord = treeGridPanel.getChecked();
-	var exportContentList = [];
+	var records = Ext.getCmp("BatchExportModuleTreeGridPanel_Id").store.data.items;
+	var selectedRecordCodeArr=[];
 	
-	if(selectedRecord.length>0){
-		Ext.Array.each(selectedRecord, function (name, index, countriesItSelf) {
-	        var code = selectedRecord[index].get('code');
+	Ext.Array.each(records, function (name, index, countriesItSelf) {
+        var checked=records[index].get('checked');
+        var enabled=!records[index].get('disabled');
+        if(enabled && checked){
+            var code = records[index].get('code');
+            selectedRecordCodeArr.push(code);
+        }
+    });
+	
+	if (selectedRecordCodeArr.length > 0) {
+		Ext.Array.each(selectedRecordCodeArr, function (name, index, countriesItSelf) {
+	        var code = selectedRecordCodeArr[index];
 	        if(code.toUpperCase()=='module'.toUpperCase()){
 	        	exportModuleBackupData();
 	        }else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
@@ -1200,9 +881,10 @@ function oneKeyBackupData(){
 	        	exportPrimaryDeviceBackupData();
 	        }
 	    });
-	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的数据");
-	}
+		Ext.getCmp("BatchExportModuleTreeGridPanel_Id").getStore().commitChanges();
+	} else {
+    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    }
 }
 function exportModuleBackupData(){
 	var url = context + '/moduleManagerController/exportModuleCompleteData';
@@ -1319,9 +1001,7 @@ function exportAuxiliaryDeviceBackupData(){
 	var key='exportAuxiliaryDeviceBackupData'+'_'+timestamp;
 	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
 	
-	var param = "&orgId=" + leftOrg_Id 
-    + "&deviceType="+deviceType
-    + "&recordCount=10000" 
+	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + '&key='+key;
     exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
@@ -1330,9 +1010,8 @@ function exportAuxiliaryDeviceBackupData(){
 }
 
 function submitBackupModuleFile() {
-	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importModule);
-	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
-    var form = Ext.getCmp("ModuleBackupImportForm_Id");
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
     if (form.isValid()) {
         form.submit({
             url: context + '/moduleManagerController/uploadImportedModuleFile',
@@ -1363,9 +1042,8 @@ function submitBackupModuleFile() {
 };
 
 function submitBackupDataDictionaryFile() {
-	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importDataDictionary);
-	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
-    var form = Ext.getCmp("DataDictionaryBackupImportForm_Id");
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
     if (form.isValid()) {
         form.submit({
             url: context + '/systemdataInfoController/uploadImportedDataDictionaryFile',
@@ -1396,9 +1074,8 @@ function submitBackupDataDictionaryFile() {
 };
 
 function submitBackupOrganizationFile() {
-	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importOrganization);
-	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
-    var form = Ext.getCmp("OrganizationBackupImportForm_Id");
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
     if (form.isValid()) {
         form.submit({
             url: context + '/orgManagerController/uploadImportedOrganizationFile',
@@ -1429,9 +1106,8 @@ function submitBackupOrganizationFile() {
 };
 
 function submitBackupImportedRoleFile() {
-	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importRole);
-	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
-    var form = Ext.getCmp("RoleBackupImportForm_Id");
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
     if (form.isValid()) {
         form.submit({
             url: context + '/roleManagerController/uploadImportedRoleFile',
@@ -1462,9 +1138,8 @@ function submitBackupImportedRoleFile() {
 };
 
 function submitBackupUserFile() {
-	Ext.getCmp('importBackupDataContentPanel_Id').setTitle(loginUserLanguageResource.importUser);
-	Ext.getCmp('importBackupDataContentPanel_Id').removeAll();
-    var form = Ext.getCmp("UserBackupImportForm_Id");
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
     if (form.isValid()) {
         form.submit({
             url: context + '/userManagerController/uploadImportedUserFile',
@@ -1508,4 +1183,14 @@ adviceImportBackupDataCollisionInfoColor = function (val, o, p, e) {
     if (isNotVal(tipval)) {
         return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
     }
+}
+
+function backupDataSelectAll(select) {
+    var store= Ext.getCmp("BatchExportModuleTreeGridPanel_Id").getStore();
+	store.each(function (record) {
+		var enabled=!record.get('disabled');
+		if(enabled){
+			record.set('checked', select);
+		}
+    });
 }

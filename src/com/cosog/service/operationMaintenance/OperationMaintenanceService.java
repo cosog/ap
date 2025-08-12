@@ -49,154 +49,133 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		}
 		
 		tree_json.append("[");
-		
-		
-		
-		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"模块\",");
 		tree_json.append("\"code\":\"module\",");
-		if(userModuleEditMap.containsKey("ModuleManagement")&& userModuleEditMap.get("ModuleManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("ModuleManagement")&&userModuleEditMap.get("ModuleManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"字典\",");
 		tree_json.append("\"code\":\"dataDictionary\",");
-		if(userModuleEditMap.containsKey("DataDictionaryManagement")&& userModuleEditMap.get("DataDictionaryManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DataDictionaryManagement")&& userModuleEditMap.get("DataDictionaryManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"组织\",");
 		tree_json.append("\"code\":\"organization\",");
-		if(userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"角色\",");
 		tree_json.append("\"code\":\"role\",");
-		if(userModuleEditMap.containsKey("RoleManagement")&& userModuleEditMap.get("RoleManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("RoleManagement")&& userModuleEditMap.get("RoleManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"用户\",");
 		tree_json.append("\"code\":\"user\",");
-		if(userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"协议\",");
 		tree_json.append("\"code\":\"protocol\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"采控单元\",");
 		tree_json.append("\"code\":\"acqUnit\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"显示单元\",");
 		tree_json.append("\"code\":\"displayUnit\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"报警单元\",");
 		tree_json.append("\"code\":\"alarmUnit\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"报表单元\",");
 		tree_json.append("\"code\":\"reportUnit\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"采控实例\",");
 		tree_json.append("\"code\":\"acqInstance\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"显示实例\",");
 		tree_json.append("\"code\":\"displayInstance\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"报警实例\",");
 		tree_json.append("\"code\":\"alarmInstance\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"报表实例\",");
 		tree_json.append("\"code\":\"reportInstance\",");
-		if(userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
-		
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"辅件设备\",");
 		tree_json.append("\"code\":\"auxiliaryDevice\",");
-		if(userModuleEditMap.containsKey("AuxiliaryDeviceManager")&& userModuleEditMap.get("AuxiliaryDeviceManager") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"主设备\",");
 		tree_json.append("\"code\":\"primaryDevice\",");
-		if(userModuleEditMap.containsKey("DeviceManagement")&& userModuleEditMap.get("DeviceManagement") ){
-			tree_json.append("\"checked\": false,");
-		}
-		tree_json.append("\"leaf\": true");
+		tree_json.append("\"disabled\": "+( userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"checked\": false");
+//		tree_json.append("\"leaf\": true");
 		tree_json.append("},");
 		
 		
@@ -205,9 +184,14 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		}
 		tree_json.append("]");
 		
-		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\"数据列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
-		result_json.append("]");
+		result_json.append("{ \"success\":true,\"columns\":[],");
+		result_json.append("\"totalCount\":"+16+",");
+		result_json.append("\"totalRoot\":"+tree_json+"");
+		result_json.append("}");
+		
+//		result_json.append("[");
+//		result_json.append("{\"classes\":0,\"text\":\"数据列表\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+//		result_json.append("]");
 		
 		return result_json.toString();
 	}

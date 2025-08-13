@@ -173,7 +173,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("{\"classes\":1,");
 		tree_json.append("\"text\":\"主设备\",");
 		tree_json.append("\"code\":\"primaryDevice\",");
-		tree_json.append("\"disabled\": "+( userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
+		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
 //		tree_json.append("\"leaf\": true");
 		tree_json.append("},");

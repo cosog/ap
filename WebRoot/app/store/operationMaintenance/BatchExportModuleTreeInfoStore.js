@@ -39,7 +39,8 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
 //                    selType: (loginUserOperationMaintenanceModuleRight.editFlag==1?'checkboxmodel':''),
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
-                        forceFit: true
+                        forceFit: true,
+                        markDirty: false
                     },
                     store: store,
                     columns: [{
@@ -49,6 +50,7 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
                     	header: '',
                     	disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     	dataIndex: 'checked',
+//                    	hideCheckDirtyMarker: true,
                     	width: 30,
 //                    	editor: {
 //                        	xtype: 'checkbox',

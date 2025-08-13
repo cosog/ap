@@ -652,7 +652,27 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                             id:'OperationMaintenanceImportDataSaveBtn_Id',
                             disabled: true,
                             handler: function (v, o) {
-                            	
+                                var gridStore = Ext.getCmp("ImportBackupContentGridPanel_Id").getStore();
+                                var count = gridStore.getCount();
+                                var overlayCount = 0;
+                                var collisionCount = 0;
+                                for (var i = 0; i < count; i++) {
+                                    if (gridStore.getAt(i).data.saveSign == 1) {
+                                        overlayCount++;
+                                    } else if (gridStore.getAt(i).data.saveSign == 2) {
+                                        collisionCount++;
+                                    }
+                                }
+                                if (overlayCount > 0 || collisionCount > 0) {
+                                	var info = loginUserLanguageResource.collisionInfo4+"?";
+                                    Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
+                                        if (btn == "yes") {
+                                            saveBackupsData();
+                                        }
+                                    });
+                                } else {
+                                    saveBackupsData();
+                                }
                             }
                 		},{
                             xtype: 'button',
@@ -843,9 +863,27 @@ function submitOperationMaintenanceImportedFile(){
     }else if(code.toUpperCase()=='user'.toUpperCase()){
     	submitBackupUserFile();
     }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
-    	exportAuxiliaryDeviceBackupData();
+//    	submitAuxiliaryDeviceBackupData();
     }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
-    	exportPrimaryDeviceBackupData();
+//    	submitPrimaryDeviceBackupData();
+    }else if(code.toUpperCase()=='protocol'.toUpperCase()){
+    	submitProtocolBackupData();
+    }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
+    	submitAcqUnitBackupData();
+    }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
+    	submitDisplayUnitBackupData();
+    }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
+    	submitAlarmUnitBackupData();
+    }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
+    	submitReportUnitBackupData();
+    }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
+    	submitAcqInstanceBackupData();
+    }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
+    	submitDisplayInstanceBackupData();
+    }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
+    	submitAlarmInstanceBackupData();
+    }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
+    	submitReportInstanceBackupData();
     }
 }
 
@@ -879,7 +917,27 @@ function oneKeyBackupData(){
 	        	exportAuxiliaryDeviceBackupData();
 	        }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
 	        	exportPrimaryDeviceBackupData();
+	        }else if(code.toUpperCase()=='protocol'.toUpperCase()){
+	        	exportProtocolBackupData();
+	        }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
+	        	exportAcqUnitBackupData();
+	        }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
+	        	exportDisplayUnitBackupData();
+	        }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
+	        	exportAlarmUnitBackupData();
+	        }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
+	        	exportReportUnitBackupData();
+	        }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
+	        	exportAcqInstanceBackupData();
+	        }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
+	        	exportDisplayInstanceBackupData();
+	        }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
+	        	exportAlarmInstanceBackupData();
+	        }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
+	        	exportReportInstanceBackupData();
 	        }
+	        
+	        
 	    });
 		Ext.getCmp("BatchExportModuleTreeGridPanel_Id").getStore().commitChanges();
 	} else {
@@ -948,31 +1006,111 @@ function exportRoleBackupData(){
 }
 
 function exportProtocolBackupData(){
-	var url = context + '/acquisitionUnitManagerController/exportProtocolData';
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolData';
 	var timestamp=new Date().getTime();
-	var key='exportProtocolData'+'_'+timestamp;
+	var key='exportProtocolBackupData'+'_'+timestamp;
 	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
 	var param = "&recordCount=10000" 
-    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportProtocol)) 
     + '&key='+key;
     exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
     downloadFile(url + '?flag=true' + param);
-//	document.location.href = url;
-    
-    
-    
-    var timestamp=new Date().getTime();
-	var key='exportProtocolData'+'_'+timestamp;
-	var maskPanelId='ExportProtocolWindow_Id';
-	
-	var url=context + '/acquisitionUnitManagerController/exportProtocolData?key='+key+'&protocolList='+exportProtocolList.join(",");
-	if(type==2){
-		key='exportProtocolInitData'+'_'+timestamp;
-		url=context + '/acquisitionUnitManagerController/exportProtocolInitData?key='+key+'&protocolList='+exportProtocolList.join(",");
-	}
-	exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
-    openExcelWindow(url);
-//	document.location.href = url;
+}
+
+function exportAcqUnitBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAcqUnitData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolAcqUnitData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqUnit)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportDisplayUnitBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolDisplayUnitData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolDisplayUnitData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayUnit)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportAlarmUnitBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAlarmUnitData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolAlarmUnitData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmUnit)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportReportUnitBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllReportUnitData';
+	var timestamp=new Date().getTime();
+	var key='exportAllReportUnitData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportUnit)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportAcqInstanceBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAcqInstanceData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolAcqInstanceData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqInstance)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportDisplayInstanceBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolDisplayInstanceData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolDisplayInstanceData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayInstance)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportAlarmInstanceBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAlarmInstanceData';
+	var timestamp=new Date().getTime();
+	var key='exportAllProtocolAlarmInstanceData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmInstance)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
+}
+
+function exportReportInstanceBackupData(){
+	var url = context + '/acquisitionUnitManagerController/exportAllReportInstanceData';
+	var timestamp=new Date().getTime();
+	var key='exportReportInstanceBackupData'+'_'+timestamp;
+	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var param = "&recordCount=10000" 
+    + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportInstance)) 
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    downloadFile(url + '?flag=true' + param);
 }
 
 function exportPrimaryDeviceBackupData(){
@@ -1026,9 +1164,9 @@ function submitBackupModuleFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importBackupModuleContentTreeGridPanel = Ext.getCmp("ImportBackupModuleContentTreeGridPanel_Id");
-                if (isNotVal(importBackupModuleContentTreeGridPanel)) {
-                	importBackupModuleContentTreeGridPanel.getStore().load();
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
                 } else {
                     Ext.create('AP.store.operationMaintenance.ImportBackupModuleContentTreeInfoStore');
                 }
@@ -1058,9 +1196,9 @@ function submitBackupDataDictionaryFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importBackupDataDictionaryContentTreeGridPanel = Ext.getCmp("ImportBackupDataDictionaryContentTreeGridPanel_Id");
-                if (isNotVal(importBackupDataDictionaryContentTreeGridPanel)) {
-                	importBackupDataDictionaryContentTreeGridPanel.getStore().load();
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
                 } else {
                     Ext.create('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeInfoStore');
                 }
@@ -1090,9 +1228,9 @@ function submitBackupOrganizationFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importBackupOrganizationContentTreeGridPanel = Ext.getCmp("ImportBackupOrganizationContentTreeGridPanel_Id");
-                if (isNotVal(importBackupOrganizationContentTreeGridPanel)) {
-                	importBackupOrganizationContentTreeGridPanel.getStore().load();
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
                 } else {
                     Ext.create('AP.store.operationMaintenance.ImportBackupOrganizationContentTreeInfoStore');
                 }
@@ -1122,9 +1260,9 @@ function submitBackupImportedRoleFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importBackupRoleContentTreeGridPanel = Ext.getCmp("ImportBackupRoleContentTreeGridPanel_Id");
-                if (isNotVal(importBackupRoleContentTreeGridPanel)) {
-                	importBackupRoleContentTreeGridPanel.getStore().load();
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
                 } else {
                     Ext.create('AP.store.operationMaintenance.ImportBackupRoleContentTreeInfoStore');
                 }
@@ -1154,9 +1292,9 @@ function submitBackupUserFile() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
                 }
 
-                var importBackupUserContentTreeGridPanel = Ext.getCmp("ImportBackupUserContentTreeGridPanel_Id");
-                if (isNotVal(importBackupUserContentTreeGridPanel)) {
-                	importBackupUserContentTreeGridPanel.getStore().load();
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
                 } else {
                     Ext.create('AP.store.operationMaintenance.ImportBackupUserContentTreeInfoStore');
                 }
@@ -1164,6 +1302,294 @@ function submitBackupUserFile() {
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
             }
+        });
+    }
+    return false;
+};
+
+function submitProtocolBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedProtocolFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupProtocolContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitAcqUnitBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedAcqUnitFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupAcqUnitContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitDisplayUnitBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedDisplayUnitFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupDisplayUnitContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitAlarmUnitBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedAlarmUnitFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupAlarmUnitContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitReportUnitBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedReportUnitFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupReportUnitContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitAcqInstanceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedAcqInstanceFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupAcqInstanceContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitDisplayInstanceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedDisplayInstanceFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupDisplayInstanceContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitAlarmInstanceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedAlarmInstanceFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupAlarmInstanceContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
+        });
+    }
+    return false;
+};
+
+function submitReportInstanceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if(form.isValid()) {
+        form.submit({
+            url: context + '/acquisitionUnitManagerController/uploadImportedReportInstanceFile',
+            timeout: 1000*60*10,
+            method:'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function(response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupReportInstanceContentTreeInfoStore');
+                }
+            },
+            failure : function() {
+            	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+			}
         });
     }
     return false;
@@ -1192,5 +1618,173 @@ function backupDataSelectAll(select) {
 		if(enabled){
 			record.set('checked', select);
 		}
+    });
+}
+
+function saveBackupsData(){
+	var code=Ext.getCmp("BatchExportModuleDataListSelectCode_Id").getValue();
+	if(code.toUpperCase()=='module'.toUpperCase()){
+		saveBackupModuleFile();
+    }else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
+    	saveBackupDataDictionaryFile();
+    }else if(code.toUpperCase()=='organization'.toUpperCase()){
+    	saveBackupOrganizationFile();
+    }else if(code.toUpperCase()=='role'.toUpperCase()){
+    	saveBackupImportedRoleFile();
+    }else if(code.toUpperCase()=='user'.toUpperCase()){
+    	saveBackupUserFile();
+    }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
+//    	saveAuxiliaryDeviceBackupData();
+    }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
+//    	savePrimaryDeviceBackupData();
+    }else if(code.toUpperCase()=='protocol'.toUpperCase()){
+    	saveProtocolBackupData();
+    }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
+    	saveAcqUnitBackupData();
+    }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
+    	saveDisplayUnitBackupData();
+    }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
+    	saveAlarmUnitBackupData();
+    }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
+    	saveReportUnitBackupData();
+    }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
+    	saveAcqInstanceBackupData();
+    }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
+    	saveDisplayInstanceBackupData();
+    }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
+    	saveAlarmInstanceBackupData();
+    }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
+    	saveReportInstanceBackupData();
+    }
+}
+
+function saveBackupModuleFile(){
+	Ext.Ajax.request({
+        url: context + '/moduleManagerController/saveAllImportedModule',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveBackupDataDictionaryFile(){
+	Ext.Ajax.request({
+        url: context + '/systemdataInfoController/saveAllImportedDataDictionary',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveBackupOrganizationFile(){
+	Ext.Ajax.request({
+        url: context + '/orgManagerController/saveAllImportedOrganization',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveBackupImportedRoleFile(){
+	Ext.Ajax.request({
+        url: context + '/roleManagerController/saveAllImportedRole',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveBackupUserFile(){
+	Ext.Ajax.request({
+        url: context + '/userManagerController/saveAllImportedUser',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+function saveProtocolBackupData(){
+	Ext.Ajax.request({
+        url: context + '/userManagerController/saveAllImportedUser',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
     });
 }

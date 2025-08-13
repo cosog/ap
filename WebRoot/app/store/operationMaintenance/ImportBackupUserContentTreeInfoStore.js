@@ -29,10 +29,10 @@ Ext.define('AP.store.operationMaintenance.ImportBackupUserContentTreeInfoStore',
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
-            var gridPanel = Ext.getCmp("ImportBackupUserContentTreeGridPanel_Id");
+            var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
             if (!isNotVal(gridPanel)) {
                 var gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "ImportBackupUserContentTreeGridPanel_Id",
+                    id: "ImportBackupContentGridPanel_Id",
                     border: false,
                     stateful: true,
                     columnLines: true,

@@ -195,4 +195,111 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		return result_json.toString();
 	}
+	
+	public String importedFilePermissionVerification(User user,String code){
+		boolean r=true;
+		if("module".equalsIgnoreCase(code)){
+			
+		}else if("dataDictionary".equalsIgnoreCase(code)){
+			String sql="select count(1) from tbl_module t,tbl_module2role t2 where t.md_id=t2.rm_moduleid and t2.rm_roleid="+(user!=null?user.getUserType():0);
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("organization".equalsIgnoreCase(code)){
+	    	
+	    }else if("role".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_module t,tbl_module2role t2 where t.md_id=t2.rm_moduleid and t2.rm_roleid="+(user!=null?user.getUserType():0);
+	    	int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("user".equalsIgnoreCase(code)){
+	    	String orgSql="select count(1) from tbl_org t where t.org_id="+(user!=null?user.getUserOrgid():0);
+	    	String roleSql="select count(1) from tbl_role t where t.role_id="+(user!=null?user.getUserType():0);
+	    	int orgCount=this.getTotalCountRows(orgSql);
+	    	int roleount=this.getTotalCountRows(roleSql);
+			if(orgCount>0 && roleount>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("auxiliaryDevice".equalsIgnoreCase(code)){
+	    	
+	    }else if("primaryDevice".equalsIgnoreCase(code)){
+	    	String orgSql="select count(1) from tbl_org t where t.org_id="+(user!=null?user.getUserOrgid():0);
+	    	int orgCount=this.getTotalCountRows(orgSql);
+			if(orgCount>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("protocol".equalsIgnoreCase(code)){
+	    	
+	    }else if("acqUnit".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_protocol t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("displayUnit".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_acq_unit_conf t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("alarmUnit".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_protocol t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("reportUnit".equalsIgnoreCase(code)){
+	    	
+	    }else if("acqInstance".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_acq_unit_conf t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("displayInstance".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_display_unit_conf t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("alarmInstance".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_alarm_unit_conf t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }else if("reportInstance".equalsIgnoreCase(code)){
+	    	String sql="select count(1) from tbl_report_unit_conf t";
+			int total=this.getTotalCountRows(sql);
+			if(total>0){
+				r=true;
+			}else {
+				r=false;
+			}
+	    }
+		
+		return  "{success:true,msg:"+r+"}";
+	}
 }

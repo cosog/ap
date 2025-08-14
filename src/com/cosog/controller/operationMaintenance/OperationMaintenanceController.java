@@ -187,4 +187,23 @@ public class OperationMaintenanceController  extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/importedFilePermissionVerification")
+	public String importedFilePermissionVerification() throws IOException {
+		HttpSession session=request.getSession();
+		String code = ParamUtils.getParameter(request, "code");
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		String json = operationMaintenanceService.importedFilePermissionVerification(user,code);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

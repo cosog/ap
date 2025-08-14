@@ -645,7 +645,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                     }
                                 }
                     	    }]
-                		},'->',{
+                		},{
+                        	xtype: 'label',
+                        	id: 'OperationMaintenanceImportDataTipLabel_Id',
+                        	hidden:true,
+                        	html: ''
+                        },'->',{
                 			xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
@@ -1160,8 +1165,10 @@ function submitBackupModuleFile() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1173,6 +1180,7 @@ function submitBackupModuleFile() {
             },
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
             }
         });
     }
@@ -1192,8 +1200,10 @@ function submitBackupDataDictionaryFile() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1205,6 +1215,7 @@ function submitBackupDataDictionaryFile() {
             },
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
             }
         });
     }
@@ -1224,8 +1235,10 @@ function submitBackupOrganizationFile() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1237,6 +1250,7 @@ function submitBackupOrganizationFile() {
             },
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
             }
         });
     }
@@ -1256,8 +1270,10 @@ function submitBackupImportedRoleFile() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1269,6 +1285,7 @@ function submitBackupImportedRoleFile() {
             },
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
             }
         });
     }
@@ -1288,8 +1305,10 @@ function submitBackupUserFile() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1301,6 +1320,7 @@ function submitBackupUserFile() {
             },
             failure: function () {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
             }
         });
     }
@@ -1320,8 +1340,10 @@ function submitProtocolBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1333,6 +1355,7 @@ function submitProtocolBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1352,8 +1375,10 @@ function submitAcqUnitBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1365,6 +1390,7 @@ function submitAcqUnitBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1384,8 +1410,10 @@ function submitDisplayUnitBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1397,6 +1425,7 @@ function submitDisplayUnitBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1416,8 +1445,10 @@ function submitAlarmUnitBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1429,6 +1460,7 @@ function submitAlarmUnitBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1448,8 +1480,10 @@ function submitReportUnitBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1461,6 +1495,7 @@ function submitReportUnitBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1480,8 +1515,10 @@ function submitAcqInstanceBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1493,6 +1530,7 @@ function submitAcqInstanceBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1512,8 +1550,10 @@ function submitDisplayInstanceBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1525,6 +1565,7 @@ function submitDisplayInstanceBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1544,8 +1585,10 @@ function submitAlarmInstanceBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1557,6 +1600,7 @@ function submitAlarmInstanceBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1576,8 +1620,10 @@ function submitReportInstanceBackupData() {
                 var result = action.result;
                 if (result.flag == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
                 } else {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
                 }
 
                 var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
@@ -1589,6 +1635,7 @@ function submitReportInstanceBackupData() {
             },
             failure : function() {
             	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>"+loginUserLanguageResource.uploadFail+"</font>】");
+            	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
 			}
         });
     }
@@ -1787,4 +1834,68 @@ function saveProtocolBackupData(){
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
+}
+
+function importedFilePermissionVerification(code){
+	var verification={};
+	verification.sign=false;
+	verification.info="";
+	
+	
+	if(code.toUpperCase()=='module'.toUpperCase()){
+		
+	}else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
+		verification.info='请先导入模块数据';
+	}else if(code.toUpperCase()=='organization'.toUpperCase()){
+		
+	}else if(code.toUpperCase()=='role'.toUpperCase()){
+		verification.info='请先导入模块数据';
+	}else if(code.toUpperCase()=='user'.toUpperCase()){
+		verification.info='请先导入组织数据和角色数据';
+    }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
+    	
+    }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
+    	verification.info='请先导入组织数据和驱动数据';
+    }else if(code.toUpperCase()=='protocol'.toUpperCase()){
+    	
+    }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
+    	verification.info='请先导入协议数据';
+    }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
+    	verification.info='请先导入采控单元数据';
+    }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
+    	verification.info='请先导入协议数据';
+    }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
+    	
+    }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
+    	verification.info='请先导入采控单元数据';
+    }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
+    	verification.info='请先导入显示单元数据';
+    }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
+    	verification.info='请先导入报警单元数据';
+    }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
+    	verification.info='请先导入报表单元数据';
+    }
+	
+	var code=Ext.getCmp("BatchExportModuleDataListSelectCode_Id").getValue();
+	Ext.Ajax.request({
+        url: context + '/operationMaintenanceController/importedFilePermissionVerification',
+        method: "POST",
+        async: false,
+        params: {
+        	code:code
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            verification.sign = result.success&&result.msg
+        },
+        
+//        success: function (response, action) {
+//        	verification.sign=action.result.msg;
+//        },
+        
+        failure: function () {
+        	
+        }
+    });
+	return verification;
 }

@@ -557,13 +557,15 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	            }]
         		},{
         			title: '备份与恢复',
-        			id:'OperationMaintenanceBackupsInfoPanel_Id',
-        			layout: 'border',
-        			items:[{
-        				region: 'west',
-        				title:"导出",
-        				width:'20%',
-        				id:'BatchExportModuleTreePanel_Id',
+        			id:'OperationMaintenanceBackupsInfoTabPanel_Id',
+        			xtype: 'tabpanel',
+        			activeTab: 0,
+        			border: false,
+	        		tabPosition: 'left',
+	        		items:[{
+	        			title:"导出",
+	        			id:'BatchExportModuleTreePanel_Id',
+	        			iconCls: 'check3',
                     	tbar:[{
                             xtype: 'button',
                             text: loginUserLanguageResource.selectAll,
@@ -599,102 +601,136 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         	xtype: 'textfield',
                             value: '',
                             hidden: true
-                        }],
-        			},{
-        				region: 'center',
-        				title:'导入',
-        				layout: 'fit',
-        				id:'OperationMaintenanceDataImportPanel_Id',
-        				tbar:[{
-                            xtype: 'button',
-                            text: '上一步',
-                            iconCls: 'forward',
-                            id:'OperationMaintenanceImportDataForwardBtn_Id',
-                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-                            handler: function (v, o) {
-                            	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
-                            	var gridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
-                            	if(parseInt(selectRow)>0){
-                            		gridPanel.getSelectionModel().deselectAll(true);
-                                	gridPanel.getSelectionModel().select(parseInt(selectRow)-1, true);
-                            	}
-                            }
-                        },{
-                            xtype: 'form',
-                            id: 'OperationMaintenanceImportForm_Id',
-                            width: 500,
-                            bodyPadding: 0,
-                            frame: true,
-                            items: [{
-                                xtype: 'filefield',
-                                id: 'OperationMaintenanceImportFilefield_Id',
-                                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-                                name: 'file',
-                                fieldLabel: loginUserLanguageResource.uploadFile,
-                                labelWidth: (getLabelWidth(loginUserLanguageResource.uploadFile, loginUserLanguage)),
-                                width: '100%',
-                                msgTarget: 'side',
-                                allowBlank: true,
-                                anchor: '100%',
-                                draggable: true,
-                                buttonText: loginUserLanguageResource.selectUploadFile,
-                                accept: '.json',
-                                listeners: {
-                                    change: function (cmp) {
-                                    	submitOperationMaintenanceImportedFile();
-                                    }
-                                }
-                    	    }]
-                		},{
-                        	xtype: 'label',
-                        	id: 'OperationMaintenanceImportDataTipLabel_Id',
-                        	hidden:true,
-                        	html: ''
-                        },'->',{
-                			xtype: 'button',
-                            text: loginUserLanguageResource.save,
-                            iconCls: 'save',
-                            id:'OperationMaintenanceImportDataSaveBtn_Id',
-                            disabled: true,
-                            handler: function (v, o) {
-                                var gridStore = Ext.getCmp("ImportBackupContentGridPanel_Id").getStore();
-                                var count = gridStore.getCount();
-                                var overlayCount = 0;
-                                var collisionCount = 0;
-                                for (var i = 0; i < count; i++) {
-                                    if (gridStore.getAt(i).data.saveSign == 1) {
-                                        overlayCount++;
-                                    } else if (gridStore.getAt(i).data.saveSign == 2) {
-                                        collisionCount++;
-                                    }
-                                }
-                                if (overlayCount > 0 || collisionCount > 0) {
-                                	var info = loginUserLanguageResource.collisionInfo4+"?";
-                                    Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
-                                        if (btn == "yes") {
-                                            saveBackupsData();
-                                        }
-                                    });
-                                } else {
-                                    saveBackupsData();
-                                }
-                            }
-                		},{
-                            xtype: 'button',
-                            text: '下一步',
-                            iconCls: 'backwards',
-                            id:'OperationMaintenanceImportDataBackwardBtn_Id',
-                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-                            handler: function (v, o) {
-                            	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
-                            	var gridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
-                            	if(parseInt(selectRow)>=0){
-                            		gridPanel.getSelectionModel().deselectAll(true);
-                                	gridPanel.getSelectionModel().select(parseInt(selectRow)+1, true);
-                            	}
-                            }
                         }]
-        			}]
+	        		},{
+        				title:'导入',
+        				id:'OperationMaintenanceDataImportTabPanel_Id',
+            			layout: 'border',
+            			items:[{
+            				region: 'west',
+            				title:"功能列表",
+            				width:'20%',
+            				layout: 'fit',
+            				id:'BatchImportModuleTreePanel_Id'
+            			},{
+            				region: 'center',
+            				title:'备份数据导入',
+            				layout: 'fit',
+            				id:'OperationMaintenanceDataImportPanel_Id',
+            				tbar:[{
+                                xtype: 'button',
+                                text: '上一步',
+                                iconCls: 'forward',
+                                id:'OperationMaintenanceImportDataForwardBtn_Id',
+                                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                                handler: function (v, o) {
+                                	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
+                                	var gridPanel = Ext.getCmp("BatchImportModuleTreeGridPanel_Id");
+                                	if(parseInt(selectRow)>0){
+                                		gridPanel.getSelectionModel().deselectAll(true);
+                                    	gridPanel.getSelectionModel().select(parseInt(selectRow)-1, true);
+                                	}
+                                }
+                            },{
+                                xtype: 'form',
+                                id: 'OperationMaintenanceImportForm_Id',
+                                width: 500,
+                                bodyPadding: 0,
+                                frame: true,
+                                items: [{
+                                    xtype: 'filefield',
+                                    id: 'OperationMaintenanceImportFilefield_Id',
+                                    disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                                    name: 'file',
+                                    fieldLabel: loginUserLanguageResource.uploadFile,
+                                    labelWidth: (getLabelWidth(loginUserLanguageResource.uploadFile, loginUserLanguage)),
+                                    width: '100%',
+                                    msgTarget: 'side',
+                                    allowBlank: true,
+                                    anchor: '100%',
+                                    draggable: true,
+                                    buttonText: loginUserLanguageResource.selectUploadFile,
+                                    accept: '.json',
+                                    listeners: {
+                                        change: function (cmp) {
+                                        	submitOperationMaintenanceImportedFile();
+                                        }
+                                    }
+                        	    }]
+                    		},{
+                            	xtype: 'label',
+                            	id: 'OperationMaintenanceImportDataTipLabel_Id',
+                            	hidden:true,
+                            	html: ''
+                            },'->',{
+                    			xtype: 'button',
+                                text: loginUserLanguageResource.save,
+                                iconCls: 'save',
+                                id:'OperationMaintenanceImportDataSaveBtn_Id',
+                                disabled: true,
+                                handler: function (v, o) {
+                                    var gridStore = Ext.getCmp("ImportBackupContentGridPanel_Id").getStore();
+                                    var count = gridStore.getCount();
+                                    var overlayCount = 0;
+                                    var collisionCount = 0;
+                                    for (var i = 0; i < count; i++) {
+                                        if (gridStore.getAt(i).data.saveSign == 1) {
+                                            overlayCount++;
+                                        } else if (gridStore.getAt(i).data.saveSign == 2) {
+                                            collisionCount++;
+                                        }
+                                    }
+                                    if (overlayCount > 0 || collisionCount > 0) {
+                                    	var info = loginUserLanguageResource.collisionInfo4+"?";
+                                        Ext.Msg.confirm(loginUserLanguageResource.tip, info, function (btn) {
+                                            if (btn == "yes") {
+                                                saveBackupsData();
+                                            }
+                                        });
+                                    } else {
+                                        saveBackupsData();
+                                    }
+                                }
+                    		},{
+                                xtype: 'button',
+                                text: '下一步',
+                                iconCls: 'backwards',
+                                id:'OperationMaintenanceImportDataBackwardBtn_Id',
+                                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                                handler: function (v, o) {
+                                	var selectRow=Ext.getCmp("BatchExportModuleDataListSelectRow_Id").getValue();
+                                	var gridPanel = Ext.getCmp("BatchImportModuleTreeGridPanel_Id");
+                                	if(parseInt(selectRow)>=0){
+                                		gridPanel.getSelectionModel().deselectAll(true);
+                                    	gridPanel.getSelectionModel().select(parseInt(selectRow)+1, true);
+                                	}
+                                }
+                            }]
+            			}]
+        			}],
+	        		listeners: {
+	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+	        				oldCard.setIconCls(null);
+	        				newCard.setIconCls('check3');
+	        			},
+	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
+	    					if(newCard.id=="BatchExportModuleTreePanel_Id"){
+	    						var treeGridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
+	    			            if (isNotVal(treeGridPanel)) {
+	    			            	treeGridPanel.getStore().load();
+	    			            }else{
+	    			            	Ext.create("AP.store.operationMaintenance.BatchExportModuleTreeInfoStore");
+	    			            }
+	    					}else if(newCard.id=="OperationMaintenanceDataImportTabPanel_Id"){
+	    						var treeGridPanel = Ext.getCmp("BatchImportModuleTreeGridPanel_Id");
+	    			            if (isNotVal(treeGridPanel)) {
+	    			            	treeGridPanel.getStore().load();
+	    			            }else{
+	    			            	Ext.create("AP.store.operationMaintenance.BatchImportModuleTreeInfoStore");
+	    			            }
+	    					}
+	    				}
+	    			}
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -704,13 +740,23 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
     					if(newCard.id=="OperationMaintenanceBasicInfoPanel_Id"){
     						loadOemConfigInfo();
-    					}else if(newCard.id=="OperationMaintenanceBackupsInfoPanel_Id"){
-    						var treeGridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
-    			            if (isNotVal(treeGridPanel)) {
-    			            	treeGridPanel.getStore().load();
-    			            }else{
-    			            	Ext.create("AP.store.operationMaintenance.BatchExportModuleTreeInfoStore");
-    			            }
+    					}else if(newCard.id=="OperationMaintenanceBackupsInfoTabPanel_Id"){
+    						var importExportActiveId = Ext.getCmp(newCard.id).getActiveTab().id;
+    						if(importExportActiveId=="BatchExportModuleTreePanel_Id"){
+	    						var treeGridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
+	    			            if (isNotVal(treeGridPanel)) {
+	    			            	treeGridPanel.getStore().load();
+	    			            }else{
+	    			            	Ext.create("AP.store.operationMaintenance.BatchExportModuleTreeInfoStore");
+	    			            }
+	    					}else if(importExportActiveId=="OperationMaintenanceDataImportTabPanel_Id"){
+	    						var treeGridPanel = Ext.getCmp("BatchImportModuleTreeGridPanel_Id");
+	    			            if (isNotVal(treeGridPanel)) {
+	    			            	treeGridPanel.getStore().load();
+	    			            }else{
+	    			            	Ext.create("AP.store.operationMaintenance.BatchImportModuleTreeInfoStore");
+	    			            }
+	    					}
     					}
     				}
     			}
@@ -953,7 +999,7 @@ function exportModuleBackupData(){
 	var url = context + '/moduleManagerController/exportModuleCompleteData';
 	var timestamp=new Date().getTime();
 	var key='exportModuleCompleteData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.moduleExportFileName)) 
     + '&key='+key;
@@ -965,7 +1011,7 @@ function exportDataDictionaryBackupData(){
 	var url = context + '/systemdataInfoController/exportDataDictionaryCompleteData';
 	var timestamp=new Date().getTime();
 	var key='exportDataDictionaryCompleteData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.dataDictionaryExportFileName)) 
     + '&key='+key;
@@ -978,7 +1024,7 @@ function exportOrganizationBackupData(){
 	
 	var timestamp=new Date().getTime();
 	var key='exportOrganizationCompleteData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.organizationExportFileName)) 
     + '&key='+key;
@@ -990,7 +1036,7 @@ function exportUserBackupData(){
 	var url = context + '/userManagerController/exportUserCompleteData';
 	var timestamp=new Date().getTime();
 	var key='exportUserCompleteData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.userExportFileName)) 
     + '&key='+key;
@@ -1002,7 +1048,7 @@ function exportRoleBackupData(){
 	var url = context + '/roleManagerController/exportRoleCompleteData';
 	var timestamp=new Date().getTime();
 	var key='exportRoleCompleteData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
     + '&key='+key;
@@ -1014,7 +1060,7 @@ function exportProtocolBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolData';
 	var timestamp=new Date().getTime();
 	var key='exportProtocolBackupData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportProtocol)) 
     + '&key='+key;
@@ -1026,7 +1072,7 @@ function exportAcqUnitBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAcqUnitData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolAcqUnitData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqUnit)) 
     + '&key='+key;
@@ -1038,7 +1084,7 @@ function exportDisplayUnitBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolDisplayUnitData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolDisplayUnitData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayUnit)) 
     + '&key='+key;
@@ -1050,7 +1096,7 @@ function exportAlarmUnitBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAlarmUnitData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolAlarmUnitData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmUnit)) 
     + '&key='+key;
@@ -1062,7 +1108,7 @@ function exportReportUnitBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllReportUnitData';
 	var timestamp=new Date().getTime();
 	var key='exportAllReportUnitData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportUnit)) 
     + '&key='+key;
@@ -1074,7 +1120,7 @@ function exportAcqInstanceBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAcqInstanceData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolAcqInstanceData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqInstance)) 
     + '&key='+key;
@@ -1086,7 +1132,7 @@ function exportDisplayInstanceBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolDisplayInstanceData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolDisplayInstanceData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayInstance)) 
     + '&key='+key;
@@ -1098,7 +1144,7 @@ function exportAlarmInstanceBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllProtocolAlarmInstanceData';
 	var timestamp=new Date().getTime();
 	var key='exportAllProtocolAlarmInstanceData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmInstance)) 
     + '&key='+key;
@@ -1110,7 +1156,7 @@ function exportReportInstanceBackupData(){
 	var url = context + '/acquisitionUnitManagerController/exportAllReportInstanceData';
 	var timestamp=new Date().getTime();
 	var key='exportReportInstanceBackupData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportInstance)) 
     + '&key='+key;
@@ -1123,7 +1169,7 @@ function exportPrimaryDeviceBackupData(){
 	
 	var timestamp=new Date().getTime();
 	var key='exportPrimaryDeviceBackupData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	
 	
 	var param = "&recordCount=10000" 
@@ -1142,7 +1188,7 @@ function exportAuxiliaryDeviceBackupData(){
 	
 	var timestamp=new Date().getTime();
 	var key='exportAuxiliaryDeviceBackupData'+'_'+timestamp;
-	var maskPanelId='OperationMaintenanceBackupsInfoPanel_Id';
+	var maskPanelId='BatchExportModuleTreePanel_Id';
 	
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(fileName)) 

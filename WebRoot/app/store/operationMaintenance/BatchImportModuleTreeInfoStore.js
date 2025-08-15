@@ -1,6 +1,6 @@
-Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
+Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.batchExportModuleTreeInfoStore',
+    alias: 'widget.batchImportModuleTreeInfoStore',
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -24,11 +24,10 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
         },
         load: function (store, options, eOpts) {
         	var get_rawData = store.proxy.reader.rawData;
-        	var gridPanel = Ext.getCmp("BatchExportModuleTreeGridPanel_Id");
+        	var gridPanel = Ext.getCmp("BatchImportModuleTreeGridPanel_Id");
             if (!isNotVal(gridPanel)) {
             	gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "BatchExportModuleTreeGridPanel_Id",
-//                    layout: "fit",
+                    id: "BatchImportModuleTreeGridPanel_Id",
                     border: false,
                     animate: true,
                     enableDD: false,
@@ -50,6 +49,7 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
                     	disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     	dataIndex: 'checked',
                     	width: 30,
+                    	hidden:true,
                         renderer: function(value, meta, record) {
                             var disabled = record.get('disabled');
                             if (disabled) {
@@ -93,15 +93,68 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
+                        	Ext.getCmp("BatchExportModuleDataListSelectRow_Id").setValue(index);
+                        	Ext.getCmp("BatchExportModuleDataListSelectCode_Id").setValue(record.data.code);
+                        	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+                        	var showInfo='导入';
+                        	var showInfo="【<font color=red>"+record.data.text+"</font>】"+showInfo+"&nbsp;"
                         	
+                        	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').setTitle(showInfo);
+                        	
+                        	
+                        	var records = Ext.getCmp("BatchImportModuleTreeGridPanel_Id").store.data.items.length;
+                        	if(index==records-1){
+                        		Ext.getCmp('OperationMaintenanceImportDataBackwardBtn_Id').disable();
+                        		Ext.getCmp('OperationMaintenanceImportDataForwardBtn_Id').enable();
+                        	}else if(index==0){
+                        		Ext.getCmp('OperationMaintenanceImportDataForwardBtn_Id').disable();
+                        	}else{
+                        		Ext.getCmp('OperationMaintenanceImportDataForwardBtn_Id').enable();
+                        		Ext.getCmp('OperationMaintenanceImportDataBackwardBtn_Id').enable();
+                        	}
+                        	Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+                        	Ext.getCmp('OperationMaintenanceImportDataTipLabel_Id').hide();
+                        	
+                        	var verification=importedFilePermissionVerification(record.data.code);
+                        	if(verification.sign){
+                        		Ext.getCmp('OperationMaintenanceImportDataTipLabel_Id').setHtml('');
+                        		Ext.getCmp('OperationMaintenanceImportDataTipLabel_Id').hide();
+                        		
+                        		Ext.getCmp('OperationMaintenanceImportForm_Id').enable();
+                        	}else{
+                        		Ext.getCmp('OperationMaintenanceImportDataTipLabel_Id').setHtml("【<font color=red>"+verification.info+"</font>】");
+                        		Ext.getCmp('OperationMaintenanceImportDataTipLabel_Id').show();
+                        		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();
+                        	}
+                        	
+                        	if(record.data.disabled){
+                        		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();
+                        	}else{
+                        		Ext.getCmp('OperationMaintenanceImportForm_Id').enable();
+                        	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	
                         }
                     }
 
                 });
-                var panel = Ext.getCmp("BatchExportModuleTreePanel_Id");
+                var panel = Ext.getCmp("BatchImportModuleTreePanel_Id");
+                
                 panel.add(gridPanel);
+            }
+            if(get_rawData.totalCount>0){
+    			gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(0, true);
+            }else{
+            	Ext.getCmp("BatchExportModuleDataListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("BatchExportModuleDataListSelectCode_Id").setValue("");
+            	
+            	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').setTitle('导入');
+            	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+            	Ext.getCmp('OperationMaintenanceImportDataForwardBtn_Id').disable();
+        		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();
+        		Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        		Ext.getCmp('OperationMaintenanceImportDataBackwardBtn_Id').disable();
             }
         }
     }

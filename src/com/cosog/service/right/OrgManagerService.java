@@ -332,7 +332,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 	}
 	
 	public void addOrganization(Org org) throws Exception {
-		getBaseDao().addObject(org);
+		getBaseDao().addObjectFlush(org);
 	}
 	
 	public Integer addOrg2(Org org) throws Exception {
@@ -563,7 +563,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 							}else{
 								String parentSql="select t.org_id from tbl_org t "
 										+ "where t.org_code='"+e.getOrgParentId()+"' "
-										+ "or (t.org_name_zh_cn='"+e.getOrgName_zh_CN()+"' and t.org_name_en='"+e.getOrgName_en()+"' and t.org_name_ru='"+e.getOrgName_ru()+"')";
+										+ "or (t.org_name_zh_cn='"+parentNode.getOrgName_zh_CN()+"' and t.org_name_en='"+parentNode.getOrgName_en()+"' and t.org_name_ru='"+parentNode.getOrgName_ru()+"')";
 								List<?> parentOrgList=this.findCallSql(parentSql);
 								if(parentOrgList.size()>0){
 									org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
@@ -574,7 +574,9 @@ public class OrgManagerService<T> extends BaseService<T> {
 							if(org.getOrgParent()>0){
 								try {
 									this.addOrganization(org);
+									e.setMsg(languageResourceMap.get("addSuccessfully"));
 								} catch (Exception e1) {
+									e.setMsg(languageResourceMap.get("addFailure"));
 									e1.printStackTrace();
 								}
 							}else{
@@ -603,10 +605,13 @@ public class OrgManagerService<T> extends BaseService<T> {
 								org.setOrgParent(-1);
 							}
 						}
-						if(org.getOrgParent()>0){
+						if(org.getOrgParent()>=0){
 							try {
 								this.modifyOrganization(org);
+								e.setMsg(languageResourceMap.get("updateSuccessfully"));
+								e.setSaveSign(0);
 							} catch (Exception e1) {
+								e.setMsg(languageResourceMap.get("updateFailure"));
 								e1.printStackTrace();
 							}
 						}else{

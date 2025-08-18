@@ -169,6 +169,11 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@Transactional
+	public <T> Serializable addObjectFlush(T clazz) {
+		return this.saveFlush(clazz);
+	}
+	
+	@Transactional
 	public Integer saveEntity(Org entity) {
         // 调用 HibernateTemplate 的 save() 方法
         return (Integer) getHibernateTemplate().save(entity);
@@ -950,6 +955,26 @@ public class BaseDao extends HibernateDaoSupport {
 	@Transactional
 	public Serializable save(Object object) {
 		return getSessionFactory().getCurrentSession().save(object);
+	}
+	
+	public Serializable saveFlush(Object object) {
+//		Session session=getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().openSession(); 
+		Transaction transaction=null;
+		Serializable serializable=null;
+		try {
+			transaction = session.beginTransaction(); // 开启新事务
+			serializable=session.save(object);
+	        session.flush();            // 强制同步到数据库
+	        transaction.commit();       // 提交事务（立即生效）
+	        session.clear();            // 清除缓存，避免内存溢出
+	    } catch (Exception e) {
+	        if (transaction != null) transaction.rollback();
+	        throw e;
+	    } finally {
+	        session.close(); // 必须关闭 Session
+	    }
+		return serializable;
 	}
 
 	public <T> void saveOrUpdateObject(T clazz) {
@@ -2010,6 +2035,10 @@ public class BaseDao extends HibernateDaoSupport {
 	 *            传入的对象
 	 */
 	public <T> void updateObject(T clazz) {
+		this.getHibernateTemplate().update(clazz);
+	}
+	
+	public <T> void updateObjectFlush(T clazz) {
 		this.getHibernateTemplate().update(clazz);
 	}
 
@@ -4608,5 +4637,42 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 			conn.close();
 		}
+	}
+	
+	public boolean resetSequence(String table,String column,String sequence) throws SQLException{
+		boolean r =true;
+		try {
+			String sql="select max(t."+column+") from "+table+" t";
+			List<?> list= findCallSql(sql);
+			if(list!=null && list.size()>0){
+				long newValue=StringManagerUtils.stringToLong(list.get(0).toString());
+				sql = "SELECT " + sequence + ".CURRVAL FROM DUAL";
+				List<?> currentValueList= findCallSql(sql);
+				if(currentValueList!=null && currentValueList.size()>0){
+					long currentValue=StringManagerUtils.stringToLong(currentValueList.get(0).toString())+1;
+					long increment = newValue - currentValue - 1;
+		            if (increment > 0) {
+		            	//临时修改序列步长
+		                String alterSql = "ALTER SEQUENCE " + sequence + " INCREMENT BY " + increment;
+		                updateOrDeleteBySql(alterSql);
+
+		                //获取下一个值（使序列前进到目标值）
+		                String nextValSql = "SELECT " + sequence + ".NEXTVAL FROM DUAL";
+		                List<?> nextValueList= findCallSql(nextValSql);
+		                
+
+		                // 5. 恢复原始步长（通常为1）
+		                String resetSql = "ALTER SEQUENCE " + sequence + " INCREMENT BY 1";
+		                updateOrDeleteBySql(resetSql);
+		            }
+				}
+			}
+		}catch (Exception e) {
+			r =false;
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return r;
 	}
 }

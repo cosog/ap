@@ -41,6 +41,7 @@ public class Org {
 //        allocationSize = 1,
 //        initialValue = 1
 //    )
+	@GeneratedValue
 	@Column(name = "org_id")
 	public Integer getOrgId() {
 		return orgId;

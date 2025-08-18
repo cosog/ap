@@ -77,6 +77,8 @@ function UpdatemoduleDataInfoSubmitBtnForm() {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
                         "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
                 }
+                
+                Ext.getCmp("MainIframeView_Id").getStore().load();//右侧模块导航数刷新
             },
             failure: function () {
                 Ext.getCmp("module_addwin_Id").getEl().unmask();

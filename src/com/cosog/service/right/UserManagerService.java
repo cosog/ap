@@ -430,7 +430,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void addUserInfo(User user) throws Exception {
-		this.getBaseDao().addObject(user);
+		this.getBaseDao().addObjectFlush(user);
 	}
 
 	/** <p>用户信息修改方法</p>
@@ -968,13 +968,18 @@ public class UserManagerService<T> extends BaseService<T> {
 			if(exportUserData.getSaveSign()==0){
 				try {
 					this.addUserInfo(u);
+					exportUserData.setMsg(languageResourceMap.get("addSuccessfully"));
 				} catch (Exception e) {
+					exportUserData.setMsg(languageResourceMap.get("addFailure"));
 					e.printStackTrace();
 				}
 			}else if(exportUserData.getSaveSign()==1){
 				try {
 					this.modifyUserInfo(u);
+					exportUserData.setMsg(languageResourceMap.get("updateSuccessfully"));
+					exportUserData.setSaveSign(0);
 				} catch (Exception e) {
+					exportUserData.setMsg(languageResourceMap.get("updateFailure"));
 					e.printStackTrace();
 				}
 			}

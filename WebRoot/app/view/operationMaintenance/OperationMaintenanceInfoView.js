@@ -705,6 +705,11 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                     	gridPanel.getSelectionModel().select(parseInt(selectRow)+1, true);
                                 	}
                                 }
+                            },{
+                            	id: 'OperationMaintenanceImportDataCheckSign_Id',
+                            	xtype: 'textfield',
+                                value: 1,
+                                hidden: true
                             }]
             			}]
         			}],
@@ -1766,6 +1771,9 @@ function saveBackupModuleFile(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+            Ext.getCmp("MainIframeView_Id").getStore().load();//右侧模块导航数刷新
+            
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
@@ -1788,6 +1796,7 @@ function saveBackupDataDictionaryFile(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
@@ -1810,6 +1819,9 @@ function saveBackupOrganizationFile(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            
+            Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
@@ -1832,6 +1844,7 @@ function saveBackupImportedRoleFile(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
@@ -1854,6 +1867,7 @@ function saveBackupUserFile(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
@@ -1875,6 +1889,7 @@ function saveProtocolBackupData(){
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);

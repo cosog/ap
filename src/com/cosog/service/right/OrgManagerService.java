@@ -543,7 +543,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			
+			this.getBaseDao().triggerDisabledOrEnabled("tbl_org", false);
 			for(ExportOrganizationData e:uploadOrganizationList){
 				if(e.getSaveSign()!=2){
 					if(e.getSaveSign()==0){
@@ -552,26 +552,28 @@ public class OrgManagerService<T> extends BaseService<T> {
 							e.setMsg(languageResourceMap.get("parentNodeNoExist"));
 						}else{
 							Org org=new Org();
-							org.setOrgCode(e.getOrgId()+"");
+							org.setOrgId(e.getOrgId());
+							org.setOrgCode(e.getOrgCode()+"");
 							org.setOrgName_zh_CN(e.getOrgName_zh_CN());
 							org.setOrgName_en(e.getOrgName_en());
 							org.setOrgName_ru(e.getOrgName_ru());
 							org.setOrgMemo(e.getOrgMemo());
 							org.setOrgSeq(StringManagerUtils.isNum(e.getOrgSeq())?StringManagerUtils.stringToInteger(e.getOrgSeq()):null);
-							if(e.getOrgParentId()==0){//根节点
-								org.setOrgParent(e.getOrgParentId());
-							}else{
-								String parentSql="select t.org_id from tbl_org t "
-										+ "where t.org_code='"+e.getOrgParentId()+"' "
-										+ "or (t.org_name_zh_cn='"+parentNode.getOrgName_zh_CN()+"' and t.org_name_en='"+parentNode.getOrgName_en()+"' and t.org_name_ru='"+parentNode.getOrgName_ru()+"')";
-								List<?> parentOrgList=this.findCallSql(parentSql);
-								if(parentOrgList.size()>0){
-									org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
-								}else{
-									org.setOrgParent(-1);
-								}
-							}
-							if(org.getOrgParent()>0){
+//							if(e.getOrgParentId()==0){//根节点
+//								org.setOrgParent(e.getOrgParentId());
+//							}else{
+//								String parentSql="select t.org_id from tbl_org t "
+//										+ "where t.org_code='"+e.getOrgParentId()+"' "
+//										+ "or (t.org_name_zh_cn='"+parentNode.getOrgName_zh_CN()+"' and t.org_name_en='"+parentNode.getOrgName_en()+"' and t.org_name_ru='"+parentNode.getOrgName_ru()+"')";
+//								List<?> parentOrgList=this.findCallSql(parentSql);
+//								if(parentOrgList.size()>0){
+//									org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
+//								}else{
+//									org.setOrgParent(-1);
+//								}
+//							}
+							org.setOrgParent(e.getOrgParentId());
+							if(org.getOrgParent()>=0){
 								try {
 									this.addOrganization(org);
 									e.setMsg(languageResourceMap.get("addSuccessfully"));
@@ -586,25 +588,26 @@ public class OrgManagerService<T> extends BaseService<T> {
 					}else{
 						Org org=new Org();
 						org.setOrgId(e.getOrgId());
-						org.setOrgCode(e.getOrgId()+"");
+						org.setOrgCode(e.getOrgCode()+"");
 						org.setOrgName_zh_CN(e.getOrgName_zh_CN());
 						org.setOrgName_en(e.getOrgName_en());
 						org.setOrgName_ru(e.getOrgName_ru());
 						org.setOrgMemo(e.getOrgMemo());
 						org.setOrgSeq(StringManagerUtils.isNum(e.getOrgSeq())?StringManagerUtils.stringToInteger(e.getOrgSeq()):null);
-						if(e.getOrgParentId()==0){//根节点
-							org.setOrgParent(e.getOrgParentId());
-						}else{
-							String parentSql="select t.org_id from tbl_org t "
-									+ "where t.org_code='"+e.getOrgParentId()+"' "
-									+ "or (t.org_name_zh_cn='"+e.getOrgName_zh_CN()+"' and t.org_name_en='"+e.getOrgName_en()+"' and t.org_name_ru='"+e.getOrgName_ru()+"')";
-							List<?> parentOrgList=this.findCallSql(parentSql);
-							if(parentOrgList.size()>0){
-								org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
-							}else{
-								org.setOrgParent(-1);
-							}
-						}
+//						if(e.getOrgParentId()==0){//根节点
+//							org.setOrgParent(e.getOrgParentId());
+//						}else{
+//							String parentSql="select t.org_id from tbl_org t "
+//									+ "where t.org_code='"+e.getOrgParentId()+"' "
+//									+ "or (t.org_name_zh_cn='"+e.getOrgName_zh_CN()+"' and t.org_name_en='"+e.getOrgName_en()+"' and t.org_name_ru='"+e.getOrgName_ru()+"')";
+//							List<?> parentOrgList=this.findCallSql(parentSql);
+//							if(parentOrgList.size()>0){
+//								org.setOrgParent(StringManagerUtils.stringToInteger(parentOrgList.get(0).toString()));
+//							}else{
+//								org.setOrgParent(-1);
+//							}
+//						}
+						org.setOrgParent(e.getOrgParentId());
 						if(org.getOrgParent()>=0){
 							try {
 								this.modifyOrganization(org);
@@ -620,6 +623,8 @@ public class OrgManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			this.getBaseDao().triggerDisabledOrEnabled("tbl_org", true);
+			this.getBaseDao().resetSequence("tbl_org", "org_id", "SEQ_ORG");
 		}
 		return r;
 	}

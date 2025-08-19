@@ -200,6 +200,10 @@ public class UserManagerController extends BaseController {
 				user.setLanguage(userRoleLanguageList.get(0));
 			}
 			
+			if(user.getUserNo()==null){
+				user.setUserNo(1);
+			}
+			
 			this.userService.addUser(user);
 			
 			List<String> userList=new ArrayList<String>();

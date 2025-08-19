@@ -4639,18 +4639,22 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 	}
 	
-	public boolean resetSequence(String table,String column,String sequence) throws SQLException{
+	public boolean resetSequence(String table,String column,String sequence){
 		boolean r =true;
 		try {
+			table=table.toUpperCase();
+			column=column.toUpperCase();
+			sequence=sequence.toUpperCase();
+			
 			String sql="select max(t."+column+") from "+table+" t";
 			List<?> list= findCallSql(sql);
-			if(list!=null && list.size()>0){
+			if(list!=null && list.size()>0 && list.get(0)!=null){
 				long newValue=StringManagerUtils.stringToLong(list.get(0).toString());
-				sql = "SELECT " + sequence + ".CURRVAL FROM DUAL";
+				sql = "SELECT " + sequence + ".NEXTVAL FROM DUAL";
 				List<?> currentValueList= findCallSql(sql);
 				if(currentValueList!=null && currentValueList.size()>0){
 					long currentValue=StringManagerUtils.stringToLong(currentValueList.get(0).toString())+1;
-					long increment = newValue - currentValue - 1;
+					long increment = newValue - currentValue +20;
 		            if (increment > 0) {
 		            	//临时修改序列步长
 		                String alterSql = "ALTER SEQUENCE " + sequence + " INCREMENT BY " + increment;
@@ -4675,4 +4679,32 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return r;
 	}
+	
+	public boolean triggerDisabledOrEnabled(String table,boolean enabled) {
+		boolean r =true;
+		try {
+			String dbUser=Config.getInstance().configFile.getAp().getDatasource().getUser().toUpperCase();
+			List<String> triggerNameList=new ArrayList<>();
+			String triggerSql="select t.trigger_name from all_triggers t "
+					+ " where t.OWNER='"+dbUser.toUpperCase()+"' "
+					+ " and t.triggering_event='INSERT' "
+					+ " and t.table_name='"+table.toUpperCase()+"'";
+			List<?> triggerQueryList=this.findCallSql(triggerSql);
+			for(int i=0;i<triggerQueryList.size();i++){
+				triggerNameList.add(triggerQueryList.get(i).toString());
+			}
+			
+			for(String triggerName:triggerNameList){
+				String triggerDisableSql="ALTER TRIGGER "+triggerName+" "+(enabled?"ENABLE":"DISABLE")+"";
+				this.updateOrDeleteBySql(triggerDisableSql);
+			}
+		}catch (Exception e) {
+			r =false;
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return r;
+	}
+	
 }

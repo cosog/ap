@@ -38,6 +38,7 @@ public class OperationMaintenanceController  extends BaseController {
 	@Autowired
 	private OperationMaintenanceService operationMaintenanceService;
 	
+	@SuppressWarnings("unused")
 	@RequestMapping("/loadOemConfigInfo")
 	public String loadOemConfigInfo() throws Exception {
 		String json = "";
@@ -54,6 +55,7 @@ public class OperationMaintenanceController  extends BaseController {
 		}else{
 			json="{\"success\":false}";
 		}
+		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

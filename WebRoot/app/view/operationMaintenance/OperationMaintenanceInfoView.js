@@ -1757,6 +1757,7 @@ function saveBackupsData(){
 }
 
 function saveBackupModuleFile(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/moduleManagerController/saveAllImportedModule',
         method: "POST",
@@ -1764,6 +1765,7 @@ function saveBackupModuleFile(){
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1776,12 +1778,14 @@ function saveBackupModuleFile(){
             
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupDataDictionaryFile(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/systemdataInfoController/saveAllImportedDataDictionary',
         method: "POST",
@@ -1789,6 +1793,7 @@ function saveBackupDataDictionaryFile(){
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1799,12 +1804,14 @@ function saveBackupDataDictionaryFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupOrganizationFile(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/orgManagerController/saveAllImportedOrganization',
         method: "POST",
@@ -1812,6 +1819,7 @@ function saveBackupOrganizationFile(){
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1824,12 +1832,14 @@ function saveBackupOrganizationFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupImportedRoleFile(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/roleManagerController/saveAllImportedRole',
         method: "POST",
@@ -1837,6 +1847,7 @@ function saveBackupImportedRoleFile(){
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1847,12 +1858,14 @@ function saveBackupImportedRoleFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupUserFile(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/userManagerController/saveAllImportedUser',
         method: "POST",
@@ -1860,6 +1873,7 @@ function saveBackupUserFile(){
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1870,18 +1884,22 @@ function saveBackupUserFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
+
 function saveProtocolBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
-        url: context + '/userManagerController/saveAllImportedUser',
+        url: context + '/acquisitionUnitManagerController/saveProtocolBackupData',
         method: "POST",
         params: {
         	
         },
         success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -1892,6 +1910,215 @@ function saveProtocolBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveAcqUnitBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveAcqUnitBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveDisplayUnitBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveDisplayUnitBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveAlarmUnitBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveAlarmUnitBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveReportUnitBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveReportUnitBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveAcqInstanceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveAcqInstanceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveDisplayInstanceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveDisplayInstanceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveAlarmInstanceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveAlarmInstanceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveReportInstanceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/acquisitionUnitManagerController/saveReportInstanceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });

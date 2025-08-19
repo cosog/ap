@@ -913,22 +913,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		Map<String,Integer> roleMap=new HashMap<>();
-		String roleSql="select t.role_name,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
-		List<?> roleList = this.findCallSql(roleSql);
-		for(int i=0;i<roleList.size();i++){
-			Object[] obj = (Object[]) roleList.get(i);
-			roleMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
-		}
-		
-		Map<String,Integer> currentUserMap=new HashMap<>();
-		String userSql="select t.user_id,t.user_no,t.role_id from tbl_user t ";
-		List<?> currentUserList = this.findCallSql(userSql);
-		for(int i=0;i<currentUserList.size();i++){
-			Object[] obj = (Object[]) currentUserList.get(i);
-			currentUserMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
-		}
-		
+		this.getBaseDao().triggerDisabledOrEnabled("tbl_user", false);
 		for(ExportUserData exportUserData:userList){
 			User u=new User();
 			u.setUserId(exportUserData.getUserId());
@@ -942,28 +927,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			u.setReceiveMail(exportUserData.getReceiveMail());
 			u.setReceiveSMS(exportUserData.getReceiveSMS());
 			u.setLanguage(exportUserData.getUserLanguage());
-			if(exportUserData.getUserId().equals(user.getUserId())){//当前登录用户
-				u.setUserType(user.getUserType());
-				u.setUserNo(user.getUserNo());
-			}else if(exportUserData.getSaveSign()==0){
-				if(roleMap.containsKey(exportUserData.getRoleName())){
-					u.setUserType(roleMap.get(exportUserData.getRoleName()));
-				}else{
-					u.setUserType(0);
-				}
-			}else if(exportUserData.getSaveSign()==1){
-				if(currentUserMap.containsKey(exportUserData.getUserId())){
-					u.setUserNo(currentUserMap.get(exportUserData.getUserId()));
-				}else{
-					u.setUserNo(exportUserData.getUserNo());
-				}
-				
-				if(roleMap.containsKey(exportUserData.getRoleName())){
-					u.setUserType(roleMap.get(exportUserData.getRoleName()));
-				}else{
-					u.setUserType(0);
-				}
-			}
+			u.setUserNo(exportUserData.getUserNo());
+			u.setUserType(exportUserData.getUserType());
 			
 			if(exportUserData.getSaveSign()==0){
 				try {
@@ -988,6 +953,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			userNoList.add(user.getUserNo()+"");
 			MemoryDataManagerTask.loadUserInfo(userNoList,0,"update");
 		}
+		this.getBaseDao().triggerDisabledOrEnabled("tbl_user", true);
+		this.getBaseDao().resetSequence("tbl_user", "user_no", "SEQ_USER");
 		return r;
 	}
 }

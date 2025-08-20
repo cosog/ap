@@ -123,7 +123,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                        },
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '是否发送模拟数据',
+    				                            fieldLabel : '发送模拟数据',
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -159,7 +159,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    items: [
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '是否显示图标',
+    				                            fieldLabel : '显示logo',
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -200,7 +200,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    items: [
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '是否打印日志',
+    				                            fieldLabel : '打印日志',
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -617,6 +617,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
             				title:'备份数据导入',
             				layout: 'fit',
             				id:'OperationMaintenanceDataImportPanel_Id',
+            				collapsible: true,
             				tbar:[{
                                 xtype: 'button',
                                 text: '上一步',
@@ -919,9 +920,9 @@ function submitOperationMaintenanceImportedFile(){
     }else if(code.toUpperCase()=='user'.toUpperCase()){
     	submitBackupUserFile();
     }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
-//    	submitAuxiliaryDeviceBackupData();
+    	submitAuxiliaryDeviceBackupData();
     }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
-//    	submitPrimaryDeviceBackupData();
+    	submitPrimaryDeviceBackupData();
     }else if(code.toUpperCase()=='protocol'.toUpperCase()){
     	submitProtocolBackupData();
     }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
@@ -1693,6 +1694,76 @@ function submitReportInstanceBackupData() {
     return false;
 };
 
+function submitAuxiliaryDeviceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/wellInformationManagerController/uploadAuxiliaryDeviceBackupData',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupAuxiliaryDeviceContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+            }
+        });
+    }
+    return false;
+};
+
+function submitPrimaryDeviceBackupData() {
+	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
+    var form = Ext.getCmp("OperationMaintenanceImportForm_Id");
+    if (form.isValid()) {
+        form.submit({
+            url: context + '/wellInformationManagerController/uploadPrimaryDeviceBackupData',
+            timeout: 1000 * 60 * 10,
+            method: 'post',
+            waitMsg: loginUserLanguageResource.uploadingFile+'...',
+            success: function (response, action) {
+                var result = action.result;
+                if (result.flag == true) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.loadSuccessfully);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').enable();
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadDataError);
+                    Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+                }
+
+                var gridPanel = Ext.getCmp("ImportBackupContentGridPanel_Id");
+                if (isNotVal(gridPanel)) {
+                	gridPanel.getStore().load();
+                } else {
+                    Ext.create('AP.store.operationMaintenance.ImportBackupPrimaryDeviceContentTreeInfoStore');
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.uploadFail + "</font>】");
+                Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+            }
+        });
+    }
+    return false;
+};
+
 adviceImportBackupDataCollisionInfoColor = function (val, o, p, e) {
     var saveSign = p.data.saveSign;
     var tipval = val;
@@ -1732,9 +1803,9 @@ function saveBackupsData(){
     }else if(code.toUpperCase()=='user'.toUpperCase()){
     	saveBackupUserFile();
     }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
-//    	saveAuxiliaryDeviceBackupData();
+    	saveAuxiliaryDeviceBackupData();
     }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
-//    	savePrimaryDeviceBackupData();
+    	savePrimaryDeviceBackupData();
     }else if(code.toUpperCase()=='protocol'.toUpperCase()){
     	saveProtocolBackupData();
     }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
@@ -2102,6 +2173,58 @@ function saveReportInstanceBackupData(){
 	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveReportInstanceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function saveAuxiliaryDeviceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/saveAuxiliaryDeviceBackupData',
+        method: "POST",
+        params: {
+        	
+        },
+        success: function (response) {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.success == true) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+            } else {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+            }
+            Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
+            Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
+        },
+        failure: function () {
+        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
+        }
+    });
+}
+
+function savePrimaryDeviceBackupData(){
+	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/savePrimaryDeviceBackupData',
         method: "POST",
         params: {
         	

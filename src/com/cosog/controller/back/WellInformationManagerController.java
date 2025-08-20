@@ -40,6 +40,8 @@ import com.cosog.model.AuxiliaryDeviceDetailsSaveData;
 import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceInformation;
+import com.cosog.model.ExportAuxiliaryDeviceData;
+import com.cosog.model.ExportPrimaryDeviceData;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PcpDeviceInformation;
@@ -58,6 +60,7 @@ import com.cosog.model.calculate.ResultStatusData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.drive.AcqAddrData;
+import com.cosog.model.drive.ExportAcqInstanceData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.SRPInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
@@ -855,6 +858,127 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/uploadAuxiliaryDeviceBackupData")
+	public String uploadAuxiliaryDeviceBackupData(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadAuxiliaryDeviceFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("AuxiliaryDevice".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportAuxiliaryDeviceData> uploadList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			        	String itemJson = gson.toJson(item);
+			        	try{
+				            ExportAuxiliaryDeviceData exportAuxiliaryDeviceData = gson.fromJson(itemJson, ExportAuxiliaryDeviceData.class);
+				            uploadList.add(exportAuxiliaryDeviceData);
+			        	}catch(Exception e){
+			        		System.out.println(itemJson);
+			    			e.printStackTrace();
+			    			continue;
+			    		}
+			            
+			        } 
+			        
+			        if(uploadList!=null){
+						flag=true;
+						session.setAttribute(key, uploadList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
+		}
+		
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUploadedAuxiliaryDeviceTreeData")
+	public String getUploadedAuxiliaryDeviceTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportAuxiliaryDeviceData> uploadList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		String key="uploadAuxiliaryDeviceFile"+(user!=null?user.getUserNo():0);
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadList=(List<ExportAuxiliaryDeviceData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = wellInformationManagerService.getUploadedAuxiliaryDeviceTreeData(uploadList,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAuxiliaryDeviceBackupData")
+	public String saveAuxiliaryDeviceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAuxiliaryDeviceFile"+(user!=null?user.getUserNo():0);
+		List<ExportAuxiliaryDeviceData> uploadList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadList=(List<ExportAuxiliaryDeviceData>) session.getAttribute(key);
+				if(uploadList!=null && uploadList.size()>0){
+					wellInformationManagerService.saveAuxiliaryDeviceBackupData(uploadList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getAuxiliaryDevice")
 	public String getAuxiliaryDevice() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1440,6 +1564,126 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/uploadPrimaryDeviceBackupData")
+	public String uploadPrimaryDeviceBackupData(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		StringBuffer result_json = new StringBuffer();
+		boolean flag=false;
+		String key="uploadPrimaryDeviceFile"+(user!=null?user.getUserNo():0);
+		
+		session.removeAttribute(key);
+		
+		String json = "";
+		String fileContent="";
+		if(files.length>0 && (!files[0].isEmpty())){
+			try{
+				byte[] buffer = files[0].getBytes();
+				fileContent = new String(buffer, "UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		String code="";
+		try{
+			Map<String, Object> result = gson.fromJson(fileContent, new TypeToken<Map<String, Object>>(){}.getType());
+			code =result.containsKey("Code")?((String) result.get("Code")):"";
+			if("PrimaryDevice".equalsIgnoreCase(code)){
+				if (result.containsKey("List")) {
+					List<ExportPrimaryDeviceData> uploadList=new ArrayList<>();
+					
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
+			        for (Map<String, Object> item : listData) {
+			        	String itemJson = gson.toJson(item);
+			        	try{
+			        		ExportPrimaryDeviceData exportDeviceData = gson.fromJson(itemJson, ExportPrimaryDeviceData.class);
+				            uploadList.add(exportDeviceData);
+			        	}catch(Exception e){
+			        		System.out.println(itemJson);
+			    			e.printStackTrace();
+			    			continue;
+			    		}
+			        } 
+			        
+			        if(uploadList!=null){
+						flag=true;
+						session.setAttribute(key, uploadList);
+					}
+				}
+			}
+		}catch(Exception e){
+			flag=false;
+			e.printStackTrace();
+		}
+		
+		result_json.append("{ \"success\":true,\"flag\":"+flag+"}");
+		
+		json=result_json.toString();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+
+
+	@RequestMapping("/getUploadedPrimaryDeviceTreeData")
+	public String getUploadedPrimaryDeviceTreeData() throws IOException {
+		HttpSession session=request.getSession();
+		List<ExportPrimaryDeviceData> uploadList=null;
+		User user = (User) session.getAttribute("userLogin");
+		String language=user!=null?user.getLanguageName():"";
+		String key="uploadPrimaryDeviceFile"+(user!=null?user.getUserNo():0);
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadList=(List<ExportPrimaryDeviceData>) session.getAttribute(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		String json = wellInformationManagerService.getUploadedPrimaryDeviceTreeData(uploadList,user);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/savePrimaryDeviceBackupData")
+	public String savePrimaryDeviceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadPrimaryDeviceFile"+(user!=null?user.getUserNo():0);
+		List<ExportPrimaryDeviceData> uploadList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadList=(List<ExportPrimaryDeviceData>) session.getAttribute(key);
+				if(uploadList!=null && uploadList.size()>0){
+					wellInformationManagerService.savePrimaryDeviceBackupData(uploadList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	/**
 	 * <p>

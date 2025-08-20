@@ -1,6 +1,7 @@
 package com.cosog.service.back;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -14,14 +15,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionUnitGroup;
@@ -30,6 +37,10 @@ import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.Code;
 import com.cosog.model.DeviceInformation;
+import com.cosog.model.ExportAuxiliaryDeviceData;
+import com.cosog.model.ExportAuxiliaryDeviceData.AdditionalInformation;
+import com.cosog.model.ExportDataDictionary;
+import com.cosog.model.ExportUserData;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PcpDeviceInformation;
@@ -39,6 +50,8 @@ import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
+import com.cosog.model.ExportDataDictionary.DataDictionaryItem;
+import com.cosog.model.ExportPrimaryDeviceData;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
@@ -49,6 +62,8 @@ import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPDeviceInfo;
 import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.data.DataDictionary;
+import com.cosog.model.data.DataitemsInfo;
+import com.cosog.model.data.SystemdataInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceHandsontableChangedData;
@@ -61,7 +76,11 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.Config;
+import com.cosog.utils.Constants;
+import com.cosog.utils.DateUtils;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.LicenseMap;
 import com.cosog.utils.Page;
@@ -1607,7 +1626,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String sql = "select t.id,t.orgid,o.org_name_"+language+" as orgName,t.devicetype,d.name_"+language+" as deviceTypeName,"//0~4
 				+ " t.devicename,t.applicationscenarios,t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"//5~11
-				+ " t.instancecode,t2.name as instanceName,t.displayinstancecode,t3.name as displayinstanceName,t.alarminstancecode,t4.name as alarminstanceName,t.reportinstancecode,t5.code as reportinstanceName," //12~19
+				+ " t.instancecode,t2.name as instanceName,"
+				+ " t.displayinstancecode,t3.name as displayinstanceName,"
+				+ " t.alarminstancecode,t4.name as alarminstanceName,"
+				+ " t.reportinstancecode,t5.name as reportinstanceName," //12~19
 				+ " t.videokeyid1,t.videourl1,t.videokeyid2,t.videourl2," //20~23
 				+ " t.status,t.calculatetype,t.sortnum,to_char(t.commissioningdate,'yyyy-mm-dd hh24:mi:ss'),"//24~27
 				+ " t.productiondata,t.balanceinfo,t.stroke,t.constructiondata"
@@ -1623,7 +1645,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.id=t2.deviceid"
 				+ " and t.orgid in ("+orgId+")";
 		
-		String auxiliaryDeviceSql="select t.id,t3.name,t3.manufacturer,t3.model,t3.id as auxiliaryDeviceId"
+		String auxiliaryDeviceSql="select t.id,t3.id as tbl_auxiliaryDeviceId,t3.name,t3.manufacturer,t3.model,t3.id as auxiliaryDeviceId"
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
 				+ " and t.orgid in ("+orgId+")";
@@ -1656,7 +1678,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"DeviceTypeName\":\""+obj[4]+"\",");
 			
 			result_json.append("\"DeviceName\":\""+obj[5]+"\",");
-			result_json.append("\"ApplicationScenarios\":\""+obj[6]+"\",");
+			result_json.append("\"ApplicationScenarios\":"+obj[6]+",");
 			result_json.append("\"ApplicationScenariosName\":\""+(codeMap.get(obj[6]+"")!=null?codeMap.get(obj[6]+"").getItemname():"")+"\",");
 			result_json.append("\"TCPType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 			result_json.append("\"SignInId\":\""+obj[8]+"\",");
@@ -1681,8 +1703,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"VideoKeyId2\":\""+obj[22]+"\",");
 			result_json.append("\"VideoUrl2\":\""+obj[23]+"\",");
 			
-			result_json.append("\"Status\":\""+obj[24]+"\",");
-			result_json.append("\"CalculateType\":\""+calculateType+"\",");
+			result_json.append("\"Status\":"+obj[24]+",");
+			result_json.append("\"CalculateType\":"+calculateType+",");
 			result_json.append("\"SortNum\":\""+obj[26]+"\",");
 			result_json.append("\"CommissioningDate\":\""+obj[27]+"\"");
 			
@@ -1738,9 +1760,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				Object[] auxiliaryDeviceObj = (Object[]) auxiliaryDeviceList.get(j);
 				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(auxiliaryDeviceObj[0]+"")){
 					result_json.append("{");
-					result_json.append("\"Name\":\""+auxiliaryDeviceObj[1]+"\",");
-					result_json.append("\"Manufacturer\":\""+auxiliaryDeviceObj[2]+"\",");
-					result_json.append("\"Model\":\""+auxiliaryDeviceObj[3]+"\"");
+					result_json.append("\"Id\":"+auxiliaryDeviceObj[1]+",");
+					result_json.append("\"Name\":\""+auxiliaryDeviceObj[2]+"\",");
+					result_json.append("\"Manufacturer\":\""+auxiliaryDeviceObj[3]+"\",");
+					result_json.append("\"Model\":\""+auxiliaryDeviceObj[4]+"\"");
 					result_json.append("},");
 				}
 			}
@@ -3994,8 +4017,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String deviceId=obj[0]+"";
+			String sort=obj[7]+"";
 			String specificType=obj[8]+"";
-			String prtf="[]";
+			sort=StringManagerUtils.isNum(sort)?sort:"1";
+			specificType=StringManagerUtils.isNum(specificType)?specificType:"0";
+			String prtf="{}";
 			if(StringManagerUtils.stringToInteger(specificType)==1 && obj[9]!=null){
 				try {
 					SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
@@ -4006,7 +4032,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				}
 			}
 			if(!StringManagerUtils.isNotNull(prtf)){
-				prtf="[]";
+				prtf="{}";
 			}
 			result_json.append("{\"Id\":"+deviceId+",");
 			result_json.append("\"DeviceType\":"+obj[1]+",");
@@ -4015,8 +4041,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"Manufacturer\":\""+obj[4]+"\",");
 			result_json.append("\"Model\":\""+obj[5]+"\",");
 			result_json.append("\"Remark\":\""+obj[6]+"\",");
-			result_json.append("\"Sort\":\""+obj[7]+"\",");
-			result_json.append("\"SpecificType\":\""+specificType+"\"");
+			result_json.append("\"Sort\":"+sort+",");
+			result_json.append("\"SpecificType\":"+specificType+"");
 			if(StringManagerUtils.stringToInteger(specificType)==1){
 				result_json.append(",\"PRTF\":"+prtf+"");
 			}
@@ -4250,5 +4276,340 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			applicationScenarios=0;
 		}
 		return applicationScenarios;
+	}
+	
+	public String getUploadedAuxiliaryDeviceTreeData(List<ExportAuxiliaryDeviceData> uploadList,User user) throws IOException {
+		StringBuffer result_json = new StringBuffer();
+		String orgIds=user!=null?user.getUserOrgIds():"";
+		String deviceTypes=user!=null?user.getDeviceTypeIds():"0";
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		
+		String columns=	"[]";
+		
+		
+		List<String> overlayList=new ArrayList<>();
+		List<String> collisionList=new ArrayList<>();
+		
+		
+		String overlaySql="select t.id from TBL_AUXILIARYDEVICE t where t.type in ("+deviceTypes+")";
+		String collisionSql="select t.id from TBL_AUXILIARYDEVICE t where t.type not in ("+deviceTypes+")";
+		List<?> overlayQueryList = this.findCallSql(overlaySql);
+		List<?> collisionQueryList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayQueryList.size();i++){
+			overlayList.add(overlayQueryList.get(i).toString());
+		}
+		for(int i=0;i<collisionQueryList.size();i++){
+			collisionList.add(collisionQueryList.get(i).toString());
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+uploadList.size()+",\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		for (ExportAuxiliaryDeviceData exportData:uploadList) {
+			
+			if(StringManagerUtils.existOrNot(overlayList, exportData.getId()+"", true)){
+				exportData.setSaveSign(1);
+				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionList, exportData.getId()+"", true)){
+				exportData.setSaveSign(2);
+				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+			
+			result_json.append("{\"id\":\""+exportData.getId()+"\",");
+			result_json.append("\"specificType\":\""+exportData.getSpecificType()+"\",");
+			result_json.append("\"name\":\""+exportData.getDeviceName()+"\",");
+			result_json.append("\"manufacturer\":\""+exportData.getManufacturer()+"\",");
+			result_json.append("\"model\":\""+exportData.getModel()+"\",");
+			result_json.append("\"remark\":\""+exportData.getRemark()+"\",");
+			result_json.append("\"sort\":\""+exportData.getSort()+"\",");
+			result_json.append("\"msg\":\""+exportData.getMsg()+"\",");
+			result_json.append("\"saveSign\":\""+exportData.getSaveSign()+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int saveAuxiliaryDeviceBackupData(List<ExportAuxiliaryDeviceData> uploadList,User user) {
+		int result=0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Gson gson = new Gson();
+		
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_AUXILIARYDEVICE", false);
+		for(ExportAuxiliaryDeviceData exportAuxiliaryDeviceData:uploadList){
+			if(exportAuxiliaryDeviceData.getSaveSign()!=2){
+				
+				if(exportAuxiliaryDeviceData.getSaveSign()==1){
+					String deleteAddInfoSql="delete from TBL_AUXILIARYDEVICEADDINFO t where t.deviceid="+exportAuxiliaryDeviceData.getId();
+					this.getBaseDao().updateOrDeleteBySql(deleteAddInfoSql);
+					
+					
+					String updateSql="update TBL_AUXILIARYDEVICE t set "
+							+ " t.name='"+exportAuxiliaryDeviceData.getDeviceName()+"',"
+							+ " t.type="+exportAuxiliaryDeviceData.getDeviceType()+","
+							+ " t.manufacturer='"+exportAuxiliaryDeviceData.getManufacturer()+"',"
+							+ " t.model='"+exportAuxiliaryDeviceData.getModel()+"',"
+							+ " t.specifictype="+exportAuxiliaryDeviceData.getSpecificType()+","
+							+ " t.sort="+exportAuxiliaryDeviceData.getSort()+","
+							+ " t.remark='"+exportAuxiliaryDeviceData.getRemark()+"',"
+							+ " t.prtf=? "
+							+ " where t.id="+exportAuxiliaryDeviceData.getId();
+					
+					List<String> prtfClobCont=new ArrayList<String>();
+					if(exportAuxiliaryDeviceData.getPRTF()!=null){
+						prtfClobCont.add(gson.toJson(exportAuxiliaryDeviceData.getPRTF()));
+					}else{
+						prtfClobCont.add("{}");
+					}
+					result=this.getBaseDao().executeSqlUpdateClob(updateSql,prtfClobCont);
+				}else if(exportAuxiliaryDeviceData.getSaveSign()==0){
+					String insertSql="insert into TBL_AUXILIARYDEVICE"
+							+ " (id,name,type,manufacturer,model,specifictype,sort,remark,prtf) "
+							+ " values "
+							+ " ("+exportAuxiliaryDeviceData.getId()+",'"+exportAuxiliaryDeviceData.getDeviceName()+"',"+exportAuxiliaryDeviceData.getDeviceType()+","
+							+ "'"+exportAuxiliaryDeviceData.getManufacturer()+"','"+exportAuxiliaryDeviceData.getModel()+"',"
+							+ ""+exportAuxiliaryDeviceData.getSpecificType()+","+exportAuxiliaryDeviceData.getSort()+",'"+exportAuxiliaryDeviceData.getRemark()+"',?)";
+					List<String> prtfClobCont=new ArrayList<String>();
+					if(exportAuxiliaryDeviceData.getPRTF()!=null){
+						prtfClobCont.add(gson.toJson(exportAuxiliaryDeviceData.getPRTF()));
+					}else{
+						prtfClobCont.add("{}");
+					}
+					result=this.getBaseDao().executeSqlUpdateClob(insertSql,prtfClobCont);
+				}
+				
+				try {
+					if(exportAuxiliaryDeviceData.getAdditionalInformationList()!=null){
+						for(AdditionalInformation exportAdditionalInformation:exportAuxiliaryDeviceData.getAdditionalInformationList()){
+							AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+							auxiliaryDeviceAddInfo.setDeviceId(exportAuxiliaryDeviceData.getId());
+							auxiliaryDeviceAddInfo.setItemName(exportAdditionalInformation.getItemName());
+							auxiliaryDeviceAddInfo.setItemValue(exportAdditionalInformation.getItemValue());
+							auxiliaryDeviceAddInfo.setItemUnit(exportAdditionalInformation.getItemUnit());
+							auxiliaryDeviceAddInfo.setItemCode(exportAdditionalInformation.getItemCode());
+							this.saveAuxiliaryDeviceAddInfo(auxiliaryDeviceAddInfo);
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_AUXILIARYDEVICE", true);
+		this.getBaseDao().resetSequence("TBL_AUXILIARYDEVICE", "ID", "SEQ_AUXILIARYDEVICE");
+		
+		return result;
+	}
+	
+	public String getUploadedPrimaryDeviceTreeData(List<ExportPrimaryDeviceData> uploadList,User user) throws IOException {
+		StringBuffer result_json = new StringBuffer();
+		String orgIds=user!=null?user.getUserOrgIds():"0";
+		String deviceTypes=user!=null?user.getDeviceTypeIds():"0";
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
+		
+		String columns=	"[]";
+		
+		
+		List<String> overlayList=new ArrayList<>();
+		List<String> collisionList=new ArrayList<>();
+		
+		
+		String overlaySql="select t.id from TBL_DEVICE t where t.orgid in ("+orgIds+") and t.devicetype in ("+deviceTypes+")";
+		String collisionSql="select t.id from TBL_DEVICE t where t.orgid not in ("+orgIds+") or t.devicetype not in ("+deviceTypes+")";
+		List<?> overlayQueryList = this.findCallSql(overlaySql);
+		List<?> collisionQueryList = this.findCallSql(collisionSql);
+		for(int i=0;i<overlayQueryList.size();i++){
+			overlayList.add(overlayQueryList.get(i).toString());
+		}
+		for(int i=0;i<collisionQueryList.size();i++){
+			collisionList.add(collisionQueryList.get(i).toString());
+		}
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+uploadList.size()+",\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		for (ExportPrimaryDeviceData exportData:uploadList) {
+			
+			if(StringManagerUtils.existOrNot(overlayList, exportData.getId()+"", true)){
+				exportData.setSaveSign(1);
+				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo1"));
+			}else if(StringManagerUtils.existOrNot(collisionList, exportData.getId()+"", true)){
+				exportData.setSaveSign(2);
+				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo2"));
+			}
+			
+			result_json.append("{\"id\":\""+exportData.getId()+"\",");
+			result_json.append("\"orgName\":\""+exportData.getOrgName()+"\",");
+			result_json.append("\"deviceName\":\""+exportData.getDeviceName()+"\",");
+			
+			result_json.append("\"instanceName\":\""+exportData.getInstanceName()+"\",");
+			result_json.append("\"displayInstanceName\":\""+exportData.getDisplayInstanceName()+"\",");
+			result_json.append("\"alarmInstanceName\":\""+exportData.getAlarmInstanceName()+"\",");
+			result_json.append("\"reportInstanceName\":\""+exportData.getReportInstanceName()+"\",");
+			result_json.append("\"tcpType\":\""+exportData.getTCPType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
+			result_json.append("\"signInId\":\""+exportData.getSignInId()+"\",");
+			result_json.append("\"ipPort\":\""+exportData.getIPPort()+"\",");
+			result_json.append("\"slave\":\""+exportData.getSlave()+"\",");
+			result_json.append("\"peakDelay\":\""+exportData.getPeakDelay()+"\",");
+			
+			result_json.append("\"sortNum\":\""+exportData.getSortNum()+"\",");
+			result_json.append("\"msg\":\""+exportData.getMsg()+"\",");
+			result_json.append("\"saveSign\":\""+exportData.getSaveSign()+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int savePrimaryDeviceBackupData(List<ExportPrimaryDeviceData> uploadList,User user) {
+		int result=0;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Gson gson = new Gson();
+		String deviceTypes=user!=null?user.getDeviceTypeIds():"0";
+		String language=user!=null?user.getLanguageName():"";
+		
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_DEVICE", false);
+		
+		List<String> initWellList=new ArrayList<String>();
+		for(ExportPrimaryDeviceData exportDeviceData:uploadList){
+			if(exportDeviceData.getSaveSign()!=2){
+				if(exportDeviceData.getSaveSign()==1){
+					String deleteAddInfoSql="delete from tbl_deviceaddinfo t where t.deviceid="+exportDeviceData.getId();
+					this.getBaseDao().updateOrDeleteBySql(deleteAddInfoSql);
+					String deleteAuxiliaryDeviceSql="delete from tbl_auxiliary2master t where t.masterid="+exportDeviceData.getId();
+					this.getBaseDao().updateOrDeleteBySql(deleteAuxiliaryDeviceSql);
+					
+					
+					String updateSql="update TBL_DEVICE t set "
+							+ " t.orgid="+exportDeviceData.getOrgId()+","
+							+ " t.devicename='"+exportDeviceData.getDeviceName()+"',"
+							+ " t.devicetype="+exportDeviceData.getDeviceType()+","
+							+ " t.applicationscenarios="+exportDeviceData.getApplicationScenarios()+","
+						
+							+ " t.tcptype='"+exportDeviceData.getTCPType()+"',"
+							+ " t.signinid='"+exportDeviceData.getSignInId()+"',"
+							+ " t.ipport='"+exportDeviceData.getIPPort()+"',"
+							+ " t.slave='"+exportDeviceData.getSlave()+"',"
+							+ " t.peakdelay="+(StringManagerUtils.isInteger(exportDeviceData.getPeakDelay())?exportDeviceData.getPeakDelay():"null")+","					
+							
+							+ " t.instancecode='"+exportDeviceData.getInstanceCode()+"',"
+							+ " t.alarminstancecode='"+exportDeviceData.getAlarmInstanceCode()+"',"
+							+ " t.displayinstancecode='"+exportDeviceData.getDisplayInstanceCode()+"',"
+							+ " t.reportinstancecode='"+exportDeviceData.getReportInstanceCode()+"',"
+							
+							+ " t.videourl1='"+exportDeviceData.getVideoUrl1()+"',"
+							+ " t.videourl2='"+exportDeviceData.getVideoUrl2()+"',"
+							
+							+ " t.videokeyid1="+(StringManagerUtils.isInteger(exportDeviceData.getVideoKeyId1())?exportDeviceData.getVideoKeyId1():"null")+","
+							+ " t.videokeyid2="+(StringManagerUtils.isInteger(exportDeviceData.getVideoKeyId2())?exportDeviceData.getVideoKeyId2():"null")+","
+							
+							+ " t.calculatetype="+exportDeviceData.getCalculateType()+","
+							+ " t.status="+exportDeviceData.getStatus()+","
+							+ " t.sortnum="+(StringManagerUtils.isInteger(exportDeviceData.getSortNum())?exportDeviceData.getSortNum():"null")+","
+							
+							+ " t.commissioningdate="+(StringManagerUtils.isNotNull(exportDeviceData.getCommissioningDate())?("to_date('"+exportDeviceData.getCommissioningDate()+"','yyyy-mm-dd hh24:mi:ss')"):"null");
+					if(exportDeviceData.getCalculateType()==1){
+						updateSql+= " ,t.productiondata="+(exportDeviceData.getSRPProductionData()!=null?("'"+gson.toJson(exportDeviceData.getSRPProductionData())+"'"):"null");
+						updateSql+= " ,t.stroke="+(StringManagerUtils.isNum(exportDeviceData.getStroke())?exportDeviceData.getStroke():"null");
+						updateSql+= " ,t.balanceinfo="+(exportDeviceData.getBalanceInfo()!=null?("'"+gson.toJson(exportDeviceData.getBalanceInfo())+"'"):"null");
+						updateSql+= " ,t.constructiondata="+(exportDeviceData.getConstructionData()!=null?("'"+gson.toJson(exportDeviceData.getConstructionData())+"'"):"null");
+					}else if(exportDeviceData.getCalculateType()==2){
+						updateSql+= " ,t.productiondata="+(exportDeviceData.getPCPProductionData()!=null?("'"+gson.toJson(exportDeviceData.getPCPProductionData())+"'"):"null");
+					}
+					updateSql+= " where t.id="+exportDeviceData.getId();
+					this.getBaseDao().updateOrDeleteBySql(updateSql);
+					initWellList.add(exportDeviceData.getId()+"");
+				}else if(exportDeviceData.getSaveSign()==0){
+					String insertCol="id,orgid,devicename,devicetype,applicationscenarios,"
+							+ "tcptype,signinid,ipport,slave,peakdelay,"
+							+ "instancecode,alarminstancecode,displayinstancecode,reportinstancecode,"
+							+ "videourl1,videourl2,videokeyid1,videokeyid2,"
+							+ "calculatetype,status,sortnum,"
+							+ "commissioningdate";
+					String insertValue=""+exportDeviceData.getId()+","+exportDeviceData.getOrgId()+",'"+exportDeviceData.getDeviceName()+"',"+exportDeviceData.getDeviceType()+","+exportDeviceData.getApplicationScenarios()+","
+							+ "'"+exportDeviceData.getTCPType()+"','"+exportDeviceData.getSignInId()+"','"+exportDeviceData.getIPPort()+"','"+exportDeviceData.getSlave()+"',"+(StringManagerUtils.isInteger(exportDeviceData.getPeakDelay())?exportDeviceData.getPeakDelay():"null")+","
+							+ "'"+exportDeviceData.getInstanceCode()+"','"+exportDeviceData.getAlarmInstanceCode()+"','"+exportDeviceData.getDisplayInstanceCode()+"','"+exportDeviceData.getReportInstanceCode()+"',"
+							+ "'"+exportDeviceData.getVideoUrl1()+"','"+exportDeviceData.getVideoUrl2()+"',"+(StringManagerUtils.isInteger(exportDeviceData.getVideoKeyId1())?exportDeviceData.getVideoKeyId1():"null")+","+(StringManagerUtils.isInteger(exportDeviceData.getVideoKeyId2())?exportDeviceData.getVideoKeyId2():"null")+","
+							+ ""+exportDeviceData.getCalculateType()+","+exportDeviceData.getStatus()+","+(StringManagerUtils.isInteger(exportDeviceData.getSortNum())?exportDeviceData.getSortNum():"null")+","
+							+ ""+(StringManagerUtils.isNotNull(exportDeviceData.getCommissioningDate())?("to_date('"+exportDeviceData.getCommissioningDate()+"','yyyy-mm-dd hh24:mi:ss')"):"null");
+					
+					if(exportDeviceData.getCalculateType()==1){
+						insertCol+=",productiondata,stroke,balanceinfo,constructiondata";
+						insertValue+=","+(exportDeviceData.getSRPProductionData()!=null?("'"+gson.toJson(exportDeviceData.getSRPProductionData())+"'"):"null")
+								+","+(StringManagerUtils.isNum(exportDeviceData.getStroke())?exportDeviceData.getStroke():"null")
+								+","+(exportDeviceData.getBalanceInfo()!=null?("'"+gson.toJson(exportDeviceData.getBalanceInfo())+"'"):"null")
+								+","+(exportDeviceData.getConstructionData()!=null?("'"+gson.toJson(exportDeviceData.getConstructionData())+"'"):"null")+"";
+						
+						
+					}else if(exportDeviceData.getCalculateType()==2){
+						insertCol+=",productiondata";
+						insertValue+=","+(exportDeviceData.getPCPProductionData()!=null?("'"+gson.toJson(exportDeviceData.getPCPProductionData())+"'"):"null");
+					}
+					
+					
+					String insertSql="insert into TBL_DEVICE ("+insertCol+") values ("+insertValue+")";
+					this.getBaseDao().updateOrDeleteBySql(insertSql);
+					initWellList.add(exportDeviceData.getId()+"");
+				}
+				
+				try {
+					if(exportDeviceData.getAdditionalInformationList()!=null){
+						for(ExportPrimaryDeviceData.AdditionalInformation exportAdditionalInformation:exportDeviceData.getAdditionalInformationList()){
+							DeviceAddInfo deviceAddInfo=new DeviceAddInfo();
+							deviceAddInfo.setDeviceId(exportDeviceData.getId());
+							deviceAddInfo.setItemName(exportAdditionalInformation.getItemName());
+							deviceAddInfo.setItemValue(exportAdditionalInformation.getItemValue());
+							deviceAddInfo.setItemUnit(exportAdditionalInformation.getItemUnit());
+							this.saveDeviceAdditionalInfo(deviceAddInfo);
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				try {
+					if(exportDeviceData.getAuxiliaryDeviceList()!=null){
+						for(ExportPrimaryDeviceData.AuxiliaryDeviceList exportAuxiliaryDevice:exportDeviceData.getAuxiliaryDeviceList()){
+							MasterAndAuxiliaryDevice masterAndAuxiliaryDevice=new MasterAndAuxiliaryDevice();
+							masterAndAuxiliaryDevice.setMasterid(exportDeviceData.getId());
+							masterAndAuxiliaryDevice.setAuxiliaryid(exportAuxiliaryDevice.getId());
+							masterAndAuxiliaryDevice.setMatrix("0,0,0");
+							this.grantMasterAuxiliaryDevice(masterAndAuxiliaryDevice);
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_DEVICE", true);
+		this.getBaseDao().resetSequence("TBL_DEVICE", "ID", "SEQ_DEVICE");
+		
+		if(initWellList.size()>0){
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(103);
+				dataSynchronizationThread.setInitWellList(initWellList);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setDeleteNameList(null);
+				dataSynchronizationThread.setCondition(0);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setWellInformationManagerService(this);
+				dataSynchronizationThread.setDeviceType(deviceTypes);
+				executor.execute(dataSynchronizationThread);
+		}
+		
+		return result;
 	}
 }

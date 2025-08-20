@@ -49,7 +49,7 @@ public class Role implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue
+//	@GeneratedValue
 	@Column(name = "ROLE_ID", unique = true, nullable = false, precision = 10, scale = 0)
 	public Integer getRoleId() {
 		return this.roleId;

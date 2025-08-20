@@ -3358,6 +3358,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(protocolInstance.getPacketSendInterval()==null){
 				protocolInstance.setPacketSendInterval(100);
 			}
+			if(protocolInstance.getId()==null){
+				protocolInstance.setId(1);
+			}
 			this.protocolInstanceManagerService.doModbusProtocolInstanceAdd(protocolInstance);
 			
 			if(user!=null){
@@ -3793,6 +3796,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doModbusProtocolDisplayInstanceAdd(@ModelAttribute ProtocolDisplayInstance protocolDisplayInstance) throws IOException {
 		String result = "";
 		try {
+			if(protocolDisplayInstance.getId()==null){
+				protocolDisplayInstance.setId(1);
+			}
 			this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceAdd(protocolDisplayInstance);
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(061);
@@ -3866,6 +3872,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doModbusProtocolReportInstanceAdd(@ModelAttribute ProtocolReportInstance protocolReportInstance) throws IOException {
 		String result = "";
 		try {
+			if(protocolReportInstance.getId()!=null){
+				protocolReportInstance.setId(1);
+			}
 			this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceAdd(protocolReportInstance);
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
@@ -4103,6 +4112,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doModbusProtocolAlarmInstanceAdd(@ModelAttribute ProtocolAlarmInstance protocolAlarmInstance) throws IOException {
 		String result = "";
 		try {
+			if(protocolAlarmInstance.getId()==null){
+				protocolAlarmInstance.setId(1);
+			}
 			this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceAdd(protocolAlarmInstance);
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(071);
@@ -6383,6 +6395,35 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveProtocolBackupData")
+	public String saveProtocolBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String[] protocolNameList=protocolName.split(",");
+		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
+		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		
+		try{
+			if(session.getAttribute(key)!=null){
+				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				acquisitionUnitItemManagerService.saveProtocolBackupData(protocolList,user);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/uploadImportedAcqUnitFile")
 	public String uploadImportedAcqUnitFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
@@ -6562,6 +6603,35 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionUnitItemManagerService.importAcqUnit(exportAcqUnitData,user);
 						it.remove();
 					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveAcqUnitBackupData")
+	public String saveAcqUnitBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String[] unitNameList=unitName.split(",");
+		String key="uploadAcqUnitFile"+(user!=null?user.getUserNo():0);
+		List<ExportAcqUnitData> uploadAcqUnitList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadAcqUnitList=(List<ExportAcqUnitData>) session.getAttribute(key);
+				if(uploadAcqUnitList!=null && uploadAcqUnitList.size()>0){
+					acquisitionUnitItemManagerService.saveAcqUnitBackupData(uploadAcqUnitList,user);
 				}
 			}
 		} catch (Exception e) {
@@ -6766,6 +6836,36 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveAlarmUnitBackupData")
+	public String saveAlarmUnitBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String unitName=ParamUtils.getParameter(request, "unitName");
+		String[] unitNameList=unitName.split(",");
+		String key="uploadAlarmUnitFile"+(user!=null?user.getUserNo():0);
+		List<ExportAlarmUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportAlarmUnitData>) session.getAttribute(key);
+				if(uploadUnitList!=null && uploadUnitList.size()>0){
+					acquisitionUnitItemManagerService.saveAlarmUnitBackupData(uploadUnitList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/uploadImportedDisplayUnitFile")
 	public String uploadImportedDisplayUnitFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
@@ -6943,6 +7043,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionUnitItemManagerService.importDisplayUnit(exportDisplayUnitData,user);
 						it.remove();
 					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveDisplayUnitBackupData")
+	public String saveDisplayUnitBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayUnitFile"+(user!=null?user.getUserNo():0);
+		List<ExportDisplayUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportDisplayUnitData>) session.getAttribute(key);
+				if(uploadUnitList!=null && uploadUnitList.size()>0){
+					acquisitionUnitItemManagerService.saveDisplayUnitBackupData(uploadUnitList,user);
 				}
 			}
 		} catch (Exception e) {
@@ -7172,6 +7300,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveReportUnitBackupData")
+	public String saveReportUnitBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportUnitFile"+(user!=null?user.getUserNo():0);
+		List<ExportReportUnitData> uploadUnitList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadUnitList=(List<ExportReportUnitData>) session.getAttribute(key);
+				if(uploadUnitList!=null && uploadUnitList.size()>0){
+					acquisitionUnitItemManagerService.saveReportUnitBackupData(uploadUnitList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/uploadImportedAcqInstanceFile")
 	public String uploadImportedAcqInstanceFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
@@ -7365,6 +7521,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveAcqInstanceBackupData")
+	public String saveAcqInstanceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAcqInstanceFile"+(user!=null?user.getUserNo():0);
+		List<ExportAcqInstanceData> uploadInstanceList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAcqInstanceData>) session.getAttribute(key);
+				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+					acquisitionUnitItemManagerService.saveAcqInstanceBackupData(uploadInstanceList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	@RequestMapping("/uploadImportedDisplayInstanceFile")
 	public String uploadImportedDisplayInstanceFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
@@ -7563,6 +7746,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveDisplayInstanceBackupData")
+	public String saveDisplayInstanceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
+		List<ExportDisplayInstanceData> uploadInstanceList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
+				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+					acquisitionUnitItemManagerService.saveDisplayInstanceBackupData(uploadInstanceList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	@RequestMapping("/uploadImportedAlarmInstanceFile")
 	public String uploadImportedAlarmInstanceFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
@@ -7755,6 +7965,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/saveAlarmInstanceBackupData")
+	public String saveAlarmInstanceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
+		List<ExportAlarmInstanceData> uploadInstanceList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
+				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+					acquisitionUnitItemManagerService.saveAlarmInstanceBackupData(uploadInstanceList,user);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	@RequestMapping("/uploadImportedReportInstanceFile")
 	public String uploadImportedReportInstanceFile(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request) throws Exception {
@@ -7899,6 +8136,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionUnitItemManagerService.importReportInstance(instanceData,user);
 						it.remove();
 					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveReportInstanceBackupData")
+	public String saveReportInstanceBackupData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String key="uploadReportInstanceFile"+(user!=null?user.getUserNo():0);
+		List<ExportReportInstanceData> uploadInstanceList=null;
+		try{
+			if(session.getAttribute(key)!=null){
+				uploadInstanceList=(List<ExportReportInstanceData>) session.getAttribute(key);
+				if(uploadInstanceList!=null && uploadInstanceList.size()>0){
+					acquisitionUnitItemManagerService.saveReportInstanceBackupData(uploadInstanceList,user);
 				}
 			}
 		} catch (Exception e) {

@@ -31,17 +31,7 @@ public class Org {
 	}
 
 	@Id
-//	@GeneratedValue(
-//	        strategy = GenerationType.SEQUENCE, 
-//	        generator = "org_seq"
-//	    )
-//    @SequenceGenerator(
-//        name = "org_seq",
-//        sequenceName = "SEQ_ORG",
-//        allocationSize = 1,
-//        initialValue = 1
-//    )
-	@GeneratedValue
+//	@GeneratedValue(strategy = GenerationType.NONE) // 关键配置
 	@Column(name = "org_id")
 	public Integer getOrgId() {
 		return orgId;

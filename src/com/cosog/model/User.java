@@ -87,7 +87,7 @@ public class User implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue
+//	@GeneratedValue
 	@Column(name = "user_No", nullable = false, insertable = true, updatable = true, length = 32)
 	public Integer getUserNo() {
 		return this.userNo;

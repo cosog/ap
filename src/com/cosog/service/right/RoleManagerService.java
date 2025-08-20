@@ -412,14 +412,14 @@ public class RoleManagerService<T> extends BaseService<T> {
 		}
 		
 		
-		String overlaySql="select role_name as roleName"
+		String overlaySql="select role_id"
 				+ " from  viw_role t"
 				+ " where 1=1 "
 				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
 				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )";
 		
-		String collisionSql="select role_name "
+		String collisionSql="select role_id "
 				+ " from viw_role "
 				+ " where role_name not in("
 				+ " select role_name"
@@ -468,10 +468,10 @@ public class RoleManagerService<T> extends BaseService<T> {
 		if(uploadRoleList!=null){
 			for(ExportRoleData exportRoleData:roleList){
 				
-				if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleName(), true)){
+				if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(1);
 					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo1"));
-				}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleName(), true)){
+				}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(2);
 					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo2"));
 				}
@@ -519,20 +519,6 @@ public class RoleManagerService<T> extends BaseService<T> {
 			currentVideoKeyEdit=obj[3]+"";
 			currentLanguageEdit=obj[4]+"";
 		}
-//		List<ExportRoleData> roleList=new ArrayList<>();
-//		for(ExportRoleData exportRoleData:uploadRoleList){
-//			boolean deviceTypeRight=true;
-//			for(int i=0;i<exportRoleData.getDeviceTypeRight().size();i++){
-//				if(!StringManagerUtils.existOrNot(currentTabArr, exportRoleData.getDeviceTypeRight().get(i).getId()+"", false)){
-//					deviceTypeRight=false;
-//					break;
-//				}
-//			}
-//			
-//			if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
-//				roleList.add(exportRoleData);
-//			}
-//		}
 		
 		Map<String,Integer> roleMap=new HashMap<>();
 		String roleSql="select t.role_name,t.role_id from TBL_ROLE t ";
@@ -541,6 +527,8 @@ public class RoleManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) currentRoleList.get(i);
 			roleMap.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
 		}
+		
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_ROLE", false);
 		
 		for(ExportRoleData exportRoleData:uploadRoleList){
 			boolean deviceTypeRight=true;
@@ -560,21 +548,11 @@ public class RoleManagerService<T> extends BaseService<T> {
 					role.setRoleVideoKeyEdit(exportRoleData.getRoleVideoKeyEdit());
 					role.setRoleLanguageEdit(exportRoleData.getRoleLanguageEdit());
 					role.setRemark(exportRoleData.getRemark());
-					if(exportRoleData.getRoleName().equals(user.getUserTypeName())){
-						role.setRoleId(StringManagerUtils.stringToInteger(currentId));
-					}else if(exportRoleData.getSaveSign()==1 && roleMap.containsKey(exportRoleData.getRoleName())){
-						role.setRoleId(roleMap.get(exportRoleData.getRoleName()));
-					}
+					role.setRoleId(exportRoleData.getRoleId());
 					
 					if(exportRoleData.getSaveSign()==0){
 						try {
 							this.addRoleInfo(role);
-							String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
-							List<?> list=findCallSql(sql);
-							if(list.size()>0){
-								int addRoleId=StringManagerUtils.stringToInteger(list.get(0)+"");
-								role.setRoleId(addRoleId);
-							}
 							exportRoleData.setMsg(languageResourceMap.get("addSuccessfully"));
 						} catch (Exception e) {
 							exportRoleData.setMsg(languageResourceMap.get("addFailure"));
@@ -636,6 +614,9 @@ public class RoleManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_ROLE", true);
+		this.getBaseDao().resetSequence("TBL_ROLE", "role_id", "SEQ_ROLE");
+		
 		
 		return result;
 	}

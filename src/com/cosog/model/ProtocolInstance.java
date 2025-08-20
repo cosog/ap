@@ -66,7 +66,7 @@ public class ProtocolInstance implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue
+//	@GeneratedValue
 	@Column(name = "id", unique = true, nullable = false, precision = 10, scale = 0)
 	public Integer getId() {
 		return this.id;

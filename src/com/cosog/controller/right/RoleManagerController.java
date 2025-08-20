@@ -106,6 +106,7 @@ public class RoleManagerController extends BaseController {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String addDeviceTypeIds = ParamUtils.getParameter(request, "addDeviceTypeIds");
 			String addLanguageIds = ParamUtils.getParameter(request, "addLanguageIds");
+			role.setRoleId(1);
 			this.roleService.addRole(role);
 			
 			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addDeviceTypeIds) || StringManagerUtils.isNotNull(addLanguageIds)){

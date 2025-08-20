@@ -520,13 +520,18 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				if(exportDataDictionary.getSaveSign()==1){
 					try {
 						this.modifyDataDictionaryInfo(systemdataInfo);
+						exportDataDictionary.setMsg(languageResourceMap.get("updateSuccessfully"));
+						exportDataDictionary.setSaveSign(0);
 					} catch (Exception e) {
+						exportDataDictionary.setMsg(languageResourceMap.get("updateFailure"));
 						e.printStackTrace();
 					}
 				}else if(exportDataDictionary.getSaveSign()==0){
 					try {
 						this.addDataDictionaryInfo(systemdataInfo);
+						exportDataDictionary.setMsg(languageResourceMap.get("addSuccessfully"));
 					} catch (Exception e) {
+						exportDataDictionary.setMsg(languageResourceMap.get("addFailure"));
 						e.printStackTrace();
 					}
 				}
@@ -574,7 +579,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	}
 	
 	public void addDataDictionaryInfo(SystemdataInfo systemdataInfo) throws Exception {
-		getBaseDao().addObject(systemdataInfo);
+		getBaseDao().addObjectFlush(systemdataInfo);
 	}
 	
 	public void modifyDataDictionaryInfo(SystemdataInfo systemdataInfo) throws Exception {

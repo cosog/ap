@@ -39,7 +39,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	}
 	
 	public void addImportedModule(Module m) throws Exception {
-		getBaseDao().addObject(m);
+		getBaseDao().addObjectFlush(m);
 	}
 	
 	public void modifyImportedModule(Module m) throws Exception {
@@ -439,21 +439,8 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	public int saveAllImportedModule(List<ExportModuleData> uploadModuleList,User user) {
 		int result=0;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		String dbUser=Config.getInstance().configFile.getAp().getDatasource().getUser().toUpperCase();
 		
-		List<String> triggerNameList=new ArrayList<>();
-		String triggerSql="select t.trigger_name from all_triggers t where t.OWNER='"+dbUser+"' and t.table_name='TBL_MODULE'";
-		List<?> triggerQueryList=this.findCallSql(triggerSql);
-		for(int i=0;i<triggerQueryList.size();i++){
-			triggerNameList.add(triggerQueryList.get(i).toString());
-		}
-		
-		for(String triggerName:triggerNameList){
-			String triggerDisableSql="ALTER TRIGGER "+triggerName+" DISABLE";
-			result=this.getBaseDao().updateOrDeleteBySql(triggerDisableSql);
-		}
-		
-		
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_MODULE",false);
 		for(ExportModuleData exportModuleData:uploadModuleList){
 			if(exportModuleData.getSaveSign()!=2){
 				Module module=new Module();
@@ -474,23 +461,25 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				if(exportModuleData.getSaveSign()==0){
 					try {
 						this.addImportedModule(module);
+						exportModuleData.setMsg(languageResourceMap.get("addSuccessfully"));
 					} catch (Exception e) {
+						exportModuleData.setMsg(languageResourceMap.get("addFailure"));
 						e.printStackTrace();
 					}
 				}else if(exportModuleData.getSaveSign()==1){
 					try {
 						this.modifyImportedModule(module);
+						exportModuleData.setMsg(languageResourceMap.get("updateSuccessfully"));
+						exportModuleData.setSaveSign(0);
 					} catch (Exception e) {
+						exportModuleData.setMsg(languageResourceMap.get("updateFailure"));
 						e.printStackTrace();
 					}
 				}
 			}
 		}
 		
-		for(String triggerName:triggerNameList){
-			String triggerEnableSql="ALTER TRIGGER "+triggerName+" ENABLE";
-			result=this.getBaseDao().updateOrDeleteBySql(triggerEnableSql);
-		}
+		this.getBaseDao().triggerDisabledOrEnabled("TBL_MODULE",true);
 		
 		return result;
 	}

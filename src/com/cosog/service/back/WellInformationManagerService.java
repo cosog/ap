@@ -67,6 +67,7 @@ import com.cosog.model.data.SystemdataInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceHandsontableChangedData;
+import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.VideoKeyHandsontableChangedData;
 import com.cosog.model.gridmodel.WellGridPanelData;
@@ -1622,7 +1623,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		String ddicCode="deviceInfo_DeviceManager";
-		
+		Gson gson = new Gson();
+		java.lang.reflect.Type reflectType=null;
 		
 		String sql = "select t.id,t.orgid,o.org_name_"+language+" as orgName,t.devicetype,d.name_"+language+" as deviceTypeName,"//0~4
 				+ " t.devicename,t.applicationscenarios,t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"//5~11
@@ -1649,19 +1651,27 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3"
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id"
 				+ " and t.orgid in ("+orgId+")";
+		
+		String graphicSetSql="select t.id,t2.graphicstyle from tbl_device t,tbl_devicegraphicset t2 "
+				+ " where t.id=t2.deviceid"
+				+ " and t.orgid in ("+orgId+")";
+		
 		if (StringManagerUtils.isNotNull(deviceName)) {
 			sql += " and t.devicename like '%" + deviceName+ "%'";
 			addInfoSql += " and t.devicename like '%" + deviceName+ "%'";
 			auxiliaryDeviceSql += " and t.devicename like '%" + deviceName+ "%'";
+			graphicSetSql += " and t.devicename like '%" + deviceName+ "%'";
 		};
 		sql+= " order by t.sortnum,t.devicename ";
 		addInfoSql+= " order by t.sortnum,t.devicename ";
 		auxiliaryDeviceSql+= " order by t.sortnum,t.devicename ";
+		graphicSetSql+= " order by t.sortnum,t.devicename ";
 		
 		String json = "";
 		List<?> list = this.findCallSql(sql);
 		List<?> addInfoList = this.findCallSql(addInfoSql);
 		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
+		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		result_json.append("\"List\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -1767,11 +1777,28 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("},");
 				}
 			}
-			
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
 			result_json.append("]");
+			
+			GraphicSetData graphicSetData =null;
+			for(int j=0;i<graphicSetList.size();j++){
+				Object[] graphicSetObj = (Object[]) auxiliaryDeviceList.get(j);
+				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(graphicSetObj[0]+"")){
+					
+					
+					String graphicSetStr=(graphicSetObj[1]+"").replaceAll("\r\n", "").replaceAll("\n", "");
+					reflectType = new TypeToken<GraphicSetData>() {}.getType();
+					graphicSetData=gson.fromJson(graphicSetStr, reflectType);
+					
+					break;
+				}
+			}
+			if(graphicSetData!=null){
+				result_json.append(",\"GraphicSet\":"+gson.toJson(graphicSetData)+"");
+			}
+			
 			
 			result_json.append("},");
 		}
@@ -4582,6 +4609,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							masterAndAuxiliaryDevice.setMatrix("0,0,0");
 							this.grantMasterAuxiliaryDevice(masterAndAuxiliaryDevice);
 						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+				try {
+					if(exportDeviceData.getGraphicSet()!=null){
+						String sql="select t.deviceId from tbl_devicegraphicset t where t.deviceId="+exportDeviceData.getId();
+						String updateSql="";
+						List<?> list = this.findCallSql(sql);
+						if(list.size()>0){
+							updateSql="update tbl_devicegraphicset t set t.graphicstyle='"+gson.toJson(exportDeviceData.getGraphicSet())+"' where t.deviceId="+exportDeviceData.getId();
+						}else{
+							updateSql="insert into tbl_devicegraphicset (deviceId,graphicstyle) values("+exportDeviceData.getId()+",'"+gson.toJson(exportDeviceData.getGraphicSet())+"')";
+						}
+						this.getBaseDao().updateOrDeleteBySql(updateSql);
+					}else{
+						String delSql="delete from tbl_devicegraphicset t where t.deviceId="+exportDeviceData.getId();
+						this.getBaseDao().updateOrDeleteBySql(delSql);
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();

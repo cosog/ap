@@ -5,6 +5,7 @@ import java.util.List;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.gridmodel.GraphicSetData;
 
 public class ExportPrimaryDeviceData {
 	
@@ -79,6 +80,8 @@ public class ExportPrimaryDeviceData {
     private List<AdditionalInformation> AdditionalInformationList;
 
     private List<AuxiliaryDeviceList> AuxiliaryDeviceList;
+    
+    private GraphicSetData GraphicSet;
     
     private int saveSign=0;
 	
@@ -460,5 +463,13 @@ public class ExportPrimaryDeviceData {
 
 	public void setSaveId(int saveId) {
 		this.saveId = saveId;
+	}
+
+	public GraphicSetData getGraphicSet() {
+		return GraphicSet;
+	}
+
+	public void setGraphicSet(GraphicSetData graphicSet) {
+		GraphicSet = graphicSet;
 	}
 }

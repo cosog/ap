@@ -71,6 +71,7 @@ import com.cosog.model.drive.ExportAlarmUnitData;
 import com.cosog.model.drive.ExportDisplayInstanceData;
 import com.cosog.model.drive.ExportDisplayUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
+import com.cosog.model.drive.ExportProtocolData;
 import com.cosog.model.drive.ExportReportInstanceData;
 import com.cosog.model.drive.ExportReportUnitData;
 import com.cosog.model.drive.ModbusDriverSaveData;
@@ -4436,7 +4437,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String runCondition = ParamUtils.getParameter(request, "runCondition");
 		String stopCondition = ParamUtils.getParameter(request, "stopCondition");
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
-		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,deviceType,runValue,stopValue,runCondition,stopCondition);
+		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,runValue,stopValue,runCondition,stopCondition);
 		MemoryDataManagerTask.loadProtocolRunStatusConfig();
 		
 		HttpSession session=request.getSession();
@@ -6177,7 +6178,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		boolean flag=false;
 		String protocolName="";
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
+		String uploadProtocolMappingColumnKey="uploadProtocolMappingColumn"+(user!=null?user.getUserNo():0);
 		session.removeAttribute(key);
+		session.removeAttribute(uploadProtocolMappingColumnKey);
 		
 		String json = "";
 		String fileContent="";
@@ -6196,18 +6199,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 			code =result.containsKey("Code")?((String) result.get("Code")):"";
 			if("Protocol".equalsIgnoreCase(code)){
 				if (result.containsKey("List")) {
-					List<ModbusProtocolConfig.Protocol> protocolList=new ArrayList<>();
+					List<ExportProtocolData> protocolList=new ArrayList<>();
 					
 					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("List");
 			        for (Map<String, Object> item : listData) {
 			            String itemJson = gson.toJson(item);
-			            ModbusProtocolConfig.Protocol protocol = gson.fromJson(itemJson, ModbusProtocolConfig.Protocol.class);
+			            ExportProtocolData protocol = gson.fromJson(itemJson, ExportProtocolData.class);
 			            protocolList.add(protocol);
 			        } 
 			        
 			        if(protocolList!=null){
 						flag=true;
 						session.setAttribute(key, protocolList);
+					}
+				}
+				
+				if(result.containsKey("DataMappingList")){
+					List<ExportProtocolData.DataMapping> dataMappingList=new ArrayList<>();
+					List<Map<String, Object>> listData = (List<Map<String, Object>>) result.get("DataMappingList");
+			        for (Map<String, Object> item : listData) {
+			            String itemJson = gson.toJson(item);
+			            ExportProtocolData.DataMapping dataMapping = gson.fromJson(itemJson, ExportProtocolData.DataMapping.class);
+			            dataMappingList.add(dataMapping);
+			        } 
+			        
+			        if(dataMappingList!=null){
+						flag=true;
+						session.setAttribute(uploadProtocolMappingColumnKey, dataMappingList);
 					}
 				}
 			}
@@ -6230,12 +6248,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getUploadedProtocolTreeData")
 	public String getUploadedProtocolTreeData() throws IOException {
 		HttpSession session=request.getSession();
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		List<ExportProtocolData> protocolList=null;
 		User user = (User) session.getAttribute("userLogin");
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6264,10 +6282,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
 		
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		List<ExportProtocolData> protocolList=null;
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6297,10 +6315,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		List<ExportProtocolData> protocolList=null;
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -6325,15 +6343,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		User user = (User) session.getAttribute("userLogin");
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		List<ExportProtocolData> protocolList=null;
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
 				if(protocolList!=null && protocolList.size()>0){
-					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
+					Iterator<ExportProtocolData> it = protocolList.iterator();
 					while(it.hasNext()){
 						boolean isDel=true;
-						ModbusProtocolConfig.Protocol protocol=(ModbusProtocolConfig.Protocol)it.next();
+						ExportProtocolData protocol=(ExportProtocolData)it.next();
 						if(protocolName.equalsIgnoreCase(protocol.getName())){
 							protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 							acquisitionUnitItemManagerService.updateProtocol(protocol,user);
@@ -6365,14 +6383,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String[] protocolNameList=protocolName.split(",");
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		List<ExportProtocolData> protocolList=null;
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
 				if(protocolList!=null && protocolList.size()>0){
-					Iterator<ModbusProtocolConfig.Protocol> it = protocolList.iterator();
+					Iterator<ExportProtocolData> it = protocolList.iterator();
 					while(it.hasNext()){
-						ModbusProtocolConfig.Protocol protocol=(ModbusProtocolConfig.Protocol)it.next();
+						ExportProtocolData protocol=(ExportProtocolData)it.next();
 						if(StringManagerUtils.existOrNot(protocolNameList, protocol.getName(), false)){
 							protocol.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 							acquisitionUnitItemManagerService.updateProtocol(protocol,user);
@@ -6403,12 +6421,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		String[] protocolNameList=protocolName.split(",");
 		String key="uploadProtocolFile"+(user!=null?user.getUserNo():0);
-		List<ModbusProtocolConfig.Protocol> protocolList=null;
+		String uploadProtocolMappingColumnKey="uploadProtocolMappingColumn"+(user!=null?user.getUserNo():0);
+		List<ExportProtocolData> protocolList=null;
+		List<ExportProtocolData.DataMapping> dataMappingList=null;
 		
 		try{
 			if(session.getAttribute(key)!=null){
-				protocolList=(List<ModbusProtocolConfig.Protocol>) session.getAttribute(key);
-				acquisitionUnitItemManagerService.saveProtocolBackupData(protocolList,user);
+				protocolList=(List<ExportProtocolData>) session.getAttribute(key);
+				if(session.getAttribute(uploadProtocolMappingColumnKey)!=null){
+					dataMappingList=(List<ExportProtocolData.DataMapping>) session.getAttribute(uploadProtocolMappingColumnKey);
+				}
+				acquisitionUnitItemManagerService.saveProtocolBackupData(protocolList,dataMappingList,user);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

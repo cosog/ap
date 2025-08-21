@@ -50,6 +50,7 @@ import com.cosog.model.drive.ExportAlarmUnitData;
 import com.cosog.model.drive.ExportDisplayInstanceData;
 import com.cosog.model.drive.ExportDisplayUnitData;
 import com.cosog.model.drive.ExportProtocolConfig;
+import com.cosog.model.drive.ExportProtocolData;
 import com.cosog.model.drive.ExportReportInstanceData;
 import com.cosog.model.drive.ExportReportUnitData;
 import com.cosog.model.drive.ImportProtocolContent;
@@ -7512,8 +7513,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,String deviceType,
-			String runValue,String stopValue,String runCondition,String stopCondition) throws Exception {
+	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,
+			String runValue,String stopValue,String runCondition,String stopCondition) {
 		String recordCountSql="select count(1) from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' ";
 		int recordCount=this.getTotalCountRows(recordCountSql);
@@ -8101,22 +8102,113 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String exportAllProtocolData(User user){
 		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"Protocol\",");
-		List<ModbusProtocolConfig.Protocol> protocolList=new ArrayList<>();
+		List<ExportProtocolData> protocolList=new ArrayList<>();
+		List<ExportProtocolData.DataMapping> dataMappingList=new ArrayList<>();
 		String[] userDeviceTypeArr=(user!=null?user.getDeviceTypeIds():"").split(",");
 		List<Integer> userLanguageArr=user.getLanguageList();
 		
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-			if(StringManagerUtils.existOrNot(userLanguageArr, modbusProtocolConfig.getProtocol().get(i).getLanguage()) && StringManagerUtils.existOrNot(userDeviceTypeArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
-				protocolList.add(modbusProtocolConfig.getProtocol().get(i));
+		StringBuffer protocolBuff=null;
+		String allDeviceIds=user!=null?user.getDeviceTypeIds():"0";
+		String allLanguages=user!=null?StringUtils.join(user.getLanguageList(), ","):"0";
+		
+		String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language,t.extendedField "
+				+ " from TBL_PROTOCOL t "
+				+ " where t.devicetype in ("+allDeviceIds+")"
+				+ " and t.language in ("+allLanguages+")";
+		
+		String runStatusConfigSql="select t.protocol,t.itemname,t.itemmappingcolumn,t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition "
+				+ " from tbl_runstatusconfig t,tbl_protocol t2 "
+				+ " where t.protocol=t2.code"
+				+ " and t2.devicetype in ("+allDeviceIds+")"
+				+ " and t2.language in ("+allLanguages+")";
+		
+		String dataMappingSql="select t.name,t.mappingcolumn,t.calcolumn,t.calculateenable from TBL_DATAMAPPING t order by t.id";
+		
+		List<?> queryProtocolList=this.findCallSql(sql.toString());
+		List<?> queryRunStatusConfigList=this.findCallSql(runStatusConfigSql);
+		List<?> queryDataMappingList=this.findCallSql(dataMappingSql);
+		
+		for(int i=0;i<queryDataMappingList.size();i++){
+			Object[] obj = (Object[]) queryDataMappingList.get(i);
+			ExportProtocolData.DataMapping dataMapping=new ExportProtocolData.DataMapping();
+			dataMapping.setItemName(obj[0]+"");
+			dataMapping.setItemMappingColumn(obj[1]+"");
+			dataMapping.setItemCalculateColumn(obj[2]+"");
+			dataMapping.setCalculateEnable(StringManagerUtils.stringToInteger(obj[3]+""));
+			dataMappingList.add(dataMapping);
+		}
+		
+		for(int i=0;i<queryProtocolList.size();i++){
+			Object[] obj = (Object[]) queryProtocolList.get(i);
+			
+			String itemsStr=obj[3]!=null?StringManagerUtils.CLOBObjectToString(obj[3]):"[]";
+			String extendedFieldStr=obj[7]!=null?StringManagerUtils.CLOBObjectToString(obj[7]):"[]";
+			
+			protocolBuff=new StringBuffer();
+			protocolBuff.append("{");
+			protocolBuff.append("\"Id\":\""+StringManagerUtils.stringToInteger(obj[0]+"")+"\",");
+			protocolBuff.append("\"Name\":\""+obj[1]+"\",");
+			protocolBuff.append("\"Code\":\""+obj[2]+"\",");
+			protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
+			protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
+			protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
+			protocolBuff.append("\"Items\":"+itemsStr+",");
+			protocolBuff.append("\"ExtendedFields\":"+extendedFieldStr+"");
+			protocolBuff.append("}");
+			
+			type = new TypeToken<ExportProtocolData>() {}.getType();
+			ExportProtocolData exportProtocolData=gson.fromJson(protocolBuff.toString(), type);
+			
+			if(exportProtocolData!=null){
+				exportProtocolData.setRunStatus(new ExportProtocolData.RunStatusConfig());
+				exportProtocolData.setDataMappingList(new ArrayList<ExportProtocolData.DataMapping>());
+				
+				for(int j=0;j<queryRunStatusConfigList.size();j++){
+					Object[] runStatusConfigObj = (Object[]) queryProtocolList.get(j);
+					String protocolCode=runStatusConfigObj[0]+"";
+					if(protocolCode.equals(exportProtocolData.getCode())){
+						exportProtocolData.getRunStatus().setItemName(runStatusConfigObj[1]+"");
+						exportProtocolData.getRunStatus().setItemMappingColumn(runStatusConfigObj[2]+"");
+						exportProtocolData.getRunStatus().setResolutionMode(StringManagerUtils.stringToInteger(runStatusConfigObj[3]+""));
+						exportProtocolData.getRunStatus().setRunValue(runStatusConfigObj[4]+"");
+						exportProtocolData.getRunStatus().setStopValue(runStatusConfigObj[5]+"");
+						exportProtocolData.getRunStatus().setRunCondition(runStatusConfigObj[6]+"");
+						exportProtocolData.getRunStatus().setStopCondition(runStatusConfigObj[7]+"");
+						break;
+					}
+				}
+				
+				protocolList.add(exportProtocolData);
 			}
 		}
 		
-		result_json.append("\"List\":"+gson.toJson(protocolList));
-		result_json.append("}");
 		
+		
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//			if(StringManagerUtils.existOrNot(userLanguageArr, modbusProtocolConfig.getProtocol().get(i).getLanguage()) 
+//					&& StringManagerUtils.existOrNot(userDeviceTypeArr, modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"")){
+//				
+//				ExportProtocolData exportProtocolData=new ExportProtocolData();
+//				exportProtocolData.setId(modbusProtocolConfig.getProtocol().get(i).getId());
+//				exportProtocolData.setName(modbusProtocolConfig.getProtocol().get(i).getName());
+//				exportProtocolData.setCode(modbusProtocolConfig.getProtocol().get(i).getCode());
+//				exportProtocolData.setSort(modbusProtocolConfig.getProtocol().get(i).getSort());
+//				exportProtocolData.setDeviceType(modbusProtocolConfig.getProtocol().get(i).getDeviceType());
+//				exportProtocolData.setLanguage(modbusProtocolConfig.getProtocol().get(i).getLanguage());
+//				
+//				
+//				protocolList.add(modbusProtocolConfig.getProtocol().get(i));
+//			}
+//		}
+		
+		result_json.append("\"List\":"+gson.toJson(protocolList));
+		result_json.append(",\"DataMappingList\":"+gson.toJson(dataMappingList));
+		result_json.append("}");
+//		System.out.println(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -11963,7 +12055,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getUploadedProtocolTreeData(List<ModbusProtocolConfig.Protocol> protocolList,User user){
+	public String getUploadedProtocolTreeData(List<ExportProtocolData> protocolList,User user){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
@@ -12020,6 +12112,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 					}
 				}
+				
+				protocolList.get(i).setSaveSign(saveSign);
+				protocolList.get(i).setMsg(msg);
 				tree_json.append("{\"classes\":1,");
 				tree_json.append("\"text\":\""+protocolList.get(i).getName()+"\",");
 				tree_json.append("\"code\":\""+protocolList.get(i).getCode()+"\",");
@@ -12044,7 +12139,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void saveProtocolBackupData(List<ModbusProtocolConfig.Protocol> protocolList,User user){
+	public void saveProtocolBackupData(List<ExportProtocolData> protocolList,List<ExportProtocolData.DataMapping> dataMappingList,User user){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String allDeviceIds=user.getDeviceTypeIds();
 		String overlayProtoolSql="select t.id,t.name, substr(v.path||'/'||t.name,2) as allpath  from tbl_protocol t, "
@@ -12090,9 +12185,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		this.getBaseDao().triggerDisabledOrEnabled("tbl_protocol", true);
 		this.getBaseDao().resetSequence("tbl_protocol", "id", "SEQ_PROTOCOL");
+		
+		syncDataMappingTable(dataMappingList);
+		
 	}
 	
-	public String getUploadedProtocolItemsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList,String language){
+	public void syncDataMappingTable(List<ExportProtocolData.DataMapping> dataMappingList){
+		int r=0;
+		if(dataMappingList!=null){
+			String updateSql="";
+			for(ExportProtocolData.DataMapping dataMapping:dataMappingList){
+				if(StringManagerUtils.isNotNull(dataMapping.getItemCalculateColumn())){
+					updateSql="update TBL_DATAMAPPING t set "
+							+ " t.calcolumn='"+dataMapping.getItemCalculateColumn()+"',"
+							+ " t.calculateenable= "+dataMapping.getCalculateEnable()
+							+ " where t.name='"+dataMapping.getItemName()+"'";
+					r+=this.getBaseDao().updateOrDeleteBySql(updateSql);
+				}
+			}
+			if(r>0){
+				MemoryDataManagerTask.loadProtocolMappingColumn();
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle(0);
+				MemoryDataManagerTask.loadProtocolMappingColumnByTitle(1);
+			}
+		}
+	}
+	
+	public String getUploadedProtocolItemsConfigData(String protocolName,String classes,String code,List<ExportProtocolData> protocolList,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -12114,9 +12233,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		ModbusProtocolConfig.Protocol protocolConfig=null;
+		ExportProtocolData protocolConfig=null;
 		if(protocolList!=null){
-			for(ModbusProtocolConfig.Protocol protocol:protocolList){
+			for(ExportProtocolData protocol:protocolList){
 				if(protocolName.equalsIgnoreCase(protocol.getName())){
 					protocolConfig=protocol;
 				}
@@ -12165,7 +12284,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getUploadedProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,List<ModbusProtocolConfig.Protocol> protocolList,String language){
+	public String getUploadedProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,List<ExportProtocolData> protocolList,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -12173,9 +12292,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
-		ModbusProtocolConfig.Protocol protocolConfig=null;
+		ExportProtocolData protocolConfig=null;
 		if(protocolList!=null){
-			for(ModbusProtocolConfig.Protocol protocol:protocolList){
+			for(ExportProtocolData protocol:protocolList){
 				if(protocolName.equalsIgnoreCase(protocol.getName())){
 					protocolConfig=protocol;
 				}
@@ -12204,7 +12323,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public int updateProtocol(ModbusProtocolConfig.Protocol protocol,User user){
+	public int updateProtocol(ExportProtocolData protocol,User user){
 		int r=0;
 		if(protocol!=null){
 			Gson gson = new Gson();
@@ -12263,49 +12382,51 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return r;
 	}
 	
-	public int updateOrAddProtocol(ModbusProtocolConfig.Protocol protocol,User user){
+	public int updateOrAddProtocol(ExportProtocolData protocol,User user){
 		int r=0;
 		if(protocol!=null){
 			Gson gson = new Gson();
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-					TimeUnit.SECONDS, 
-					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-			String updateSql="update TBL_PROTOCOL t "
-					+ " set t.sort="+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","
-					+ " t.deviceType="+protocol.getDeviceType()+","
-					+ " t.language="+protocol.getLanguage()+","
-					+ " t.items=?,t.extendedfield=?"
-					+" where t.name='"+protocol.getName()+"'";
-			List<String> clobCont=new ArrayList<String>();
-			clobCont.add(gson.toJson(protocol.getItems()));
-			clobCont.add(gson.toJson(protocol.getExtendedFields()));
-			r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
-			if(r>0){
-				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
-				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(003);
-				dataSynchronizationThread.setParam1(protocol.getName());
-				dataSynchronizationThread.setMethod("update");
-				executor.execute(dataSynchronizationThread);
-			}
-			if(r==0){
+			
+			if(protocol.getSaveSign()==1){
+				String updateSql="update TBL_PROTOCOL t "
+						+ " set t.sort="+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","
+						+ " t.deviceType="+protocol.getDeviceType()+","
+						+ " t.language="+protocol.getLanguage()+","
+						+ " t.items=?,t.extendedfield=?"
+						+" where t.name='"+protocol.getName()+"'";
+				List<String> clobCont=new ArrayList<String>();
+				clobCont.add(gson.toJson(protocol.getItems()));
+				clobCont.add(gson.toJson(protocol.getExtendedFields()));
+				r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
+				if(r>0){
+					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+					MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(protocol.getName(),"update");
+					MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(protocol.getName(),"update");
+					MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(protocol.getName(),"update");
+					
+					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),"update");
+					EquipmentDriverServerTask.initInstanceConfigByProtocolName(protocol.getName(),"update");
+					
+					protocol.setSaveSign(0);
+					protocol.setMsg(languageResourceMap.get("updateSuccessfully"));
+				}else{
+					protocol.setMsg(languageResourceMap.get("updateFailure"));
+				}
+			}else if(protocol.getSaveSign()==0){
 				String insertSql="insert into TBL_PROTOCOL (id,code,name,sort,deviceType,language,items,extendedfield) "
 						+ " values ("+protocol.getId()+",'"+protocol.getCode()+"','"+protocol.getName()+"',"+(protocol.getSort()<=0?"null":(protocol.getSort()+""))+","+protocol.getDeviceType()+","+protocol.getLanguage()+",?,?)";
-				clobCont=new ArrayList<String>();
+				List<String> clobCont=new ArrayList<String>();
 				clobCont.add(gson.toJson(protocol.getItems()));
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
 				r=service.getBaseDao().executeSqlUpdateClob(insertSql,clobCont);
 				if(r>0){
 					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
-					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-					dataSynchronizationThread.setSign(001);
-					dataSynchronizationThread.setParam1(protocol.getName());
-					dataSynchronizationThread.setMethod("update");
-					executor.execute(dataSynchronizationThread);
+					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),"update");
+					
+					protocol.setMsg(languageResourceMap.get("addSuccessfully"));
+				}else{
+					protocol.setMsg(languageResourceMap.get("addFailure"));
 				}
 			}
 			
@@ -12318,6 +12439,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+			
+			if(protocol.getRunStatus()!=null){
+				saveProtocolRunStatusConfig(protocol.getCode(),protocol.getRunStatus().getResolutionMode()+"",
+						protocol.getRunStatus().getItemName(),protocol.getRunStatus().getItemMappingColumn(),
+						protocol.getRunStatus().getRunValue(),protocol.getRunStatus().getStopValue(),
+						protocol.getRunStatus().getRunCondition(),protocol.getRunStatus().getStopCondition());
+			}else{
+				String sql="delete from TBL_RUNSTATUSCONFIG t where t.protocol='"+protocol.getCode()+"'";
+				int result=getBaseDao().updateOrDeleteBySql(sql);
+			}
+			MemoryDataManagerTask.loadProtocolRunStatusConfig();
 		}
 		return r;
 	}

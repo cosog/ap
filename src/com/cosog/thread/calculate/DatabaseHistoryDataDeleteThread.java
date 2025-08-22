@@ -238,11 +238,8 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}while(!Thread.interrupted());
 			}
 		}
-//		StringManagerUtils.printLog("timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
-		if("tbl_acqdata_hist".equalsIgnoreCase(table)){
-			DatabaseMaintenanceCounterUtils.add(delCount);
-		}
+		DatabaseMaintenanceCounterUtils.add(delCount,table);
 	}
 
 	public int getDeviceId() {

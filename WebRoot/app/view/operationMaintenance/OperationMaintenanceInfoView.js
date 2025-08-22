@@ -33,7 +33,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         
         var languageCombox = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: '登录界面语言',
+                    fieldLabel: loginUserLanguageResource.loginInterfaceLanguage,
                     id: 'operationMaintenance_LogonLanguageCombox_Id',
                     anchor: '100%',
                     value: '',
@@ -62,7 +62,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		border: false,
         		tabPosition: 'top',
         		items:[{
-        			title: '基础信息',
+        			title: loginUserLanguageResource.basicInformation,
         			id:'OperationMaintenanceBasicInfoPanel_Id',
     				iconCls: 'check3',
     				layout: 'border',
@@ -86,7 +86,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				            // 第一个 FieldSet
     				            {
     				            	xtype: 'fieldset',
-    				            	title: '基础信息',
+    				            	title: loginUserLanguageResource.basicInformation,
     				            	layout: 'column',
     				            	defaults: {
     				                    layout: 'form',
@@ -99,7 +99,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    	languageCombox,
     						                {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '时率单位',
+    				                            fieldLabel : loginUserLanguageResource.timeEfficiencyUnit,
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -108,12 +108,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            layout: 'hbox',
     				                            items: [
     				                                {
-    				                                    boxLabel:'小数',
+    				                                    boxLabel: loginUserLanguageResource.decimals,
     				                                    name:'operationMaintenance.timeEfficiencyUnit',
     				                                    inputValue: '1',
     				                                    id: 'operationMaintenance_timeEfficiencyUnit1_Id'
     				                                }, {
-    				                                    boxLabel: '百分数',
+    				                                    boxLabel:  loginUserLanguageResource.percent,
     				                                    name:'operationMaintenance.timeEfficiencyUnit',
     				                                    checked:true,
     				                                    inputValue:'2',
@@ -123,7 +123,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                        },
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '发送模拟数据',
+    				                            fieldLabel :  loginUserLanguageResource.sendSimulationData,
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -159,7 +159,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    items: [
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '显示logo',
+    				                            fieldLabel : loginUserLanguageResource.displayTheLogo,
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -182,14 +182,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            ]
     				                        },
     				                        { 
-    				                        	fieldLabel: '资源监测保存记录数' ,
+    				                        	fieldLabel: loginUserLanguageResource.resourceMonitoringLimit ,
     				                        	xtype: 'numberfield',
     				                        	name:'operationMaintenance.resourceMonitoringSaveData',
     				                        	id:'operationMaintenance_resourceMonitoringSaveData_Id',
     				                        	minValue: 1
     				                        },
     				                        {
-    				                        	fieldLabel: '模拟数据发送周期(秒)',
+    				                        	fieldLabel: loginUserLanguageResource.simulateDataSendingCycles+'(s)',
     				                        	xtype: 'numberfield',
     				                        	name:'operationMaintenance.sendCycle',
     				                        	id:'operationMaintenance_sendCycle_Id',
@@ -200,7 +200,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    items: [
     				                        {
     				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : '打印日志',
+    				                            fieldLabel : loginUserLanguageResource.printLogs,
     				                            defaultType: 'radiofield',
     				                            anchor: '100%',
     				                            defaults: {
@@ -223,7 +223,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            ]
     				                        },
     				                        {
-    				                        	fieldLabel: '导出excel数据上限',
+    				                        	fieldLabel: loginUserLanguageResource.exportDataLimits,
     				                        	xtype: 'numberfield',
     				                        	name:'operationMaintenance.exportLimit',
     				                        	id:'operationMaintenance_exportLimit_Id',
@@ -235,7 +235,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				            },
     				        	{
     				            	xtype: 'fieldset',
-    				            	title: '历史数据维护',
+    				            	title: loginUserLanguageResource.historicalDataMaintenance,
     				            	layout: 'column',
     				            	defaults: {
     				                    layout: 'form',
@@ -246,7 +246,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                items: [{
     				                    items: [
     				                        {
-    				                        	fieldLabel: '执行周期(天)',
+    				                        	fieldLabel: loginUserLanguageResource.executionCycle+'('+loginUserLanguageResource.day+')',
     				                        	xtype: 'numberfield',
     				                        	name:'operationMaintenance.databaseMaintenanceCycle',
     				                        	id:'operationMaintenance_databaseMaintenanceCycle_Id',
@@ -298,52 +298,52 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '历史数据表',
+    					                        fieldLabel: loginUserLanguageResource.historicalDataTable,
     					                        name: 'operationMaintenance.acqdata_hist_enabled',
     					                        id:'operationMaintenance_acqdata_hist_enabled_Id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '原始数据表',
+    					                        fieldLabel: loginUserLanguageResource.sourceDataTable,
     					                        name: 'operationMaintenance.acqrawdata_enabled',
     					                        id: 'operationMaintenance_acqrawdata_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '报警数据表',
+    					                        fieldLabel: loginUserLanguageResource.alarmHistoryTable,
     					                        name: 'operationMaintenance.alarminfo_hist_enabled',
     					                        id: 'operationMaintenance_alarminfo_hist_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '日累计计算表',
+    					                        fieldLabel: loginUserLanguageResource.dailyTotalCalculateTable,
     					                        name: 'operationMaintenance.dailytotalcalculate_hist_enabled',
     					                        id: 'operationMaintenance_dailytotalcalculate_hist_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
     					                        fieldLabel: '全天汇总表',
     					                        name: 'operationMaintenance.dailycalculationdata_enabled',
     					                        id: 'operationMaintenance_dailycalculationdata_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
     					                        fieldLabel: '定时汇总表',
     					                        name: 'operationMaintenance.timingcalculationdata_enabled',
     					                        id: 'operationMaintenance_timingcalculationdata_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
     					                        fieldLabel: '数据抽稀表',
     					                        name: 'operationMaintenance.acqdata_vacuate_enabled',
     					                        id: 'operationMaintenance_acqdata_vacuate_enabled_id',
-    					                        boxLabel: '启用'
+    					                        boxLabel: loginUserLanguageResource.enable
     					                    }
     				                    ]
     				                }, {
@@ -556,7 +556,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				    }]
     	            }]
         		},{
-        			title: '备份与恢复',
+        			title: loginUserLanguageResource.backupAndRecovery,
         			id:'OperationMaintenanceBackupsInfoTabPanel_Id',
         			xtype: 'tabpanel',
         			activeTab: 0,

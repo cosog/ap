@@ -50,7 +50,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		tree_json.append("[");
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"模块\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("module")+"\",");
 		tree_json.append("\"code\":\"module\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("ModuleManagement")&&userModuleEditMap.get("ModuleManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -58,7 +58,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"字典\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("dataDictionary")+"\",");
 		tree_json.append("\"code\":\"dataDictionary\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DataDictionaryManagement")&& userModuleEditMap.get("DataDictionaryManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -66,7 +66,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"组织\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("organization")+"\",");
 		tree_json.append("\"code\":\"organization\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -75,7 +75,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"角色\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("role")+"\",");
 		tree_json.append("\"code\":\"role\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("RoleManagement")&& userModuleEditMap.get("RoleManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -83,7 +83,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"用户\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("user")+"\",");
 		tree_json.append("\"code\":\"user\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("OrganizationAndUserManagement")&& userModuleEditMap.get("OrganizationAndUserManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -91,7 +91,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"协议\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("protocol")+"\",");
 		tree_json.append("\"code\":\"protocol\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -99,7 +99,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"采控单元\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("acqUnit")+"\",");
 		tree_json.append("\"code\":\"acqUnit\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -107,7 +107,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"显示单元\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("displayUnit")+"\",");
 		tree_json.append("\"code\":\"displayUnit\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -115,7 +115,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"报警单元\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("alarmUnit")+"\",");
 		tree_json.append("\"code\":\"alarmUnit\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -123,7 +123,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"报表单元\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("reportUnit")+"\",");
 		tree_json.append("\"code\":\"reportUnit\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -131,7 +131,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"采控实例\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("acqInstance")+"\",");
 		tree_json.append("\"code\":\"acqInstance\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -139,7 +139,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"显示实例\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("displayInstance")+"\",");
 		tree_json.append("\"code\":\"displayInstance\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -147,7 +147,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"报警实例\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("alarmInstance")+"\",");
 		tree_json.append("\"code\":\"alarmInstance\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -155,7 +155,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"报表实例\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("reportInstance")+"\",");
 		tree_json.append("\"code\":\"reportInstance\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -163,7 +163,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"辅件设备\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("auxiliaryDevice")+"\",");
 		tree_json.append("\"code\":\"auxiliaryDevice\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");
@@ -171,7 +171,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		tree_json.append("},");
 		
 		tree_json.append("{\"classes\":1,");
-		tree_json.append("\"text\":\"主设备\",");
+		tree_json.append("\"text\":\""+languageResourceMap.get("primaryDevice")+"\",");
 		tree_json.append("\"code\":\"primaryDevice\",");
 		tree_json.append("\"disabled\": "+(! userModuleEditMap.containsKey("DriverManagement")&& userModuleEditMap.get("DriverManagement") )+",");
 		tree_json.append("\"checked\": false");

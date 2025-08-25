@@ -218,3 +218,35 @@ function exportDeviceCompleteData(){
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }
+
+function getInstanceUnitAndProtocol(instance,condition,type){//type: 0-acqInstance 1-displayInstance 2-alarmInstance
+	var info={};
+	info.protocolCode='';
+	info.acqUnitId='';
+	info.displayUnitId='';
+	info.alarmUnitId='';
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/getInstanceUnitAndProtocol',
+        method: "POST",
+        async: false,
+        params: {
+        	instance:instance,
+        	condition:condition,
+        	type:type
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            info.protocolCode=result.protocolCode;
+        	info.acqUnitId=result.acqUnitId;
+        	info.displayUnitId=result.displayUnitId;
+        	info.alarmUnitId=result.alarmUnitId;
+        	info.displayInstanceList=result.displayInstanceList;
+        	info.alarmInstanceList=result.alarmInstanceList;
+        },
+        
+        failure: function () {
+        	
+        }
+    });
+	return info;
+}

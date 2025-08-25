@@ -2506,31 +2506,21 @@ public class StringManagerUtils {
             json = json.replaceAll("\n", "\\u000a");
         }
         
-        JsonParser jsonParser = new JsonParser();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        if(json.startsWith("[")){
-        	JsonArray jsonArrey=jsonParser.parse(json).getAsJsonArray();
-        	result=gson.toJson(jsonArrey);
-        }else if(json.startsWith("{")){
-        	JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
-        	result=gson.toJson(jsonObject);
+        try{
+        	JsonParser jsonParser = new JsonParser();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            if(json.startsWith("[")){
+            	JsonArray jsonArrey=jsonParser.parse(json).getAsJsonArray();
+            	result=gson.toJson(jsonArrey);
+            }else if(json.startsWith("{")){
+            	JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+            	result=gson.toJson(jsonObject);
+            }
+        } catch (Exception e) {
+        	System.out.println(e.toString()+",json:"+json);
+            e.printStackTrace();
         }
         
-//        boolean isList=false;
-//        if(json.startsWith("[{") && json.endsWith("}]")){
-//        	isList=true;
-//        	json="{\"dataList\":"+json+"}";
-//        }
-//        
-//        JsonParser jsonParser = new JsonParser();
-//        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        
-//        String result=gson.toJson(jsonObject);
-//        if(isList){
-//        	result=result.substring(16, result.length());
-//        	result=result.substring(0, result.length()-2);
-//        }
         return result;
     }
     public static String jsonStringFormat(String json) {

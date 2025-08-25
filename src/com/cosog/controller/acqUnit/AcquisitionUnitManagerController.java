@@ -4819,7 +4819,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocol"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5328,7 +5328,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqUnit"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5436,7 +5436,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmUnit"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5543,7 +5543,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				session.setAttribute(key, 0);
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportUnit"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5651,7 +5651,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayUnit"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5760,7 +5760,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5814,7 +5814,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqInstanceInitData"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5868,7 +5868,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5923,7 +5923,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -5977,7 +5977,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -6031,7 +6031,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -6085,7 +6085,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
@@ -6139,7 +6139,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				user = (User) session.getAttribute("userLogin");
 			}
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportInstance"));
+				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));

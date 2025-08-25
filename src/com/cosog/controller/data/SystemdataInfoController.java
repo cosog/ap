@@ -363,7 +363,7 @@ public class SystemdataInfoController extends BaseController {
 	@RequestMapping("/getUploadedDataDictionaryTreeData")
 	public String getUploadedDataDictionaryTreeData() throws IOException {
 		HttpSession session=request.getSession();
-		List<ExportDataDictionary> uploadDataDictionaryList=null;
+		List<ExportDataDictionary> uploadDataDictionaryList=new ArrayList<>();
 		User user = (User) session.getAttribute("userLogin");
 		String language=user!=null?user.getLanguageName():"";
 		String key="uploadImportedDataDictionaryFile"+(user!=null?user.getUserNo():0);

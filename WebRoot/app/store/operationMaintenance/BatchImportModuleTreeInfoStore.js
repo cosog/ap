@@ -73,7 +73,7 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
                         width: 50,
                         xtype: 'rownumberer'
                     },{
-                    	text: '数据',
+                    	text: loginUserLanguageResource.data,
                         flex: 8,
                         align: 'center',
                         dataIndex: 'text',
@@ -96,7 +96,7 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
                         	Ext.getCmp("BatchExportModuleDataListSelectRow_Id").setValue(index);
                         	Ext.getCmp("BatchExportModuleDataListSelectCode_Id").setValue(record.data.code);
                         	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
-                        	var showInfo='导入';
+                        	var showInfo=loginUserLanguageResource.importData;
                         	var showInfo="【<font color=red>"+record.data.text+"</font>】"+showInfo+"&nbsp;"
                         	
                         	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').setTitle(showInfo);
@@ -139,7 +139,6 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("BatchImportModuleTreePanel_Id");
-                
                 panel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
@@ -149,7 +148,7 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
             	Ext.getCmp("BatchExportModuleDataListSelectRow_Id").setValue(-1);
             	Ext.getCmp("BatchExportModuleDataListSelectCode_Id").setValue("");
             	
-            	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').setTitle('导入');
+            	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').setTitle(loginUserLanguageResource.importData);
             	Ext.getCmp('OperationMaintenanceDataImportPanel_Id').removeAll();
             	Ext.getCmp('OperationMaintenanceImportDataForwardBtn_Id').disable();
         		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();

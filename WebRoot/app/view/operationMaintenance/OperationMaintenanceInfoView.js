@@ -326,21 +326,21 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '全天汇总表',
+    					                        fieldLabel: loginUserLanguageResource.dailyCalculationTable,
     					                        name: 'operationMaintenance.dailycalculationdata_enabled',
     					                        id: 'operationMaintenance_dailycalculationdata_enabled_id',
     					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '定时汇总表',
+    					                        fieldLabel: loginUserLanguageResource.timingCalculationTable,
     					                        name: 'operationMaintenance.timingcalculationdata_enabled',
     					                        id: 'operationMaintenance_timingcalculationdata_enabled_id',
     					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
     					                    	xtype: 'checkboxfield',
-    					                        fieldLabel: '数据抽稀表',
+    					                        fieldLabel: loginUserLanguageResource.acqdataVacuateTable,
     					                        name: 'operationMaintenance.acqdata_vacuate_enabled',
     					                        id: 'operationMaintenance_acqdata_vacuate_enabled_id',
     					                        boxLabel: loginUserLanguageResource.enable
@@ -349,55 +349,55 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '执行时间',
+    				                        	fieldLabel: loginUserLanguageResource.executionTime,
     				                        	name:'operationMaintenance.databaseMaintenanceStartTime',
     				                        	id:'operationMaintenance_databaseMaintenanceStartTime_Id',
     						                    allowBlank: false
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.acqdata_hist_retentionTime',
     					                        id:'operationMaintenance_acqdata_hist_retentionTime_Id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.acqrawdata_retentionTime',
     					                        id: 'operationMaintenance_acqrawdata_retentionTime_id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.alarminfo_hist_retentionTime',
     					                        id: 'operationMaintenance_alarminfo_hist_retentionTime_id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.dailytotalcalculate_hist_retentionTime',
     					                        id: 'operationMaintenance_dailytotalcalculate_hist_retentionTime_id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.dailycalculationdata_retentionTime',
     					                        id: 'operationMaintenance_dailycalculationdata_retentionTime_id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.timingcalculationdata_retentionTim',
     					                        id: 'operationMaintenance_timingcalculationdata_retentionTim_id',
     				                        	minValue: 1
     						                },
     				                        { 
-    						                	fieldLabel: '数据保留时间(天)',
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.acqdata_vacuate_retentionTim',
     					                        id: 'operationMaintenance_acqdata_vacuate_retentionTim_id',
@@ -407,7 +407,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '结束时间',
+    				                        	fieldLabel: loginUserLanguageResource.endTime,
     				                        	name:'operationMaintenance.databaseMaintenanceEndTime',
     				                        	id:'operationMaintenance_databaseMaintenanceEndTime_Id',
     						                    allowBlank: false
@@ -416,7 +416,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }]
     				            },{
     				            	xtype: 'fieldset',
-    				            	title: '数据抽稀',
+    				            	title: loginUserLanguageResource.dataSparseness,
     				            	layout: 'column',
     				            	defaults: {
     				                    layout: 'form',
@@ -427,7 +427,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                items: [{
     				                    items: [
     				                        {
-    				                        	fieldLabel: '抽稀记录数',
+    				                        	fieldLabel: loginUserLanguageResource.sparseRecordCount,
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateRecord',
@@ -435,7 +435,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                        	minValue: 1
     						                },
     						                {
-    				                        	fieldLabel: '抽稀数据保存周期波动(分钟)',
+    				                        	fieldLabel: loginUserLanguageResource.vacuateSaveIntervalWaveRange+'('+loginUserLanguageResource.minute+')',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateSaveIntervalWaveRange',
@@ -446,7 +446,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '抽稀数据保存周期(小时)',
+    				                        	fieldLabel: loginUserLanguageResource.vacuateSaveInterval+'('+loginUserLanguageResource.hour+')',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateSaveInterval',
@@ -457,8 +457,8 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: '抽稀表启用限值(记录数大于)',
-    				                        	tpl:'查询总记录数超过该值，将从抽稀表中查询数据',
+    				                        	fieldLabel: loginUserLanguageResource.vacuateThreshold+'('+loginUserLanguageResource.recordsGreaterThan+')',
+//    				                        	tpl:'查询总记录数超过该值，将从抽稀表中查询数据',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateThreshold',
@@ -471,7 +471,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				        ]
     				    }],
     				    buttons: [{
-    				        text: '提交',
+    				        text: loginUserLanguageResource.submit,
 //    				        formBind: true, // 表单验证通过时启用按钮
     				        iconCls: 'save',
     				        handler: function() {
@@ -563,7 +563,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         			border: false,
 	        		tabPosition: 'left',
 	        		items:[{
-	        			title:"导出",
+	        			title: loginUserLanguageResource.exportData,
 	        			id:'BatchExportModuleTreePanel_Id',
 	        			iconCls: 'check3',
                     	tbar:[{
@@ -584,7 +584,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                             }
                         },'->', {
                     		xtype: 'button',
-                    		text: '一键导出',
+                    		text: loginUserLanguageResource.oneKeyBackup,
                     		iconCls: 'export',
                     		disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     		hidden: false,
@@ -603,24 +603,24 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                             hidden: true
                         }]
 	        		},{
-        				title:'导入',
+        				title: loginUserLanguageResource.importData,
         				id:'OperationMaintenanceDataImportTabPanel_Id',
             			layout: 'border',
             			items:[{
             				region: 'west',
-            				title:"功能列表",
+            				title: loginUserLanguageResource.featureList,
             				width:'20%',
             				layout: 'fit',
             				id:'BatchImportModuleTreePanel_Id'
             			},{
             				region: 'center',
-            				title:'备份数据导入',
+            				title: loginUserLanguageResource.backupDataImport,
             				layout: 'fit',
             				id:'OperationMaintenanceDataImportPanel_Id',
             				collapsible: true,
             				tbar:[{
                                 xtype: 'button',
-                                text: '上一步',
+                                text: loginUserLanguageResource.previous,
                                 iconCls: 'forward',
                                 id:'OperationMaintenanceImportDataForwardBtn_Id',
                                 disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -694,7 +694,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                 }
                     		},{
                                 xtype: 'button',
-                                text: '下一步',
+                                text: loginUserLanguageResource.next,
                                 iconCls: 'backwards',
                                 id:'OperationMaintenanceImportDataBackwardBtn_Id',
                                 disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -2256,35 +2256,35 @@ function importedFilePermissionVerification(code){
 	if(code.toUpperCase()=='module'.toUpperCase()){
 		
 	}else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
-		verification.info='请先导入模块数据';
+		verification.info=loginUserLanguageResource.pleaseImportModuleData;
 	}else if(code.toUpperCase()=='organization'.toUpperCase()){
 		
 	}else if(code.toUpperCase()=='role'.toUpperCase()){
-		verification.info='请先导入模块数据';
+		verification.info=loginUserLanguageResource.pleaseImportModuleData;
 	}else if(code.toUpperCase()=='user'.toUpperCase()){
-		verification.info='请先导入组织数据和角色数据';
+		verification.info=loginUserLanguageResource.pleaseImportOrgAndRoleData;
     }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
     	
     }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
-    	verification.info='请先导入组织数据和驱动数据';
+    	verification.info=loginUserLanguageResource.pleaseImportOrgAndDriverData;
     }else if(code.toUpperCase()=='protocol'.toUpperCase()){
     	
     }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
-    	verification.info='请先导入协议数据';
+    	verification.info=loginUserLanguageResource.pleaseImportProtocolData;
     }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
-    	verification.info='请先导入采控单元数据';
+    	verification.info=loginUserLanguageResource.pleaseImportAcqUnitData;
     }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
-    	verification.info='请先导入协议数据';
+    	verification.info=loginUserLanguageResource.pleaseImportProtocolData;
     }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
     	
     }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
-    	verification.info='请先导入采控单元数据';
+    	verification.info=loginUserLanguageResource.pleaseImportAcqUnitData;
     }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
-    	verification.info='请先导入显示单元数据';
+    	verification.info=loginUserLanguageResource.pleaseImportDisplayUnitData;
     }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
-    	verification.info='请先导入报警单元数据';
+    	verification.info=loginUserLanguageResource.pleaseImportAlarmUnitData;
     }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
-    	verification.info='请先导入报表单元数据';
+    	verification.info=loginUserLanguageResource.pleaseImportReportUnitData;
     }
 	
 	var code=Ext.getCmp("BatchExportModuleDataListSelectCode_Id").getValue();
@@ -2299,11 +2299,6 @@ function importedFilePermissionVerification(code){
             var result = Ext.JSON.decode(response.responseText);
             verification.sign = result.success&&result.msg
         },
-        
-//        success: function (response, action) {
-//        	verification.sign=action.result.msg;
-//        },
-        
         failure: function () {
         	
         }

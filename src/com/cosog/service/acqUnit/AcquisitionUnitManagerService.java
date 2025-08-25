@@ -11399,7 +11399,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString();
+		
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String path=stringManagerUtils.getFilePath("test7.json","example/");
+		String data=stringManagerUtils.readFile(path,"utf-8");
+		return data;
+		
+//		System.out.println("显示单元备份数据:"+result_json.toString());
+//		return result_json.toString();
 	}
 	
 	public String getProtocolDisplayUnitExportData(String unitListStr){
@@ -11936,6 +11943,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
+		System.out.println("显示实例备份数据:"+result_json.toString());
 		return result_json.toString();
 	}
 	

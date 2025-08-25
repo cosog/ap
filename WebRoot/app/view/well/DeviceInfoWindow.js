@@ -114,7 +114,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("addDeviceType_Id").setValue(this.value);
 	                    }
@@ -174,7 +174,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("deviceApplicationScenarios_Id").setValue(this.value);
 	                    }
@@ -235,9 +235,37 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("deviceAcqInstanceCode_Id").setValue(this.value);
+							
+							
+	                    },
+	                    change: function ( comb, newValue, oldValue, eOpts ) {
+	                    	var oldInstanceInfo=getInstanceUnitAndProtocol(oldValue,0,0)
+	                    	var newInstanceInfo=getInstanceUnitAndProtocol(newValue,0,0)
+	                    	
+	                    	Ext.getCmp("deviceDisplayInstanceComb_Id").getStore().load();
+	                    	Ext.getCmp("deviceAlarmInstanceComb_Id").getStore().load();
+	                    	
+	                    	if(oldInstanceInfo.protocolCode!=newInstanceInfo.protocolCode){
+	                    		Ext.getCmp("deviceDisplayInstanceComb_Id").setValue('');
+								Ext.getCmp("deviceDisplayInstanceComb_Id").setRawValue('');
+								Ext.getCmp("deviceDisplayInstanceCode_Id").setValue('');
+								
+								Ext.getCmp("deviceAlarmInstanceComb_Id").setValue('');
+								Ext.getCmp("deviceAlarmInstanceComb_Id").setRawValue('');
+								Ext.getCmp("deviceAlarmInstanceCode_Id").setValue('');
+								return ;
+	                    	}
+	                    	
+	                    	if(oldInstanceInfo.acqUnitId!=newInstanceInfo.acqUnitId){
+	                    		Ext.getCmp("deviceDisplayInstanceComb_Id").setValue('');
+								Ext.getCmp("deviceDisplayInstanceComb_Id").setRawValue('');
+								Ext.getCmp("deviceDisplayInstanceCode_Id").setValue('');
+								return ;
+	                    	}
+	                    	
 	                    }
 					}
 				});
@@ -266,8 +294,10 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
+					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0)
 					var new_params = {
-							deviceType: 101
+							deviceType: 101,
+							acqUnitId:acqInstanceInfo.acqUnitId
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -296,7 +326,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("deviceDisplayInstanceCode_Id").setValue(this.value);
 	                    }
@@ -357,7 +387,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("deviceReportInstanceCode_Id").setValue(this.value);
 	                    }
@@ -388,8 +418,10 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
+					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0)
 					var new_params = {
-							deviceType: 101
+							deviceType: 101,
+							protocolCode: acqInstanceInfo.protocolCode
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -418,7 +450,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 						select: function (v,o) {
 							if(o.data.boxkey==''){
 								v.setValue('');
-								v.setRawValue(' ');
+								v.setRawValue('');
 							}
 							Ext.getCmp("deviceAlarmInstanceCode_Id").setValue(this.value);
 	                    }

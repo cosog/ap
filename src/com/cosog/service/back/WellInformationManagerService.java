@@ -500,7 +500,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
@@ -513,17 +513,19 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDisplayInstanceCombList(String deviceTypeStr,User user){
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+	public String getDisplayInstanceCombList(String deviceTypeStr,String acqUnitId,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
-				+ " and t4.language= "+(user!=null?user.getLanguage():0)
-				+ " order by t.sort";
+				+ " and t4.language= "+(user!=null?user.getLanguage():0);
+		if(StringManagerUtils.isNotNull(acqUnitId)){
+			sql+=" and t3.id="+acqUnitId;
+		}
+		sql+= " order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
@@ -547,7 +549,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql="select t.code,t.name from tbl_protocolreportinstance t order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
@@ -560,16 +562,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getAlarmInstanceCombList(String deviceTypeStr,User user){
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+	public String getAlarmInstanceCombList(String deviceTypeStr,String protocolCode,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
-				+ " and t3.language="+(user!=null?user.getLanguage():0)
-				+ " order by t.sort";
+				+ " and t3.language="+(user!=null?user.getLanguage():0);
+		if(StringManagerUtils.isNotNull(protocolCode)){
+			sql+=" and t3.code='"+protocolCode+"'";
+		}
+		sql+= " order by t.sort";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
@@ -586,7 +590,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name from tbl_protocolsmsinstance t order by t.sort";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"&nbsp;\"},");
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
@@ -1808,7 +1812,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append("}");
 		json=result_json.toString().replaceAll("null", "");
-		
+		System.out.println("主设备备份数据:"+json);
 		return json;
 	}
 	
@@ -4657,5 +4661,107 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		return result;
+	}
+	
+	public String getInstanceUnitAndProtocol(String instance,String condition,String type,User user){
+		String protocolCode="";
+		String acqUnitId="";
+		String displayUnitId="";
+		String alarmUnitId="";
+		String displayInstanceList="[]";
+		String alarmInstanceList="[]";
+		if(StringManagerUtils.stringToInteger(type)==0){
+			String sql="select t.id,t.name,t2.id as unitId,t2.unit_name as unitName,t3.code as protocolCode,t3.name as protocolName "
+					+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+					+ " where t.unitid=t2.id and t2.protocol=t3.name";
+			if(StringManagerUtils.stringToInteger(condition)==0){
+				sql+=" and t.code='"+instance+"'";
+			}if(StringManagerUtils.stringToInteger(condition)==1){
+				sql+=" and t.name='"+instance+"'";
+			}
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				acqUnitId=obj[2]+"";
+				protocolCode=obj[4]+"";
+			}
+			
+			
+			
+			String displayInstanceSql="select t.name "
+					+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+					+ " and t4.language= "+(user!=null?user.getLanguage():0);
+			if(StringManagerUtils.isNotNull(acqUnitId)){
+				displayInstanceSql+= " and t3.id="+acqUnitId;
+			}
+			displayInstanceSql+= " order by t.sort";
+			
+			
+			
+			String alarmInstanceSql="select t.name "
+					+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
+					+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+					+ " and t3.language="+(user!=null?user.getLanguage():0);
+			if(StringManagerUtils.isNotNull(protocolCode)){
+				alarmInstanceSql+= " and t3.code='"+protocolCode+"'";
+			}
+			alarmInstanceSql+= " order by t.sort";
+			
+			List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
+			List<?> alarmInstanceQueryList = this.findCallSql(alarmInstanceSql);
+			
+			StringBuffer displayInstanceBuf = new StringBuffer();
+			StringBuffer alarmInstanceBuf = new StringBuffer();
+			
+			displayInstanceBuf.append("[\"\"");
+			for(int i=0;i<displayInstanceQueryList.size();i++){
+				displayInstanceBuf.append(",\""+displayInstanceQueryList.get(i).toString()+"\"");
+			}
+			displayInstanceBuf.append("]");
+			
+			alarmInstanceBuf.append("[\"\"");
+			for(int i=0;i<alarmInstanceQueryList.size();i++){
+				alarmInstanceBuf.append(",\""+alarmInstanceQueryList.get(i).toString()+"\"");
+			}
+			alarmInstanceBuf.append("]");
+			
+			displayInstanceList=displayInstanceBuf.toString();
+			alarmInstanceList=alarmInstanceBuf.toString();
+		}else if(StringManagerUtils.stringToInteger(type)==1){
+			String sql="select t.id,t.name,t2.id as displayUnitId,t2.unit_name as displayUnitName,t3.id as acqUnitId,t3.unit_name as acqUnitName,t4.code as protocolCode,t4.name as protocolName "
+					+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
+			if(StringManagerUtils.stringToInteger(condition)==0){
+				sql+=" and t.code='"+instance+"'";
+			}if(StringManagerUtils.stringToInteger(condition)==1){
+				sql+=" and t.name='"+instance+"'";
+			}
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				displayUnitId=obj[2]+"";
+				acqUnitId=obj[4]+"";
+				protocolCode=obj[6]+"";
+			}
+		}else if(StringManagerUtils.stringToInteger(type)==2){
+			String sql="select t.id,t.name,t2.id as unitId,t2.unit_name as unitName,t3.code as protocolCode,t3.name as protocolName  "
+					+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
+					+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
+			if(StringManagerUtils.stringToInteger(condition)==0){
+				sql+=" and t.code='"+instance+"'";
+			}if(StringManagerUtils.stringToInteger(condition)==1){
+				sql+=" and t.name='"+instance+"'";
+			}
+			List<?> list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				alarmUnitId=obj[2]+"";
+				protocolCode=obj[4]+"";
+			}
+		}
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"success\":true,\"protocolCode\":\""+protocolCode+"\",\"acqUnitId\":\""+acqUnitId+"\",\"displayUnitId\":\""+displayUnitId+"\",\"alarmUnitId\":\""+alarmUnitId+"\",\"displayInstanceList\":"+displayInstanceList+",\"alarmInstanceList\":"+alarmInstanceList+"}");
+		return result_json.toString();
 	}
 }

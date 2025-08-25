@@ -449,7 +449,8 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType,user);
+		String acqUnitId= ParamUtils.getParameter(request, "acqUnitId");
+		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType,acqUnitId,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -479,7 +480,8 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType,user);
+		String protocolCode= ParamUtils.getParameter(request, "protocolCode");
+		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType,protocolCode,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2843,6 +2845,24 @@ public class WellInformationManagerController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		int applicationScenarios=wellInformationManagerService.getApplicationScenariosType(deviceId);
 		json="{\"success\":true,\"applicationScenarios\":"+applicationScenarios+"}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getInstanceUnitAndProtocol")
+	public String getInstanceUnitAndProtocol() throws Exception {
+		HttpSession session=request.getSession();
+		String json = "";
+		String instance = ParamUtils.getParameter(request, "instance");
+		String condition = ParamUtils.getParameter(request, "condition");
+		String type = ParamUtils.getParameter(request, "type");
+		User user = (User) session.getAttribute("userLogin");
+		json=wellInformationManagerService.getInstanceUnitAndProtocol(instance,condition,type,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

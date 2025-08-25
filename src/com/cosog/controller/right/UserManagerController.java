@@ -822,7 +822,7 @@ public class UserManagerController extends BaseController {
 	@RequestMapping("/getUploadedUserTreeData")
 	public String getUploadedUserTreeData() throws IOException {
 		HttpSession session=request.getSession();
-		List<ExportUserData> uploadUserList=null;
+		List<ExportUserData> uploadUserList=new ArrayList<>();
 		User user = (User) session.getAttribute("userLogin");
 		String language=user!=null?user.getLanguageName():"";
 		String key="uploadUserFile"+(user!=null?user.getUserNo():0);

@@ -1211,7 +1211,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    			||prop.toUpperCase()=='waterVolumetricProduction'.toUpperCase()
 	                    	) {
 								cellProperties.readOnly = true;
-			                }else if(srpFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()
+			                }else if(prop.toUpperCase()=='pumpGrade'.toUpperCase()
 			                		&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
 			                		&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
 			                	var columns=srpFESDiagramCalculateMaintainingHandsontableHelper.columns;

@@ -1251,6 +1251,20 @@ var DeviceInfoHandsontableHelper = {
                             			}
                             		}
                         		}
+                        	}else if(prop.toUpperCase() === "displayInstanceName".toUpperCase()){
+                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
+                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+                        			this.source = acqInstanceInfo.displayInstanceList;
+                        			
+                        		}
+                        	}else if(prop.toUpperCase() === "alarmInstanceName".toUpperCase()){
+                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
+                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+                        			this.source = acqInstanceInfo.alarmInstanceList;
+                        			
+                        		}
                         	}
                         	if(deviceInfoHandsontableHelper.columns[visualColIndex].type == undefined || deviceInfoHandsontableHelper.columns[visualColIndex].type!='dropdown'){
                         		cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
@@ -1379,6 +1393,18 @@ var DeviceInfoHandsontableHelper = {
                             				CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenarios,isNew);
                             			}
                             		}
+                                }else if(params[1] == "instanceName"){
+                                	var newAcqInstanceInfo = getInstanceUnitAndProtocol(params[3], 1, 0);
+                                	var oldAcqInstanceInfo = getInstanceUnitAndProtocol(params[2], 1, 0);
+                                	
+                                	if(oldAcqInstanceInfo.protocolCode!=newAcqInstanceInfo.protocolCode){
+                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
+                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'alarmInstanceName','');
+        	                    	}else{
+        	                    		if(oldAcqInstanceInfo.acqUnitId!=newAcqInstanceInfo.acqUnitId){
+        	                    			deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
+            	                    	}
+        	                    	}
                                 }
                             }
                         }

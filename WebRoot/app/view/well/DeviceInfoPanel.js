@@ -1169,6 +1169,7 @@ var DeviceInfoHandsontableHelper = {
             deviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
             	data: data,
+            	theme: 'dark',
                 hiddenColumns: {
                     columns: [0],
                     indicators: false,
@@ -1252,19 +1253,19 @@ var DeviceInfoHandsontableHelper = {
                             		}
                         		}
                         	}else if(prop.toUpperCase() === "displayInstanceName".toUpperCase()){
-                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
-                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
-                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
-                        			this.source = acqInstanceInfo.displayInstanceList;
-                        			
-                        		}
+//                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
+//                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+//                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+//                        			this.source = acqInstanceInfo.displayInstanceList;
+//                        			
+//                        		}
                         	}else if(prop.toUpperCase() === "alarmInstanceName".toUpperCase()){
-                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
-                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
-                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
-                        			this.source = acqInstanceInfo.alarmInstanceList;
-                        			
-                        		}
+//                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
+//                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+//                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+//                        			this.source = acqInstanceInfo.alarmInstanceList;
+//                        			
+//                        		}
                         	}
                         	if(deviceInfoHandsontableHelper.columns[visualColIndex].type == undefined || deviceInfoHandsontableHelper.columns[visualColIndex].type!='dropdown'){
                         		cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
@@ -1397,18 +1398,54 @@ var DeviceInfoHandsontableHelper = {
                                 	var newAcqInstanceInfo = getInstanceUnitAndProtocol(params[3], 1, 0);
                                 	var oldAcqInstanceInfo = getInstanceUnitAndProtocol(params[2], 1, 0);
                                 	
+//                                	var displayInstanceColumnIndex=0;
+//                                	var alarmInstanceColumnIndex=0;
+//                                	for (var j = 0; j < deviceInfoHandsontableHelper.columns.length; j++) {
+//                                		if(deviceInfoHandsontableHelper.columns[j].data.toUpperCase()=='displayInstanceName'.toUpperCase()){
+//                                			displayInstanceColumnIndex=j;
+//                                		}else if(deviceInfoHandsontableHelper.columns[j].data.toUpperCase()=='alarmInstanceName'.toUpperCase()){
+//                                			alarmInstanceColumnIndex=j;
+//                                		}
+//                                		if(displayInstanceColumnIndex>0 && alarmInstanceColumnIndex>0){
+//                                			break;
+//                                		}
+//                                	}
+//                                	const displayInstanceListSource = newAcqInstanceInfo.displayInstanceList || [];
+//                                	const alarmInstanceListSource = newAcqInstanceInfo.alarmInstanceList || [];
+                                	
+                                	
                                 	if(oldAcqInstanceInfo.protocolCode!=newAcqInstanceInfo.protocolCode){
                                 		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
                                 		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'alarmInstanceName','');
+                                		
+//                                		deviceInfoHandsontableHelper.hot.setCellMeta(index, displayInstanceColumnIndex, 'source', displayInstanceListSource);
+//                                		deviceInfoHandsontableHelper.hot.setCellMeta(index, alarmInstanceColumnIndex, 'source', alarmInstanceListSource);
+//                                		productionHandsontableHelper.hot.render();
         	                    	}else{
         	                    		if(oldAcqInstanceInfo.acqUnitId!=newAcqInstanceInfo.acqUnitId){
         	                    			deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
+        	                    			
+//        	                    			deviceInfoHandsontableHelper.hot.setCellMeta(index, displayInstanceColumnIndex, 'source', displayInstanceListSource);
+//                                    		productionHandsontableHelper.hot.render();
             	                    	}
         	                    	}
                                 }
                             }
                         }
                     }
+                },
+                afterBeginEditing: function(row, col) {
+                	if(deviceInfoHandsontableHelper.columns[col].data.toUpperCase()=='displayInstanceName'.toUpperCase()){
+                		var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+                		var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+                		const displayInstanceListSource = acqInstanceInfo.displayInstanceList || [];
+                		deviceInfoHandsontableHelper.hot.setCellMeta(row, col, 'source', displayInstanceListSource);
+                	}else if(deviceInfoHandsontableHelper.columns[col].data.toUpperCase()=='alarmInstanceName'.toUpperCase()){
+                		var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
+                		var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
+                		const alarmInstanceListSource = acqInstanceInfo.alarmInstanceList || [];
+                		deviceInfoHandsontableHelper.hot.setCellMeta(row, col, 'source', alarmInstanceListSource);
+                	}
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
                 	if(coords.col>=0 && coords.row>=0 && deviceInfoHandsontableHelper!=null&&deviceInfoHandsontableHelper.hot!=''&&deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){

@@ -2349,6 +2349,7 @@ public class StringManagerUtils {
         File file = null;
         FileOutputStream fos = null;
         Writer write = null;
+        String rawData=jsonString;
         // 生成json格式文件
         try {
             // 保证创建一个新文件
@@ -2381,6 +2382,9 @@ public class StringManagerUtils {
 
             // 格式化json字符串
             jsonString = toPrettyFormat(jsonString);
+            if(!StringManagerUtils.isNotNull(jsonString)){
+            	jsonString=rawData;
+            }
 
             // 将格式化后的字符串写入文件
             fos = new FileOutputStream(file);

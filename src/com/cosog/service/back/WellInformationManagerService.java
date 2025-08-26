@@ -1639,12 +1639,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.videokeyid1,t.videourl1,t.videokeyid2,t.videourl2," //20~23
 				+ " t.status,t.calculatetype,t.sortnum,to_char(t.commissioningdate,'yyyy-mm-dd hh24:mi:ss'),"//24~27
 				+ " t.productiondata,t.balanceinfo,t.stroke,t.constructiondata"
-				
-				+ " from tbl_device t,tbl_org o,tbl_devicetypeinfo d,"
-				+ " tbl_protocolinstance t2,tbl_protocoldisplayinstance t3,tbl_protocolalarminstance t4,tbl_protocolreportinstance t5"
-				+ " where t.orgid=o.org_id and t.devicetype=d.id"
-				+ " and t.instancecode=t2.code and t.displayinstancecode=t3.code and t.alarminstancecode=t4.code and t.reportinstancecode=t5.code"
-				+ " and t.orgid in ("+orgId+")";
+				+ " from tbl_device t "
+				+ " left outer join tbl_org o on t.orgid=o.org_id "
+				+ " left outer join tbl_devicetypeinfo d on t.devicetype=d.id "
+				+ " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code "
+				+ " left outer join tbl_protocoldisplayinstance t3 on t.displayinstancecode=t3.code "
+				+ " left outer join tbl_protocolalarminstance t4 on t.alarminstancecode=t4.code "
+				+ " left outer join tbl_protocolreportinstance t5 on t.reportinstancecode=t5.code"
+				+ " where t.orgid in ("+orgId+")";
 		
 		String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit "
 				+ " from tbl_device t,tbl_deviceaddinfo t2 "
@@ -1671,7 +1673,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		auxiliaryDeviceSql+= " order by t.sortnum,t.devicename ";
 		graphicSetSql+= " order by t.sortnum,t.devicename ";
 		
-		String json = "";
+		String json2 = "";
 		List<?> list = this.findCallSql(sql);
 		List<?> addInfoList = this.findCallSql(addInfoSql);
 		List<?> auxiliaryDeviceList = this.findCallSql(auxiliaryDeviceSql);
@@ -1786,19 +1788,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			result_json.append("]");
 			
+			
 			GraphicSetData graphicSetData =null;
-			for(int j=0;i<graphicSetList.size();j++){
-				Object[] graphicSetObj = (Object[]) auxiliaryDeviceList.get(j);
-				if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(graphicSetObj[0]+"")){
-					
-					
-					String graphicSetStr=(graphicSetObj[1]+"").replaceAll("\r\n", "").replaceAll("\n", "");
-					reflectType = new TypeToken<GraphicSetData>() {}.getType();
-					graphicSetData=gson.fromJson(graphicSetStr, reflectType);
-					
-					break;
+			
+			try{
+				for(int j=0;j<graphicSetList.size();j++){
+					Object[] graphicSetObj = (Object[]) graphicSetList.get(j);
+					if(StringManagerUtils.stringToInteger(deviceId)==StringManagerUtils.stringToInteger(graphicSetObj[0]+"")){
+						
+						
+						String graphicSetStr=(graphicSetObj[1]+"").replaceAll("\r\n", "").replaceAll("\n", "");
+						reflectType = new TypeToken<GraphicSetData>() {}.getType();
+						graphicSetData=gson.fromJson(graphicSetStr, reflectType);
+						
+						break;
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+			
 			if(graphicSetData!=null){
 				result_json.append(",\"GraphicSet\":"+gson.toJson(graphicSetData)+"");
 			}
@@ -1811,9 +1820,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		json=result_json.toString().replaceAll("null", "");
-		System.out.println("主设备备份数据:"+json);
-		return json;
+		
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	@SuppressWarnings("rawtypes")

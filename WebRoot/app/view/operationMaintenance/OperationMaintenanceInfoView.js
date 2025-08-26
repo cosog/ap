@@ -959,42 +959,43 @@ function oneKeyBackupData(){
 	
 	if (selectedRecordCodeArr.length > 0) {
 		Ext.Array.each(selectedRecordCodeArr, function (name, index, countriesItSelf) {
-	        var code = selectedRecordCodeArr[index];
-	        if(code.toUpperCase()=='module'.toUpperCase()){
-	        	exportModuleBackupData();
-	        }else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
-	        	exportDataDictionaryBackupData();
-	        }else if(code.toUpperCase()=='organization'.toUpperCase()){
-	        	exportOrganizationBackupData();
-	        }else if(code.toUpperCase()=='role'.toUpperCase()){
-	        	exportRoleBackupData();
-	        }else if(code.toUpperCase()=='user'.toUpperCase()){
-	        	exportUserBackupData();
-	        }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
-	        	exportAuxiliaryDeviceBackupData();
-	        }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
-	        	exportPrimaryDeviceBackupData();
-	        }else if(code.toUpperCase()=='protocol'.toUpperCase()){
-	        	exportProtocolBackupData();
-	        }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
-	        	exportAcqUnitBackupData();
-	        }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
-	        	exportDisplayUnitBackupData();
-	        }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
-	        	exportAlarmUnitBackupData();
-	        }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
-	        	exportReportUnitBackupData();
-	        }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
-	        	exportAcqInstanceBackupData();
-	        }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
-	        	exportDisplayInstanceBackupData();
-	        }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
-	        	exportAlarmInstanceBackupData();
-	        }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
-	        	exportReportInstanceBackupData();
-	        }
-	        
-	        
+	        setTimeout(() => {
+	        	var code = selectedRecordCodeArr[index];
+		        if(code.toUpperCase()=='module'.toUpperCase()){
+		        	exportModuleBackupData();
+		        }else if(code.toUpperCase()=='dataDictionary'.toUpperCase()){
+		        	exportDataDictionaryBackupData();
+		        }else if(code.toUpperCase()=='organization'.toUpperCase()){
+		        	exportOrganizationBackupData();
+		        }else if(code.toUpperCase()=='role'.toUpperCase()){
+		        	exportRoleBackupData();
+		        }else if(code.toUpperCase()=='user'.toUpperCase()){
+		        	exportUserBackupData();
+		        }else if(code.toUpperCase()=='auxiliaryDevice'.toUpperCase()){
+		        	exportAuxiliaryDeviceBackupData();
+		        }else if(code.toUpperCase()=='primaryDevice'.toUpperCase()){
+		        	exportPrimaryDeviceBackupData();
+		        }else if(code.toUpperCase()=='protocol'.toUpperCase()){
+		        	exportProtocolBackupData();
+		        }else if(code.toUpperCase()=='acqUnit'.toUpperCase()){
+		        	exportAcqUnitBackupData();
+		        }else if(code.toUpperCase()=='displayUnit'.toUpperCase()){
+		        	exportDisplayUnitBackupData();
+		        }else if(code.toUpperCase()=='alarmUnit'.toUpperCase()){
+		        	exportAlarmUnitBackupData();
+		        }else if(code.toUpperCase()=='reportUnit'.toUpperCase()){
+		        	exportReportUnitBackupData();
+		        }else if(code.toUpperCase()=='acqInstance'.toUpperCase()){
+		        	exportAcqInstanceBackupData();
+		        }else if(code.toUpperCase()=='displayInstance'.toUpperCase()){
+		        	exportDisplayInstanceBackupData();
+		        }else if(code.toUpperCase()=='alarmInstance'.toUpperCase()){
+		        	exportAlarmInstanceBackupData();
+		        }else if(code.toUpperCase()=='reportInstance'.toUpperCase()){
+		        	exportReportInstanceBackupData();
+		        }
+	        	console.log('export data:'+code);
+            }, 1000*index);
 	    });
 		Ext.getCmp("BatchExportModuleTreeGridPanel_Id").getStore().commitChanges();
 	} else {

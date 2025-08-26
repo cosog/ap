@@ -11364,7 +11364,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"RealtimeSort\":"+(StringManagerUtils.isInteger(displayItemObj[4]+"")?StringManagerUtils.stringToInteger(displayItemObj[4]+""):-99)+",");
 					result_json.append("\"BitIndex\":"+(StringManagerUtils.isInteger(displayItemObj[5]+"")?StringManagerUtils.stringToInteger(displayItemObj[5]+""):-99)+",");
 					result_json.append("\"ShowLevel\":"+(StringManagerUtils.isInteger(displayItemObj[6]+"")?StringManagerUtils.stringToInteger(displayItemObj[6]+""):-99)+",");
-					result_json.append("\"RealtimeCurveConf\":"+(displayItemObj[7]!=null?(displayItemObj[7]+"").replaceAll("null", ""):"{}")+",");
+					result_json.append("\"RealtimeCurveConf\":"+(displayItemObj[7]!=null?(displayItemObj[7]+"").replaceAll("null", "").replaceAll("\r\n", "\n").replaceAll("\n", ""):"{}")+",");
 					result_json.append("\"HistoryCurveConf\":"+(displayItemObj[8]!=null?(displayItemObj[8]+"").replaceAll("null", ""):"{}")+",");
 					result_json.append("\"Type\":"+StringManagerUtils.stringToInteger(displayItemObj[9]+"")+",");
 					result_json.append("\"Matrix\":\""+((displayItemObj[10]+"").replaceAll("null", ""))+"\",");
@@ -11400,13 +11400,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append("}");
 		
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("test7.json","example/");
-		String data=stringManagerUtils.readFile(path,"utf-8");
-		return data;
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		String path=stringManagerUtils.getFilePath("test7.json","example/");
+//		String data=stringManagerUtils.readFile(path,"utf-8");
+//		return data;
 		
 //		System.out.println("显示单元备份数据:"+result_json.toString());
-//		return result_json.toString();
+		
+//		if(result_json.length()>971411){
+//			String subStr=result_json.substring(970000, result_json.length()>972000?972000:result_json.length()-1);
+//			System.out.println("显示单元备份截取数据:"+subStr);
+//		}
+		
+		return result_json.toString();
 	}
 	
 	public String getProtocolDisplayUnitExportData(String unitListStr){
@@ -11943,7 +11949,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		System.out.println("显示实例备份数据:"+result_json.toString());
+//		System.out.println("显示实例备份数据:"+result_json.toString());
 		return result_json.toString();
 	}
 	

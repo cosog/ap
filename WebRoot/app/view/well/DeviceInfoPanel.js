@@ -1169,7 +1169,8 @@ var DeviceInfoHandsontableHelper = {
             deviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
             	data: data,
-            	theme: 'dark',
+//            	theme: 'dark',
+            	
                 hiddenColumns: {
                     columns: [0],
                     indicators: false,

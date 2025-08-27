@@ -1,5 +1,7 @@
 package com.cosog.task;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,7 +42,7 @@ public class DatabaseMaintenanceTask {
 	public static void timingShrinkSpace(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start！");
 		
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
 		try{
 			tableSpaceInfo= ResourceMonitoringTask.getTableSpaceInfo();
 		}catch(Exception e){
@@ -66,7 +68,7 @@ public class DatabaseMaintenanceTask {
 		shrinkSpace("TBL_PCPACQDATA_VACUATE");
 		long t2=System.nanoTime();
 		
-		tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
+		tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
 		try{
 			tableSpaceInfo= ResourceMonitoringTask.getTableSpaceInfo();
 		}catch(Exception e){
@@ -141,54 +143,54 @@ public class DatabaseMaintenanceTask {
 		}
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!");
 		
-		long acqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQDATA_HIST");
-		long acqRawDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQRAWDATA");
-		long alarmDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ALARMINFO_HIST");
-		long dailyTotalCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_DAILYTOTALCALCULATE_HIST");
-		long dailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_DAILYCALCULATIONDATA");
-		long timingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_TIMINGCALCULATIONDATA");
-		long SRPAcqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPACQDATA_HIST");
-		long SRPDailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPDAILYCALCULATIONDATA");
-		long SRPTimingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPTIMINGCALCULATIONDATA");
-		long PCPAcqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPACQDATA_HIST");
-		long PCPDailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPDAILYCALCULATIONDATA");
-		long PCPTimingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPTIMINGCALCULATIONDATA");
-		long acqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQDATA_VACUATE");
-		long SRPAcqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPACQDATA_VACUATE");
-		long PCPAcqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPACQDATA_VACUATE");
-		
-		long acqDataAddCount= getCount("select count(1) from TBL_ACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long acqRawDataAddCount= getCount("select count(1) from TBL_ACQRAWDATA t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long alarmDataAddCount= getCount("select count(1) from TBL_ALARMINFO_HIST t where t.alarmTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long dailyTotalCalculateDataAddCount= getCount("select count(1) from TBL_DAILYTOTALCALCULATE_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long dailyCalculateDataAddCount= getCount("select count(1) from TBL_DAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
-		long timingCalculateDataAddCount= getCount("select count(1) from TBL_TIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long SRPAcqDataAddCount= getCount("select count(1) from TBL_SRPACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long SRPDailyCalculateDataAddCount= getCount("select count(1) from TBL_SRPDAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
-		long SRPTimingCalculateDataAddCount= getCount("select count(1) from TBL_SRPTIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long PCPAcqDataAddCount= getCount("select count(1) from TBL_PCPACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long PCPDailyCalculateDataAddCount= getCount("select count(1) from TBL_PCPDAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
-		long PCPTimingCalculateDataAddCount= getCount("select count(1) from TBL_PCPTIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long acqDataVacuateAddCount= getCount("select count(1) from TBL_ACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long SRPAcqDataVacuateAddCount= getCount("select count(1) from TBL_SRPACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		long PCPAcqDataVacuateAddCount= getCount("select count(1) from TBL_PCPACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
-		
-		
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQDATA_HIST,delCount:"+acqDataDelCount+",addCount:"+acqDataAddCount+",diff:"+(acqDataAddCount-acqDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQRAWDATA,delCount:"+acqRawDataDelCount+",addCount:"+acqRawDataAddCount+",diff:"+(acqRawDataAddCount-acqRawDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ALARMINFO_HIST,delCount:"+alarmDataDelCount+",addCount:"+alarmDataAddCount+",diff:"+(alarmDataAddCount-alarmDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_DAILYTOTALCALCULATE_HIST,delCount:"+dailyTotalCalculateDataDelCount+",addCount:"+dailyTotalCalculateDataAddCount+",diff:"+(dailyTotalCalculateDataAddCount-dailyTotalCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_DAILYCALCULATIONDATA,delCount:"+dailyCalculateDataDelCount+",addCount:"+dailyCalculateDataAddCount+",diff:"+(dailyCalculateDataAddCount-dailyCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_TIMINGCALCULATIONDATA,delCount:"+timingCalculateDataDelCount+",addCount:"+timingCalculateDataAddCount+",diff:"+(timingCalculateDataAddCount-timingCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPACQDATA_HIST,delCount:"+SRPAcqDataDelCount+",addCount:"+SRPAcqDataAddCount+",diff:"+(SRPAcqDataAddCount-SRPAcqDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPDAILYCALCULATIONDATA,delCount:"+SRPDailyCalculateDataDelCount+",addCount:"+SRPDailyCalculateDataAddCount+",diff:"+(SRPDailyCalculateDataAddCount-SRPDailyCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPTIMINGCALCULATIONDATA,delCount:"+SRPTimingCalculateDataDelCount+",addCount:"+SRPTimingCalculateDataAddCount+",diff:"+(SRPTimingCalculateDataAddCount-SRPTimingCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPACQDATA_HIST,delCount:"+PCPAcqDataDelCount+",addCount:"+PCPAcqDataAddCount+",diff:"+(PCPAcqDataAddCount-PCPAcqDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPDAILYCALCULATIONDATA:"+PCPDailyCalculateDataDelCount+",addCount:"+PCPDailyCalculateDataAddCount+",diff:"+(PCPDailyCalculateDataAddCount-PCPDailyCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPTIMINGCALCULATIONDATA:"+PCPTimingCalculateDataDelCount+",addCount:"+PCPTimingCalculateDataAddCount+",diff:"+(PCPTimingCalculateDataAddCount-PCPTimingCalculateDataDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQDATA_VACUATE:"+acqDataVacuateDelCount+",addCount:"+acqDataVacuateAddCount+",diff:"+(acqDataVacuateAddCount-acqDataVacuateDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPACQDATA_VACUATE,delCount:"+SRPAcqDataVacuateDelCount+",addCount:"+SRPAcqDataVacuateAddCount+",diff:"+(SRPAcqDataVacuateAddCount-SRPAcqDataVacuateDelCount));
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPACQDATA_VACUATE,delCount:"+PCPAcqDataVacuateDelCount+",addCount:"+PCPAcqDataVacuateAddCount+",diff:"+(PCPAcqDataVacuateAddCount-PCPAcqDataVacuateDelCount));
+//		long acqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQDATA_HIST");
+//		long acqRawDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQRAWDATA");
+//		long alarmDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ALARMINFO_HIST");
+//		long dailyTotalCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_DAILYTOTALCALCULATE_HIST");
+//		long dailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_DAILYCALCULATIONDATA");
+//		long timingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_TIMINGCALCULATIONDATA");
+//		long SRPAcqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPACQDATA_HIST");
+//		long SRPDailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPDAILYCALCULATIONDATA");
+//		long SRPTimingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPTIMINGCALCULATIONDATA");
+//		long PCPAcqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPACQDATA_HIST");
+//		long PCPDailyCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPDAILYCALCULATIONDATA");
+//		long PCPTimingCalculateDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPTIMINGCALCULATIONDATA");
+//		long acqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQDATA_VACUATE");
+//		long SRPAcqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_SRPACQDATA_VACUATE");
+//		long PCPAcqDataVacuateDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_PCPACQDATA_VACUATE");
+//		
+//		long acqDataAddCount= getCount("select count(1) from TBL_ACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long acqRawDataAddCount= getCount("select count(1) from TBL_ACQRAWDATA t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long alarmDataAddCount= getCount("select count(1) from TBL_ALARMINFO_HIST t where t.alarmTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long dailyTotalCalculateDataAddCount= getCount("select count(1) from TBL_DAILYTOTALCALCULATE_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long dailyCalculateDataAddCount= getCount("select count(1) from TBL_DAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
+//		long timingCalculateDataAddCount= getCount("select count(1) from TBL_TIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long SRPAcqDataAddCount= getCount("select count(1) from TBL_SRPACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long SRPDailyCalculateDataAddCount= getCount("select count(1) from TBL_SRPDAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
+//		long SRPTimingCalculateDataAddCount= getCount("select count(1) from TBL_SRPTIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long PCPAcqDataAddCount= getCount("select count(1) from TBL_PCPACQDATA_HIST t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long PCPDailyCalculateDataAddCount= getCount("select count(1) from TBL_PCPDAILYCALCULATIONDATA t where t.calDate = to_date('"+lastDate+"','yyyy-mm-dd')");
+//		long PCPTimingCalculateDataAddCount= getCount("select count(1) from TBL_PCPTIMINGCALCULATIONDATA t where t.calTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long acqDataVacuateAddCount= getCount("select count(1) from TBL_ACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long SRPAcqDataVacuateAddCount= getCount("select count(1) from TBL_SRPACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		long PCPAcqDataVacuateAddCount= getCount("select count(1) from TBL_PCPACQDATA_VACUATE t where t.acqTime between to_date('"+lastDate+"','yyyy-mm-dd') and to_date('"+currentDate+"','yyyy-mm-dd')");
+//		
+//		
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQDATA_HIST,delCount:"+acqDataDelCount+",addCount:"+acqDataAddCount+",diff:"+(acqDataAddCount-acqDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQRAWDATA,delCount:"+acqRawDataDelCount+",addCount:"+acqRawDataAddCount+",diff:"+(acqRawDataAddCount-acqRawDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ALARMINFO_HIST,delCount:"+alarmDataDelCount+",addCount:"+alarmDataAddCount+",diff:"+(alarmDataAddCount-alarmDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_DAILYTOTALCALCULATE_HIST,delCount:"+dailyTotalCalculateDataDelCount+",addCount:"+dailyTotalCalculateDataAddCount+",diff:"+(dailyTotalCalculateDataAddCount-dailyTotalCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_DAILYCALCULATIONDATA,delCount:"+dailyCalculateDataDelCount+",addCount:"+dailyCalculateDataAddCount+",diff:"+(dailyCalculateDataAddCount-dailyCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_TIMINGCALCULATIONDATA,delCount:"+timingCalculateDataDelCount+",addCount:"+timingCalculateDataAddCount+",diff:"+(timingCalculateDataAddCount-timingCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPACQDATA_HIST,delCount:"+SRPAcqDataDelCount+",addCount:"+SRPAcqDataAddCount+",diff:"+(SRPAcqDataAddCount-SRPAcqDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPDAILYCALCULATIONDATA,delCount:"+SRPDailyCalculateDataDelCount+",addCount:"+SRPDailyCalculateDataAddCount+",diff:"+(SRPDailyCalculateDataAddCount-SRPDailyCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPTIMINGCALCULATIONDATA,delCount:"+SRPTimingCalculateDataDelCount+",addCount:"+SRPTimingCalculateDataAddCount+",diff:"+(SRPTimingCalculateDataAddCount-SRPTimingCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPACQDATA_HIST,delCount:"+PCPAcqDataDelCount+",addCount:"+PCPAcqDataAddCount+",diff:"+(PCPAcqDataAddCount-PCPAcqDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPDAILYCALCULATIONDATA:"+PCPDailyCalculateDataDelCount+",addCount:"+PCPDailyCalculateDataAddCount+",diff:"+(PCPDailyCalculateDataAddCount-PCPDailyCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPTIMINGCALCULATIONDATA:"+PCPTimingCalculateDataDelCount+",addCount:"+PCPTimingCalculateDataAddCount+",diff:"+(PCPTimingCalculateDataAddCount-PCPTimingCalculateDataDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_ACQDATA_VACUATE:"+acqDataVacuateDelCount+",addCount:"+acqDataVacuateAddCount+",diff:"+(acqDataVacuateAddCount-acqDataVacuateDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_SRPACQDATA_VACUATE,delCount:"+SRPAcqDataVacuateDelCount+",addCount:"+SRPAcqDataVacuateAddCount+",diff:"+(SRPAcqDataVacuateAddCount-SRPAcqDataVacuateDelCount));
+//		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",table:TBL_PCPACQDATA_VACUATE,delCount:"+PCPAcqDataVacuateDelCount+",addCount:"+PCPAcqDataVacuateAddCount+",diff:"+(PCPAcqDataVacuateAddCount-PCPAcqDataVacuateDelCount));
 
 		timingShrinkSpace();
 	}

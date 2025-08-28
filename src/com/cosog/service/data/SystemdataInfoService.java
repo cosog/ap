@@ -444,8 +444,11 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		String columns="[]";
-		String overlaySql="select t.sysdataid from tbl_dist_name t where t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
-		String collisionSql="select t.sysdataid from tbl_dist_name t where t.moduleid not in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
+		String overlaySql="select t.sysdataid from tbl_dist_name t "
+				+ " where t.moduleid in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")"
+						+ " or t.moduleid is null";
+		String collisionSql="select t.sysdataid from tbl_dist_name t "
+				+ " where t.moduleid not in (select t2.rm_moduleid from tbl_module2role t2 where t2.rm_roleid="+user.getUserType()+")";
 		
 		List<String> overlayObjectList=new ArrayList<>();
 		List<String> collisionObjectList=new ArrayList<>();
@@ -507,7 +510,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				SystemdataInfo systemdataInfo=new SystemdataInfo();
 				systemdataInfo.setSysdataid(exportDataDictionary.getDictionaryid());
 				systemdataInfo.setTenantid(user.getUserId());
-				systemdataInfo.setStatus(0);
+				systemdataInfo.setStatus(exportDataDictionary.getStatus());
 				systemdataInfo.setUpdateuser(user.getUserId());
 				systemdataInfo.setCreator(user.getUserId());
 				systemdataInfo.setUpdatetime(DateUtils.getTime());
@@ -515,7 +518,9 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				systemdataInfo.setName_zh_CN(exportDataDictionary.getName_en());
 				systemdataInfo.setName_en(exportDataDictionary.getName_en());
 				systemdataInfo.setName_ru(exportDataDictionary.getName_ru());
-				
+				systemdataInfo.setModuleId(exportDataDictionary.getModuleId());
+				systemdataInfo.setSorts(exportDataDictionary.getSort());
+				systemdataInfo.setCode(exportDataDictionary.getCode());
 				
 				if(exportDataDictionary.getSaveSign()==1){
 					try {
@@ -587,7 +592,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	}
 	
 	public void deleteCurrentDictionaryItem(final String dictionaryId) throws Exception {
-		final String hql = "DELETE DataitemsInfo u where u.sysdataid = " + dictionaryId + "";
+		final String hql = "DELETE DataitemsInfo u where u.sysdataid = '" + dictionaryId + "'";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 }

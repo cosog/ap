@@ -1170,7 +1170,7 @@ var DeviceInfoHandsontableHelper = {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
             	data: data,
 //            	theme: 'dark',
-            	
+            	themeName: 'ht-theme-main',
                 hiddenColumns: {
                     columns: [0],
                     indicators: false,

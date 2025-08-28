@@ -13382,8 +13382,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					displayUnitItem.setHistoryBgColor(exportDisplayUnitData.getItemList().get(i).getHistoryBgColor());
 					displayUnitItem.setBitIndex(exportDisplayUnitData.getItemList().get(i).getBitIndex()>=0?exportDisplayUnitData.getItemList().get(i).getBitIndex():null);
 					displayUnitItem.setShowLevel(exportDisplayUnitData.getItemList().get(i).getShowLevel()>0?exportDisplayUnitData.getItemList().get(i).getShowLevel():null);
-					displayUnitItem.setRealtimeCurveConf(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()==null?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()));
-					displayUnitItem.setHistoryCurveConf(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()==null?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()));
+					displayUnitItem.setRealtimeCurveConf(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()==null||exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf().getSort()<=0?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getRealtimeCurveConf()));
+					displayUnitItem.setHistoryCurveConf(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()==null||exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf().getSort()<=0?null:gson.toJson(exportDisplayUnitData.getItemList().get(i).getHistoryCurveConf()));
 					displayUnitItem.setMatrix(exportDisplayUnitData.getItemList().get(i).getMatrix());
 					
 					displayUnitItem.setRealtimeOverview(exportDisplayUnitData.getItemList().get(i).getRealtimeOverview()>0?exportDisplayUnitData.getItemList().get(i).getRealtimeOverview():null);

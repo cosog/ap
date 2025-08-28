@@ -127,7 +127,7 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
                         		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();
                         	}
                         	
-                        	if(record.data.disabled){
+                        	if(record.data.disabled || !verification.sign){
                         		Ext.getCmp('OperationMaintenanceImportForm_Id').disable();
                         	}else{
                         		Ext.getCmp('OperationMaintenanceImportForm_Id').enable();

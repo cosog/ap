@@ -186,6 +186,12 @@
     </script>
 
     <style type="text/css">
+    	.handsontable .htDropdownMenu {
+  			background-color: #c7c7c7 !important;
+		}
+    
+    
+    
         #loading_div_id {
             position: absolute;
             left: 40%;

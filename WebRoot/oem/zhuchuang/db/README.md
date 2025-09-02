@@ -26,105 +26,113 @@
 
 [1.2.7 tbl_module2role](#127-tbl_module2role)
 
-[1.2.8 tbl_user](#128-tbl_user)
+[1.2.8 tbl_language2role](#128-tbl_language2role)
 
-[1.2.9 tbl_dist_name](#129-tbl_dist_name)
+[1.2.9 tbl_user](#129-tbl_user)
 
-[1.2.10 tbl_dist_item](#1210-tbl_dist_item)
+[1.2.10 tbl_dist_name](#1210-tbl_dist_name)
 
-[1.2.11 tbl_code](#1211-tbl_code)
+[1.2.11 tbl_dist_item](#1211-tbl_dist_item)
 
-[1.2.12 tbl_datamapping](#1212-tbl_datamapping)
+[1.2.12 tbl_code](#1212-tbl_code)
 
-[1.2.13 tbl_runstatusconfig](#1213-tbl_runstatusconfig)
+[1.2.13 tbl_datamapping](#1213-tbl_datamapping)
 
-[1.2.14 tbl_acq_unit_conf](#1214-tbl_acq_unit_conf)
+[1.2.14 tbl_runstatusconfig](#1214-tbl_runstatusconfig)
 
-[1.2.15 tbl_acq_group_conf](#1215-tbl_acq_group_conf)
+[1.2.15 tbl_acq_unit_conf](#1215-tbl_acq_unit_conf)
 
-[1.2.16 tbl_acq_item2group_conf](#1216-tbl_acq_item2group_conf)
+[1.2.16 tbl_acq_group_conf](#1216-tbl_acq_group_conf)
 
-[1.2.17 tbl_acq_group2unit_conf](#1217-tbl_acq_group2unit_conf)
+[1.2.17 tbl_acq_item2group_conf](#1217-tbl_acq_item2group_conf)
 
-[1.2.18 tbl_alarm_unit_conf](#1218-tbl_alarm_unit_conf)
+[1.2.18 tbl_acq_group2unit_conf](#1218-tbl_acq_group2unit_conf)
 
-[1.2.19 tbl_alarm_item2unit_conf](#1219-tbl_alarm_item2unit_conf)
+[1.2.19 tbl_alarm_unit_conf](#1219-tbl_alarm_unit_conf)
 
-[1.2.20 tbl_display_unit_conf](#1220-tbl_display_unit_conf)
+[1.2.20 tbl_alarm_item2unit_conf](#1220-tbl_alarm_item2unit_conf)
 
-[1.2.21 tbl_display_item2unit_conf](#1221-tbl_display_item2unit_conf)
+[1.2.21 tbl_display_unit_conf](#1221-tbl_display_unit_conf)
 
-[1.2.22 tbl_report_unit_conf](#1222-tbl_report_unit_conf)
+[1.2.22 tbl_display_item2unit_conf](#1222-tbl_display_item2unit_conf)
 
-[1.2.23 tbl_report_items2unit_conf](#1223-tbl_report_items2unit_conf)
+[1.2.23 tbl_report_unit_conf](#1223-tbl_report_unit_conf)
 
-[1.2.24 tbl_protocolinstance](#1224-tbl_protocolinstance)
+[1.2.24 tbl_report_items2unit_conf](#1224-tbl_report_items2unit_conf)
 
-[1.2.25 tbl_protocolalarminstance](#1225-tbl_protocolalarminstance)
+[1.2.25 tbl_protocolinstance](#1225-tbl_protocolinstance)
 
-[1.2.26 tbl_protocoldisplayinstance](#1226-tbl_protocoldisplayinstance)
+[1.2.26 tbl_protocolalarminstance](#1226-tbl_protocolalarminstance)
 
-[1.2.27 tbl_protocolreportinstance](#1227-tbl_protocolreportinstance)
+[1.2.27 tbl_protocoldisplayinstance](#1227-tbl_protocoldisplayinstance)
 
-[1.2.28 tbl_protocolsmsinstance](#1228-tbl_protocolsmsinstance)
+[1.2.28 tbl_protocolreportinstance](#1228-tbl_protocolreportinstance)
 
-[1.2.29 tbl_device](#1229-tbl_device)
+[1.2.29 tbl_protocolsmsinstance](#1229-tbl_protocolsmsinstance)
 
-[1.2.30 tbl_smsdevice](#1230-tbl_smsdevice)
+[1.2.30 tbl_device](#1230-tbl_device)
 
-[1.2.31 tbl_deviceaddinfo](#1231-tbl_deviceaddinfo)
+[1.2.31 tbl_smsdevice](#1231-tbl_smsdevice)
 
-[1.2.32 tbl_auxiliarydevice](#1232-tbl_auxiliarydevice)
+[1.2.32 tbl_deviceaddinfo](#1232-tbl_deviceaddinfo)
 
-[1.2.33 tbl_auxiliarydeviceaddinfo](#1233-tbl_auxiliarydeviceaddinfo)
+[1.2.33 tbl_auxiliarydevice](#1233-tbl_auxiliarydevice)
 
-[1.2.34 tbl_auxiliary2master](#1234-tbl_auxiliary2master)
+[1.2.34 tbl_auxiliarydeviceaddinfo](#1234-tbl_auxiliarydeviceaddinfo)
 
-[1.2.35 tbl_devicegraphicset](#1235-tbl_devicegraphicset)
+[1.2.35 tbl_auxiliary2master](#1235-tbl_auxiliary2master)
 
-[1.2.36 tbl_acqdata_latest](#1236-tbl_acqdata_latest)
+[1.2.36 tbl_devicegraphicset](#1236-tbl_devicegraphicset)
 
-[1.2.37 tbl_acqdata_hist](#1237-tbl_acqdata_hist)
+[1.2.37 tbl_acqdata_latest](#1237-tbl_acqdata_latest)
 
-[1.2.38 tbl_acqrawdata](#1238-tbl_acqrawdata)
+[1.2.38 tbl_acqdata_hist](#1238-tbl_acqdata_hist)
 
-[1.2.39 tbl_alarminfo_latest](#1239-tbl_alarminfo_latest)
+[1.2.39 tbl_acqdata_vacute](#1239-tbl_acqdata_vacute)
 
-[1.2.40 tbl_alarminfo_hist](#1240-tbl_alarminfo_hist)
+[1.2.40 tbl_acqrawdata](#1240-tbl_acqrawdata)
 
-[1.2.41 tbl_dailytotalcalculate_latest](#1241-tbl_dailytotalcalculate_latest)
+[1.2.41 tbl_alarminfo_latest](#1241-tbl_alarminfo_latest)
 
-[1.2.42 tbl_dailytotalcalculate_hist](#1242-tbl_dailytotalcalculate_hist)
+[1.2.42 tbl_alarminfo_hist](#1242-tbl_alarminfo_hist)
 
-[1.2.43 tbl_dailycalculationdata](#1243-tbl_dailycalculationdata)
+[1.2.43 tbl_dailytotalcalculate_latest](#1243-tbl_dailytotalcalculate_latest)
 
-[1.2.44 tbl_timingcalculationdata](#1244-tbl_timingcalculationdata)
+[1.2.44 tbl_dailytotalcalculate_hist](#1244-tbl_dailytotalcalculate_hist)
 
-[1.2.45 tbl_realtimetotalcalculationdata](#1245-tbl_realtimetotalcalculationdata)
+[1.2.45 tbl_dailycalculationdata](#1245-tbl_dailycalculationdata)
 
-[1.2.46 tbl_srpacqdata_latest](#1246-tbl_srpacqdata_latest)
+[1.2.46 tbl_timingcalculationdata](#1246-tbl_timingcalculationdata)
 
-[1.2.47 tbl_srpacqdata_hist](#1247-tbl_srpacqdata_hist)
+[1.2.47 tbl_realtimetotalcalculationdata](#1247-tbl_realtimetotalcalculationdata)
 
-[1.2.48 tbl_srpdailycalculationdata](#1248-tbl_srpdailycalculationdata)
+[1.2.48 tbl_srpacqdata_latest](#1248-tbl_srpacqdata_latest)
 
-[1.2.49 tbl_srptimingcalculationdata](#1249-tbl_srptimingcalculationdata)
+[1.2.49 tbl_srpacqdata_hist](#1249-tbl_srpacqdata_hist)
 
-[1.2.50 tbl_pcpacqdata_latest](#1250-tbl_pcpacqdata_latest)
+[1.2.50 tbl_srpacqdata_vacute](#1250-tbl_srpacqdata_vacute)
 
-[1.2.51 tbl_pcpacqdata_hist](#1251-tbl_pcpacqdata_hist)
+[1.2.51 tbl_srpdailycalculationdata](#1251-tbl_srpdailycalculationdata)
 
-[1.2.52 tbl_pcpdailycalculationdata](#1252-tbl_pcpdailycalculationdata)
+[1.2.52 tbl_srptimingcalculationdata](#1252-tbl_srptimingcalculationdata)
 
-[1.2.53 tbl_pcptimingcalculationdata](#1253-tbl_pcptimingcalculationdata)
+[1.2.53 tbl_pcpacqdata_latest](#1253-tbl_pcpacqdata_latest)
 
-[1.2.54 tbl_deviceoperationlog](#1254-tbl_deviceoperationlog)
+[1.2.54 tbl_pcpacqdata_hist](#1254-tbl_pcpacqdata_hist)
 
-[1.2.55 tbl_systemlog](#1255-tbl_systemlog)
+[1.2.55 tbl_pcpdailycalculationdata](#1255-tbl_pcpdailycalculationdata)
 
-[1.2.56 tbl_resourcemonitoring](#1256-tbl_resourcemonitoring)
+[1.2.56 tbl_pcptimingcalculationdata](#1256-tbl_pcptimingcalculationdata)
 
-[1.2.57 tbl_videokey](#1257-tbl_videokey)
+[1.2.57 tbl_deviceoperationlog](#1257-tbl_deviceoperationlog)
+
+[1.2.58 tbl_systemlog](#1258-tbl_systemlog)
+
+[1.2.59 tbl_resourcemonitoring](#1259-tbl_resourcemonitoring)
+
+[1.2.60 tbl_dbmonitoring](#1260-tbl_dbmonitoring)
+
+[1.2.61 tbl_videokey](#1261-tbl_videokey)
 
 [二、视图](#二视图)
 
@@ -189,56 +197,61 @@
 | 5        | tbl_devicetype2 role             | 设备类型角色关系表     |
 | 6        | tbl_module                       | 模块数据表             |
 | 7        | tbl_module2role                  | 模块角色关系表         |
-| 8        | tbl_user                         | 用户数据表             |
-| 9        | tbl_dist_name                    | 字典名称表             |
-| 10       | tbl_dist_item                    | 字典数据项表           |
-| 11       | tbl_code                         | 代码表                 |
-| 12       | tbl_datamapping                  | 字段映射表             |
-| 13       | tbl_runstatusconfig              | 运行状态配置表         |
-| 14       | tbl_acq_unit_conf                | 采控单元表             |
-| 15       | tbl_acq_group_conf               | 采控组表               |
-| 16       | tbl_acq_item2group_conf          | 采控组和采控项关系表   |
-| 17       | tbl_acq_group2unit_conf          | 采控单元和采控组关系表 |
-| 18       | tbl_alarm_unit_conf              | 报警单元表             |
-| 19       | tbl_alarm_item2unit_conf         | 报警单元和报警项关系表 |
-| 20       | tbl_display_unit_conf            | 显示单元表             |
-| 21       | tbl_display_items2unit_conf      | 显示单元和显示项关系表 |
-| 22       | tbl_report_unit_conf             | 报表单元表             |
-| 23       | tbl_report_items2unit_conf       | 报表单元和报表项关系表 |
-| 24       | tbl_protocolinstance             | 采控实例表             |
-| 25       | tbl_protocolalarminstance        | 报警实例表             |
-| 26       | tbl_protocoldisplayinstance      | 显示实例表             |
-| 27       | tbl_protocolreportinstance       | 报表实例表             |
-| 28       | tbl_protocolsmsinstance          | 短信实例表             |
-| 29       | tbl_device                       | 设备信息表             |
-| 30       | tbl_smsdevice                    | 短信设备信息表         |
-| 31       | tbl_deviceaddinfo                | 设备附加信息表         |
-| 32       | tbl_auxiliarydevice              | 辅件设备信息表         |
-| 33       | tbl_auxiliarydeviceaddinfo       | 辅件设备附加信息表     |
-| 34       | tbl_auxiliary2master             | 主设备与辅件设备关系表 |
-| 35       | tbl_devicegraphicset             | 抽油机图形设置表       |
-| 36       | tbl_acqdata_latest               | 实时数据表             |
-| 37       | tbl_acqdata_hist                 | 历史数据表             |
-| 38       | tbl_acqrawdata                   | 原始采集数据表         |
-| 39       | tbl_alarminfo_latest             | 报警实时数据表         |
-| 40       | tbl_alarminfo_hist               | 报警历史数据表         |
-| 41       | tbl_dailytotalcalculate_latest   | 日累计计算实时数据表   |
-| 42       | tbl_dailytotalcalculate_hist     | 日累计计算历史数据表   |
-| 43       | tbl_dailycalculationdata         | 日汇总数据表           |
-| 44       | tbl_timingcalculationdata        | 定时汇总数据表         |
-| 45       | tbl_realtimetotalcalculationdata | 实时汇总数据表         |
-| 46       | tbl_srpacqdata_latest            | 功图计算实时数据表     |
-| 47       | tbl_srpacqdata_hist              | 功图计算历史数据表     |
-| 48       | tbl_srpdailycalculationdata      | 功图计算日汇总数据表   |
-| 49       | tbl_srptimingcalculationdata     | 功图计算定时汇总数据表 |
-| 50       | tbl_pcpacqdata_latest            | 转速计产实时数据表     |
-| 51       | tbl_pcpacqdata_hist              | 转速计产历史数据表     |
-| 52       | tbl_pcpdailycalculationdata      | 转速计产日汇总数据表   |
-| 53       | tbl_pcptimingcalculationdata     | 转速计产定时汇总数据表 |
-| 54       | tbl_deviceoperationlog           | 设备操作日志表         |
-| 55       | tbl_systemlog                    | 系统日志表             |
-| 56       | tbl_resourcemonitoring           | 资源监测数据表         |
-| 57       | tbl_videokey                     | 视频秘钥表             |
+| 8        | tbl_language2role                | 角色语言权限           |
+| 9        | tbl_user                         | 用户数据表             |
+| 10       | tbl_dist_name                    | 字典名称表             |
+| 11       | tbl_dist_item                    | 字典数据项表           |
+| 12       | tbl_code                         | 代码表                 |
+| 13       | tbl_datamapping                  | 字段映射表             |
+| 14       | tbl_runstatusconfig              | 运行状态配置表         |
+| 15       | tbl_acq_unit_conf                | 采控单元表             |
+| 16       | tbl_acq_group_conf               | 采控组表               |
+| 17       | tbl_acq_item2group_conf          | 采控组和采控项关系表   |
+| 18       | tbl_acq_group2unit_conf          | 采控单元和采控组关系表 |
+| 19       | tbl_alarm_unit_conf              | 报警单元表             |
+| 20       | tbl_alarm_item2unit_conf         | 报警单元和报警项关系表 |
+| 21       | tbl_display_unit_conf            | 显示单元表             |
+| 22       | tbl_display_items2unit_conf      | 显示单元和显示项关系表 |
+| 23       | tbl_report_unit_conf             | 报表单元表             |
+| 24       | tbl_report_items2unit_conf       | 报表单元和报表项关系表 |
+| 25       | tbl_protocolinstance             | 采控实例表             |
+| 26       | tbl_protocolalarminstance        | 报警实例表             |
+| 27       | tbl_protocoldisplayinstance      | 显示实例表             |
+| 28       | tbl_protocolreportinstance       | 报表实例表             |
+| 29       | tbl_protocolsmsinstance          | 短信实例表             |
+| 30       | tbl_device                       | 设备信息表             |
+| 31       | tbl_smsdevice                    | 短信设备信息表         |
+| 32       | tbl_deviceaddinfo                | 设备附加信息表         |
+| 33       | tbl_auxiliarydevice              | 辅件设备信息表         |
+| 34       | tbl_auxiliarydeviceaddinfo       | 辅件设备附加信息表     |
+| 35       | tbl_auxiliary2master             | 主设备与辅件设备关系表 |
+| 36       | tbl_devicegraphicset             | 抽油机图形设置表       |
+| 37       | tbl_acqdata_latest               | 实时数据表             |
+| 38       | tbl_acqdata_hist                 | 历史数据表             |
+| 39       | tbl_acqdata_vacuate              | 历史数据表抽稀表       |
+| 40       | tbl_acqrawdata                   | 原始采集数据表         |
+| 41       | tbl_alarminfo_latest             | 报警实时数据表         |
+| 42       | tbl_alarminfo_hist               | 报警历史数据表         |
+| 43       | tbl_dailytotalcalculate_latest   | 日累计计算实时数据表   |
+| 44       | tbl_dailytotalcalculate_hist     | 日累计计算历史数据表   |
+| 45       | tbl_dailycalculationdata         | 日汇总数据表           |
+| 46       | tbl_timingcalculationdata        | 定时汇总数据表         |
+| 47       | tbl_realtimetotalcalculationdata | 实时汇总数据表         |
+| 48       | tbl_srpacqdata_latest            | 功图计算实时数据表     |
+| 49       | tbl_srpacqdata_hist              | 功图计算历史数据表     |
+| 50       | tbl_srpacqdata_vacuate           | 功图计算历史数据抽稀表 |
+| 51       | tbl_srpdailycalculationdata      | 功图计算日汇总数据表   |
+| 52       | tbl_srptimingcalculationdata     | 功图计算定时汇总数据表 |
+| 53       | tbl_pcpacqdata_latest            | 转速计产实时数据表     |
+| 54       | tbl_pcpacqdata_hist              | 转速计产历史数据表     |
+| 55       | tbl_pcpacqdata_vacuate           | 转速计产历史数据抽稀表 |
+| 56       | tbl_pcpdailycalculationdata      | 转速计产日汇总数据表   |
+| 57       | tbl_pcptimingcalculationdata     | 转速计产定时汇总数据表 |
+| 58       | tbl_deviceoperationlog           | 设备操作日志表         |
+| 59       | tbl_systemlog                    | 系统日志表             |
+| 60       | tbl_resourcemonitoring           | 资源监测数据表         |
+| 61       | tbl_dbmonitoring                 | 数据库监测数据表       |
+| 62       | tbl_videokey                     | 视频秘钥表             |
 
 ## 1.2 详述
 
@@ -342,7 +355,18 @@
 | 3        | RM_MODULEID | 模块序号 | NUMBER(10)  |          | N        |        | 对应module表中md_id字段     |
 | 4        | RM_MATRIX   | 权限矩阵 | VARCHAR2(8) |          | N        |        |                             |
 
-### 1.2.8 tbl_user
+### 1.2.8 tbl_language2role
+
+角色语言权限
+
+| **序号** | **代码** | **名称** | **类型**    | **单位** | **为空** | **键** | **备注**                    |
+|----------|----------|----------|-------------|----------|----------|--------|-----------------------------|
+| 1        | ID       | 序号     | NUMBER(10)  |          | N        | 主键   |                             |
+| 2        | LANGUAGE | 语言     | NUMBER(1)   |          | N        |        | 1-zh_CN 2-en 3-ru           |
+| 3        | ROLEID   | 角色编号 | NUMBER(10)  |          | N        |        | 对应tbl_role表中role_id字段 |
+| 4        | MATRIX   | 权限矩阵 | VARCHAR2(8) |          | N        |        |                             |
+
+### 1.2.9 tbl_user
 
 用户数据表
 
@@ -363,7 +387,7 @@
 | 13       | USER_RECEIVEMAIL | 是否接收报警邮件 | NUMBER(10)   |          | Y        |        | 0-否，1-是                  |
 | 14       | USER_LANGUAGE    | 用户语言         | NUMBER(1)    |          | Y        |        | 1-中文，2-英文，3-俄文      |
 
-### 1.2.9 tbl_dist_name
+### 1.2.10 tbl_dist_name
 
 字典名称表
 
@@ -382,7 +406,7 @@
 | 11       | UPDATETIME | 创建时间 | DATE         |          | Y        |        | SYSDATE        |
 | 12       | CREATEDATE | 修改时间 | DATE         |          | N        |        | SYSDATE        |
 
-### 1.2.10 tbl_dist_item
+### 1.2.11 tbl_dist_item
 
 字典数据项表
 
@@ -403,7 +427,7 @@
 | 13       | UPDATETIME | 创建时间   | DATE          |          | Y        |        | SYSDATE        |
 | 14       | CREATEDATE | 修改时间   | DATE          |          | Y        |        | SYSDATE        |
 
-### 1.2.11 tbl_code
+### 1.2.12 tbl_code
 
 代码表
 
@@ -417,7 +441,7 @@
 | 6        | STATE     | 状态       | NUMBER(10)    |          | Y        |        |          |
 | 7        | REMARK    | 备注       | VARCHAR2(200) |          | Y        |        |          |
 
-### 1.2.12 tbl_datamapping
+### 1.2.13 tbl_datamapping
 
 字段映射表
 
@@ -432,7 +456,7 @@
 | 7        | REPETITIONTIMES | 重复次数       | NUMBER(2)    |          | Y        |        |                           |
 | 8        | MAPPINGMODE     | 映射模式       | NUMBER(1)    |          | Y        |        | 0-以地址为准 1-以名称为准 |
 
-### 1.2.13 tbl_runstatusconfig
+### 1.2.14 tbl_runstatusconfig
 
 表1-12 运行状态配置表
 
@@ -449,7 +473,7 @@
 | 9        | RUNCONDITION      | 运行条件   | VARCHAR2(50) |          | Y        |        |                            |
 | 10       | STOPCONDITION     | 停止条件   | VARCHAR2(50) |          | Y        |        |                            |
 
-### 1.2.14 tbl_acq_unit_conf
+### 1.2.15 tbl_acq_unit_conf
 
 采控单元名称表
 
@@ -462,7 +486,7 @@
 | 5        | SORT      | 排序     | NUMBER(10)     |          | Y        |        |          |
 | 6        | REMARK    | 单元描述 | VARCHAR2(2000) |          | Y        |        |          |
 
-### 1.2.15 tbl_acq_group_conf
+### 1.2.16 tbl_acq_group_conf
 
 采控组名称表
 
@@ -477,7 +501,7 @@
 | 7        | TYPE       | 类型     | NUMBER(1)      |          | Y        |        | 0-采集组 1-控制组 |
 | 8        | REMARK     | 组描述   | VARCHAR2(2000) |          | Y        |        |                   |
 
-### 1.2.16 tbl_acq_item2group_conf
+### 1.2.17 tbl_acq_item2group_conf
 
 采控组和采集项关系表
 
@@ -493,7 +517,7 @@
 | 8        | DAILYTOTALCALCULATENAME | 日累计字段名称 | VARCHAR2(100) |          | Y        |        |                       |
 | 9        | MATRIX                  | 阵列           | VARCHAR2(8)   |          | Y        |        |                       |
 
-### 1.2.17 tbl_acq_group2unit_conf
+### 1.2.18 tbl_acq_group2unit_conf
 
 采控单元和采集采控组关系表
 
@@ -504,7 +528,7 @@
 | 3        | GROUPID  | 采控组编号   | NUMBER(10)  |          | N        |        | 对应tbl_acq_group_conf表中id字段 |
 | 4        | MATRIX   | 阵列         | VARCHAR2(8) |          | N        |        |                                  |
 
-### 1.2.18 tbl_alarm_unit_conf
+### 1.2.19 tbl_alarm_unit_conf
 
 报警单元名称表
 
@@ -517,7 +541,7 @@
 | 5        | SORT      | 排序     | NUMBER(10)     |          | Y        |        |          |
 | 6        | REMARK    | 单元描述 | VARCHAR2(2000) |          | Y        |        |          |
 
-### 1.2.19 tbl_alarm_item2unit_conf
+### 1.2.20 tbl_alarm_item2unit_conf
 
 报警单元和报警项关系表
 
@@ -541,7 +565,7 @@
 | 16       | ISSENDMESSAGE | 是否发送短信 | NUMBER(1)     |          | Y        |        | 0-否 1-是      |
 | 17       | ISSENDMAIL    | 是否发送邮件 | NUMBER(1)     |          | Y        |        | 0-否 1-是      |
 
-### 1.2.20 tbl_display_unit_conf
+### 1.2.21 tbl_display_unit_conf
 
 显示单元名称表
 
@@ -556,7 +580,7 @@
 | 8        | SORT          | 排序         | NUMBER(10)     |          | Y        |        |                            |
 | 9        | REMARK        | 单元描述     | VARCHAR2(2000) |          | Y        |        |                            |
 
-### 1.2.21 tbl_display_item2unit_conf
+### 1.2.22 tbl_display_item2unit_conf
 
 显示单元和显示项关系表
 
@@ -576,7 +600,7 @@
 | 12       | TYPE              | 项类型       | NUMBER(1)      |          | Y        |        | 0-采集项 1-计算项 2-控制项 |
 | 13       | MATRIX            | 阵列         | VARCHAR2(8)    |          | Y        |        |                            |
 
-### 1.2.22 tbl_report_unit_conf
+### 1.2.23 tbl_report_unit_conf
 
 报表单元名称表
 
@@ -591,7 +615,7 @@
 |          | CALCULATETYPE                 | 计算类型       | NUMBER(2)    |          |          |        | 1-功图计算 2-转速计产 0-无 |
 | 6        | SORT                          | 排序编号       | NUMBER(10)   |          | Y        |        |                            |
 
-### 1.2.23 tbl_report_items2unit_conf
+### 1.2.24 tbl_report_items2unit_conf
 
 报表单元和报表项关系表
 
@@ -615,7 +639,7 @@
 | 16       | DATASOURCE      | 数据来源     | VARCHAR2(8)    |          | Y        |        | 采集、录入、计算                                               |
 | 17       | MATRIX          | 阵列         | VARCHAR2(8)    |          | Y        |        |                                                                |
 
-### 1.2.24 tbl_protocolinstance
+### 1.2.25 tbl_protocolinstance
 
 采控实例表
 
@@ -637,7 +661,7 @@
 | 14       | UNITID                   | 采控单元编号         | NUMBER(10)   |          | Y        |        |           |
 | 15       | SORT                     | 排序编号             | NUMBER(10)   |          | Y        |        |           |
 
-### 1.2.25 tbl_protocolalarminstance
+### 1.2.26 tbl_protocolalarminstance
 
 报警实例表
 
@@ -649,7 +673,7 @@
 | 4        | ALARMUNITID | 报警单元编号 | NUMBER(10)   |          | N        |        |          |
 | 5        | SORT        | 排序编号     | NUMBER(10)   |          | Y        |        |          |
 
-### 1.2.26 tbl_protocoldisplayinstance
+### 1.2.27 tbl_protocoldisplayinstance
 
 显示实例表
 
@@ -661,7 +685,7 @@
 | 4        | DISPLAYUNITID | 显示单元编号 | NUMBER(10)   |          | N        |        |          |
 | 5        | SORT          | 排序编号     | NUMBER(10)   |          | Y        |        |          |
 
-### 1.2.27 tbl_protocolreportinstance
+### 1.2.28 tbl_protocolreportinstance
 
 表1-26 报表实例表
 
@@ -673,7 +697,7 @@
 | 4        | UNITID   | 报表单元编号 | NUMBER(10)   |          | N        |        |          |
 | 5        | SORT     | 排序编号     | NUMBER(10)   |          | Y        |        |          |
 
-### 1.2.28 tbl_protocolsmsinstance
+### 1.2.29 tbl_protocolsmsinstance
 
 表1-27 短信实例表
 
@@ -686,7 +710,7 @@
 | 5        | CTRLPROTOCOLTYPE | 控制协议类型 | VARCHAR2(50) |          | Y        |        |          |
 | 6        | SORT             | 排序编号     | NUMBER(10)   |          | Y        |        |          |
 
-### 1.2.29 tbl_device
+### 1.2.30 tbl_device
 
 设备信息表
 
@@ -721,7 +745,7 @@
 | 27       | CONSTRUCTIONDATA         | 功图构建参数     | VARCHAR2(4000) |          | Y        |        | 用于电参反演功图           |
 | 28       | SORTNUM                  | 排序编号         | NUMBER(10)     |          | Y        |        |                            |
 
-### 1.2.30 tbl_smsdevice
+### 1.2.31 tbl_smsdevice
 
 短信设备信息表
 
@@ -734,7 +758,7 @@
 | 5        | INSTANCECODE | 短信实例代码 | VARCHAR2(50)  |          | Y        |        |          |
 | 6        | SORTNUM      | 排序编号     | NUMBER(10)    |          | Y        |        |          |
 
-### 1.2.31 tbl_deviceaddinfo
+### 1.2.32 tbl_deviceaddinfo
 
 设备附加信息表
 
@@ -746,7 +770,7 @@
 | 4        | ITEMVALUE | 变量     | VARCHAR2(200) |          | Y        |        |                        |
 | 5        | ITEMUNIT  | 单位     | VARCHAR2(200) |          | Y        |        |                        |
 
-### 1.2.32 tbl_auxiliarydevice
+### 1.2.33 tbl_auxiliarydevice
 
 辅件设备信息表
 
@@ -762,7 +786,7 @@
 | 8        | SORT         | 排序编号           | NUMBER(10)     |          | Y        |        |                                |
 | 9        | REMARK       | 备注               | VARCHAR2(2000) |          | Y        |        |                                |
 
-### 1.2.33 tbl_auxiliarydeviceaddinfo
+### 1.2.34 tbl_auxiliarydeviceaddinfo
 
 辅件设备附加信息表
 
@@ -775,7 +799,7 @@
 | 5        | ITEMUNIT  | 单位     | VARCHAR2(200) |          | Y        |        |                                 |
 | 6        | ITEMCODE  |          |               |          |          |        |                                 |
 
-### 1.2.34 tbl_auxiliary2master
+### 1.2.35 tbl_auxiliary2master
 
 主设备与辅件设备关系表
 
@@ -786,7 +810,7 @@
 | 3        | AUXILIARYID | 辅件设备编号 | NUMBER(10)  |          | Y        |        | 对应tbl_auxiliarydevice表id字段 |
 | 4        | MATRIX      | 权限矩阵     | VARCHAR2(8) |          | Y        |        |                                 |
 
-### 1.2.35 tbl_devicegraphicset
+### 1.2.36 tbl_devicegraphicset
 
 设备图形设置表
 
@@ -796,7 +820,7 @@
 | 2        | DEVICEID     | 设备编号     | NUMBER(10)     |          | N        |        |                |
 | 3        | GRAPHICSTYLE | 图形设置内容 | VARCHAR2(4000) |          | Y        |        | json格式字符串 |
 
-### 1.2.36 tbl_acqdata_latest
+### 1.2.37 tbl_acqdata_latest
 
 实时数据表
 
@@ -816,11 +840,15 @@
 | …        | …                  | …        |              |          | Y        |        | 根据协议自动生成的字段 |
 | …        | …                  | …        |              |          | Y        |        |                        |
 
-### 1.2.37 tbl_acqdata_hist
+### 1.2.38 tbl_acqdata_hist
 
 同tbl_acqdata_latest
 
-### 1.2.38 tbl_acqrawdata
+### 1.2.39 tbl_acqdata_vacute
+
+同tbl_acqdata_latest
+
+### 1.2.40 tbl_acqrawdata
 
 原始采集数据表
 
@@ -832,7 +860,7 @@
 | 4        | RAWDATA      | 原始数据   | VARCHAR2(4000) |          | Y        |        | 设备采集的未解析原始数据，16进制字符串 |
 | 5        | ACQGROUPDATA | 采集组数据 | CLOB           |          | Y        |        | 上传的采集组数据                       |
 
-### 1.2.39 tbl_alarminfo_latest
+### 1.2.41 tbl_alarminfo_latest
 
 报警实时数据表
 
@@ -852,11 +880,11 @@
 | 12       | ISSENDMESSAGE | 是否发送短信 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 | 13       | ISSENDMAIL    | 是否发送邮件 | NUMBER(1)     |          | Y        |        | 0-否 1-是                                       |
 
-### 1.2.40 tbl_alarminfo_hist
+### 1.2.42 tbl_alarminfo_hist
 
 同tbl_alarminfo_latest
 
-### 1.2.41 tbl_dailytotalcalculate_latest
+### 1.2.43 tbl_dailytotalcalculate_latest
 
 日累计计算实时数据表
 
@@ -870,11 +898,11 @@
 | 6        | TODAYVALUE | 日累计值 | NUMBER(12,3)   |          | Y        |        |          |
 | 7        | ITEMNAME   | 字段名称 | VARCHAR2(50)   |          | Y        |        |          |
 
-### 1.2.42 tbl_dailytotalcalculate_hist
+### 1.2.44 tbl_dailytotalcalculate_hist
 
 同tbl_dailytotalcalculate_latest
 
-### 1.2.43 tbl_dailycalculationdata
+### 1.2.45 tbl_dailycalculationdata
 
 日汇总数据表
 
@@ -895,7 +923,7 @@
 | 13       | CALDATA            | 计算数据     | CLOB           |          | Y        |        |               |
 | 14       | REMARK             | 备注         | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.44 tbl_timingcalculationdata
+### 1.2.46 tbl_timingcalculationdata
 
 定时汇总数据表
 
@@ -916,7 +944,7 @@
 | 13       | CALDATA            | 计算数据     | CLOB           |          | Y        |        |               |
 | 14       | REMARK             | 备注         | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.45 tbl_realtimetotalcalculationdata
+### 1.2.47 tbl_realtimetotalcalculationdata
 
 实时汇总数据表
 
@@ -937,7 +965,7 @@
 | 13       | CALDATA            | 计算数据     | CLOB           |          | Y        |        |               |
 | 14       | REMARK             | 备注         | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.46 tbl_srpacqdata_latest
+### 1.2.48 tbl_srpacqdata_latest
 
 功图计算实时数据表
 
@@ -1068,11 +1096,15 @@
 | 123      | REALTIMELIQUIDWEIGHTPRODUCTION     | 实时产液量               | NUMBER(12,3)   | 吨       | Y        |        |                     |
 | 124      | SAVETIME                           | 保存时间                 | DATE           |          | Y        |        |                     |
 
-### 1.2.47 tbl_srpacqdata_hist
+### 1.2.49 tbl_srpacqdata_hist
 
 同tbl_rpcacqdata_latest
 
-### 1.2.48 tbl_srpdailycalculationdata
+### 1.2.50 tbl_srpacqdata_vacute
+
+同tbl_rpcacqdata_latest
+
+### 1.2.51 tbl_srpdailycalculationdata
 
 功图计算日汇总数据表
 
@@ -1135,7 +1167,7 @@
 | 55       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
 | 56       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.49 tbl_srptimingcalculationdata
+### 1.2.52 tbl_srptimingcalculationdata
 
 功图计算定时汇总数据表
 
@@ -1198,7 +1230,7 @@
 | 55       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
 | 56       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.50 tbl_pcpacqdata_latest
+### 1.2.53 tbl_pcpacqdata_latest
 
 转速计产实时数据表
 
@@ -1261,11 +1293,11 @@
 | …        | …                              | …                  |                |          | Y        |        | 根据驱动自动生成的字段 |
 | …        | …                              | …                  |                |          | Y        |        |                        |
 
-### 1.2.51 tbl_pcpacqdata_hist
+### 1.2.54 tbl_pcpacqdata_hist
 
 同tbl_pcpacqdata_latest
 
-### 1.2.52 tbl_pcpdailycalculationdata
+### 1.2.55 tbl_pcpdailycalculationdata
 
 转速计产日汇总数据表
 
@@ -1314,7 +1346,7 @@
 | 41       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
 | 42       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.53 tbl_pcptimingcalculationdata
+### 1.2.56 tbl_pcptimingcalculationdata
 
 转速计产定时汇总数据表
 
@@ -1363,9 +1395,9 @@
 | 41       | RESULTSTATUS                   | 计算状态       | NUMBER(2)      |          | Y        |        |               |
 | 42       | REMARK                         | 备注           | VARCHAR2(4000) |          | Y        |        |               |
 
-### 1.2.54 tbl_deviceoperationlog
+### 1.2.57 tbl_deviceoperationlog
 
-表1-43 设备操作日志表
+设备操作日志表
 
 | **序号** | **代码**   | **名称**     | **类型** | **单位** | **为空** | **键** | **备注**                                    |
 |----------|------------|--------------|----------|----------|----------|--------|---------------------------------------------|
@@ -1378,9 +1410,9 @@
 | 7        | DEVICETYPE | 设备类型     | NUMBER   |          | Y        |        | 0-抽油机 1-螺杆泵                           |
 | 8        | REMARK     | 备注         | VARCHAR2 |          | Y        |        |                                             |
 
-### 1.2.55 tbl_systemlog
+### 1.2.58 tbl_systemlog
 
-表1-44 系统日志表
+系统日志表
 
 | **序号** | **代码**   | **名称** | **类型**      | **单位** | **为空** | **键** | **备注**              |
 |----------|------------|----------|---------------|----------|----------|--------|-----------------------|
@@ -1391,9 +1423,9 @@
 | 5        | ACTION     | 操作     | NUMBER(2)     | 次/min   | Y        |        | 0-用户登录 1-用户退出 |
 | 6        | REMARK     | 备注     | VARCHAR2(200) | kN       | Y        |        |                       |
 
-### 1.2.56 tbl_resourcemonitoring
+### 1.2.59 tbl_resourcemonitoring
 
-表1-45 资源监测数据表
+资源监测数据表
 
 | **序号** | **代码**        | **名称**         | **类型**     | **单位** | **为空** | **键** | **备注** |
 |----------|-----------------|------------------|--------------|----------|----------|--------|----------|
@@ -1407,12 +1439,25 @@
 | 8        | MEMUSEDPERCENT  | 内存使用率       | NUMBER(8,2)  | %        | Y        |        |          |
 | 9        | TABLESPACESIZE  | 数据库表空间大小 | NUMBER(10,2) | Mb       | Y        |        |          |
 | 10       | JEDISSTATUS     | REDIS状态        | NUMBER(2)    |          | Y        |        |          |
-|          | CACHEMAXMEMORY  | REDIS最大内存    | NUMBER(20)   | kb       | Y        |        |          |
-|          | CACHEUSEDMEMORY | REDIS已用内存    | NUMBER(20)   | kb       | Y        |        |          |
+| 11       | CACHEMAXMEMORY  | REDIS最大内存    | NUMBER(20)   | kb       | Y        |        |          |
+| 12       | CACHEUSEDMEMORY | REDIS已用内存    | NUMBER(20)   | kb       | Y        |        |          |
 
-### 1.2.57 tbl_videokey
+### 1.2.60 tbl_dbmonitoring
 
-表1-46 视频秘钥表
+数据库资源监测数据表
+
+| **序号** | **代码**              | **名称**                   | **类型**     | **单位** | **为空** | **键** | **备注**                                                        |
+|----------|-----------------------|----------------------------|--------------|----------|----------|--------|-----------------------------------------------------------------|
+| 1        | ID                    | 记录编号                   | NUMBER(10)   |          | N        | 主键   |                                                                 |
+| 2        | ACQTIME               | 采集时间                   | DATE         |          | Y        |        |                                                                 |
+| 3        | CONNSTATUS            | 连接状态                   | NUMBER(2)    |          | Y        |        |                                                                 |
+| 4        | TABLESPACEUSEDSIZE    | 表空间已使用大小           | NUMBER(10,2) |          | Y        |        |                                                                 |
+| 5        | TABLESPACEUSEDPERCENT | 表空间已使用百分比         | NUMBER(10,2) |          | Y        |        |                                                                 |
+| 6        | TABLESIZE             | 具体到每个表的所占空间大小 | CLOB         |          | Y        |        | Json字符换，记录每个表数据大小、lob大小，索引大小，以及总记录数 |
+
+### 1.2.61 tbl_videokey
+
+视频秘钥表
 
 | **序号** | **代码** | **名称** | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|----------|----------|---------------|----------|----------|--------|----------|

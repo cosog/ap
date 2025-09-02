@@ -1074,7 +1074,7 @@ tablespace AP_DATA
   )
 /
 alter table TBL_ACQRAWDATA
-  add constraint PK_RPCACQRAWDATA primary key (ID)
+  add constraint PK_ACQRAWDATA primary key (ID)
 /
 
 /*==============================================================*/
@@ -1105,7 +1105,7 @@ tablespace AP_DATA
   )
 /
 alter table TBL_ALARMINFO_LATEST
-  add constraint PK_RPCALARMINFO_LATEST primary key (ID)
+  add constraint PK_ALARMINFO_LATEST primary key (ID)
 /
 
 /*==============================================================*/
@@ -1136,7 +1136,7 @@ tablespace AP_DATA
   )
 /
 alter table TBL_ALARMINFO_HIST
-  add constraint PK_RPCALARMINFO_HIST primary key (ID)
+  add constraint PK_ALARMINFO_HIST primary key (ID)
 /
 
 
@@ -2131,7 +2131,8 @@ create table TBL_DBMONITORING
   acqtime     DATE,
   connstatus  NUMBER(2),
   tablespaceusedsize    NUMBER(10,2),
-  tablespaceusedpercent NUMBER(10,2)
+  tablespaceusedpercent NUMBER(10,2),
+  tablesize             CLOB
 )
 tablespace AP_DATA
   storage

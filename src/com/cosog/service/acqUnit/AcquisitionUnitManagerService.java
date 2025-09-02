@@ -12211,6 +12211,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(ExportProtocolData.DataMapping dataMapping:dataMappingList){
 				if(StringManagerUtils.isNotNull(dataMapping.getItemCalculateColumn())){
 					updateSql="update TBL_DATAMAPPING t set "
+							+ " t.mappingcolumn='"+dataMapping.getItemMappingColumn()+"',"
 							+ " t.calcolumn='"+dataMapping.getItemCalculateColumn()+"',"
 							+ " t.calculateenable= "+dataMapping.getCalculateEnable()
 							+ " where t.name='"+dataMapping.getItemName()+"'";

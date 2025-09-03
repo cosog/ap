@@ -67,6 +67,90 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				iconCls: 'check3',
     				layout: 'border',
     				bodyStyle: 'background-color:#ffffff;',
+    				tbar: ['->',{
+    	                xtype: 'button',
+    	                text: loginUserLanguageResource.save,
+    	                iconCls: 'save',
+    	                hidden:false,
+    	                handler: function (v, o) {
+				        	var OperationMaintenanceBasicInfoSubForm = Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").down('form');
+				        	if (OperationMaintenanceBasicInfoSubForm.isValid()) {
+				        		var configFile={};
+				        		configFile.others={};
+				        		configFile.others.loginLanguage=Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').getValue();
+				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo1_Id').getValue();
+				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog1_Id').getValue();
+				        		configFile.others.timeEfficiencyUnit=Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').getValue()?1:2;
+				        		configFile.others.resourceMonitoringSaveData=Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').getValue();
+				        		configFile.others.exportLimit=Ext.getCmp('operationMaintenance_exportLimit_Id').getValue();
+				        		configFile.others.simulateAcqEnable=Ext.getCmp('operationMaintenance_simulateAcqEnable1_Id').getValue();
+				        		configFile.others.sendCycle=Ext.getCmp('operationMaintenance_sendCycle_Id').getValue();
+				        		
+				        		configFile.databaseMaintenance={};
+				        		configFile.databaseMaintenance.cycle=Ext.getCmp('operationMaintenance_databaseMaintenanceCycle_Id').getValue();
+				        		configFile.databaseMaintenance.startTime=Ext.getCmp('operationMaintenance_databaseMaintenanceStartTime_Id').getValue();
+				        		configFile.databaseMaintenance.endTime=Ext.getCmp('operationMaintenance_databaseMaintenanceEndTime_Id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig={};
+				        		configFile.databaseMaintenance.tableConfig.acqdata_hist={};
+				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.enabled=Ext.getCmp('operationMaintenance_acqdata_hist_enabled_Id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.retentionTime=Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.acqrawdata={};
+				        		configFile.databaseMaintenance.tableConfig.acqrawdata.enabled=Ext.getCmp('operationMaintenance_acqrawdata_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.acqrawdata.retentionTime=Ext.getCmp('operationMaintenance_acqrawdata_retentionTime_id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist={}
+				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.enabled=Ext.getCmp('operationMaintenance_alarminfo_hist_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.retentionTime=Ext.getCmp('operationMaintenance_alarminfo_hist_retentionTime_id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist={};
+				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.enabled=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.retentionTime=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata={};
+				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.enabled=Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.retentionTime=Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata={};
+				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.enabled=Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.retentionTime=Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').getValue();
+				        		
+				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate={};
+				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.enabled=Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.retentionTime=Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').getValue();
+				        		
+				        		configFile.dataVacuate={};
+				        		configFile.dataVacuate.vacuateRecord=Ext.getCmp('operationMaintenance_vacuateRecord_Id').getValue();
+				        		configFile.dataVacuate.saveInterval=Ext.getCmp('operationMaintenance_vacuateSaveInterval_Id').getValue();
+				        		configFile.dataVacuate.saveIntervalWaveRange=Ext.getCmp('operationMaintenance_vacuateSaveIntervalWaveRange_Id').getValue();
+				        		configFile.dataVacuate.vacuateThreshold=Ext.getCmp('operationMaintenance_vacuateThreshold_Id').getValue();
+				        		
+				        		OperationMaintenanceBasicInfoSubForm.getForm().submit({
+    				                url: context + '/operationMaintenanceController/updateOemConfigInfo',
+    				                clientValidation: false, // 进行客户端验证
+    				                method: "POST",
+    				                params: {
+    				                	configFile: JSON.stringify(configFile)
+    				                },
+    				                waitMsg: loginUserLanguageResource.sendServer,
+    				                waitTitle: loginUserLanguageResource.wait,
+    				                success: function (response, action) {
+    				                    if (action.result.msg == true) {
+    				                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
+    				                        loadOemConfigInfo();
+    				                    }
+    				                    if (action.result.msg == false) {
+    				                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
+    				                    }
+    				                },
+    				                failure: function () {
+    				                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
+    				                }
+    				            });
+				        	}
+				        }
+    	    		}],
     				items:[{
     	            	region: 'center',
     					height:'1500px',
@@ -469,91 +553,91 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }]
     				            }
     				        ]
-    				    }],
-    				    buttons: [{
-    				        text: loginUserLanguageResource.submit,
-//    				        formBind: true, // 表单验证通过时启用按钮
-    				        iconCls: 'save',
-    				        handler: function() {
-    				        	var OperationMaintenanceBasicInfoSubForm = Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").down('form');
-    				        	if (OperationMaintenanceBasicInfoSubForm.isValid()) {
-    				        		var configFile={};
-    				        		configFile.others={};
-    				        		configFile.others.loginLanguage=Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').getValue();
-    				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo1_Id').getValue();
-    				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog1_Id').getValue();
-    				        		configFile.others.timeEfficiencyUnit=Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').getValue()?1:2;
-    				        		configFile.others.resourceMonitoringSaveData=Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').getValue();
-    				        		configFile.others.exportLimit=Ext.getCmp('operationMaintenance_exportLimit_Id').getValue();
-    				        		configFile.others.simulateAcqEnable=Ext.getCmp('operationMaintenance_simulateAcqEnable1_Id').getValue();
-    				        		configFile.others.sendCycle=Ext.getCmp('operationMaintenance_sendCycle_Id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance={};
-    				        		configFile.databaseMaintenance.cycle=Ext.getCmp('operationMaintenance_databaseMaintenanceCycle_Id').getValue();
-    				        		configFile.databaseMaintenance.startTime=Ext.getCmp('operationMaintenance_databaseMaintenanceStartTime_Id').getValue();
-    				        		configFile.databaseMaintenance.endTime=Ext.getCmp('operationMaintenance_databaseMaintenanceEndTime_Id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig={};
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist={};
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.enabled=Ext.getCmp('operationMaintenance_acqdata_hist_enabled_Id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.retentionTime=Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.acqrawdata={};
-    				        		configFile.databaseMaintenance.tableConfig.acqrawdata.enabled=Ext.getCmp('operationMaintenance_acqrawdata_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.acqrawdata.retentionTime=Ext.getCmp('operationMaintenance_acqrawdata_retentionTime_id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist={}
-    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.enabled=Ext.getCmp('operationMaintenance_alarminfo_hist_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.retentionTime=Ext.getCmp('operationMaintenance_alarminfo_hist_retentionTime_id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist={};
-    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.enabled=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.retentionTime=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata={};
-    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.enabled=Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.retentionTime=Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata={};
-    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.enabled=Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.retentionTime=Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').getValue();
-    				        		
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate={};
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.enabled=Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').getValue();
-    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.retentionTime=Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').getValue();
-    				        		
-    				        		configFile.dataVacuate={};
-    				        		configFile.dataVacuate.vacuateRecord=Ext.getCmp('operationMaintenance_vacuateRecord_Id').getValue();
-    				        		configFile.dataVacuate.saveInterval=Ext.getCmp('operationMaintenance_vacuateSaveInterval_Id').getValue();
-    				        		configFile.dataVacuate.saveIntervalWaveRange=Ext.getCmp('operationMaintenance_vacuateSaveIntervalWaveRange_Id').getValue();
-    				        		configFile.dataVacuate.vacuateThreshold=Ext.getCmp('operationMaintenance_vacuateThreshold_Id').getValue();
-    				        		
-    				        		OperationMaintenanceBasicInfoSubForm.getForm().submit({
-        				                url: context + '/operationMaintenanceController/updateOemConfigInfo',
-        				                clientValidation: false, // 进行客户端验证
-        				                method: "POST",
-        				                params: {
-        				                	configFile: JSON.stringify(configFile)
-        				                },
-        				                waitMsg: loginUserLanguageResource.sendServer,
-        				                waitTitle: loginUserLanguageResource.wait,
-        				                success: function (response, action) {
-        				                    if (action.result.msg == true) {
-        				                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
-        				                        loadOemConfigInfo();
-        				                    }
-        				                    if (action.result.msg == false) {
-        				                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
-        				                    }
-        				                },
-        				                failure: function () {
-        				                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
-        				                }
-        				            });
-    				        	}
-    				        	
-    				        }
     				    }]
+//    				    buttons: [{
+//    				        text: loginUserLanguageResource.submit,
+////    				        formBind: true, // 表单验证通过时启用按钮
+//    				        iconCls: 'save',
+//    				        handler: function() {
+//    				        	var OperationMaintenanceBasicInfoSubForm = Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").down('form');
+//    				        	if (OperationMaintenanceBasicInfoSubForm.isValid()) {
+//    				        		var configFile={};
+//    				        		configFile.others={};
+//    				        		configFile.others.loginLanguage=Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').getValue();
+//    				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo1_Id').getValue();
+//    				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog1_Id').getValue();
+//    				        		configFile.others.timeEfficiencyUnit=Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').getValue()?1:2;
+//    				        		configFile.others.resourceMonitoringSaveData=Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').getValue();
+//    				        		configFile.others.exportLimit=Ext.getCmp('operationMaintenance_exportLimit_Id').getValue();
+//    				        		configFile.others.simulateAcqEnable=Ext.getCmp('operationMaintenance_simulateAcqEnable1_Id').getValue();
+//    				        		configFile.others.sendCycle=Ext.getCmp('operationMaintenance_sendCycle_Id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance={};
+//    				        		configFile.databaseMaintenance.cycle=Ext.getCmp('operationMaintenance_databaseMaintenanceCycle_Id').getValue();
+//    				        		configFile.databaseMaintenance.startTime=Ext.getCmp('operationMaintenance_databaseMaintenanceStartTime_Id').getValue();
+//    				        		configFile.databaseMaintenance.endTime=Ext.getCmp('operationMaintenance_databaseMaintenanceEndTime_Id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig={};
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist={};
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.enabled=Ext.getCmp('operationMaintenance_acqdata_hist_enabled_Id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_hist.retentionTime=Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.acqrawdata={};
+//    				        		configFile.databaseMaintenance.tableConfig.acqrawdata.enabled=Ext.getCmp('operationMaintenance_acqrawdata_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.acqrawdata.retentionTime=Ext.getCmp('operationMaintenance_acqrawdata_retentionTime_id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist={}
+//    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.enabled=Ext.getCmp('operationMaintenance_alarminfo_hist_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.alarminfo_hist.retentionTime=Ext.getCmp('operationMaintenance_alarminfo_hist_retentionTime_id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist={};
+//    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.enabled=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.retentionTime=Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata={};
+//    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.enabled=Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.dailycalculationdata.retentionTime=Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata={};
+//    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.enabled=Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.retentionTime=Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').getValue();
+//    				        		
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate={};
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.enabled=Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').getValue();
+//    				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.retentionTime=Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').getValue();
+//    				        		
+//    				        		configFile.dataVacuate={};
+//    				        		configFile.dataVacuate.vacuateRecord=Ext.getCmp('operationMaintenance_vacuateRecord_Id').getValue();
+//    				        		configFile.dataVacuate.saveInterval=Ext.getCmp('operationMaintenance_vacuateSaveInterval_Id').getValue();
+//    				        		configFile.dataVacuate.saveIntervalWaveRange=Ext.getCmp('operationMaintenance_vacuateSaveIntervalWaveRange_Id').getValue();
+//    				        		configFile.dataVacuate.vacuateThreshold=Ext.getCmp('operationMaintenance_vacuateThreshold_Id').getValue();
+//    				        		
+//    				        		OperationMaintenanceBasicInfoSubForm.getForm().submit({
+//        				                url: context + '/operationMaintenanceController/updateOemConfigInfo',
+//        				                clientValidation: false, // 进行客户端验证
+//        				                method: "POST",
+//        				                params: {
+//        				                	configFile: JSON.stringify(configFile)
+//        				                },
+//        				                waitMsg: loginUserLanguageResource.sendServer,
+//        				                waitTitle: loginUserLanguageResource.wait,
+//        				                success: function (response, action) {
+//        				                    if (action.result.msg == true) {
+//        				                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
+//        				                        loadOemConfigInfo();
+//        				                    }
+//        				                    if (action.result.msg == false) {
+//        				                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
+//        				                    }
+//        				                },
+//        				                failure: function () {
+//        				                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
+//        				                }
+//        				            });
+//    				        	}
+//    				        	
+//    				        }
+//    				    }]
     	            }]
         		},{
         			title: loginUserLanguageResource.backupAndRecovery,

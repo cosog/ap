@@ -192,7 +192,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            layout: 'hbox',
     				                            items: [
     				                                {
-    				                                    boxLabel: loginUserLanguageResource.decimals,
+    				                                    boxLabel: loginUserLanguageResource.decimals+'&nbsp;&nbsp;',
     				                                    name:'operationMaintenance.timeEfficiencyUnit',
     				                                    inputValue: '1',
     				                                    id: 'operationMaintenance_timeEfficiencyUnit1_Id'
@@ -216,7 +216,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            layout: 'hbox',
     				                            items: [
     				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes,
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
     				                                    name:'operationMaintenance.simulateAcqEnable',
     				                                    inputValue: '1',
     				                                    id: 'operationMaintenance_simulateAcqEnable1_Id',
@@ -252,7 +252,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            layout: 'hbox',
     				                            items: [
     				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes,
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
     				                                    name:'operationMaintenance.showLogo',
     				                                    inputValue: '1',
     				                                    id: 'operationMaintenance_showLogo1_Id'
@@ -293,7 +293,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                            layout: 'hbox',
     				                            items: [
     				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes,
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
     				                                    name:'operationMaintenance.printLog',
     				                                    inputValue: '1',
     				                                    id: 'operationMaintenance_printLog1_Id'

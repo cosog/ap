@@ -1,0 +1,32 @@
+{
+  "Code": "AlarmInstance",
+  "List": [
+    {
+      "Id": 43,
+      "Name": "压力计2报警实例",
+      "Code": "alarminstance43",
+      "UnitId": 1,
+      "UnitName": "压力计2报警",
+      "Sort": 2,
+      "Protocol": "压力计（3位、1位）"
+    },
+    {
+      "Id": 1,
+      "Name": "RTU2.0报警实例",
+      "Code": "alarminstance1",
+      "UnitId": 2,
+      "UnitName": "RTU2.0报警单元",
+      "Sort": 1,
+      "Protocol": "RTU2.0"
+    },
+    {
+      "Id": 23,
+      "Name": "2.1",
+      "Code": "alarminstance23",
+      "UnitId": 3,
+      "UnitName": "RTU2.1",
+      "Sort": 3,
+      "Protocol": "RTU2.0"
+    }
+  ]
+}

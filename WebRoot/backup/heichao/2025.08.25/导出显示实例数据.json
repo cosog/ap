@@ -1,0 +1,95 @@
+{
+  "Code": "DisplayInstance",
+  "List": [
+    {
+      "Id": 43,
+      "Name": "压力计2、2",
+      "Code": "displayinstance43",
+      "DisplayUnitId": 1,
+      "DisplayUnitName": "压力计2、2显示",
+      "Sort": 6,
+      "AcqUnitName": "压力计2、2位采控",
+      "Protocol": "压力计（2位、2位）"
+    },
+    {
+      "Id": 103,
+      "Name": "压力计3、1显示",
+      "Code": "displayinstance103",
+      "DisplayUnitId": 2,
+      "DisplayUnitName": "压力计3、1显示",
+      "Sort": 7,
+      "AcqUnitName": "压力计3、1位采控",
+      "Protocol": "压力计（3位、1位）"
+    },
+    {
+      "Id": 123,
+      "Name": "温湿度显示实例",
+      "Code": "displayinstance123",
+      "DisplayUnitId": 3,
+      "DisplayUnitName": "温湿度显示",
+      "Sort": 8,
+      "AcqUnitName": "温湿度监测采控",
+      "Protocol": "温湿度监测"
+    },
+    {
+      "Id": 1,
+      "Name": "RTU2.0显示实例（三交、焦作）",
+      "Code": "displayinstance1",
+      "DisplayUnitId": 4,
+      "DisplayUnitName": "RTU2.0显示单元（三交、焦作）",
+      "Sort": 3,
+      "AcqUnitName": "抽油机RTU2.0",
+      "Protocol": "RTU2.0"
+    },
+    {
+      "Id": 3,
+      "Name": "RTU2.01显示实例（洪洞）",
+      "Code": "displayinstance3",
+      "DisplayUnitId": 5,
+      "DisplayUnitName": "RTU2.01显示单元（洪洞）",
+      "Sort": 1,
+      "AcqUnitName": "抽油机RTU2.0",
+      "Protocol": "RTU2.0"
+    },
+    {
+      "Id": 4,
+      "Name": "RTU2.02显示实例（铜川）",
+      "Code": "displayinstance4",
+      "DisplayUnitId": 6,
+      "DisplayUnitName": "RTU2.02显示单元（铜川）",
+      "Sort": 2,
+      "AcqUnitName": "抽油机RTU2.0",
+      "Protocol": "RTU2.0"
+    },
+    {
+      "Id": 143,
+      "Name": "WSQ-SL-KC1",
+      "Code": "displayinstance143",
+      "DisplayUnitId": 7,
+      "DisplayUnitName": "WSQ-SL-KC1",
+      "Sort": 4,
+      "AcqUnitName": "抽油机RTU2.0",
+      "Protocol": "RTU2.0"
+    },
+    {
+      "Id": 23,
+      "Name": "LGB-1.0显示实例",
+      "Code": "displayinstance23",
+      "DisplayUnitId": 8,
+      "DisplayUnitName": "LGB-1.0显示单元",
+      "Sort": 5,
+      "AcqUnitName": "LGB-1.0",
+      "Protocol": "LGB"
+    },
+    {
+      "Id": 164,
+      "Name": "多点测温显示实例",
+      "Code": "displayinstance164",
+      "DisplayUnitId": 22,
+      "DisplayUnitName": "多点测温显示",
+      "Sort": 0,
+      "AcqUnitName": "测温采集",
+      "Protocol": "多点测温"
+    }
+  ]
+}

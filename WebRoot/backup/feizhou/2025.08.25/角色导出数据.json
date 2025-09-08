@@ -1,0 +1,1386 @@
+{
+  "Code": "Role",
+  "List": [
+    {
+      "RoleId": 1,
+      "RoleName": "超级管理员",
+      "RoleLevel": 1,
+      "RoleVideoKeyEdit": 1,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 1,
+      "Remark": "全部权限",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 27,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 24,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 29,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 23,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 26,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 894,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2158,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2179,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2218,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2078,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2278,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 2,
+      "RoleName": "应用管理员",
+      "RoleLevel": 3,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 3,
+      "Remark": "设备管理、客户管理",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 27,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 24,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2218,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 23,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 894,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 3,
+      "RoleName": "普通用户",
+      "RoleLevel": 5,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 5,
+      "Remark": "数据查询",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 4,
+      "RoleName": "软件管理员",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "设备管理、客户管理、驱动管理",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 44,
+      "RoleName": "普通用户_带控制",
+      "RoleLevel": 4,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 4,
+      "Remark": "数据查询",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 104,
+      "RoleName": "泵设备应用管理员",
+      "RoleLevel": 3,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 3,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 27,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 24,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2218,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 23,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 894,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 105,
+      "RoleName": "管设备应用管理员",
+      "RoleLevel": 3,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 3,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 27,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 24,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2218,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 23,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 894,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 106,
+      "RoleName": "泵设备普通用户",
+      "RoleLevel": 5,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 5,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 107,
+      "RoleName": "管设备普通用户",
+      "RoleLevel": 5,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 5,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 108,
+      "RoleName": "泵设备软件管理员",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 109,
+      "RoleName": "管设备软件管理员",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 110,
+      "RoleName": "泵设备普通用户_带控制",
+      "RoleLevel": 4,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 4,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 111,
+      "RoleName": "管设备普通用户_带控制",
+      "RoleLevel": 4,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 4,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 124,
+      "RoleName": "Software Administrator",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 125,
+      "RoleName": "администратор",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 7,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 8,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 9,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 10,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 11,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    }
+  ]
+}

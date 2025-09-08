@@ -1,0 +1,155 @@
+{
+  "Code": "Organization",
+  "List": [
+    {
+      "OrgId": 1,
+      "OrgCode": "0000",
+      "OrgName_zh_CN": "组织根节点",
+      "OrgName_en": "Root",
+      "OrgName_ru": "Корневой узел",
+      "OrgMemo": "组织根节点",
+      "OrgParentId": 0,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 22,
+      "OrgCode": "",
+      "OrgName_zh_CN": "临县三交北",
+      "OrgName_en": "临县三交北",
+      "OrgName_ru": "临县三交北",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 25,
+      "OrgCode": "",
+      "OrgName_zh_CN": "山西安鑫煤业",
+      "OrgName_en": "山西安鑫煤业",
+      "OrgName_ru": "山西安鑫煤业",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 26,
+      "OrgCode": "",
+      "OrgName_zh_CN": "陕西铜川",
+      "OrgName_en": "陕西铜川",
+      "OrgName_ru": "陕西铜川",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 27,
+      "OrgCode": "",
+      "OrgName_zh_CN": "河南焦作",
+      "OrgName_en": "河南焦作",
+      "OrgName_ru": "河南焦作",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 42,
+      "OrgCode": "",
+      "OrgName_zh_CN": "EC螺杆泵",
+      "OrgName_en": "EC螺杆泵",
+      "OrgName_ru": "EC螺杆泵",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 84,
+      "OrgCode": "",
+      "OrgName_zh_CN": "测试",
+      "OrgName_en": "测试",
+      "OrgName_ru": "测试",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 62,
+      "OrgCode": "",
+      "OrgName_zh_CN": "模块测试",
+      "OrgName_en": "模块测试",
+      "OrgName_ru": "模块测试",
+      "OrgMemo": "",
+      "OrgParentId": 84,
+      "OrgSeq": "10"
+    },
+    {
+      "OrgId": 142,
+      "OrgCode": "",
+      "OrgName_zh_CN": "数据采集监测",
+      "OrgName_en": "数据采集监测",
+      "OrgName_ru": "数据采集监测",
+      "OrgMemo": "",
+      "OrgParentId": 84,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 222,
+      "OrgCode": "",
+      "OrgName_zh_CN": "温度监测",
+      "OrgName_en": "温度监测",
+      "OrgName_ru": "温度监测",
+      "OrgMemo": "",
+      "OrgParentId": 84,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 242,
+      "OrgCode": "",
+      "OrgName_zh_CN": "SC-YLJC",
+      "OrgName_en": "SC-YLJC",
+      "OrgName_ru": "SC-YLJC",
+      "OrgMemo": "",
+      "OrgParentId": 84,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 102,
+      "OrgCode": "",
+      "OrgName_zh_CN": "EL螺杆泵算产测试",
+      "OrgName_en": "EL螺杆泵算产测试",
+      "OrgName_ru": "EL螺杆泵算产测试",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 122,
+      "OrgCode": "",
+      "OrgName_zh_CN": "WC螺杆泵",
+      "OrgName_en": "WC螺杆泵",
+      "OrgName_ru": "WC螺杆泵",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 202,
+      "OrgCode": "",
+      "OrgName_zh_CN": "ELMCQ",
+      "OrgName_en": "ELMCQ",
+      "OrgName_ru": "ELMCQ",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 262,
+      "OrgCode": "",
+      "OrgName_zh_CN": "乌审旗",
+      "OrgName_en": "乌审旗",
+      "OrgName_ru": "乌审旗",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": ""
+    }
+  ]
+}

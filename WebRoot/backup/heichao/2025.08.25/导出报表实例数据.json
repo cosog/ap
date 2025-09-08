@@ -1,0 +1,21 @@
+{
+  "Code": "ReportInstance",
+  "List": [
+    {
+      "Id": 1,
+      "Name": "煤层气井报表实例",
+      "Code": "reportinstance1",
+      "UnitId": 1,
+      "UnitName": "煤层气井报表单元一",
+      "Sort": 1
+    },
+    {
+      "Id": 4,
+      "Name": "螺杆泵井报表实例",
+      "Code": "reportinstance4",
+      "UnitId": 2,
+      "UnitName": "螺杆泵井报表单元",
+      "Sort": 2
+    }
+  ]
+}

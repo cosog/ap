@@ -1,0 +1,525 @@
+{
+  "Code": "DisplayInstance",
+  "List": [
+    {
+      "Id": 83,
+      "Name": "JM32煤层气_外置传感器显示实例",
+      "Code": "displayinstance83",
+      "DisplayUnitId": 123,
+      "DisplayUnitName": "JM32煤层气_外置传感器显示单元",
+      "Sort": 7,
+      "AcqUnitName": "JM32煤层气_外置传感器",
+      "Protocol": "JM32"
+    },
+    {
+      "Id": 118,
+      "Name": "小17-6显示实例",
+      "Code": "displayinstance118",
+      "DisplayUnitId": 143,
+      "DisplayUnitName": "小17-6显示单元",
+      "Sort": 20,
+      "AcqUnitName": "小17-6",
+      "Protocol": "小17-6"
+    },
+    {
+      "Id": 103,
+      "Name": "JM39煤层气显示实例",
+      "Code": "displayinstance103",
+      "DisplayUnitId": 144,
+      "DisplayUnitName": "JM39煤层气显示单元",
+      "Sort": 1,
+      "AcqUnitName": "JM39煤层气",
+      "Protocol": "JM39：新协议，尚未启用"
+    },
+    {
+      "Id": 105,
+      "Name": "JM23煤层气显示实例",
+      "Code": "displayinstance105",
+      "DisplayUnitId": 146,
+      "DisplayUnitName": "JM23煤层气显示单元",
+      "Sort": 3,
+      "AcqUnitName": "JM23煤层气采控单元",
+      "Protocol": "JM23：VSD-V05"
+    },
+    {
+      "Id": 106,
+      "Name": "JM29油井显示实例",
+      "Code": "displayinstance106",
+      "DisplayUnitId": 147,
+      "DisplayUnitName": "JM29油井显示单元",
+      "Sort": 4,
+      "AcqUnitName": "JM29油井",
+      "Protocol": "JM29：VSD-V03"
+    },
+    {
+      "Id": 107,
+      "Name": "JM29煤层气_外置传感器显示实例",
+      "Code": "displayinstance107",
+      "DisplayUnitId": 148,
+      "DisplayUnitName": "JM29煤层气_外置传感器显示单元",
+      "Sort": 5,
+      "AcqUnitName": "JM29煤层气_外置传感器",
+      "Protocol": "JM29：VSD-V03"
+    },
+    {
+      "Id": 108,
+      "Name": "JM29煤层气_内置传感器显示实例",
+      "Code": "displayinstance108",
+      "DisplayUnitId": 149,
+      "DisplayUnitName": "JM29煤层气_内置传感器显示单元",
+      "Sort": 6,
+      "AcqUnitName": "JM29煤层气_内置传感器",
+      "Protocol": "JM29：VSD-V03"
+    },
+    {
+      "Id": 109,
+      "Name": "JM32煤层气_内置传感器显示实例",
+      "Code": "displayinstance109",
+      "DisplayUnitId": 150,
+      "DisplayUnitName": "JM32煤层气_内置传感器显示单元",
+      "Sort": 8,
+      "AcqUnitName": "JM32煤层气_内置传感器",
+      "Protocol": "JM32"
+    },
+    {
+      "Id": 110,
+      "Name": "JM32油井显示实例",
+      "Code": "displayinstance110",
+      "DisplayUnitId": 151,
+      "DisplayUnitName": "JM32油井显示单元",
+      "Sort": 9,
+      "AcqUnitName": "JM32油井",
+      "Protocol": "JM32"
+    },
+    {
+      "Id": 111,
+      "Name": "JM32室内测试显示实例",
+      "Code": "displayinstance111",
+      "DisplayUnitId": 152,
+      "DisplayUnitName": "JM32室内测试显示单元",
+      "Sort": 10,
+      "AcqUnitName": "JM32室内测试采控单元",
+      "Protocol": "JM32"
+    },
+    {
+      "Id": 112,
+      "Name": "JM35煤层气_外置传感器_小流量计显示实例",
+      "Code": "displayinstance112",
+      "DisplayUnitId": 153,
+      "DisplayUnitName": "JM35煤层气_外置传感器_小流量计显示单元",
+      "Sort": 11,
+      "AcqUnitName": "JM35煤层气_外置传感器_小流量计",
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 116,
+      "Name": "JM35油田显示实例",
+      "Code": "displayinstance116",
+      "DisplayUnitId": 154,
+      "DisplayUnitName": "JM35油田显示单元",
+      "Sort": 15,
+      "AcqUnitName": "JM35油田采控单元",
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 113,
+      "Name": "JM35煤层气_内置传感器_小流量计显示实例",
+      "Code": "displayinstance113",
+      "DisplayUnitId": 155,
+      "DisplayUnitName": "JM35煤层气_内置传感器_小流量计显示单元",
+      "Sort": 12,
+      "AcqUnitName": "JM35煤层气_内置传感器_小流量计",
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 114,
+      "Name": "JM35煤层气_外置传感器_大流量计显示实例",
+      "Code": "displayinstance114",
+      "DisplayUnitId": 156,
+      "DisplayUnitName": "JM35煤层气_外置传感器_大流量计显示单元",
+      "Sort": 13,
+      "AcqUnitName": "JM35煤层气_外置传感器_大流量计",
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 115,
+      "Name": "JM35煤层气_内置传感器_大流量计显示实例",
+      "Code": "displayinstance115",
+      "DisplayUnitId": 157,
+      "DisplayUnitName": "JM35煤层气_内置传感器_大流量计显示单元",
+      "Sort": 14,
+      "AcqUnitName": "JM35煤层气_内置传感器_大流量计",
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 117,
+      "Name": "JM37煤层气井显示实例",
+      "Code": "displayinstance117",
+      "DisplayUnitId": 158,
+      "DisplayUnitName": "JM37煤层气井显示单元",
+      "Sort": 16,
+      "AcqUnitName": "JM37煤层气井",
+      "Protocol": "JM37：VSD-V08"
+    },
+    {
+      "Id": 223,
+      "Name": "JM37油井显示实例",
+      "Code": "displayinstance223",
+      "DisplayUnitId": 158,
+      "DisplayUnitName": "JM37煤层气井显示单元",
+      "Sort": 0,
+      "AcqUnitName": "JM37煤层气井",
+      "Protocol": "JM37：VSD-V08"
+    },
+    {
+      "Id": 119,
+      "Name": "JRC380-300(150)-G1J1(管2)显示实例",
+      "Code": "displayinstance119",
+      "DisplayUnitId": 159,
+      "DisplayUnitName": "JRC380-300(150)-G1J1(管2)显示单元",
+      "Sort": 21,
+      "AcqUnitName": "JRC380-300(150)-G1J1(管2)",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 120,
+      "Name": "JRC380-G2J2(管1管2)显示实例",
+      "Code": "displayinstance120",
+      "DisplayUnitId": 160,
+      "DisplayUnitName": "JRC380-G2J2(管1管2)显示单元",
+      "Sort": 22,
+      "AcqUnitName": "JRC380-G2J2(管1管2)",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 121,
+      "Name": "华辰智通测试显示实例",
+      "Code": "displayinstance121",
+      "DisplayUnitId": 161,
+      "DisplayUnitName": "华辰智通测试显示单元",
+      "Sort": 23,
+      "AcqUnitName": "华辰智通测试",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 122,
+      "Name": "JRC380-300(150)-G1J1(管1)显示实例",
+      "Code": "displayinstance122",
+      "DisplayUnitId": 162,
+      "DisplayUnitName": "JRC380-300(150)-G1J1(管1)显示单元",
+      "Sort": 24,
+      "AcqUnitName": "JRC380-300(150)-G1J1(管1)",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 123,
+      "Name": "JRC380-300(150)-G2J1(管1管2)显示实例",
+      "Code": "displayinstance123",
+      "DisplayUnitId": 163,
+      "DisplayUnitName": "JRC380-300(150)-G2J1(管1管2)显示单元",
+      "Sort": 25,
+      "AcqUnitName": "JRC380-300(150)-G2J1(管1管2)",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 124,
+      "Name": "JRC380-300(150)大口径显示实例",
+      "Code": "displayinstance124",
+      "DisplayUnitId": 164,
+      "DisplayUnitName": "JRC380-300(150)大口径显示单元",
+      "Sort": 26,
+      "AcqUnitName": "JRC380-300(150)大口径",
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 125,
+      "Name": "管1管2显示实例",
+      "Code": "displayinstance125",
+      "DisplayUnitId": 165,
+      "DisplayUnitName": "管1管2显示单元",
+      "Sort": 27,
+      "AcqUnitName": "管1管2",
+      "Protocol": "集输加热管（200Smart）"
+    },
+    {
+      "Id": 126,
+      "Name": "管1显示实例",
+      "Code": "displayinstance126",
+      "DisplayUnitId": 166,
+      "DisplayUnitName": "管1显示单元",
+      "Sort": 28,
+      "AcqUnitName": "管1",
+      "Protocol": "集输加热管（200Smart）"
+    },
+    {
+      "Id": 127,
+      "Name": "JRC380-65-G1X2W3显示实例",
+      "Code": "displayinstance127",
+      "DisplayUnitId": 167,
+      "DisplayUnitName": "JRC380-65-G1X2W3显示单元",
+      "Sort": 29,
+      "AcqUnitName": "JRC380-65-G1X2W3",
+      "Protocol": "地埋_智能_管（200Smart_老版本TH报警代码）"
+    },
+    {
+      "Id": 128,
+      "Name": "JRC400-G1T2显示实例",
+      "Code": "displayinstance128",
+      "DisplayUnitId": 168,
+      "DisplayUnitName": "JRC400-G1T2显示单元",
+      "Sort": 30,
+      "AcqUnitName": "JRC400-G1T2",
+      "Protocol": "地埋_智能_管（200Smart_老版本TH报警代码）"
+    },
+    {
+      "Id": 129,
+      "Name": "JRC400-G1T2(新版TH)显示实例",
+      "Code": "displayinstance129",
+      "DisplayUnitId": 169,
+      "DisplayUnitName": "JRC400-G1T2(新版TH)显示单元",
+      "Sort": 31,
+      "AcqUnitName": "JRC400-G1T2(新版TH)",
+      "Protocol": "地埋_智能_管（200Smart_新版本TH及SH300报警代码）"
+    },
+    {
+      "Id": 130,
+      "Name": "JRC380-65-G1X2W3(新版TH)显示实例",
+      "Code": "displayinstance130",
+      "DisplayUnitId": 170,
+      "DisplayUnitName": "JRC380-65-G1X2W3(新版TH)显示单元",
+      "Sort": 32,
+      "AcqUnitName": "JRC380-65-G1X2W3(新版TH)",
+      "Protocol": "地埋_智能_管（200Smart_新版本TH及SH300报警代码）"
+    },
+    {
+      "Id": 131,
+      "Name": "JRC660-G1T2(SH300)显示实例",
+      "Code": "displayinstance131",
+      "DisplayUnitId": 171,
+      "DisplayUnitName": "JRC660-G1T2(SH300)显示单元",
+      "Sort": 33,
+      "AcqUnitName": "JRC660-G1T2(SH300)",
+      "Protocol": "地埋_智能_管（200Smart_新版本TH及SH300报警代码）"
+    },
+    {
+      "Id": 132,
+      "Name": "JRC380-G1J1(新版TH)(一组线温)显示实例",
+      "Code": "displayinstance132",
+      "DisplayUnitId": 172,
+      "DisplayUnitName": "JRC380-G1J1(新版TH)(一组线温)显示单元",
+      "Sort": 34,
+      "AcqUnitName": "JRC380-G1J1(新版TH)(一组线温)",
+      "Protocol": "地埋_智能_管（200Smart_新版本TH及SH300报警代码）"
+    },
+    {
+      "Id": 133,
+      "Name": "JRC380(1200_2022版本)显示实例",
+      "Code": "displayinstance133",
+      "DisplayUnitId": 173,
+      "DisplayUnitName": "JRC380(1200_2022版本)显示单元",
+      "Sort": 35,
+      "AcqUnitName": "JRC380(1200_2022版本)",
+      "Protocol": "加热管（1200_2022版本）"
+    },
+    {
+      "Id": 134,
+      "Name": "JRC400（1200_2023版本）显示实例",
+      "Code": "displayinstance134",
+      "DisplayUnitId": 174,
+      "DisplayUnitName": "JRC400（1200_2023版本）显示单元",
+      "Sort": 36,
+      "AcqUnitName": "JRC400（1200_2023版本）",
+      "Protocol": "加热管（1200_2022版本）"
+    },
+    {
+      "Id": 135,
+      "Name": "JRC400-G1T2(A2)显示实例",
+      "Code": "displayinstance135",
+      "DisplayUnitId": 175,
+      "DisplayUnitName": "JRC400-G1T2(A2)显示单元",
+      "Sort": 37,
+      "AcqUnitName": "JRC400-G1T2(A2)",
+      "Protocol": "加热管（1200）"
+    },
+    {
+      "Id": 136,
+      "Name": "JRC400-G1T2(A2)甲方专供显示单元",
+      "Code": "displayinstance136",
+      "DisplayUnitId": 176,
+      "DisplayUnitName": "JRC400-G1T2(A2)甲方专供显示单元",
+      "Sort": 38,
+      "AcqUnitName": "JRC400-G1T2(A2)甲方专供",
+      "Protocol": "加热管（1200）"
+    },
+    {
+      "Id": 137,
+      "Name": "JRC400-G1T2-A3~A4显示实例",
+      "Code": "displayinstance137",
+      "DisplayUnitId": 177,
+      "DisplayUnitName": "JRC400-G1T2-A3~A4显示单元",
+      "Sort": 39,
+      "AcqUnitName": "JRC400-G1T2-A3~A4",
+      "Protocol": "加热管（200Smart）"
+    },
+    {
+      "Id": 138,
+      "Name": "JRC660-G1T2-A1显示实例",
+      "Code": "displayinstance138",
+      "DisplayUnitId": 178,
+      "DisplayUnitName": "JRC660-G1T2-A1显示单元",
+      "Sort": 40,
+      "AcqUnitName": "JRC660-G1T2-A1",
+      "Protocol": "加热管（200Smart）"
+    },
+    {
+      "Id": 139,
+      "Name": "JRC380-65-A0~A1（地埋）显示实例",
+      "Code": "displayinstance139",
+      "DisplayUnitId": 179,
+      "DisplayUnitName": "JRC380-65-A0~A1（地埋）显示单元",
+      "Sort": 41,
+      "AcqUnitName": "JRC380-65-A0~A1（地埋）",
+      "Protocol": "加热管（200Smart）"
+    },
+    {
+      "Id": 140,
+      "Name": "地埋管第三批显示实例",
+      "Code": "displayinstance140",
+      "DisplayUnitId": 180,
+      "DisplayUnitName": "地埋管第三批显示单元",
+      "Sort": 42,
+      "AcqUnitName": "地埋管第三批",
+      "Protocol": "地埋管（A0）"
+    },
+    {
+      "Id": 141,
+      "Name": "地埋管第一批显示实例",
+      "Code": "displayinstance141",
+      "DisplayUnitId": 181,
+      "DisplayUnitName": "地埋管第一批显示单元",
+      "Sort": 43,
+      "AcqUnitName": "地埋管第一批",
+      "Protocol": "地埋管（A0）"
+    },
+    {
+      "Id": 142,
+      "Name": "地埋管（PTC）显示实例",
+      "Code": "displayinstance142",
+      "DisplayUnitId": 182,
+      "DisplayUnitName": "地埋管（PTC）显示单元",
+      "Sort": 44,
+      "AcqUnitName": "地埋管（PTC）",
+      "Protocol": "地埋管（A1）"
+    },
+    {
+      "Id": 143,
+      "Name": "采水管显示实例",
+      "Code": "displayinstance143",
+      "DisplayUnitId": 183,
+      "DisplayUnitName": "采水管显示单元",
+      "Sort": 45,
+      "AcqUnitName": "采水管",
+      "Protocol": "采水管_变频（A1-A3_1200）"
+    },
+    {
+      "Id": 144,
+      "Name": "变频采水管（200Smart）显示实例",
+      "Code": "displayinstance144",
+      "DisplayUnitId": 184,
+      "DisplayUnitName": "变频采水管（200Smart）显示单元",
+      "Sort": 46,
+      "AcqUnitName": "变频采水管（200Smart）",
+      "Protocol": "采水管_变频（A4_200Smart）"
+    },
+    {
+      "Id": 145,
+      "Name": "采水管（SS）显示实例",
+      "Code": "displayinstance145",
+      "DisplayUnitId": 185,
+      "DisplayUnitName": "采水管（SS）显示单元",
+      "Sort": 47,
+      "AcqUnitName": "采水管（SS）",
+      "Protocol": "采水管_软起（A1-A3_200Smart）"
+    },
+    {
+      "Id": 146,
+      "Name": "单片机测试显示实例",
+      "Code": "displayinstance146",
+      "DisplayUnitId": 186,
+      "DisplayUnitName": "单片机测试显示单元",
+      "Sort": 48,
+      "AcqUnitName": "单片机测试",
+      "Protocol": "单片机加热管_A0"
+    },
+    {
+      "Id": 147,
+      "Name": "单片机地埋管显示实例",
+      "Code": "displayinstance147",
+      "DisplayUnitId": 187,
+      "DisplayUnitName": "单片机地埋管显示单元_A0",
+      "Sort": 49,
+      "AcqUnitName": "单片机地埋管",
+      "Protocol": "单片机加热管_A0"
+    },
+    {
+      "Id": 148,
+      "Name": "单片机智能管甲方版显示实例",
+      "Code": "displayinstance148",
+      "DisplayUnitId": 188,
+      "DisplayUnitName": "单片机智能管甲方版显示单元",
+      "Sort": 50,
+      "AcqUnitName": "单片机智能管甲方版",
+      "Protocol": "单片机加热管_A1"
+    },
+    {
+      "Id": 149,
+      "Name": "单片机智能管技术版显示实例",
+      "Code": "displayinstance149",
+      "DisplayUnitId": 189,
+      "DisplayUnitName": "单片机智能管技术版显示单元",
+      "Sort": 51,
+      "AcqUnitName": "单片机智能管技术版",
+      "Protocol": "单片机加热管_A1"
+    },
+    {
+      "Id": 150,
+      "Name": "A1单片机地埋管显示实例",
+      "Code": "displayinstance150",
+      "DisplayUnitId": 190,
+      "DisplayUnitName": "单片机地埋管显示单元",
+      "Sort": 52,
+      "AcqUnitName": "单片机地埋管",
+      "Protocol": "单片机加热管_A1"
+    },
+    {
+      "Id": 206,
+      "Name": "JRC660-G2J2的显示实例",
+      "Code": "displayinstance206",
+      "DisplayUnitId": 263,
+      "DisplayUnitName": "G2J2显示单元",
+      "Sort": 0,
+      "AcqUnitName": "G2J2",
+      "Protocol": "集输加热管（1200_G2J2）"
+    },
+    {
+      "Id": 243,
+      "Name": "A11 Diplay Instance",
+      "Code": "displayinstance243",
+      "DisplayUnitId": 323,
+      "DisplayUnitName": "A11 Display Unit",
+      "Sort": 100,
+      "AcqUnitName": "A11 Acquisition Unit",
+      "Protocol": "A11 Protocol"
+    },
+    {
+      "Id": 244,
+      "Name": "Отображает экземпляры A11",
+      "Code": "displayinstance244",
+      "DisplayUnitId": 343,
+      "DisplayUnitName": "Камера а11",
+      "Sort": 200,
+      "AcqUnitName": "Группа захвата а11",
+      "Protocol": "Протокол А11"
+    }
+  ]
+}

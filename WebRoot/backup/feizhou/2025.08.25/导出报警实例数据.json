@@ -1,0 +1,131 @@
+{
+  "Code": "AlarmInstance",
+  "List": [
+    {
+      "Id": 43,
+      "Name": "JM32报警实例一",
+      "Code": "alarminstance43",
+      "UnitId": 43,
+      "UnitName": "JM32报警单元",
+      "Sort": 2,
+      "Protocol": "JM32"
+    },
+    {
+      "Id": 63,
+      "Name": "JM23报警实例",
+      "Code": "alarminstance63",
+      "UnitId": 63,
+      "UnitName": "JM23报警单元",
+      "Sort": 1,
+      "Protocol": "JM23：VSD-V05"
+    },
+    {
+      "Id": 64,
+      "Name": "JM35报警实例一",
+      "Code": "alarminstance64",
+      "UnitId": 64,
+      "UnitName": "JM35报警单元一",
+      "Sort": 3,
+      "Protocol": "JM35"
+    },
+    {
+      "Id": 65,
+      "Name": "集输加热管_1200",
+      "Code": "alarminstance65",
+      "UnitId": 65,
+      "UnitName": "集输加热管_1200",
+      "Sort": 21,
+      "Protocol": "集输加热管（1200）"
+    },
+    {
+      "Id": 66,
+      "Name": "加热管（1200）",
+      "Code": "alarminstance66",
+      "UnitId": 66,
+      "UnitName": "智能加热管 （1200）报警单元",
+      "Sort": 22,
+      "Protocol": "加热管（1200）"
+    },
+    {
+      "Id": 67,
+      "Name": "加热管（200Smart）",
+      "Code": "alarminstance67",
+      "UnitId": 67,
+      "UnitName": "JRC400-G1T2 报警单元",
+      "Sort": 23,
+      "Protocol": "加热管（200Smart）"
+    },
+    {
+      "Id": 68,
+      "Name": "采水管",
+      "Code": "alarminstance68",
+      "UnitId": 68,
+      "UnitName": "采水管 报警单元",
+      "Sort": 24,
+      "Protocol": "采水管_变频（A1-A3_1200）"
+    },
+    {
+      "Id": 124,
+      "Name": "集输加热管_1200_双回路",
+      "Code": "alarminstance124",
+      "UnitId": 83,
+      "UnitName": "JRC380(660)-G2T2报警单元",
+      "Sort": 0,
+      "Protocol": "集输加热管（1200_G2J2）"
+    },
+    {
+      "Id": 103,
+      "Name": "CSC_SS",
+      "Code": "alarminstance103",
+      "UnitId": 103,
+      "UnitName": "采水管_软起_200smart",
+      "Sort": 0,
+      "Protocol": "采水管_软起（A1-A3_200Smart）"
+    },
+    {
+      "Id": 104,
+      "Name": "CSC_VFD",
+      "Code": "alarminstance104",
+      "UnitId": 104,
+      "UnitName": "采水管_变频_200Smart",
+      "Sort": 0,
+      "Protocol": "采水管_变频（A4_200Smart）"
+    },
+    {
+      "Id": 123,
+      "Name": "集输加热管_200smart",
+      "Code": "alarminstance123",
+      "UnitId": 123,
+      "UnitName": "集输加热管_200smart",
+      "Sort": 0,
+      "Protocol": "集输加热管（200Smart）"
+    },
+    {
+      "Id": 125,
+      "Name": "小17-6",
+      "Code": "alarminstance125",
+      "UnitId": 143,
+      "UnitName": "小17-6",
+      "Sort": 0,
+      "Protocol": "小17-6"
+    },
+    {
+      "Id": 126,
+      "Name": "A11 Alarm Instance",
+      "Code": "alarminstance126",
+      "UnitId": 183,
+      "UnitName": "A11 Alarm Unit",
+      "Sort": 100,
+      "Protocol": "A11 Protocol"
+    },
+    {
+      "Id": 127,
+      "Name": "Экземпляр оповещения A11",
+      "Code": "alarminstance127",
+      "UnitId": 203,
+      "UnitName": "Блок сигнализации А11",
+      "Sort": 200,
+      "Protocol": "Протокол А11"
+    }
+  ]
+}

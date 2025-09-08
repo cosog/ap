@@ -1,0 +1,337 @@
+{
+  "Code": "Role",
+  "List": [
+    {
+      "RoleId": 1,
+      "RoleName": "超级管理员",
+      "RoleLevel": 1,
+      "RoleVideoKeyEdit": 1,
+      "RoleLanguageEdit": 1,
+      "ShowLevel": 1,
+      "Remark": "全部权限",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 27,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 24,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 29,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 31,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 1777,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 23,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 26,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 894,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2158,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2179,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2278,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 2,
+      "RoleName": "软件管理员",
+      "RoleLevel": 2,
+      "RoleVideoKeyEdit": 1,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 1,
+      "Remark": "数据查询、编辑、权限管理",
+      "ModuleRight": [
+        {
+          "Id": 9999,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2158,
+          "Matrix": "1,1,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 34,
+          "Matrix": "1,1,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 3,
+      "RoleName": "应用分析员",
+      "RoleLevel": 3,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 1,
+      "Remark": "数据查询",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,1"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2158,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        }
+      ]
+    },
+    {
+      "RoleId": 4,
+      "RoleName": "一般操作员",
+      "RoleLevel": 4,
+      "RoleVideoKeyEdit": 0,
+      "RoleLanguageEdit": 0,
+      "ShowLevel": 2,
+      "Remark": "",
+      "ModuleRight": [
+        {
+          "Id": 1998,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2018,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2158,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2058,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2038,
+          "Matrix": "1,0,0"
+        },
+        {
+          "Id": 2238,
+          "Matrix": "1,0,0"
+        }
+      ],
+      "DeviceTypeRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 2,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 3,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 4,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 5,
+          "Matrix": "0,0,0"
+        },
+        {
+          "Id": 6,
+          "Matrix": "0,0,0"
+        }
+      ],
+      "LanguageRight": [
+        {
+          "Id": 1,
+          "Matrix": "0,0,0"
+        }
+      ]
+    }
+  ]
+}

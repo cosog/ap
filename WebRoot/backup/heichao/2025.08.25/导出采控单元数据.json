@@ -1,0 +1,2677 @@
+{
+  "Code": "AcqUnit",
+  "List": [
+    {
+      "Id": 1,
+      "UnitCode": "unit1",
+      "UnitName": "抽油机RTU2.0",
+      "Protocol": "RTU2.0",
+      "Remark": "临县中澳",
+      "GroupList": [
+        {
+          "Id": 1,
+          "GroupCode": "group1",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 120,
+          "GroupSavingInterval": 120,
+          "Protocol": "RTU2.0",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 1,
+              "ItemId": 0,
+              "ItemName": "煤层顶板深",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 2,
+              "ItemId": 0,
+              "ItemName": "压力计安装深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 3,
+              "ItemId": 0,
+              "ItemName": "井下压力计-压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 4,
+              "ItemId": 0,
+              "ItemName": "动液面",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 5,
+              "ItemId": 0,
+              "ItemName": "井口套压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 6,
+              "ItemId": 0,
+              "ItemName": "系统压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 7,
+              "ItemId": 0,
+              "ItemName": "产气量累计",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 1,
+              "DailyTotalCalculateName": "日产气量"
+            },
+            {
+              "Id": 8,
+              "ItemId": 0,
+              "ItemName": "产气量瞬时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 9,
+              "ItemId": 0,
+              "ItemName": "气体温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 10,
+              "ItemId": 0,
+              "ItemName": "产水量累计",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 1,
+              "DailyTotalCalculateName": "日产水量"
+            },
+            {
+              "Id": 11,
+              "ItemId": 0,
+              "ItemName": "产水量瞬时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 12,
+              "ItemId": 0,
+              "ItemName": "冲次",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 13,
+              "ItemId": 0,
+              "ItemName": "A相电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 14,
+              "ItemId": 0,
+              "ItemName": "B相电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 15,
+              "ItemId": 0,
+              "ItemName": "C相电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 16,
+              "ItemId": 0,
+              "ItemName": "A相电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 17,
+              "ItemId": 0,
+              "ItemName": "B相电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 18,
+              "ItemId": 0,
+              "ItemName": "C相电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 19,
+              "ItemId": 0,
+              "ItemName": "井下压力计-温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 20,
+              "ItemId": 0,
+              "ItemName": "气体流量计通讯状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 21,
+              "ItemId": 0,
+              "ItemName": "水流量计通讯状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 22,
+              "ItemId": 0,
+              "ItemName": "井下压力计/液面仪通讯状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 23,
+              "ItemId": 0,
+              "ItemName": "变频器通讯状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 24,
+              "ItemId": 0,
+              "ItemName": "当前目标值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 25,
+              "ItemId": 0,
+              "ItemName": "初始液柱",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 26,
+              "ItemId": 0,
+              "ItemName": "变频器设置频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 27,
+              "ItemId": 0,
+              "ItemName": "变频器运行频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 28,
+              "ItemId": 0,
+              "ItemName": "变频器故障状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 29,
+              "ItemId": 0,
+              "ItemName": "变频器输出电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 30,
+              "ItemId": 0,
+              "ItemName": "变频器输出电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 31,
+              "ItemId": 0,
+              "ItemName": "变频器厂家代码",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 32,
+              "ItemId": 0,
+              "ItemName": "变频器状态字1",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 33,
+              "ItemId": 0,
+              "ItemName": "变频器状态字2",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 34,
+              "ItemId": 0,
+              "ItemName": "母线电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 35,
+              "ItemId": 0,
+              "ItemName": "10Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 36,
+              "ItemId": 0,
+              "ItemName": "50Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 37,
+              "ItemId": 0,
+              "ItemName": "修正后井底流压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 38,
+              "ItemId": 0,
+              "ItemName": "计算液柱高度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 39,
+              "ItemId": 0,
+              "ItemName": "计算近1小时液柱下降速度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 40,
+              "ItemId": 0,
+              "ItemName": "排采模式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 41,
+              "ItemId": 0,
+              "ItemName": "自动排采状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 42,
+              "ItemId": 0,
+              "ItemName": "自动排采-最小频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 43,
+              "ItemId": 0,
+              "ItemName": "自动排采-最大频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 44,
+              "ItemId": 0,
+              "ItemName": "最大步长幅度限制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 45,
+              "ItemId": 0,
+              "ItemName": "最短调整时间间隔",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 46,
+              "ItemId": 0,
+              "ItemName": "自动重启延时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 47,
+              "ItemId": 0,
+              "ItemName": "自动重启次数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 48,
+              "ItemId": 0,
+              "ItemName": "井底流压波动报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 49,
+              "ItemId": 0,
+              "ItemName": "定降液-目标定降（每日）",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 50,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 51,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 52,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 53,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 54,
+              "ItemId": 0,
+              "ItemName": "定降液-P参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 55,
+              "ItemId": 0,
+              "ItemName": "定降液-I参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 56,
+              "ItemId": 0,
+              "ItemName": "定降液-D参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 57,
+              "ItemId": 0,
+              "ItemName": "定流压-目标流压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 58,
+              "ItemId": 0,
+              "ItemName": "定流压-流压低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 59,
+              "ItemId": 0,
+              "ItemName": "定流压-流压低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 60,
+              "ItemId": 0,
+              "ItemName": "定流压-流压重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 61,
+              "ItemId": 0,
+              "ItemName": "定流压-流压高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        },
+        {
+          "Id": 2,
+          "GroupCode": "group2",
+          "GroupName": "控制组",
+          "GroupTimingInterval": 0,
+          "GroupSavingInterval": 0,
+          "Protocol": "RTU2.0",
+          "Type": 1,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 62,
+              "ItemId": 0,
+              "ItemName": "煤层顶板深",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 63,
+              "ItemId": 0,
+              "ItemName": "压力计安装深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 64,
+              "ItemId": 0,
+              "ItemName": "频率控制方式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 65,
+              "ItemId": 0,
+              "ItemName": "启停控制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 66,
+              "ItemId": 0,
+              "ItemName": "变频器设置频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 67,
+              "ItemId": 0,
+              "ItemName": "10Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 68,
+              "ItemId": 0,
+              "ItemName": "50Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 69,
+              "ItemId": 0,
+              "ItemName": "冲次/转速设定值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 70,
+              "ItemId": 0,
+              "ItemName": "排采模式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 71,
+              "ItemId": 0,
+              "ItemName": "自动排采状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 72,
+              "ItemId": 0,
+              "ItemName": "自动排采-最小频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 73,
+              "ItemId": 0,
+              "ItemName": "自动排采-最大频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 74,
+              "ItemId": 0,
+              "ItemName": "最大步长幅度限制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 75,
+              "ItemId": 0,
+              "ItemName": "最短调整时间间隔",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 76,
+              "ItemId": 0,
+              "ItemName": "自动重启延时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 77,
+              "ItemId": 0,
+              "ItemName": "自动重启次数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 78,
+              "ItemId": 0,
+              "ItemName": "井底流压波动报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 79,
+              "ItemId": 0,
+              "ItemName": "定降液-目标定降（每日）",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 80,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 81,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 82,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 83,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 84,
+              "ItemId": 0,
+              "ItemName": "定降液-P参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 85,
+              "ItemId": 0,
+              "ItemName": "定降液-I参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 86,
+              "ItemId": 0,
+              "ItemName": "定降液-D参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 87,
+              "ItemId": 0,
+              "ItemName": "定流压-目标流压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 88,
+              "ItemId": 0,
+              "ItemName": "定流压-流压低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 89,
+              "ItemId": 0,
+              "ItemName": "定流压-流压低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 90,
+              "ItemId": 0,
+              "ItemName": "定流压-流压重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 91,
+              "ItemId": 0,
+              "ItemName": "定流压-流压高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "UnitCode": "unit2",
+      "UnitName": "WSQ",
+      "Protocol": "RTU2.0",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 3,
+          "GroupCode": "group3",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 60,
+          "GroupSavingInterval": 60,
+          "Protocol": "RTU2.0",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 261,
+              "ItemId": 0,
+              "ItemName": "煤层顶板深",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 262,
+              "ItemId": 0,
+              "ItemName": "压力计安装深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 263,
+              "ItemId": 0,
+              "ItemName": "井下压力计-压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 264,
+              "ItemId": 0,
+              "ItemName": "动液面",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 265,
+              "ItemId": 0,
+              "ItemName": "井口套压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 266,
+              "ItemId": 0,
+              "ItemName": "系统压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 267,
+              "ItemId": 0,
+              "ItemName": "产气量累计",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 1,
+              "DailyTotalCalculateName": "日产气量"
+            },
+            {
+              "Id": 268,
+              "ItemId": 0,
+              "ItemName": "产气量瞬时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 269,
+              "ItemId": 0,
+              "ItemName": "气体温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 270,
+              "ItemId": 0,
+              "ItemName": "冲次",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 271,
+              "ItemId": 0,
+              "ItemName": "井下压力计-温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 272,
+              "ItemId": 0,
+              "ItemName": "当前目标值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 273,
+              "ItemId": 0,
+              "ItemName": "初始液柱",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 274,
+              "ItemId": 0,
+              "ItemName": "频率控制方式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 275,
+              "ItemId": 0,
+              "ItemName": "启停控制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 276,
+              "ItemId": 0,
+              "ItemName": "变频器设置频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 277,
+              "ItemId": 0,
+              "ItemName": "变频器运行频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 278,
+              "ItemId": 0,
+              "ItemName": "变频器输出电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 279,
+              "ItemId": 0,
+              "ItemName": "变频器输出电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 280,
+              "ItemId": 0,
+              "ItemName": "母线电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 281,
+              "ItemId": 0,
+              "ItemName": "10Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 282,
+              "ItemId": 0,
+              "ItemName": "50Hz对应冲次/转速预设值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 283,
+              "ItemId": 0,
+              "ItemName": "修正后井底流压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 284,
+              "ItemId": 0,
+              "ItemName": "计算液柱高度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 285,
+              "ItemId": 0,
+              "ItemName": "计算近1小时液柱下降速度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 286,
+              "ItemId": 0,
+              "ItemName": "排采模式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 287,
+              "ItemId": 0,
+              "ItemName": "自动排采状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 288,
+              "ItemId": 0,
+              "ItemName": "自动排采-最小频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 289,
+              "ItemId": 0,
+              "ItemName": "自动排采-最大频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 290,
+              "ItemId": 0,
+              "ItemName": "最大步长幅度限制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 291,
+              "ItemId": 0,
+              "ItemName": "最短调整时间间隔",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 292,
+              "ItemId": 0,
+              "ItemName": "自动重启延时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 293,
+              "ItemId": 0,
+              "ItemName": "自动重启次数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 294,
+              "ItemId": 0,
+              "ItemName": "井底流压波动报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 295,
+              "ItemId": 0,
+              "ItemName": "定降液-目标定降（每日）",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 296,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 297,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 298,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 299,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 300,
+              "ItemId": 0,
+              "ItemName": "定降液-P参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 301,
+              "ItemId": 0,
+              "ItemName": "定降液-I参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 302,
+              "ItemId": 0,
+              "ItemName": "定降液-D参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        },
+        {
+          "Id": 4,
+          "GroupCode": "group4",
+          "GroupName": "控制组",
+          "GroupTimingInterval": 0,
+          "GroupSavingInterval": 0,
+          "Protocol": "RTU2.0",
+          "Type": 1,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 140,
+              "ItemId": 0,
+              "ItemName": "煤层顶板深",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 141,
+              "ItemId": 0,
+              "ItemName": "压力计安装深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 142,
+              "ItemId": 0,
+              "ItemName": "频率控制方式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 143,
+              "ItemId": 0,
+              "ItemName": "启停控制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 144,
+              "ItemId": 0,
+              "ItemName": "变频器设置频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 145,
+              "ItemId": 0,
+              "ItemName": "冲次/转速设定值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 146,
+              "ItemId": 0,
+              "ItemName": "排采模式",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 147,
+              "ItemId": 0,
+              "ItemName": "自动排采状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 148,
+              "ItemId": 0,
+              "ItemName": "自动排采-最小频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 149,
+              "ItemId": 0,
+              "ItemName": "自动排采-最大频率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 150,
+              "ItemId": 0,
+              "ItemName": "最大步长幅度限制",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 151,
+              "ItemId": 0,
+              "ItemName": "最短调整时间间隔",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 152,
+              "ItemId": 0,
+              "ItemName": "自动重启延时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 153,
+              "ItemId": 0,
+              "ItemName": "自动重启次数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 154,
+              "ItemId": 0,
+              "ItemName": "井底流压波动报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 155,
+              "ItemId": 0,
+              "ItemName": "定降液-目标定降（每日）",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 156,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低停机值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 157,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱低报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 158,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱重启值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 159,
+              "ItemId": 0,
+              "ItemName": "定降液-液柱高报警值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 160,
+              "ItemId": 0,
+              "ItemName": "定降液-P参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 161,
+              "ItemId": 0,
+              "ItemName": "定降液-I参数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "UnitCode": "unit3",
+      "UnitName": "LGB-1.0",
+      "Protocol": "LGB",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 5,
+          "GroupCode": "group5",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 60,
+          "GroupSavingInterval": 60,
+          "Protocol": "LGB",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 162,
+              "ItemId": 0,
+              "ItemName": "母线电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 163,
+              "ItemId": 0,
+              "ItemName": "IGBT 温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 164,
+              "ItemId": 0,
+              "ItemName": "输出电流",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 165,
+              "ItemId": 0,
+              "ItemName": "输出电压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 166,
+              "ItemId": 0,
+              "ItemName": "输出功率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 167,
+              "ItemId": 0,
+              "ItemName": "转速",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 168,
+              "ItemId": 0,
+              "ItemName": "转矩",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 169,
+              "ItemId": 0,
+              "ItemName": "变频器通信状态",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 170,
+              "ItemId": 0,
+              "ItemName": "转矩系数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 171,
+              "ItemId": 0,
+              "ItemName": "日产液量(m^3/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 172,
+              "ItemId": 0,
+              "ItemName": "日产油量(m^3/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 173,
+              "ItemId": 0,
+              "ItemName": "日产水量(m^3/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 174,
+              "ItemId": 0,
+              "ItemName": "日产液量(t/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 175,
+              "ItemId": 0,
+              "ItemName": "日产油量(t/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 176,
+              "ItemId": 0,
+              "ItemName": "日产水量(t/d)",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 177,
+              "ItemId": 0,
+              "ItemName": "理论排量",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 178,
+              "ItemId": 0,
+              "ItemName": "容积效率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 179,
+              "ItemId": 0,
+              "ItemName": "收缩系数",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 180,
+              "ItemId": 0,
+              "ItemName": "计算泵效",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 181,
+              "ItemId": 0,
+              "ItemName": "原油密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 182,
+              "ItemId": 0,
+              "ItemName": "地层水密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 183,
+              "ItemId": 0,
+              "ItemName": "天然气相对密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 184,
+              "ItemId": 0,
+              "ItemName": "饱和压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 185,
+              "ItemId": 0,
+              "ItemName": "油层中部深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 186,
+              "ItemId": 0,
+              "ItemName": "油层中部温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 187,
+              "ItemId": 0,
+              "ItemName": "油压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 188,
+              "ItemId": 0,
+              "ItemName": "套压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 189,
+              "ItemId": 0,
+              "ItemName": "井口温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 190,
+              "ItemId": 0,
+              "ItemName": "含水率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 191,
+              "ItemId": 0,
+              "ItemName": "生产气油比",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 192,
+              "ItemId": 0,
+              "ItemName": "动液面",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 193,
+              "ItemId": 0,
+              "ItemName": "泵挂",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 194,
+              "ItemId": 0,
+              "ItemName": "每转公称排量",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 195,
+              "ItemId": 0,
+              "ItemName": "油管内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 196,
+              "ItemId": 0,
+              "ItemName": "套管内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 197,
+              "ItemId": 0,
+              "ItemName": "一级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 198,
+              "ItemId": 0,
+              "ItemName": "一级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 199,
+              "ItemId": 0,
+              "ItemName": "一级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 200,
+              "ItemId": 0,
+              "ItemName": "一级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 201,
+              "ItemId": 0,
+              "ItemName": "二级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 202,
+              "ItemId": 0,
+              "ItemName": "二级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 203,
+              "ItemId": 0,
+              "ItemName": "二级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 204,
+              "ItemId": 0,
+              "ItemName": "二级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 205,
+              "ItemId": 0,
+              "ItemName": "三级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 206,
+              "ItemId": 0,
+              "ItemName": "三级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 207,
+              "ItemId": 0,
+              "ItemName": "三级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 208,
+              "ItemId": 0,
+              "ItemName": "三级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 209,
+              "ItemId": 0,
+              "ItemName": "净毛比",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 210,
+              "ItemId": 0,
+              "ItemName": "净毛值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 211,
+              "ItemId": 0,
+              "ItemName": "系统时间-时",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 212,
+              "ItemId": 0,
+              "ItemName": "系统时间-分",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 213,
+              "ItemId": 0,
+              "ItemName": "系统时间-秒",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 214,
+              "ItemId": 0,
+              "ItemName": "系统时间-年",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 215,
+              "ItemId": 0,
+              "ItemName": "系统时间-月",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 216,
+              "ItemId": 0,
+              "ItemName": "系统时间-日",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 217,
+              "ItemId": 0,
+              "ItemName": "RTU地址",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 218,
+              "ItemId": 0,
+              "ItemName": "程序版本号",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 219,
+              "ItemId": 0,
+              "ItemName": "井号",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        },
+        {
+          "Id": 6,
+          "GroupCode": "group6",
+          "GroupName": "控制组",
+          "GroupTimingInterval": 0,
+          "GroupSavingInterval": 0,
+          "Protocol": "LGB",
+          "Type": 1,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 220,
+              "ItemId": 0,
+              "ItemName": "原油密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 221,
+              "ItemId": 0,
+              "ItemName": "地层水密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 222,
+              "ItemId": 0,
+              "ItemName": "天然气相对密度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 223,
+              "ItemId": 0,
+              "ItemName": "饱和压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 224,
+              "ItemId": 0,
+              "ItemName": "油层中部深度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 225,
+              "ItemId": 0,
+              "ItemName": "油层中部温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 226,
+              "ItemId": 0,
+              "ItemName": "油压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 227,
+              "ItemId": 0,
+              "ItemName": "套压",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 228,
+              "ItemId": 0,
+              "ItemName": "井口温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 229,
+              "ItemId": 0,
+              "ItemName": "含水率",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 230,
+              "ItemId": 0,
+              "ItemName": "生产气油比",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 231,
+              "ItemId": 0,
+              "ItemName": "动液面",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 232,
+              "ItemId": 0,
+              "ItemName": "泵挂",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 233,
+              "ItemId": 0,
+              "ItemName": "每转公称排量",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 234,
+              "ItemId": 0,
+              "ItemName": "油管内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 235,
+              "ItemId": 0,
+              "ItemName": "套管内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 236,
+              "ItemId": 0,
+              "ItemName": "一级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 237,
+              "ItemId": 0,
+              "ItemName": "一级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 238,
+              "ItemId": 0,
+              "ItemName": "一级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 239,
+              "ItemId": 0,
+              "ItemName": "一级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 240,
+              "ItemId": 0,
+              "ItemName": "二级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 241,
+              "ItemId": 0,
+              "ItemName": "二级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 242,
+              "ItemId": 0,
+              "ItemName": "二级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 243,
+              "ItemId": 0,
+              "ItemName": "二级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 244,
+              "ItemId": 0,
+              "ItemName": "三级杆级别",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 245,
+              "ItemId": 0,
+              "ItemName": "三级杆外径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 246,
+              "ItemId": 0,
+              "ItemName": "三级杆内径",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 247,
+              "ItemId": 0,
+              "ItemName": "三级杆长",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 248,
+              "ItemId": 0,
+              "ItemName": "净毛比",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 249,
+              "ItemId": 0,
+              "ItemName": "净毛值",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "UnitCode": "unit4",
+      "UnitName": "压力计2、2位采控",
+      "Protocol": "压力计（2位、2位）",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 7,
+          "GroupCode": "group7",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 60,
+          "GroupSavingInterval": 60,
+          "Protocol": "压力计（2位、2位）",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 250,
+              "ItemId": 0,
+              "ItemName": "压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 251,
+              "ItemId": 0,
+              "ItemName": "温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 5,
+      "UnitCode": "unit5",
+      "UnitName": "压力计3、1位采控",
+      "Protocol": "压力计（3位、1位）",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 8,
+          "GroupCode": "group8",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 120,
+          "GroupSavingInterval": 120,
+          "Protocol": "压力计（3位、1位）",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 252,
+              "ItemId": 0,
+              "ItemName": "压力",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 253,
+              "ItemId": 0,
+              "ItemName": "温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 6,
+      "UnitCode": "unit6",
+      "UnitName": "温湿度监测采控",
+      "Protocol": "温湿度监测",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 9,
+          "GroupCode": "group9",
+          "GroupName": "采集组",
+          "GroupTimingInterval": 300,
+          "GroupSavingInterval": 300,
+          "Protocol": "温湿度监测",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": [
+            {
+              "Id": 254,
+              "ItemId": 0,
+              "ItemName": "湿度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            },
+            {
+              "Id": 255,
+              "ItemId": 0,
+              "ItemName": "温度",
+              "ItemCode": "",
+              "BitIndex": -99,
+              "Matrix": "0,0,0",
+              "DailyTotalCalculate": 0,
+              "DailyTotalCalculateName": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": 22,
+      "UnitCode": "unit22",
+      "UnitName": "测温采集",
+      "Protocol": "多点测温",
+      "Remark": "null",
+      "GroupList": [
+        {
+          "Id": 22,
+          "GroupCode": "group22",
+          "GroupName": "多点",
+          "GroupTimingInterval": 60,
+          "GroupSavingInterval": 300,
+          "Protocol": "多点测温",
+          "Type": 0,
+          "Remark": "",
+          "ItemList": []
+        }
+      ]
+    }
+  ]
+}

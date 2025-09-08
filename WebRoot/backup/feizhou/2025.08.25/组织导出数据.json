@@ -1,0 +1,1825 @@
+{
+  "Code": "Organization",
+  "List": [
+    {
+      "OrgId": 1,
+      "OrgCode": "0000",
+      "OrgName_zh_CN": "组织根节点",
+      "OrgName_en": "Root",
+      "OrgName_ru": "Корневой узел",
+      "OrgMemo": "组织根节点",
+      "OrgParentId": 0,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 222,
+      "OrgCode": "",
+      "OrgName_zh_CN": "现场设备",
+      "OrgName_en": "现场设备",
+      "OrgName_ru": "现场设备",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 28,
+      "OrgCode": "",
+      "OrgName_zh_CN": "泵设备",
+      "OrgName_en": "泵设备",
+      "OrgName_ru": "泵设备",
+      "OrgMemo": "",
+      "OrgParentId": 222,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 1323,
+      "OrgCode": "",
+      "OrgName_zh_CN": "煤层气隔膜泵",
+      "OrgName_en": "煤层气隔膜泵",
+      "OrgName_ru": "煤层气隔膜泵",
+      "OrgMemo": "",
+      "OrgParentId": 28,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 2,
+      "OrgCode": "",
+      "OrgName_zh_CN": "中联煤层气",
+      "OrgName_en": "中联煤层气",
+      "OrgName_ru": "中联煤层气",
+      "OrgMemo": "中联煤层气",
+      "OrgParentId": 1323,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 6,
+      "OrgCode": "",
+      "OrgName_zh_CN": "潘河",
+      "OrgName_en": "潘河",
+      "OrgName_ru": "潘河",
+      "OrgMemo": "",
+      "OrgParentId": 2,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 7,
+      "OrgCode": "",
+      "OrgName_zh_CN": "柿庄南",
+      "OrgName_en": "柿庄南",
+      "OrgName_ru": "柿庄南",
+      "OrgMemo": "",
+      "OrgParentId": 2,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 8,
+      "OrgCode": "",
+      "OrgName_zh_CN": "柿庄北",
+      "OrgName_en": "柿庄北",
+      "OrgName_ru": "柿庄北",
+      "OrgMemo": "",
+      "OrgParentId": 2,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 22,
+      "OrgCode": "",
+      "OrgName_zh_CN": "海拉尔",
+      "OrgName_en": "海拉尔",
+      "OrgName_ru": "海拉尔",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": "3"
+    },
+    {
+      "OrgId": 23,
+      "OrgCode": "",
+      "OrgName_zh_CN": "蓝焰煤层气",
+      "OrgName_en": "蓝焰煤层气",
+      "OrgName_ru": "蓝焰煤层气",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": "4"
+    },
+    {
+      "OrgId": 1082,
+      "OrgCode": "",
+      "OrgName_zh_CN": "郑庄北区",
+      "OrgName_en": "郑庄北区",
+      "OrgName_ru": "郑庄北区",
+      "OrgMemo": "",
+      "OrgParentId": 23,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1122,
+      "OrgCode": "",
+      "OrgName_zh_CN": "嘉能项目部",
+      "OrgName_en": "嘉能项目部",
+      "OrgName_ru": "嘉能项目部",
+      "OrgMemo": "",
+      "OrgParentId": 23,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1262,
+      "OrgCode": "",
+      "OrgName_zh_CN": "成庄工区",
+      "OrgName_en": "成庄工区",
+      "OrgName_ru": "成庄工区",
+      "OrgMemo": "",
+      "OrgParentId": 23,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1463,
+      "OrgCode": "",
+      "OrgName_zh_CN": "郑庄南工区",
+      "OrgName_en": "郑庄南工区",
+      "OrgName_ru": "郑庄南工区",
+      "OrgMemo": "",
+      "OrgParentId": 23,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1603,
+      "OrgCode": "",
+      "OrgName_zh_CN": "候甲工区",
+      "OrgName_en": "候甲工区",
+      "OrgName_ru": "候甲工区",
+      "OrgMemo": "",
+      "OrgParentId": 23,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 24,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华北煤层气",
+      "OrgName_en": "华北煤层气",
+      "OrgName_ru": "华北煤层气",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": "5"
+    },
+    {
+      "OrgId": 203,
+      "OrgCode": "",
+      "OrgName_zh_CN": "美中能源",
+      "OrgName_en": "美中能源",
+      "OrgName_ru": "美中能源",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 922,
+      "OrgCode": "",
+      "OrgName_zh_CN": "兰花煤层气",
+      "OrgName_en": "兰花煤层气",
+      "OrgName_ru": "兰花煤层气",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1264,
+      "OrgCode": "",
+      "OrgName_zh_CN": "淮南矿业",
+      "OrgName_en": "淮南矿业",
+      "OrgName_ru": "淮南矿业",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1265,
+      "OrgCode": "",
+      "OrgName_zh_CN": "韩城煤层气",
+      "OrgName_en": "韩城煤层气",
+      "OrgName_ru": "韩城煤层气",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1266,
+      "OrgCode": "",
+      "OrgName_zh_CN": "富地柳林",
+      "OrgName_en": "富地柳林",
+      "OrgName_ru": "富地柳林",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1443,
+      "OrgCode": "",
+      "OrgName_zh_CN": "新疆亚新",
+      "OrgName_en": "新疆亚新",
+      "OrgName_ru": "新疆亚新",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1663,
+      "OrgCode": "",
+      "OrgName_zh_CN": "新疆中联国盛公司",
+      "OrgName_en": "新疆中联国盛公司",
+      "OrgName_ru": "新疆中联国盛公司",
+      "OrgMemo": "",
+      "OrgParentId": 1323,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1322,
+      "OrgCode": "",
+      "OrgName_zh_CN": "油田隔膜泵",
+      "OrgName_en": "油田隔膜泵",
+      "OrgName_ru": "油田隔膜泵",
+      "OrgMemo": "",
+      "OrgParentId": 28,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 5,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆油田公司",
+      "OrgName_en": "长庆油田公司",
+      "OrgName_ru": "长庆油田公司",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": "6"
+    },
+    {
+      "OrgId": 12,
+      "OrgCode": "",
+      "OrgName_zh_CN": "十厂",
+      "OrgName_en": "十厂",
+      "OrgName_ru": "十厂",
+      "OrgMemo": "",
+      "OrgParentId": 5,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 13,
+      "OrgCode": "",
+      "OrgName_zh_CN": "三厂",
+      "OrgName_en": "三厂",
+      "OrgName_ru": "三厂",
+      "OrgMemo": "",
+      "OrgParentId": 5,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 3,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大庆油田",
+      "OrgName_en": "大庆油田",
+      "OrgName_ru": "大庆油田",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": "7"
+    },
+    {
+      "OrgId": 1623,
+      "OrgCode": "",
+      "OrgName_zh_CN": "八厂",
+      "OrgName_en": "八厂",
+      "OrgName_ru": "八厂",
+      "OrgMemo": "",
+      "OrgParentId": 3,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 25,
+      "OrgCode": "",
+      "OrgName_zh_CN": "吉林油田",
+      "OrgName_en": "吉林油田",
+      "OrgName_ru": "吉林油田",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": "8"
+    },
+    {
+      "OrgId": 1302,
+      "OrgCode": "",
+      "OrgName_zh_CN": "铜川油气开发有限公司",
+      "OrgName_en": "铜川油气开发有限公司",
+      "OrgName_ru": "铜川油气开发有限公司",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1303,
+      "OrgCode": "",
+      "OrgName_zh_CN": "渭北油田",
+      "OrgName_en": "渭北油田",
+      "OrgName_ru": "渭北油田",
+      "OrgMemo": "",
+      "OrgParentId": 1302,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1304,
+      "OrgCode": "",
+      "OrgName_zh_CN": "玉门油田",
+      "OrgName_en": "玉门油田",
+      "OrgName_ru": "玉门油田",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1305,
+      "OrgCode": "",
+      "OrgName_zh_CN": "老君庙作业区L层西区",
+      "OrgName_en": "老君庙作业区L层西区",
+      "OrgName_ru": "老君庙作业区L层西区",
+      "OrgMemo": "",
+      "OrgParentId": 1304,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1563,
+      "OrgCode": "",
+      "OrgName_zh_CN": "延长油田",
+      "OrgName_en": "延长油田",
+      "OrgName_ru": "延长油田",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1583,
+      "OrgCode": "",
+      "OrgName_zh_CN": "哈萨克斯坦北部扎奇油田",
+      "OrgName_en": "哈萨克斯坦北部扎奇油田",
+      "OrgName_ru": "哈萨克斯坦北部扎奇油田",
+      "OrgMemo": "",
+      "OrgParentId": 1322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 29,
+      "OrgCode": "",
+      "OrgName_zh_CN": "管设备",
+      "OrgName_en": "管设备",
+      "OrgName_ru": "管设备",
+      "OrgMemo": "",
+      "OrgParentId": 222,
+      "OrgSeq": "10"
+    },
+    {
+      "OrgId": 282,
+      "OrgCode": "",
+      "OrgName_zh_CN": "现场参数更新",
+      "OrgName_en": "现场参数更新",
+      "OrgName_ru": "现场参数更新",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 162,
+      "OrgCode": "",
+      "OrgName_zh_CN": "【供应商】东昊",
+      "OrgName_en": "【供应商】东昊",
+      "OrgName_ru": "【供应商】东昊",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": "50"
+    },
+    {
+      "OrgId": 662,
+      "OrgCode": "",
+      "OrgName_zh_CN": "测试柜",
+      "OrgName_en": "测试柜",
+      "OrgName_ru": "测试柜",
+      "OrgMemo": "",
+      "OrgParentId": 162,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1242,
+      "OrgCode": "",
+      "OrgName_zh_CN": "产品柜",
+      "OrgName_en": "产品柜",
+      "OrgName_ru": "产品柜",
+      "OrgMemo": "",
+      "OrgParentId": 162,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 182,
+      "OrgCode": "",
+      "OrgName_zh_CN": "【供应商】杉建",
+      "OrgName_en": "【供应商】杉建",
+      "OrgName_ru": "【供应商】杉建",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": "51"
+    },
+    {
+      "OrgId": 302,
+      "OrgCode": "",
+      "OrgName_zh_CN": "【供应商】多欧",
+      "OrgName_en": "【供应商】多欧",
+      "OrgName_ru": "【供应商】多欧",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": "52"
+    },
+    {
+      "OrgId": 1402,
+      "OrgCode": "",
+      "OrgName_zh_CN": "【供应商】生产自制",
+      "OrgName_en": "【供应商】生产自制",
+      "OrgName_ru": "【供应商】生产自制",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": "53"
+    },
+    {
+      "OrgId": 67,
+      "OrgCode": "",
+      "OrgName_zh_CN": "集输加热管",
+      "OrgName_en": "集输加热管",
+      "OrgName_ru": "集输加热管",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 68,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华北五厂",
+      "OrgName_en": "华北五厂",
+      "OrgName_ru": "华北五厂",
+      "OrgMemo": "",
+      "OrgParentId": 67,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 69,
+      "OrgCode": "",
+      "OrgName_zh_CN": "束21",
+      "OrgName_en": "束21",
+      "OrgName_ru": "束21",
+      "OrgMemo": "",
+      "OrgParentId": 68,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 72,
+      "OrgCode": "",
+      "OrgName_zh_CN": "晋古",
+      "OrgName_en": "晋古",
+      "OrgName_ru": "晋古",
+      "OrgMemo": "",
+      "OrgParentId": 68,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 76,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华北一厂",
+      "OrgName_en": "华北一厂",
+      "OrgName_ru": "华北一厂",
+      "OrgMemo": "",
+      "OrgParentId": 67,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 77,
+      "OrgCode": "",
+      "OrgName_zh_CN": "同口",
+      "OrgName_en": "同口",
+      "OrgName_ru": "同口",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 84,
+      "OrgCode": "",
+      "OrgName_zh_CN": "高阳",
+      "OrgName_en": "高阳",
+      "OrgName_ru": "高阳",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 88,
+      "OrgCode": "",
+      "OrgName_zh_CN": "鄚北",
+      "OrgName_en": "鄚北",
+      "OrgName_ru": "鄚北",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 90,
+      "OrgCode": "",
+      "OrgName_zh_CN": "雁翔",
+      "OrgName_en": "雁翔",
+      "OrgName_ru": "雁翔",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 92,
+      "OrgCode": "",
+      "OrgName_zh_CN": "南马",
+      "OrgName_en": "南马",
+      "OrgName_ru": "南马",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 97,
+      "OrgCode": "",
+      "OrgName_zh_CN": "任北",
+      "OrgName_en": "任北",
+      "OrgName_ru": "任北",
+      "OrgMemo": "",
+      "OrgParentId": 76,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 482,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大庆",
+      "OrgName_en": "大庆",
+      "OrgName_ru": "大庆",
+      "OrgMemo": "",
+      "OrgParentId": 67,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 483,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华油",
+      "OrgName_en": "华油",
+      "OrgName_ru": "华油",
+      "OrgMemo": "",
+      "OrgParentId": 482,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1503,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大庆恒久利通石油科技有限公司",
+      "OrgName_en": "大庆恒久利通石油科技有限公司",
+      "OrgName_ru": "大庆恒久利通石油科技有限公司",
+      "OrgMemo": "",
+      "OrgParentId": 482,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 624,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大港油田",
+      "OrgName_en": "大港油田",
+      "OrgName_ru": "大港油田",
+      "OrgMemo": "",
+      "OrgParentId": 67,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 625,
+      "OrgCode": "",
+      "OrgName_zh_CN": "三厂",
+      "OrgName_en": "三厂",
+      "OrgName_ru": "三厂",
+      "OrgMemo": "",
+      "OrgParentId": 624,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 204,
+      "OrgCode": "",
+      "OrgName_zh_CN": "智能加热管",
+      "OrgName_en": "智能加热管",
+      "OrgName_ru": "智能加热管",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 205,
+      "OrgCode": "",
+      "OrgName_zh_CN": "三厂",
+      "OrgName_en": "三厂",
+      "OrgName_ru": "三厂",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 564,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五里湾",
+      "OrgName_en": "五里湾",
+      "OrgName_ru": "五里湾",
+      "OrgMemo": "",
+      "OrgParentId": 205,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 206,
+      "OrgCode": "",
+      "OrgName_zh_CN": "延长",
+      "OrgName_en": "延长",
+      "OrgName_ru": "延长",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 207,
+      "OrgCode": "",
+      "OrgName_zh_CN": "南泥湾",
+      "OrgName_en": "南泥湾",
+      "OrgName_ru": "南泥湾",
+      "OrgMemo": "",
+      "OrgParentId": 206,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 322,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五厂",
+      "OrgName_en": "五厂",
+      "OrgName_ru": "五厂",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 323,
+      "OrgCode": "",
+      "OrgName_zh_CN": "冯地坑采油作业区",
+      "OrgName_en": "冯地坑采油作业区",
+      "OrgName_ru": "冯地坑采油作业区",
+      "OrgMemo": "",
+      "OrgParentId": 322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 324,
+      "OrgCode": "",
+      "OrgName_zh_CN": "堡子弯",
+      "OrgName_en": "堡子弯",
+      "OrgName_ru": "堡子弯",
+      "OrgMemo": "",
+      "OrgParentId": 322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 325,
+      "OrgCode": "",
+      "OrgName_zh_CN": "麻北",
+      "OrgName_en": "麻北",
+      "OrgName_ru": "麻北",
+      "OrgMemo": "",
+      "OrgParentId": 322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 326,
+      "OrgCode": "",
+      "OrgName_zh_CN": "马西",
+      "OrgName_en": "马西",
+      "OrgName_ru": "马西",
+      "OrgMemo": "",
+      "OrgParentId": 322,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 327,
+      "OrgCode": "",
+      "OrgName_zh_CN": "十厂",
+      "OrgName_en": "十厂",
+      "OrgName_ru": "十厂",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 328,
+      "OrgCode": "",
+      "OrgName_zh_CN": "乔河",
+      "OrgName_en": "乔河",
+      "OrgName_ru": "乔河",
+      "OrgMemo": "",
+      "OrgParentId": 327,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 382,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大庆六厂  ",
+      "OrgName_en": "大庆六厂  ",
+      "OrgName_ru": "大庆六厂  ",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1202,
+      "OrgCode": "",
+      "OrgName_zh_CN": "一区",
+      "OrgName_en": "一区",
+      "OrgName_ru": "一区",
+      "OrgMemo": "",
+      "OrgParentId": 382,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 1342,
+      "OrgCode": "",
+      "OrgName_zh_CN": "二区",
+      "OrgName_en": "二区",
+      "OrgName_ru": "二区",
+      "OrgMemo": "",
+      "OrgParentId": 382,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 383,
+      "OrgCode": "",
+      "OrgName_zh_CN": "四区",
+      "OrgName_en": "四区",
+      "OrgName_ru": "四区",
+      "OrgMemo": "",
+      "OrgParentId": 382,
+      "OrgSeq": "4"
+    },
+    {
+      "OrgId": 1423,
+      "OrgCode": "",
+      "OrgName_zh_CN": "六区",
+      "OrgName_en": "六区",
+      "OrgName_ru": "六区",
+      "OrgMemo": "",
+      "OrgParentId": 382,
+      "OrgSeq": "6"
+    },
+    {
+      "OrgId": 522,
+      "OrgCode": "",
+      "OrgName_zh_CN": "海南",
+      "OrgName_en": "海南",
+      "OrgName_ru": "海南",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 523,
+      "OrgCode": "",
+      "OrgName_zh_CN": "海南项目",
+      "OrgName_en": "海南项目",
+      "OrgName_ru": "海南项目",
+      "OrgMemo": "",
+      "OrgParentId": 522,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 562,
+      "OrgCode": "",
+      "OrgName_zh_CN": "加热电缆项目",
+      "OrgName_en": "加热电缆项目",
+      "OrgName_ru": "加热电缆项目",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 563,
+      "OrgCode": "",
+      "OrgName_zh_CN": "加热电缆",
+      "OrgName_en": "加热电缆",
+      "OrgName_ru": "加热电缆",
+      "OrgMemo": "",
+      "OrgParentId": 562,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 582,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大庆八厂",
+      "OrgName_en": "大庆八厂",
+      "OrgName_ru": "大庆八厂",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 963,
+      "OrgCode": "",
+      "OrgName_zh_CN": "三平台",
+      "OrgName_en": "三平台",
+      "OrgName_ru": "三平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": "3"
+    },
+    {
+      "OrgId": 764,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五平台",
+      "OrgName_en": "五平台",
+      "OrgName_ru": "五平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": "5"
+    },
+    {
+      "OrgId": 765,
+      "OrgCode": "",
+      "OrgName_zh_CN": "六平台",
+      "OrgName_en": "六平台",
+      "OrgName_ru": "六平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": "6"
+    },
+    {
+      "OrgId": 942,
+      "OrgCode": "",
+      "OrgName_zh_CN": "十二平台",
+      "OrgName_en": "十二平台",
+      "OrgName_ru": "十二平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": "12"
+    },
+    {
+      "OrgId": 962,
+      "OrgCode": "",
+      "OrgName_zh_CN": "十五平台",
+      "OrgName_en": "十五平台",
+      "OrgName_ru": "十五平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1142,
+      "OrgCode": "",
+      "OrgName_zh_CN": "十六平台",
+      "OrgName_en": "十六平台",
+      "OrgName_ru": "十六平台",
+      "OrgMemo": "",
+      "OrgParentId": 582,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 622,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆",
+      "OrgName_en": "长庆",
+      "OrgName_ru": "长庆",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 623,
+      "OrgCode": "",
+      "OrgName_zh_CN": "页岩油",
+      "OrgName_en": "页岩油",
+      "OrgName_ru": "页岩油",
+      "OrgMemo": "",
+      "OrgParentId": 622,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 682,
+      "OrgCode": "",
+      "OrgName_zh_CN": "胜利油田",
+      "OrgName_en": "胜利油田",
+      "OrgName_ru": "胜利油田",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 683,
+      "OrgCode": "",
+      "OrgName_zh_CN": "东辛",
+      "OrgName_en": "东辛",
+      "OrgName_ru": "东辛",
+      "OrgMemo": "",
+      "OrgParentId": 682,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1022,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆四厂",
+      "OrgName_en": "长庆四厂",
+      "OrgName_ru": "长庆四厂",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1023,
+      "OrgCode": "",
+      "OrgName_zh_CN": "化子平",
+      "OrgName_en": "化子平",
+      "OrgName_ru": "化子平",
+      "OrgMemo": "",
+      "OrgParentId": 1022,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1543,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华北",
+      "OrgName_en": "华北",
+      "OrgName_ru": "华北",
+      "OrgMemo": "",
+      "OrgParentId": 204,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1544,
+      "OrgCode": "",
+      "OrgName_zh_CN": "四厂",
+      "OrgName_en": "四厂",
+      "OrgName_ru": "四厂",
+      "OrgMemo": "",
+      "OrgParentId": 1543,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 208,
+      "OrgCode": "",
+      "OrgName_zh_CN": "地埋加热管",
+      "OrgName_en": "地埋加热管",
+      "OrgName_ru": "地埋加热管",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 462,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆十厂",
+      "OrgName_en": "长庆十厂",
+      "OrgName_ru": "长庆十厂",
+      "OrgMemo": "",
+      "OrgParentId": 208,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 463,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五蛟",
+      "OrgName_en": "五蛟",
+      "OrgName_ru": "五蛟",
+      "OrgMemo": "",
+      "OrgParentId": 462,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1162,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华庆",
+      "OrgName_en": "华庆",
+      "OrgName_ru": "华庆",
+      "OrgMemo": "",
+      "OrgParentId": 462,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1182,
+      "OrgCode": "",
+      "OrgName_zh_CN": "柔远",
+      "OrgName_en": "柔远",
+      "OrgName_ru": "柔远",
+      "OrgMemo": "",
+      "OrgParentId": 462,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1324,
+      "OrgCode": "",
+      "OrgName_zh_CN": "元城",
+      "OrgName_en": "元城",
+      "OrgName_ru": "元城",
+      "OrgMemo": "",
+      "OrgParentId": 462,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1362,
+      "OrgCode": "",
+      "OrgName_zh_CN": "乔河",
+      "OrgName_en": "乔河",
+      "OrgName_ru": "乔河",
+      "OrgMemo": "",
+      "OrgParentId": 462,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 507,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆十一厂",
+      "OrgName_en": "长庆十一厂",
+      "OrgName_ru": "长庆十一厂",
+      "OrgMemo": "",
+      "OrgParentId": 208,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 508,
+      "OrgCode": "",
+      "OrgName_zh_CN": "方山",
+      "OrgName_en": "方山",
+      "OrgName_ru": "方山",
+      "OrgMemo": "",
+      "OrgParentId": 507,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 982,
+      "OrgCode": "",
+      "OrgName_zh_CN": "铜川",
+      "OrgName_en": "铜川",
+      "OrgName_ru": "铜川",
+      "OrgMemo": "",
+      "OrgParentId": 507,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1523,
+      "OrgCode": "",
+      "OrgName_zh_CN": "其他",
+      "OrgName_en": "其他",
+      "OrgName_ru": "其他",
+      "OrgMemo": "",
+      "OrgParentId": 507,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 242,
+      "OrgCode": "",
+      "OrgName_zh_CN": "水源井",
+      "OrgName_en": "水源井",
+      "OrgName_ru": "水源井",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 243,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆一厂",
+      "OrgName_en": "长庆一厂",
+      "OrgName_ru": "长庆一厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 251,
+      "OrgCode": "",
+      "OrgName_zh_CN": "王南",
+      "OrgName_en": "王南",
+      "OrgName_ru": "王南",
+      "OrgMemo": "",
+      "OrgParentId": 243,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 442,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长东",
+      "OrgName_en": "长东",
+      "OrgName_ru": "长东",
+      "OrgMemo": "",
+      "OrgParentId": 243,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 244,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆二厂",
+      "OrgName_en": "长庆二厂",
+      "OrgName_ru": "长庆二厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 252,
+      "OrgCode": "",
+      "OrgName_zh_CN": "华池",
+      "OrgName_en": "华池",
+      "OrgName_ru": "华池",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 253,
+      "OrgCode": "",
+      "OrgName_zh_CN": "西峰",
+      "OrgName_en": "西峰",
+      "OrgName_ru": "西峰",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 261,
+      "OrgCode": "",
+      "OrgName_zh_CN": "城壕",
+      "OrgName_en": "城壕",
+      "OrgName_ru": "城壕",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 269,
+      "OrgCode": "",
+      "OrgName_zh_CN": "南岭",
+      "OrgName_en": "南岭",
+      "OrgName_ru": "南岭",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 447,
+      "OrgCode": "",
+      "OrgName_zh_CN": "南梁",
+      "OrgName_en": "南梁",
+      "OrgName_ru": "南梁",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 503,
+      "OrgCode": "",
+      "OrgName_zh_CN": "岭北",
+      "OrgName_en": "岭北",
+      "OrgName_ru": "岭北",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 722,
+      "OrgCode": "",
+      "OrgName_zh_CN": "马岭南",
+      "OrgName_en": "马岭南",
+      "OrgName_ru": "马岭南",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1382,
+      "OrgCode": "",
+      "OrgName_zh_CN": "樊家川",
+      "OrgName_en": "樊家川",
+      "OrgName_ru": "樊家川",
+      "OrgMemo": "",
+      "OrgParentId": 244,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 449,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆三厂",
+      "OrgName_en": "长庆三厂",
+      "OrgName_ru": "长庆三厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "3"
+    },
+    {
+      "OrgId": 450,
+      "OrgCode": "",
+      "OrgName_zh_CN": "红井子",
+      "OrgName_en": "红井子",
+      "OrgName_ru": "红井子",
+      "OrgMemo": "",
+      "OrgParentId": 449,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1062,
+      "OrgCode": "",
+      "OrgName_zh_CN": "大水坑",
+      "OrgName_en": "大水坑",
+      "OrgName_ru": "大水坑",
+      "OrgMemo": "",
+      "OrgParentId": 449,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 245,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆四厂",
+      "OrgName_en": "长庆四厂",
+      "OrgName_ru": "长庆四厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "4"
+    },
+    {
+      "OrgId": 254,
+      "OrgCode": "",
+      "OrgName_zh_CN": "艾家湾",
+      "OrgName_en": "艾家湾",
+      "OrgName_ru": "艾家湾",
+      "OrgMemo": "",
+      "OrgParentId": 245,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 246,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆五厂",
+      "OrgName_en": "长庆五厂",
+      "OrgName_ru": "长庆五厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "5"
+    },
+    {
+      "OrgId": 255,
+      "OrgCode": "",
+      "OrgName_zh_CN": "麻南",
+      "OrgName_en": "麻南",
+      "OrgName_ru": "麻南",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 263,
+      "OrgCode": "",
+      "OrgName_zh_CN": "冯地坑",
+      "OrgName_en": "冯地坑",
+      "OrgName_ru": "冯地坑",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 264,
+      "OrgCode": "",
+      "OrgName_zh_CN": "马家山东",
+      "OrgName_en": "马家山东",
+      "OrgName_ru": "马家山东",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 265,
+      "OrgCode": "",
+      "OrgName_zh_CN": "麻黄山北",
+      "OrgName_en": "麻黄山北",
+      "OrgName_ru": "麻黄山北",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 266,
+      "OrgCode": "",
+      "OrgName_zh_CN": "麻黄山西",
+      "OrgName_en": "麻黄山西",
+      "OrgName_ru": "麻黄山西",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 267,
+      "OrgCode": "",
+      "OrgName_zh_CN": "营盘山",
+      "OrgName_en": "营盘山",
+      "OrgName_ru": "营盘山",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 702,
+      "OrgCode": "",
+      "OrgName_zh_CN": "堡子湾",
+      "OrgName_en": "堡子湾",
+      "OrgName_ru": "堡子湾",
+      "OrgMemo": "",
+      "OrgParentId": 246,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 402,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆六厂",
+      "OrgName_en": "长庆六厂",
+      "OrgName_ru": "长庆六厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "6"
+    },
+    {
+      "OrgId": 403,
+      "OrgCode": "",
+      "OrgName_zh_CN": "砖井作业区",
+      "OrgName_en": "砖井作业区",
+      "OrgName_ru": "砖井作业区",
+      "OrgMemo": "",
+      "OrgParentId": 402,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 451,
+      "OrgCode": "",
+      "OrgName_zh_CN": "安五",
+      "OrgName_en": "安五",
+      "OrgName_ru": "安五",
+      "OrgMemo": "",
+      "OrgParentId": 402,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 822,
+      "OrgCode": "",
+      "OrgName_zh_CN": "兴庄作业区",
+      "OrgName_en": "兴庄作业区",
+      "OrgName_ru": "兴庄作业区",
+      "OrgMemo": "",
+      "OrgParentId": 402,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 883,
+      "OrgCode": "",
+      "OrgName_zh_CN": "未知井场",
+      "OrgName_en": "未知井场",
+      "OrgName_ru": "未知井场",
+      "OrgMemo": "",
+      "OrgParentId": 402,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1282,
+      "OrgCode": "",
+      "OrgName_zh_CN": "安边 ",
+      "OrgName_en": "安边 ",
+      "OrgName_ru": "安边 ",
+      "OrgMemo": "",
+      "OrgParentId": 402,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 782,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆七厂",
+      "OrgName_en": "长庆七厂",
+      "OrgName_ru": "长庆七厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "7"
+    },
+    {
+      "OrgId": 783,
+      "OrgCode": "",
+      "OrgName_zh_CN": "洪德",
+      "OrgName_en": "洪德",
+      "OrgName_ru": "洪德",
+      "OrgMemo": "",
+      "OrgParentId": 782,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 882,
+      "OrgCode": "",
+      "OrgName_zh_CN": "未知井场",
+      "OrgName_en": "未知井场",
+      "OrgName_ru": "未知井场",
+      "OrgMemo": "",
+      "OrgParentId": 782,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1422,
+      "OrgCode": "",
+      "OrgName_zh_CN": "环江",
+      "OrgName_en": "环江",
+      "OrgName_ru": "环江",
+      "OrgMemo": "",
+      "OrgParentId": 782,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 247,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆九厂",
+      "OrgName_en": "长庆九厂",
+      "OrgName_ru": "长庆九厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "9"
+    },
+    {
+      "OrgId": 256,
+      "OrgCode": "",
+      "OrgName_zh_CN": "刘茆源",
+      "OrgName_en": "刘茆源",
+      "OrgName_ru": "刘茆源",
+      "OrgMemo": "",
+      "OrgParentId": 247,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 262,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五谷城",
+      "OrgName_en": "五谷城",
+      "OrgName_ru": "五谷城",
+      "OrgMemo": "",
+      "OrgParentId": 247,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 823,
+      "OrgCode": "",
+      "OrgName_zh_CN": "薛岔",
+      "OrgName_en": "薛岔",
+      "OrgName_ru": "薛岔",
+      "OrgMemo": "",
+      "OrgParentId": 247,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 862,
+      "OrgCode": "",
+      "OrgName_zh_CN": "杨青",
+      "OrgName_en": "杨青",
+      "OrgName_ru": "杨青",
+      "OrgMemo": "",
+      "OrgParentId": 247,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 248,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆十厂",
+      "OrgName_en": "长庆十厂",
+      "OrgName_ru": "长庆十厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "10"
+    },
+    {
+      "OrgId": 257,
+      "OrgCode": "",
+      "OrgName_zh_CN": "柔远",
+      "OrgName_en": "柔远",
+      "OrgName_ru": "柔远",
+      "OrgMemo": "",
+      "OrgParentId": 248,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 268,
+      "OrgCode": "",
+      "OrgName_zh_CN": "五蛟",
+      "OrgName_en": "五蛟",
+      "OrgName_ru": "五蛟",
+      "OrgMemo": "",
+      "OrgParentId": 248,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 505,
+      "OrgCode": "",
+      "OrgName_zh_CN": "乔川",
+      "OrgName_en": "乔川",
+      "OrgName_ru": "乔川",
+      "OrgMemo": "",
+      "OrgParentId": 248,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1002,
+      "OrgCode": "",
+      "OrgName_zh_CN": "元城",
+      "OrgName_en": "元城",
+      "OrgName_ru": "元城",
+      "OrgMemo": "",
+      "OrgParentId": 248,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 249,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆十一厂",
+      "OrgName_en": "长庆十一厂",
+      "OrgName_ru": "长庆十一厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "11"
+    },
+    {
+      "OrgId": 259,
+      "OrgCode": "",
+      "OrgName_zh_CN": "方山",
+      "OrgName_en": "方山",
+      "OrgName_ru": "方山",
+      "OrgMemo": "",
+      "OrgParentId": 249,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 260,
+      "OrgCode": "",
+      "OrgName_zh_CN": "太白梁",
+      "OrgName_en": "太白梁",
+      "OrgName_ru": "太白梁",
+      "OrgMemo": "",
+      "OrgParentId": 249,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 446,
+      "OrgCode": "",
+      "OrgName_zh_CN": "桐川",
+      "OrgName_en": "桐川",
+      "OrgName_ru": "桐川",
+      "OrgMemo": "",
+      "OrgParentId": 249,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 448,
+      "OrgCode": "",
+      "OrgName_zh_CN": "彭阳",
+      "OrgName_en": "彭阳",
+      "OrgName_ru": "彭阳",
+      "OrgMemo": "",
+      "OrgParentId": 249,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 1222,
+      "OrgCode": "",
+      "OrgName_zh_CN": "新集",
+      "OrgName_en": "新集",
+      "OrgName_ru": "新集",
+      "OrgMemo": "",
+      "OrgParentId": 249,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 250,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆十二厂",
+      "OrgName_en": "长庆十二厂",
+      "OrgName_ru": "长庆十二厂",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "12"
+    },
+    {
+      "OrgId": 258,
+      "OrgCode": "",
+      "OrgName_zh_CN": "固城",
+      "OrgName_en": "固城",
+      "OrgName_ru": "固城",
+      "OrgMemo": "",
+      "OrgParentId": 250,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 504,
+      "OrgCode": "",
+      "OrgName_zh_CN": "吉岘",
+      "OrgName_en": "吉岘",
+      "OrgName_ru": "吉岘",
+      "OrgMemo": "",
+      "OrgParentId": 250,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 642,
+      "OrgCode": "",
+      "OrgName_zh_CN": "板桥",
+      "OrgName_en": "板桥",
+      "OrgName_ru": "板桥",
+      "OrgMemo": "",
+      "OrgParentId": 250,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 443,
+      "OrgCode": "",
+      "OrgName_zh_CN": "长庆页岩油",
+      "OrgName_en": "长庆页岩油",
+      "OrgName_ru": "长庆页岩油",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "20"
+    },
+    {
+      "OrgId": 444,
+      "OrgCode": "",
+      "OrgName_zh_CN": "西十转",
+      "OrgName_en": "西十转",
+      "OrgName_ru": "西十转",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 445,
+      "OrgCode": "",
+      "OrgName_zh_CN": "岭二转",
+      "OrgName_en": "岭二转",
+      "OrgName_ru": "岭二转",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 602,
+      "OrgCode": "",
+      "OrgName_zh_CN": "庆城联合站",
+      "OrgName_en": "庆城联合站",
+      "OrgName_ru": "庆城联合站",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 742,
+      "OrgCode": "",
+      "OrgName_zh_CN": "未知井场",
+      "OrgName_en": "未知井场",
+      "OrgName_ru": "未知井场",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 842,
+      "OrgCode": "",
+      "OrgName_zh_CN": "岭三",
+      "OrgName_en": "岭三",
+      "OrgName_ru": "岭三",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 902,
+      "OrgCode": "",
+      "OrgName_zh_CN": "岭13联",
+      "OrgName_en": "岭13联",
+      "OrgName_ru": "岭13联",
+      "OrgMemo": "",
+      "OrgParentId": 443,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 422,
+      "OrgCode": "",
+      "OrgName_zh_CN": "苏中天然气",
+      "OrgName_en": "苏中天然气",
+      "OrgName_ru": "苏中天然气",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "21"
+    },
+    {
+      "OrgId": 506,
+      "OrgCode": "",
+      "OrgName_zh_CN": "苏格里气田",
+      "OrgName_en": "苏格里气田",
+      "OrgName_ru": "苏格里气田",
+      "OrgMemo": "",
+      "OrgParentId": 242,
+      "OrgSeq": "22"
+    },
+    {
+      "OrgId": 802,
+      "OrgCode": "",
+      "OrgName_zh_CN": "技术服务部",
+      "OrgName_en": "技术服务部",
+      "OrgName_ru": "技术服务部",
+      "OrgMemo": "",
+      "OrgParentId": 29,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 803,
+      "OrgCode": "",
+      "OrgName_zh_CN": "KD93备用模块",
+      "OrgName_en": "KD93备用模块",
+      "OrgName_ru": "KD93备用模块",
+      "OrgMemo": "",
+      "OrgParentId": 802,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 27,
+      "OrgCode": "",
+      "OrgName_zh_CN": "厂内测试",
+      "OrgName_en": "厂内测试",
+      "OrgName_ru": "厂内测试",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "2"
+    },
+    {
+      "OrgId": 4,
+      "OrgCode": "",
+      "OrgName_zh_CN": "太仓工厂",
+      "OrgName_en": "太仓工厂",
+      "OrgName_ru": "太仓工厂",
+      "OrgMemo": "",
+      "OrgParentId": 27,
+      "OrgSeq": "1"
+    },
+    {
+      "OrgId": 9,
+      "OrgCode": "",
+      "OrgName_zh_CN": "出厂测试",
+      "OrgName_en": "出厂测试",
+      "OrgName_ru": "出厂测试",
+      "OrgMemo": "",
+      "OrgParentId": 4,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 10,
+      "OrgCode": "",
+      "OrgName_zh_CN": "疲劳测试",
+      "OrgName_en": "疲劳测试",
+      "OrgName_ru": "疲劳测试",
+      "OrgMemo": "",
+      "OrgParentId": 4,
+      "OrgSeq": ""
+    },
+    {
+      "OrgId": 42,
+      "OrgCode": "",
+      "OrgName_zh_CN": "待出厂",
+      "OrgName_en": "待出厂",
+      "OrgName_ru": "待出厂",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "3"
+    },
+    {
+      "OrgId": 1643,
+      "OrgCode": "",
+      "OrgName_zh_CN": "First plant",
+      "OrgName_en": "First plant",
+      "OrgName_ru": "First plant",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "4"
+    },
+    {
+      "OrgId": 1644,
+      "OrgCode": "",
+      "OrgName_zh_CN": "Первый завод",
+      "OrgName_en": "Первый завод",
+      "OrgName_ru": "Первый завод",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "5"
+    },
+    {
+      "OrgId": 202,
+      "OrgCode": "",
+      "OrgName_zh_CN": "回收站",
+      "OrgName_en": "回收站",
+      "OrgName_ru": "回收站",
+      "OrgMemo": "",
+      "OrgParentId": 1,
+      "OrgSeq": "6"
+    }
+  ]
+}

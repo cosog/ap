@@ -254,7 +254,9 @@ public class LogQueryService<T> extends BaseService<T>  {
 	public boolean exportSystemLogData(HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,String operationType,Page pager,User user,String selectUserId) throws IOException, SQLException{
 		try{
+			String language=user!=null?user.getLanguageName():"";
 			StringBuffer result_json = new StringBuffer();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
@@ -319,7 +321,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){
 		    	try {
-					saveSystemLog(user,4,"export file:"+title);
+					saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

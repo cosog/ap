@@ -517,8 +517,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     	var alarmType=getAlarmTypeFromTabActive();
                     	var alarmTypeName=getAlarmTypeNameFromTabActive();
                    	 	
-                   	 	var fileName=deviceTypeName+alarmTypeName+loginUserLanguageResource.deviceList;
-                   	 	var title=deviceTypeName+alarmTypeName+loginUserLanguageResource.deviceList;
+                   	 	var fileName=alarmTypeName+loginUserLanguageResource.deviceList;
+                   	 	
+                   	 	if(deviceType.indexOf(",")<0){
+                   	 		fileName=deviceTypeName+fileName;
+                   	 	}
+                   	 	
+                   	 	var title=fileName;
                    	 	var columnStr=Ext.getCmp("AlarmOverviewColumnStr_Id").getValue();
                    	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }
@@ -589,8 +594,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                         var alarmType=getAlarmTypeFromTabActive();
                     	var alarmTypeName=getAlarmTypeNameFromTabActive();
                    	 	
-                   	 	var fileName=deviceTypeName+deviceName+alarmTypeName+'数据';
-                   	 	var title=deviceTypeName+deviceName+alarmTypeName+'数据';
+                   	 	var fileName=deviceName+alarmTypeName;
+                   	 	var title=fileName;
                    	 	var columnStr=Ext.getCmp("AlarmDetailsColumnStr_Id").getValue();
                    	 	exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }

@@ -592,6 +592,16 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          iconCls: 'export',
                          id:'PCPCalculateMaintainingExportDataBtn',
                          handler: function (v, o) {
+                        	 var checkedStatus=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
+                        	 var checkedList=[];
+                        	 if(checkedStatus.length>0){
+                        		 for(var i=0;i<checkedStatus.length;i++){
+                        			 if(checkedStatus[i]){
+                        				 checkedList.push(i);
+                        			 }
+                        		 }
+                        	 }
+                        	 
                         	 if(checkedList.length>0){
                          		for(var i=0;i<checkedList.length;i++){
                          			var row=checkedList[i];

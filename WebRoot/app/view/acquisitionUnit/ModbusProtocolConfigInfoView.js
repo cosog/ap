@@ -387,7 +387,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        	protocolItemsConfigHandsontableHelper.titleDataMap.clear();
                 data.forEach((row, index) => {
                     const value = row.title;
-                    if (!value) return;
+                    if (row.title==undefined || !value) return;
                     
                     if (!protocolItemsConfigHandsontableHelper.titleDataMap.has(value)) {
                         protocolItemsConfigHandsontableHelper.titleDataMap.set(value, [index]);
@@ -423,7 +423,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        	protocolItemsConfigHandsontableHelper.addressDataMap.clear();
                 data.forEach((row, index) => {
                     const value = row.addr+"";
-                    if (!value) return;
+                    if (row.addr==undefined || !value) return;
                     
                     if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(value)) {
                         protocolItemsConfigHandsontableHelper.addressDataMap.set(value, [index]);
@@ -621,26 +621,6 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                            if (oldValue !== newValue) {
 	                            	needUpdateMap = true;
 	                            }
-	                            
-	                            
-	                            // 重绘受影响的行（仅当值改变时）
-//	                            if (oldValue !== newValue) {
-//	                                protocolItemsConfigHandsontableHelper.hot.renderCell(row, 1);
-//
-//	                                // 如果新值重复，重绘所有重复行
-//	                                if (newValue && protocolItemsConfigHandsontableHelper.titleDataMap.has(newValue) && protocolItemsConfigHandsontableHelper.titleDataMap.get(newValue).length > 1) {
-//	                                    protocolItemsConfigHandsontableHelper.titleDataMap.get(newValue).forEach(r => {
-//	                                        if (r !== row) protocolItemsConfigHandsontableHelper.hot.renderCell(r, 1);
-//	                                    });
-//	                                }
-//
-//	                                // 如果旧值重复，重绘所有重复行
-//	                                if (oldValue && protocolItemsConfigHandsontableHelper.titleDataMap.has(oldValue) && protocolItemsConfigHandsontableHelper.titleDataMap.get(oldValue).length > 0) {
-//	                                    protocolItemsConfigHandsontableHelper.titleDataMap.get(oldValue).forEach(r => {
-//	                                        if (r !== row) protocolItemsConfigHandsontableHelper.hot.renderCell(r, 1);
-//	                                    });
-//	                                }
-//	                            }
 	                        }else if (prop === 'addr') {
 	                            // 从映射中移除旧值
 	                            if (oldValue && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldValue+"")) {

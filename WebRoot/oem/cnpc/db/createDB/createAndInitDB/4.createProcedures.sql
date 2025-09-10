@@ -74,7 +74,7 @@ END prd_reset_sequence;
 CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
 --清空所有数据
---EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_acqdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_hist';
@@ -96,20 +96,25 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcpdailycalculationdata';
 EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
 
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_vacuate';
+EXECUTE IMMEDIATE 'truncate table tbl_srpacqdata_vacuate';
+EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_vacuate';
 
 --EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
 --EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
 --EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
 
---EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
---EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
---EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
+EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
+EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
+EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
+EXECUTE IMMEDIATE 'truncate table tbl_dbmonitoring';
 
 --EXECUTE IMMEDIATE 'truncate table tbl_device';
 --EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
 
+
 --重置所有序列
- --prd_reset_sequence('seq_acqdata_latest');
+ prd_reset_sequence('seq_acqdata_latest');
  prd_reset_sequence('seq_acqdata_hist');
  prd_reset_sequence('seq_alarminfo_latest');
  prd_reset_sequence('seq_alarminfo_hist');
@@ -130,14 +135,19 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
  prd_reset_sequence('seq_pcpacqdata_hist');
  prd_reset_sequence('seq_pcpdailycalculationdata');
  prd_reset_sequence('seq_pcptimingcalculationdata');
+ 
+ prd_reset_sequence('seq_acqdata_vacuate');
+ prd_reset_sequence('seq_srpacqdata_vacuate');
+ prd_reset_sequence('seq_pcpacqdata_vacuate');
 
  --prd_reset_sequence('seq_deviceaddinfo');
  --prd_reset_sequence('seq_auxiliary2master');
  --prd_reset_sequence('seq_devicegraphicset');
 
- --prd_reset_sequence('seq_deviceoperationlog');
- --prd_reset_sequence('seq_systemlog');
- --prd_reset_sequence('seq_resourcemonitoring');
+ prd_reset_sequence('seq_deviceoperationlog');
+ prd_reset_sequence('seq_systemlog');
+ prd_reset_sequence('seq_resourcemonitoring');
+ prd_reset_sequence('seq_dbmonitoring');
 
  --prd_reset_sequence('seq_device');
  --prd_reset_sequence('seq_smsdevice');

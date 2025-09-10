@@ -2796,7 +2796,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 	    if(user!=null){
 	    	try {
-				wellInformationManagerService.saveSystemLog(user,4,title);
+				wellInformationManagerService.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+title);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

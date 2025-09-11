@@ -62,7 +62,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		border: false,
         		tabPosition: 'top',
         		items:[{
-        			title: loginUserLanguageResource.basicInformation,
+        			title: loginUserLanguageResource.automatedOperationsManagement,
         			id:'OperationMaintenanceBasicInfoPanel_Id',
     				iconCls: 'check3',
     				layout: 'border',

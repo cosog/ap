@@ -432,17 +432,20 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			String sql="select t.id from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " where  t.orgid in ("+orgId+") ";
+					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id";
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+= " left outer join "+calTableName+" t3 on t3.deviceid=t.id";
+			}
+			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
 			}
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and t.calculateType=1 ";
 				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
-					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+					sql+=" and (t3.resultcode=0 or t3.resultcode is null)";
 				}else{
 					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
 				}
@@ -451,7 +454,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -547,8 +550,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.acqdata";//16
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
-					+ " where  t.orgid in ("+orgId+") ";
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype ";
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" left outer join tbl_srpacqdata_latest t3 on t2.deviceid=t3.deviceid ";
+			}
+			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 			}else{
@@ -560,8 +566,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and t.calculateType=1 ";
 				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
-					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+					sql+=" and (t3.resultcode=0 or t3.resultcode is null)";
 				}else{
 					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
 				}
@@ -570,7 +577,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -1366,8 +1373,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "t2.acqdata";//16
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
-					+ " where  t.orgid in ("+orgId+") ";
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype ";
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" left outer join tbl_srpacqdata_latest t3 on t2.deviceid=t3.deviceid ";
+			}
+			sql+= " where  t.orgid in ("+orgId+") ";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 			}else{
@@ -1379,17 +1389,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and t.calculateType=1 ";
 				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
-					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+					sql+=" and (t3.resultcode=0 or t3.resultcode is null)";
 				}else{
 					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
 				}
+				
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -2009,7 +2021,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//7
 					+ "decode(t2.commstatus,null,0,t2.commstatus) as commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//8~9
 					+ "t2.commtime,t2.commtimeefficiency*"+timeEfficiencyZoom+",t2.commrange,"//10~12
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"//13~14
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runstatus,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,"//13~14
 					+ "t2.runtime,t2.runtimeefficiency*"+timeEfficiencyZoom+",t2.runrange,"//15~17
 					+ "t.calculateType,t.deviceType,"//18~19
 					+ "t.productiondata";
@@ -2026,9 +2038,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " and t.orgid in ("+orgId+") ";
 			sql+= " from "+deviceTableName+" t "
 					+ " left outer join "+tableName+" t2 on t2.deviceid=t.id"
-					+ " left outer join "+calTableName+" t3 on t3.deviceid=t.id"
-					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype "
-					+ " where  t.orgid in ("+orgId+") ";
+					+ " left outer join tbl_devicetypeinfo c1 on c1.id=t.devicetype ";
+			
+			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+= " left outer join "+calTableName+" t3 on t3.deviceid=t.id";
+			}
+			sql+= " where  t.orgid in ("+orgId+") ";
+			
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 				addInfoSql+= " and t.devicetype="+deviceType;
@@ -2043,18 +2059,22 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				addInfoSql+= " and t.devicename='"+deviceName+"'";
 				auxiliaryDeviceSql+= " and t.devicename='"+deviceName+"'";
 			}
+			
 			if(StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and t.calculateType=1 ";
 				if(FESdiagramResultStatValue.equalsIgnoreCase(languageResourceMap.get("emptyMsg"))){
-					sql+=" and (t3.resultcode=0 t3.resultcode is null)";
+					sql+=" and (t3.resultcode=0 or t3.resultcode is null)";
 				}else{
 					sql+=" and t3.resultcode="+MemoryDataManagerTask.getWorkTypeByName(FESdiagramResultStatValue,language).getResultCode();
 				}
 			}
+			
+			
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
 				sql+=" and decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"')='"+commStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
-				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -2705,7 +2725,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "
 							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
-							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
+							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
 							+ "t2.acqdata ";
 					
 					for(int i=0;i<displayCalItemList.size();i++){
@@ -3533,7 +3553,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					
 					String sql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), "
 							+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel,"
-							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
+							+ " t2.runStatus as runStatusCalValue,decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"')) as runStatusName,decode(t2.runstatus,1,0,100) as runAlarmLevel,"
 							+ "t2.acqdata ";
 					
 					for(int i=0;i<displayCalItemList.size();i++){

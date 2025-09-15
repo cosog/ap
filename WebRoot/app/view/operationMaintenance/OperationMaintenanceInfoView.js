@@ -821,6 +821,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    					}
 	    				}
 	    			}
+        		},{
+        			title: loginUserLanguageResource.oemConfig,
+        			id:'OperationMaintenanceOEMInfoTabPanel_Id'
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {

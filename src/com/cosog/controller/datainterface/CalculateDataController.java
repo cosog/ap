@@ -41,6 +41,7 @@ import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.thread.calculate.CalculateThread;
 import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
@@ -172,6 +173,10 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/AcquisitionDataDailyCalculation")
 	public String AcquisitionDataDailyCalculation() throws ParseException, SQLException, IOException{
+		String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		System.out.println("采集数据日汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		
@@ -185,6 +190,8 @@ public class CalculateDataController extends BaseController{
 		calculateDataService.AcquisitionDataDailyCalculation(tatalDate,deviceId);
 		
 		StringManagerUtils.printLog("采集数据汇总完成");
+		System.out.println("采集数据日汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -204,6 +211,10 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/FESDiagramDailyCalculation")
 	public String FESDiagramDailyCalculation() throws ParseException, SQLException, IOException{
+		String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		System.out.println("功图数据日汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
 		List<String> requestDataList=null;
@@ -235,6 +246,8 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		StringManagerUtils.printLog("功图数据隔天汇总完成");
+		System.out.println("功图数据日汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -257,6 +270,10 @@ public class CalculateDataController extends BaseController{
 		String time=ParamUtils.getParameter(request, "time");
 		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		
+		System.out.println("采集数据定时汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 //		deviceId="522";
 //		timeStr="2024-09-29 16:00:00";
 		
@@ -264,6 +281,9 @@ public class CalculateDataController extends BaseController{
 		calculateDataService.AcquisitionDataTimingTotalCalculation(timeStr,deviceId);
 		long t2 = System.nanoTime();
 		StringManagerUtils.printLog("采集数据定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2));
+		
+		System.out.println("采集数据定时汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -285,9 +305,16 @@ public class CalculateDataController extends BaseController{
 	public String SRPTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		
+		System.out.println("功图数据定时汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 		calculateDataService.SRPTimingTotalCalculation(timeStr);
 		
 		StringManagerUtils.printLog("功图定时汇总完成");
+		
+		System.out.println("功图数据定时汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -308,6 +335,10 @@ public class CalculateDataController extends BaseController{
 	@SuppressWarnings("static-access")
 	@RequestMapping("/RPMDailyCalculation")
 	public String RPMDailyCalculation() throws ParseException, SQLException, IOException{
+		String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		System.out.println("转速数据日汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
 		List<String> requestDataList=null;
@@ -340,6 +371,8 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		StringManagerUtils.printLog("转速数据隔天汇总完成");
+		System.out.println("转速数据日汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -361,9 +394,16 @@ public class CalculateDataController extends BaseController{
 	public String PCPTimingTotalCalculation() throws ParseException, SQLException, IOException{
 		String time=ParamUtils.getParameter(request, "time");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		
+		System.out.println("转速数据定时汇总前内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 //		timeStr="2024-11-04 18:00:00";
 		calculateDataService.PCPTimingTotalCalculation(timeStr);
 		StringManagerUtils.printLog("转速数据定时汇总完成");
+		
+		System.out.println("转速数据定时汇总后内存情况,时间:"+timeStr);
+		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

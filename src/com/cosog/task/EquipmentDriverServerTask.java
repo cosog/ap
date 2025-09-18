@@ -30,6 +30,7 @@ import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitMap;
+import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
@@ -55,9 +56,6 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
-		
-//		Config.getInstance().updateOemConfigFile("others.printLog", false);
-		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		
@@ -412,20 +410,20 @@ public class EquipmentDriverServerTask {
 //				sendCycle=60;
 //				timeDifference=0;
 				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1).start();
+//				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1).start();
+//				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2).start();
+//				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1).start();
+//				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2).start();
+//				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1).start();
 //				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2).start();
 //				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3).start();
 				
 //				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0).start();
 //				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0).start();
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

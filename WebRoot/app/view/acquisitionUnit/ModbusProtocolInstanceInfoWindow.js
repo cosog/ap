@@ -142,7 +142,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-srp', 'private-srp'],['private-mqtt', 'private-mqtt'],['private-kd93', 'private-kd93'],['private-lq1000', 'private-lq1000']]
+							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-kd93', 'private-kd93'],['private-lq1000', 'private-lq1000'],['private-g771', 'private-g771']]
 						}),
 				displayField : 'text',
 				valueField : 'value',
@@ -173,7 +173,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu'],['private-srp', 'private-srp'],['private-mqtt', 'private-mqtt']]
+							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu']]
 						}),
 				displayField : 'text',
 				valueField : 'value',

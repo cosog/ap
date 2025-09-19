@@ -2,19 +2,35 @@ package com.cosog.service.operationMaintenance;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.CurveConf;
+import com.cosog.model.DataMapping;
+import com.cosog.model.KeyValue;
 import com.cosog.model.User;
+import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.DisplayInstanceOwnItem;
+import com.cosog.model.calculate.PCPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
+import com.cosog.model.gridmodel.GraphicSetData;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.CalItem;
+import com.cosog.utils.Config;
 import com.cosog.utils.StringManagerUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service("operationMaintenanceService")
 public class OperationMaintenanceService<T> extends BaseService<T>  {
@@ -301,5 +317,52 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	    }
 		
 		return  "{success:true,msg:"+r+"}";
+	}
+	
+	public String getOperationMaintenanceMonitorCurveData(String startDate,String endDate,User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer itemsBuff = new StringBuffer();
+		StringBuffer itemsCodeBuff = new StringBuffer();
+		try{
+			List<String> acqTimeList=new ArrayList<>();
+			itemsBuff.append("[\"总内存(Mb)\",\"JVM内存(Mb)\",\"数据库物理内存(Mb)\"]");
+			
+			itemsCodeBuff.append("[\"totalMemoryUsage\",\"jvmMemoryUsage\",\"oraclePhysicalMemory\"]");
+			
+			String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+					+ " round(t.totalmemoryusage*1024,2) as totalmemoryusage,"
+					+ " round(t.jvmmemoryusage/1024/1024,2) as jvmmemoryusage,"
+					+ " round(t.oraclephysicalmemory/1024/1024,2) as oraclephysicalmemory"
+					+ " from TBL_RESOURCEMONITORING t "
+					+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
+					+ " order by t.acqtime";
+			List<?> list = this.findCallSql(sql);
+			
+			result_json.append("{\"startDate\":\""+startDate+"\","
+					+ "\"endDate\":\""+endDate+"\","
+					+ "\"curveCount\":3,"
+					+ "\"curveItems\":"+itemsBuff+","
+					+ "\"curveItemCodes\":"+itemsCodeBuff+","
+					+ "\"totalCount\":\""+list.size()+"\","
+					+ "\"list\":[");
+			
+			String minAcqTime="";
+			String maxAcqTime="";
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[]) list.get(i);
+				if(i==0){
+					minAcqTime=obj[0]+"";
+				}else if(i==list.size()-1){
+					maxAcqTime=obj[0]+"";
+				}
+				acqTimeList.add(obj[0]+"");
+				result_json.append("{\"acqTime\":\""+obj[0]+"\",\"data\":["+(StringManagerUtils.isNum(obj[1]+"")?(obj[1]+""):null)+","+(StringManagerUtils.isNum(obj[2]+"")?(obj[2]+""):null)+","+(StringManagerUtils.isNum(obj[3]+"")?(obj[3]+""):null)+"]},");
+				
+			}
+			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result_json.toString();
 	}
 }

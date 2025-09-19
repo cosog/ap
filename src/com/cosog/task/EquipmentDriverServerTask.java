@@ -30,6 +30,7 @@ import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitMap;
+import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
@@ -55,9 +56,6 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
-		
-//		Config.getInstance().updateOemConfigFile("others.printLog", false);
-		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		

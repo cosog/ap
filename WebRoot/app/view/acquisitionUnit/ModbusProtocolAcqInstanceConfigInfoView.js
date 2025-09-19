@@ -365,12 +365,12 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['modbus-tcp','modbus-rtu','private-srp','private-mqtt','private-kd93','private-lq1000'];
+			                    	this.source = ['modbus-tcp','modbus-rtu','private-kd93','private-lq1000','private-g771'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && visualRowIndex===3) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['modbus-tcp','modbus-rtu','private-srp','private-mqtt'];
+			                    	this.source = ['modbus-tcp','modbus-rtu'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {

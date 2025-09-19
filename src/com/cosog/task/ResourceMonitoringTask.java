@@ -1,6 +1,8 @@
 package com.cosog.task;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,6 +23,7 @@ import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.task.MemoryDataManagerTask.RedisInfo;
+import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
@@ -50,6 +53,7 @@ public class ResourceMonitoringTask {
 	
     private static String memUsedPercent="";
     private static String memUsedPercentValue="";
+    private static String totalMemoryUsage="";
     private static int memUsedPercentAlarmLevel=0;
     
     private static int redisStatus=1; 
@@ -58,6 +62,9 @@ public class ResourceMonitoringTask {
     private static String tableSpaceName="";
     
     private static TableSpaceInfo tableSpaceInfo=null;
+    
+    private static int save_cycle=60*10;
+    private static String lastSaveTime="";
     
     @SuppressWarnings("unused")
 //    @Scheduled(fixedRate = 1000*60*60*24*365*100)
@@ -156,9 +163,10 @@ public class ResourceMonitoringTask {
     
     
     
-	@SuppressWarnings("static-access")
-	@Scheduled(cron = "0/2 * * * * ?")
+	@SuppressWarnings({ "static-access", "unused" })
+	 @Scheduled(cron = "0/2 * * * * ?")
 	public void checkAndSendResourceMonitoring(){
+		String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
 		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
@@ -270,6 +278,7 @@ public class ResourceMonitoringTask {
 		memUsedPercent="";
 		memUsedPercentValue="";
 		memUsedPercentAlarmLevel=0;
+		totalMemoryUsage="";
 		if( ((!Config.getInstance().configFile.getAp().getOthers().getIot()) && acRunStatus==1)
 				|| (Config.getInstance().configFile.getAp().getOthers().getIot() && adRunStatus==1) 
 				){
@@ -307,6 +316,7 @@ public class ResourceMonitoringTask {
 				memUsedPercent="";
 				memUsedPercentValue="";
 				memUsedPercentAlarmLevel=0;
+				totalMemoryUsage="";
 				if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
 					memUsedPercentAlarmLevel=1;
 				}else if(memoryProbeResponseData.getUsedPercent()>=80){
@@ -314,52 +324,69 @@ public class ResourceMonitoringTask {
 				}
 				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
 				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
+				totalMemoryUsage=memoryProbeResponseData.getUsed()+"";
 			}else{
 				memUsedPercent="";
 				memUsedPercentValue="";
 				memUsedPercentAlarmLevel=0;
+				totalMemoryUsage="";
 			}
 		}
 		
-		Connection conn = null;
-		CallableStatement cs= null;
-		try{
-			conn=OracleJdbcUtis.getConnection();
-			cs= null;
-			if(conn!=null){
-				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?)}");
-				cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-				cs.setInt(2, acRunStatus);
-				cs.setString(3, acVersion);
-				cs.setInt(4, adRunStatus);
-				cs.setString(5, adVersion);
-				cs.setString(6, cpuUsedPercentValue);
-				cs.setString(7, memUsedPercentValue);
-				cs.setFloat(8, tableSpaceInfo.getUsedPercent());
-				cs.setInt(9, redisStatus);
-				cs.setLong(10, cacheMaxMemory);
-				cs.setLong(11, cacheUsedMemory);
-				cs.setInt(12, resourceMonitoringSaveData);
-				cs.executeUpdate();
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				try {
-					cs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+		long JVMMemory=AdvancedMemoryMonitorUtils.getJVMMemory();
+		long oraclePhysicalMemory=getOraclePhysicalMemory();
+		
+		boolean save=false;
+		long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, timeStr, "yyyy-MM-dd HH:mm:ss");
+		if(timeDiff>=save_cycle*1000){
+			save=true;
+		}
+		if(save){
+			lastSaveTime=timeStr;
+			Connection conn = null;
+			CallableStatement cs= null;
+			try{
+				conn=OracleJdbcUtis.getConnection();
+				cs= null;
+				if(conn!=null){
+					cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+					cs.setString(1,timeStr );
+					cs.setInt(2, acRunStatus);
+					cs.setString(3, acVersion);
+					cs.setInt(4, adRunStatus);
+					cs.setString(5, adVersion);
+					cs.setString(6, cpuUsedPercentValue);
+					cs.setString(7, memUsedPercentValue);
+					cs.setFloat(8, tableSpaceInfo.getUsedPercent());
+					cs.setInt(9, redisStatus);
+					cs.setLong(10, cacheMaxMemory);
+					cs.setLong(11, cacheUsedMemory);
+					cs.setInt(12, resourceMonitoringSaveData);
+					cs.setString(13, totalMemoryUsage);
+					cs.setLong(14, JVMMemory);
+					cs.setLong(15, oraclePhysicalMemory);
+					cs.executeUpdate();
 				}
-			}
-			if(conn!=null){
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				if(cs!=null){
+					try {
+						cs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				if(conn!=null){
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
+		
 		
 		String sendData="{"
 				+ "\"functionCode\":\"ResourceMonitoringData\","
@@ -756,6 +783,82 @@ public class ResourceMonitoringTask {
 		public void setTableSizeMap(Map<String, TableSize> tableSizeMap) {
 			this.tableSizeMap = tableSizeMap;
 		}
+	}
+	
+	public static long getOraclePhysicalMemory() {
+	    try {
+	        String os = System.getProperty("os.name").toLowerCase();
+	        
+	        if (os.contains("win")) {
+	            return getOracleMemoryWindows();
+	        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+	            return getOracleMemoryLinux();
+	        } else {
+	            System.err.println("Unsupported operating system: " + os);
+	            return -1;
+	        }
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return -1;
+	    }
+	}
+
+	// Windows专用方法
+	private static long getOracleMemoryWindows() throws Exception {
+	    Process process = Runtime.getRuntime().exec(
+	        "wmic process where \"name like '%oracle%'\" get WorkingSetSize");
+	    
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	    
+	    long totalMemory = 0;
+	    String line;
+	    boolean firstLine = true;
+	    
+	    while ((line = reader.readLine()) != null) {
+	        if (!firstLine && !line.trim().isEmpty()) {
+	            try {
+	                totalMemory += Long.parseLong(line.trim());
+	            } catch (NumberFormatException e) {
+	                // 忽略
+	            }
+	        }
+	        firstLine = false;
+	    }
+	    
+	    process.waitFor();
+	    return totalMemory;
+	}
+
+	// Linux专用方法
+	private static long getOracleMemoryLinux() throws Exception {
+	    long totalMemory = 0;
+	    
+	    // 方法1: 使用ps命令获取所有Oracle相关进程的RSS内存
+	    Process psProcess = Runtime.getRuntime().exec(
+	        new String[]{"sh", "-c", "ps -eo pid,rss,comm | grep -i oracle | grep -v grep"});
+	    
+	    BufferedReader psReader = new BufferedReader(
+	        new InputStreamReader(psProcess.getInputStream()));
+	    
+	    String line;
+	    while ((line = psReader.readLine()) != null) {
+	        if (!line.trim().isEmpty()) {
+	            String[] parts = line.trim().split("\\s+");
+	            if (parts.length >= 2) {
+	                try {
+	                    // RSS是以KB为单位的，需要转换为字节
+	                    long memoryKB = Long.parseLong(parts[1]);
+	                    totalMemory += memoryKB * 1024;
+	                } catch (NumberFormatException e) {
+	                    // 忽略格式错误的行
+	                }
+	            }
+	        }
+	    }
+	    
+	    psProcess.waitFor();
+	    return totalMemory;
 	}
 
 	public static int getAcRunStatus() {

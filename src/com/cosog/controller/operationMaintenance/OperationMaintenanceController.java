@@ -2,6 +2,7 @@ package com.cosog.controller.operationMaintenance;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -201,6 +202,43 @@ public class OperationMaintenanceController  extends BaseController {
 		}
 		String json = operationMaintenanceService.importedFilePermissionVerification(user,code);
 		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getOperationMaintenanceMonitorCurveData")
+	public String getOperationMaintenanceMonitorCurveData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		
+		if(user!=null){
+			if(!StringManagerUtils.isNotNull(endDate)){
+				String sql = " select to_char(max(t.acqTime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from TBL_RESOURCEMONITORING t ";
+				List list = this.service.reportDateJssj(sql);
+				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+					endDate = list.get(0).toString();
+				} else {
+					endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				}
+				if(!StringManagerUtils.isNotNull(startDate)){
+					startDate=endDate.split(" ")[0]+" 00:00:00";
+				}
+			}
+			
+			
+			this.pager = new Page("pagerForm", request);
+			json = operationMaintenanceService.getOperationMaintenanceMonitorCurveData(startDate,endDate,user);
+		}
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

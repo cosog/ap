@@ -22,6 +22,10 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryUsage;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -4707,5 +4711,28 @@ public class StringManagerUtils {
     	Random random = new Random();
     	int randomInt = random.nextInt(range*2+1) - range;
     	return randomInt;
+    }
+    
+    public static String getJVMMemoryUsage(){
+    	MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = memoryMXBean.getNonHeapMemoryUsage();
+ 
+        System.out.println("Heap Memory Used: " + (heapMemoryUsage.getUsed() / (1024 * 1024)) + " MB");
+        System.out.println("Heap Memory Committed: " + (heapMemoryUsage.getCommitted() / (1024 * 1024)) + " MB");
+        System.out.println("Non-Heap Memory Used: " + (nonHeapMemoryUsage.getUsed() / (1024 * 1024)) + " MB");
+        System.out.println("Non-Heap Memory Committed: " + (nonHeapMemoryUsage.getCommitted() / (1024 * 1024)) + " MB");
+ 
+        // 获取所有内存池的使用情况
+        List<MemoryPoolMXBean> memoryPools = ManagementFactory.getMemoryPoolMXBeans();
+        for (MemoryPoolMXBean pool : memoryPools) {
+            System.out.println("Pool Name: " + pool.getName());
+            MemoryUsage usage = pool.getUsage();
+            System.out.println("Used: " + (usage.getUsed() / (1024 * 1024)) + " MB");
+            System.out.println("Committed: " + (usage.getCommitted() / (1024 * 1024)) + " MB");
+            System.out.println("Max: " + (usage.getMax() / (1024 * 1024)) + " MB");
+        }
+        
+        return null;
     }
 }

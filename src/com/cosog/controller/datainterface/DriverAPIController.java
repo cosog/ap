@@ -74,6 +74,7 @@ import com.cosog.task.OuterDatabaseSyncTask;
 import com.cosog.task.OuterDatabaseSyncTask.SRPWellDataSyncThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
+import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
@@ -2204,6 +2205,9 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,String data){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//		System.out.println("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+		
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		List<String> websocketClientUserList=new ArrayList<>();
@@ -2769,6 +2773,9 @@ public class DriverAPIController extends BaseController{
 		}finally{
 			
 		}
+		
+//		System.out.println("采集数据处理后内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		return null;
 	}
 	
@@ -2858,12 +2865,6 @@ public class DriverAPIController extends BaseController{
 						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 					}
 					
-					
-//					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
-//						srpCalculateRequestData.getFESDiagram().setSrc(1);
-//					}else{
-//						srpCalculateRequestData.getFESDiagram().setSrc(0);
-//					}
 					updateRequestData(srpCalculateRequestData,deviceInfo);
 					
 					TotalAnalysisResponseData totalAnalysisResponseData=null;

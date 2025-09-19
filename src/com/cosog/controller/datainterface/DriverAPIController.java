@@ -2205,8 +2205,8 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,String data){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		System.out.println("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
-		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//		System.out.println("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2774,8 +2774,8 @@ public class DriverAPIController extends BaseController{
 			
 		}
 		
-		System.out.println("采集数据处理后内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
-		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//		System.out.println("采集数据处理后内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		return null;
 	}
 	

@@ -128,9 +128,9 @@ public class WebSocketByJavax {
 //                }
 //            }
 //    	}
-    	String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-    	System.out.println("websocket推送前内存情况,时间:"+timeStr);
-		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//    	String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//    	System.out.println("websocket推送前内存情况,时间:"+timeStr);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 
 		for (WebSocketByJavax item : clients.values()) {
         	if (item.userId.contains(To) ) {
@@ -147,8 +147,8 @@ public class WebSocketByJavax {
         	}
         }
 		
-		System.out.println("websocket推送后内存情况,时间:"+timeStr);
-		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//		System.out.println("websocket推送后内存情况,时间:"+timeStr);
+//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
     }
     
     public void sendMessageToUser(String userAccount,String message){

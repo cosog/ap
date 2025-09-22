@@ -23,6 +23,18 @@ public class AdvancedMemoryMonitorUtils {
     	return heap.getUsed()+nonHeap.getUsed();
     }
     
+    public static long getJVMHeapMemory() {
+    	MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+    	MemoryUsage heap = memoryMXBean.getHeapMemoryUsage();
+    	return heap.getUsed();
+    }
+    
+    public static long getJVMNonHeapMemory() {
+    	MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+    	MemoryUsage nonHeap = memoryMXBean.getNonHeapMemoryUsage();
+    	return nonHeap.getUsed();
+    }
+    
     public static MemoryUsage getJVMMemoryInfo() {
     	MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
     	MemoryUsage heap = memoryMXBean.getHeapMemoryUsage();

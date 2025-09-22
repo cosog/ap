@@ -582,10 +582,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    	cellProperties.renderer = protocolItemsConfigHandsontableHelper.addBoldBg;
 	                    }else{
 	                    	if(protocolItemsConfigHandsontableHelper.columns[visualColIndex].type == undefined || protocolItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-//	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.addCellStyle;
-	                    		
 	                    		cellProperties.renderer = protocolItemsConfigHandsontableHelper.uniqueTitleRenderer;
-	                    		
 	                    	}
 	                    }
 	                    return cellProperties;

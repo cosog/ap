@@ -161,8 +161,6 @@ public class ResourceMonitoringTask {
 		}
     }
     
-    
-    
 	@SuppressWarnings({ "static-access", "unused" })
 	 @Scheduled(cron = "0/2 * * * * ?")
 	public void checkAndSendResourceMonitoring(){
@@ -334,6 +332,9 @@ public class ResourceMonitoringTask {
 		}
 		
 		long JVMMemory=AdvancedMemoryMonitorUtils.getJVMMemory();
+		long JVMHeapMemory=AdvancedMemoryMonitorUtils.getJVMHeapMemory();
+		long JVMNonHeapMemory=AdvancedMemoryMonitorUtils.getJVMNonHeapMemory();
+		
 		long oraclePhysicalMemory=getOraclePhysicalMemory();
 		
 		boolean save=false;
@@ -349,7 +350,7 @@ public class ResourceMonitoringTask {
 				conn=OracleJdbcUtis.getConnection();
 				cs= null;
 				if(conn!=null){
-					cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+					cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					cs.setString(1,timeStr );
 					cs.setInt(2, acRunStatus);
 					cs.setString(3, acVersion);
@@ -364,7 +365,9 @@ public class ResourceMonitoringTask {
 					cs.setInt(12, resourceMonitoringSaveData);
 					cs.setString(13, totalMemoryUsage);
 					cs.setLong(14, JVMMemory);
-					cs.setLong(15, oraclePhysicalMemory);
+					cs.setLong(15, JVMHeapMemory);
+					cs.setLong(16, JVMNonHeapMemory);
+					cs.setLong(17, oraclePhysicalMemory);
 					cs.executeUpdate();
 				}
 			}catch(Exception e){

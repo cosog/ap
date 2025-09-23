@@ -323,14 +323,17 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			List<String> acqTimeList=new ArrayList<>();
-			itemsBuff.append("[\"总内存(Mb)\",\"JVM内存(Mb)\",\"JVM堆内存(Mb)\",\"JVM非堆内存(Mb)\",\"数据库物理内存(Mb)\"]");
+			itemsBuff.append("[\""+languageResourceMap.get("totalMemoryUsage")+"(Mb)\",\""+languageResourceMap.get("tomcatPhysicalMemory")+"(Mb)\",\""+languageResourceMap.get("JVMMemory")+"(Mb)\",\""+languageResourceMap.get("JVMHeapMemory")+"(Mb)\",\""+languageResourceMap.get("JVMNonHeapMemory")+"(Mb)\",\""+languageResourceMap.get("oraclePhysicalMemory")+"(Mb)\"]");
 			
-			itemsCodeBuff.append("[\"totalMemoryUsage\",\"jvmMemoryUsage\",\"jvmHeapMemoryUsage\",\"jvmNonHeapMemoryUsage\",\"oraclePhysicalMemory\"]");
+			itemsCodeBuff.append("[\"totalMemoryUsage\",\"tomcatPhysicalMemory\",\"jvmMemoryUsage\",\"jvmHeapMemoryUsage\",\"jvmNonHeapMemoryUsage\",\"oraclePhysicalMemory\"]");
 			
 			String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " round(t.totalmemoryusage*1024,2) as totalmemoryusage,"
+					+ " round(t.tomcatPhysicalMemory/1024/1024,2) as tomcatPhysicalMemory,"
 					+ " round(t.jvmmemoryusage/1024/1024,2) as jvmmemoryusage,"
 					+ " round(t.jvmheapmemoryusage/1024/1024,2) as jvmheapmemoryusage,"
 					+ " round(t.jvmnonheapmemoryusage/1024/1024,2) as jvmnonheapmemoryusage,"
@@ -363,7 +366,8 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 				+(StringManagerUtils.isNum(obj[2]+"")?(obj[2]+""):null)+","
 				+(StringManagerUtils.isNum(obj[3]+"")?(obj[3]+""):null)+","
 				+(StringManagerUtils.isNum(obj[4]+"")?(obj[4]+""):null)+","
-				+(StringManagerUtils.isNum(obj[5]+"")?(obj[5]+""):null)
+				+(StringManagerUtils.isNum(obj[5]+"")?(obj[5]+""):null)+","
+				+(StringManagerUtils.isNum(obj[6]+"")?(obj[6]+""):null)
 				+"]},");
 				
 			}

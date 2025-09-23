@@ -687,7 +687,12 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == 1) {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo1+","+loginUserLanguageResource.collisionDevice+":"+obj.device+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"
+                                    			+loginUserLanguageResource.collisionInfo1+"</br>"
+                                    			+loginUserLanguageResource.affiliatedOrg+":"+obj.org+"</br>"
+                                    			+loginUserLanguageResource.deviceName+":"+obj.device+"</br>"
+                                    			+"</font></br>"
+                                    			+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -731,7 +736,12 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo1+","+loginUserLanguageResource.collisionDevice+":"+obj.device+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"
+                                    			+loginUserLanguageResource.collisionInfo1+"</br>"
+                                    			+loginUserLanguageResource.affiliatedOrg+":"+obj.org+"</br>"
+                                    			+loginUserLanguageResource.deviceName+":"+obj.device+"</br>"
+                                    			+"</font></br>"
+                                    			+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -772,7 +782,12 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.collisionInfo1+","+loginUserLanguageResource.collisionDevice+":"+obj.device+"】</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"
+                                    			+loginUserLanguageResource.collisionInfo1+"</br>"
+                                    			+loginUserLanguageResource.affiliatedOrg+":"+obj.org+"</br>"
+                                    			+loginUserLanguageResource.deviceName+":"+obj.device+"</br>"
+                                    			+"</font></br>"
+                                    			+loginUserLanguageResource.pleaseConfirm, function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }

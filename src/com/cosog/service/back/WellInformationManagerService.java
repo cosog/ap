@@ -3349,29 +3349,31 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String judgeDeviceExistOrNotBySigninIdAndSlave(String deviceTypeStr,String signinId,String slaveStr) {
-		String result="";
+		String json = "{\"success\":true,\"msg\":0}";
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String sql = "select t.allpath_zh_CN||'/'||t.devicename from viw_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+			String sql = "select t.devicename,t.allpath_zh_CN from viw_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
 			List<?> list = this.findCallSql(sql);
-			if (list.size()>0 && list.get(0)!=null) {
-				result=list.get(0).toString();
+			if (list.size()>0) {
+				Object[] obj=(Object[]) list.get(0);
+				json = "{\"success\":true,\"msg\":1,\"device\":\""+obj[0]+"\",\"org\":\""+obj[1]+"\"}";
 			}
 		}
-		return result;
+		return json;
 	}
 	
 	public String judgeDeviceExistOrNotByIpPortAndSlave(String deviceTypeStr,String ipPort,String slaveStr) {
-		String result="";
+		String json = "{\"success\":true,\"msg\":0}";
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(ipPort)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String sql = "select t.allpath_zh_CN||'/'||t.devicename from viw_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
+			String sql = "select t.devicename,t.allpath_zh_CN from viw_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
 			List<?> list = this.findCallSql(sql);
-			if (list.size()>0 && list.get(0)!=null) {
-				result=list.get(0).toString();
+			if (list.size()>0) {
+				Object[] obj=(Object[]) list.get(0);
+				json = "{\"success\":true,\"msg\":1,\"device\":\""+obj[0]+"\",\"org\":\""+obj[1]+"\"}";
 			}
 		}
-		return result;
+		return json;
 	}
 	
 	public boolean judgePumpingModelExistOrNot(String manufacturer,String model) {

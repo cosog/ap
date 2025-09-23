@@ -1033,7 +1033,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                     } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['', 'TCP Client','TCP Server']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 
                     		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
                     		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {

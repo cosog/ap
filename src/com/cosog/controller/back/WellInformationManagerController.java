@@ -2431,15 +2431,10 @@ public class WellInformationManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
-		boolean flag = this.wellInformationManagerService.judgeDeviceExistOrNotBySigninIdAndSlave(deviceType,signinId,slave);
+		String json = this.wellInformationManagerService.judgeDeviceExistOrNotBySigninIdAndSlave(deviceType,signinId,slave);
+		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
-		String json = "";
-		if (flag) {
-			json = "{success:true,msg:'1'}";
-		} else {
-			json = "{success:true,msg:'0'}";
-		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		pw.flush();
@@ -2452,15 +2447,10 @@ public class WellInformationManagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String ipPort = ParamUtils.getParameter(request, "ipPort");
 		String slave = ParamUtils.getParameter(request, "slave");
-		boolean flag = this.wellInformationManagerService.judgeDeviceExistOrNotByIpPortAndSlave(deviceType,ipPort,slave);
+		String json = this.wellInformationManagerService.judgeDeviceExistOrNotByIpPortAndSlave(deviceType,ipPort,slave);
+		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
-		String json = "";
-		if (flag) {
-			json = "{success:true,msg:'1'}";
-		} else {
-			json = "{success:true,msg:'0'}";
-		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		pw.flush();

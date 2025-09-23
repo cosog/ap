@@ -1033,7 +1033,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                     } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['', 'TCP Client','TCP Server']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 
                     		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
                     		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {
@@ -1117,6 +1117,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
             });
+            
+            
+            deviceInfoHandsontableHelper.initSignInIdAndSlaveMap(result.totalRoot);
         },
         failure: function () {
         	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
@@ -1150,6 +1153,49 @@ var DeviceInfoHandsontableHelper = {
         deviceInfoHandsontableHelper.delidslist = [];
         deviceInfoHandsontableHelper.insertlist = [];
         deviceInfoHandsontableHelper.editWellNameList = [];
+        
+        deviceInfoHandsontableHelper.signInIdAndSlaveMap=new Map();
+        
+        
+        deviceInfoHandsontableHelper.initSignInIdAndSlaveMap= function (data){
+        	deviceInfoHandsontableHelper.signInIdAndSlaveMap.clear();
+            data.forEach((row, index) => {
+                const signInId = row.signInId;
+                const slave = row.slave;
+                if ( (row.signInId==undefined || !signInId) || (row.slave==undefined || !slave)   ) return;
+                
+                var value=signInId+"_"+slave;
+                if (!deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(value)) {
+                    deviceInfoHandsontableHelper.signInIdAndSlaveMap.set(value, [index]);
+                } else {
+                    deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(value).push(index);
+                }
+            });
+        }
+        
+        deviceInfoHandsontableHelper.getDuplicateCount= function(){
+        	var duplicateCount = 0;
+        	for (const [value, indexes] of deviceInfoHandsontableHelper.signInIdAndSlaveMap.entries()) {
+                if (indexes.length > 1) {
+                    duplicateCount += indexes.length;
+                }
+            }
+        	return duplicateCount;
+        }
+        
+        deviceInfoHandsontableHelper.getDuplicateRowList= function(){
+        	var duplicateList = [];
+        	for (const [value, indexes] of deviceInfoHandsontableHelper.signInIdAndSlaveMap.entries()) {
+                if (indexes.length > 1) {
+                	for(var i=0;i<indexes.length;i++){
+                		duplicateList.push(indexes[i]);
+                	}
+                }
+            }
+        	return duplicateList;
+        }
+        
+        
 
         deviceInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -1157,11 +1203,71 @@ var DeviceInfoHandsontableHelper = {
         }
         
         deviceInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+        	if(deviceInfoHandsontableHelper.columns[col].type=='checkbox'){
+        		deviceInfoHandsontableHelper.addCheckboxCellStyle(instance, td, row, col, prop, value, cellProperties);
+        	}else if(deviceInfoHandsontableHelper.columns[col].type=='dropdown'){
+        		deviceInfoHandsontableHelper.addDropdownCellStyle(instance, td, row, col, prop, value, cellProperties);
+        	}else{
+        		deviceInfoHandsontableHelper.addTextCellStyle(instance, td, row, col, prop, value, cellProperties);
+        	}
+        	
+        	if (prop === 'instanceName') {
+                if (!isNotVal(value)) {
+                	td.style.backgroundColor = '#FF4C42';
+                }
+            }else if (prop === 'tcpType') {
+                if (!isNotVal(value)) {
+                	td.style.backgroundColor = '#FF4C42';
+                }
+            }
+        	
+        	if(isNotVal(deviceInfoHandsontableHelper.hot)){
+        		if (prop === 'signInId') {
+                    // 检查重复
+                	var slave=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'slave');
+                	if(isNotVal(value) && isNotVal(slave)){
+                		var checkValue=value+"_"+slave;
+                        if (checkValue && deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(checkValue)) {
+                            const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(checkValue);
+                            if (rows!=undefined && rows.length > 1 && rows.includes(row)) {
+                                td.style.backgroundColor = '#FF4C42';
+                            }
+                        }
+                	}
+                }else if (prop === 'slave') {
+                    // 检查重复
+                	var signInId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'signInId');
+                	if(isNotVal(value) && isNotVal(signInId)){
+                		var checkValue=signInId+"_"+value;
+                        if (checkValue && deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(checkValue)) {
+                            const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(checkValue);
+                            if (rows!=undefined && rows.length > 1 && rows.includes(row)) {
+                                td.style.backgroundColor = '#FF4C42';
+                            }
+                        }
+                	}
+                }
+        	}
+        }
+        
+        deviceInfoHandsontableHelper.addCheckboxCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+        }
+        
+        deviceInfoHandsontableHelper.addDropdownCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        deviceInfoHandsontableHelper.addTextCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             td.style.whiteSpace='nowrap'; //文本不换行
         	td.style.overflow='hidden';//超出部分隐藏
         	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
         }
+        
 
         deviceInfoHandsontableHelper.createTable = function (data) {
             $('#' + deviceInfoHandsontableHelper.divid).empty();
@@ -1254,23 +1360,11 @@ var DeviceInfoHandsontableHelper = {
                             		}
                         		}
                         	}else if(prop.toUpperCase() === "displayInstanceName".toUpperCase()){
-//                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
-//                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
-//                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
-//                        			this.source = acqInstanceInfo.displayInstanceList;
-//                        			
-//                        		}
+                        		
                         	}else if(prop.toUpperCase() === "alarmInstanceName".toUpperCase()){
-//                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtRowProp!=undefined){
-//                        			var acqInstanceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'instanceName');
-//                        			var acqInstanceInfo=getInstanceUnitAndProtocol(acqInstanceName,1,0);
-//                        			this.source = acqInstanceInfo.alarmInstanceList;
-//                        			
-//                        		}
+                        		
                         	}
-                        	if(deviceInfoHandsontableHelper.columns[visualColIndex].type == undefined || deviceInfoHandsontableHelper.columns[visualColIndex].type!='dropdown'){
-                        		cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
-                        	}
+                        	cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
                         }
                     }else{
                     	cellProperties.readOnly = true;
@@ -1338,11 +1432,12 @@ var DeviceInfoHandsontableHelper = {
                     	var addInfoReload=false;
                         for (var i = 0; i < changes.length; i++) {
                             var params = [];
-                            var index = changes[i][0]; //行号码
-                            var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(index);
-                            var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(index,'id');
+                            var row = changes[i][0]; //行号码
+                            var prop=changes[i][1];
+                            var rowdata = deviceInfoHandsontableHelper.hot.getDataAtRow(row);
+                            var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'id');
                             params.push(recordId);
-                            params.push(changes[i][1]);
+                            params.push(prop);
                             params.push(changes[i][2]);
                             params.push(changes[i][3]);
 
@@ -1399,37 +1494,86 @@ var DeviceInfoHandsontableHelper = {
                                 	var newAcqInstanceInfo = getInstanceUnitAndProtocol(params[3], 1, 0);
                                 	var oldAcqInstanceInfo = getInstanceUnitAndProtocol(params[2], 1, 0);
                                 	
-//                                	var displayInstanceColumnIndex=0;
-//                                	var alarmInstanceColumnIndex=0;
-//                                	for (var j = 0; j < deviceInfoHandsontableHelper.columns.length; j++) {
-//                                		if(deviceInfoHandsontableHelper.columns[j].data.toUpperCase()=='displayInstanceName'.toUpperCase()){
-//                                			displayInstanceColumnIndex=j;
-//                                		}else if(deviceInfoHandsontableHelper.columns[j].data.toUpperCase()=='alarmInstanceName'.toUpperCase()){
-//                                			alarmInstanceColumnIndex=j;
-//                                		}
-//                                		if(displayInstanceColumnIndex>0 && alarmInstanceColumnIndex>0){
-//                                			break;
-//                                		}
-//                                	}
-//                                	const displayInstanceListSource = newAcqInstanceInfo.displayInstanceList || [];
-//                                	const alarmInstanceListSource = newAcqInstanceInfo.alarmInstanceList || [];
-                                	
-                                	
                                 	if(oldAcqInstanceInfo.protocolCode!=newAcqInstanceInfo.protocolCode){
-                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
-                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'alarmInstanceName','');
-                                		
-//                                		deviceInfoHandsontableHelper.hot.setCellMeta(index, displayInstanceColumnIndex, 'source', displayInstanceListSource);
-//                                		deviceInfoHandsontableHelper.hot.setCellMeta(index, alarmInstanceColumnIndex, 'source', alarmInstanceListSource);
-//                                		productionHandsontableHelper.hot.render();
+                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(row,'displayInstanceName','');
+                                		deviceInfoHandsontableHelper.hot.setDataAtRowProp(row,'alarmInstanceName','');
         	                    	}else{
         	                    		if(oldAcqInstanceInfo.acqUnitId!=newAcqInstanceInfo.acqUnitId){
-        	                    			deviceInfoHandsontableHelper.hot.setDataAtRowProp(index,'displayInstanceName','');
-        	                    			
-//        	                    			deviceInfoHandsontableHelper.hot.setCellMeta(index, displayInstanceColumnIndex, 'source', displayInstanceListSource);
-//                                    		productionHandsontableHelper.hot.render();
+        	                    			deviceInfoHandsontableHelper.hot.setDataAtRowProp(row,'displayInstanceName','');
             	                    	}
         	                    	}
+                                }else if(params[1] == "signInId"){
+                                	let needUpdateMap = false;
+                                	var oldValue=params[2];
+                                	var newValue=params[3];
+                                	
+                                	var slave=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'slave');
+                                	
+                                	if (oldValue && deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(oldValue+"_"+slave)) {
+    	                                const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(oldValue+"_"+slave);
+    	                                const index = rows.indexOf(row);
+    	                                if (index !== -1) {
+    	                                    rows.splice(index, 1);
+    	                                    if (rows.length === 0) {
+    	                                        deviceInfoHandsontableHelper.signInIdAndSlaveMap.delete(oldValue+"_"+slave);
+    	                                    }
+    	                                }
+    	                            }
+
+    	                            // 添加新值到映射
+    	                            if (newValue) {
+    	                                if (!deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(newValue+"_"+slave)) {
+    	                                    deviceInfoHandsontableHelper.signInIdAndSlaveMap.set(newValue+"_"+slave, [row]);
+    	                                } else {
+    	                                    const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(newValue+"_"+slave);
+    	                                    if (!rows.includes(row)) {
+    	                                        rows.push(row);
+    	                                    }
+    	                                }
+    	                            }
+    	                            if (oldValue !== newValue) {
+    	                            	needUpdateMap = true;
+    	                            }
+    	                            
+    	                            if(needUpdateMap){
+    	    	                		deviceInfoHandsontableHelper.hot.render();
+    	    	                	}
+                                }else if(params[1] == "slave"){
+                                	let needUpdateMap = false;
+                                	var oldValue=params[2];
+                                	var newValue=params[3];
+                                	
+                                	var signInId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'signInId');
+                                	
+                                	if (oldValue && deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(signInId+"_"+oldValue)) {
+    	                                const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(signInId+"_"+oldValue);
+    	                                const index = rows.indexOf(row);
+    	                                if (index !== -1) {
+    	                                    rows.splice(index, 1);
+    	                                    if (rows.length === 0) {
+    	                                        deviceInfoHandsontableHelper.signInIdAndSlaveMap.delete(signInId+"_"+oldValue);
+    	                                    }
+    	                                }
+    	                            }
+
+    	                            // 添加新值到映射
+    	                            if (newValue) {
+    	                                if (!deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(signInId+"_"+newValue)) {
+    	                                    deviceInfoHandsontableHelper.signInIdAndSlaveMap.set(signInId+"_"+newValue, [row]);
+    	                                } else {
+    	                                    const rows = deviceInfoHandsontableHelper.signInIdAndSlaveMap.get(signInId+"_"+newValue);
+    	                                    if (!rows.includes(row)) {
+    	                                        rows.push(row);
+    	                                    }
+    	                                }
+    	                            }
+    	                            if (oldValue !== newValue) {
+    	                            	needUpdateMap = true;
+    	                            }
+    	                            
+    	                            if(needUpdateMap){
+    	    	                		deviceInfoHandsontableHelper.hot.render();
+    	    	                	}
                                 }
                             }
                         }

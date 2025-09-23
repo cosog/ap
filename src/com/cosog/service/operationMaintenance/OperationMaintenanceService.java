@@ -323,15 +323,20 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
 			List<String> acqTimeList=new ArrayList<>();
-			itemsBuff.append("[\"总内存(Mb)\",\"JVM内存(Mb)\",\"数据库物理内存(Mb)\"]");
+			itemsBuff.append("[\""+languageResourceMap.get("totalMemoryUsage")+"(Mb)\",\""+languageResourceMap.get("tomcatPhysicalMemory")+"(Mb)\",\""+languageResourceMap.get("JVMMemory")+"(Mb)\",\""+languageResourceMap.get("JVMHeapMemory")+"(Mb)\",\""+languageResourceMap.get("JVMNonHeapMemory")+"(Mb)\",\""+languageResourceMap.get("oraclePhysicalMemory")+"(Mb)\"]");
 			
-			itemsCodeBuff.append("[\"totalMemoryUsage\",\"jvmMemoryUsage\",\"oraclePhysicalMemory\"]");
+			itemsCodeBuff.append("[\"totalMemoryUsage\",\"tomcatPhysicalMemory\",\"jvmMemoryUsage\",\"jvmHeapMemoryUsage\",\"jvmNonHeapMemoryUsage\",\"oraclePhysicalMemory\"]");
 			
 			String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " round(t.totalmemoryusage*1024,2) as totalmemoryusage,"
+					+ " round(t.tomcatPhysicalMemory/1024/1024,2) as tomcatPhysicalMemory,"
 					+ " round(t.jvmmemoryusage/1024/1024,2) as jvmmemoryusage,"
+					+ " round(t.jvmheapmemoryusage/1024/1024,2) as jvmheapmemoryusage,"
+					+ " round(t.jvmnonheapmemoryusage/1024/1024,2) as jvmnonheapmemoryusage,"
 					+ " round(t.oraclephysicalmemory/1024/1024,2) as oraclephysicalmemory"
 					+ " from TBL_RESOURCEMONITORING t "
 					+ " where t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
@@ -356,7 +361,14 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 					maxAcqTime=obj[0]+"";
 				}
 				acqTimeList.add(obj[0]+"");
-				result_json.append("{\"acqTime\":\""+obj[0]+"\",\"data\":["+(StringManagerUtils.isNum(obj[1]+"")?(obj[1]+""):null)+","+(StringManagerUtils.isNum(obj[2]+"")?(obj[2]+""):null)+","+(StringManagerUtils.isNum(obj[3]+"")?(obj[3]+""):null)+"]},");
+				result_json.append("{\"acqTime\":\""+obj[0]+"\",\"data\":["
+				+(StringManagerUtils.isNum(obj[1]+"")?(obj[1]+""):null)+","
+				+(StringManagerUtils.isNum(obj[2]+"")?(obj[2]+""):null)+","
+				+(StringManagerUtils.isNum(obj[3]+"")?(obj[3]+""):null)+","
+				+(StringManagerUtils.isNum(obj[4]+"")?(obj[4]+""):null)+","
+				+(StringManagerUtils.isNum(obj[5]+"")?(obj[5]+""):null)+","
+				+(StringManagerUtils.isNum(obj[6]+"")?(obj[6]+""):null)
+				+"]},");
 				
 			}
 			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");

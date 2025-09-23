@@ -33,6 +33,11 @@ import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import oshi.SystemInfo;
+import oshi.hardware.GlobalMemory;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
+
 @Component("ResourceMonitoringTask")  
 public class ResourceMonitoringTask {
     
@@ -160,8 +165,6 @@ public class ResourceMonitoringTask {
 			e.printStackTrace();
 		}
     }
-    
-    
     
 	@SuppressWarnings({ "static-access", "unused" })
 	 @Scheduled(cron = "0/2 * * * * ?")
@@ -333,7 +336,12 @@ public class ResourceMonitoringTask {
 			}
 		}
 		
+		long tomcatPhysicalMemory=getTomcatMemoryWithOshi();
+		
 		long JVMMemory=AdvancedMemoryMonitorUtils.getJVMMemory();
+		long JVMHeapMemory=AdvancedMemoryMonitorUtils.getJVMHeapMemory();
+		long JVMNonHeapMemory=AdvancedMemoryMonitorUtils.getJVMNonHeapMemory();
+		
 		long oraclePhysicalMemory=getOraclePhysicalMemory();
 		
 		boolean save=false;
@@ -349,7 +357,7 @@ public class ResourceMonitoringTask {
 				conn=OracleJdbcUtis.getConnection();
 				cs= null;
 				if(conn!=null){
-					cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+					cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					cs.setString(1,timeStr );
 					cs.setInt(2, acRunStatus);
 					cs.setString(3, acVersion);
@@ -363,8 +371,11 @@ public class ResourceMonitoringTask {
 					cs.setLong(11, cacheUsedMemory);
 					cs.setInt(12, resourceMonitoringSaveData);
 					cs.setString(13, totalMemoryUsage);
-					cs.setLong(14, JVMMemory);
-					cs.setLong(15, oraclePhysicalMemory);
+					cs.setLong(14, tomcatPhysicalMemory);
+					cs.setLong(15, JVMMemory);
+					cs.setLong(16, JVMHeapMemory);
+					cs.setLong(17, JVMNonHeapMemory);
+					cs.setLong(18, oraclePhysicalMemory);
 					cs.executeUpdate();
 				}
 			}catch(Exception e){
@@ -988,4 +999,85 @@ public class ResourceMonitoringTask {
 	public static void setTableSpaceInfo(TableSpaceInfo tableSpaceInfo) {
 		ResourceMonitoringTask.tableSpaceInfo = tableSpaceInfo;
 	}
+	
+	public static long getTomcatMemoryWithOshi() {
+		long r=0;
+		try {
+			SystemInfo systemInfo = new SystemInfo();
+	        int pid = systemInfo.getOperatingSystem().getProcessId();
+	        OSProcess process = systemInfo.getOperatingSystem().getProcess(pid);
+	        GlobalMemory memory = systemInfo.getHardware().getMemory();
+	        r=process.getResidentSetSize();
+		} catch (Exception e) {
+        	r=-1;
+        }
+        return r;
+        
+//        System.out.println("=== 与任务管理器对应关系 ===");
+//        System.out.println("进程PID: " + pid);
+//        System.out.println();
+//        
+//        // 进程内存指标
+//        System.out.println("【进程内存使用】");
+//        System.out.println("工作集(内存): " + formatBytes(process.getResidentSetSize()) + 
+//                          " ← 任务管理器'内存'列");
+//        System.out.println("提交大小: " + formatBytes(process.getVirtualSize()) + 
+//                          " ← 任务管理器'提交大小'列");
+//        
+//        System.out.println();
+//        System.out.println("【系统内存信息】");
+//        System.out.println("总物理内存: " + formatBytes(memory.getTotal()) + 
+//                          " ← 性能标签页'总物理内存'");
+//        System.out.println("可用内存: " + formatBytes(memory.getAvailable()) + 
+//                          " ← 性能标签页'可用物理内存'");
+//        System.out.println("已使用内存: " + formatBytes(memory.getTotal() - memory.getAvailable()) + 
+//                          " ← 性能标签页'已使用物理内存'");
+//        
+//        // 计算内存使用百分比
+//        double memoryUsagePercent = (memory.getTotal() - memory.getAvailable()) * 100.0 / memory.getTotal();
+//        System.out.println("内存使用率: " + String.format("%.1f%%", memoryUsagePercent) + 
+//                          " ← 性能标签页内存使用率");
+    }
+	
+//	private static String formatBytes(long bytes) {
+//        if (bytes < 1024) return bytes + " B";
+//        int exp = (int) (Math.log(bytes) / Math.log(1024));
+//        char pre = "KMGTPE".charAt(exp-1);
+//        return String.format("%.2f %sB", bytes / Math.pow(1024, exp), pre);
+//    }
+    
+    public static long getTomcatMemoryFromTaskManager() {
+    	long memoryKB=0;
+        try {
+            // 获取Tomcat进程的PID
+            String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+            long pid = Long.parseLong(processName.split("@")[0]);
+            
+            // 使用Windows任务管理器命令
+            Process process = Runtime.getRuntime().exec("tasklist /fi \"PID eq " + pid + "\" /fo csv /nh");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(String.valueOf(pid))) {
+                	line=line.replaceAll("\",\"", "&&").replaceAll("\"", "").replaceAll(",", "").replace(" K", "");
+                	line=line.replaceAll("&&",",");
+//                	"javaw.exe","16424","Console","1","1,593,152 K"
+                	
+                    // 解析CSV格式的输出
+                    String[] parts = line.split(",");
+                    if (parts.length >= 5) {
+                        String memoryStr = parts[4].replace("\"", "").replace(" K", "").trim();
+                        memoryKB = Long.parseLong(memoryStr);
+                    }
+                }
+            }
+            reader.close();
+            
+        } catch (Exception e) {
+        	memoryKB=-1;
+            e.printStackTrace();
+        }
+        return memoryKB;
+    }
 }

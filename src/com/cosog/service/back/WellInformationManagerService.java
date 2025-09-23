@@ -1373,17 +1373,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.name "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		String displayInstanceSql="select t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " and ( t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		
 		
@@ -3345,30 +3348,32 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeDeviceExistOrNotBySigninIdAndSlave(String deviceTypeStr,String signinId,String slaveStr) {
-		boolean flag = false;
+	public String judgeDeviceExistOrNotBySigninIdAndSlave(String deviceTypeStr,String signinId,String slaveStr) {
+		String json = "{\"success\":true,\"msg\":0}";
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String srpSql = "select t.id from tbl_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
-			List<?> srpList = this.findCallSql(srpSql);
-			if (srpList.size() > 0) {
-				flag = true;
+			String sql = "select t.devicename,t.allpath_zh_CN from viw_device t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+			List<?> list = this.findCallSql(sql);
+			if (list.size()>0) {
+				Object[] obj=(Object[]) list.get(0);
+				json = "{\"success\":true,\"msg\":1,\"device\":\""+obj[0]+"\",\"org\":\""+obj[1]+"\"}";
 			}
 		}
-		return flag;
+		return json;
 	}
 	
-	public boolean judgeDeviceExistOrNotByIpPortAndSlave(String deviceTypeStr,String ipPort,String slaveStr) {
-		boolean flag = false;
+	public String judgeDeviceExistOrNotByIpPortAndSlave(String deviceTypeStr,String ipPort,String slaveStr) {
+		String json = "{\"success\":true,\"msg\":0}";
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		if (StringManagerUtils.isNotNull(ipPort)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String srpSql = "select t.id from tbl_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
-			List<?> srpList = this.findCallSql(srpSql);
-			if (srpList.size() > 0) {
-				flag = true;
+			String sql = "select t.devicename,t.allpath_zh_CN from viw_device t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
+			List<?> list = this.findCallSql(sql);
+			if (list.size()>0) {
+				Object[] obj=(Object[]) list.get(0);
+				json = "{\"success\":true,\"msg\":1,\"device\":\""+obj[0]+"\",\"org\":\""+obj[1]+"\"}";
 			}
 		}
-		return flag;
+		return json;
 	}
 	
 	public boolean judgePumpingModelExistOrNot(String manufacturer,String model) {

@@ -1044,7 +1044,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		        }]
         		    }]
         		},{
-        			title: '内存曲线',
+        			title: loginUserLanguageResource.memoryCurve,
         			id:'OperationMaintenanceMonitorCurveTabPanel_Id',
         			layout: 'fit',
         		    tbar: [{
@@ -2895,7 +2895,7 @@ function getOperationMaintenanceMonitorCurveData(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = '内存曲线';
+		    var title = loginUserLanguageResource.memoryCurve;
 		    var xTitle=loginUserLanguageResource.acqTime;
 		    var legendName =result.curveItems;
 		    var legendCode =result.curveItemCodes;

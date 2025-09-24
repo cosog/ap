@@ -151,6 +151,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			unitList=result.unitList;
+			var hiddenRows=[];
 			if(data.classes==0){
 				var item1={};
 				item1.id=1;
@@ -175,6 +176,9 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				item3.title=loginUserLanguageResource.acqProtocolType;
 				item3.value=data.acqProtocolType;
 				root.push(item3);
+				if(data.acqProtocolType.startsWith('private-')){
+					hiddenRows=[4,5,6,7,8,9,10,11];
+				}
 				
 				var item4={};
 				item4.id=4;
@@ -246,6 +250,9 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item13={};
 				item13.id=13;
+				if(hiddenRows.length>0){
+					item13.id=item13.id-hiddenRows.length;
+				}
 				item13.title=loginUserLanguageResource.sortNum;
 				item13.value=data.sort;
 				root.push(item13);
@@ -271,6 +278,14 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				protocolConfigInstancePropertiesHandsontableHelper.unitList=unitList;
 				protocolConfigInstancePropertiesHandsontableHelper.hot.loadData(root);
 			}
+			
+			const plugin = protocolConfigInstancePropertiesHandsontableHelper.hot.getPlugin('hiddenRows');
+			if(hiddenRows.length>0){
+				plugin.hideRows(hiddenRows);
+			}else{
+				plugin.showRows(hiddenRows);
+			}
+			protocolConfigInstancePropertiesHandsontableHelper.hot.render();
 		},
 		failure:function(){
 //			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
@@ -315,6 +330,11 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		colWidths: [1,4,5],
+	        		hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	                columns:protocolConfigInstancePropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -416,6 +436,24 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                }
 	                    
 	                    return cellProperties;
+	                },
+	                afterChange: function (changes, source) {
+	                	if (!changes) return;
+	                	changes.forEach(([row, prop, oldValue, newValue]) => {
+	                		if(row==2 && prop==='value' ){
+	                			const plugin = protocolConfigInstancePropertiesHandsontableHelper.hot.getPlugin('hiddenRows');
+	                			var hiddenRows=[4,5,6,7,8,9,10,11];
+	                			
+	                			if(newValue.startsWith('private-')){
+	                				plugin.hideRows(hiddenRows);
+	                				protocolConfigInstancePropertiesHandsontableHelper.hot.setDataAtRowProp(12,'id',5);
+	            				}else{
+	            					plugin.showRows(hiddenRows);
+	            					protocolConfigInstancePropertiesHandsontableHelper.hot.setDataAtRowProp(12,'id',13);
+	            				}
+	                			protocolConfigInstancePropertiesHandsontableHelper.hot.render();
+	                		}
+	                	});
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if((coords.col<2||(coords.col==2&&coords.row!=4&&coords.row!=7&&coords.row!=8  ))

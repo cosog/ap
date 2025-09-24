@@ -220,7 +220,14 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 				blankText : loginUserLanguageResource.selectGroupType,
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("formAcquisitionGroupType_Id").setValue(this.value);
+						Ext.getCmp("formAcquisitionGroupType_Id").setValue(o.data.value);
+						if(o.data.value==1){
+							Ext.getCmp('formAcquisitionGroupGroupTimingInterval_Id').hide();
+							Ext.getCmp('formAcquisitionGroupGroupSavingInterval_Id').hide();
+						}else{
+							Ext.getCmp('formAcquisitionGroupGroupTimingInterval_Id').show();
+							Ext.getCmp('formAcquisitionGroupGroupSavingInterval_Id').show();
+						}
 					}
 				}
             }, {

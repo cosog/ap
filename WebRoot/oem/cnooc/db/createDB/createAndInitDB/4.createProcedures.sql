@@ -74,7 +74,7 @@ END prd_reset_sequence;
 CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
 --清空所有数据
---EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_acqdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_alarminfo_hist';
@@ -96,20 +96,25 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcpdailycalculationdata';
 EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
 
+EXECUTE IMMEDIATE 'truncate table tbl_acqdata_vacuate';
+EXECUTE IMMEDIATE 'truncate table tbl_srpacqdata_vacuate';
+EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_vacuate';
 
 --EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
 --EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
 --EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
 
---EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
---EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
---EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
+EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
+EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
+EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
+EXECUTE IMMEDIATE 'truncate table tbl_dbmonitoring';
 
 --EXECUTE IMMEDIATE 'truncate table tbl_device';
 --EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
 
+
 --重置所有序列
- --prd_reset_sequence('seq_acqdata_latest');
+ prd_reset_sequence('seq_acqdata_latest');
  prd_reset_sequence('seq_acqdata_hist');
  prd_reset_sequence('seq_alarminfo_latest');
  prd_reset_sequence('seq_alarminfo_hist');
@@ -130,14 +135,19 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcptimingcalculationdata';
  prd_reset_sequence('seq_pcpacqdata_hist');
  prd_reset_sequence('seq_pcpdailycalculationdata');
  prd_reset_sequence('seq_pcptimingcalculationdata');
+ 
+ prd_reset_sequence('seq_acqdata_vacuate');
+ prd_reset_sequence('seq_srpacqdata_vacuate');
+ prd_reset_sequence('seq_pcpacqdata_vacuate');
 
  --prd_reset_sequence('seq_deviceaddinfo');
  --prd_reset_sequence('seq_auxiliary2master');
  --prd_reset_sequence('seq_devicegraphicset');
 
- --prd_reset_sequence('seq_deviceoperationlog');
- --prd_reset_sequence('seq_systemlog');
- --prd_reset_sequence('seq_resourcemonitoring');
+ prd_reset_sequence('seq_deviceoperationlog');
+ prd_reset_sequence('seq_systemlog');
+ prd_reset_sequence('seq_resourcemonitoring');
+ prd_reset_sequence('seq_dbmonitoring');
 
  --prd_reset_sequence('seq_device');
  --prd_reset_sequence('seq_smsdevice');
@@ -606,6 +616,7 @@ CREATE OR REPLACE PROCEDURE prd_save_device (
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
+                                                    v_commissioningDate in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_isCheckout in NUMBER,
                                                     v_license in NUMBER,
@@ -638,7 +649,7 @@ begin
           t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
           t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
           t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
-          t.status=v_status, t.sortnum=v_sortNum,
+          t.commissioningdate=to_date(v_commissioningDate,'yyyy-mm-dd'),t.status=v_status, t.sortnum=v_sortNum,
           t.productiondataupdatetime=sysdate
         Where t.deviceName=v_deviceName and t.orgid=v_orgId;
         commit;
@@ -668,8 +679,8 @@ begin
         and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
-            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,commissioningdate,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,to_date(v_commissioningDate,'yyyy-mm-dd'),v_sortNum,sysdate);
             commit;
             update tbl_device t
             set t.applicationscenarios=v_applicationScenarios,
@@ -716,8 +727,8 @@ begin
         and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,Sortnum,productiondataupdatetime)
-            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,v_sortNum,sysdate);
+            insert into tbl_device(orgId,deviceName,devicetype,tcptype,signinid,ipport,slave,peakdelay,status,commissioningdate,Sortnum,productiondataupdatetime)
+            values(v_orgId,v_deviceName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_status,to_date(v_commissioningDate,'yyyy-mm-dd'),v_sortNum,sysdate);
             commit;
             update tbl_device t
             set t.applicationscenarios=v_applicationScenarios,
@@ -1147,7 +1158,14 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_jedisStatus in number,
   v_cacheMaxMemory in number,
   v_cacheUsedMemory in number,
-  v_resourceMonitoringSaveData in number
+  v_resourceMonitoringSaveData in number,
+  v_totalMemoryUsage in number,
+  v_tomcatPhysicalMemory in number,
+  v_JVMMemory in number,
+  v_JVMHeapMemory in number,
+  v_JVMNonHeapMemory in number,
+  v_oraclePhysicalMemory in number
+  
   ) is
   p_msg varchar2(3000) := 'error';
   counts number :=0;
@@ -1163,7 +1181,13 @@ begin
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
         t.jedisStatus=v_jedisStatus,
         t.cachemaxmemory=v_cacheMaxMemory,
-        t.cacheusedmemory=v_cacheUsedMemory
+        t.cacheusedmemory=v_cacheUsedMemory,
+        t.totalmemoryusage=v_totalMemoryUsage,
+        t.tomcatphysicalmemory=v_tomcatPhysicalMemory,
+        t.jvmmemoryusage=v_JVMMemory,
+        t.jvmheapmemoryusage=v_JVMHeapMemory,
+        t.jvmnonheapmemoryusage=v_JVMNonHeapMemory,
+        t.oraclephysicalmemory=v_oraclePhysicalMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
      p_msg := '删除多余记录并更新成功';
@@ -1175,14 +1199,22 @@ begin
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
         t.jedisStatus=v_jedisStatus,
         t.cachemaxmemory=v_cacheMaxMemory,
-        t.cacheusedmemory=v_cacheUsedMemory
+        t.cacheusedmemory=v_cacheUsedMemory,
+        t.totalmemoryusage=v_totalMemoryUsage,
+        t.tomcatphysicalmemory=v_tomcatPhysicalMemory,
+        t.jvmmemoryusage=v_JVMMemory,
+        t.jvmheapmemoryusage=v_JVMHeapMemory,
+        t.jvmnonheapmemoryusage=v_JVMNonHeapMemory,
+        t.oraclephysicalmemory=v_oraclePhysicalMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
     p_msg := '更新成功';
    elsif counts<v_resourceMonitoringSaveData then
      insert into tbl_resourcemonitoring (
          acqtime,acrunstatus,acversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize,
-         jedisStatus,cachemaxmemory,cacheusedmemory
+         jedisStatus,cachemaxmemory,cacheusedmemory,totalmemoryusage,
+         tomcatphysicalmemory,jvmmemoryusage,jvmheapmemoryusage,jvmnonheapmemoryusage,
+         oraclephysicalmemory
       )values(
          to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          v_acRunStatus,
@@ -1194,7 +1226,13 @@ begin
          v_tableSpaceSize,
          v_jedisStatus,
          v_cacheMaxMemory,
-         v_cacheUsedMemory
+         v_cacheUsedMemory,
+         v_totalMemoryUsage,
+         v_tomcatPhysicalMemory,
+         v_JVMMemory,
+         v_JVMHeapMemory,
+         v_JVMNonHeapMemory,
+         v_oraclePhysicalMemory
       );
       commit;
       p_msg := '插入成功';
@@ -1312,7 +1350,8 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram (
        v_rpm in NUMBER) as
   p_msg varchar2(3000) := 'error';
 begin
-  update tbl_srpacqdata_latest t
+  if v_ResultStatus=1 then
+    update tbl_srpacqdata_latest t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
@@ -1357,7 +1396,8 @@ begin
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.deviceid=v_wellId;
-  commit;
+    commit;
+  end if;
   update tbl_srpacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
@@ -1877,6 +1917,7 @@ end prd_update_auxiliarydevice;
 CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_applicationScenarios    in NUMBER,
+                                                    v_calculateType   in NUMBER,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -1887,6 +1928,7 @@ CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
+                                                    v_commissioningDate in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_result out NUMBER,
                                                     v_resultstr out varchar2) as
@@ -1909,12 +1951,14 @@ begin
           Update tbl_device t
            Set t.devicename=v_deviceName,
                t.applicationscenarios=v_applicationScenarios,
+               t.calculatetype=v_calculateType,
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
                t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
+               t.commissioningdate=to_date(v_commissioningDate,'yyyy-mm-dd'),
                t.sortnum=v_sortNum,
                t.productiondataupdatetime=sysdate
            Where t.id=v_recordId;
@@ -1983,4 +2027,152 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_smsdevice;
+/
+
+CREATE OR REPLACE PROCEDURE prd_update_srp_diagram_latest (v_deviceId in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_srpacqdata_latest t set (fesdiagramacqtime,fesdiagramsrc,
+  productiondata,balanceinfo,
+  stroke,spm,
+  position_curve,load_curve,power_curve,current_curve,
+  resultstatus,
+  fmax,fmin,
+  upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,
+  deltaradius,
+  resultcode,
+  fullnesscoefficient,
+  noliquidfullnesscoefficient,
+  plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
+  upperloadline,upperloadlineofexact,lowerloadline,
+  smaxindex,sminindex,
+  pumpfsdiagram,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  availableplungerstrokeprod_v,pumpclearanceleakprod_v,
+  tvleakvolumetricproduction,svleakvolumetricproduction,gasinfluenceprod_v,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  availableplungerstrokeprod_w,pumpclearanceleakprod_w,
+  tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
+  LevelDifferenceValue,CalcProducingfluidLevel,
+  submergence,
+  averagewatt,polishrodpower,waterpower,
+  surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
+  energyper100mlift,area,
+  rodflexlength,tubingflexlength,inertialength,
+  pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  crankangle,polishrodv,polishroda,pr,tf,
+  loadtorque,cranktorque,currentbalancetorque,currentnettorque,
+  expectedbalancetorque,expectednettorque,
+  wellboreslice,
+  rpm,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction)=
+  (select fesdiagramacqtime,fesdiagramsrc,
+  productiondata,balanceinfo,
+  stroke,spm,
+  position_curve,load_curve,power_curve,current_curve,
+  resultstatus,
+  fmax,fmin,
+  upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,
+  deltaradius,
+  resultcode,
+  fullnesscoefficient,
+  noliquidfullnesscoefficient,
+  plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
+  upperloadline,upperloadlineofexact,lowerloadline,
+  smaxindex,sminindex,
+  pumpfsdiagram,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  availableplungerstrokeprod_v,pumpclearanceleakprod_v,
+  tvleakvolumetricproduction,svleakvolumetricproduction,gasinfluenceprod_v,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  availableplungerstrokeprod_w,pumpclearanceleakprod_w,
+  tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
+  LevelDifferenceValue,CalcProducingfluidLevel,
+  submergence,
+  averagewatt,polishrodpower,waterpower,
+  surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
+  energyper100mlift,area,
+  rodflexlength,tubingflexlength,inertialength,
+  pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  crankangle,polishrodv,polishroda,pr,tf,
+  loadtorque,cranktorque,currentbalancetorque,currentnettorque,
+  expectedbalancetorque,expectednettorque,
+  wellboreslice,
+  rpm,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction
+  from tbl_srpacqdata_hist t3 where t3.id=
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 and t2.fesdiagramacqtime is not null order by t2.fesdiagramacqtime desc) v where rownum=1) )
+  where t.deviceid=v_deviceId;
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_srp_diagram_latest;
+/
+
+CREATE OR REPLACE PROCEDURE prd_update_pcp_rpm_latest (v_deviceId in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_pcpacqdata_latest t set (acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction)=
+  (select acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction
+  from tbl_pcpacqdata_hist t3 where t3.id=
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.acqtime desc) v where rownum=1) )
+  where t.deviceid=v_deviceId;
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_pcp_rpm_latest;
 /

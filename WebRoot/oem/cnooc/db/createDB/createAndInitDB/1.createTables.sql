@@ -27,8 +27,8 @@ alter table TBL_DEVICETYPEINFO  add constraint PK_TABINFO primary key (ID)
 create table TBL_PROTOCOL
 (
   id         NUMBER(10) not null,
-  name       VARCHAR2(50),
-  code       VARCHAR2(50),
+  name       VARCHAR2(500),
+  code       VARCHAR2(500),
   devicetype NUMBER(10),
   items      CLOB,
   extendedfield CLOB,
@@ -438,7 +438,7 @@ create table TBL_ACQ_GROUP_CONF
   group_name          VARCHAR2(50),
   grouptiminginterval NUMBER(10) default 1,
   groupsavinginterval NUMBER(10) default 5,
-  protocol            VARCHAR2(50),
+  protocol            VARCHAR2(500),
   type                NUMBER(1) default 0,
   remark              VARCHAR2(2000)
 )
@@ -2109,7 +2109,13 @@ create table TBL_RESOURCEMONITORING
   tablespacesize NUMBER(10,2),
   jedisstatus    NUMBER(2),
   cachemaxmemory  NUMBER(20),
-  cacheusedmemory NUMBER(20)
+  cacheusedmemory NUMBER(20),
+  jvmmemoryusage        NUMBER(20),
+  oraclephysicalmemory  NUMBER(20),
+  totalmemoryusage      NUMBER(10,2),
+  jvmheapmemoryusage    NUMBER(20),
+  jvmnonheapmemoryusage NUMBER(20),
+  tomcatphysicalmemory  NUMBER(20)
 )
 tablespace AP_DATA
   storage

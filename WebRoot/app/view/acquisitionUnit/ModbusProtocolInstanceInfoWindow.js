@@ -151,7 +151,28 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				blankText : loginUserLanguageResource.selectProtocolType+'...',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("modbusInstanceAcqProtocolType_Id").setValue(this.value);
+						Ext.getCmp("modbusInstanceAcqProtocolType_Id").setValue(o.data.value);
+						
+						if(o.data.value.startsWith('private-')){
+							Ext.getCmp('modbusInstanceSignInPrefixSuffixHex_Id').hide();
+							Ext.getCmp('formModbusProtocolInstanceSignInPrefix_Id').hide();
+							Ext.getCmp('modbusProtocolInstanceSignInSuffix_Id').hide();
+							Ext.getCmp('modbusProtocolInstanceSignInIDHex_Id').hide();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatPrefixSuffixHex_Id').hide();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatPrefix_Id').hide();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatSuffix_Id').hide();
+							Ext.getCmp('modbusProtocolInstancePacketSendInterval_Id').hide();
+						}else{
+							Ext.getCmp('modbusInstanceSignInPrefixSuffixHex_Id').show();
+							Ext.getCmp('formModbusProtocolInstanceSignInPrefix_Id').show();
+							Ext.getCmp('modbusProtocolInstanceSignInSuffix_Id').show();
+							Ext.getCmp('modbusProtocolInstanceSignInIDHex_Id').show();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatPrefixSuffixHex_Id').show();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatPrefix_Id').show();
+							Ext.getCmp('modbusProtocolInstanceHeartbeatSuffix_Id').show();
+							Ext.getCmp('modbusProtocolInstancePacketSendInterval_Id').show();
+						}
+						
 					}
 				}
             },{
@@ -187,6 +208,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				}
             },{
             	xtype: 'fieldcontainer',
+            	id:'modbusInstanceSignInPrefixSuffixHex_Id',
                 fieldLabel : loginUserLanguageResource.signInPrefixSuffixHex+'<font color=red>*</font>',
                 labelWidth: 135,
                 defaultType: 'radiofield',
@@ -225,6 +247,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 value: ''
             },{
             	xtype: 'fieldcontainer',
+            	id: 'modbusProtocolInstanceSignInIDHex_Id',
                 fieldLabel : loginUserLanguageResource.signInIDHex+'<font color=red>*</font>',
                 labelWidth: 135,
                 defaultType: 'radiofield',
@@ -249,6 +272,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 ]
             },{
             	xtype: 'fieldcontainer',
+            	id: 'modbusProtocolInstanceHeartbeatPrefixSuffixHex_Id',
                 fieldLabel : loginUserLanguageResource.heartbeatPrefixSuffixHex+'<font color=red>*</font>',
                 labelWidth: 135,
                 defaultType: 'radiofield',

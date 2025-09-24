@@ -1158,7 +1158,14 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_jedisStatus in number,
   v_cacheMaxMemory in number,
   v_cacheUsedMemory in number,
-  v_resourceMonitoringSaveData in number
+  v_resourceMonitoringSaveData in number,
+  v_totalMemoryUsage in number,
+  v_tomcatPhysicalMemory in number,
+  v_JVMMemory in number,
+  v_JVMHeapMemory in number,
+  v_JVMNonHeapMemory in number,
+  v_oraclePhysicalMemory in number
+  
   ) is
   p_msg varchar2(3000) := 'error';
   counts number :=0;
@@ -1174,7 +1181,13 @@ begin
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
         t.jedisStatus=v_jedisStatus,
         t.cachemaxmemory=v_cacheMaxMemory,
-        t.cacheusedmemory=v_cacheUsedMemory
+        t.cacheusedmemory=v_cacheUsedMemory,
+        t.totalmemoryusage=v_totalMemoryUsage,
+        t.tomcatphysicalmemory=v_tomcatPhysicalMemory,
+        t.jvmmemoryusage=v_JVMMemory,
+        t.jvmheapmemoryusage=v_JVMHeapMemory,
+        t.jvmnonheapmemoryusage=v_JVMNonHeapMemory,
+        t.oraclephysicalmemory=v_oraclePhysicalMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
      p_msg := '删除多余记录并更新成功';
@@ -1186,14 +1199,22 @@ begin
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize,
         t.jedisStatus=v_jedisStatus,
         t.cachemaxmemory=v_cacheMaxMemory,
-        t.cacheusedmemory=v_cacheUsedMemory
+        t.cacheusedmemory=v_cacheUsedMemory,
+        t.totalmemoryusage=v_totalMemoryUsage,
+        t.tomcatphysicalmemory=v_tomcatPhysicalMemory,
+        t.jvmmemoryusage=v_JVMMemory,
+        t.jvmheapmemoryusage=v_JVMHeapMemory,
+        t.jvmnonheapmemoryusage=v_JVMNonHeapMemory,
+        t.oraclephysicalmemory=v_oraclePhysicalMemory
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
     p_msg := '更新成功';
    elsif counts<v_resourceMonitoringSaveData then
      insert into tbl_resourcemonitoring (
          acqtime,acrunstatus,acversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize,
-         jedisStatus,cachemaxmemory,cacheusedmemory
+         jedisStatus,cachemaxmemory,cacheusedmemory,totalmemoryusage,
+         tomcatphysicalmemory,jvmmemoryusage,jvmheapmemoryusage,jvmnonheapmemoryusage,
+         oraclephysicalmemory
       )values(
          to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          v_acRunStatus,
@@ -1205,7 +1226,13 @@ begin
          v_tableSpaceSize,
          v_jedisStatus,
          v_cacheMaxMemory,
-         v_cacheUsedMemory
+         v_cacheUsedMemory,
+         v_totalMemoryUsage,
+         v_tomcatPhysicalMemory,
+         v_JVMMemory,
+         v_JVMHeapMemory,
+         v_JVMNonHeapMemory,
+         v_oraclePhysicalMemory
       );
       commit;
       p_msg := '插入成功';

@@ -134,7 +134,7 @@ public class TimingTotalCalculateThread extends Thread {
                     String reportItemSql = "select t.itemname,t.itemcode,t.sort,t.datatype " +
                         " from TBL_REPORT_ITEMS2UNIT_CONF t " +
                         " where t.unitid=" + reportUnitId +
-                        " and t.datasource='计算'" +
+                        " and t.datasource=1" +
                         " and t.sort>=0" +
                         " and t.reporttype=2" +
                         " order by t.sort";
@@ -503,7 +503,7 @@ public class TimingTotalCalculateThread extends Thread {
                     String reportItemSql = "select t.itemname,t.itemcode,t.sort,t.datatype " +
                         " from TBL_REPORT_ITEMS2UNIT_CONF t " +
                         " where t.unitid=" + reportUnitId +
-                        " and t.datasource='计算'" +
+                        " and t.datasource=1" +
                         " and t.sort>=0" +
                         " and t.reporttype=2" +
                         " order by t.sort";
@@ -822,7 +822,7 @@ public class TimingTotalCalculateThread extends Thread {
                     String reportItemSql = "select t.itemname,t.itemcode,t.sort,t.datatype " +
                         " from TBL_REPORT_ITEMS2UNIT_CONF t " +
                         " where t.unitid=" + reportUnitId +
-                        " and t.datasource<>'计算'" +
+                        " and t.datasource<>1" +
                         " and t.sort>=0" +
                         " and t.reporttype=2" +
                         " order by t.sort";

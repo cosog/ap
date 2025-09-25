@@ -349,11 +349,13 @@ public class EquipmentDriverServerTask {
 		private String deviceName;
 		private int cycle;
 		private int wait;
-		public ExampleDataManageThread(String deviceName,int cycle,int wait) {
+		private String language;
+		public ExampleDataManageThread(String deviceName,int cycle,int wait,String language) {
 			super();
 			this.deviceName = deviceName;
 			this.cycle = cycle;
 			this.wait = wait;
+			this.language = language;
 		}
 		@SuppressWarnings("static-access")
 		public void run(){
@@ -365,10 +367,10 @@ public class EquipmentDriverServerTask {
 				String onlineUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL();
 				
 				String path="";
-				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/");
+				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/"+language+"/");
 				String data=stringManagerUtils.readFile(path,"utf-8");
 				
-				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/");
+				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/"+language+"/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
 				
 				
@@ -378,7 +380,7 @@ public class EquipmentDriverServerTask {
 						if("srp01".equalsIgnoreCase(deviceName)){
 							int index=i%30+1;
 							String indexStr=index<10?("0"+index):(index+"");
-							path=stringManagerUtils.getFilePath(deviceName+"_"+indexStr+".json","example/");
+							path=stringManagerUtils.getFilePath(deviceName+"_"+indexStr+".json","example/"+language+"/");
 							data=stringManagerUtils.readFile(path,"utf-8");
 							StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
 						}else{
@@ -409,21 +411,49 @@ public class EquipmentDriverServerTask {
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
 //				sendCycle=60;
 //				timeDifference=0;
-				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1).start();
-				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2).start();
-				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0).start();
-				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1).start();
-//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2).start();
-//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3).start();
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"zh_CN").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"zh_CN").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"zh_CN").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"zh_CN").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"zh_CN").start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"zh_CN").start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"zh_CN").start();
 				
-//				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0).start();
-//				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0).start();
+//				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0,"zh_CN").start();
+//				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0,"zh_CN").start();
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
+				
+				
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"en").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"en").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"en").start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
+				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
+				
+				
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"ru").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"ru").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"ru").start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"ru").start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"ru").start();
+				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"ru").start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1375,6 +1405,7 @@ public class EquipmentDriverServerTask {
 						+ " where t.commstatus<>1 "
 						+ " and t.deviceid in ( select t2.id from tbl_device t2 where t2.tcptype='TCP Server' and t2.ipport in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineIPPort(), ",")+") )";
 				try {
+//					OracleJdbcUtis.executeSqlUpdate(initSRPCommSql);         
 					JDBCUtil.updateRecord(initSRPCommSql, null);
 				} catch (SQLException e) {
 					e.printStackTrace();

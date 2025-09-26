@@ -1,6 +1,7 @@
 package com.cosog.utils;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -142,6 +143,27 @@ public class OracleJdbcUtis {
                 try{
                 	if(pstmt!=null)
                 		pstmt.close();
+                }catch(SQLException e){  
+                    e.printStackTrace();  
+                }  
+                conn = null;  
+            }  
+        }  
+    }
+	
+	public static void closeDBConnection(Connection conn,CallableStatement cs){  
+        if(conn != null){  
+            try{           
+            	if(cs!=null)
+            		cs.close();  
+                conn.close();  
+            }catch(SQLException e){  
+                StringManagerUtils.printLog("closeDBConnectionError!");  
+                e.printStackTrace();  
+            }finally{  
+                try{
+                	if(cs!=null)
+                		cs.close();
                 }catch(SQLException e){  
                     e.printStackTrace();  
                 }  
@@ -539,4 +561,39 @@ public class OracleJdbcUtis {
 		}
 		return list;
 	}
+	
+	public synchronized static int callProcedure(String procedure,List<Object>params) throws SQLException{  
+        int iNum=0;  
+        Connection conn=OracleJdbcUtis.getConnection();
+        CallableStatement cs=null;
+        try{
+        	if(conn!=null){
+        		StringBuffer call=new StringBuffer();
+            	call.append("{call "+procedure+"(");
+            	if(params!=null && params.size()>0){
+            		for(int i=0;i<params.size();i++){
+            			call.append("?,");
+            		}
+            		if(call.toString().endsWith(",")){
+            			call.deleteCharAt(call.length() - 1);
+            		}
+            	}
+            	
+            	call.append(")}");
+            	
+            	cs=conn.prepareCall(call.toString());
+            	if(params!=null && params.size()>0){
+            		for(int i=0;i<params.size();i++){
+            			cs.setObject(i+1, params.get(i));
+            		}
+            	}
+            	iNum=cs.executeUpdate();
+        	}
+        }catch(Exception e){
+            e.printStackTrace();  
+        }finally{  
+        	OracleJdbcUtis.closeDBConnection(conn, cs);
+        }  
+        return iNum;  
+    }
 }

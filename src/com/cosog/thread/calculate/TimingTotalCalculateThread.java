@@ -1,5 +1,7 @@
 package com.cosog.thread.calculate;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -10,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.orm.hibernate5.SessionFactoryUtils;
 
+import com.cosog.dao.BaseDao;
 import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
 import com.cosog.model.RealtimeTotalInfo;
@@ -39,6 +43,9 @@ import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import oracle.jdbc.OracleConnection;
+import oracle.sql.CLOB;
+
 public class TimingTotalCalculateThread extends Thread {
     private int threadId;
     private int deviceId;
@@ -47,11 +54,10 @@ public class TimingTotalCalculateThread extends Thread {
     private String templateCode;
     private String reportUnitId;
     private int calculateType;
-    private CommonDataService commonDataService = null;
 
 
     public TimingTotalCalculateThread(int threadId, int deviceId, String deviceName, String timeStr, String templateCode,
-        String reportUnitId, int calculateType, CommonDataService commonDataService) {
+        String reportUnitId, int calculateType) {
         super();
         this.threadId = threadId;
         this.deviceId = deviceId;
@@ -60,7 +66,6 @@ public class TimingTotalCalculateThread extends Thread {
         this.templateCode = templateCode;
         this.reportUnitId = reportUnitId;
         this.calculateType = calculateType;
-        this.commonDataService = commonDataService;
     }
 
     @SuppressWarnings({
@@ -107,13 +112,13 @@ public class TimingTotalCalculateThread extends Thread {
             TimeEffResponseData timeEffResponseData = null;
             CommResponseData commResponseData = null;
 
-            List <?> labelInfoQueryList = commonDataService.findCallSql(labelInfoSql);
+            List <Object[]> labelInfoQueryList = OracleJdbcUtis.query(labelInfoSql);
             String labelInfo = "";
             ReportTemplate.Template template = null;
 
             //继承表头信息
             for (int j = 0; j <labelInfoQueryList.size(); j++) {
-                Object[] labelInfoObj = (Object[]) labelInfoQueryList.get(j);
+                Object[] labelInfoObj = labelInfoQueryList.get(j);
                 if (deviceId == StringManagerUtils.stringToInteger(labelInfoObj[0].toString())) {
                     labelInfo = labelInfoObj[1] + "";
                     break;
@@ -121,7 +126,7 @@ public class TimingTotalCalculateThread extends Thread {
             }
             String updateSql = "update tbl_srptimingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
             try {
-                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
+            	initDeviceTimingReportDate(deviceId,timeStr,date,calculateType);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -139,9 +144,9 @@ public class TimingTotalCalculateThread extends Thread {
                         " and t.reporttype=2" +
                         " order by t.sort";
                     List <ReportUnitItem> reportItemList = new ArrayList <ReportUnitItem> ();
-                    List <?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
+                    List <Object[]> reportItemQuertList = OracleJdbcUtis.query(reportItemSql);
                     for (int k = 0; reportItemQuertList != null && k <reportItemQuertList.size(); k++) {
-                        Object[] reportItemObj = (Object[]) reportItemQuertList.get(k);
+                        Object[] reportItemObj = reportItemQuertList.get(k);
                         ReportUnitItem reportUnitItem = new ReportUnitItem();
                         reportUnitItem.setItemName(reportItemObj[0] + "");
                         reportUnitItem.setItemCode(reportItemObj[1] + "");
@@ -181,7 +186,7 @@ public class TimingTotalCalculateThread extends Thread {
                             " where t.deviceId=" + deviceId +
                             " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
                         try {
-                            int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
+                            int r = OracleJdbcUtis.executeSqlUpdate(updateEditDataSql);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -416,7 +421,7 @@ public class TimingTotalCalculateThread extends Thread {
             TotalAnalysisResponseData totalAnalysisResponseData = CalculateUtils.totalCalculate(dataSbf.toString());
             updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
             try {
-                int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
+                int r = OracleJdbcUtis.executeSqlUpdate(updateSql);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -431,7 +436,7 @@ public class TimingTotalCalculateThread extends Thread {
                 }
                 updateHisRangeClobSql += " where t.deviceId=" + deviceId + " and t.caltime=" + "to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
                 try {
-                    int r = commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql, clobCont);
+                    int r =OracleJdbcUtis.executeSqlUpdateClob(updateHisRangeClobSql, clobCont);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -440,7 +445,7 @@ public class TimingTotalCalculateThread extends Thread {
             if (totalAnalysisResponseData != null && totalAnalysisResponseData.getResultStatus() == 1) {
                 int recordCount = totalAnalysisRequestData.getAcqTime() != null ? totalAnalysisRequestData.getAcqTime().size() : 0;
                 try {
-                    commonDataService.getBaseDao().saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData, totalAnalysisRequestData, timeStr, recordCount);
+                    saveFSDiagramTimingTotalCalculationData(totalAnalysisResponseData, totalAnalysisRequestData, timeStr, recordCount);
                 } catch (SQLException | ParseException e) {
                     e.printStackTrace();
                 }
@@ -473,13 +478,13 @@ public class TimingTotalCalculateThread extends Thread {
             TimeEffResponseData timeEffResponseData = null;
             CommResponseData commResponseData = null;
 
-            List <?> labelInfoQueryList = commonDataService.findCallSql(labelInfoSql);
+            List <Object[]> labelInfoQueryList = OracleJdbcUtis.query(labelInfoSql);
             String labelInfo = "";
             ReportTemplate.Template template = null;
 
             //继承表头信息
             for (int j = 0; j <labelInfoQueryList.size(); j++) {
-                Object[] labelInfoObj = (Object[]) labelInfoQueryList.get(j);
+                Object[] labelInfoObj = labelInfoQueryList.get(j);
                 if (StringManagerUtils.stringToInteger(labelInfoObj[0].toString()) == deviceId) {
                     labelInfo = labelInfoObj[1] + "";
                     break;
@@ -489,7 +494,7 @@ public class TimingTotalCalculateThread extends Thread {
             String updateSql = "update tbl_pcptimingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
 
             try {
-                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
+            	initDeviceTimingReportDate(deviceId,timeStr,date,calculateType);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -508,10 +513,10 @@ public class TimingTotalCalculateThread extends Thread {
                         " and t.reporttype=2" +
                         " order by t.sort";
                     List <ReportUnitItem> reportItemList = new ArrayList <ReportUnitItem> ();
-                    List <?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
+                    List <Object[]> reportItemQuertList = OracleJdbcUtis.query(reportItemSql);
 
                     for (int k = 0; k <reportItemQuertList.size(); k++) {
-                        Object[] reportItemObj = (Object[]) reportItemQuertList.get(k);
+                        Object[] reportItemObj = reportItemQuertList.get(k);
                         ReportUnitItem reportUnitItem = new ReportUnitItem();
                         reportUnitItem.setItemName(reportItemObj[0] + "");
                         reportUnitItem.setItemCode(reportItemObj[1] + "");
@@ -551,7 +556,7 @@ public class TimingTotalCalculateThread extends Thread {
                             " where t.deviceId=" + deviceId +
                             " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
                         try {
-                            int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
+                            int r = OracleJdbcUtis.executeSqlUpdate(updateEditDataSql);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -734,7 +739,7 @@ public class TimingTotalCalculateThread extends Thread {
 
             updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
             try {
-                int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
+                int r = OracleJdbcUtis.executeSqlUpdate(updateSql);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -749,7 +754,7 @@ public class TimingTotalCalculateThread extends Thread {
                 }
                 updateHisRangeClobSql += " where t.deviceId=" + deviceId + " and t.caltime=" + "to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
                 try {
-                    int r = commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql, clobCont);
+                    int r = OracleJdbcUtis.executeSqlUpdateClob(updateHisRangeClobSql, clobCont);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -757,7 +762,7 @@ public class TimingTotalCalculateThread extends Thread {
             if (totalAnalysisResponseData != null && totalAnalysisResponseData.getResultStatus() == 1) {
                 int recordCount = totalAnalysisRequestData.getAcqTime() != null ? totalAnalysisRequestData.getAcqTime().size() : 0;
                 try {
-                    commonDataService.getBaseDao().saveRPMTimingTotalCalculateData(totalAnalysisResponseData, totalAnalysisRequestData, timeStr, recordCount);
+                    saveRPMTimingTotalCalculateData(totalAnalysisResponseData, totalAnalysisRequestData, timeStr, recordCount);
                 } catch (SQLException | ParseException e) {
                     e.printStackTrace();
                 }
@@ -792,13 +797,13 @@ public class TimingTotalCalculateThread extends Thread {
             float runTimeEfficiency = 0;
             String runRange = "";
 
-            List <?> labelInfoQueryList = commonDataService.findCallSql(labelInfoSql);
+            List <Object[]> labelInfoQueryList = OracleJdbcUtis.query(labelInfoSql);
             String labelInfo = "";
             ReportTemplate.Template template = null;
 
             //继承表头信息
             for (int j = 0; j <labelInfoQueryList.size(); j++) {
-                Object[] labelInfoObj = (Object[]) labelInfoQueryList.get(j);
+                Object[] labelInfoObj = labelInfoQueryList.get(j);
                 if (StringManagerUtils.stringToInteger(labelInfoObj[0].toString()) == deviceId) {
                     labelInfo = labelInfoObj[1] + "";
                     break;
@@ -808,7 +813,7 @@ public class TimingTotalCalculateThread extends Thread {
             String updateSql = "update tbl_timingcalculationdata t set t.headerlabelinfo='" + labelInfo + "'";
 
             try {
-                commonDataService.getBaseDao().initDeviceTimingReportDate(deviceId, timeStr, date, calculateType);
+            	initDeviceTimingReportDate(deviceId,timeStr,date,calculateType);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -827,10 +832,10 @@ public class TimingTotalCalculateThread extends Thread {
                         " and t.reporttype=2" +
                         " order by t.sort";
                     List <ReportUnitItem> reportItemList = new ArrayList <ReportUnitItem> ();
-                    List <?> reportItemQuertList = commonDataService.findCallSql(reportItemSql);
+                    List <Object[]> reportItemQuertList = OracleJdbcUtis.query(reportItemSql);
 
                     for (int k = 0; k <reportItemQuertList.size(); k++) {
-                        Object[] reportItemObj = (Object[]) reportItemQuertList.get(k);
+                        Object[] reportItemObj = reportItemQuertList.get(k);
                         ReportUnitItem reportUnitItem = new ReportUnitItem();
                         reportUnitItem.setItemName(reportItemObj[0] + "");
                         reportUnitItem.setItemCode(reportItemObj[1] + "");
@@ -870,7 +875,7 @@ public class TimingTotalCalculateThread extends Thread {
                             " where t.deviceId=" + deviceId +
                             " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss') ";
                         try {
-                            int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateEditDataSql);
+                            int r = OracleJdbcUtis.executeSqlUpdate(updateEditDataSql);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -974,7 +979,7 @@ public class TimingTotalCalculateThread extends Thread {
             
             updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
             try {
-            	int r = commonDataService.getBaseDao().updateOrDeleteBySql(updateSql);
+            	int r = OracleJdbcUtis.executeSqlUpdate(updateSql);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1014,7 +1019,12 @@ public class TimingTotalCalculateThread extends Thread {
                     clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
                 }
                 updateRangeClobSql += " where t.deviceid=" + deviceId + " and t.caltime=" + "to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
-                commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql, clobCont);
+                try {
+					OracleJdbcUtis.executeSqlUpdateClob(updateRangeClobSql, clobCont);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
 		
         }
@@ -1083,14 +1093,14 @@ public class TimingTotalCalculateThread extends Thread {
     }
 
 
-    public CommonDataService getCommonDataService() {
-        return commonDataService;
-    }
-
-
-    public void setCommonDataService(CommonDataService commonDataService) {
-        this.commonDataService = commonDataService;
-    }
+//    public CommonDataService getCommonDataService() {
+//        return commonDataService;
+//    }
+//
+//
+//    public void setCommonDataService(CommonDataService commonDataService) {
+//        this.commonDataService = commonDataService;
+//    }
 
     public int getCalculateType() {
         return calculateType;
@@ -1099,4 +1109,228 @@ public class TimingTotalCalculateThread extends Thread {
     public void setCalculateType(int calculateType) {
         this.calculateType = calculateType;
     }
+    
+    public Boolean saveFSDiagramTimingTotalCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String timeStr,int recordCount) throws SQLException, ParseException {
+		Connection conn=OracleJdbcUtis.getConnection();
+		CallableStatement cs=null;
+		
+		CLOB resultStrClob=new CLOB((OracleConnection) conn);
+		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		
+		CLOB commRanceClob=new CLOB((OracleConnection) conn);
+		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		
+		CLOB runRanceClob=new CLOB((OracleConnection) conn);
+		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		
+		try {
+			if(conn!=null){
+				cs = conn.prepareCall("{call prd_save_srp_diagramtimingtotal("
+						+ "?,?,"
+						+ "?,?,?,"
+						+ "?,?,?,?,?,"
+						+ "?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,"
+						+ "?,?,?,?,?,?,?,"
+						+ "?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,"
+						+ "?"
+						+ ")}");
+				cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
+				cs.setInt(2,totalAnalysisResponseData.getResultStatus());
+				
+				cs.setInt(3,totalAnalysisResponseData.getResultCode());
+				cs.setClob(4,resultStrClob);
+				cs.setInt(5,totalAnalysisResponseData.getExtendedDays());
+				
+				cs.setFloat(6, totalAnalysisResponseData.getStroke().getValue());
+				cs.setFloat(7, totalAnalysisResponseData.getSPM().getValue());
+				cs.setFloat(8, totalAnalysisResponseData.getFMax().getValue());
+				cs.setFloat(9, totalAnalysisResponseData.getFMin().getValue());
+				cs.setFloat(10, totalAnalysisResponseData.getFullnessCoefficient().getValue());
+				
+				cs.setFloat(11, totalAnalysisResponseData.getTheoreticalProduction().getValue());
+				
+				cs.setFloat(12, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
+				cs.setFloat(13, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
+				cs.setFloat(14, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
+				cs.setFloat(15, totalAnalysisResponseData.getVolumeWaterCut().getValue());
+				
+				cs.setFloat(16, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
+				cs.setFloat(17, totalAnalysisResponseData.getOilWeightProduction().getValue());
+				cs.setFloat(18, totalAnalysisResponseData.getWaterWeightProduction().getValue());
+				cs.setFloat(19, totalAnalysisResponseData.getWeightWaterCut().getValue());
+				
+				cs.setFloat(20, totalAnalysisResponseData.getPumpEff().getValue());
+				cs.setFloat(21, totalAnalysisResponseData.getPumpEff1().getValue());
+				cs.setFloat(22, totalAnalysisResponseData.getPumpEff2().getValue());
+				cs.setFloat(23, totalAnalysisResponseData.getPumpEff3().getValue());
+				cs.setFloat(24, totalAnalysisResponseData.getPumpEff4().getValue());
+				
+				cs.setFloat(25, totalAnalysisResponseData.getWellDownSystemEfficiency().getValue());
+				cs.setFloat(26, totalAnalysisResponseData.getSurfaceSystemEfficiency().getValue());
+				cs.setFloat(27, totalAnalysisResponseData.getSystemEfficiency().getValue());
+				cs.setFloat(28, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+				
+				cs.setFloat(29, totalAnalysisResponseData.getIDegreeBalance().getValue());
+				cs.setFloat(30, totalAnalysisResponseData.getWattDegreeBalance().getValue());
+				cs.setFloat(31, totalAnalysisResponseData.getDeltaRadius().getValue());
+				
+				cs.setFloat(32, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+				cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+				cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
+				cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
+				cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+				cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
+				cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
+				
+				cs.setFloat(39, totalAnalysisResponseData.getRPM().getValue());
+				
+				cs.setInt(40,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+				cs.setFloat(41, totalAnalysisResponseData.getCommTime());
+				cs.setFloat(42, totalAnalysisResponseData.getCommTimeEfficiency());
+				cs.setClob(43,commRanceClob);
+				
+				cs.setInt(44,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+				cs.setFloat(45, totalAnalysisResponseData.getRunTime());
+				cs.setFloat(46, totalAnalysisResponseData.getRunTimeEfficiency());
+				cs.setClob(47,runRanceClob);
+				
+				cs.setString(48, timeStr);
+				cs.setInt(49, recordCount);
+				cs.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		
+		return true;
+	}
+    
+    public Boolean saveRPMTimingTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,
+			TotalAnalysisRequestData totalAnalysisRequestData,
+			String timeStr,int recordCount) throws SQLException, ParseException {
+    	Connection conn=OracleJdbcUtis.getConnection();
+		CallableStatement cs=null;
+		
+		CLOB commRanceClob=new CLOB((OracleConnection) conn);
+		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		
+		CLOB runRanceClob=new CLOB((OracleConnection) conn);
+		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		
+		
+		try {
+			if(conn!=null){
+				cs = conn.prepareCall("{call prd_save_pcp_rpmtimingtotal("
+						+ "?,?,"
+						+ "?,"
+						+ "?,"
+						+ "?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,"
+						+ "?,?,"
+						+ "?,?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,?,?,?,"
+						+ "?,?"
+						+ ")}");
+				cs.setInt(1,StringManagerUtils.stringToInteger(totalAnalysisRequestData.getWellName()));
+				cs.setInt(2,totalAnalysisResponseData.getResultStatus());
+				
+				cs.setInt(3,totalAnalysisResponseData.getExtendedDays());
+				
+				cs.setFloat(4, totalAnalysisResponseData.getRPM().getValue());
+				
+				cs.setFloat(5, totalAnalysisResponseData.getTheoreticalProduction().getValue());
+				
+				cs.setFloat(6, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
+				cs.setFloat(7, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
+				cs.setFloat(8, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
+				cs.setFloat(9, totalAnalysisResponseData.getVolumeWaterCut().getValue());
+				
+				cs.setFloat(10, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
+				cs.setFloat(11, totalAnalysisResponseData.getOilWeightProduction().getValue());
+				cs.setFloat(12, totalAnalysisResponseData.getWaterWeightProduction().getValue());
+				cs.setFloat(13, totalAnalysisResponseData.getWeightWaterCut().getValue());
+				
+				cs.setFloat(14, totalAnalysisResponseData.getPumpEff().getValue());
+				cs.setFloat(15, totalAnalysisResponseData.getPumpEff1().getValue());
+				cs.setFloat(16, totalAnalysisResponseData.getPumpEff2().getValue());
+				
+				cs.setFloat(17, totalAnalysisResponseData.getSystemEfficiency().getValue());
+				cs.setFloat(18, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+				
+				cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+				cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+				cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+				cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
+				cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
+				
+				cs.setInt(24,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getCommStatus():totalAnalysisRequestData.getCurrentCommStatus());
+				cs.setFloat(25, totalAnalysisResponseData.getCommTime());
+				cs.setFloat(26, totalAnalysisResponseData.getCommTimeEfficiency());
+				cs.setClob(27,commRanceClob);
+				
+				cs.setInt(28,totalAnalysisRequestData.getAcqTime().size()>0?totalAnalysisResponseData.getRunStatus():totalAnalysisRequestData.getCurrentRunStatus());
+				cs.setFloat(29, totalAnalysisResponseData.getRunTime());
+				cs.setFloat(30, totalAnalysisResponseData.getRunTimeEfficiency());
+				cs.setClob(31,runRanceClob);
+				
+				cs.setString(32, timeStr);
+				cs.setInt(33, recordCount);
+				cs.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+    
+    public Boolean initDeviceTimingReportDate(int deviceId,String timeStr,String dateStr,int calculateType) throws SQLException, ParseException {
+    	Connection conn=OracleJdbcUtis.getConnection();
+		CallableStatement cs=null;
+		try {
+			if(conn!=null){
+				cs = conn.prepareCall("{call prd_init_device_timingreportdate(?,?,?,?)}");
+				cs.setInt(1,deviceId);
+				cs.setString(2,timeStr);
+				cs.setString(3,dateStr);
+				cs.setInt(4,calculateType);
+				cs.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
 }

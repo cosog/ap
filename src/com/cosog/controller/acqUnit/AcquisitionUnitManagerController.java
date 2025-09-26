@@ -2579,7 +2579,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getAcqUnitList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String json = acquisitionUnitItemManagerService.getAcqUnitList(user);
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String json = acquisitionUnitItemManagerService.getAcqUnitList(user,protocol);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2593,7 +2594,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getDisplayUnitList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String json = acquisitionUnitItemManagerService.getDisplayUnitList(user);
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String json = acquisitionUnitItemManagerService.getDisplayUnitList(user,protocol);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3665,6 +3667,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolInstanceSaveData>() {}.getType();
 		ModbusProtocolInstanceSaveData modbusProtocolInstanceSaveData=gson.fromJson(data, type);
 		
@@ -3699,7 +3702,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getName()) && StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getCode()) && modbusProtocolInstanceSaveData.getId()>0){
-				String sql="select t.id from tbl_acq_unit_conf t where t.unit_name='"+modbusProtocolInstanceSaveData.getUnitName()+"' and rownum=1";
+				String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
+						+ " where t.protocol=t2.name"
+						+ " and t.unit_name='"+modbusProtocolInstanceSaveData.getUnitName()+"' ";
+				if(StringManagerUtils.isNotNull(protocolCode)){
+					sql+=" and t2.code='"+protocolCode+"'";
+				}
+				sql+= " and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){

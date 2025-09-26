@@ -1148,7 +1148,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
 				String reportUnitId=wellObj[3]+"";
 				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(deviceId, deviceId, deviceName, timeStr, templateCode,
-						reportUnitId, 0, commonDataService);
+						reportUnitId, 0);
 				executor.execute(thread);
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1191,7 +1191,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
 				String reportUnitId=wellObj[3]+"";
 				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(deviceId, deviceId, deviceName, timeStr, templateCode,
-						reportUnitId, 1, commonDataService);
+						reportUnitId, 1);
 				executor.execute(thread);
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1538,7 +1538,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
 				String reportUnitId=wellObj[3]+"";
 				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(deviceId, deviceId, deviceName, timeStr, templateCode,
-						reportUnitId, 2, commonDataService);
+						reportUnitId, 2);
 				executor.execute(thread);
 			}catch(Exception e){
 				e.printStackTrace();

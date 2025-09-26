@@ -144,7 +144,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
 function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 	var root=[];
 	var unitList=[];
-	
+	var protocolList=[];
+	var protocolTreeGridPanelSelection= Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		}else{
+			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+				}
+			}
+		}
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getAcqUnitList',
@@ -291,7 +303,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 //			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			
+			protocol: protocolList.join(",")
         }
 	});
 };
@@ -513,6 +525,16 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
 		var selectedItem=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+		
+		var protocolCode='';
+		var protocolTreeGridPanelSelection= Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+    	if(protocolTreeGridPanelSelection.length>0){
+    		if(protocolTreeGridPanelSelection[0].data.classes==1){
+    			protocolCode=protocolTreeGridPanelSelection[0].data.code;
+    		}
+    	}
+		
+		
 		var propertiesData=protocolConfigInstancePropertiesHandsontableHelper.hot.getData();
 		if(selectedItem.data.classes==1){//选中的是实例
 			var saveData={};
@@ -550,12 +572,12 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			
 			saveData.sort=propertiesData[12][2];
 			
-			SaveModbusProtocolAcqInstanceData(saveData);
+			SaveModbusProtocolAcqInstanceData(saveData,protocolCode);
 		}
 	}
 };
 
-function SaveModbusProtocolAcqInstanceData(saveData){
+function SaveModbusProtocolAcqInstanceData(saveData,protocolCode){
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveProtocolInstanceData',
@@ -577,6 +599,7 @@ function SaveModbusProtocolAcqInstanceData(saveData){
 		},
 		params: {
 			data: JSON.stringify(saveData),
+			protocolCode:protocolCode
         }
 	});
 }

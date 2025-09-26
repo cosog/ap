@@ -6435,7 +6435,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAcqUnitList(User user){
+	public String getAcqUnitList(User user,String protocols){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
 
@@ -6443,8 +6443,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
 				+ " where t.protocol=t2.name"
-				+ " and t2.language= "+user.getLanguage()
-				+ " order by t.sort,t.protocol, t.id";
+				+ " and t2.language= "+user.getLanguage();
+//		if(StringManagerUtils.isNotNull(protocols)){
+//			acqUnitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocols.split(","), ",")+")";
+//		}else{
+//			acqUnitSql+=" and 1=2 ";
+//		}
+		acqUnitSql+= " order by t.sort,t.protocol, t.id";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
@@ -6461,7 +6466,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDisplayUnitList(User user){
+	public String getDisplayUnitList(User user,String protocol){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
 
@@ -6469,8 +6474,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String acqUnitSql="select t.unit_code,t.unit_name "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
-				+ " and t3.language= "+user.getLanguage()
-				+ " order by  t.sort";
+				+ " and t3.language= "+user.getLanguage();
+//		if(StringManagerUtils.isNotNull(protocol)){
+//			acqUnitSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
+//		}else{
+//			acqUnitSql+=" and 1=2 ";
+//		}
+		
+		acqUnitSql+= " order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);

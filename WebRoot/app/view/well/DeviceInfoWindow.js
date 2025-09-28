@@ -633,7 +633,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['TCP Server', 'TCP Server'],['TCP Client', 'TCP Client']]
+							data : [['TCP Client', 'TCP Client'],['TCP Server', 'TCP Server']]
 						}),
 				displayField : 'text',
 				valueField : 'value',

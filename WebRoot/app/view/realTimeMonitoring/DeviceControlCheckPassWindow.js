@@ -73,107 +73,17 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 xtype: 'button',
                 text: loginUserLanguageResource.confirm,
                 iconCls: 'edit',
+                id:'DeviceControlConfirmBtn_Id',
                 handler: function (v, o) {
-            		var all_loading = new Ext.LoadMask({
-                        msg: loginUserLanguageResource.commandSending+'...',
-                        target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
-                    });
-                	all_loading.show();
-                	
-                	var isValid=true;
-                	var controlValue='';
-                	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
-                	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
                 	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
-                	if(deviceControlValueHandsontableHelper!=null && deviceControlValueHandsontableHelper.hot!=null){
-                		var controlValueData=deviceControlValueHandsontableHelper.hot.getData();
-                		if(resolutionMode==1 && quantity==1){
-                			var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
-        					itemMeaning=Ext.JSON.decode(itemMeaning);
-        					var controlValue="";
-        					
-        					if(isNotVal(itemMeaning) && itemMeaning.length>0){
-        						for(var i=0;i<itemMeaning.length;i++){
-        							if(controlValueData[0][1]==itemMeaning[i][1]){
-        								controlValue=itemMeaning[i][0];
-        								break;
-        							}
-        						}
-        					}
-        					if(!isNumber(controlValue)){
-        						isValid=false;
-        					}
-                		}else{
-                			for(var i=0;i<controlValueData.length;i++){
-                    			
-                    			if(isNotVal(controlValueData[i][1])){
-                    				controlValue+=controlValueData[i][1];
-                    			}else{
-                    				controlValue+=" ";
-                    			}
-                    			
-                    			if(i<controlValueData.length-1){
-                    				controlValue+=',';
-                    			}
-                    			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
-                    				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
-                    					isValid=false;
-                    				}
-                    			}
-                    		}
-                		}
-                	}else{
-                		isValid=false;
-                	}
-                	if(isValid){
-                		Ext.Ajax.request({
-                            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
-                            method: "POST",
-                            params: {
-                            	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
-                            	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
-                            	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
-                                controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
-                                controlValue: controlValue,
-                                storeDataType: storeDataType,
-                                quantity: quantity
-                            },
-                            success: function (response, action) {
-                            	all_loading.hide();
-                            	var result =  Ext.JSON.decode(response.responseText);
-                            	
-                            	if (result.flag == false) {
-                            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                    Ext.MessageBox.show({
-                                        title: loginUserLanguageResource.tip,
-                                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
-                                        icon: Ext.MessageBox.INFO,
-                                        buttons: Ext.Msg.OK,
-                                        fn: function () {
-                                            window.location.href = context + "/login";
-                                        }
-                                    });
-                                } else if (result.flag == true && result.error == false) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                                }  else if (result.flag == true && result.error == true) {
-                                	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                                } 
-                            },
-                            failure: function () {
-                            	all_loading.hide();
-                            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-                            }
-                        });
-                	}else{
-                		all_loading.hide();
-                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.dataFormattingError+"</font>");
-                	}
+            		if(resolutionMode!=1){
+            			deviceControlFun();
+            		}
                 	
-            	}
+                	
+                }
             }, {
-                text: loginUserLanguageResource.cancel,
+                text: loginUserLanguageResource.close,
                 iconCls: 'cancel',
                 handler: function () {
                     Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
@@ -182,6 +92,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
         	items:[{
         		region: 'center',
         		layout: 'fit',
+        		id:'DeviceControlValueTablePanel_Id',
         		html: '<div id="DeviceControlValueTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -197,7 +108,12 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                     			height:newHeight
                     		});
                     	}else{
-                  			CreateDeviceControlValueTable();
+                    		var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+                    		if(resolutionMode==1){
+                    			Ext.create('AP.store.realTimeMonitoring.DeviceControlEnumValueStore');
+                    		}else{
+                    			CreateDeviceControlValueTable();
+                    		}
                     	}
                     }
         		}
@@ -355,3 +271,178 @@ var DeviceControlValueHandsontableHelper = {
 	        return deviceControlValueHandsontableHelper;
 	    }
 };
+
+
+
+function renderEnumValueControlBtn(btn){
+	var record = btn.up().getWidgetRecord();
+    var text = record.data.meaning;
+    
+    var btnWidth=btn.width;
+    var textLength=getLabelWidth(text,loginUserLanguage);
+    if(textLength>btnWidth){
+    	btn.setWidth(textLength);
+    }
+    
+    btn.setText(text);
+	btn.setTooltip(text);
+}
+
+function enumValueControlBtnHandler(btn){
+	var record = btn.up().getWidgetRecord();
+	var value = record.data.value;
+
+
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
+    });
+	all_loading.show();
+	
+	
+	var controlValue=value;
+	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
+	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
+	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	
+
+	Ext.Ajax.request({
+        url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+        method: "POST",
+        params: {
+        	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
+        	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
+        	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
+            controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
+            controlValue: controlValue,
+            storeDataType: storeDataType,
+            quantity: quantity
+        },
+        success: function (response, action) {
+        	all_loading.hide();
+        	var result =  Ext.JSON.decode(response.responseText);
+        	
+        	if (result.flag == false) {
+//        		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                Ext.MessageBox.show({
+                    title: loginUserLanguageResource.tip,
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    icon: Ext.MessageBox.INFO,
+                    buttons: Ext.Msg.OK,
+                    fn: function () {
+                        window.location.href = context + "/login";
+                    }
+                });
+            } else if (result.flag == true && result.error == false) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+            }  else if (result.flag == true && result.error == true) {
+//            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+            } 
+        },
+        failure: function () {
+        	all_loading.hide();
+//        	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        }
+    });
+}
+
+function deviceControlFun(){
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
+    });
+	all_loading.show();
+	
+	var isValid=true;
+	var controlValue='';
+	var storeDataType= Ext.getCmp('DeviceControlStoreDataType_Id').getValue();
+	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
+	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	if(deviceControlValueHandsontableHelper!=null && deviceControlValueHandsontableHelper.hot!=null){
+		var controlValueData=deviceControlValueHandsontableHelper.hot.getData();
+		if(resolutionMode==1 && quantity==1){
+			var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
+			itemMeaning=Ext.JSON.decode(itemMeaning);
+			var controlValue="";
+			
+			if(isNotVal(itemMeaning) && itemMeaning.length>0){
+				for(var i=0;i<itemMeaning.length;i++){
+					if(controlValueData[0][1]==itemMeaning[i][1]){
+						controlValue=itemMeaning[i][0];
+						break;
+					}
+				}
+			}
+			if(!isNumber(controlValue)){
+				isValid=false;
+			}
+		}else{
+			for(var i=0;i<controlValueData.length;i++){
+    			
+    			if(isNotVal(controlValueData[i][1])){
+    				controlValue+=controlValueData[i][1];
+    			}else{
+    				controlValue+=" ";
+    			}
+    			
+    			if(i<controlValueData.length-1){
+    				controlValue+=',';
+    			}
+    			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
+    				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
+    					isValid=false;
+    				}
+    			}
+    		}
+		}
+	}else{
+		isValid=false;
+	}
+	if(isValid){
+		Ext.Ajax.request({
+            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+            method: "POST",
+            params: {
+            	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
+            	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
+            	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
+                controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
+                controlValue: controlValue,
+                storeDataType: storeDataType,
+                quantity: quantity
+            },
+            success: function (response, action) {
+            	all_loading.hide();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+//            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+//                	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                } 
+            },
+            failure: function () {
+            	all_loading.hide();
+//            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		all_loading.hide();
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.dataFormattingError+"</font>");
+	}
+}

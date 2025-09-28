@@ -159,9 +159,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         beforeload: function (store, options) {
         	var wellName  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         	var deviceId  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	var calculateType  = Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
         	var new_params = {
         			deviceId:deviceId,
         			wellName: wellName,
+        			calculateType:calculateType,
         			deviceType:getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel")
                 };
            Ext.apply(store.proxy.extraParams, new_params);

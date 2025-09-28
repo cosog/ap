@@ -726,7 +726,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 //					}
 				}
 				
-				if(protocolItems.size()>0){
+				if(protocol!=null && protocolItems.size()>0){
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
 							for(DataitemsInfo dataitemsInfo: protocolItems){
@@ -820,7 +820,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
-				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+				if(protocol!=null && protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
 					if(acqDataList!=null){
 						for(int j=0;j<protocolExtendedFieldList.size();j++){
 							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
@@ -1513,7 +1513,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-				if(protocolItems.size()>0){
+				if(protocol!=null && protocolItems.size()>0){
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
 							for(DataitemsInfo dataitemsInfo: protocolItems){
@@ -1608,7 +1608,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 				
-				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+				if(protocol!=null && protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
 					if(acqDataList!=null){
 						for(int j=0;j<protocolExtendedFieldList.size();j++){
 							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
@@ -4285,7 +4285,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDeviceAddInfoData(String deviceId,String deviceName,String deviceType,int userId,String language)throws Exception {
+	public String getDeviceAddInfoData(String deviceId,String deviceName,String deviceType,String calculateType,int userId,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String deviceTableName="tbl_device";
 		String infoTableName="tbl_deviceaddinfo";
@@ -4307,8 +4307,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 				+ " and t3.type= "+deviceType
-				+ " and t.id= "+deviceId
-				+ " order by t4.deviceid,t4.id";
+				+ " and t.id= "+deviceId;
+		if(StringManagerUtils.stringToInteger(calculateType)!=1){
+			auxiliaryDeviceDetailsSql+=" and t3.specifictype<>1";
+		}
+		auxiliaryDeviceDetailsSql+= " order by t4.deviceid,t4.id";
 		
 		List<?> auxiliaryDeviceQueryList = this.findCallSql(auxiliaryDeviceSql);
 		List<?> deviceAddInfoList = this.findCallSql(deviceAddInfoSql);

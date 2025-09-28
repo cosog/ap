@@ -42,18 +42,43 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                     return "<span data-qtip=\"" + (value == undefined ? "" : value) + "\">" + (value == undefined ? "" : value) + "</span>";
                                 }
                             }
-			        },{
+			        }
+                    ,{
 			        	text: loginUserLanguageResource.action,
 			            align: 'center',
 			            stopSelection: true,
 			            xtype: 'widgetcolumn',
+			            minWidth: 140,
 			            widget: {
-			            	xtype: 'toolbar',
-			            	dock: 'top',
-			            	style: 'margin:0;padding:0',
-			            	ui: 'footer',
-			            	height: 20,
-			            	minWidth: 85,
+//			            	xtype: 'toolbar',
+//			            	dock: 'top',
+//			            	style: 'margin:0;padding:0',
+//			            	ui: 'footer',
+//			            	height: 20,
+//			            	minWidth: 126,
+			            	
+//			            	xtype: 'container',
+//			                layout: {
+//			                    type: 'hbox',
+//			                    pack: 'center',  // 水平居中
+//			                    align: 'middle'  // 垂直居中
+//			                },
+//			                height: 20,
+//			                minWidth: 126,
+			                
+			                xtype: 'toolbar',
+			                layout: {
+			                    type: 'hbox',
+			                    pack: 'center'
+			                },
+			                style: {
+			                    margin: '0 auto',
+			                    padding: '0'
+			                },
+			                ui: 'footer',
+			                height: 20,
+			                minWidth: 120,
+			            	
 			            	items:[{
 				            	  xtype: 'button',
 				                   text:loginUserLanguageResource.set,
@@ -70,7 +95,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 				                    }
 			            	},{
 				            	  xtype: 'button',
-				                   text:loginUserLanguageResource.set+'2',
+				                   text:loginUserLanguageResource.set+' 2',
 				                   height: 20,
 				                   width: 38,
 				                   defaultBindProperty: null, //important
@@ -82,6 +107,20 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 				                        	 renderControlBtn(btn,1);
 				                         }
 				                    }
+			            	},{
+				            	  xtype: 'button',
+				                   text:loginUserLanguageResource.set+' 3',
+				                   height: 20,
+				                   width: 38,
+				                   defaultBindProperty: null, //important
+				                   handler: function(btn) {
+				                	   controlBtnHandler(btn,2);
+				                   },
+				                   listeners: {
+				                         beforerender: function(btn){
+				                        	 renderControlBtn(btn,2);
+				                         }
+				                    }
 			            	}],
 			            	listeners: {
 		                         beforerender: function(widgetColumn){
@@ -89,7 +128,57 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
 		                         }
 		                    }
 			            }
-			        }],
+			        }
+//			        ,{
+//			        	text: loginUserLanguageResource.action,
+//			        	xtype: 'widgetcolumn',
+//			            align: 'center',
+//			            stopSelection: true,
+//			            widget: {
+//			                xtype: 'toolbar',
+//			                layout: {
+//			                    type: 'vbox',
+//			                    align: 'center'
+//			                },
+//			                vertical: true, // 关键配置
+//			                style: 'margin:0;padding:0',
+//			                ui: 'footer',
+//			                height: 60, // 调整高度
+//			                minWidth: 85,
+//			                items: [{
+//			                    xtype: 'button',
+//			                    text: loginUserLanguageResource.set,
+//			                    height: 20,
+//			                    width: 38,
+//			                    margin: '1 0',
+//			                    defaultBindProperty: null,
+//			                    handler: function(btn) {
+//			                        controlBtnHandler(btn,0);
+//			                    },
+//			                    listeners: {
+//			                        beforerender: function(btn){
+//			                            renderControlBtn(btn,0);
+//			                        }
+//			                    }
+//			                },{
+//			                    xtype: 'button',
+//			                    text: loginUserLanguageResource.set + ' 2',
+//			                    height: 20,
+//			                    width: 38,
+//			                    margin: '1 0',
+//			                    defaultBindProperty: null,
+//			                    handler: function(btn) {
+//			                        controlBtnHandler(btn,1);
+//			                    },
+//			                    listeners: {
+//			                        beforerender: function(btn){
+//			                            renderControlBtn(btn,1);
+//			                        }
+//			                    }
+//			                }]
+//			            }
+//			        }
+			        ],
 			        listeners: {
 			        	columnresize: function ( ct, column, width, eOpts ) {
 			        		

@@ -4120,7 +4120,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getAuxiliaryDevice(String deviceId,String deviceType,String language) {
+	public String getAuxiliaryDevice(String deviceId,String deviceType,String calculateType,String language) {
 		StringBuffer result_json = new StringBuffer();
 		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -4135,6 +4135,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.remark,t.sort,"
 				+ " decode(t.specificType,1,'"+languageResourceMap.get("pumping")+"','无') as specificTypeName,t.specificType"
 				+ " from tbl_auxiliarydevice t where t.type="+deviceType;
+		
+		if(StringManagerUtils.stringToInteger(calculateType)!=1){
+			sql+=" and t.specificType<>1";
+		}
+		
 		String auxiliarySql="select t2.auxiliaryid from "+deviceTableName+" t,tbl_auxiliary2master t2 "
 				+ " where t.id=t2.masterid and t.id="+deviceId;
 		

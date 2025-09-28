@@ -985,6 +985,7 @@ public class WellInformationManagerController extends BaseController {
 	public String getAuxiliaryDevice() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		String calculateType= ParamUtils.getParameter(request, "calculateType");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -993,7 +994,7 @@ public class WellInformationManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.wellInformationManagerService.getAuxiliaryDevice(deviceId,deviceType,language);
+		String json = this.wellInformationManagerService.getAuxiliaryDevice(deviceId,deviceType,calculateType,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

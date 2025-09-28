@@ -384,6 +384,7 @@ public class RealTimeMonitoringController extends BaseController {
 		String json = "";
 		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
@@ -392,7 +393,7 @@ public class RealTimeMonitoringController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		json = realTimeMonitoringService.getDeviceAddInfoData(deviceId,deviceName,deviceType,user.getUserNo(),language);
+		json = realTimeMonitoringService.getDeviceAddInfoData(deviceId,deviceName,deviceType,calculateType,user.getUserNo(),language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -859,6 +860,77 @@ public class RealTimeMonitoringController extends BaseController {
 		for(int i=0;i<quantity;i++){
 			result_json.append("{\"index\":"+(i+1)+",");
 			result_json.append("\"value\":\"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result_json.toString());
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceEnumValueControlData")
+	public String getDeviceEnumValueControlData() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
+		String deviceType = request.getParameter("deviceType");
+		String controlType = request.getParameter("controlType");
+		String controlValue = request.getParameter("controlValue");
+		String jsonLogin = "";
+		String clientIP=StringManagerUtils.getIpAddr(request);
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		
+		String deviceTableName="tbl_device";
+		
+		List<ModbusProtocolConfig.ItemsMeaning> itemsMeaningList=new ArrayList<>();
+		
+		// 用户不存在
+		if (null != userInfo) {
+			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+					+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+					+ " and t.id="+deviceId;
+			List<?> list = this.service.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				String protocolName=obj[0]+"";
+				String tcpType=obj[1]+"";
+				String signinid=obj[2]+"";
+				String ipPort=obj[3]+"";
+				String slave=obj[4]+"";
+				String realDeviceType=obj[5]+"";
+				if(StringManagerUtils.isNotNull(protocolName) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					if(protocol!=null){
+						for(int i=0;i<protocol.getItems().size();i++){
+							String col="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
+								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
+							}
+							if(controlType.equalsIgnoreCase(col)){
+								itemsMeaningList=protocol.getItems().get(i).getMeaning();
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalCount\":"+itemsMeaningList.size()+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<itemsMeaningList.size();i++){
+			result_json.append("{\"index\":"+(i+1)+",");
+			result_json.append("\"meaning\":\""+itemsMeaningList.get(i).getMeaning()+"\",");
+			result_json.append("\"value\":\""+itemsMeaningList.get(i).getValue()+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

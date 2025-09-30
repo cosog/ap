@@ -6438,9 +6438,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getAcqUnitList(User user,String protocols){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer unit_json = new StringBuffer();
+		StringBuffer unitIdName_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol "
+		unitIdName_json.append("[");
+		String acqUnitSql="select t.id,t.unit_name,t.protocol "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
 				+ " where t.protocol=t2.name"
 				+ " and t2.language= "+user.getLanguage();
@@ -6456,13 +6458,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[2]+"");
 			if(protocol!=null){
 				unit_json.append("\""+obj[1]+"\",");
+				unitIdName_json.append("{\"value\":"+obj[0]+",\"label\":\""+obj[1]+"\"},");
 			}
 		}
 		if(unit_json.toString().endsWith(",")){
 			unit_json.deleteCharAt(unit_json.length() - 1);
 		}
 		unit_json.append("]");
-		result_json.append("{\"unitList\":"+unit_json+"}");
+		
+		if(unitIdName_json.toString().endsWith(",")){
+			unitIdName_json.deleteCharAt(unitIdName_json.length() - 1);
+		}
+		unitIdName_json.append("]");
+		
+		result_json.append("{\"unitList\":"+unit_json+",\"unitIdNameList\":"+unitIdName_json+"}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

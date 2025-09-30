@@ -144,6 +144,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
 function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 	var root=[];
 	var unitList=[];
+	var unitIdNameList=[];
 	var protocolList=[];
 	var protocolTreeGridPanelSelection= Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
 	if(protocolTreeGridPanelSelection.length>0){
@@ -163,6 +164,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			unitList=result.unitList;
+			unitIdNameList=result.unitIdNameList;
 			var hiddenRows=[];
 			if(data.classes==0){
 				var item1={};
@@ -284,10 +286,12 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
 				protocolConfigInstancePropertiesHandsontableHelper.unitList=unitList;
+				protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList=unitIdNameList;
 				protocolConfigInstancePropertiesHandsontableHelper.createTable(root);
 			}else{
 				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
 				protocolConfigInstancePropertiesHandsontableHelper.unitList=unitList;
+				protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList=unitIdNameList;
 				protocolConfigInstancePropertiesHandsontableHelper.hot.loadData(root);
 			}
 			
@@ -319,6 +323,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	        protocolConfigInstancePropertiesHandsontableHelper.columns=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.AllData=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.unitList=[];
+	        protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList=[];
 	        
 	        protocolConfigInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -391,10 +396,18 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    	cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    		this.type = 'dropdown';
-		                    		this.source = protocolConfigInstancePropertiesHandsontableHelper.unitList;
-			                    	
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
+			                    	this.source = protocolConfigInstancePropertiesHandsontableHelper.unitList;
+			                    	
+			                    	
+//			                    	this.source = protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList;
+//			                    	this.renderer= function(instance, td, row, col, prop, value, cellProperties) {
+//			                            const source = cellProperties.source;
+//			                            const item = source.find(item => item.value === value);
+//			                            td.textContent = item ? item.label : value;
+//			                            return td;
+//			                          }
 			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.type = 'dropdown';
 			                    	this.source = ['modbus-tcp','modbus-rtu','private-kd93','private-lq1000','private-g771'];

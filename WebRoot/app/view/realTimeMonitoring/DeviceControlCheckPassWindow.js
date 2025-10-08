@@ -26,7 +26,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
         	layout:'border',
             tbar:[{
                 xtype: 'label',
-                margin: '0 0 0 0',
+                margin: '0 0 0 5',
                 id:'DeviceControlItemName_Id',
                 html: ''
             },{
@@ -71,16 +71,14 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 hidden: true
             },'->',{
                 xtype: 'button',
-                text: loginUserLanguageResource.confirm,
-                iconCls: 'edit',
+                text: loginUserLanguageResource.batchDownwardCommand,
+                iconCls: 'downlink',
                 id:'DeviceControlConfirmBtn_Id',
                 handler: function (v, o) {
                 	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
             		if(resolutionMode!=1){
             			deviceControlFun();
             		}
-                	
-                	
                 }
             }, {
                 text: loginUserLanguageResource.close,
@@ -186,8 +184,52 @@ function CreateDeviceControlValueTable(){
 				
 				
 				columns+="]";
-				deviceControlValueHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				deviceControlValueHandsontableHelper.columns=Ext.JSON.decode(columns);
+				
+				var colHeaderList=Ext.JSON.decode(colHeaders);
+				var columnList= Ext.JSON.decode(columns);
+				
+				if(result.totalRoot.length==1){//当只有一行时
+					Ext.getCmp("DeviceControlConfirmBtn_Id").hide();
+					colHeaderList.push(loginUserLanguageResource.action);
+					
+					var actionColumn={
+	                        data: 'id',
+	                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
+	                            // 清空单元格
+	                            td.innerHTML = '';
+	                            
+	                            // 创建按钮容器
+	                            const buttonContainer = document.createElement('div');
+	                            buttonContainer.style.display = 'flex';
+	                            buttonContainer.style.justifyContent = 'center';
+	                            buttonContainer.style.gap = '5px';
+	                            
+	                            //按钮
+	                            const controlButton = document.createElement('button');
+	                            controlButton.className = 'action-btn view';
+	                            controlButton.textContent = loginUserLanguageResource.downwardCommand;
+	                            controlButton.onclick = function() {
+	                            	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	                        		if(resolutionMode!=1){
+	                        			deviceControlFun();
+	                        		}
+	                            };
+	                            
+	                            // 添加按钮到容器
+	                            buttonContainer.appendChild(controlButton);
+	                            
+	                            // 添加容器到单元格
+	                            td.appendChild(buttonContainer);
+	                            
+	                            return td;
+	                        },
+	                        readOnly: true
+	                    };
+					columnList.push(actionColumn);
+				}
+				
+				deviceControlValueHandsontableHelper.colHeaders=colHeaderList;
+				deviceControlValueHandsontableHelper.columns=columnList;
 				deviceControlValueHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				deviceControlValueHandsontableHelper.hot.loadData(result.totalRoot);
@@ -247,7 +289,7 @@ var DeviceControlValueHandsontableHelper = {
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                rowHeaders: false,//显示行头
 	                colHeaders: deviceControlValueHandsontableHelper.colHeaders,
-	                colWidths: [1,8],
+	                colWidths: [1,8,4],
 	                columnSorting: true, //允许排序
 	                allowInsertRow:false,
 	                sortIndicator: true,

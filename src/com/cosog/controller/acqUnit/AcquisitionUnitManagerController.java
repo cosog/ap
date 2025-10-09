@@ -3702,12 +3702,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getName()) && StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getCode()) && modbusProtocolInstanceSaveData.getId()>0){
+				String unitText=modbusProtocolInstanceSaveData.getUnitName();
+				String protocol="";
+				String unitName="";
+				if(unitText.contains("/")){
+					String[] textArr=unitText.split("/");
+					if(textArr.length==2){
+						protocol=textArr[0];
+						unitName=textArr[1];
+					}
+				}
+				
 				String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
 						+ " where t.protocol=t2.name"
-						+ " and t.unit_name='"+modbusProtocolInstanceSaveData.getUnitName()+"' ";
-				if(StringManagerUtils.isNotNull(protocolCode)){
-					sql+=" and t2.code='"+protocolCode+"'";
-				}
+						+ " and t.unit_name='"+unitName+"' "
+						+ " and t2.name='"+protocol+"' ";
 				sql+= " and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
@@ -3948,11 +3957,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolDisplayInstanceSaveData.getName())){
+				String unitText=modbusProtocolDisplayInstanceSaveData.getDisplayUnitName();
+				String protocol="";
+				String unitName="";
+				if(unitText.contains("/")){
+					String[] textArr=unitText.split("/");
+					if(textArr.length==2){
+						protocol=textArr[0];
+						unitName=textArr[1];
+					}
+				}
+				
+				String sql="select t.id "
+						+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+						+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+						+ " and t.unit_name='"+unitName+"' "
+						+ " and t3.name='"+protocol+"'";
+				String unitId="";
+				List list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					unitId=list.get(0).toString();
+				}
+				
 				ProtocolDisplayInstance protocolDisplayInstance=new ProtocolDisplayInstance();
 				protocolDisplayInstance.setId(modbusProtocolDisplayInstanceSaveData.getId());
 				protocolDisplayInstance.setCode(modbusProtocolDisplayInstanceSaveData.getCode());
 				protocolDisplayInstance.setName(modbusProtocolDisplayInstanceSaveData.getName());
-				protocolDisplayInstance.setDisplayUnitId(modbusProtocolDisplayInstanceSaveData.getDisplayUnitId());
+				protocolDisplayInstance.setDisplayUnitId(StringManagerUtils.stringToInteger(unitId));
 				if(StringManagerUtils.isNum(modbusProtocolDisplayInstanceSaveData.getSort())){
 					protocolDisplayInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolDisplayInstanceSaveData.getSort()));
 				}else{
@@ -4200,11 +4231,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolAlarmInstanceSaveData.getName())){
+				String unitText=modbusProtocolAlarmInstanceSaveData.getAlarmUnitName();
+				String protocol="";
+				String unitName="";
+				if(unitText.contains("/")){
+					String[] textArr=unitText.split("/");
+					if(textArr.length==2){
+						protocol=textArr[0];
+						unitName=textArr[1];
+					}
+				}
+				
+				String sql="select t.id "
+						+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
+						+ " where t.protocol=t2.name "
+						+ " and t.unit_name='"+unitName+"' "
+						+ " and t2.name='"+protocol+"'";
+				String unitId="";
+				List list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					unitId=list.get(0).toString();
+				}
+				
+				
 				ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
 				protocolAlarmInstance.setId(modbusProtocolAlarmInstanceSaveData.getId());
 				protocolAlarmInstance.setCode(modbusProtocolAlarmInstanceSaveData.getCode());
 				protocolAlarmInstance.setName(modbusProtocolAlarmInstanceSaveData.getName());
-				protocolAlarmInstance.setAlarmUnitId(modbusProtocolAlarmInstanceSaveData.getAlarmUnitId());
+				protocolAlarmInstance.setAlarmUnitId(StringManagerUtils.stringToInteger(unitId));
 				if(StringManagerUtils.isNum(modbusProtocolAlarmInstanceSaveData.getSort())){
 					protocolAlarmInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolAlarmInstanceSaveData.getSort()));
 				}else{

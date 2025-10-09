@@ -182,7 +182,7 @@ function CreateProtocolDisplayInstancePropertiesInfoTable(data){
 				var item2={};
 				item2.id=2;
 				item2.title=loginUserLanguageResource.displayUnit;
-				item2.value=data.displayUnitName;
+				item2.value=data.protocol+'/'+data.displayUnitName;
 				root.push(item2);
 				
 				var item3={};
@@ -383,6 +383,7 @@ function SaveModbusProtocolDisplayInstanceConfigTreeData(){
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
 			saveData.displayUnitId=selectedItem.data.displayUnitId;
+			saveData.displayUnitName=propertiesData[1][2];
 			saveData.sort=propertiesData[2][2];
 			SaveModbusProtocolDisplayInstanceData(saveData);
 		}

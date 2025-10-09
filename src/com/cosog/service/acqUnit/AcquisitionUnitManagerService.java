@@ -6445,7 +6445,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String acqUnitSql="select t.id,t.unit_name,t.protocol "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
 				+ " where t.protocol=t2.name"
-				+ " and t2.language= "+user.getLanguage();
+				+ " and t2.language= "+user.getLanguage()
+				+ " and t2.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )";
 //		if(StringManagerUtils.isNotNull(protocols)){
 //			acqUnitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocols.split(","), ",")+")";
 //		}else{
@@ -6455,9 +6456,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
+			String showText=obj[2]+"/"+obj[1];
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[2]+"");
 			if(protocol!=null){
-				unit_json.append("\""+obj[1]+"\",");
+				unit_json.append("\""+showText+"\",");
 				unitIdName_json.append("{\"value\":"+obj[0]+",\"label\":\""+obj[1]+"\"},");
 			}
 		}
@@ -6480,21 +6482,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer unit_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name "
+		String acqUnitSql="select t.unit_code,t.unit_name,t3.name as protocol "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
-				+ " and t3.language= "+user.getLanguage();
-//		if(StringManagerUtils.isNotNull(protocol)){
-//			acqUnitSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
-//		}else{
-//			acqUnitSql+=" and 1=2 ";
-//		}
+				+ " and t3.language= "+user.getLanguage()
+				+ " and t3.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )";
 		
 		acqUnitSql+= " order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			unit_json.append("\""+obj[1]+"\",");
+			unit_json.append("\""+(obj[2]+"/"+obj[1])+"\",");
 		}
 		if(unit_json.toString().endsWith(",")){
 			unit_json.deleteCharAt(unit_json.length() - 1);
@@ -6509,15 +6507,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer unit_json = new StringBuffer();
 
 		unit_json.append("[");
-		String acqUnitSql="select t.unit_code,t.unit_name "
+		String acqUnitSql="select t.unit_code,t.unit_name,t2.name as protocol "
 				+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
 				+ " where t.protocol=t2.name "
 				+ " and t2.language= "+user.getLanguage()
+				+ " and t2.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )"
 				+ " order by  t.sort";
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			unit_json.append("\""+obj[1]+"\",");
+			unit_json.append("\""+(obj[2]+"/"+obj[1])+"\",");
 		}
 		if(unit_json.toString().endsWith(",")){
 			unit_json.deleteCharAt(unit_json.length() - 1);
@@ -6556,7 +6555,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
-				+ " t.sort,t.unitid,t2.unit_name "//13~15
+				+ " t.sort,t.unitid,t2.unit_name,t3.name as  protocol"//13~16
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.name"
 				+ " and t3.language="+user.getLanguage();
@@ -6610,6 +6609,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"sort\":\""+obj[13]+"\",");
 			tree_json.append("\"unitId\":"+obj[14]+",");
 			tree_json.append("\"unitName\":\""+obj[15]+"\",");
+			tree_json.append("\"protocol\":\""+obj[16]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -6698,7 +6698,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype  "
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype,t4.name as protocol  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
 		
@@ -6738,6 +6738,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"displayUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"protocol\":\""+obj[7]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -6908,7 +6909,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
+		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort,t3.name as protocol   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
 		String deviceCountSql="select device.alarminstancecode,count(1)  "
@@ -6944,6 +6945,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"alarmUnitId\":"+obj[3]+",");
 			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
+			tree_json.append("\"protocol\":\""+obj[6]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");

@@ -127,7 +127,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                 panel.add(treeGridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
-            if(selectedRow==0){
+            if(selectedRow==0 || selectedRow>=store.data.length ){
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0){
             			selectedRow=i;

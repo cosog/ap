@@ -182,7 +182,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				var item2={};
 				item2.id=2;
 				item2.title=loginUserLanguageResource.acqUnit;
-				item2.value=data.unitName;
+				item2.value=data.protocol+'/'+data.unitName;
 				root.push(item2);
 				
 				var item3={};

@@ -9,6 +9,7 @@ public class ModbusProtocolAlarmInstanceSaveData {
 	String oldName;
 	String name;
 	int alarmUnitId;
+	String alarmUnitName;
 	String sort;
 	
 	private List<String> delidslist;
@@ -67,5 +68,13 @@ public class ModbusProtocolAlarmInstanceSaveData {
 
 	public void setAlarmUnitId(int alarmUnitId) {
 		this.alarmUnitId = alarmUnitId;
+	}
+
+	public String getAlarmUnitName() {
+		return alarmUnitName;
+	}
+
+	public void setAlarmUnitName(String alarmUnitName) {
+		this.alarmUnitName = alarmUnitName;
 	}
 }

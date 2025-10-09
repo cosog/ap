@@ -9,6 +9,7 @@ public class ModbusProtocolDisplayInstanceSaveData {
 	String oldName;
 	String name;
 	int displayUnitId;
+	String displayUnitName;
 	String sort;
 	
 	private List<String> delidslist;
@@ -67,5 +68,13 @@ public class ModbusProtocolDisplayInstanceSaveData {
 
 	public void setDisplayUnitId(int displayUnitId) {
 		this.displayUnitId = displayUnitId;
+	}
+
+	public String getDisplayUnitName() {
+		return displayUnitName;
+	}
+
+	public void setDisplayUnitName(String displayUnitName) {
+		this.displayUnitName = displayUnitName;
 	}
 }

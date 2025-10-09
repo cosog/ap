@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONArray;
@@ -78,6 +79,18 @@ public class MemoryDataManagerTask {
 	public static MemoryDataManagerTask getInstance(){
 		return instance;
 	}
+	
+	//跨天清理非最新一天的采集数据
+	@Scheduled(cron = "1 0 0 * * ?")
+    public void cleanRealtimeAcqData() {
+		String date=StringManagerUtils.getCurrentTime();
+		List<DeviceInfo> deviceInfoList = MemoryDataManagerTask.getDeviceInfo();
+		if(deviceInfoList!=null){
+			for(DeviceInfo deviceInfo:deviceInfoList){
+				delDeviceRealtimeAcqData(deviceInfo.getId()+"", date);
+			}
+		}
+    }
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public static void loadMemoryData(){

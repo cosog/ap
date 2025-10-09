@@ -166,7 +166,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 				var item2={};
 				item2.id=2;
 				item2.title=loginUserLanguageResource.alarmUnit;
-				item2.value=data.alarmUnitName;
+				item2.value=data.protocol+'/'+data.alarmUnitName;
 				root.push(item2);
 				
 				var item3={};
@@ -369,6 +369,7 @@ function SaveModbusProtocolAlarmInstanceConfigTreeData(){
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
 			saveData.alarmUnitId=selectedItem.data.alarmUnitId;
+			saveData.alarmUnitName=propertiesData[1][2];
 			saveData.sort=propertiesData[2][2];
 			SaveModbusProtocolAlarmInstanceData(saveData);
 		}

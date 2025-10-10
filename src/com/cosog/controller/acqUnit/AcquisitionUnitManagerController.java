@@ -2415,13 +2415,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndAcqUnitTreeData")
 	public String modbusProtocolAndAcqUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if (user != null) {
 			language = "" + user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds,user);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAcqUnitTreeData(deviceTypeIds,protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2434,13 +2435,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndDisplayUnitTreeData")
 	public String modbusProtocolAndDisplayUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if (user != null) {
 			language = "" + user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceTypeIds,user);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndDisplayUnitTreeData(deviceTypeIds,protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2502,13 +2504,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/modbusProtocolAndAlarmUnitTreeData")
 	public String modbusProtocolAndAlarmUnitTreeData() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol = ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(deviceTypeIds,user);
+		String json = acquisitionUnitItemManagerService.modbusProtocolAndAlarmUnitTreeData(deviceTypeIds,protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2609,7 +2612,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getAlarmUnitList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String json = acquisitionUnitItemManagerService.getAlarmUnitList(user);
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String json = acquisitionUnitItemManagerService.getAlarmUnitList(user,protocol);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2771,13 +2775,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getModbusProtoclCombList")
 	public String getModbusProtoclCombList() throws IOException {
 		String deviceTypeIds=ParamUtils.getParameter(request, "deviceTypeIds");
+		String protocol=ParamUtils.getParameter(request, "protocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(deviceTypeIds,user);
+		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList(deviceTypeIds,protocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2817,14 +2822,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getAcquisitionUnitCombList() throws IOException {
 		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceTypeIds = ParamUtils.getParameter(request, "deviceTypeIds");
-		
+		String selectedProtocol = ParamUtils.getParameter(request, "selectedProtocol");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,deviceTypeIds,user);
+		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol,deviceTypeIds,selectedProtocol,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3274,7 +3279,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
-		String protocol = ParamUtils.getParameter(request, "protocol");
 		String deviceType=ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<DisplayUnitHandsontableChangeData>() {}.getType();
@@ -3300,6 +3304,33 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			if(displayUnitHandsontableChangeData.getUpdatelist()!=null){
 				for(int i=0;i<displayUnitHandsontableChangeData.getUpdatelist().size();i++){
+					String acqUnitText=displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitName();
+					String protocol="";
+					String acqUnitName="";
+					if(acqUnitText.contains("/")){
+						String[] textArr=acqUnitText.split("/");
+						if(textArr.length==2){
+							protocol=textArr[0];
+							acqUnitName=textArr[1];
+						}
+					}
+					
+					String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
+							+ " where t.protocol=t2.name"
+							+ " and t.unit_name='"+acqUnitName+"' "
+							+ " and t2.name='"+protocol+"' ";
+					sql+= " and rownum=1";
+					String acqUnitId="";
+					List<?> list = this.service.findCallSql(sql);
+					if(list.size()>0){
+						acqUnitId=list.get(0).toString();
+					}
+
+					//如果采集单元发生改变，删除已配置显示项
+					if(StringManagerUtils.stringToInteger(acqUnitId)!=StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId())){
+						this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(displayUnitHandsontableChangeData.getUpdatelist().get(i).getId());
+					}
+					
 					DisplayUnit displayUnit=new DisplayUnit();
 					String sort=displayUnitHandsontableChangeData.getUpdatelist().get(i).getSort();
 					displayUnit.setId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getId()));
@@ -3309,7 +3340,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnit.setSort(StringManagerUtils.isNumber(sort)?StringManagerUtils.stringToInteger(sort):null);
 					displayUnit.setRemark(displayUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					displayUnit.setProtocol(protocol);
-					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));
+					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(acqUnitId));
 					this.displayUnitManagerService.doDisplayUnitEdit(displayUnit);
 					
 					if(user!=null){
@@ -3321,11 +3352,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(displayUnitHandsontableChangeData.getInsertlist()!=null){
 				for(int i=0;i<displayUnitHandsontableChangeData.getInsertlist().size();i++){
 					DisplayUnit displayUnit=new DisplayUnit();
-					displayUnit.setProtocol(protocol);
 					displayUnit.setUnitCode(displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitCode());
 					displayUnit.setUnitName(displayUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
 					displayUnit.setRemark(displayUnitHandsontableChangeData.getInsertlist().get(i).getRemark());
-					displayUnit.setProtocol(protocol);
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(displayUnitHandsontableChangeData.getUpdatelist().get(i).getAcqUnitId()));
 					this.displayUnitManagerService.doDisplayUnitAdd(displayUnit);
 					

@@ -5,7 +5,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
     iframe: true,
     id: 'modbusProtocolInstanceInfoWindow_Id',
     closeAction: 'destroy',
-    width: 400,
+    width: 500,
     shadow: 'sides',
     resizable: false,
     collapsible: true,
@@ -36,8 +36,24 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 		        	if(tabTreeGridPanelSelection.length>0){
 		        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
 		        	}
+		        	
+		        	var protocolList=[];
+		        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		        	if(protocolTreeGridPanelSelection.length>0){
+		        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+		        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		        		}else{
+		        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+		        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+		        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+		        				}
+		        			}
+		        		}
+		        	}
+		        	
 					var new_params = {
-							deviceTypeIds: deviceTypeIds
+							deviceTypeIds: deviceTypeIds,
+							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}

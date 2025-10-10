@@ -491,13 +491,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public String getAcqInstanceCombList(String deviceTypeStr,User user){
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+	public String getAcqInstanceCombList(String dictDeviceType,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.name "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
@@ -513,12 +513,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDisplayInstanceCombList(String deviceTypeStr,String acqUnitId,User user){
+	public String getDisplayInstanceCombList(String dictDeviceType,String acqUnitId,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
-				+ " and t4.language= "+(user!=null?user.getLanguage():0);
+				+ " and t4.language= "+(user!=null?user.getLanguage():0)
+				+ " and ( t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )";
+		
+		
 		if(StringManagerUtils.isNotNull(acqUnitId)){
 			sql+=" and t3.id="+acqUnitId;
 		}
@@ -562,12 +565,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getAlarmInstanceCombList(String deviceTypeStr,String protocolCode,User user){
+	public String getAlarmInstanceCombList(String dictDeviceType,String protocolCode,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
-				+ " and t3.language="+(user!=null?user.getLanguage():0);
+				+ " and t3.language="+(user!=null?user.getLanguage():0)
+				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )";
 		if(StringManagerUtils.isNotNull(protocolCode)){
 			sql+=" and t3.code='"+protocolCode+"'";
 		}

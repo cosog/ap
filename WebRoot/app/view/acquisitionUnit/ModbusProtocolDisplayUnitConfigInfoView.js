@@ -880,6 +880,8 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 
 function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	var root=[];
+	var unitList=[];
+	var unitIdNameList=[];
 	if(data.classes==0){
 		var item1={};
 		item1.id=1;
@@ -893,36 +895,71 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		item1.value=data.text;
 		root.push(item1);
 	}else if(data.classes==2){
-		var item1={};
-		item1.id=1;
-		item1.title=loginUserLanguageResource.unitName;
-		item1.value=data.text;
-		root.push(item1);
+		var protocolList=[];
+		var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		if(protocolTreeGridPanelSelection.length>0){
+			if(protocolTreeGridPanelSelection[0].data.classes==1){
+				protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+			}else{
+				if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+					for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+						protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+					}
+				}
+			}
+		}
 		
-		var item2={};
-		item2.id=2;
-		item2.title=loginUserLanguageResource.acqUnit;
-		item2.value=data.acqUnitName;
-		root.push(item2);
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/acquisitionUnitManagerController/getAcqUnitList',
+			async :  false,
+			success:function(response) {
+				var result =  Ext.JSON.decode(response.responseText);
+				unitList=result.unitList;
+				unitIdNameList=result.unitIdNameList;
+				var item1={};
+				item1.id=1;
+				item1.title=loginUserLanguageResource.unitName;
+				item1.value=data.text;
+				root.push(item1);
+				
+				var item2={};
+				item2.id=2;
+				item2.title=loginUserLanguageResource.acqUnit;
+				item2.value=data.protocol+'/'+data.acqUnitName;
+				root.push(item2);
 
-		var item3={};
-		item3.id=3;
-		item3.title=loginUserLanguageResource.calculateType;
-		item3.value=data.calculateTypeName;
-		root.push(item3);
+				var item3={};
+				item3.id=3;
+				item3.title=loginUserLanguageResource.calculateType;
+				item3.value=data.calculateTypeName;
+				root.push(item3);
+				
+				
+				var item4={};
+				item4.id=4;
+				item4.title=loginUserLanguageResource.sortNum;
+				item4.value=data.sort;
+				root.push(item4);
+				
+				var item5={};
+				item5.id=5;
+				item5.title=loginUserLanguageResource.remark;
+				item5.value=data.remark;
+				root.push(item5);
+			},
+			failure:function(){
+//				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			},
+			params: {
+				protocol: protocolList.join(",")
+	        }
+		});
 		
 		
-		var item4={};
-		item4.id=4;
-		item4.title=loginUserLanguageResource.sortNum;
-		item4.value=data.sort;
-		root.push(item4);
 		
-		var item5={};
-		item5.id=5;
-		item5.title=loginUserLanguageResource.remark;
-		item5.value=data.remark;
-		root.push(item5);
+		
+		
 	}
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){
@@ -932,9 +969,13 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		protocolDisplayUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolDisplayUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 		protocolDisplayUnitPropertiesHandsontableHelper.classes=data.classes;
+		protocolDisplayUnitPropertiesHandsontableHelper.unitList=unitList;
+		protocolDisplayUnitPropertiesHandsontableHelper.unitIdNameList=unitIdNameList;
 		protocolDisplayUnitPropertiesHandsontableHelper.createTable(root);
 	}else{
 		protocolDisplayUnitPropertiesHandsontableHelper.classes=data.classes;
+		protocolDisplayUnitPropertiesHandsontableHelper.unitList=unitList;
+		protocolDisplayUnitPropertiesHandsontableHelper.unitIdNameList=unitIdNameList;
 		protocolDisplayUnitPropertiesHandsontableHelper.hot.loadData(root);
 	}
 };
@@ -949,6 +990,8 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	        protocolDisplayUnitPropertiesHandsontableHelper.colHeaders=[];
 	        protocolDisplayUnitPropertiesHandsontableHelper.columns=[];
 	        protocolDisplayUnitPropertiesHandsontableHelper.AllData=[];
+	        protocolDisplayUnitPropertiesHandsontableHelper.unitList=[];
+	        protocolDisplayUnitPropertiesHandsontableHelper.unitIdNameList=[];
 	        
 	        protocolDisplayUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -1013,6 +1056,11 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 				                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayUnitPropertiesHandsontableHelper);
 				                    	}
 				                    	cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addCellStyle;
+				                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    		this.type = 'dropdown';
+				                    	this.strict = true;
+				                    	this.allowInvalid = false;
+				                    	this.source = protocolDisplayUnitPropertiesHandsontableHelper.unitList;
 				                    } else if (visualColIndex === 2 && visualRowIndex === 2) {
 		                                this.type = 'dropdown';
 		                                this.source = [loginUserLanguageResource.nothing, loginUserLanguageResource.SRPCalculate, loginUserLanguageResource.PCPCalculate];

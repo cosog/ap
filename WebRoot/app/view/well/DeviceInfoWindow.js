@@ -205,8 +205,12 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
+					var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+					if(dictDeviceType.includes(",")){
+						dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+					}
 					var new_params = {
-							deviceType: 101
+							dictDeviceType: dictDeviceType
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -242,8 +246,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 							
 	                    },
 	                    change: function ( comb, newValue, oldValue, eOpts ) {
-	                    	var oldInstanceInfo=getInstanceUnitAndProtocol(oldValue,0,0)
-	                    	var newInstanceInfo=getInstanceUnitAndProtocol(newValue,0,0)
+	                    	var oldInstanceInfo=getInstanceUnitAndProtocol(oldValue,0,0);
+	                    	var newInstanceInfo=getInstanceUnitAndProtocol(newValue,0,0);
 	                    	
 	                    	Ext.getCmp("deviceDisplayInstanceComb_Id").getStore().load();
 	                    	Ext.getCmp("deviceAlarmInstanceComb_Id").getStore().load();
@@ -294,9 +298,13 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
-					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0)
+					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0);
+					var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+					if(dictDeviceType.includes(",")){
+						dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+					}
 					var new_params = {
-							deviceType: 101,
+							dictDeviceType: dictDeviceType,
 							acqUnitId:acqInstanceInfo.acqUnitId
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
@@ -418,9 +426,13 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 			autoLoad : true,
 			listeners : {
 				beforeload : function(store, options) {
-					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0)
+					var acqInstanceInfo=getInstanceUnitAndProtocol(Ext.getCmp('deviceAcqInstanceComb_Id').getValue(),0,0);
+					var dictDeviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+					if(dictDeviceType.includes(",")){
+						dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+					}
 					var new_params = {
-							deviceType: 101,
+							dictDeviceType: dictDeviceType,
 							protocolCode: acqInstanceInfo.protocolCode
 					};
 					Ext.apply(store.proxy.extraParams,new_params);

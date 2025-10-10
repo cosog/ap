@@ -144,6 +144,21 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
 function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 	var root=[];
 	var unitList=[];
+	
+	var protocolList=[];
+	var protocolTreeGridPanelSelection= Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		}else{
+			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+				}
+			}
+		}
+	}
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getAlarmUnitList',
@@ -201,7 +216,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 //			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			
+			protocol: protocolList.join(",")
         }
 	});
 };

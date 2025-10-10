@@ -45,8 +45,22 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 		        	if(tabTreeGridPanelSelection.length>0){
 		        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
 		        	}
+		        	var protocolList=[];
+		    		var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		    		if(protocolTreeGridPanelSelection.length>0){
+		    			if(protocolTreeGridPanelSelection[0].data.classes==1){
+		    				protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		    			}else{
+		    				if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+		    					for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+		    						protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+		    					}
+		    				}
+		    			}
+		    		}
 					var new_params = {
-							deviceTypeIds: deviceTypeIds
+							deviceTypeIds: deviceTypeIds,
+							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -70,6 +84,10 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 					listeners : {
 						select: function (v,o) {
 							Ext.getCmp("formDisplayUnitProtocol_Id").setValue(this.value);
+							
+							Ext.getCmp("formDisplayUnitAcqUnitComb_Id").setValue('');
+							Ext.getCmp("formDisplayUnitAcqUnitComb_Id").setRawValue('');
+							Ext.getCmp("formDisplayUnitAcqUnit_Id").setValue('');
 	                    }
 					}
 				});
@@ -103,9 +121,23 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 		        	if(tabTreeGridPanelSelection.length>0){
 		        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
 		        	}
+		        	var protocolList=[];
+		    		var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		    		if(protocolTreeGridPanelSelection.length>0){
+		    			if(protocolTreeGridPanelSelection[0].data.classes==1){
+		    				protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		    			}else{
+		    				if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+		    					for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+		    						protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+		    					}
+		    				}
+		    			}
+		    		}
 					var new_params = {
 						protocol:protocol,
-						deviceTypeIds:deviceTypeIds
+						deviceTypeIds:deviceTypeIds,
+						selectedProtocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}

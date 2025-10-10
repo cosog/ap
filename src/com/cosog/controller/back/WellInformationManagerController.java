@@ -433,8 +433,8 @@ public class WellInformationManagerController extends BaseController {
 	public String getAcqInstanceCombList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getAcqInstanceCombList(deviceType,user);
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
+		String json=wellInformationManagerService.getAcqInstanceCombList(dictDeviceType,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -448,9 +448,9 @@ public class WellInformationManagerController extends BaseController {
 	public String getDisplayInstanceCombList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType= ParamUtils.getParameter(request, "dictDeviceType");
 		String acqUnitId= ParamUtils.getParameter(request, "acqUnitId");
-		String json=wellInformationManagerService.getDisplayInstanceCombList(deviceType,acqUnitId,user);
+		String json=wellInformationManagerService.getDisplayInstanceCombList(dictDeviceType,acqUnitId,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -479,9 +479,9 @@ public class WellInformationManagerController extends BaseController {
 	public String getAlarmInstanceCombList() throws IOException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String dictDeviceType= ParamUtils.getParameter(request, "dictDeviceType");
 		String protocolCode= ParamUtils.getParameter(request, "protocolCode");
-		String json=wellInformationManagerService.getAlarmInstanceCombList(deviceType,protocolCode,user);
+		String json=wellInformationManagerService.getAlarmInstanceCombList(dictDeviceType,protocolCode,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

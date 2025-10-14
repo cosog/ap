@@ -35,10 +35,10 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD
 values (2038, 9999, '设备日志', '设备日志', 'AP.view.log.DeviceOperationLogInfoView', 'DeviceOperationLogQuery', 1050010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl', 'Device log', 'Журналы устройств', 'Device log', 'Журналы устройств');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (2238, 9999, '系统日志', '系统日志', 'AP.view.log.SystemLogInfoView', 'SystemLogQuery', 1060010, null, null, 'log', 0, 'AP.controller.frame.MainIframeControl', 'System log', 'Системные журналы', 'System log', 'Системные журналы');
+values (2238, 9999, '系统日志', '系统日志', 'AP.view.log.SystemLogInfoView', 'SystemLogQuery', 1060010, null, null, 'systemLog', 0, 'AP.controller.frame.MainIframeControl', 'System log', 'Системные журналы', 'System log', 'Системные журналы');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (2179, 9999, '计算维护', '计算维护', 'AP.view.dataMaintaining.CalculateMaintainingInfoView', 'CalculateMaintaining', 1070010, null, null, 'calculate', 0, '#', 'Calculate maintaining', 'Рассчитать техническое обслуживание', 'Calculate maintaining', 'Рассчитать техническое обслуживание');
+values (2179, 9999, '数据维护', '数据维护', 'AP.view.dataMaintaining.CalculateMaintainingInfoView', 'CalculateMaintaining', 1070010, null, null, 'calculate', 0, '#', 'Calculate maintaining', 'Рассчитать техническое обслуживание', 'Calculate maintaining', 'Рассчитать техническое обслуживание');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
 values (1777, 9999, '驱动配置', '驱动配置', 'AP.view.acquisitionUnit.ProtocolConfigInfoView', 'DriverManagement', 1080010, null, null, 'driverConfig', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', 'Driver config', 'Конфигурация драйвера', 'Driver config', 'Конфигурация драйвера');
@@ -72,6 +72,10 @@ values (26, 23, '模块配置', '模块配置', 'AP.view.module.ModuleInfoView', 'Module
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
 values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090100, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'Data dictionary management', 'Настройка словаря', 'Data dictionary management', 'Настройка словаря');
+
+insert into TBL_MODULE (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
+values (2278, 23, '运维配置', '运维配置', 'AP.view.operationMaintenance.OperationMaintenanceInfoView', 'OperationMaintenance', 2090300, null, null, 'operationMaintenance', 0, 'AP.controller.frame.MainIframeControl', 'O&M configuration', 'Конфигурация эксплуатации и техобслуживания', 'O&M configuration', 'Конфигурация эксплуатации и техобслуживания');
+
 
 /*==============================================================*/
 /* 初始化tbl_role数据                                          */
@@ -252,6 +256,10 @@ values (53, 2218, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (54, 1998, 144, '1,0,0');
+
+insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
+values (55, 2278, 1, '1,1,0');
+
 
 /*==============================================================*/
 /* 初始化TBL_DEVICETYPE2ROLE数据                                          */

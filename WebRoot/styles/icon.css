@@ -115,6 +115,10 @@
 	background-image: url(../images/icon/logQuery.png) !important;
 }
 
+.systemLog {
+	background-image: url(../images/icon/systemLog.png) !important;
+}
+
 .curveRoot {
 	background-image: url(../images/icon/rawData.png) !important;
 }
@@ -286,6 +290,9 @@
 }
 .acqGroup{
 	background-image: url(../images/icon/acqGroup.png) !important;
+}
+.operationMaintenance{
+	background-image: url(../images/icon/operationMaintenance.png) !important;
 }
 .x-action-col-cell img {
 	height: 16px;

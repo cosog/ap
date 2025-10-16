@@ -142,15 +142,30 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                 var panel = Ext.getCmp("ModbusProtocolAddrMappingConfigPanel_Id");
                 panel.add(treeGridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue());
-            if(selectedRow==0){
+            
+            var selectedRow=0;
+            var addProtocolName=Ext.getCmp("ModbusProtocolAddNewProtocolName_Id").getValue();
+            if(isNotVal(addProtocolName)){
+            	Ext.getCmp("ModbusProtocolAddNewProtocolName_Id").setValue('');
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>0){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){
             			selectedRow=i;
             			break;
             		}
             	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue());
+                if(selectedRow==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
+            
+            
             
             treeGridPanel.getSelectionModel().deselectAll(true);
             treeGridPanel.getSelectionModel().select(selectedRow, true);

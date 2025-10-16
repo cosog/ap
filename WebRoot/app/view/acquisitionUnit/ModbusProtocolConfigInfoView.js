@@ -17,6 +17,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'ModbusProtocolAddNewProtocolName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     id: 'ModbusProtocolAddrMappingItemsSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
@@ -296,6 +301,33 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 		success:function(response) {
 			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
+			var dataLength=result.totalRoot.length;
+			var defultNullData=[];
+			var defultDataLength=100;
+			for(var i=0;i<defultDataLength;i++){
+				var nullData={};
+				defultNullData.push(nullData);
+			}
+			
+			if(dataLength<defultDataLength){
+				if(defultDataLength-dataLength<10){
+					for(var i=0;i<10;i++){
+						var nullData={};
+						result.totalRoot.push(nullData);
+					}
+				}else{
+					for(var i=dataLength;i<defultDataLength;i++){
+						var nullData={};
+						result.totalRoot.push(nullData);
+					}
+				}
+			}else{
+				for(var i=0;i<10;i++){
+					var nullData={};
+					result.totalRoot.push(nullData);
+				}
+			}
+			
 			if(protocolItemsConfigHandsontableHelper==null || protocolItemsConfigHandsontableHelper.hot==undefined){
 				protocolItemsConfigHandsontableHelper = ProtocolItemsConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
@@ -317,8 +349,8 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				protocolItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolItemsConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					protocolItemsConfigHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					protocolItemsConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsConfigHandsontableHelper.Data=defultNullData;
+					protocolItemsConfigHandsontableHelper.createTable(defultNullData);
 				}else{
 					protocolItemsConfigHandsontableHelper.Data=result.totalRoot;
 					protocolItemsConfigHandsontableHelper.createTable(result.totalRoot);
@@ -327,14 +359,14 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				protocolItemsConfigHandsontableHelper.hot.deselectCell();
 				
 				if(result.totalRoot.length==0){
-					protocolItemsConfigHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
-					protocolItemsConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					protocolItemsConfigHandsontableHelper.Data=defultNullData;
+					protocolItemsConfigHandsontableHelper.hot.loadData(defultNullData);
 				}else{
 					protocolItemsConfigHandsontableHelper.Data=result.totalRoot;
 					protocolItemsConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
-			if(result.totalRoot.length==0){
+			if(dataLength==0){
 				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
 				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','',true);
@@ -645,6 +677,23 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                            if (oldValue !== newValue) {
 	                            	needUpdateMap = true;
 	                            }
+	                        }else if (prop === 'resolutionMode') {
+	                        	var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
+	                        	if(selectedRow==row 
+	                        			&& protocolItemsMeaningConfigHandsontableHelper!=null
+	                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=''
+	                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+	                        		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'resolutionMode');
+	                        		if(resolutionMode==loginUserLanguageResource.switchingValue){
+	                        			protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings({
+	                        			    colHeaders: [loginUserLanguageResource.bit,loginUserLanguageResource.meaning]
+	                        			});
+	                        		}else{
+	                        			protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings({
+	                        			    colHeaders: [loginUserLanguageResource.value,loginUserLanguageResource.meaning]
+	                        			});
+	                        		}
+	                        	}
 	                        }
 	                    });
 	                	if(needUpdateMap){
@@ -1075,7 +1124,12 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 			protocolItemsConfigHandsontableHelper.clearContainer();
 			if (data.success) {
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){
+					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+				}else{
+					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+				}
+				
 				
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
 					Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
@@ -1299,7 +1353,22 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 		url:context + '/acquisitionUnitManagerController/getProtocolExtendedFieldsConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-//			result.totalRoot=[];
+			var dataLength=result.totalRoot.length;
+			var defultNullData=[];
+			var defultDataLength=100;
+			for(var i=0;i<defultDataLength;i++){
+				var nullData={};
+				defultNullData.push(nullData);
+			}
+			
+			if(dataLength<defultDataLength){
+				for(var i=dataLength;i<defultDataLength;i++){
+					var nullData={};
+					result.totalRoot.push(nullData);
+				}
+			}
+			
+			
 			if(protocolExtendedFieldConfigHandsontableHelper==null || protocolExtendedFieldConfigHandsontableHelper.hot==undefined){
 				protocolExtendedFieldConfigHandsontableHelper = ProtocolExtendedFieldConfigHandsontableHelper.createNew("ProtocolExtendedFieldTableInfoDiv_id");
 				var operationList=result.operationList;
@@ -1358,14 +1427,14 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				
 				protocolExtendedFieldConfigHandsontableHelper.colHeaders=colHeaders;
 				protocolExtendedFieldConfigHandsontableHelper.columns=columns;
-				if(result.totalRoot.length==0){
-					protocolExtendedFieldConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				if(dataLength==0){
+					protocolExtendedFieldConfigHandsontableHelper.createTable(defultNullData);
 				}else{
 					protocolExtendedFieldConfigHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
-				if(result.totalRoot.length==0){
-					protocolExtendedFieldConfigHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				if(dataLength==0){
+					protocolExtendedFieldConfigHandsontableHelper.hot.loadData(defultNullData);
 				}else{
 					protocolExtendedFieldConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}

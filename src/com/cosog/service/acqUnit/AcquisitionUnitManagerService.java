@@ -528,7 +528,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
 		Gson gson = new Gson();
-		int resolutionMode=0;
+		int resolutionMode=2;
 		String title="";
 		totalRoot.append("[");
 		int totolCount=0;
@@ -5921,7 +5921,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String exportProtocolTreeData(String deviceTypeIds,User user){

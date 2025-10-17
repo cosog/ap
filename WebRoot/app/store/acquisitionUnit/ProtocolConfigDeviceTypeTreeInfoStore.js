@@ -66,6 +66,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                         	if(tabPanel.getActiveTab().id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
                         		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
                         		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
+                        		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectProtocolId_Id").setValue(0);
                         		
                         		var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
                                 if (isNotVal(treeGridPanel)) {

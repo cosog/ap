@@ -37,7 +37,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             	border: false,
             	items: [{
             		region: 'center',
-                	title:loginUserLanguageResource.columnMappingTable,
+                	title:loginUserLanguageResource.generalCaclualteConfig,
                 	id:'DatabaseColumnMappingTablePanel_Id',
                 	layout: 'fit',
                 	header:true,
@@ -136,9 +136,9 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(protocolName+"/"+loginUserLanguageResource.columnMappingTable);
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle("【<font color=red>"+protocolName+"</font>】"+"/"+loginUserLanguageResource.generalCaclualteConfig);
 			}else{
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(loginUserLanguageResource.columnMappingTable);
+				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(loginUserLanguageResource.generalCaclualteConfig);
 			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
@@ -206,7 +206,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [0],
+	                    columns: [0,2],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

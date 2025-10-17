@@ -5889,7 +5889,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 		String sql="select t.name,t.code,t.sort,t.devicetype,t.language,"
-				+ " t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath "
+				+ " t2.name_"+language+" as deviceTypeName,t2.allpath_"+language+" as deviceTypeAllPath,"
+				+ " t.id "
 				+ " from tbl_protocol t,viw_devicetypeinfo t2 "
 				+ " where t.devicetype=t2.id "
 				+ " and t.devicetype in ("+deviceTypeIds+") "
@@ -5899,6 +5900,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			tree_json.append("{\"classes\":1,");
+			tree_json.append("\"protocolId\":"+obj[7]+",");
 			tree_json.append("\"text\":\""+obj[0]+"\",");
 			tree_json.append("\"code\":\""+obj[1]+"\",");
 			tree_json.append("\"sort\":\""+obj[2]+"\",");

@@ -90,7 +90,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
             	}
         	}
         	if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(protocolName+"/"+loginUserLanguageResource.runStatusConfig);
+				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle("【<font color=red>"+protocolName+"</font>】"+"/"+loginUserLanguageResource.runStatusConfig);
 			}else{
 				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(loginUserLanguageResource.runStatusConfig);
 			}

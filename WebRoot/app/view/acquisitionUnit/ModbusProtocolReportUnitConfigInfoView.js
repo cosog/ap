@@ -2323,9 +2323,11 @@ function SaveModbusProtocolReportUnitData(saveData) {
         success: function (response) {
             data = Ext.JSON.decode(response.responseText);
             if (data.success) {
-                Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                 if (saveData.delidslist != undefined && saveData.delidslist.length > 0) {
                     Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(0);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+                }else{
+                	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
                 }
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
             } else {

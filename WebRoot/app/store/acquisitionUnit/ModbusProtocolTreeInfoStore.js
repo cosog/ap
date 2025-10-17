@@ -70,6 +70,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(index);
+                        	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectProtocolId_Id").setValue(record.data.protocolId);
                         	
                         	if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolPropertiesConfigRightTabPanel_Id'){
                         		CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
@@ -147,17 +148,44 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
             var addProtocolName=Ext.getCmp("ModbusProtocolAddNewProtocolName_Id").getValue();
             if(isNotVal(addProtocolName)){
             	Ext.getCmp("ModbusProtocolAddNewProtocolName_Id").setValue('');
+            	var maxProtocolId=0;
+            	var protocolCount=0;
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){
+//            			selectedRow=i;
+//            			break;
+//            		}
+//            	}
+            	
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){
             			selectedRow=i;
-            			break;
+            			protocolCount++;
             		}
+            	}
+            	if(protocolCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){
+                			if(store.getAt(i).data.protocolId>maxProtocolId){
+                				maxProtocolId=store.getAt(i).data.protocolId;
+                				selectedRow=i;
+                			}
+                		}
+                	}
             	}
             }else{
             	selectedRow=parseInt(Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue());
-                if(selectedRow==0){
+            	var selectedProtocolId=parseInt(Ext.getCmp("ModbusProtocolAddrMappingConfigSelectProtocolId_Id").getValue());
+                if(selectedProtocolId==0){
                 	for(var i=0;i<store.data.length;i++){
                 		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.protocolId==selectedProtocolId){
                 			selectedRow=i;
                 			break;
                 		}

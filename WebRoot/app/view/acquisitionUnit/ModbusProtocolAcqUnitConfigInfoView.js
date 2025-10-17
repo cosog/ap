@@ -802,9 +802,12 @@ function saveAcquisitionUnitConfigData(acqUnitSaveData,protocol,deviceType){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            	
             	if(acqUnitSaveData.delidslist!=undefined && acqUnitSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+            	}else{
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
@@ -830,9 +833,11 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	if(acqGroupSaveData.delidslist!=undefined && acqGroupSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+            	}else{
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {

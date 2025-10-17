@@ -46,6 +46,10 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         forceFit: true
                     },
                     store: store,
+//                    style: {
+////                        'font-family': '"Microsoft YaHei", "Segoe UI", Arial, sans-serif',
+//                        'font-size': '20px'
+//                    },
                     columns: [{
                     	xtype: 'treecolumn',
                     	text: loginUserLanguageResource.protocolList,
@@ -99,8 +103,17 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                 var panel = Ext.getCmp("DatabaseColumnMappingTableLeftTreePanel_Id");
                 panel.add(treeGridPanel);
             }
+            
+            var selectedRow=0;
+            for(var i=0;i<store.data.length;i++){
+        		if(store.getAt(i).data.classes>0){
+        			selectedRow=i;
+        			break;
+        		}
+        	}
+            
             treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(0, true);
+            treeGridPanel.getSelectionModel().select(selectedRow, true);
         }
     }
 });

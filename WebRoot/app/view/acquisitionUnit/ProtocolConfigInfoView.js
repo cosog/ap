@@ -155,6 +155,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
                     		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
                     		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
+                    		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectProtocolId_Id").setValue(0);
                     		
                     		var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
                             if (isNotVal(treeGridPanel)) {

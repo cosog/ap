@@ -1187,9 +1187,11 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
 		success:function(response) {
 			rdata=Ext.JSON.decode(response.responseText);
 			if (rdata.success) {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	if(displayUnitSaveData.delidslist!=undefined && displayUnitSaveData.delidslist.length>0){
             		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+            	}else{
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
             } else {

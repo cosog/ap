@@ -67,9 +67,11 @@ var saveModbusProtocolSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
-                Ext.getCmp('modbusProtocol_editWin_Id').close();
-                Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
+                	var addProtocolName = Ext.getCmp('formModbusProtocolName_Id').getValue();
+                	Ext.getCmp('ModbusProtocolAddNewProtocolName_Id').setValue(addProtocolName);
+                	Ext.getCmp('modbusProtocol_editWin_Id').close();
+                	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {

@@ -91,10 +91,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                 listeners: {
                     blur: function (t, e) {
                         var value_ = t.getValue();
+                        var deviceType=Ext.getCmp("modbusProtocolDeviceType_Id").getValue();
                         if(value_!=''){
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
+                                	deviceType: deviceType,
                                 	protocolName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeProtocolExistOrNot',

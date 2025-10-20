@@ -7591,10 +7591,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result;
 	}
 	
-	public boolean judgeProtocolExistOrNot(String protocolName) {
+	public boolean judgeProtocolExistOrNot(String protocolName,String deviceType) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(protocolName)) {
-			String sql = "select t.id from TBL_PROTOCOL t where t.name='"+protocolName+"'";
+			String sql = "select t.id from TBL_PROTOCOL t where t.name='"+protocolName+"' and t.devicetype="+deviceType;
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -9373,7 +9373,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
-			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName());
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName(),exportProtocolConfig.getProtocol().getDeviceType()+"");
 			if(!protocolExist){//如果协议不存在，则不存在冲突
 				//添加协议
 				ProtocolModel protocolModel=new ProtocolModel();
@@ -10424,7 +10424,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String, Object> map = DataModelMap.getMapObject();
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		if(exportProtocolConfig!=null && exportProtocolConfig.getProtocol()!=null){
-			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName());
+			boolean protocolExist=this.judgeProtocolExistOrNot(exportProtocolConfig.getProtocol().getName(),exportProtocolConfig.getProtocol().getDeviceType()+"");
 			if(protocolExist){//如果协议已存在
 				result_json.append("{\"classes\":0,\"typeName\":\""+languageResourceMap.get("protocol")+"\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
 				

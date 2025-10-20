@@ -259,6 +259,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                         xtype: 'tabpanel',
                         id:"ModbusProtocolDisplayUnitConfigRightTabPanel_Id",
                         activeTab: 1,
+                        tabBar:{
+                    		items: [{
+                                xtype: 'tbfill'
+                            },{
+                            	xtype: 'label',
+                            	id: 'DisplayUnitConfigInformationLabel_Id',
+                            	hidden:true,
+                            	html: ''
+                            },{
+                            	xtype: 'label',
+                            	hidden:false,
+                            	html: '&nbsp;'
+                            }]
+                    	},
                         items: displayUnitConfigRightTabPanelItems,
                         listeners: {
                         	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -288,6 +302,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
 });
 
 function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName,calculateType) {
+	var tabPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigRightTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(unitName)){
+		showInfo="【<font color=red>"+unitName+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("DisplayUnitConfigInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("DisplayUnitConfigInformationLabel_Id").show();
     Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
@@ -895,6 +916,15 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 		item1.value=data.text;
 		root.push(item1);
 	}else if(data.classes==2){
+		var tabPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigRightTabPanel_Id");
+		var showInfo=tabPanel.getActiveTab().title;
+		if(isNotVal(data.text)){
+			showInfo="【<font color=red>"+data.text+"</font>】"+showInfo+"&nbsp;"
+		}
+		Ext.getCmp("DisplayUnitConfigInformationLabel_Id").setHtml(showInfo);
+	    Ext.getCmp("DisplayUnitConfigInformationLabel_Id").show();
+		
+		
 		var protocolList=[];
 		var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
 		if(protocolTreeGridPanelSelection.length>0){
@@ -955,11 +985,6 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 				protocol: protocolList.join(",")
 	        }
 		});
-		
-		
-		
-		
-		
 	}
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){

@@ -61,6 +61,18 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(index);
+                        	if(record.data.classes==0){
+                        		Ext.getCmp("ReportUnitConfigInformationLabel_Id").setHtml('');
+                                Ext.getCmp("ReportUnitConfigInformationLabel_Id").hide();
+                        	}else{
+                    			var tabPanel = Ext.getCmp("ReportUnitConfigRightTabPanel_Id");
+                        		var showInfo=tabPanel.getActiveTab().title;
+                        		if(isNotVal(record.data.text)){
+                        			showInfo="【<font color=red>"+record.data.text+"</font>】"+showInfo+"&nbsp;"
+                        		}
+                        		Ext.getCmp("ReportUnitConfigInformationLabel_Id").setHtml(showInfo);
+                        	    Ext.getCmp("ReportUnitConfigInformationLabel_Id").show();
+                    		}
                         	if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ReportUnitPropertiesConfigRightTabPanel_Id'){
                         		CreateProtocolReportUnitPropertiesInfoTable(record.data);
                         	}else if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ModbusProtocolReportUnitReportTemplateTabPanel_Id'){

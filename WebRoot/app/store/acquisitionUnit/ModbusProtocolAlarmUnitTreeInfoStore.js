@@ -84,6 +84,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAlarmUnitPropertiesConfigPanel_Id");
                 			var itemsConfigTabPanel = tabPanel.getComponent("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id");
                         	if(record.data.classes!=3){
+                        		Ext.getCmp("AlarmUnitConfigInformationLabel_Id").setHtml('');
+                        	    Ext.getCmp("AlarmUnitConfigInformationLabel_Id").hide();
+                        	    
                         		if(protocolConfigAlarmUnitPropertiesHandsontableHelper!=null){
                 					if(protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined){
                 						protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.destroy();

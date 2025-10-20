@@ -211,6 +211,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                         xtype: 'tabpanel',
                         id:"ModbusProtocolAcqUnitConfigRightTabPanel_Id",
                         activeTab: 1,
+                        tabBar:{
+                    		items: [{
+                                xtype: 'tbfill'
+                            },{
+                            	xtype: 'label',
+                            	id: 'AcqUnitConfigInformationLabel_Id',
+                            	hidden:true,
+                            	html: ''
+                            },{
+                            	xtype: 'label',
+                            	hidden:false,
+                            	html: '&nbsp;'
+                            }]
+                    	},
                         items: acqUnitConfigRightTabPanelItems,
                         listeners: {
                         	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -226,7 +240,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                             	if(newCard.id=="ModbusProtocolAcqUnitPropertiesConfigPanel_Id"){
                             		CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
                             	}else if(newCard.id=="ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id"){
-                            		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
+                            		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type,record.data.text);
                             	}
                             }
                         }
@@ -238,7 +252,17 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
     }
 });
 
-function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,type){
+function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,type,text){
+	
+	var tabPanel = Ext.getCmp("ModbusProtocolAcqUnitConfigRightTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(text)){
+		showInfo="【<font color=red>"+text+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("AcqUnitConfigInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("AcqUnitConfigInformationLabel_Id").show();
+	
+	
 	Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
 		if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
@@ -473,6 +497,17 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 
 function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 	var root=[];
+	
+	if(data.classes==2 || data.classes==3){
+		var tabPanel = Ext.getCmp("ModbusProtocolAcqUnitConfigRightTabPanel_Id");
+		var showInfo=tabPanel.getActiveTab().title;
+		if(isNotVal(data.text)){
+			showInfo="【<font color=red>"+data.text+"</font>】"+showInfo+"&nbsp;"
+		}
+		Ext.getCmp("AcqUnitConfigInformationLabel_Id").setHtml(showInfo);
+	    Ext.getCmp("AcqUnitConfigInformationLabel_Id").show();
+	}
+	
 	
 	if(data.classes==0){
 		var item1={};

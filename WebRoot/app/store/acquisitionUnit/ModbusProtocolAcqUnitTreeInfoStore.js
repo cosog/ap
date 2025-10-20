@@ -82,6 +82,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
                 			var acqGroupItemsTabPanel = tabPanel.getComponent("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
                         	if(record.data.classes==0 || record.data.classes==1){
+                        		Ext.getCmp("AcqUnitConfigInformationLabel_Id").setHtml('');
+                        	    Ext.getCmp("AcqUnitConfigInformationLabel_Id").hide();
+                        		
                         		if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null){
                 					if(protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined){
                 						protocolConfigAcqUnitPropertiesHandsontableHelper.hot.destroy();
@@ -155,7 +158,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                     						tabPanel.insert(1,acqUnitConfigRightTabPanelItems[1]);
                                 		}
                     				}else if(activeId=='ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id'){
-                    					CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
+                    					CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type,record.data.text);
                     					if(propertiesTabPanel==undefined){
                     						tabPanel.insert(0,acqUnitConfigRightTabPanelItems[0]);
                                 		}

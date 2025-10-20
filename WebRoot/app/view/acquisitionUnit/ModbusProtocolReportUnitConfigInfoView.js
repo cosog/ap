@@ -109,6 +109,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                 	xtype: 'tabpanel',
                     id:"ReportUnitConfigRightTabPanel_Id",
                     activeTab: 1,
+                    tabBar:{
+                		items: [{
+                            xtype: 'tbfill'
+                        },{
+                        	xtype: 'label',
+                        	id: 'ReportUnitConfigInformationLabel_Id',
+                        	hidden:true,
+                        	html: ''
+                        },{
+                        	xtype: 'label',
+                        	hidden:false,
+                        	html: '&nbsp;'
+                        }]
+                	},
                     items:[{
                     	id:"ReportUnitPropertiesConfigRightTabPanel_Id",
                     	title:loginUserLanguageResource.properties,
@@ -480,6 +494,19 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         	if(newCard.id=="ReportUnitPropertiesConfigRightTabPanel_Id"){
                         		CreateProtocolReportUnitPropertiesInfoTable(record.data);
                         	}else if(newCard.id=="ModbusProtocolReportUnitReportTemplateTabPanel_Id"){
+                        		
+                        		if(record.data.classes == 1){
+                        			var tabPanel = Ext.getCmp("ReportUnitConfigRightTabPanel_Id");
+                            		var showInfo=tabPanel.getActiveTab().title;
+                            		if(isNotVal(record.data.text)){
+                            			showInfo="【<font color=red>"+record.data.text+"</font>】"+showInfo+"&nbsp;"
+                            		}
+                            		Ext.getCmp("ReportUnitConfigInformationLabel_Id").setHtml(showInfo);
+                            	    Ext.getCmp("ReportUnitConfigInformationLabel_Id").show();
+                        		}
+                        		
+                        		
+                        		
                         		var selectedUnitCode='';
                             	var selectedUnitId=0;
                             	if(record.data.classes==0){
@@ -1581,6 +1608,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
 
 function CreateProtocolReportUnitPropertiesInfoTable(data) {
     var root = [];
+    
     if (data.classes == 0) {
         var item1 = {};
         item1.id = 1;
@@ -1588,6 +1616,15 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
         item1.value = loginUserLanguageResource.unitList;
         root.push(item1);
     } else if (data.classes == 1) {
+    	var tabPanel = Ext.getCmp("ReportUnitConfigRightTabPanel_Id");
+    	var showInfo=tabPanel.getActiveTab().title;
+    	if(isNotVal(data.text)){
+    		showInfo="【<font color=red>"+data.text+"</font>】"+showInfo+"&nbsp;"
+    	}
+    	Ext.getCmp("ReportUnitConfigInformationLabel_Id").setHtml(showInfo);
+        Ext.getCmp("ReportUnitConfigInformationLabel_Id").show();
+    	
+    	
         var item1 = {};
         item1.id = 1;
         item1.title = loginUserLanguageResource.unitName;

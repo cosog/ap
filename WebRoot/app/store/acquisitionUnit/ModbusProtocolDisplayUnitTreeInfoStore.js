@@ -85,6 +85,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolDisplayUnitPropertiesConfigPanel_Id");
                 			var itemsConfigTabPanel = tabPanel.getComponent("ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id");
                         	if(record.data.classes!=2){
+                        		Ext.getCmp("DisplayUnitConfigInformationLabel_Id").setHtml('');
+                        	    Ext.getCmp("DisplayUnitConfigInformationLabel_Id").hide();
+                        		
                         		if(protocolDisplayUnitPropertiesHandsontableHelper!=null){
                 					if(protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
                 						protocolDisplayUnitPropertiesHandsontableHelper.hot.destroy();

@@ -142,6 +142,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 	xtype: 'tabpanel',
                     id:"ProtocolConfigRightTabPanel_Id",
                     activeTab: 1,
+                    tabBar:{
+                		items: [{
+                            xtype: 'tbfill'
+                        },{
+                        	xtype: 'label',
+                        	id: 'ProtocolConfigInformationLabel_Id',
+                        	hidden:true,
+                        	html: ''
+                        },{
+                        	xtype: 'label',
+                        	hidden:false,
+                        	html: '&nbsp;'
+                        }]
+                	},
                     items:[{
                     	id:"ProtocolPropertiesConfigRightTabPanel_Id",
                     	title:loginUserLanguageResource.properties,
@@ -300,6 +314,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
 
 function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classes,code){
 	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	var tabPanel = Ext.getCmp("ProtocolConfigRightTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(protocolName)){
+		showInfo="【<font color=red>"+protocolName+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("ProtocolConfigInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("ProtocolConfigInformationLabel_Id").show();
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolItemsConfigData',
@@ -826,7 +848,17 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		item4.title=loginUserLanguageResource.protocolBelongTo;
 		item4.value=data.deviceTypeAllPath;
 		root.push(item4);
+		
+		var tabPanel = Ext.getCmp("ProtocolConfigRightTabPanel_Id");
+		var showInfo=tabPanel.getActiveTab().title;
+		if(isNotVal(item1.title)){
+			showInfo="【<font color=red>"+item1.title+"</font>】"+showInfo+"&nbsp;"
+		}
+		Ext.getCmp("ProtocolConfigInformationLabel_Id").setHtml(showInfo);
+	    Ext.getCmp("ProtocolConfigInformationLabel_Id").show();
 	}
+	
+	
 	
 	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
 		protocolPropertiesHandsontableHelper = ProtocolPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
@@ -1389,6 +1421,15 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 		}
 		protocolExtendedFieldConfigHandsontableHelper=null;
 	}
+	
+	var tabPanel = Ext.getCmp("ProtocolConfigRightTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(protocolName)){
+		showInfo="【<font color=red>"+protocolName+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("ProtocolConfigInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("ProtocolConfigInformationLabel_Id").show();
+    
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolExtendedFieldsConfigData',

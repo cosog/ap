@@ -652,6 +652,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         xtype: 'tabpanel',
                         id:"ModbusProtocolAlarmUnitConfigRightTabPanel_Id",
                         activeTab: 1,
+                        tabBar:{
+                    		items: [{
+                                xtype: 'tbfill'
+                            },{
+                            	xtype: 'label',
+                            	id: 'AlarmUnitConfigInformationLabel_Id',
+                            	hidden:true,
+                            	html: ''
+                            },{
+                            	xtype: 'label',
+                            	hidden:false,
+                            	html: '&nbsp;'
+                            }]
+                    	},
                         items: alarmUnitConfigRightTabPanelItems,
                         listeners: {
                         	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -680,6 +694,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
 });
 
 function CreateProtocolAlarmUnitContentConfigInfoTable(record){
+	var tabPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigRightTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(record.data.text)){
+		showInfo="【<font color=red>"+record.data.text+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("AlarmUnitConfigInformationLabel_Id").setHtml(showInfo);
+    Ext.getCmp("AlarmUnitConfigInformationLabel_Id").show();
+	
 	var activeId = Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id;
 	if(activeId=="ModbusProtocolAlarmUnitNumItemsConfigTableInfoPanel_Id"){
 		CreateProtocolAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.calculateType);
@@ -999,6 +1021,15 @@ function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 		item1.value=data.text;
 		root.push(item1);
 	}else if(data.classes==3){
+		
+		var tabPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigRightTabPanel_Id");
+		var showInfo=tabPanel.getActiveTab().title;
+		if(isNotVal(data.text)){
+			showInfo="【<font color=red>"+data.text+"</font>】"+showInfo+"&nbsp;"
+		}
+		Ext.getCmp("AlarmUnitConfigInformationLabel_Id").setHtml(showInfo);
+	    Ext.getCmp("AlarmUnitConfigInformationLabel_Id").show();
+		
 		var item1={};
 		item1.id=1;
 		item1.title=loginUserLanguageResource.unitName;

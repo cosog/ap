@@ -88,6 +88,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                     					}
                     					protocolItemsMeaningConfigHandsontableHelper=null;
                     				}
+                            		
                             	}else if(record.data.classes==1){
                             		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                             	}
@@ -102,6 +103,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                             	}else if(record.data.classes==1){
                             		CreateProtocolExtendedFieldConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                             	}
+                        	}
+                        	
+                        	if(record.data.classes==0){
+                        		Ext.getCmp("ProtocolConfigInformationLabel_Id").setHtml('');
+                        	    Ext.getCmp("ProtocolConfigInformationLabel_Id").hide();
                         	}
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单

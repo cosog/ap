@@ -4557,7 +4557,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String judgeProtocolExistOrNot() throws IOException {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		boolean flag = this.acquisitionUnitManagerService.judgeProtocolExistOrNot(protocolName);
+		boolean flag = this.acquisitionUnitManagerService.judgeProtocolExistOrNot(protocolName,deviceType);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

@@ -101,7 +101,7 @@ public class EquipmentDriverServerTask {
 						}
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
-						initProtocolConfig("","");
+						initProtocolConfig("","","");
 						initInstanceConfig(null,"");
 						initSMSInstanceConfig(null,"");
 						if(executor!=null && executor.isCompletedByTaskCount()){
@@ -118,7 +118,7 @@ public class EquipmentDriverServerTask {
 					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
 							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","");
+								initProtocolConfig("","","");
 								initInstanceConfig(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
@@ -154,7 +154,7 @@ public class EquipmentDriverServerTask {
 									)
 								){
 							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","");
+								initProtocolConfig("","","");
 								initInstanceConfig(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
@@ -239,12 +239,12 @@ public class EquipmentDriverServerTask {
 						driverProbeResponse=adInitProbe();
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
-						initProtocolConfig("","");
+						initProtocolConfig("","","");
 						driverProbeResponse=adInitProbe();
 					}
 					if(!driverProbeResponse.getInstanceInitStatus()){
 						if(!driverProbeResponse.getProtocolInitStatus()){
-							initProtocolConfig("","");
+							initProtocolConfig("","","");
 							driverProbeResponse=adInitProbe();
 						}
 						initInstanceConfig(null,"");
@@ -257,7 +257,7 @@ public class EquipmentDriverServerTask {
 					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
 						if(!driverProbeResponse.getInstanceInitStatus()){
 							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","");
+								initProtocolConfig("","","");
 								driverProbeResponse=adInitProbe();
 							}
 							initInstanceConfig(null,"");
@@ -299,7 +299,7 @@ public class EquipmentDriverServerTask {
 				AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
 				if(adStatusProbeResonanceData!=null){
 					initServerConfig();
-					initProtocolConfig("","");
+					initProtocolConfig("","","");
 					initInstanceConfig(null,"");
 					initSMSInstanceConfig(null,"");
 					initSMSDevice(null,"");
@@ -679,7 +679,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static void initProtocolConfig(String protocolName,String method){
+	public static void initProtocolConfig(String protocolName,String deviceType,String method){
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
@@ -688,46 +688,75 @@ public class EquipmentDriverServerTask {
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
 		if(modbusProtocolConfig!=null){
-			if("delete".equalsIgnoreCase(method)){
-				initProtocol=new InitProtocol();
-				initProtocol.setProtocolName(protocolName);
-				initProtocol.setMethod(method);
-				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol));
-				if(initEnable){
-					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
-				}
-			}else{
-				if(StringManagerUtils.isNotNull(protocolName)){
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-							initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
-							initProtocol.setMethod(method);
-							StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
-							if(initEnable){
-								StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
-							}
-							break;
+//			if("delete".equalsIgnoreCase(method)){
+//				initProtocol=new InitProtocol();
+//				initProtocol.setProtocolName(protocolName);
+//				initProtocol.setMethod(method);
+//				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol));
+//				if(initEnable){
+//					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+//				}
+//			}else{}
+			
+
+			if(StringManagerUtils.isNotNull(deviceType) && StringManagerUtils.isNotNull(protocolName)){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())
+							&& StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
+						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
+//						initProtocol.setMethod(method);
+						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
+						if(initEnable){
+							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 						}
+						break;
 					}
-				}else{
-					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
-						initProtocol.setMethod(method);
+				}
+			}else if(StringManagerUtils.isNotNull(deviceType) && !StringManagerUtils.isNotNull(protocolName)){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
+						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
+//						initProtocol.setMethod(method);
 						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 						}
 					}
 				}
+			}else if(!StringManagerUtils.isNotNull(deviceType) && StringManagerUtils.isNotNull(protocolName)){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
+//						initProtocol.setMethod(method);
+						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
+						if(initEnable){
+							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+						}
+						break;
+					}
+				}
+			}else{
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
+//					initProtocol.setMethod(method);
+					StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
+					if(initEnable){
+						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+					}
+				}
 			}
+		
 			
 			//同步数据库字段
 			loadAcquisitionItemColumns();
 		}
 	}
 	
-	public static int initInstanceConfigByProtocolName(String protocolName,String method){
-		String sql="select t.name from tbl_protocolinstance t,tbl_acq_unit_conf t2 where t.unitid=t2.id and t2.protocol='"+protocolName+"'";
+	public static int initInstanceConfigByProtocolName(String protocolName,String deviceType,String method){
+		String sql="select t.name from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.name"
+				+ " and t3.name='"+protocolName+"'"
+				+ " and t3.deviceType="+deviceType;
 		List<String> instanceList=new ArrayList<String>();
 		List<Object[]> list=OracleJdbcUtis.query(sql);
 		try {
@@ -838,10 +867,11 @@ public class EquipmentDriverServerTask {
 					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
 					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
 					+ " t.packetsendinterval,"
-					+ " t3.name "
+					+ " t3.name,t4.allpath_zh_cn "
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_protocol t3 on t2.protocol=t3.name"
+					+ " left outer join viw_devicetypeinfo t4 on t3.devicetype=t4.id"
 					+ " where 1=1";
 			String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
 					+ " t.itemname,t.itemcode, t6.name as protocolName "
@@ -874,7 +904,7 @@ public class EquipmentDriverServerTask {
 					InitInstance initInstance=new InitInstance();
 					initInstance.setMethod(method);
 					initInstance.setInstanceName(obj[0]+"");
-					initInstance.setProtocolName(obj[11]+"");
+					initInstance.setProtocolName(obj[12]+"/"+obj[11]);
 					initInstance.setAcqProtocolType(obj[1]+"");
 					initInstance.setCtrlProtocolType(obj[2]+"");
 					

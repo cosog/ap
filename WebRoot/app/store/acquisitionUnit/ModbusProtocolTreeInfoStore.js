@@ -129,7 +129,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                                                 	if(record.data.classes==1){
                                                 		var configInfo={};
                                             			configInfo.delidslist=[];
-                                            			configInfo.delidslist.push(record.data.text);
+                                            			configInfo.delidslist.push(record.data.code);
                                             			saveModbusProtocolAddrMappingConfigData(configInfo);
                                                 	}
 //                                                }

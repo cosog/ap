@@ -8275,9 +8275,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		for(int i=0;i<protocolArr.length;i++){
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolArr[i]);
 			if(protocol!=null){
-				InitProtocol initProtocol=new InitProtocol(protocol);
+				InitProtocol initProtocol=new InitProtocol(protocol,"update");
 				if(initProtocol!=null){
-					initProtocol.setMethod("update");
 					initProtocolList.add(initProtocol);
 				}
 			}
@@ -10398,8 +10397,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(exportProtocolConfig.getProtocol().getName(),"update");
 			MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(exportProtocolConfig.getProtocol().getName(),"update");
 			
-			EquipmentDriverServerTask.initProtocolConfig(exportProtocolConfig.getProtocol().getName(),"update");
-			EquipmentDriverServerTask.initInstanceConfigByProtocolName(exportProtocolConfig.getProtocol().getName(),"update");
+			EquipmentDriverServerTask.initProtocolConfig(exportProtocolConfig.getProtocol().getName(),exportProtocolConfig.getProtocol().getDeviceType()+"","update");
+			EquipmentDriverServerTask.initInstanceConfigByProtocolName(exportProtocolConfig.getProtocol().getName(),exportProtocolConfig.getProtocol().getDeviceType()+"","update");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -11028,13 +11027,43 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(selectedDeviceTypeId)>0 && StringManagerUtils.isNotNull(selectedProtocolId)){
 			String sql = "update tbl_protocol t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedProtocolId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
-			
+			String deviceTypeAllPath_zh_CN="";
+			String deviceTypeAllPath_en="";
+			String deviceTypeAllPath_ru="";
+			sql="select t.allpath_zh_cn,t.allpath_en,t.allpath_ru from viw_devicetypeinfo t where t.id=1";
+			List<?> list=this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				deviceTypeAllPath_zh_CN=obj[0]+"";
+				deviceTypeAllPath_en=obj[1]+"";
+				deviceTypeAllPath_ru=obj[2]+"";
+			}
 			try{
-				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				String [] protocolArr=selectedProtocolId.split(",");
+				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+				
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getId()+"")){
+						
+					}
+					
+				}
+				
+				
+				
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getId()+"")){
+						//删除已初始化的协议
+						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","delete");
+						
 						modbusProtocolConfig.getProtocol().get(i).setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
+						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_zh_CN(deviceTypeAllPath_zh_CN);
+						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_en(deviceTypeAllPath_en);
+						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_ru(deviceTypeAllPath_ru);
+						//重新初始化协议
+						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","update");
+						//重新初始化实例
+						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","update");
 					}
 				}
 				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
@@ -12422,7 +12451,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			clobCont.add(gson.toJson(protocol.getExtendedFields()));
 			r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
 			if(r>0){
-				MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+				MemoryDataManagerTask.loadProtocolConfig(protocol.getName(),protocol.getDeviceType()+"");
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(003);
 				dataSynchronizationThread.setParam1(protocol.getName());
@@ -12437,10 +12466,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
 				r=service.getBaseDao().executeSqlUpdateClob(insertSql,clobCont);
 				if(r>0){
-					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+					MemoryDataManagerTask.loadProtocolConfig(protocol.getName(),protocol.getDeviceType()+"");
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(001);
 					dataSynchronizationThread.setParam1(protocol.getName());
+					dataSynchronizationThread.setParam2(protocol.getDeviceType()+"");
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
 				}
@@ -12477,13 +12507,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
 				r=service.getBaseDao().executeSqlUpdateClob(updateSql,clobCont);
 				if(r>0){
-					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
+					MemoryDataManagerTask.loadProtocolConfig(protocol.getName(),protocol.getDeviceType()+"");
 					MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(protocol.getName(),"update");
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(protocol.getName(),"update");
 					MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(protocol.getName(),"update");
 					
-					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),"update");
-					EquipmentDriverServerTask.initInstanceConfigByProtocolName(protocol.getName(),"update");
+					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),protocol.getDeviceType()+"","update");
+					EquipmentDriverServerTask.initInstanceConfigByProtocolName(protocol.getName(),protocol.getDeviceType()+"","update");
 					
 					protocol.setSaveSign(0);
 					protocol.setMsg(languageResourceMap.get("updateSuccessfully"));
@@ -12498,8 +12528,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
 				r=service.getBaseDao().executeSqlUpdateClob(insertSql,clobCont);
 				if(r>0){
-					MemoryDataManagerTask.loadProtocolConfig(protocol.getName());
-					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),"update");
+					MemoryDataManagerTask.loadProtocolConfig(protocol.getName(),protocol.getDeviceType()+"");
+					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),protocol.getDeviceType()+"","update");
 					
 					protocol.setMsg(languageResourceMap.get("addSuccessfully"));
 				}else{

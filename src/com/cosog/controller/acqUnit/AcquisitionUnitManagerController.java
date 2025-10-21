@@ -322,7 +322,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addProtocol")+":"+protocolModel.getName());
 			}
 			
-			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName());
+			MemoryDataManagerTask.loadProtocolConfig(protocolModel.getName(),protocolModel.getDeviceType()+"");
 			ThreadPool executor = new ThreadPool("dataSynchronization",
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
 					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
@@ -2871,10 +2871,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				if(modbusDriverSaveData.getDelidslist()!=null && modbusDriverSaveData.getDelidslist().size()>0){
 					for(int i=0;i<modbusDriverSaveData.getDelidslist().size();i++){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-							if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+							if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getCode())){
 								DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 								dataSynchronizationThread.setSign(002);
 								dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
+								dataSynchronizationThread.setParam2(modbusProtocolConfig.getProtocol().get(j).getDeviceType()+"");
 								dataSynchronizationThread.setMethod("delete");
 								dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 								executor.execute(dataSynchronizationThread);
@@ -2892,11 +2893,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 				
-				
+				String oldDeviceType="";
 				if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 						if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 							String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
+							oldDeviceType=modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"";
 							List<String> delItemList=new ArrayList<String>();
 							if(saveType==0){
 								modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
@@ -3023,7 +3025,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							
 							//如果协议名称改变，更新数据库
 							if(!oldName.equals(modbusDriverSaveData.getProtocolName())){
-								EquipmentDriverServerTask.initProtocolConfig(oldName,"delete");
+								EquipmentDriverServerTask.initProtocolConfig(oldName,modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","delete");
 								String unitSql="update tbl_acq_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
 								String groupSql="update tbl_acq_group_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
 								String alatmUnitSql="update tbl_alarm_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
@@ -3079,6 +3081,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(003);
 					dataSynchronizationThread.setParam1(modbusDriverSaveData.getProtocolName());
+					dataSynchronizationThread.setParam2(oldDeviceType);
 					dataSynchronizationThread.setMethod("update");
 					executor.execute(dataSynchronizationThread);
 				}

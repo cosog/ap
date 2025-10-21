@@ -23,6 +23,7 @@ public class DataSynchronizationThread implements Runnable{
 	public int condition;
 	public String method;
 	public String param1;
+	public String param2;
 	public int sign;
 	public User user;
 	public String deviceType;
@@ -35,23 +36,23 @@ public class DataSynchronizationThread implements Runnable{
 	public void run(){
 		try {
 			if(sign==001){//创建协议
-				EquipmentDriverServerTask.initProtocolConfig(param1,method);
+				EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
 			}else if(sign==002){//删除协议
 				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(param1,method);
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(param1,method);
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(param1,method);
 				
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(param1,method);
-				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,method);
-				EquipmentDriverServerTask.initProtocolConfig(param1,method);
+				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,param2,method);
+				EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
 				this.acquisitionUnitManagerService.doDeleteProtocolAssociation(param1);
 			}else if(sign==003){//修改协议
 				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(param1,method);
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(param1,method);
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(param1,method);
 				
-				EquipmentDriverServerTask.initProtocolConfig(param1,method);
-				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,method);
+				EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
+				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,param2,method);
 			}else if(sign==011){//删除采集单元
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(param1,method);
 				EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(param1,method);
@@ -250,5 +251,11 @@ public class DataSynchronizationThread implements Runnable{
 	}
 	public void setDeviceType(String deviceType) {
 		this.deviceType = deviceType;
+	}
+	public String getParam2() {
+		return param2;
+	}
+	public void setParam2(String param2) {
+		this.param2 = param2;
 	}
 }

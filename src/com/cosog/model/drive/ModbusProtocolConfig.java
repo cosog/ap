@@ -182,6 +182,12 @@ public class ModbusProtocolConfig implements Serializable{
 	    private int DeviceType;
 	    
 	    private int Language;
+	    
+	    private String DeviceTypeAllPath_zh_CN;
+	    
+	    private String DeviceTypeAllPath_en;
+	    
+	    private String DeviceTypeAllPath_ru;
 
 	    private List<Items> Items;
 	    
@@ -239,6 +245,24 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setExtendedFields(List<ExtendedField> extendedFields) {
 			ExtendedFields = extendedFields;
+		}
+		public String getDeviceTypeAllPath_zh_CN() {
+			return DeviceTypeAllPath_zh_CN;
+		}
+		public void setDeviceTypeAllPath_zh_CN(String deviceTypeAllPath_zh_CN) {
+			DeviceTypeAllPath_zh_CN = deviceTypeAllPath_zh_CN;
+		}
+		public String getDeviceTypeAllPath_en() {
+			return DeviceTypeAllPath_en;
+		}
+		public void setDeviceTypeAllPath_en(String deviceTypeAllPath_en) {
+			DeviceTypeAllPath_en = deviceTypeAllPath_en;
+		}
+		public String getDeviceTypeAllPath_ru() {
+			return DeviceTypeAllPath_ru;
+		}
+		public void setDeviceTypeAllPath_ru(String deviceTypeAllPath_ru) {
+			DeviceTypeAllPath_ru = deviceTypeAllPath_ru;
 		}
 	}
 	

@@ -98,7 +98,7 @@ public class MemoryDataManagerTask {
 		
 		cleanData();
 		
-		loadProtocolConfig("");
+		loadProtocolConfig("","");
 		System.out.println("加载协议完成");
 		
 		loadProtocolRunStatusConfig();
@@ -403,7 +403,7 @@ public class MemoryDataManagerTask {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static void loadProtocolConfig(String protocolName){
+	public static void loadProtocolConfig(String protocolName,String deviceType){
 		StringManagerUtils.printLog("驱动加载开始");
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
@@ -421,9 +421,13 @@ public class MemoryDataManagerTask {
 		}
 		try {
 			StringBuffer protocolBuff=null;
-			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language,t.extendedField "
-					+ " from TBL_PROTOCOL t "
-					+ " where 1=1 ";
+			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language,t.extendedField,"
+					+ " t2.allpath_zh_cn,t2.allpath_en,t2.allpath_ru "
+					+ " from TBL_PROTOCOL t,viw_devicetypeinfo t2  "
+					+ " where t.devicetype=t2.id ";
+			if(StringManagerUtils.isNotNull(deviceType)){
+				sql+=" and t.deviceType="+deviceType+"";
+			}
 			if(StringManagerUtils.isNotNull(protocolName)){
 				sql+=" and t.name='"+protocolName+"'";
 			}
@@ -447,6 +451,9 @@ public class MemoryDataManagerTask {
 					protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
 					protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
 					protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
+					protocolBuff.append("\"DeviceTypeAllPath_zh_CN\":\""+obj[8]+"\",");
+					protocolBuff.append("\"DeviceTypeAllPath_en\":\""+obj[9]+"\",");
+					protocolBuff.append("\"DeviceTypeAllPath_ru\":\""+obj[10]+"\",");
 					protocolBuff.append("\"Items\":"+itemsStr+",");
 					protocolBuff.append("\"ExtendedFields\":"+extendedFieldStr+"");
 					protocolBuff.append("}");
@@ -4277,7 +4284,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		ModbusProtocolConfig modbusProtocolConfig=null;
 		if(!existsKey("modbusProtocolConfig")){
-			MemoryDataManagerTask.loadProtocolConfig("");
+			MemoryDataManagerTask.loadProtocolConfig("","");
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();

@@ -7653,10 +7653,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeInstanceExistOrNot(String instanceName) {
+	public boolean judgeInstanceExistOrNot(String instanceName,String acqUnitId) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLINSTANCE t where t.name='"+instanceName+"'";
+			String sql = "select t.id from tbl_protocolinstance t "
+					+ " where t.name='"+instanceName+"' "
+					+ " and t.unitid in ( select t2.id from tbl_acq_unit_conf t2 where t2.protocol=( select t3.protocol from tbl_acq_unit_conf t3 where t3.id="+acqUnitId+")  )";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -10742,53 +10744,104 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
-	public void doDeleteProtocolAssociation(String protocolName) throws Exception {
+	public void doDeleteProtocolAssociation(String protocolName,String deviceType) throws Exception {
 		int delorUpdateCount=0;
 		String tableName="tbl_device";
 		//处理显示实例、显示单元数据
-		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4 where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol='"+protocolName+"' )";
+		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( "
+				+ " select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4,tbl_protocol t5 "
+				+ " where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol=t5.name "
+				+ " and t5.name='"+protocolName+"' and t5.devicetype="+deviceType+"  )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( "
+				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
+				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( "
+				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_display_unit_conf t where t.acqunitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"')";
+		sql="delete from tbl_display_unit_conf t where t.acqunitid in( "
+				+ " select t2.id from tbl_acq_unit_conf t2 ,tbl_protocol t3"
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		//处理报警实例、报警单元数据
-		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3 where t2.alarmunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( "
+				+ " select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.alarmunitid=t3.id and t3.protocol=t4.name"
+				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( "
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( "
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_alarm_unit_conf t where t.protocol ='"+protocolName+"'";
+		sql="delete from tbl_alarm_unit_conf t where t.id in("
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		//处理采集实例、采集单元、采集组数据
-		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( "
+				+ " select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.unitid=t3.id and t3.protocol=t4.name"
+				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in (select t2.id from tbl_acq_group_conf t2 where t2.protocol='"+protocolName+"')";
+		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in ("
+				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_acq_group_conf t where t.protocol ='"+protocolName+"'";
+		sql="delete from tbl_acq_group_conf t where t.id in ("
+				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_acq_group2unit_conf t where t.unitid in (select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"')";
+		sql="delete from tbl_acq_group2unit_conf t where t.unitid in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_protocolinstance t where t.unitid in (select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"')";
+		sql="delete from tbl_protocolinstance t where t.unitid in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
-		sql="delete from tbl_acq_unit_conf t where t.protocol ='"+protocolName+"'";
+		sql="delete from tbl_acq_unit_conf t where t.id in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from TBL_PROTOCOL t where t.name='"+protocolName+"' and t.devicetype="+deviceType+" ";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		
 	}
 	
 	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupCode) {

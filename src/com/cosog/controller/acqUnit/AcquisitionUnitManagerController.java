@@ -2880,10 +2880,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 								executor.execute(dataSynchronizationThread);
 								
-								modbusProtocolConfig.getProtocol().remove(j);
-								String delSql="delete from TBL_PROTOCOL t where t.name='"+modbusDriverSaveData.getDelidslist().get(i)+"'";
-								acquisitionUnitManagerService.getBaseDao().updateOrDeleteBySql(delSql);
-								
+//								modbusProtocolConfig.getProtocol().remove(j);
 								if(user!=null){
 									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
 								}
@@ -4660,7 +4657,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/judgeInstanceExistOrNot")
 	public String judgeInstanceExistOrNot() throws IOException {
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeInstanceExistOrNot(instanceName);
+		String acqUnitId=ParamUtils.getParameter(request, "acqUnitId");
+		boolean flag = this.acquisitionUnitManagerService.judgeInstanceExistOrNot(instanceName,acqUnitId);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

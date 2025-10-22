@@ -679,6 +679,27 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings("static-access")
+	public static void deleteInitializedProtocolConfig(String protocolName,String deviceType){
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getProtocol();
+		Gson gson = new Gson();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())
+					&& StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
+				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
+				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol));
+				if(initEnable){
+					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+				}
+				modbusProtocolConfig.getProtocol().remove(i);
+				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
+				break;
+			}
+		}
+	}
+	
+	@SuppressWarnings("static-access")
 	public static void initProtocolConfig(String protocolName,String deviceType,String method){
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
@@ -842,12 +863,43 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
+	public static void deleteInitializedInstance(String instanceName,String protocolName,String protocolAllPath){
+		
+		Gson gson = new Gson();
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
+		InitInstance initInstance=new InitInstance();
+		initInstance.setInstanceName(protocolAllPath+"/"+protocolName+"/"+instanceName);
+		initInstance.setMethod("update");
+		StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+		if(initEnable){
+			StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+		}
+		
+	}
+	
+	public static int deleteInitializedInstance(List<String> instanceNameList){
+		int t=0;
+		Gson gson = new Gson();
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
+		for(int i=0;instanceNameList!=null&&i<instanceNameList.size();i++){
+			InitInstance initInstance=new InitInstance();
+			initInstance.setInstanceName(instanceNameList.get(i));
+			initInstance.setMethod("update");
+			StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+			if(initEnable){
+				StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+			}
+			t++;
+		}
+		return t;
+	}
+	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfig(List<String> instanceList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
-		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
+		String instances=StringManagerUtils.joinStringArr(instanceList, ",");
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}

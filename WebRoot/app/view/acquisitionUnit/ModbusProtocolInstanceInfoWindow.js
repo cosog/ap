@@ -99,6 +99,11 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 anchor: '100%',
                 name: "protocolInstance.id"
             },{
+				xtype : "hidden",
+				id : 'modbusInstanceAcqUnit_Id',
+				value: 0,
+				name : "protocolInstance.unitId"
+			},protocolAndAcqUnitTree,{
                 id: 'formModbusProtocolInstanceName_Id',
                 name: "protocolInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
@@ -108,12 +113,14 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 value: '',
                 listeners: {
                     blur: function (t, e) {
+                    	var acqUnitId=Ext.getCmp("modbusInstanceAcqUnit_Id").getValue();
                         var value_ = t.getValue();
                         if(value_!=''){
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	instanceName: t.value
+                                	instanceName: t.value,
+                                	acqUnitId: acqUnitId
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeInstanceExistOrNot',
                                 success: function (response, opts) {
@@ -135,11 +142,6 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                     }
                 }
             },{
-				xtype : "hidden",
-				id : 'modbusInstanceAcqUnit_Id',
-				value: 0,
-				name : "protocolInstance.unitId"
-			},protocolAndAcqUnitTree,{
 				xtype : "hidden",
 				id : 'modbusInstanceAcqProtocolType_Id',
 				value:'modbus-tcp',

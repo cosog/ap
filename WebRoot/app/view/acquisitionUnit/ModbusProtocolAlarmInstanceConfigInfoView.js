@@ -374,6 +374,13 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 
 function SaveModbusProtocolAlarmInstanceConfigTreeData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue();
+	var protocolCode='';
+	var protocolTreeGridPanelSelection= Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolCode=protocolTreeGridPanelSelection[0].data.code;
+		}
+	}
 	if(ScadaDriverModbusConfigSelectRow!=''){
 		var selectedItem=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
 		var propertiesData=protocolAlarmInstancePropertiesHandsontableHelper.hot.getData();
@@ -386,12 +393,12 @@ function SaveModbusProtocolAlarmInstanceConfigTreeData(){
 			saveData.alarmUnitId=selectedItem.data.alarmUnitId;
 			saveData.alarmUnitName=propertiesData[1][2];
 			saveData.sort=propertiesData[2][2];
-			SaveModbusProtocolAlarmInstanceData(saveData);
+			SaveModbusProtocolAlarmInstanceData(saveData,protocolCode);
 		}
 	}
 };
 
-function SaveModbusProtocolAlarmInstanceData(saveData){
+function SaveModbusProtocolAlarmInstanceData(saveData,protocolCode){
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveProtocolAlarmInstanceData',
@@ -415,6 +422,7 @@ function SaveModbusProtocolAlarmInstanceData(saveData){
 		},
 		params: {
 			data: JSON.stringify(saveData),
+			protocolCode:protocolCode
         }
 	});
 }

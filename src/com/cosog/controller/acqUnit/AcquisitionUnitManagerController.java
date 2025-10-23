@@ -266,42 +266,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public void initBinder12(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("protocolModel.");
 	}
-
-	/**<p>描述：采集类型数据显示方法</p>
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping("/doAcquisitionUnitShow")
-	public String doAcquisitionUnitShow() throws IOException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
-		unitName = ParamUtils.getParameter(request, "unitName");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
-		int offset = (intPage - 1) * pageSize;
-		map.put(PagingConstants.PAGE_NO, intPage);
-		map.put(PagingConstants.PAGE_SIZE, pageSize);
-		map.put(PagingConstants.OFFSET, offset);
-		map.put("protocolName", protocolName);
-		map.put("unitName", unitName);
-		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
-		this.pager = new Page("pagerForm", request);
-		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager,dictDeviceType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
 	
 	@RequestMapping("/doModbusProtocolAdd")
 	public String doModbusProtocolAdd(@ModelAttribute ProtocolModel protocolModel) throws IOException {
@@ -3022,26 +2986,26 @@ public class AcquisitionUnitManagerController extends BaseController {
 							
 							//如果协议名称改变，更新数据库
 							if(!oldName.equals(modbusDriverSaveData.getProtocolName())){
-								EquipmentDriverServerTask.initProtocolConfig(oldName,modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","delete");
-								String unitSql="update tbl_acq_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-								String groupSql="update tbl_acq_group_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-								String alatmUnitSql="update tbl_alarm_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-								String displayUnitSql="update tbl_display_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-								service.updateSql(unitSql);
-								service.updateSql(groupSql);
-								service.updateSql(alatmUnitSql);
-								service.updateSql(displayUnitSql);
+								EquipmentDriverServerTask.deleteInitializedProtocolConfig(oldName,modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"");
+//								String unitSql="update tbl_acq_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
+//								String groupSql="update tbl_acq_group_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
+//								String alatmUnitSql="update tbl_alarm_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
+//								String displayUnitSql="update tbl_display_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
+//								service.updateSql(unitSql);
+//								service.updateSql(groupSql);
+//								service.updateSql(alatmUnitSql);
+//								service.updateSql(displayUnitSql);
 							}
 							if(delItemList.size()>0){
 								String delSql="delete from tbl_acq_item2group_conf t5 "
 										+ " where t5.id in "
 										+ "(select t4.id from tbl_acq_unit_conf t,tbl_acq_group2unit_conf t2,tbl_acq_group_conf t3,tbl_acq_item2group_conf t4 "
 										+ " where t.id=t2.unitid and t2.groupid=t3.id and t3.id=t4.groupid "
-										+ "and t.protocol='"+modbusDriverSaveData.getProtocolName()+"' "
+										+ "and t.protocol='"+modbusDriverSaveData.getProtocolCode()+"' "
 										+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+"))";
 								String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
 										+ "where t.type<>1 "
-										+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolName()+"'  )"
+										+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 										+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
 								service.updateSql(delSql);
 								service.updateSql(delDisplayItemSql);
@@ -3316,9 +3280,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					
 					String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
-							+ " where t.protocol=t2.name"
+							+ " where t.protocol=t2.code"
 							+ " and t.unit_name='"+acqUnitName+"' "
-							+ " and t2.name='"+protocol+"' ";
+							+ " and t2.code='"+protocol+"' ";
 					sql+= " and rownum=1";
 					String acqUnitId="";
 					List<?> list = this.service.findCallSql(sql);
@@ -3743,9 +3707,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				
 				String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
-						+ " where t.protocol=t2.name"
+						+ " where t.protocol=t2.code"
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t2.name='"+protocol+"' ";
+						+ " and t2.code='"+protocolCode+"' ";
 				sql+= " and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
@@ -3953,6 +3917,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolDisplayInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
@@ -3999,9 +3964,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				
 				String sql="select t.id "
 						+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-						+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+						+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t3.name='"+protocol+"'";
+						+ " and t3.code='"+protocolCode+"'";
+				
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -4225,6 +4191,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveProtocolAlarmInstanceData")
 	public String saveProtocolAlarmInstanceData() throws Exception {
 		HttpSession session=request.getSession();
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
@@ -4273,9 +4240,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				
 				String sql="select t.id "
 						+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
-						+ " where t.protocol=t2.name "
+						+ " where t.protocol=t2.code "
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t2.name='"+protocol+"'";
+						+ " and t2.code='"+protocolCode+"'";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){

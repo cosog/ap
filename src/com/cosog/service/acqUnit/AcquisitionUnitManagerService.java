@@ -98,32 +98,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private TabInfoManagerService<?> tabInfoManagerService;
-
-	public String getAcquisitionUnitList(Map map,Page pager,String dictDeviceType,String language) {
-		String protocolName = (String) map.get("protocolName");
-		String unitName = (String) map.get("unitName");
-		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark "
-				+ " from tbl_acq_unit_conf t where 1=1");
-		sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
-		
-		
-		sqlBuffer.append(" and t.protocol='"+protocolName+"'");
-		if (StringManagerUtils.isNotNull(unitName)) {
-			sqlBuffer.append(" and t.unit_name like '%" + unitName + "%' ");
-		}
-		
-		sqlBuffer.append(" order by t.id  asc");
-		String json = "";
-		String columns=service.showTableHeadersColumns("acquisitionUnit",dictDeviceType,language);
-		try {
-			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return json;
-	}
 	
 	public String doAcquisitionGroupShow(Map map,Page pager,String language) {
 		String groupName = (String) map.get("groupName");
@@ -5552,7 +5526,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.sort "
 				+ " from tbl_acq_unit_conf t,tbl_protocol t2"
-				+ " where t.protocol=t2.name";
+				+ " where t.protocol=t2.code";
 		if(StringManagerUtils.isNotNull(protocol)){
 			unitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
@@ -5561,7 +5535,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		unitSql+= " order by t.sort,t.protocol,t.id";
 		String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
 				+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3,tbl_protocol t4 "
-				+ " where t.unitid=t2.id and t.groupid=t3.id and t2.protocol=t4.name";
+				+ " where t.unitid=t2.id and t.groupid=t3.id and t2.protocol=t4.code";
 		if(StringManagerUtils.isNotNull(protocol)){
 			groupSql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
@@ -5643,7 +5617,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
 					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name";
+					+ " where t.protocol=t2.code";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
@@ -5670,7 +5644,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
 							tree_json.append("{\"classes\":2,");
 							tree_json.append("\"id\":"+unitObj[0]+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
@@ -5734,12 +5708,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 
-		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t3.name as protocol,t.acqunitid,t2.unit_name as acqunitname,"
+		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t3.code as protocol,t.acqunitid,t2.unit_name as acqunitname,"
 				+ " t.calculateType, "
 				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " t.sort"
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code";
 		if(StringManagerUtils.isNotNull(protocol)){
 			unitSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 		}else{
@@ -5789,11 +5763,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 		if(modbusProtocolConfig!=null){
-			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname,"
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t2.protocol,t.acqunitid,t2.unit_name as acqunitname,"
 					+ " t.calculateType, "
 					+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName"
 					+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-					+ " where t.acqunitid=t2.id and t2.protocol=t3.name";
+					+ " where t.acqunitid=t2.id and t2.protocol=t3.code";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				unitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
 			}else{
@@ -5815,7 +5789,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[4]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[4]+"")){
 							tree_json.append("{\"classes\":2,");
 							tree_json.append("\"id\":"+unitObj[0]+",");
 							tree_json.append("\"code\":\""+unitObj[1]+"\",");
@@ -5975,7 +5949,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol "
 					+ " from tbl_acq_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name"
+					+ " where t.protocol=t2.code"
 					+ " and t2.language="+user.getLanguage()
 					+ " order by t.protocol,t.id";
 			List<?> unitList=this.findCallSql(unitSql);
@@ -5996,7 +5970,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
 							result_json.append("{\"classes\":2,");
 							result_json.append("\"id\":"+unitObj[0]+",");
 							result_json.append("\"code\":\""+unitObj[1]+"\",");
@@ -6028,9 +6002,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String[] protocolArr=protocols.split(",");
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
-			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
+			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t2.protocol "
 					+ " from tbl_display_unit_conf t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-					+ " where t.acqunitid=t2.id and t2.protocol=t3.name"
+					+ " where t.acqunitid=t2.id and t2.protocol=t3.code"
 					+ " and t3.language="+user.getLanguage();
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				alarmUnitSql+=" and t3.devicetype in ("+deviceTypeIds+")";
@@ -6057,7 +6031,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"children\": [");
 					for(int j=0;j<alarmUnitList.size();j++){
 						Object[] unitObj = (Object[]) alarmUnitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
 							result_json.append("{\"classes\":2,");
 							result_json.append("\"id\":"+unitObj[0]+",");
 							result_json.append("\"code\":\""+unitObj[1]+"\",");
@@ -6092,7 +6066,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol "
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name"
+					+ " where t.protocol=t2.code"
 					+ " and t2.language= "+user.getLanguage();
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				alarmUnitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
@@ -6119,7 +6093,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"children\": [");
 					for(int j=0;j<alarmUnitList.size();j++){
 						Object[] unitObj = (Object[]) alarmUnitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
 							result_json.append("{\"classes\":2,");
 							result_json.append("\"id\":"+unitObj[0]+",");
 							result_json.append("\"code\":\""+unitObj[1]+"\",");
@@ -6311,7 +6285,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " t.sort"
 				+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.language="+user.getLanguage();
 		if(StringManagerUtils.isNotNull(protocol)){
 			unitSql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
@@ -6363,7 +6337,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
 					+ " from tbl_alarm_unit_conf t,tbl_protocol t2"
-					+ " where t.protocol=t2.name ";
+					+ " where t.protocol=t2.code ";
 			if(StringManagerUtils.isNotNull(deviceTypeIds)){
 				unitSql+=" and t2.devicetype in ("+deviceTypeIds+")";
 			}else{
@@ -6386,7 +6360,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					tree_json.append("\"children\": [");
 					for(int j=0;j<unitList.size();j++){
 						Object[] unitObj = (Object[]) unitList.get(j);
-						if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
 							tree_json.append("{\"classes\":3,");
 							tree_json.append("\"id\":"+unitObj[0]+",");
 							tree_json.append("\"deviceType\":"+modbusProtocolConfig.getProtocol().get(i).getDeviceType()+",");
@@ -6458,7 +6432,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		unitIdName_json.append("[");
 		String acqUnitSql="select t.id,t.unit_name,t.protocol "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
-				+ " where t.protocol=t2.name"
+				+ " where t.protocol=t2.code"
 				+ " and t2.language= "+user.getLanguage()
 				+ " and t2.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )";
 		if(StringManagerUtils.isNotNull(protocols)){
@@ -6498,7 +6472,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		unit_json.append("[");
 		String sql="select t.unit_code,t.unit_name,t3.name as protocol "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language= "+user.getLanguage()
 				+ " and t3.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )";
 		
@@ -6529,7 +6503,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		unit_json.append("[");
 		String sql="select t.unit_code,t.unit_name,t2.name as protocol "
 				+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.language= "+user.getLanguage()
 				+ " and t2.devicetype in (select rd_devicetypeid from tbl_devicetype2role where rd_roleid="+user.getUserType()+" )";
 		
@@ -6583,11 +6557,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.packetsendinterval,"//12
 				+ " t.sort,t.unitid,t2.unit_name,t3.name as  protocol"//13~16
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name"
+				+ " where t.unitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.language="+user.getLanguage();
 		String deviceCountSql="select t.instancecode,count(1) "
 				+ " from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4"
-				+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.name";
+				+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.code";
 		if(StringManagerUtils.isNotNull(protocol)){
 			sql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 			deviceCountSql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
@@ -6666,7 +6640,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.packetsendinterval,"//12
 				+ " t.sort,t.unitid,t2.unit_name "//13~15
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name"
+				+ " where t.unitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.language="+languageValue;
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
@@ -6726,11 +6700,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype,t4.name as protocol  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
+				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code";
 		
 		String deviceCountSql="select device.displayinstancecode,count(1) "
 				+ " from tbl_device device,tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
-				+ " where device.displayinstancecode=t.code and t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name ";
+				+ " where device.displayinstancecode=t.code and t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code ";
 		if(StringManagerUtils.isNotNull(protocol)){
 			sql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 			deviceCountSql+=" and t4.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
@@ -6792,7 +6766,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.language="+languageValue;
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+=" and t4.devicetype in ("+deviceTypeIds+")";
@@ -6937,10 +6911,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort,t3.name as protocol   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code";
 		String deviceCountSql="select device.alarminstancecode,count(1)  "
 				+ " from tbl_device device,tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-				+ " where device.alarminstancecode= t.code and t.alarmunitid=t2.id and t2.protocol=t3.name";
+				+ " where device.alarminstancecode= t.code and t.alarmunitid=t2.id and t2.protocol=t3.code";
 		if(StringManagerUtils.isNotNull(protocol)){
 			sql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
 			deviceCountSql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocol.split(","), ",")+")";
@@ -6999,7 +6973,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name"
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.language="+languageValue;
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+=" and t3.devicetype in ("+deviceTypeIds+")";
@@ -7143,7 +7117,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String[] selectedProtocolArr=selectedProtocol.split(",");
 		String sql="select t.id,t.unit_name "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name"
+				+ " where t.protocol=t2.code"
 				+ " and t2.language="+user.getLanguage();
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+=" and t2.devicetype in ("+deviceTypeIds+")";
@@ -9384,7 +9358,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				protocolModel.setSort(exportProtocolConfig.getProtocol().getSort());
 				this.getBaseDao().addObject(protocolModel);
 				//添加后，查询自动生成的id和code
-				String addProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"' ";
+				String addProtocolSql="select t.id,t.code from TBL_PROTOCOL t "
+						+ " where t.name='"+exportProtocolConfig.getProtocol().getName()+"' "
+						+ " and t.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
 				List<?> addProtocolList=this.findCallSql(addProtocolSql.toString());
 				if(addProtocolList.size()>0){//添加成功，更新地址项
 					Object[] addProtocolObj = (Object[]) addProtocolList.get(0);
@@ -9683,7 +9659,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}else{//如果协议已存在
 				try {
 					result_json.append("{\"classes\":0},");
-					String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+					String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t "
+							+ " where t.name='"+exportProtocolConfig.getProtocol().getName()+"'"
+							+ " and t.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
 					List<?> existProtocolList=this.findCallSql(existProtocolSql);
 					if(existProtocolList.size()>0){
 						Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
@@ -10364,7 +10342,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			//更新运行状态
 			if(exportProtocolConfig.getProtocolRunStatusConfigList()!=null && exportProtocolConfig.getProtocolRunStatusConfigList().size()>0){
-				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t "
+						+ " where t.name='"+exportProtocolConfig.getProtocol().getName()+"'"
+						+ " and t.devicetype="+exportProtocolConfig.getProtocol().getDeviceType();
 				List<?> existProtocolList=this.findCallSql(existProtocolSql);
 				if(existProtocolList.size()>0){
 					Object[] existProtocolObj = (Object[]) existProtocolList.get(0);
@@ -10429,7 +10409,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(protocolExist){//如果协议已存在
 				result_json.append("{\"classes\":0,\"typeName\":\""+languageResourceMap.get("protocol")+"\",\"type\":0,\"id\":"+exportProtocolConfig.getProtocol().getId()+",\"text\":\""+exportProtocolConfig.getProtocol().getName()+"\"},");
 				
-				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t where t.name='"+exportProtocolConfig.getProtocol().getName()+"'";
+				String existProtocolSql="select t.id,t.code from TBL_PROTOCOL t "
+						+ " where t.name='"+exportProtocolConfig.getProtocol().getName()+"'"
+						+ " and t.deviceType="+exportProtocolConfig.getProtocol().getDeviceType();
 				
 				List<Integer> acqUnitIdList=new ArrayList<>();
 				if(importProtocolContent.getAcqUnitList()!=null){
@@ -10750,91 +10732,91 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		//处理显示实例、显示单元数据
 		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( "
 				+ " select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4,tbl_protocol t5 "
-				+ " where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol=t5.name "
+				+ " where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol=t5.code "
 				+ " and t5.name='"+protocolName+"' and t5.devicetype="+deviceType+"  )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( "
 				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
 				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( "
 				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_display_unit_conf t where t.acqunitid in( "
 				+ " select t2.id from tbl_acq_unit_conf t2 ,tbl_protocol t3"
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		//处理报警实例、报警单元数据
 		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( "
 				+ " select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3,tbl_protocol t4 "
-				+ " where t2.alarmunitid=t3.id and t3.protocol=t4.name"
+				+ " where t2.alarmunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( "
 				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( "
 				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_alarm_unit_conf t where t.id in("
 				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		//处理采集实例、采集单元、采集组数据
 		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( "
 				+ " select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t2.unitid=t3.id and t3.protocol=t4.name"
+				+ " where t2.unitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.name='"+protocolName+"' and t4.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in ("
 				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ ")";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_acq_group_conf t where t.id in ("
 				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_acq_group2unit_conf t where t.unitid in ("
 				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_protocolinstance t where t.unitid in ("
 				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_acq_unit_conf t where t.id in ("
 				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t2.protocol=t3.name and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
+				+ " where t2.protocol=t3.code and t3.name='"+protocolName+"' and t3.devicetype="+deviceType+" "
 				+ " )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
@@ -11220,7 +11202,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":[");
 		String acqUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark "
 				+ " from tbl_acq_unit_conf t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.devicetype in ( select t3.rd_devicetypeid from tbl_devicetype2role t3 where t3.rd_roleid="+(user!=null?user.getUserType():0)+") "
 				+ " and t2.language in ( select t4.language from tbl_language2role t4 where t4.roleid="+(user!=null?user.getUserType():0)+") "
 				+ " order by t.id";
@@ -11385,7 +11367,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":[");
 		String alarmUnitSql="select t.id,t.unit_code,t.unit_name,t.protocol,t.remark,decode(t.calculatetype,null,0,t.calculatetype) as calculatetype "
 				+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.devicetype in ( select t3.rd_devicetypeid from tbl_devicetype2role t3 where t3.rd_roleid="+(user!=null?user.getUserType():0)+") "
 				+ " and t2.language in ( select t4.language from tbl_language2role t4 where t4.roleid="+(user!=null?user.getUserType():0)+") "
 				+ " order by t.id";
@@ -11395,7 +11377,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.retriggertime,"
 				+ " t.unitid "
 				+ " from tbl_alarm_item2unit_conf t,  TBL_ALARM_UNIT_CONF t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ( select t4.rd_devicetypeid from tbl_devicetype2role t4 where t4.rd_roleid="+(user!=null?user.getUserType():0)+") "
 				+ " and t3.language in ( select t5.language from tbl_language2role t5 where t5.roleid="+(user!=null?user.getUserType():0)+") "
 				+ " order by t2.id,t.id";
@@ -11465,7 +11447,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":[");
 		String displayUnitSql="select t.id,t.unit_code,t.unit_name,t2.protocol,t2.unit_name as acqUnit,t.remark,t.calculatetype "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ( select t4.rd_devicetypeid from tbl_devicetype2role t4 where t4.rd_roleid="+(user!=null?user.getUserType():0)+") "
 				+ " and t3.language in ( select t5.language from tbl_language2role t5 where t5.roleid="+(user!=null?user.getUserType():0)+") "
 				+ " order by t2.id,t.id";
@@ -11476,7 +11458,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
 				+ "t.unitid "
 				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.devicetype in ( select t5.rd_devicetypeid from tbl_devicetype2role t5 where t5.rd_roleid="+(user!=null?user.getUserType():0)+") "
 				+ " and t4.language in ( select t6.language from tbl_language2role t6 where t6.roleid="+(user!=null?user.getUserType():0)+") "
 				+ " order by t2.id,t.type,t.id";
@@ -11824,7 +11806,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.sort,t.unitid,t2.unit_name, "//13~15
 				+ " t2.protocol"
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name"
+				+ " where t.unitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.devicetype in ( select t4.rd_devicetypeid from tbl_devicetype2role t4 where t4.rd_roleid="+(user!=null?user.getUserType():0)+")"
 				+ " and t3.language in ( select t5.language from tbl_language2role t5 where t5.roleid="+(user!=null?user.getUserType():0)+")"
 				+ " order by t.sort";
@@ -11929,7 +11911,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t3.name "
 				+ " from tbl_protocolinstance t "
 				+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
-				+ " left outer join tbl_protocol t3 on t2.protocol=t3.name"
+				+ " left outer join tbl_protocol t3 on t2.protocol=t3.code"
 				+ " where 1=1";
 		String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
 				+ " t.itemname,t.itemcode, t6.name as protocolName "
@@ -11939,7 +11921,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " tbl_acq_unit_conf t4,"
 				+ " tbl_protocolinstance t5,"
 				+ " tbl_protocol t6 "
-				+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t4.protocol=t6.name ";
+				+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t4.protocol=t6.code ";
 		
 		
 		if(StringManagerUtils.isNotNull(instanceList)){
@@ -12070,7 +12052,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":[");
 		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t3.protocol  "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name"
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.devicetype in ( select t5.rd_devicetypeid from tbl_devicetype2role t5 where rd_roleid=1)"
 				+ " and t4.language in ( select t6.language from tbl_language2role t6 where t6.roleid=1)"
 				+ " order by t.displayunitid,t.id";
@@ -12132,7 +12114,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":[");
 		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t2.protocol"
 				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2,tbl_protocol t3"
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name"
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.devicetype in ( select t4.rd_devicetypeid from tbl_devicetype2role t4 where t4.rd_roleid="+(user!=null?user.getUserType():0)+")"
 				+ " and t3.language in ( select t5.language from tbl_language2role t5 where t5.roleid="+(user!=null?user.getUserType():0)+")"
 				+ " order by t.alarmunitid,t.id";
@@ -12498,7 +12480,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " t.deviceType="+protocol.getDeviceType()+","
 					+ " t.language="+protocol.getLanguage()+","
 					+ " t.items=?,t.extendedfield=?"
-					+" where t.name='"+protocol.getName()+"'";
+					+"  where t.name='"+protocol.getName()+"'"
+					+ " and t.deviceType="+protocol.getDeviceType();
 			List<String> clobCont=new ArrayList<String>();
 			clobCont.add(gson.toJson(protocol.getItems()));
 			clobCont.add(gson.toJson(protocol.getExtendedFields()));
@@ -12554,7 +12537,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ " t.deviceType="+protocol.getDeviceType()+","
 						+ " t.language="+protocol.getLanguage()+","
 						+ " t.items=?,t.extendedfield=?"
-						+" where t.name='"+protocol.getName()+"'";
+						+ " where t.name='"+protocol.getName()+"'"
+						+ " and t.deviceType="+protocol.getDeviceType();
 				List<String> clobCont=new ArrayList<String>();
 				clobCont.add(gson.toJson(protocol.getItems()));
 				clobCont.add(gson.toJson(protocol.getExtendedFields()));
@@ -12632,7 +12616,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String unitSql="select t.id,t.protocol "
 				+ " from tbl_acq_unit_conf t, tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.devicetype in ("+allDeviceIds+")"
 				+ " and t2.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> unitQueryList = this.findCallSql(unitSql);
@@ -12834,7 +12818,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void importAcqUnit(ExportAcqUnitData exportAcqUnitData,User user){
 		String unitsql="select t.id,t.unit_code from tbl_acq_unit_conf t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t.id="+exportAcqUnitData.getId()
 				+ " order by t.id desc";
 		List<?> unitList = this.findCallSql(unitsql);
@@ -12946,7 +12930,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String unitSql="select t.id,t.protocol "
 				+ " from tbl_acq_unit_conf t, tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.devicetype in ("+allDeviceIds+")"
 				+ " and t2.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> unitQueryList = this.findCallSql(unitSql);
@@ -12991,7 +12975,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String unitSql="select t.id,t.unit_name,t.protocol "
 				+ " from TBL_ALARM_UNIT_CONF t, tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t2.deviceType in("+allDeviceIds+")"
 				+ " and t2.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> unitQueryList = this.findCallSql(unitSql);
@@ -13182,7 +13166,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void importAlarmUnit(ExportAlarmUnitData exportAlarmUnitData,User user){
 		String unitsql="select t.id,t.unit_code from tbl_alarm_unit_conf t,tbl_protocol t2 "
-				+ " where t.protocol=t2.name "
+				+ " where t.protocol=t2.code "
 				+ " and t.id="+exportAlarmUnitData.getId()
 				+ " order by t.id desc";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
@@ -13299,7 +13283,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String displayUnitSql="select t.id,t.unit_name,t2.unit_name as acqUnit,t3.name "
 				+ " from tbl_display_unit_conf t, tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.acqunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in("+allDeviceIds+")"
 				+ " and t3.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> displayUnitQueryList = this.findCallSql(displayUnitSql);
@@ -13943,7 +13927,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ("+allDeviceIds+")"
 				+ " and t3.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14178,7 +14162,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ("+allDeviceIds+")"
 				+ " and t3.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14224,7 +14208,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.devicetype in ("+allDeviceIds+")"
 				+ " and t4.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14653,7 +14637,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson=new Gson();
 		String instanceSql="select t.id,t.code,t.displayunitid "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t.id="+instanceData.getId()
 				+ " order by t.id desc";
 		List<?> instanceList = this.findCallSql(instanceSql);
@@ -14721,7 +14705,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.devicetype in ("+allDeviceIds+")"
 				+ " and t4.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14769,7 +14753,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ("+allDeviceIds+")"
 				+ " and t3.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14992,7 +14976,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.devicetype in ("+allDeviceIds+")"
 				+ " and t3.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);

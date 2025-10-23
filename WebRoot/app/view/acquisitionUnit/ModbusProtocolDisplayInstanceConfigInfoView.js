@@ -374,6 +374,15 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 function SaveModbusProtocolDisplayInstanceConfigTreeData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
+		var protocolCode='';
+		var protocolTreeGridPanelSelection= Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+    	if(protocolTreeGridPanelSelection.length>0){
+    		if(protocolTreeGridPanelSelection[0].data.classes==1){
+    			protocolCode=protocolTreeGridPanelSelection[0].data.code;
+    		}
+    	}
+		
+		
 		var selectedItem=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
 		var propertiesData=protocolDisplayInstancePropertiesHandsontableHelper.hot.getData();
 		if(selectedItem.data.classes==1){//选中的是实例
@@ -385,12 +394,12 @@ function SaveModbusProtocolDisplayInstanceConfigTreeData(){
 			saveData.displayUnitId=selectedItem.data.displayUnitId;
 			saveData.displayUnitName=propertiesData[1][2];
 			saveData.sort=propertiesData[2][2];
-			SaveModbusProtocolDisplayInstanceData(saveData);
+			SaveModbusProtocolDisplayInstanceData(saveData,protocolCode);
 		}
 	}
 };
 
-function SaveModbusProtocolDisplayInstanceData(saveData){
+function SaveModbusProtocolDisplayInstanceData(saveData,protocolCode){
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveProtocolDisplayInstanceData',
@@ -414,6 +423,7 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 		},
 		params: {
 			data: JSON.stringify(saveData),
+			protocolCode:protocolCode
         }
 	});
 }

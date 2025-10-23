@@ -2878,16 +2878,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus"
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn"
 						+ " from tbl_device t"
 						+ " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code"
 						+ " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id"
 						+ " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+						+ " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
 						+ " where t.id="+deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3157,16 +3160,19 @@ public class WellInformationManagerController extends BaseController {
 			if (StringManagerUtils.isNotNull(deviceId)) {
 				this.wellInformationManagerService.saveSRPPumpingModel(StringManagerUtils.stringToInteger(deviceId),manufacturer,model);
 				this.wellInformationManagerService.savePumpingInfo(StringManagerUtils.stringToInteger(deviceId),stroke,balanceInfo);
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3350,16 +3356,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3563,16 +3572,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3748,16 +3760,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3901,16 +3916,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn"
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -3991,16 +4009,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn"
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
@@ -4076,16 +4097,19 @@ public class WellInformationManagerController extends BaseController {
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
-				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus" +
-					    " from tbl_device t" +
-					    " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" +
-					    " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" +
-					    " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" +
-					    " where t.id=" + deviceId;
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";

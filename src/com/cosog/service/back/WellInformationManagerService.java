@@ -495,7 +495,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
@@ -517,7 +517,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " and ( t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )";
 		
@@ -569,7 +569,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )";
 		if(StringManagerUtils.isNotNull(protocolCode)){
@@ -763,18 +763,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceTypeSql="select t.name_"+user.getLanguageName()+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		String displayInstanceSql="select t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		
@@ -1375,20 +1375,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		String displayInstanceSql="select t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " and ( t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " and ( t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t3.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
@@ -3204,18 +3204,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
 		String instanceSql="select t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.name "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		String displayInstanceSql="select t.name "
 				+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
-				+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 				+ " and t3.language="+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
 		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
@@ -4695,7 +4695,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(type)==0){
 			String sql="select t.id,t.name,t2.id as unitId,t2.unit_name as unitName,t3.code as protocolCode,t3.name as protocolName "
 					+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
-					+ " where t.unitid=t2.id and t2.protocol=t3.name";
+					+ " where t.unitid=t2.id and t2.protocol=t3.code";
 			if(StringManagerUtils.stringToInteger(condition)==0){
 				sql+=" and t.code='"+instance+"'";
 			}if(StringManagerUtils.stringToInteger(condition)==1){
@@ -4712,7 +4712,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			String displayInstanceSql="select t.name "
 					+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name "
+					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 					+ " and t4.language= "+(user!=null?user.getLanguage():0);
 			if(StringManagerUtils.isNotNull(acqUnitId)){
 				displayInstanceSql+= " and t3.id="+acqUnitId;
@@ -4723,7 +4723,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			String alarmInstanceSql="select t.name "
 					+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
-					+ " where t.alarmunitid=t2.id and t2.protocol=t3.name "
+					+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
 					+ " and t3.language="+(user!=null?user.getLanguage():0);
 			if(StringManagerUtils.isNotNull(protocolCode)){
 				alarmInstanceSql+= " and t3.code='"+protocolCode+"'";
@@ -4753,7 +4753,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}else if(StringManagerUtils.stringToInteger(type)==1){
 			String sql="select t.id,t.name,t2.id as displayUnitId,t2.unit_name as displayUnitName,t3.id as acqUnitId,t3.unit_name as acqUnitName,t4.code as protocolCode,t4.name as protocolName "
 					+ " from tbl_protocoldisplayinstance t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
-					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.name";
+					+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code";
 			if(StringManagerUtils.stringToInteger(condition)==0){
 				sql+=" and t.code='"+instance+"'";
 			}if(StringManagerUtils.stringToInteger(condition)==1){
@@ -4769,7 +4769,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}else if(StringManagerUtils.stringToInteger(type)==2){
 			String sql="select t.id,t.name,t2.id as unitId,t2.unit_name as unitName,t3.code as protocolCode,t3.name as protocolName  "
 					+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
-					+ " where t.alarmunitid=t2.id and t2.protocol=t3.name";
+					+ " where t.alarmunitid=t2.id and t2.protocol=t3.code";
 			if(StringManagerUtils.stringToInteger(condition)==0){
 				sql+=" and t.code='"+instance+"'";
 			}if(StringManagerUtils.stringToInteger(condition)==1){

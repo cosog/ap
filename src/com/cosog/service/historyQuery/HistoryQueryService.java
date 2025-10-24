@@ -448,7 +448,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(acqInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1274,7 +1274,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(acqInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1844,7 +1844,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -2853,7 +2853,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			
 			if(acqInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 			}
 			
 			if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -3800,7 +3800,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				ModbusProtocolConfig.Protocol protocol=null;
 				if(displayInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(protocol!=null){
@@ -4625,7 +4625,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 			ModbusProtocolConfig.Protocol protocol=null;
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			
@@ -5488,8 +5488,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				});
 				
-				String protocolName=displayInstanceOwnItem.getProtocol();
-				Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				String protocolCode=displayInstanceOwnItem.getProtocolCode();
+				Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				if(protocol!=null){
 					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 						gson = new Gson();
@@ -5606,10 +5606,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				List<?> protocolList = this.findCallSql(protocolSql);
 				
 				List<?> curveItemList = this.findCallSql(curveItemsSql);
-				String protocolName="";
+				String protocolCode="";
 				if(protocolList.size()>0){
-					protocolName=protocolList.get(0)+"";
-					Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					protocolCode=protocolList.get(0)+"";
+					Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null){
 						for(int j=0;j<curveItemList.size();j++){
 							Object[] itemObj=(Object[]) curveItemList.get(j);

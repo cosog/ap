@@ -2879,7 +2879,7 @@ public class WellInformationManagerController extends BaseController {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
-						+ " t6.allpath_zh_cn"
+						+ " t6.allpath_zh_cn,t5.name as protocolName"
 						+ " from tbl_device t"
 						+ " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code"
 						+ " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id"
@@ -2890,14 +2890,15 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[0]+"";
+					String protocolName=obj[7]+"/"+obj[8]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus=StringManagerUtils.stringToInteger(obj[6]+"");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  && StringManagerUtils.isNotNull(slave)  ){
 						if(commStatus>0){
 							Gson gson = new Gson();
@@ -2968,24 +2969,24 @@ public class WellInformationManagerController extends BaseController {
 										}
 									}
 									
-									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",srpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WaterDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",srpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SaturationPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",srpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",srpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",srpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SaturationPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",srpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("ReservoirDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("TubingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("CasingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",srpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",srpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WaterCut", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",srpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",srpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",srpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
-									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",srpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingPressure",srpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",srpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterCut", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterCut",srpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",srpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",srpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",srpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
 									
 									int barrelType=0;
 									if("L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
@@ -2993,18 +2994,18 @@ public class WellInformationManagerController extends BaseController {
 									}else if("H".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
 										barrelType=1;
 									}
-									downStatusMap.put("BarrelType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BarrelType",barrelType+"",userInfo.getLanguageName()));
+									downStatusMap.put("BarrelType", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BarrelType",barrelType+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("PumpGrade", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
-									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()*1000+"",userInfo.getLanguageName()));
-									downStatusMap.put("PlungerLength", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpGrade", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("PlungerLength", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
 									
 									
-									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
-									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
 									
 									for(int i=0;i<srpProductionData.getRodString().getEveryRod().size();i++){
-										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
 										
 										int rodGrade=0;
 										if("A".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
@@ -3024,26 +3025,26 @@ public class WellInformationManagerController extends BaseController {
 										}if("HY".equalsIgnoreCase(srpProductionData.getRodString().getEveryRod().get(i).getGrade())){
 											rodGrade=8;
 										}
-										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
 									}
 									
 									WorkType w=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, userInfo.getLanguageName());
-									downStatusMap.put("ManualInterventionCode", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",(w!=null?w.getResultCode():0)+"",userInfo.getLanguageName()));
-									downStatusMap.put("NetGrossRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",srpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
-									downStatusMap.put("NetGrossValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",srpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
-									downStatusMap.put("LevelCorrectValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",srpProductionData.getManualIntervention().getLevelCorrectValue()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ManualInterventionCode", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",(w!=null?w.getResultCode():0)+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",srpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",srpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+									downStatusMap.put("LevelCorrectValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",srpProductionData.getManualIntervention().getLevelCorrectValue()+"",userInfo.getLanguageName()));
 									srpProductionData.getManualIntervention().setCode(w!=null?w.getResultCode():0);
 									
 									if(srpProductionData.getPumpingUnit()!=null){
-										downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(srpProductionData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
-										downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",srpProductionData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+										downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(srpProductionData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+										downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",srpProductionData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
 										
 										if(srpProductionData.getPumpingUnit().getBalance()!=null && srpProductionData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 											for(int i=0;i<srpProductionData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
-												downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),srpProductionData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
+												downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),srpProductionData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
 											}
 										}
 									}
@@ -3053,31 +3054,31 @@ public class WellInformationManagerController extends BaseController {
 								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 								if(pcpProductionData!=null){
-									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",pcpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WaterDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",pcpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SaturationPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",pcpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",pcpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",pcpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SaturationPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",pcpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("ReservoirDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("TubingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("CasingPressure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",pcpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",pcpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
-									downStatusMap.put("WaterCut", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",pcpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",pcpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
-									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",pcpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
-									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",pcpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingPressure",pcpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",pcpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("WaterCut", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterCut",pcpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",pcpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",pcpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",pcpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
 							
 									
-									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
-									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
 									
 									for(int i=0;i<pcpProductionData.getRodString().getEveryRod().size();i++){
-										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
 										int rodGrade=0;
 										if("A".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
 											rodGrade=1;
@@ -3096,14 +3097,14 @@ public class WellInformationManagerController extends BaseController {
 										}if("HY".equalsIgnoreCase(pcpProductionData.getRodString().getEveryRod().get(i).getGrade())){
 											rodGrade=8;
 										}
-										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
 									}
 									
-									downStatusMap.put("NetGrossRatio", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",pcpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
-									downStatusMap.put("NetGrossValue", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",pcpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",pcpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("NetGrossValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",pcpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
 									
 									this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceId),gson.toJson(pcpProductionData),StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 								}
@@ -3161,7 +3162,7 @@ public class WellInformationManagerController extends BaseController {
 				this.wellInformationManagerService.saveSRPPumpingModel(StringManagerUtils.stringToInteger(deviceId),manufacturer,model);
 				this.wellInformationManagerService.savePumpingInfo(StringManagerUtils.stringToInteger(deviceId),stroke,balanceInfo);
 				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
-						+ " t6.allpath_zh_cn" 
+						+ " t6.allpath_zh_cn,t5.code as protocolCode" 
 					    + " from tbl_device t" 
 					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
@@ -3173,13 +3174,14 @@ public class WellInformationManagerController extends BaseController {
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
 					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[8]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Gson gson = new Gson();
@@ -3279,33 +3281,33 @@ public class WellInformationManagerController extends BaseController {
 								}
 								
 								if(requestData.getPumpingUnit()!=null){
-									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
+									downStatusMap.put("Stroke", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("structureType", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
+									downStatusMap.put("structureType", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
-									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
-									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
 									
 									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
 											downStatusMap.put("positionAndWeight"+(i+1), 
-													dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName())
+													dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName())
 													+"/"
-													+dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName())
+													+dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName())
 													);
 										}
 									}
 									
-									downStatusMap.put("PRTFPointCount", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
+									downStatusMap.put("PRTFPointCount", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
-									downStatusMap.put("PR", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
-									downStatusMap.put("TF", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("CrankAngle", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("PR", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("TF", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
 								}
 							}
 						
@@ -3357,7 +3359,7 @@ public class WellInformationManagerController extends BaseController {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
 				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
-						+ " t6.allpath_zh_cn" 
+						+ " t6.allpath_zh_cn,t5.code as protocolCode" 
 					    + " from tbl_device t" 
 					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
@@ -3369,13 +3371,14 @@ public class WellInformationManagerController extends BaseController {
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
 					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[8]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Gson gson = new Gson();
@@ -3479,50 +3482,50 @@ public class WellInformationManagerController extends BaseController {
 									}
 								}
 								
-								downStatusMap.put("crankDIInitAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",requestData.getCrankDIInitAngle()+"",userInfo.getLanguageName()));
-								downStatusMap.put("interpolationCNT", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",requestData.getInterpolationCNT()+"",userInfo.getLanguageName()));
-								downStatusMap.put("surfaceSystemEfficiency", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SurfaceSystemEfficiency",requestData.getSurfaceSystemEfficiency()+"",userInfo.getLanguageName()));
-								downStatusMap.put("wattTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_WattTimes",requestData.getWattTimes()+"",userInfo.getLanguageName()));
-								downStatusMap.put("iTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_ITimes",requestData.getITimes()+"",userInfo.getLanguageName()));
-								downStatusMap.put("fsDiagramTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramTimes",requestData.getFSDiagramTimes()+"",userInfo.getLanguageName()));
-								downStatusMap.put("fsDiagramLeftTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramLeftTimes",requestData.getFSDiagramLeftTimes()+"",userInfo.getLanguageName()));
-								downStatusMap.put("fsDiagramRightTimes", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramRightTimes",requestData.getFSDiagramRightTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("crankDIInitAngle", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",requestData.getCrankDIInitAngle()+"",userInfo.getLanguageName()));
+								downStatusMap.put("interpolationCNT", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",requestData.getInterpolationCNT()+"",userInfo.getLanguageName()));
+								downStatusMap.put("surfaceSystemEfficiency", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SurfaceSystemEfficiency",requestData.getSurfaceSystemEfficiency()+"",userInfo.getLanguageName()));
+								downStatusMap.put("wattTimes", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WattTimes",requestData.getWattTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("iTimes", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ITimes",requestData.getITimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramTimes", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramTimes",requestData.getFSDiagramTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramLeftTimes", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramLeftTimes",requestData.getFSDiagramLeftTimes()+"",userInfo.getLanguageName()));
+								downStatusMap.put("fsDiagramRightTimes", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramRightTimes",requestData.getFSDiagramRightTimes()+"",userInfo.getLanguageName()));
 								
-								downStatusMap.put("leftPercent", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_LeftPercent",requestData.getLeftPercent()+"",userInfo.getLanguageName()));
-								downStatusMap.put("rightPercent", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_RightPercent",requestData.getRightPercent()+"",userInfo.getLanguageName()));
-								downStatusMap.put("positiveXWatt", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",requestData.getPositiveXWatt()+"",userInfo.getLanguageName()));
-								downStatusMap.put("negativeXWatt", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",requestData.getNegativeXWatt()+"",userInfo.getLanguageName()));
+								downStatusMap.put("leftPercent", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_LeftPercent",requestData.getLeftPercent()+"",userInfo.getLanguageName()));
+								downStatusMap.put("rightPercent", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RightPercent",requestData.getRightPercent()+"",userInfo.getLanguageName()));
+								downStatusMap.put("positiveXWatt", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",requestData.getPositiveXWatt()+"",userInfo.getLanguageName()));
+								downStatusMap.put("negativeXWatt", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",requestData.getNegativeXWatt()+"",userInfo.getLanguageName()));
 								
 								
 								if(requestData.getPumpingUnit()!=null){
-									downStatusMap.put("Stroke", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
+									downStatusMap.put("Stroke", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("PumpingUnitStructure", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpingUnitStructure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
-									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
-									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
-									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
+									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
+									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
 									
 									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
-											downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
-											downStatusMap.put("BalancePosition"+(i+1), dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName()));
+											downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
+											downStatusMap.put("BalancePosition"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName()));
 										}
 									}
 									
-									downStatusMap.put("PRTFPointCount", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
+									downStatusMap.put("PRTFPointCount", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
 									
-									downStatusMap.put("CrankAngle", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
-									downStatusMap.put("PR", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
-									downStatusMap.put("TF", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("CrankAngle", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("PR", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
+									downStatusMap.put("TF", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
 								}
 								
-								downStatusMap.put("PRTFSrc", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFSrc",requestData.getPRTFSrc()+"",userInfo.getLanguageName()));
-								downStatusMap.put("BoardDataSource", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_BoardDataSource",requestData.getBoardDataSource()+"",userInfo.getLanguageName()));
+								downStatusMap.put("PRTFSrc", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFSrc",requestData.getPRTFSrc()+"",userInfo.getLanguageName()));
+								downStatusMap.put("BoardDataSource", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BoardDataSource",requestData.getBoardDataSource()+"",userInfo.getLanguageName()));
 								
 								this.wellInformationManagerService.saveFSDiagramConstructionData(StringManagerUtils.stringToInteger(deviceId), data);
 							}
@@ -3573,7 +3576,7 @@ public class WellInformationManagerController extends BaseController {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 			if (StringManagerUtils.isNotNull(deviceId)) {
 				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
-						+ " t6.allpath_zh_cn" 
+						+ " t6.allpath_zh_cn,t5.code as protocolCode" 
 					    + " from tbl_device t" 
 					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
@@ -3585,18 +3588,19 @@ public class WellInformationManagerController extends BaseController {
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
 					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[8]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
-							downStatusMap.put("systemDate", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemDate",StringManagerUtils.getCurrentTime("yyyy00MM00dd"),userInfo.getLanguageName()));
-							downStatusMap.put("systemTime", dataDownlink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemTime",StringManagerUtils.getCurrentTime("00HH00mm00ss"),userInfo.getLanguageName()));
+							downStatusMap.put("systemDate", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemDate",StringManagerUtils.getCurrentTime("yyyy00MM00dd"),userInfo.getLanguageName()));
+							downStatusMap.put("systemTime", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemTime",StringManagerUtils.getCurrentTime("00HH00mm00ss"),userInfo.getLanguageName()));
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
 							for (String key : downStatusMap.keySet()) {
@@ -3632,13 +3636,13 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	public String dataDownlink(String protocolName,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
+	public String dataDownlink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
 		String status=languageResourceMap.get("noDownlink");
 		int reslut=0;
 		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
-			reslut=deviceControlOperation_Mdubus(protocolName,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
+			reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
 			if(reslut==1){
 				status=languageResourceMap.get("downlinkSuccessfully");
 			}else{
@@ -3648,7 +3652,7 @@ public class WellInformationManagerController extends BaseController {
 		return status;
 	}
 	
-	public int deviceControlOperation_Mdubus(String protocolName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
+	public int deviceControlOperation_Mdubus(String protocolCode,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
 		int result=-1;
 		try {
 			Gson gson = new Gson();
@@ -3659,7 +3663,7 @@ public class WellInformationManagerController extends BaseController {
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			int addr=-99;
 			String dataType="";
 			String title="";
@@ -3772,39 +3776,39 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
-								statusMap.put("CrudeOilDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
-								statusMap.put("WaterDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",userInfo.getLanguageName()));
-								statusMap.put("NaturalGasRelativeDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",userInfo.getLanguageName()));
-								statusMap.put("SaturationPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",userInfo.getLanguageName()));
+								statusMap.put("CrudeOilDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
+								statusMap.put("WaterDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",userInfo.getLanguageName()));
+								statusMap.put("NaturalGasRelativeDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",userInfo.getLanguageName()));
+								statusMap.put("SaturationPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",userInfo.getLanguageName()));
 								
-								statusMap.put("ReservoirDepth", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
-								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
 								
-								statusMap.put("TubingPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
-								statusMap.put("TubingPressure_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
-								statusMap.put("CasingPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",userInfo.getLanguageName()));
-								statusMap.put("WellHeadTemperature", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",userInfo.getLanguageName()));
-								statusMap.put("WaterCut", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",userInfo.getLanguageName()));
-								statusMap.put("ProductionGasOilRatio", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",userInfo.getLanguageName()));
-								statusMap.put("ProducingfluidLevel", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",userInfo.getLanguageName()));
-								statusMap.put("PumpSettingDepth", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",userInfo.getLanguageName()));
+								statusMap.put("TubingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
+								statusMap.put("TubingPressure_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
+								statusMap.put("CasingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingPressure",userInfo.getLanguageName()));
+								statusMap.put("WellHeadTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",userInfo.getLanguageName()));
+								statusMap.put("WaterCut", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterCut",userInfo.getLanguageName()));
+								statusMap.put("ProductionGasOilRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",userInfo.getLanguageName()));
+								statusMap.put("ProducingfluidLevel", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",userInfo.getLanguageName()));
+								statusMap.put("PumpSettingDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",userInfo.getLanguageName()));
 								
 								
-								String barrelType=dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BarrelType",userInfo.getLanguageName());
+								String barrelType=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_BarrelType",userInfo.getLanguageName());
 								if("0".equalsIgnoreCase(barrelType)){
 									barrelType="L";
 								}else if("1".equalsIgnoreCase(barrelType)){
@@ -3812,63 +3816,63 @@ public class WellInformationManagerController extends BaseController {
 								}
 								statusMap.put("BarrelType", barrelType);
 								
-								statusMap.put("PumpGrade", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpGrade",userInfo.getLanguageName()));
-								statusMap.put("PumpBoreDiameter", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",userInfo.getLanguageName()));
-								statusMap.put("PlungerLength", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PlungerLength",userInfo.getLanguageName()));
+								statusMap.put("PumpGrade", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpGrade",userInfo.getLanguageName()));
+								statusMap.put("PumpBoreDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",userInfo.getLanguageName()));
+								statusMap.put("PlungerLength", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",userInfo.getLanguageName()));
 								
 								
-								statusMap.put("TubingStringInsideDiameter", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",userInfo.getLanguageName()));
-								statusMap.put("CasingStringOutsideDiameter", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",userInfo.getLanguageName()));
+								statusMap.put("TubingStringInsideDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",userInfo.getLanguageName()));
+								statusMap.put("CasingStringOutsideDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",userInfo.getLanguageName()));
 								
 								for(int i=0;i<4;i++){
-									statusMap.put("RodStringType"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodGrade"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringOutsideDiameter"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringInsideDiameter"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringLength"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringType"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodGrade"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringOutsideDiameter"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringInsideDiameter"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringLength"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),userInfo.getLanguageName()));
 								}
 								
 								
-								String ManualInterventionCode=dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",userInfo.getLanguageName());
+								String ManualInterventionCode=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",userInfo.getLanguageName());
 								WorkType w=MemoryDataManagerTask.getWorkTypeByCode(ManualInterventionCode, userInfo.getLanguageName());
 								statusMap.put("ManualInterventionCode", w!=null?w.getResultName():ManualInterventionCode);
 								
-								statusMap.put("NetGrossRatio", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",userInfo.getLanguageName()));
-								statusMap.put("NetGrossValue", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",userInfo.getLanguageName()));
-								statusMap.put("LevelCorrectValue", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",userInfo.getLanguageName()));
+								statusMap.put("NetGrossRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",userInfo.getLanguageName()));
+								statusMap.put("NetGrossValue", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",userInfo.getLanguageName()));
+								statusMap.put("LevelCorrectValue", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",userInfo.getLanguageName()));
 							}else if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==2){
-								statusMap.put("CrudeOilDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
-								statusMap.put("WaterDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterDensity",userInfo.getLanguageName()));
-								statusMap.put("NaturalGasRelativeDensity", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",userInfo.getLanguageName()));
-								statusMap.put("SaturationPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SaturationPressure",userInfo.getLanguageName()));
+								statusMap.put("CrudeOilDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",userInfo.getLanguageName()));
+								statusMap.put("WaterDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",userInfo.getLanguageName()));
+								statusMap.put("NaturalGasRelativeDensity", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",userInfo.getLanguageName()));
+								statusMap.put("SaturationPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",userInfo.getLanguageName()));
 								
-								statusMap.put("ReservoirDepth", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
-								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
 								
-								statusMap.put("TubingPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
-								statusMap.put("TubingPressure_cbm", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
-								statusMap.put("CasingPressure", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingPressure",userInfo.getLanguageName()));
-								statusMap.put("WellHeadTemperature", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",userInfo.getLanguageName()));
-								statusMap.put("WaterCut", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WaterCut",userInfo.getLanguageName()));
-								statusMap.put("ProductionGasOilRatio", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",userInfo.getLanguageName()));
-								statusMap.put("ProducingfluidLevel", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",userInfo.getLanguageName()));
-								statusMap.put("PumpSettingDepth", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",userInfo.getLanguageName()));
+								statusMap.put("TubingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
+								statusMap.put("TubingPressure_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
+								statusMap.put("CasingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingPressure",userInfo.getLanguageName()));
+								statusMap.put("WellHeadTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",userInfo.getLanguageName()));
+								statusMap.put("WaterCut", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterCut",userInfo.getLanguageName()));
+								statusMap.put("ProductionGasOilRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",userInfo.getLanguageName()));
+								statusMap.put("ProducingfluidLevel", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",userInfo.getLanguageName()));
+								statusMap.put("PumpSettingDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",userInfo.getLanguageName()));
 								
-								statusMap.put("TubingStringInsideDiameter", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",userInfo.getLanguageName()));
-								statusMap.put("CasingStringOutsideDiameter", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",userInfo.getLanguageName()));
+								statusMap.put("TubingStringInsideDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",userInfo.getLanguageName()));
+								statusMap.put("CasingStringOutsideDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",userInfo.getLanguageName()));
 								
 								for(int i=0;i<4;i++){
-									statusMap.put("RodStringType"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodGrade"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringOutsideDiameter"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringInsideDiameter"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),userInfo.getLanguageName()));
-									statusMap.put("RodStringLength"+(i+1), dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringType"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodGrade"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringOutsideDiameter"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringInsideDiameter"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),userInfo.getLanguageName()));
+									statusMap.put("RodStringLength"+(i+1), dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),userInfo.getLanguageName()));
 								}
 								
-								statusMap.put("NetGrossRatio", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",userInfo.getLanguageName()));
-								statusMap.put("NetGrossValue", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NetGrossValue",userInfo.getLanguageName()));
+								statusMap.put("NetGrossRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",userInfo.getLanguageName()));
+								statusMap.put("NetGrossValue", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",userInfo.getLanguageName()));
 							}
 							
 							StringBuffer result_json = new StringBuffer();
@@ -3928,39 +3932,39 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
-							statusMap.put("Stroke", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_Stroke",userInfo.getLanguageName()));
-							statusMap.put("structureType", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",userInfo.getLanguageName()));
-							statusMap.put("CrankRotationDirection", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",userInfo.getLanguageName()));
-							statusMap.put("OffsetAngleOfCrank", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",userInfo.getLanguageName()));
+							statusMap.put("Stroke", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_Stroke",userInfo.getLanguageName()));
+							statusMap.put("structureType", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",userInfo.getLanguageName()));
+							statusMap.put("CrankRotationDirection", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection",userInfo.getLanguageName()));
+							statusMap.put("OffsetAngleOfCrank", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",userInfo.getLanguageName()));
 							
-							statusMap.put("CrankGravityRadius", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",userInfo.getLanguageName()));
-							statusMap.put("SingleCrankWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",userInfo.getLanguageName()));
-							statusMap.put("SingleCrankPinWeight", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",userInfo.getLanguageName()));
-							statusMap.put("StructuralUnbalance", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",userInfo.getLanguageName()));
+							statusMap.put("CrankGravityRadius", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",userInfo.getLanguageName()));
+							statusMap.put("SingleCrankWeight", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",userInfo.getLanguageName()));
+							statusMap.put("SingleCrankPinWeight", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",userInfo.getLanguageName()));
+							statusMap.put("StructuralUnbalance", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",userInfo.getLanguageName()));
 							
 							for(int i=0;i<8;i++){
 								statusMap.put("positionAndWeight"+(i+1), 
-										dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),userInfo.getLanguageName())
+										dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),userInfo.getLanguageName())
 										+"/"
-										+dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),userInfo.getLanguageName()));
+										+dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),userInfo.getLanguageName()));
 							}
 							
-							statusMap.put("PRTFPointCount", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",userInfo.getLanguageName()));
+							statusMap.put("PRTFPointCount", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",userInfo.getLanguageName()));
 							
-							statusMap.put("CrankAngle", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankAngle",userInfo.getLanguageName()));
-							statusMap.put("PR", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PR",userInfo.getLanguageName()));
-							statusMap.put("TF", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_TF",userInfo.getLanguageName()));
+							statusMap.put("CrankAngle", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankAngle",userInfo.getLanguageName()));
+							statusMap.put("PR", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PR",userInfo.getLanguageName()));
+							statusMap.put("TF", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TF",userInfo.getLanguageName()));
 							
 							
 							StringBuffer result_json = new StringBuffer();
@@ -4021,33 +4025,33 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
-							statusMap.put("crankDIInitAngle", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",userInfo.getLanguageName()));
-							statusMap.put("interpolationCNT", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",userInfo.getLanguageName()));
-							statusMap.put("surfaceSystemEfficiency", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SurfaceSystemEfficiency",userInfo.getLanguageName()));
-							statusMap.put("wattTimes", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_WattTimes",userInfo.getLanguageName()));
-							statusMap.put("iTimes", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_ITimes",userInfo.getLanguageName()));
-							statusMap.put("fsDiagramTimes", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramTimes",userInfo.getLanguageName()));
-							statusMap.put("fsDiagramLeftTimes", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramLeftTimes",userInfo.getLanguageName()));
-							statusMap.put("fsDiagramRightTimes", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_FSDiagramRightTimes",userInfo.getLanguageName()));
+							statusMap.put("crankDIInitAngle", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankDIInitAngle",userInfo.getLanguageName()));
+							statusMap.put("interpolationCNT", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterpolationCNT",userInfo.getLanguageName()));
+							statusMap.put("surfaceSystemEfficiency", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SurfaceSystemEfficiency",userInfo.getLanguageName()));
+							statusMap.put("wattTimes", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_WattTimes",userInfo.getLanguageName()));
+							statusMap.put("iTimes", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ITimes",userInfo.getLanguageName()));
+							statusMap.put("fsDiagramTimes", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramTimes",userInfo.getLanguageName()));
+							statusMap.put("fsDiagramLeftTimes", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramLeftTimes",userInfo.getLanguageName()));
+							statusMap.put("fsDiagramRightTimes", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FSDiagramRightTimes",userInfo.getLanguageName()));
 							
-							statusMap.put("leftPercent", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_LeftPercent",userInfo.getLanguageName()));
-							statusMap.put("rightPercent", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_RightPercent",userInfo.getLanguageName()));
-							statusMap.put("positiveXWatt", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",userInfo.getLanguageName()));
-							statusMap.put("negativeXWatt", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",userInfo.getLanguageName()));
+							statusMap.put("leftPercent", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_LeftPercent",userInfo.getLanguageName()));
+							statusMap.put("rightPercent", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_RightPercent",userInfo.getLanguageName()));
+							statusMap.put("positiveXWatt", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",userInfo.getLanguageName()));
+							statusMap.put("negativeXWatt", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",userInfo.getLanguageName()));
 						
-							statusMap.put("PRTFSrc", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_PRTFSrc",userInfo.getLanguageName()));
-							statusMap.put("BoardDataSource", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_BoardDataSource",userInfo.getLanguageName()));
+							statusMap.put("PRTFSrc", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFSrc",userInfo.getLanguageName()));
+							statusMap.put("BoardDataSource", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_BoardDataSource",userInfo.getLanguageName()));
 						
 							
 							StringBuffer result_json = new StringBuffer();
@@ -4109,19 +4113,19 @@ public class WellInformationManagerController extends BaseController {
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String deviceType=obj[5]+"";
 					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
-							statusMap.put("systemDate", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemDate",userInfo.getLanguageName()));
-							statusMap.put("systemTime", dataUplink(protocolName,tcpType,signinid,ipPort,slave,"write_SystemTime",userInfo.getLanguageName()));
+							statusMap.put("systemDate", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemDate",userInfo.getLanguageName()));
+							statusMap.put("systemTime", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemTime",userInfo.getLanguageName()));
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
 							for (String key : statusMap.keySet()) {
@@ -4157,18 +4161,18 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	public String dataUplink(String protocolName,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
+	public String dataUplink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
 		String result=languageResourceMap.get("noUplink");
 		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
-			result=readAddr(protocolName,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
+			result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
 			
 		}
 		return result;
 	}
 	
-	public String readAddr(String protocolName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String language){
+	public String readAddr(String protocolCode,String tcpType,String ID,String ipPort,String Slave,String itemCode,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String result=languageResourceMap.get("noUplink");
 		try {
@@ -4182,7 +4186,7 @@ public class WellInformationManagerController extends BaseController {
 			User user = (User) session.getAttribute("userLogin");
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			ModbusProtocolConfig.Items item=null;
 			for(int i=0;i<protocol.getItems().size();i++){
 				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){

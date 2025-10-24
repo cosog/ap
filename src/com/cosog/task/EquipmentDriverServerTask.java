@@ -915,17 +915,17 @@ public class EquipmentDriverServerTask {
 				}
 			}
 		}else{
-			String instanceSql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
+			String instanceSql="select t.id,t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
 					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
 					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
 					+ " t.packetsendinterval,"
-					+ " t3.name,t4.allpath_zh_cn "
+					+ " t3.id as protocolId, t3.name as protocolName,t4.allpath_zh_cn "
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_protocol t3 on t2.protocol=t3.code"
 					+ " left outer join viw_devicetypeinfo t4 on t3.devicetype=t4.id"
 					+ " where 1=1";
-			String sql="select t5.name as instanceName,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
+			String sql="select t5.id as instanceId,t2.id as groupId,t2.group_name,t2.type,t2.grouptiminginterval,"
 					+ " t.itemname,t.itemcode, t6.name as protocolName "
 					+ " from tbl_acq_item2group_conf t,"
 					+ " tbl_acq_group_conf t2,"
@@ -949,41 +949,46 @@ public class EquipmentDriverServerTask {
 			
 			
 			if(instanceQueryList!=null && instanceQueryList.size()>0){
-				Map<String,InitInstance> InstanceListMap=new LinkedHashMap<String,InitInstance>();
-				
-				
+				Map<Integer,InitInstance> InstanceListMap=new LinkedHashMap<>();
 				for(Object[] obj:instanceQueryList){
 					InitInstance initInstance=new InitInstance();
 					initInstance.setMethod(method);
-					initInstance.setInstanceName(obj[0]+"");
-					initInstance.setProtocolName(obj[12]+"/"+obj[11]);
-					initInstance.setAcqProtocolType(obj[1]+"");
-					initInstance.setCtrlProtocolType(obj[2]+"");
 					
-					initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[3]+"")==1);
-					initInstance.setSignInPrefix((obj[4]+"").replaceAll("null", ""));
-					initInstance.setSignInSuffix((obj[5]+"").replaceAll("null", ""));
-					initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[6]+"")==1);
+					String instanceName=obj[1]+"";
+					String protocolName=obj[13]+"";
+					String protocolDeviceTypeAllPath=obj[14]+"";
 					
-					initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[7]+"")==1);
-					initInstance.setHeartbeatPrefix((obj[8]+"").replaceAll("null", ""));
-					initInstance.setHeartbeatSuffix((obj[9]+"").replaceAll("null", ""));
+					initInstance.setId(StringManagerUtils.stringToInteger(obj[0]+""));
+					initInstance.setInstanceName(protocolDeviceTypeAllPath+"/"+protocolName+"/"+instanceName);
+					initInstance.setProtocolName(protocolDeviceTypeAllPath+"/"+protocolName);
+					initInstance.setProtocolId(StringManagerUtils.stringToInteger(obj[12]+""));
+					initInstance.setAcqProtocolType(obj[2]+"");
+					initInstance.setCtrlProtocolType(obj[3]+"");
 					
-					initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[10]+""));
+					initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[4]+"")==1);
+					initInstance.setSignInPrefix((obj[5]+"").replaceAll("null", ""));
+					initInstance.setSignInSuffix((obj[6]+"").replaceAll("null", ""));
+					initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[7]+"")==1);
+					
+					initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[8]+"")==1);
+					initInstance.setHeartbeatPrefix((obj[9]+"").replaceAll("null", ""));
+					initInstance.setHeartbeatSuffix((obj[10]+"").replaceAll("null", ""));
+					
+					initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[11]+""));
 					
 					initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 					initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
 					
-					InstanceListMap.put(initInstance.getInstanceName(), initInstance);
+					InstanceListMap.put(initInstance.getId(), initInstance);
 				}
 				
-				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+				for(Entry<Integer, InitInstance> entry:InstanceListMap.entrySet()){
 					InitInstance initInstance=entry.getValue();
-					String key=entry.getKey();
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(initInstance.getProtocolName());
+					int key=entry.getKey();
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(initInstance.getProtocolId());
 					
 					for(Object[] obj:itemsQueryList){
-						String instanceName=obj[0]+"";
+						int instanceId=StringManagerUtils.stringToInteger(obj[0]+"");
 						int groupId=StringManagerUtils.stringToInteger(obj[1]+"");
 						String groupName=obj[2]+"";
 						int groupType=StringManagerUtils.stringToInteger(obj[3]+"");
@@ -991,7 +996,7 @@ public class EquipmentDriverServerTask {
 						
 						String itemName=obj[5]+"";
 						String protocolName=obj[7]+"";
-						if(instanceName.equalsIgnoreCase(initInstance.getInstanceName())){
+						if(instanceId==initInstance.getId()){
 							if(!initInstance.containGroup(groupType, groupId)){
 								InitInstance.Group group=new InitInstance.Group();
 								group.setId(groupId);
@@ -1013,9 +1018,9 @@ public class EquipmentDriverServerTask {
 						}
 					}
 				}
-				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
+				for(Entry<Integer, InitInstance> entry:InstanceListMap.entrySet()){
 					InitInstance initInstance=entry.getValue();
-					String key=entry.getKey();
+					int key=entry.getKey();
 					for(InitInstance.Group group:initInstance.getAcqGroup() ){
 						Collections.sort(group.getAddr());
 					}
@@ -1024,9 +1029,9 @@ public class EquipmentDriverServerTask {
 					}
 					
 					try {
-						StringManagerUtils.printLog("实例初始化："+gson.toJson(entry.getValue()));
+						StringManagerUtils.printLog("实例初始化："+entry.getValue().toString());
 						if(initEnable){
-							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8",0,0);
+							StringManagerUtils.sendPostMethod(initUrl, entry.getValue().toString(),"utf-8",0,0);
 						}
 					}catch (Exception e) {
 						continue;

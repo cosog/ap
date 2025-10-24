@@ -141,7 +141,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					initId.setIPPort(ipPort);
 				}
 				initId.setSlave((byte) slave);
-				initId.setInstanceName(instanceName);
+				initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 				String response="";
@@ -193,7 +193,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						initialized.getSigninid().equalsIgnoreCase(signinId) 
 						&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
 						&& initialized.getSlave()==(byte) slave 
-						&& initialized.getInstanceName().equalsIgnoreCase(instanceName)  
+						&& initialized.getInstanceName().equalsIgnoreCase(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName)  
 						&& initialized.getPeakDelay()==peakDelay
 						)  ){
 					InitId initId=new InitId();
@@ -202,7 +202,7 @@ public class InitIdAndIPPortThread implements Runnable{
 							initialized.getSigninid().equalsIgnoreCase(signinId) 
 							&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
 							&& initialized.getSlave()==(byte) slave 
-							&& initialized.getInstanceName().equalsIgnoreCase(instanceName)
+							&& initialized.getInstanceName().equalsIgnoreCase(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName)
 							) ){
 						//删掉原有初始化
 						initId.setMethod("delete");
@@ -228,7 +228,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						initId.setIPPort(ipPort);
 					}
 					initId.setSlave((byte) slave);
-					initId.setInstanceName(instanceName);
+					initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 					initId.setPeakDelay(peakDelay);
 					StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId));
 					String response="";

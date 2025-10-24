@@ -635,7 +635,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(acqInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1463,7 +1463,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(acqInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -2100,15 +2100,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String productionData=obj[20]+""; 
 				
 				DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
-				String protocolName="";
+				String protocolCode="";
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
 				if(deviceInfo!=null){
 					acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 					if(acqInstanceOwnItem!=null){
-						protocolName=acqInstanceOwnItem.getProtocol();
+						protocolCode=acqInstanceOwnItem.getProtocolCode();
 					}
 				}
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				
 				//附加信息
 				Map<String,String> deviceAddInfoMap=new LinkedHashMap<>(); 
@@ -2601,7 +2601,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 			ModbusProtocolConfig.Protocol protocol=null;
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			
@@ -3426,7 +3426,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(displayInstanceCode);
 			ModbusProtocolConfig.Protocol protocol=null;
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			
@@ -4157,7 +4157,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DeviceInfo deviceInfo=null;
 		UserInfo userInfo=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		String protocolName="";
+		String protocolCode="";
 		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try{
@@ -4167,7 +4167,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				if(deviceInfo!=null){
 					displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
 					if(displayInstanceOwnItem!=null){
-						protocolName=displayInstanceOwnItem.getProtocol();
+						protocolCode=displayInstanceOwnItem.getProtocolCode();
 					}
 				}
 			}catch(Exception e){
@@ -4186,7 +4186,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			deviceControlList.append("[");
 			
 			if(displayInstanceOwnItem!=null){
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				if(protocol!=null){
 					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 						if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
@@ -4550,8 +4550,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						return 0;
 					}
 				});
-				String protocolName=displayInstanceOwnItem.getProtocol();
-				Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				String protocolCode=displayInstanceOwnItem.getProtocolCode();
+				Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				if(protocol!=null){
 					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 						Gson gson = new Gson();

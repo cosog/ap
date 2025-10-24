@@ -2027,7 +2027,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			String hisTableName="tbl_acqdata_hist";
@@ -2347,7 +2347,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
 			
 			if(displayInstanceOwnItem!=null){
-				protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+				protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 			}
 			
 			String hisTableName="tbl_acqdata_hist";

@@ -606,7 +606,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String groupId = ParamUtils.getParameter(request, "groupId");
 //			String groupCode = ParamUtils.getParameter(request, "groupCode");
-			String protocolName = ParamUtils.getParameter(request, "protocol");
+			String protocolCode = ParamUtils.getParameter(request, "protocol");
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 //			String groupName="";
@@ -618,7 +618,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //				groupName=obj[1]+"";
 //			}
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			if (StringManagerUtils.isNotNull(groupId) && protocol!=null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
@@ -742,10 +742,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 		try {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
-			String protocolName = ParamUtils.getParameter(request, "protocol");
+			String protocolCode = ParamUtils.getParameter(request, "protocol");
 //			String itemType = ParamUtils.getParameter(request, "itemType");
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
@@ -876,12 +876,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
-			String protocolName = ParamUtils.getParameter(request, "protocol");
+			String protocolCode = ParamUtils.getParameter(request, "protocol");
 			String itemType = ParamUtils.getParameter(request, "itemType");
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
@@ -1374,7 +1374,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getProtocolAcqUnitItemsConfigData")
 	public String getProtocolAcqUnitItemsConfigData() throws Exception {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String type = ParamUtils.getParameter(request, "type");
@@ -1385,7 +1385,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		json = acquisitionUnitItemManagerService.getProtocolAcqUnitItemsConfigData(protocolName,classes,code,type,language);
+		json = acquisitionUnitItemManagerService.getProtocolAcqUnitItemsConfigData(protocolCode,classes,code,type,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1413,7 +1413,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getModbusProtocolNumAlarmItemsConfigData")
 	public String getModbusProtocolNumAlarmItemsConfigData() throws Exception {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
@@ -1424,7 +1424,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		json = acquisitionUnitItemManagerService.getModbusProtocolNumAlarmItemsConfigData(protocolName,classes,code,calculateType,language);
+		json = acquisitionUnitItemManagerService.getModbusProtocolNumAlarmItemsConfigData(protocolCode,classes,code,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1459,7 +1459,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getModbusProtocolEnumAlarmItemsConfigData")
 	public String getModbusProtocolEnumAlarmItemsConfigData() throws Exception {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitCode = ParamUtils.getParameter(request, "unitCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
@@ -1472,9 +1472,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		if("1".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemResolutionMode,language);
 		}else if("0".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolName,classes,unitCode,itemAddr,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemResolutionMode,language);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -1554,7 +1554,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getProtocolDisplayUnitAcqItemsConfigData")
 	public String getProtocolDisplayUnitAcqItemsConfigData() throws Exception {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String unitId = ParamUtils.getParameter(request, "unitId");
@@ -1567,7 +1567,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolName,classes,code,unitId,acqUnitId,calculateType,language);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitAcqItemsConfigData(protocolCode,classes,code,unitId,acqUnitId,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1579,7 +1579,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/getProtocolDisplayUnitCtrlItemsConfigData")
 	public String getProtocolDisplayUnitCtrlItemsConfigData() throws Exception {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String classes = ParamUtils.getParameter(request, "classes");
 		String code = ParamUtils.getParameter(request, "code");
 		String unitId = ParamUtils.getParameter(request, "unitId");
@@ -1591,7 +1591,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCtrlItemsConfigData(protocolName,classes,code,unitId,acqUnitId,language);
+		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCtrlItemsConfigData(protocolCode,classes,code,unitId,acqUnitId,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1763,49 +1763,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getProtocolInstanceItemsConfigData")
-	public String getProtocolInstanceItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String classes = ParamUtils.getParameter(request, "classes");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolInstanceItemsConfigData(id,classes,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolDisplayInstanceAcqItemsConfigData")
-	public String getProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceAcqItemsConfigData(id,classes,calculateType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getImportProtocolDisplayInstanceAcqItemsConfigData")
 	public String getImportProtocolDisplayInstanceAcqItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -1818,27 +1775,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceAcqItemsConfigData(id,type,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolDisplayInstanceCtrlItemsConfigData")
-	public String getProtocolDisplayInstanceCtrlItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String classes = ParamUtils.getParameter(request, "classes");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCtrlItemsConfigData(id,classes,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2023,29 +1959,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getProtocolAlarmInstanceSwitchItemsConfigData")
-	public String getProtocolAlarmInstanceSwitchItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String code = ParamUtils.getParameter(request, "code");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceSwitchItemsConfigData(id,classes,resolutionMode,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getImportProtocolAlarmContentSwitchItemsConfigData")
 	public String getImportProtocolAlarmContentSwitchItemsConfigData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
@@ -2058,29 +1971,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		json = acquisitionUnitItemManagerService.getImportProtocolAlarmContentSwitchItemsConfigData(id,type,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolAlarmInstanceEnumItemsConfigData")
-	public String getProtocolAlarmInstanceEnumItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String code = ParamUtils.getParameter(request, "code");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolAlarmInstanceEnumItemsConfigData(id,classes,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

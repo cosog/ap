@@ -8,7 +8,7 @@ public class AcqInstanceOwnItem  implements Serializable {
 	public String instanceCode;
 	public String acqProtocolType;
 	public String ctrlProtocolType;
-	public String protocol;
+	public String protocolCode;
 	public int unitId;
 	private int groupTimingInterval;
 	private int groupSavingInterval;
@@ -73,11 +73,11 @@ public class AcqInstanceOwnItem  implements Serializable {
 	public void setInstanceCode(String instanceCode) {
 		this.instanceCode = instanceCode;
 	}
-	public String getProtocol() {
-		return protocol;
+	public String getProtocolCode() {
+		return protocolCode;
 	}
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
+	public void setProtocolCode(String protocolCode) {
+		this.protocolCode = protocolCode;
 	}
 	public int getUnitId() {
 		return unitId;

@@ -178,7 +178,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(code);
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
 			for(int j=0;j<protocolConfig.getItems().size();j++){
@@ -284,7 +284,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		
 
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(code);
 		if(protocolConfig!=null){
 			for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
 				
@@ -310,10 +310,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAcqUnitItemsConfigData(String protocolName,String classes,String code,String type,String language){
+	public String getProtocolAcqUnitItemsConfigData(String protocolCode,String classes,String code,String type,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -555,7 +555,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolNumAlarmItemsConfigData(String protocolName,String classes,String code,String calculateType,String language){
+	public String getModbusProtocolNumAlarmItemsConfigData(String protocolCode,String classes,String code,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -612,7 +612,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		int index=1;
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
 			for(int j=0;j<protocolConfig.getItems().size();j++){
@@ -869,7 +869,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
+	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -907,7 +907,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			Collections.sort(protocolConfig.getItems());
 			int index=1;
@@ -955,7 +955,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolName,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
+	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -994,7 +994,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			int index=1;
 			Collections.sort(protocolConfig.getItems());
@@ -1311,7 +1311,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String calculateType,String language){
+	public String getProtocolDisplayUnitAcqItemsConfigData(String protocolCode,String classes,String code,String unitId,String acqUnitId,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1379,7 +1379,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Boolean> historyOverviewList=new ArrayList<>();
 		List<String> historyOverviewSortList=new ArrayList<String>();
 		
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		int index=1;
 		
 		//acquisition
@@ -2225,7 +2225,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolDisplayUnitCtrlItemsConfigData(String protocolName,String classes,String code,String unitId,String acqUnitId,String language){
+	public String getProtocolDisplayUnitCtrlItemsConfigData(String protocolCode,String classes,String code,String unitId,String acqUnitId,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2272,7 +2272,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 
-		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 //			Collections.sort(protocolConfig.getItems());
 			int index=1;
@@ -2421,7 +2421,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2 where t.id=t2.acqunitid and t2.id="+unitId;
 			List<?> protocolList=this.findCallSql(protocolSql);
 			if(protocolList.size()>0){
-				protocol=MemoryDataManagerTask.getProtocolByName(protocolList.get(0)+"");
+				protocol=MemoryDataManagerTask.getProtocolByCode(protocolList.get(0)+"");
 			}
 			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
 					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
@@ -3839,816 +3839,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolInstanceItemsConfigData(String id,String classes,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		int index=1;
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
-				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		List<String> itemsList=new ArrayList<String>();
-		
-		String protocolSql="select t.protocol from tbl_acq_unit_conf t,tbl_protocolinstance t2 where t2.unitid=t.id and t2.id="+id+"";
-		String itemsSql="select distinct(t.itemname) "
-				+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5 "
-				+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t5.id="+id+"";
-		if("2".equals(classes)){
-			protocolSql="select t.protocol from tbl_acq_unit_conf t where t.id="+id+"";
-			itemsSql="select distinct(t.itemname) "
-					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+id+"";
-		}else if("3".equals(classes)){
-			protocolSql="select t.protocol from tbl_acq_group_conf t where t.id="+id+"";
-			itemsSql="select distinct(t.itemname) "
-					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2 "
-					+ " where t.groupid=t2.id and t2.id="+id+"";
-		}
-		List<?> protocolList=this.findCallSql(protocolSql);
-		if(protocolList.size()>0){
-			String protocolName=protocolList.get(0)+"";
-			List<?> list=this.findCallSql(itemsSql);
-			for(int i=0;i<list.size();i++){
-				itemsList.add(list.get(i)+"");
-			}
-
-			ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
-			if(protocolConfig!=null){
-				Collections.sort(protocolConfig.getItems());
-				for(int j=0;j<protocolConfig.getItems().size();j++){
-					if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
-//						if(RWType.equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){}
-						String RWTypeName=languageResourceMap.get("readOnly");
-						if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName=languageResourceMap.get("readOnly");
-						}else if("w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName=languageResourceMap.get("writeOnly");
-						}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
-							RWTypeName=languageResourceMap.get("readWrite");
-						}
-						
-						String resolutionMode=languageResourceMap.get("numericValue");
-						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
-							resolutionMode=languageResourceMap.get("switchingValue");
-						}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
-							resolutionMode=languageResourceMap.get("enumValue");
-						}
-						
-						result_json.append("{\"id\":"+index+","
-								+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-								+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-								+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
-								+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
-								+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
-								+ "\"prec\":"+(protocolConfig.getItems().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?protocolConfig.getItems().get(j).getPrec():"\"\"")+","
-								+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
-								+ "\"RWType\":\""+RWTypeName+"\","
-								+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-								+ "\"resolutionMode\":\""+resolutionMode+"\","
-								+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?languageResourceMap.get("activeAcqModel"):languageResourceMap.get("passiveAcqModel"))+"\"},");
-						index++;
-					}
-				}
-			}
-			
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString();
-	}
-	
-	public String getProtocolDisplayInstanceAcqItemsConfigData(String id,String classes,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		List<CalItem> calItemList=new ArrayList<>();
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		List<CalItem> inputItemList=new ArrayList<>();
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsHistorySortList=new ArrayList<String>();
-		List<String> itemsBitIndexList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveConfList=new ArrayList<String>();
-		List<String> historyCurveConfList=new ArrayList<String>();
-		List<String> realtimeColorList=new ArrayList<String>();
-		List<String> realtimeBgColorList=new ArrayList<String>();
-		List<String> historyColorList=new ArrayList<String>();
-		List<String> historyBgColorList=new ArrayList<String>();
-		
-		List<String> itemsCodeList=new ArrayList<String>();
-		
-		List<Boolean> realtimeDataList=new ArrayList<>();
-		List<Boolean> realtimeOverviewList=new ArrayList<>();
-		List<String> realtimeOverviewSortList=new ArrayList<String>();
-		
-		List<Boolean> historyDataList=new ArrayList<>();
-		List<Boolean> historyOverviewList=new ArrayList<>();
-		List<String> historyOverviewSortList=new ArrayList<String>();
-		
-		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		
-		List<?> protocolList=this.findCallSql(protocolSql);
-		if(protocolList.size()>0){
-			String protocolName=protocolList.get(0)+"";
-			ModbusProtocolConfig.Protocol protocolConfig =MemoryDataManagerTask.getProtocolByName(protocolName);
-			
-			int index=1;
-			//acquisition
-			String sql="select t.itemname,t.bitindex,"
-					+ "t.realtimeSort,t.historySort,"
-					+ "t.showlevel,"
-					+ "t.realtimeCurveConf,historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=0 and t3.id= "+id
-					+ " order by t.id";
-			List<?> list=this.findCallSql(sql);
-			
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsBitIndexList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsHistorySortList.add(obj[3]+"");
-				
-				itemsShowLevelList.add(obj[4]+"");
-				
-				String realtimeCurveConfShowValue="";
-				String historyCurveConfShowValue="";
-				
-				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
-				}
-				
-				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[6]+"", type);
-				}
-				
-				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-				}
-				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConfShowValue);
-				historyCurveConfList.add(historyCurveConfShowValue);
-				
-				realtimeColorList.add(obj[7]+"");
-				realtimeBgColorList.add(obj[8]+"");
-				historyColorList.add(obj[9]+"");
-				historyBgColorList.add(obj[10]+"");
-				
-				realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[11]+"")==1);
-				realtimeOverviewSortList.add(obj[12]+"");
-				realtimeDataList.add(StringManagerUtils.stringToInteger(obj[13]+"")==1);
-				
-				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-				historyOverviewSortList.add(obj[15]+"");
-				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
-			}
-			if(protocolConfig!=null){
-				Collections.sort(protocolConfig.getItems());
-				for(int j=0;j<protocolConfig.getItems().size();j++){
-					if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-						String realtimeSort="";
-						String historySort="";
-						String showLevel="";
-						
-						String realtimeCurveConfShowValue="";
-						String historyCurveConfShowValue="";
-						String realtimeColor=""; 
-						String realtimeBgColor="";
-						String historyColor="";
-						String historyBgColor="";
-						
-						boolean realtimeOverview=false;
-						String  realtimeOverviewSort="";
-						boolean realtimeData=false;
-						
-						boolean historyOverview=false;
-						String  historyOverviewSort="";
-						boolean historyData=false;
-						
-						if(protocolConfig.getItems().get(j).getResolutionMode()==0
-								&&protocolConfig.getItems().get(j).getMeaning()!=null
-								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
-							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
-							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-								realtimeSort="";
-								historySort="";
-								showLevel="";
-								realtimeCurveConfShowValue="";
-								historyCurveConfShowValue="";
-								realtimeColor=""; 
-								realtimeBgColor="";
-								historyColor="";
-								historyBgColor="";
-								realtimeOverview=false;
-								realtimeOverviewSort="";
-								realtimeData=false;
-								
-								historyOverview=false;
-								historyOverviewSort="";
-								historyData=false;
-								for(int m=0;m<itemsList.size();m++){
-									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-										){
-										realtimeSort=itemsRealtimeSortList.get(m);
-										historySort=itemsHistorySortList.get(m);
-										showLevel=itemsShowLevelList.get(m);
-										realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
-										historyCurveConfShowValue=historyCurveConfList.get(m);
-										realtimeColor=realtimeColorList.get(m);
-										realtimeBgColor=realtimeBgColorList.get(m);
-										historyColor=historyColorList.get(m);
-										historyBgColor=historyBgColorList.get(m);
-										
-										realtimeOverview=realtimeOverviewList.get(m);
-										realtimeOverviewSort=realtimeOverviewSortList.get(m);
-										realtimeData=realtimeDataList.get(m);
-										
-										historyOverview=historyOverviewList.get(m);
-										historyOverviewSort=historyOverviewSortList.get(m);
-										historyData=historyDataList.get(m);
-										
-										result_json.append("{"
-												+ "\"id\":"+(index)+","
-												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-												+ "\"showLevel\":\""+showLevel+"\","
-												+ "\"realtimeSort\":\""+realtimeSort+"\","
-												+ "\"realtimeColor\":\""+realtimeColor+"\","
-												+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-												+ "\"historySort\":\""+historySort+"\","
-												+ "\"historyColor\":\""+historyColor+"\","
-												+ "\"historyBgColor\":\""+historyBgColor+"\","
-												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-												+ "\"type\":0,"
-												+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
-												+ "\"realtimeOverview\":"+realtimeOverview+","
-												+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-												+ "\"realtimeData\":"+realtimeData+","
-												+ "\"historyOverview\":"+historyOverview+","
-												+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-												+ "\"historyData\":"+historyData+""
-												+ "},");
-										index++;
-										break;
-									}
-								}
-							}
-						}else{
-							for(int k=0;k<itemsList.size();k++){
-								if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-									realtimeSort=itemsRealtimeSortList.get(k);
-									historySort=itemsHistorySortList.get(k);
-									showLevel=itemsShowLevelList.get(k);
-									realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-									historyCurveConfShowValue=realtimeCurveConfList.get(k);
-									realtimeColor=realtimeColorList.get(k);
-									realtimeBgColor=realtimeBgColorList.get(k);
-									historyColor=historyColorList.get(k);
-									historyBgColor=historyBgColorList.get(k);
-									
-									realtimeOverview=realtimeOverviewList.get(k);
-									realtimeOverviewSort=realtimeOverviewSortList.get(k);
-									realtimeData=realtimeDataList.get(k);
-									
-									historyOverview=historyOverviewList.get(k);
-									historyOverviewSort=historyOverviewSortList.get(k);
-									historyData=historyDataList.get(k);
-									break;
-								}
-							}
-							result_json.append("{"
-									+ "\"id\":"+(index)+","
-									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-									+ "\"showLevel\":\""+showLevel+"\","
-									+ "\"realtimeSort\":\""+realtimeSort+"\","
-									+ "\"realtimeColor\":\""+realtimeColor+"\","
-									+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-									+ "\"historySort\":\""+historySort+"\","
-									+ "\"historyColor\":\""+historyColor+"\","
-									+ "\"historyBgColor\":\""+historyBgColor+"\","
-									+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-									+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-									+ "\"type\":0,"
-									+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
-									+ "\"realtimeOverview\":"+realtimeOverview+","
-									+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-									+ "\"realtimeData\":"+realtimeData+","
-									+ "\"historyOverview\":"+historyOverview+","
-									+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-									+ "\"historyData\":"+historyData+""
-									+ "},");
-							index++;
-						}
-					}
-				}
-			}
-			
-			//calculate
-			itemsList=new ArrayList<String>();
-			itemsCodeList=new ArrayList<String>();
-			itemsRealtimeSortList=new ArrayList<String>();
-			itemsHistorySortList=new ArrayList<String>();
-			itemsBitIndexList=new ArrayList<String>();
-			itemsShowLevelList=new ArrayList<String>();
-			realtimeCurveConfList=new ArrayList<String>();
-			historyCurveConfList=new ArrayList<String>();
-			
-			realtimeColorList=new ArrayList<String>();
-			realtimeBgColorList=new ArrayList<String>();
-			historyColorList=new ArrayList<String>();
-			historyBgColorList=new ArrayList<String>();
-			
-			realtimeDataList=new ArrayList<>();
-			realtimeOverviewList=new ArrayList<>();
-			realtimeOverviewSortList=new ArrayList<String>();
-			
-			historyDataList=new ArrayList<>();
-			historyOverviewList=new ArrayList<>();
-			historyOverviewSortList=new ArrayList<String>();
-			if(StringManagerUtils.isNotNull(id)){
-				String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-						+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-						+ " tbl_datamapping t6,tbl_protocoldisplayinstance t7 "
-						+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid and t5.id=t7.displayunitid "
-						+ " and t.itemname=t6.name "
-						+ " and t.dailytotalcalculate=1 and t7.id= "+id
-						+ " order by t.id";
-				List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-				for(int i=0;i<unitDailyTotalItemsList.size();i++){
-					Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-					String itemName=obj[0]+"";
-					String name=obj[1]+"";
-					String code=(obj[2]+"_TOTAL").toUpperCase();
-					String unit="";
-					if(protocolConfig!=null && protocolConfig.getItems()!=null){
-						for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
-							if(itemName.equalsIgnoreCase(item.getTitle())){
-								unit=item.getUnit();
-								break;
-							}
-						}
-					}
-					CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
-					calItemList.add(calItem);
-				}
-			}
-			
-			sql="select t.itemname,t.itemcode,t.bitindex,"
-					+ "t.realtimeSort,t.historySort,"
-					+ "t.showlevel,"
-					+ "t.realtimeCurveConf,historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
-					+ " order by t.id";
-			if(calItemList!=null && calItemList.size()>0){
-				list=this.findCallSql(sql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
-					itemsBitIndexList.add(obj[2]+"");
-					itemsRealtimeSortList.add(obj[3]+"");
-					itemsHistorySortList.add(obj[4]+"");
-					itemsShowLevelList.add(obj[5]+"");
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					
-					CurveConf realtimeCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-					}
-					
-					CurveConf historyCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-					}
-					
-					if(realtimeCurveConfObj!=null){
-						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-					}
-					if(historyCurveConfObj!=null){
-						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-					}
-					
-					realtimeCurveConfList.add(realtimeCurveConfShowValue);
-					historyCurveConfList.add(historyCurveConfShowValue);
-					
-					realtimeColorList.add(obj[8]+"");
-					realtimeBgColorList.add(obj[9]+"");
-					historyColorList.add(obj[10]+"");
-					historyBgColorList.add(obj[11]+"");
-					
-					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
-					realtimeOverviewSortList.add(obj[13]+"");
-					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-					
-					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
-					historyOverviewSortList.add(obj[16]+"");
-					historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
-				}
-				for(CalItem calItem:calItemList){
-					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-						String realtimeSort="";
-						String historySort="";
-						String showLevel="";
-						String realtimeCurveConfShowValue="";
-						String historyCurveConfShowValue="";
-						String realtimeColor=""; 
-						String realtimeBgColor="";
-						String historyColor="";
-						String historyBgColor="";
-						
-						boolean realtimeOverview=false;
-						String  realtimeOverviewSort="";
-						boolean realtimeData=false;
-						
-						boolean historyOverview=false;
-						String  historyOverviewSort="";
-						boolean historyData=false;
-
-						for(int k=0;k<itemsList.size();k++){
-							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-								realtimeSort=itemsRealtimeSortList.get(k);
-								historySort=itemsHistorySortList.get(k);
-								showLevel=itemsShowLevelList.get(k);
-								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-								historyCurveConfShowValue=historyCurveConfList.get(k);
-								realtimeColor=realtimeColorList.get(k);
-								realtimeBgColor=realtimeBgColorList.get(k);
-								historyColor=historyColorList.get(k);
-								historyBgColor=historyBgColorList.get(k);
-								
-								realtimeOverview=realtimeOverviewList.get(k);
-								realtimeOverviewSort=realtimeOverviewSortList.get(k);
-								realtimeData=realtimeDataList.get(k);
-								
-								historyOverview=historyOverviewList.get(k);
-								historyOverviewSort=historyOverviewSortList.get(k);
-								historyData=historyDataList.get(k);
-								break;
-							}
-						}
-						result_json.append("{"
-								+ "\"id\":"+index+","
-								+ "\"title\":\""+calItem.getName()+"\","
-								+ "\"unit\":\""+calItem.getUnit()+"\","
-								+ "\"showLevel\":\""+showLevel+"\","
-								+ "\"realtimeSort\":\""+realtimeSort+"\","
-								+ "\"realtimeColor\":\""+realtimeColor+"\","
-								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-								+ "\"historySort\":\""+historySort+"\","
-								+ "\"historyColor\":\""+historyColor+"\","
-								+ "\"historyBgColor\":\""+historyBgColor+"\","
-								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-								+ "\"type\":1,"
-								+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
-								+ "\"realtimeOverview\":"+realtimeOverview+","
-								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-								+ "\"realtimeData\":"+realtimeData+","
-								+ "\"historyOverview\":"+historyOverview+","
-								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-								+ "\"historyData\":"+historyData+""
-								+ "},");
-						index++;
-					}
-				}
-			}
-			
-			//input
-			itemsList=new ArrayList<String>();
-			itemsCodeList=new ArrayList<String>();
-			itemsRealtimeSortList=new ArrayList<String>();
-			itemsHistorySortList=new ArrayList<String>();
-			itemsBitIndexList=new ArrayList<String>();
-			itemsShowLevelList=new ArrayList<String>();
-			realtimeCurveConfList=new ArrayList<String>();
-			historyCurveConfList=new ArrayList<String>();
-			
-			realtimeColorList=new ArrayList<String>();
-			realtimeBgColorList=new ArrayList<String>();
-			historyColorList=new ArrayList<String>();
-			historyBgColorList=new ArrayList<String>();
-			
-			realtimeDataList=new ArrayList<>();
-			realtimeOverviewList=new ArrayList<>();
-			realtimeOverviewSortList=new ArrayList<String>();
-			
-			historyDataList=new ArrayList<>();
-			historyOverviewList=new ArrayList<>();
-			historyOverviewSortList=new ArrayList<String>();
-			sql="select t.itemname,t.itemcode,t.bitindex,"
-					+ "t.realtimeSort,t.historySort,"
-					+ "t.showlevel,"
-					+ "t.realtimeCurveConf,historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
-					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
-					+ " and t3.id= "+id
-					+ " order by t.id";
-			if(inputItemList!=null){
-				list=this.findCallSql(sql);
-				for(int i=0;i<list.size();i++){
-					Object[] obj=(Object[])list.get(i);
-					itemsList.add(obj[0]+"");
-					itemsCodeList.add(obj[1]+"");
-					itemsBitIndexList.add(obj[2]+"");
-					itemsRealtimeSortList.add(obj[3]+"");
-					itemsHistorySortList.add(obj[4]+"");
-					itemsShowLevelList.add(obj[5]+"");
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					
-					CurveConf realtimeCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-					}
-					
-					CurveConf historyCurveConfObj=null;
-					if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-						type = new TypeToken<CurveConf>() {}.getType();
-						historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-					}
-					
-					if(realtimeCurveConfObj!=null){
-						realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-					}
-					if(historyCurveConfObj!=null){
-						historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-					}
-					
-					realtimeCurveConfList.add(realtimeCurveConfShowValue);
-					historyCurveConfList.add(historyCurveConfShowValue);
-					
-					realtimeColorList.add(obj[8]+"");
-					realtimeBgColorList.add(obj[9]+"");
-					historyColorList.add(obj[10]+"");
-					historyBgColorList.add(obj[11]+"");
-					
-					realtimeOverviewList.add(StringManagerUtils.stringToInteger(obj[12]+"")==1);
-					realtimeOverviewSortList.add(obj[13]+"");
-					realtimeDataList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
-					
-					historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
-					historyOverviewSortList.add(obj[15]+"");
-					historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
-				}
-				for(CalItem calItem:inputItemList){
-					if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-						String realtimeSort="";
-						String historySort="";
-						String showLevel="";
-						String realtimeCurveConfShowValue="";
-						String historyCurveConfShowValue="";
-						String realtimeColor=""; 
-						String realtimeBgColor="";
-						String historyColor="";
-						String historyBgColor="";
-						
-						boolean realtimeOverview=false;
-						String  realtimeOverviewSort="";
-						boolean realtimeData=false;
-						
-						boolean historyOverview=false;
-						String  historyOverviewSort="";
-						boolean historyData=false;
-
-						for(int k=0;k<itemsList.size();k++){
-							if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-								realtimeSort=itemsRealtimeSortList.get(k);
-								historySort=itemsHistorySortList.get(k);
-								showLevel=itemsShowLevelList.get(k);
-								realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-								historyCurveConfShowValue=historyCurveConfList.get(k);
-								realtimeColor=realtimeColorList.get(k);
-								realtimeBgColor=realtimeBgColorList.get(k);
-								historyColor=historyColorList.get(k);
-								historyBgColor=historyBgColorList.get(k);
-								
-								realtimeOverview=realtimeOverviewList.get(k);
-								realtimeOverviewSort=realtimeOverviewSortList.get(k);
-								realtimeData=realtimeDataList.get(k);
-								
-								historyOverview=historyOverviewList.get(k);
-								historyOverviewSort=historyOverviewSortList.get(k);
-								historyData=historyDataList.get(k);
-								break;
-							}
-						}
-						result_json.append("{"
-								+ "\"id\":"+index+","
-								+ "\"title\":\""+calItem.getName()+"\","
-								+ "\"unit\":\""+calItem.getUnit()+"\","
-								+ "\"showLevel\":\""+showLevel+"\","
-								+ "\"realtimeSort\":\""+realtimeSort+"\","
-								+ "\"realtimeColor\":\""+realtimeColor+"\","
-								+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-								+ "\"historySort\":\""+historySort+"\","
-								+ "\"historyColor\":\""+historyColor+"\","
-								+ "\"historyBgColor\":\""+historyBgColor+"\","
-								+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-								+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-								+ "\"type\":3,"
-								+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
-								+ "\"realtimeOverview\":"+realtimeOverview+","
-								+ "\"realtimeOverviewSort\":\""+realtimeOverviewSort+"\","
-								+ "\"realtimeData\":"+realtimeData+","
-								+ "\"historyOverview\":"+historyOverview+","
-								+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-								+ "\"historyData\":"+historyData+""
-								+ "},");
-						index++;
-					}
-				}
-			}
-			
-			//acquisition
-			
-		}
-		
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolDisplayInstanceCtrlItemsConfigData(String id,String classes,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsBitIndexList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		
-		String protocolSql="select t.protocol from tbl_display_unit_conf t,tbl_protocoldisplayinstance t2 where t.id=t2.displayunitid and t2.id="+id+"";
-		String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel"
-				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=2 and t3.id= "+id
-				+ " order by t.id";
-		List<?> protocolList=this.findCallSql(protocolSql);
-		if(protocolList.size()>0){
-			String protocolName=protocolList.get(0)+"";
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsBitIndexList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsShowLevelList.add(obj[3]+"");
-			}
-
-			ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByName(protocolName);
-			if(protocolConfig!=null){
-//				Collections.sort(protocolConfig.getItems());
-				int index=1;
-				for(int j=0;j<protocolConfig.getItems().size();j++){
-					if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-						String realtimeSort="";
-						String showLevel="";
-						if(protocolConfig.getItems().get(j).getResolutionMode()==0
-								&&protocolConfig.getItems().get(j).getMeaning()!=null
-								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
-							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
-							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-								realtimeSort="";
-								showLevel="";
-								for(int m=0;m<itemsList.size();m++){
-									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-										){
-										realtimeSort=itemsRealtimeSortList.get(m);
-										showLevel=itemsShowLevelList.get(m);
-										break;
-									}
-								}
-								
-								result_json.append("{"
-										+ "\"id\":"+(index)+","
-										+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-										+ "\"showLevel\":\""+showLevel+"\","
-										+ "\"realtimeSort\":\""+realtimeSort+"\""
-										+ "},");
-								index++;
-							}
-						}else{
-							for(int k=0;k<itemsList.size();k++){
-								if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-									realtimeSort=itemsRealtimeSortList.get(k);
-									showLevel=itemsShowLevelList.get(k);
-									break;
-								}
-							}
-							result_json.append("{"
-									+ "\"id\":"+(index)+","
-									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-									+ "\"showLevel\":\""+showLevel+"\","
-									+ "\"realtimeSort\":\""+realtimeSort+"\""
-									+ "},");
-							index++;
-						}
-					}
-				}
-			}
-		
-		}
-		
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
 	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String calculateType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
@@ -4699,7 +3889,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 where t.id=t2.acqunitid and t2.id=t3.displayunitid and t3.id="+id;
 			List<?> protocolList=this.findCallSql(protocolSql);
 			if(protocolList.size()>0){
-				protocol=MemoryDataManagerTask.getProtocolByName(protocolList.get(0)+"");
+				protocol=MemoryDataManagerTask.getProtocolByCode(protocolList.get(0)+"");
 			}
 			
 			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
@@ -5148,191 +4338,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolAlarmInstanceSwitchItemsConfigData(String id,String classes,String resolutionMode,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"bitIndex\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("switchItemAlarmValue")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
-				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		List<Integer> itemAddrsList=new ArrayList<Integer>();
-		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
-				+ "t.delay,t.retriggerTime,"
-				+ " t.alarmlevel,"
-				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
-				+ " t2.protocol "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
-				+ " and t3.id="+id+" "
-				+ " and t.type="+resolutionMode
-				+ " order by t.itemaddr,t.bitindex";
-		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.bitIndex,t.value,"
-					+ " t.delay,t.retriggerTime,"
-					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
-					+ " t2.protocol "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
-					+ " where t.unitid=t2.id "
-					+ " and t2.id="+id+" "
-					+ " and t.type="+resolutionMode
-					+ " order by t.itemaddr,t.bitindex";
-		}
-		List<?> list=this.findCallSql(itemsSql);
-		String protocolName="";
-		Protocol protocol=null;
-		if(list.size()>0){
-			Object[] obj = (Object[]) list.get(0);
-			protocolName=obj[obj.length-1]+"";
-			protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-		}
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[]) list.get(i);
-			int itemAddr=StringManagerUtils.stringToInteger(obj[3]+"");
-			int bitIndex=StringManagerUtils.stringToInteger(obj[4]+"");
-			String meaning="";
-			for(int j=0;protocol!=null&&j<protocol.getItems().size();j++){
-				if(itemAddr==protocol.getItems().get(j).getAddr()&&protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
-					for(int k=0;k<protocol.getItems().get(j).getMeaning().size();k++){
-						if(bitIndex==protocol.getItems().get(j).getMeaning().get(k).getValue()){
-							meaning=protocol.getItems().get(j).getMeaning().get(k).getMeaning();
-							break;
-						}
-					}
-					break;
-				}
-			}
-			result_json.append("{\"id\":"+(i+1)+","
-					+ "\"title\":\""+obj[1]+"\","
-					+ "\"code\":\""+obj[2]+"\","
-					+ "\"addr\":\""+obj[3]+"\","
-					+ "\"bitIndex\":\""+obj[4]+"\","
-					+ "\"meaning\":\""+meaning+"\","
-					+ "\"value\":\""+("1".equalsIgnoreCase(obj[5]+"")?languageResourceMap.get("switchingOpenValue"):languageResourceMap.get("switchingCloseValue"))+"\","
-					+ "\"delay\":\""+obj[6]+"\","
-					+ "\"retriggerTime\":\""+obj[7]+"\","
-					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language)+"\","
-					+ "\"alarmSign\":\""+obj[9]+"\","
-					+ "\"isSendMessage\":\""+obj[10]+"\","
-					+ "\"isSendMail\":\""+obj[11]+"\"},");
-		}
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolAlarmInstanceEnumItemsConfigData(String id,String classes,String resolutionMode,String language){
-		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
-				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		List<Integer> itemAddrsList=new ArrayList<Integer>();
-		
-		String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
-				+ " t.delay,t.retriggerTime,"
-				+ " t.alarmlevel,"
-				+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
-				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
-				+ " t2.protocol "
-				+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2,tbl_protocolalarminstance t3 "
-				+ " where t.unitid=t2.id and t2.id=t3.alarmunitid "
-				+ " and t3.id="+id+" "
-				+ " and t.type="+resolutionMode
-				+ " order by t.itemaddr,t.bitindex";
-		if("2".equals(classes)){
-			itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,t.value,"
-					+ "t.delay,t.retriggerTime,"
-					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'),"
-					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
-					+ " t2.protocol "
-					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
-					+ " where t.unitid=t2.id "
-					+ " and t2.id="+id+" "
-					+ " and t.type="+resolutionMode
-					+ " order by t.itemaddr,t.bitindex";
-		}
-		List<?> list=this.findCallSql(itemsSql);
-		String protocolName="";
-		Protocol protocol=null;
-		if(list.size()>0){
-			Object[] obj = (Object[]) list.get(0);
-			protocolName=obj[obj.length-1]+"";
-			protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-		}
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[]) list.get(i);
-			int itemAddr=StringManagerUtils.stringToInteger(obj[3]+"");
-			int value=StringManagerUtils.stringToInteger(obj[4]+"");
-			String meaning="";
-			for(int j=0;protocol!=null&&j<protocol.getItems().size();j++){
-				if(itemAddr==protocol.getItems().get(j).getAddr()&&protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
-					for(int k=0;k<protocol.getItems().get(j).getMeaning().size();k++){
-						if(value==protocol.getItems().get(j).getMeaning().get(k).getValue()){
-							meaning=protocol.getItems().get(j).getMeaning().get(k).getMeaning();
-							break;
-						}
-					}
-					break;
-				}
-			}
-			result_json.append("{\"id\":"+(i+1)+","
-					+ "\"title\":\""+obj[1]+"\","
-					+ "\"code\":\""+obj[2]+"\","
-					+ "\"addr\":\""+obj[3]+"\","
-					+ "\"value\":\""+obj[4]+"\","
-					+ "\"meaning\":\""+meaning+"\","
-					+ "\"delay\":\""+obj[5]+"\","
-					+ "\"retriggerTime\":\""+obj[6]+"\","
-					+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language)+"\","
-					+ "\"alarmSign\":\""+obj[8]+"\","
-					+ "\"isSendMessage\":\""+obj[9]+"\","
-					+ "\"isSendMail\":\""+obj[10]+"\"},");
-		}
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
 	public String getProtocolAlarmInstanceFESDiagramResultItemsConfigData(String id,String classes,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -5533,7 +4538,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			unitSql+=" and 1=2 ";
 		}
 		unitSql+= " order by t.sort,t.protocol,t.id";
-		String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
+		String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t4.code as protocolCode,t3.type,t2.id as unitId "
 				+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3,tbl_protocol t4 "
 				+ " where t.unitid=t2.id and t.groupid=t3.id and t2.protocol=t4.code";
 		if(StringManagerUtils.isNotNull(protocol)){
@@ -6430,7 +5435,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 
 		unit_json.append("[");
 		unitIdName_json.append("[");
-		String acqUnitSql="select t.id,t.unit_name,t.protocol "
+		String acqUnitSql="select t.id,t.unit_name,t2.name as protocolName,t2.code as protocolCode "
 				+ " from TBL_ACQ_UNIT_CONF t,tbl_protocol t2"
 				+ " where t.protocol=t2.code"
 				+ " and t2.language= "+user.getLanguage()
@@ -6444,8 +5449,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> unitList=this.findCallSql(acqUnitSql);
 		for(int i=0;i<unitList.size();i++){
 			Object[] obj = (Object[]) unitList.get(i);
-			String showText=obj[2]+"/"+obj[1];
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[2]+"");
+			String protocolName=obj[2]+"";
+			String protocolCode=obj[3]+"";
+			String showText=protocolName+"/"+obj[1];
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			if(protocol!=null){
 				unit_json.append("\""+showText+"\",");
 				unitIdName_json.append("{\"value\":"+obj[0]+",\"label\":\""+obj[1]+"\"},");
@@ -11966,7 +10973,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
 				InitInstance initInstance=entry.getValue();
 				String key=entry.getKey();
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(initInstance.getProtocolName());
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(initInstance.getProtocolId());
 				
 				for(Object[] obj:itemsQueryList){
 					String instanceName=obj[0]+"";

@@ -208,10 +208,11 @@ adviceImportAcqInstanceCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,saveSign,msg){
+function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,protocolDeviceType,saveSign,msg){
 	instanceName = decodeURIComponent(instanceName);
 	unitName = decodeURIComponent(unitName);
 	protocolName = decodeURIComponent(protocolName);
+	protocolDeviceType = decodeURIComponent(protocolDeviceType);
 	saveSign = decodeURIComponent(saveSign);
 	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
@@ -223,7 +224,8 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,saveSi
 					params : {
 						instanceName : instanceName,
 						unitName : unitName,
-						protocolName : protocolName
+						protocolName : protocolName,
+						protocolDeviceType:protocolDeviceType
 					},
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
@@ -254,7 +256,8 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,saveSi
 			params : {
 				instanceName : instanceName,
 				unitName : unitName,
-				protocolName : protocolName
+				protocolName : protocolName,
+				protocolDeviceType:protocolDeviceType
 			},
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
@@ -327,7 +330,7 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 		var instanceName=record.data.text;
 		var unitName=record.data.unitName;
 		var protocolName=record.data.protocol;
-		
+		var protocolDeviceType=record.data.protocolDeviceType;
 		var saveSign=record.data.saveSign;
 		var msg=record.data.msg;
 		
@@ -339,65 +342,10 @@ iconImportSingleAcqInstanceAction = function(value, e, record) {
 		msg = encodeURIComponent(msg || '');
 		
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqInstance('"+instanceName+"','"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqInstance('"+instanceName+"','"+unitName+"','"+protocolName+"','"+protocolDeviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
-
-function CreateImportAcqInstanceItemsInfoTable(protocolName,unitName,instanceName){
-	Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getImportAcqInstanceItemsData',
-		success:function(response) {
-			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").getEl().unmask();
-			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").setTitle(instanceName+"/"+loginUserLanguageResource.acqAndCtrlItemConfig);
-			var result =  Ext.JSON.decode(response.responseText);
-			if(importAcqInstanceConfigItemsHandsontableHelper==null || importAcqInstanceConfigItemsHandsontableHelper.hot==undefined){
-				importAcqInstanceConfigItemsHandsontableHelper = ImportAcqInstanceConfigItemsHandsontableHelper.createNew("importedAcqInstanceItemInfoTableDiv_Id");
-				var colHeaders="[" 
-					+"['','',{label: '"+loginUserLanguageResource.lowerComputer+"', colspan: 5},{label: '"+loginUserLanguageResource.upperComputer+"', colspan: 5}]," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.startAddress+"','"+loginUserLanguageResource.storeDataType+"','"+loginUserLanguageResource.quantity+"','"+loginUserLanguageResource.RWType+"','"+loginUserLanguageResource.acqMode+"','"+loginUserLanguageResource.IFDataType+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.ratio+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.resolutionMode+"']" 
-					+"]";
-				
-				var columns="[{data:'id'},{data:'title'},"
-				 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}},"
-				 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
-				 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}}," 
-				 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.writeOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
-				 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
-					+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
-					+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}}," 
-					+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,importAcqInstanceConfigItemsHandsontableHelper);}}," 
-					+"{data:'unit'}," 
-					+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
-					+"]";
-				importAcqInstanceConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				importAcqInstanceConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					importAcqInstanceConfigItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importAcqInstanceConfigItemsHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					importAcqInstanceConfigItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					importAcqInstanceConfigItemsHandsontableHelper.hot.loadData(result.totalRoot);
-				}
-			}
-		},
-		failure:function(){
-			Ext.getCmp("importedAcqInstanceItemInfoTablePanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-		},
-		params: {
-			protocolName:protocolName,
-			unitName:unitName,
-			instanceName:instanceName
-        }
-	});
-};
 
 var ImportAcqInstanceConfigItemsHandsontableHelper = {
 		createNew: function (divid) {

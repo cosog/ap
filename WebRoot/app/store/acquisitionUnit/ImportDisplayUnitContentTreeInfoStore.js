@@ -84,8 +84,8 @@ Ext.define('AP.store.acquisitionUnit.ImportDisplayUnitContentTreeInfoStore', {
                         	if(record.data.classes==0){//选中设备类型deviceType
                         		clearImportDisplayUnitHandsontable();
                         	}else if(record.data.classes==1){//选中显示单元
-                        		CreateImportDisplayUnitAcqItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
-                        		CreateImportDisplayUnitCtrlItemsInfoTable(record.data.protocol,record.data.acqUnit,record.data.text,record.data.calculateType);
+                        		CreateImportDisplayUnitAcqItemsInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.acqUnit,record.data.text,record.data.calculateType);
+                        		CreateImportDisplayUnitCtrlItemsInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.acqUnit,record.data.text,record.data.calculateType);
                         	}
                         }
                     }

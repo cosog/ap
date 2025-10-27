@@ -1987,11 +1987,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAcqInstanceOwnItemByName(String instanceName,String method){
+	public static void loadAcqInstanceOwnItemByNameAndUnitId(String instanceName,String acqUnitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(acqUnitId)){
+				instanceSql+=" and t.unitid="+acqUnitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2032,11 +2035,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAcqInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadAcqInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.unitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+				instanceSql+=" and t.unitid in( "
+						+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+						+ " where t2.protocol=t3.code "
+						+ " and t3.name='"+protocolName+"' "
+						+ " and t3.devicetype="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2259,11 +2267,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadDisplayInstanceOwnItemByName(String instanceName,String method){
+	public static void loadDisplayInstanceOwnItemByNameAndUnidId(String instanceName,String unitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(unitId)){
+				instanceSql+=" and t.displayunitid="+unitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2274,11 +2285,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadDisplayInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadDisplayInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.displayunitid in( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+				instanceSql+=" and t.displayunitid in( "
+						+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+						+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
+						+ " and t4.protocol='"+protocolName+"' "
+						+ " and t4.deviceType="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2445,11 +2461,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAlarmInstanceOwnItemByName(String instanceName,String method){
+	public static void loadAlarmInstanceOwnItemByNameAndUnitId(String instanceName,String unitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(unitId)){
+				instanceSql+=" and t.alarmunitid="+unitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2475,11 +2494,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAlarmInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadAlarmInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.alarmunitid in (select t2.id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"')";
+				instanceSql+=" and t.alarmunitid in ("
+						+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+						+ " where t2.protocol=t3.code "
+						+ " and t3.name='"+protocolName+"'"
+						+ " and t3.deviceType="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){

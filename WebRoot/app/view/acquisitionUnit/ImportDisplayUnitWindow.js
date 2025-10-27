@@ -257,6 +257,8 @@ iconImportSingleDisplayUnitAction = function(value, e, record) {
 		var unitName=record.data.text;
 		var acqUnit=record.data.acqUnit;
 		var protocolName=record.data.protocol;
+		var protocolDeviceType=record.data.protocolDeviceType;
+		
 		var saveSign=record.data.saveSign;
 		var msg=record.data.msg;
 		
@@ -266,12 +268,12 @@ iconImportSingleDisplayUnitAction = function(value, e, record) {
 		saveSign = encodeURIComponent(saveSign || '');
 		msg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedDisplayUnit('"+unitName+"','"+acqUnit+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedDisplayUnit('"+unitName+"','"+acqUnit+"','"+protocolName+"','"+protocolDeviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
-function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,saveSign,msg){
+function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,protocolDeviceType,saveSign,msg){
 	unitName = decodeURIComponent(unitName);
 	acqUnit = decodeURIComponent(acqUnit);
 	protocolName = decodeURIComponent(protocolName);
@@ -286,7 +288,8 @@ function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,saveSign,ms
 					params : {
 						unitName : unitName,
 						acqUnit : acqUnit,
-						protocolName : protocolName
+						protocolName : protocolName,
+						protocolDeviceType:protocolDeviceType
 					},
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
@@ -317,7 +320,8 @@ function saveSingelImportedDisplayUnit(unitName,acqUnit,protocolName,saveSign,ms
 			params : {
 				unitName : unitName,
 				acqUnit : acqUnit,
-				protocolName : protocolName
+				protocolName : protocolName,
+				protocolDeviceType:protocolDeviceType
 			},
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
@@ -380,7 +384,7 @@ function saveAllImportedDisplayUnit(){
 	});
 }
 
-function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
+function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,protocolDeviceType,acqUnitName,unitName,calculateType){
 	Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -462,6 +466,7 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,acqUnitName,unitN
 		},
 		params: {
 			protocolName: protocolName,
+			protocolDeviceType: protocolDeviceType,
 			acqUnitName: acqUnitName,
 			unitName: unitName,
 			calculateType: calculateType,
@@ -665,7 +670,7 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unitName,calculateType){
+function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,protocolDeviceType,acqUnitName,unitName,calculateType){
 	Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -709,6 +714,7 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,acqUnitName,unit
 		},
 		params: {
 			protocolName: protocolName,
+			protocolDeviceType:protocolDeviceType,
 			acqUnitName: acqUnitName,
 			unitName: unitName,
 			calculateType: calculateType,

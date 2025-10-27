@@ -773,7 +773,7 @@ public class EquipmentDriverServerTask {
 		}
 	}
 	
-	public static int initInstanceConfigByProtocolName(String protocolName,String deviceType,String method){
+	public static int initInstanceConfigByProtocolNameAndType(String protocolName,String deviceType,String method){
 		String sql="select t.name from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.name='"+protocolName+"'"
@@ -1286,11 +1286,16 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
-	public static int initDriverAcquisitionInfoConfigByProtocolName(String protocolName,String method){
+	public static int initDriverAcquisitionInfoConfigByProtocolNameAndType(String protocolName,String deviceType,String method){
 		List<String> wellList=new ArrayList<String>();
 		String sql="";
 		try {
-			sql="select t.id from tbl_device t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+			sql="select t.id from tbl_device t where t.instancecode in ( "
+					+ " select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+					+ " where t2.unitid=t3.id and t3.protocol=t4.code "
+					+ " and t4.name='"+protocolName+"' "
+					+ " and t4.deviceType="+deviceType
+					+ " )";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
 				wellList.add(obj[0]+"");

@@ -294,17 +294,17 @@ Ext.define("AP.view.acquisitionUnit.ImportAlarmUnitWindow", {
                         	}else{
                         		var activeId = newCard.id;
                             	if(activeId=="importAlarmUnitNumItemsConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitNumItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}else if(activeId=="importAlarmUnitSwitchItemsConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitSwitchItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}else if(activeId=="importAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitEnumItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}else if(activeId=="importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}else if(activeId=="importAlarmUnitRunStatusConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitRunStatusItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}else if(activeId=="importAlarmUnitCommStatusConfigTableInfoPanel_Id"){
-                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.text,record.data.calculateType);
+                            		CreateImportAlarmUnitCommStatusItemsConfigInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.text,record.data.calculateType);
                             	}
                         	}
                     	}else{
@@ -425,6 +425,7 @@ iconImportSingleAlarmUnitAction = function(value, e, record) {
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		var unitName=record.data.text;
 		var protocolName=record.data.protocol;
+		var protocolDeviceType=record.data.protocolDeviceType;
 		var saveSign=record.data.saveSign;
 		var msg=record.data.msg;
 		
@@ -433,14 +434,15 @@ iconImportSingleAlarmUnitAction = function(value, e, record) {
 		saveSign = encodeURIComponent(saveSign || '');
 		msg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAlarmUnit('"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAlarmUnit('"+unitName+"','"+protocolName+"','"+protocolDeviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	return resultstring;
 }
 
-function saveSingelImportedAlarmUnit(unitName,protocolName,saveSign,msg){
+function saveSingelImportedAlarmUnit(unitName,protocolName,protocolDeviceType,saveSign,msg){
 	unitName = decodeURIComponent(unitName);
 	protocolName = decodeURIComponent(protocolName);
+	protocolDeviceType = decodeURIComponent(protocolDeviceType);
 	saveSign = decodeURIComponent(saveSign);
 	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
@@ -451,7 +453,8 @@ function saveSingelImportedAlarmUnit(unitName,protocolName,saveSign,msg){
 					method : "POST",
 					params : {
 						unitName : unitName,
-						protocolName : protocolName
+						protocolName : protocolName,
+						protocolDeviceType: protocolDeviceType
 					},
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
@@ -481,7 +484,8 @@ function saveSingelImportedAlarmUnit(unitName,protocolName,saveSign,msg){
 			method : "POST",
 			params : {
 				unitName : unitName,
-				protocolName : protocolName
+				protocolName : protocolName,
+				protocolDeviceType:protocolDeviceType
 			},
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
@@ -543,7 +547,7 @@ function saveAllImportedAlarmUnit(){
 	});
 }
 
-function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -599,6 +603,7 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,unitName,calc
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:2,
 			calculateType:calculateType
@@ -707,7 +712,7 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -751,6 +756,7 @@ function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,unitName,c
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:0,
 			calculateType:calculateType
@@ -859,7 +865,7 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -902,6 +908,7 @@ function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,unitName,cal
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:1,
 			calculateType:calculateType
@@ -1010,7 +1017,7 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1051,6 +1058,7 @@ function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:4,
 			calculateType:calculateType
@@ -1159,7 +1167,7 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1200,6 +1208,7 @@ function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,unitNam
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:6,
 			calculateType:calculateType
@@ -1308,7 +1317,7 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	    }
 };
 
-function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitName,calculateType){
+function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
 	Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1350,6 +1359,7 @@ function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,unitNa
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			unitName:unitName,
 			alarmType:3,
 			calculateType

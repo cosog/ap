@@ -34,7 +34,9 @@ public class ExportAcqInstanceData {
 
     private String UnitName;
     
-    private String Protocol;
+    private String ProtocolName;
+    
+    private String ProtocolDeviceType;
 
     public void setId(int Id){
         this.Id = Id;
@@ -126,16 +128,22 @@ public class ExportAcqInstanceData {
     public String getUnitName(){
         return this.UnitName;
     }
-	public String getProtocol() {
-		return Protocol;
-	}
-	public void setProtocol(String protocol) {
-		Protocol = protocol;
-	}
 	public String getSigninSuffix() {
 		return SigninSuffix;
 	}
 	public void setSigninSuffix(String signinSuffix) {
 		SigninSuffix = signinSuffix;
+	}
+	public String getProtocolName() {
+		return ProtocolName;
+	}
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
 	}
 }

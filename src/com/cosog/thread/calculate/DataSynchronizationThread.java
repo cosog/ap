@@ -38,21 +38,21 @@ public class DataSynchronizationThread implements Runnable{
 			if(sign==001){//创建协议
 				EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
 			}else if(sign==002){//删除协议
-				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(param1,method);
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(param1,method);
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(param1,method);
+				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 				
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(param1,method);
-				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,param2,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolNameAndType(param1,param2,method);
+				EquipmentDriverServerTask.initInstanceConfigByProtocolNameAndType(param1,param2,method);
 				EquipmentDriverServerTask.deleteInitializedProtocolConfig(param1,param2);
 				this.acquisitionUnitManagerService.doDeleteProtocolAssociation(param1,param2);
 			}else if(sign==003){//修改协议
-				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolName(param1,method);
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolName(param1,method);
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolName(param1,method);
+				MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 				
 				EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
-				EquipmentDriverServerTask.initInstanceConfigByProtocolName(param1,param2,method);
+				EquipmentDriverServerTask.initInstanceConfigByProtocolNameAndType(param1,param2,method);
 			}else if(sign==011){//删除采集单元
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(param1,method);
 				EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(param1,method);
@@ -88,7 +88,7 @@ public class DataSynchronizationThread implements Runnable{
 			}
 			
 			else if(sign==051){//添加采控实例
-				MemoryDataManagerTask.loadAcqInstanceOwnItemByName(param1,method);
+				MemoryDataManagerTask.loadAcqInstanceOwnItemByNameAndUnitId(param1,param2,method);
 				EquipmentDriverServerTask.initInstanceConfig(initWellList, method);
 			}else if(sign==052){//删除采控实例
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,method);
@@ -113,7 +113,7 @@ public class DataSynchronizationThread implements Runnable{
 			}
 			
 			else if(sign==061){//添加显示实例
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByName(param1,method);
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemByNameAndUnidId(param1,param2,method);
 			}else if(sign==062){//删除显示实例
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById(param1,method);
 				acquisitionUnitManagerService.doModbusProtocolDisplayInstanceBulkDelete(param1);
@@ -126,7 +126,7 @@ public class DataSynchronizationThread implements Runnable{
 			}
 			
 			else if(sign==071){//添加报警实例
-				MemoryDataManagerTask.loadAlarmInstanceOwnItemByName(param1,method);
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemByNameAndUnitId(param1,param2,method);
 			}else if(sign==072){//删除报警实例
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById(param1,method);
 				acquisitionUnitManagerService.doModbusProtocolAlarmInstanceBulkDelete(param1);

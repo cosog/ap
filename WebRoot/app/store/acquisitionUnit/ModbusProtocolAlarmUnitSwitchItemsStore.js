@@ -56,7 +56,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
                 					protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
                 				}
                     		}else if(selectedGroup.data.classes==1){
-                    			CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.text,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
+                    			CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.code,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
                         	}else if(selectedGroup.data.classes==2||selectedGroup.data.classes==3){
                         		CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.protocol,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
                         	}

@@ -25,6 +25,10 @@ public class DeviceInfo implements Serializable {
 	private String displayInstanceName;
 	private String alarmInstanceCode;
 	private String alarmInstanceName;
+	
+	private String protocolName;
+	private String protocolDeviceTypeAllPath_zh_CN;
+	
 	private String tcpType;
 	private String signInId;
 	private String ipPort;
@@ -545,6 +549,22 @@ public class DeviceInfo implements Serializable {
 
 	public void setVacuateDataSaveTime(String vacuateDataSaveTime) {
 		this.vacuateDataSaveTime = vacuateDataSaveTime;
+	}
+
+	public String getProtocolName() {
+		return protocolName;
+	}
+
+	public void setProtocolName(String protocolName) {
+		this.protocolName = protocolName;
+	}
+
+	public String getProtocolDeviceTypeAllPath_zh_CN() {
+		return protocolDeviceTypeAllPath_zh_CN;
+	}
+
+	public void setProtocolDeviceTypeAllPath_zh_CN(String protocolDeviceTypeAllPath_zh_CN) {
+		this.protocolDeviceTypeAllPath_zh_CN = protocolDeviceTypeAllPath_zh_CN;
 	}
 
 }

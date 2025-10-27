@@ -505,7 +505,7 @@ public class MobileService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(displayInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1265,7 +1265,7 @@ public class MobileService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 				
 				if(displayInstanceOwnItem!=null){
-					protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+					protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 				}
 				
 				if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -2360,7 +2360,7 @@ public class MobileService<T> extends BaseService<T> {
 					alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
 					
 					if(displayInstanceOwnItem!=null){
-						protocol=MemoryDataManagerTask.getProtocolByName(displayInstanceOwnItem.getProtocol());
+						protocol=MemoryDataManagerTask.getProtocolByCode(displayInstanceOwnItem.getProtocolCode());
 					}
 					
 					if(StringManagerUtils.stringToInteger(calculateType)==1){

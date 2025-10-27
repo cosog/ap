@@ -1057,7 +1057,8 @@ public class MemoryDataManagerTask {
 						+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 						+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
 						+ "decode(t2.runstatus,null,2,t2.runstatus),t2.runtime,t2.runtimeefficiency,t2.runrange,"
-						+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode"
+						+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode,"
+						+ "t.protocolName,t.protocolDeviceTypeAllPath_zh_cn"
 						+ " from viw_device t"
 						+ " left outer join tbl_acqdata_latest t2 on t2.deviceid=t.id "
 						+ " left outer join tbl_srpacqdata_latest t3 on t3.deviceid=t.id "
@@ -1252,6 +1253,9 @@ public class MemoryDataManagerTask {
 					
 					deviceInfo.setResultStatus(rs.getInt(43));
 					deviceInfo.setResultCode(rs.getInt(44));
+					
+					deviceInfo.setProtocolName(rs.getString(45));
+					deviceInfo.setProtocolDeviceTypeAllPath_zh_CN(rs.getString(46));
 					
 					//日汇总数据
 					deviceInfo.setDailyTotalItemMap(new HashMap<>());
@@ -1925,7 +1929,7 @@ public class MemoryDataManagerTask {
 					acqInstanceOwnItem.setAcqProtocolType(rs.getString(2)+"");
 					acqInstanceOwnItem.setCtrlProtocolType(rs.getString(3)+"");
 					
-					acqInstanceOwnItem.setProtocol(rs.getString(4)+"");
+					acqInstanceOwnItem.setProtocolCode(rs.getString(4)+"");
 					acqInstanceOwnItem.setUnitId(rs.getInt(5));
 					acqInstanceOwnItem.setGroupTimingInterval(rs.getInt(6));
 					acqInstanceOwnItem.setGroupSavingInterval(rs.getInt(7));
@@ -1983,11 +1987,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAcqInstanceOwnItemByName(String instanceName,String method){
+	public static void loadAcqInstanceOwnItemByNameAndUnitId(String instanceName,String acqUnitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(acqUnitId)){
+				instanceSql+=" and t.unitid="+acqUnitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2028,11 +2035,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAcqInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadAcqInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.unitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+				instanceSql+=" and t.unitid in( "
+						+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+						+ " where t2.protocol=t3.code "
+						+ " and t3.name='"+protocolName+"' "
+						+ " and t3.devicetype="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2076,7 +2088,7 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocoldisplayinstance t where 1=1 ";
-			String sql="select t3.code as instanceCode,t2.protocol,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
+			String sql="select t3.code as instanceCode,t5.code as protocolCode,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
 					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
 					+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
 					+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
@@ -2085,8 +2097,9 @@ public class MemoryDataManagerTask {
 					+ "t.type,"
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-					+ " where t.unitid=t2.id and t2.id=t3.displayunitid";
+					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3,"
+					+ " tbl_acq_unit_conf t4,tbl_protocol t5 "
+					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t2.acqunitid =t4.id and t4.protocol=t5.code";
 			if(StringManagerUtils.isNotNull(instanceId)){
 				instanceSql+=" and t.id="+instanceId;
 				sql+=" and t3.id="+instanceId;
@@ -2131,7 +2144,7 @@ public class MemoryDataManagerTask {
     				}
     				
     				displayInstanceOwnItem.setInstanceCode(rs.getString(1));
-    				displayInstanceOwnItem.setProtocol(rs.getString(2));
+    				displayInstanceOwnItem.setProtocolCode(rs.getString(2));
     				displayInstanceOwnItem.setUnitId(rs.getInt(3));
     				
     				if(displayInstanceOwnItem.getItemList()==null){
@@ -2254,11 +2267,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadDisplayInstanceOwnItemByName(String instanceName,String method){
+	public static void loadDisplayInstanceOwnItemByNameAndUnidId(String instanceName,String unitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(unitId)){
+				instanceSql+=" and t.displayunitid="+unitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2269,11 +2285,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadDisplayInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadDisplayInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.displayunitid in( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+				instanceSql+=" and t.displayunitid in( "
+						+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+						+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
+						+ " and t4.protocol='"+protocolName+"' "
+						+ " and t4.deviceType="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2369,7 +2390,7 @@ public class MemoryDataManagerTask {
 					
 					alarmInstanceOwnItem.setInstanceCode(rs.getString(1));
 					alarmInstanceOwnItem.setUnitId(rs.getInt(2));
-					alarmInstanceOwnItem.setProtocol(rs.getString(3));
+					alarmInstanceOwnItem.setProtocolCode(rs.getString(3));
 					
 					if(alarmInstanceOwnItem.getItemList()==null){
 						alarmInstanceOwnItem.setItemList(new ArrayList<AlarmItem>());
@@ -2440,11 +2461,14 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAlarmInstanceOwnItemByName(String instanceName,String method){
+	public static void loadAlarmInstanceOwnItemByNameAndUnitId(String instanceName,String unitId,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceName)){
 				instanceSql+=" and t.name='"+instanceName+"'";
+			}
+			if(StringManagerUtils.isNotNull(unitId)){
+				instanceSql+=" and t.alarmunitid="+unitId;
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -2470,11 +2494,16 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadAlarmInstanceOwnItemByProtocolName(String protocolName,String method){
+	public static void loadAlarmInstanceOwnItemByProtocolNameAndType(String protocolName,String deviceType,String method){
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(protocolName)){
-				instanceSql+=" and t.alarmunitid in (select t2.id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"')";
+				instanceSql+=" and t.alarmunitid in ("
+						+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+						+ " where t2.protocol=t3.code "
+						+ " and t3.name='"+protocolName+"'"
+						+ " and t3.deviceType="+deviceType
+						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
 			for(Object[] obj:list){
@@ -4367,6 +4396,35 @@ public class MemoryDataManagerTask {
 		if(StringManagerUtils.isNotNull(protocolName)){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+					protocol=modbusProtocolConfig.getProtocol().get(i);
+					break;
+				}
+			}
+		}
+		return protocol;
+	}
+	
+	public static ModbusProtocolConfig.Protocol getProtocolByNameAndDevicetype(String protocolName,int deviceType){
+		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
+		ModbusProtocolConfig.Protocol protocol=null;
+		if(StringManagerUtils.isNotNull(protocolName)){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName()) 
+						&& deviceType==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
+					protocol=modbusProtocolConfig.getProtocol().get(i);
+					break;
+				}
+			}
+		}
+		return protocol;
+	}
+	
+	public static ModbusProtocolConfig.Protocol getProtocolById(int protocolId){
+		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
+		ModbusProtocolConfig.Protocol protocol=null;
+		if(protocolId>0){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(protocolId==modbusProtocolConfig.getProtocol().get(i).getId()){
 					protocol=modbusProtocolConfig.getProtocol().get(i);
 					break;
 				}

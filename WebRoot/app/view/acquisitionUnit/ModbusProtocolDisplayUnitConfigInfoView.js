@@ -301,7 +301,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
     }
 });
 
-function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes, code, unitId, acqUnitId, unitName,calculateType) {
+function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes, code, unitId, acqUnitId, unitName,calculateType) {
 	var tabPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigRightTabPanel_Id");
 	var showInfo=tabPanel.getActiveTab().title;
 	if(isNotVal(unitName)){
@@ -381,7 +381,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName, classes,
             Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
-            protocolName: protocolName,
+        	protocolCode: protocolCode,
             classes: classes,
             code: code,
             unitId: unitId,
@@ -682,7 +682,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
     }
 };
 
-function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
+function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,code,unitId,acqUnitId,unitName){
 	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -722,7 +722,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			protocolName:protocolName,
+			protocolCode:protocolCode,
 			classes:classes,
 			code:code,
 			unitId:unitId,

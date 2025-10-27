@@ -10,7 +10,9 @@ public class ExportDisplayUnitData {
 
     private String UnitName;
 
-    private String Protocol;
+    private String ProtocolName;
+
+    private String ProtocolDeviceType;
 
     private String AcqUnit;
 
@@ -37,12 +39,6 @@ public class ExportDisplayUnitData {
     }
     public String getUnitName(){
         return this.UnitName;
-    }
-    public void setProtocol(String Protocol){
-        this.Protocol = Protocol;
-    }
-    public String getProtocol(){
-        return this.Protocol;
     }
     public void setRemark(String Remark){
         this.Remark = Remark;
@@ -297,5 +293,17 @@ public class ExportDisplayUnitData {
 	}
 	public void setAcqUnit(String acqUnit) {
 		AcqUnit = acqUnit;
+	}
+	public String getProtocolName() {
+		return ProtocolName;
+	}
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
 	}
 }

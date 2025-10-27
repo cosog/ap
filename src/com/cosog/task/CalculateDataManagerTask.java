@@ -371,7 +371,7 @@ public class CalculateDataManagerTask {
 			 if(deviceInfo!=null){
 				 acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				 if(acqInstanceOwnItem!=null){
-					 protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					 protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				 }
 			 }
 			 
@@ -548,7 +548,7 @@ public class CalculateDataManagerTask {
 			 if(deviceInfo!=null){
 				 acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				 if(acqInstanceOwnItem!=null){
-					 protocol=MemoryDataManagerTask.getProtocolByName(acqInstanceOwnItem.getProtocol());
+					 protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
 				 }
 			 }
 			 

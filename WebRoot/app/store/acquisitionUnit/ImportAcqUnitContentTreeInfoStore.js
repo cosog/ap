@@ -94,17 +94,19 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqUnitContentTreeInfoStore', {
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
                         			CreateUploadedAcqUnitContentInfoTable(
                         					record.data.children[0].protocol,
+                        					record.data.children[0].protocolDeviceType,
                         					record.data.children[0].classes,
                         					record.data.children[0].text
                         					);
                         		}else{
-                        			CreateUploadedAcqUnitContentInfoTable('',1,'');
+                        			CreateUploadedAcqUnitContentInfoTable('','',1,'');
                         		}
                         	}else if(record.data.classes==1){
-                        		CreateUploadedAcqUnitContentInfoTable(record.data.protocol,record.data.classes,record.data.text);
+                        		CreateUploadedAcqUnitContentInfoTable(record.data.protocol,record.data.protocolDeviceType,record.data.classes,record.data.text);
                         	}else if(record.data.classes==2){
                         		CreateUploadedAcqUnitContentInfoTable(
                         				record.data.protocol,
+                        				record.data.protocolDeviceType,
                         				record.data.classes,
                         				record.parentNode.data.text,
                         				record.data.text,

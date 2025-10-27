@@ -252,7 +252,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
     }
 });
 
-function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,type,text){
+function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,type,text){
 	
 	var tabPanel = Ext.getCmp("ModbusProtocolAcqUnitConfigRightTabPanel_Id");
 	var showInfo=tabPanel.getActiveTab().title;
@@ -315,7 +315,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			protocolName:protocolName,
+			protocolCode:protocolCode,
 			classes:classes,
 			code:code,
 			type:type

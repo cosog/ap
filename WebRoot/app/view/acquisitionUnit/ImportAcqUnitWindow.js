@@ -212,7 +212,7 @@ function submitImportedAcqUnitFile() {
     return false;
 };
 
-function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,groupName,groupType){
+function CreateUploadedAcqUnitContentInfoTable(protocolName,protocolDeviceType,classes,unitName,groupName,groupType){
 	clearImportAcqUnitHandsontable();
 	Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
@@ -260,6 +260,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,classes,unitName,gro
 		},
 		params: {
 			protocolName:protocolName,
+			protocolDeviceType:protocolDeviceType,
 			classes:classes,
 			unitName:unitName,
 			groupName:groupName,
@@ -349,9 +350,10 @@ adviceImportAcqUnitCollisionInfoColor = function(val,o,p,e) {
  	}
 }
 
-function saveSingelImportedAcqUnit(unitName,protocolName,saveSign,msg){
+function saveSingelImportedAcqUnit(unitName,protocolName,protocolDeviceType,saveSign,msg){
 	unitName = decodeURIComponent(unitName);
 	protocolName = decodeURIComponent(protocolName);
+	protocolDeviceType = decodeURIComponent(protocolDeviceType);
 	saveSign = decodeURIComponent(saveSign);
 	msg = decodeURIComponent(msg);
 	if(parseInt(saveSign)>0){
@@ -362,7 +364,8 @@ function saveSingelImportedAcqUnit(unitName,protocolName,saveSign,msg){
 					method : "POST",
 					params : {
 						unitName : unitName,
-						protocolName : protocolName
+						protocolName : protocolName,
+						protocolDeviceType : protocolDeviceType
 					},
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
@@ -392,7 +395,8 @@ function saveSingelImportedAcqUnit(unitName,protocolName,saveSign,msg){
 			method : "POST",
 			params : {
 				unitName : unitName,
-				protocolName : protocolName
+				protocolName : protocolName,
+				protocolDeviceType : protocolDeviceType
 			},
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
@@ -462,6 +466,7 @@ iconImportSingleAcqUnitAction = function(value, e, record) {
 	if( record.data.classes==1 && record.data.saveSign!=2 ){
 		var unitName=record.data.text;
 		var protocolName=record.data.protocol;
+		var protocolDeviceType=record.data.protocolDeviceType;
 		var saveSign=record.data.saveSign;
 		var msg=record.data.msg;
 		
@@ -470,7 +475,7 @@ iconImportSingleAcqUnitAction = function(value, e, record) {
 		saveSign = encodeURIComponent(saveSign || '');
 		msg = encodeURIComponent(msg || '');
 		resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " +
-		"onclick=saveSingelImportedAcqUnit('"+unitName+"','"+protocolName+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
+		"onclick=saveSingelImportedAcqUnit('"+unitName+"','"+protocolName+"','"+protocolDeviceType+"','"+saveSign+"','"+msg+"')>"+loginUserLanguageResource.save+"...</a>";
 	}
 	
 	return resultstring;

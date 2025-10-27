@@ -448,7 +448,7 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String deviceName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
+	public int DeviceControlOperation_Mdubus(String protocolCode,String deviceId,String deviceName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
 		int result=-1;
 		try {
 			Gson gson = new Gson();
@@ -459,7 +459,7 @@ public class RealTimeMonitoringController extends BaseController {
 			String url=Config.getInstance().configFile.getAd().getRw().getWriteAddr();
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			int addr=-99;
 			String dataType="";
 			String title="";
@@ -565,21 +565,22 @@ public class RealTimeMonitoringController extends BaseController {
 //			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			String getOld = StringManagerUtils.stringToMD5(password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType "
+						+ " from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocol=obj[0]+"";
+					String protocolCode=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
 					String ipPort=obj[3]+"";
 					String slave=obj[4]+"";
 					String realDeviceType=obj[5]+"";
-					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					if(StringManagerUtils.isNotNull(protocolCode) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocolCode,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){
@@ -824,20 +825,21 @@ public class RealTimeMonitoringController extends BaseController {
 		int quantity=0;
 		// 用户不存在
 		if (null != userInfo) {
-			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType "
+					+ " from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 					+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 					+ " and t.id="+deviceId;
 			List<?> list = this.service.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
-				String protocolName=obj[0]+"";
+				String protocolCode=obj[0]+"";
 				String tcpType=obj[1]+"";
 				String signinid=obj[2]+"";
 				String ipPort=obj[3]+"";
 				String slave=obj[4]+"";
 				String realDeviceType=obj[5]+"";
-				if(StringManagerUtils.isNotNull(protocolName) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				if(StringManagerUtils.isNotNull(protocolCode) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null){
 						for(int i=0;i<protocol.getItems().size();i++){
 							String col="";
@@ -894,20 +896,21 @@ public class RealTimeMonitoringController extends BaseController {
 		
 		// 用户不存在
 		if (null != userInfo) {
-			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType "
+					+ " from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 					+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 					+ " and t.id="+deviceId;
 			List<?> list = this.service.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
-				String protocolName=obj[0]+"";
+				String protocolCode=obj[0]+"";
 				String tcpType=obj[1]+"";
 				String signinid=obj[2]+"";
 				String ipPort=obj[3]+"";
 				String slave=obj[4]+"";
 				String realDeviceType=obj[5]+"";
-				if(StringManagerUtils.isNotNull(protocolName) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
-					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				if(StringManagerUtils.isNotNull(protocolCode) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null){
 						for(int i=0;i<protocol.getItems().size();i++){
 							String col="";

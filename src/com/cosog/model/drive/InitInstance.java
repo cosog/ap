@@ -18,11 +18,15 @@ public class InitInstance  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private int Id;
+	
 	private String Method;
 	
 	private String InstanceName;
 	
 	private String ProtocolName;
+	
+	private int ProtocolId;
     
     private String AcqProtocolType;
     
@@ -210,13 +214,24 @@ public class InitInstance  implements Serializable {
 			ObjectMapper objectMapper = new ObjectMapper();
 			ObjectNode jsonNodes;
 			jsonNodes = objectMapper.readValue(result, ObjectNode.class);
+			
+			jsonNodes.remove("Id");
+			jsonNodes.remove("ProtocolId");
 			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
 	        while (iterator.hasNext()) {
 	            Entry<String, JsonNode> entry = iterator.next();
 	            if("AcqGroup".equalsIgnoreCase(entry.getKey())){
-	            	((ObjectNode)entry.getValue()).remove("Id");
+	            	if (entry.getValue().isArray()) {
+	            	    for (JsonNode acqGroup : entry.getValue()) {
+	            	    	((ObjectNode)acqGroup).remove("Id");
+	            	    }
+	            	}
 	            }else if("CtrlGroup".equalsIgnoreCase(entry.getKey())){
-	            	((ObjectNode)entry.getValue()).remove("Id");
+	            	if (entry.getValue().isArray()) {
+	            	    for (JsonNode ctrlGroup : entry.getValue()) {
+	            	    	((ObjectNode)ctrlGroup).remove("Id");
+	            	    }
+	            	}
 	            }
 	        }
 	        result = objectMapper.writeValueAsString(jsonNodes);
@@ -279,5 +294,21 @@ public class InitInstance  implements Serializable {
 			}
 		}
 		return rtnGroup;
+	}
+
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
+	}
+
+	public int getProtocolId() {
+		return ProtocolId;
+	}
+
+	public void setProtocolId(int protocolId) {
+		ProtocolId = protocolId;
 	}
 }

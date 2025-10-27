@@ -10,7 +10,11 @@ public class ExportAcqUnitData {
 
     private String UnitName;
 
-    private String Protocol;
+    private String ProtocolCode;
+    
+    private String ProtocolName;
+    
+    private String ProtocolDeviceType;
 
     private String Remark;
 
@@ -33,12 +37,6 @@ public class ExportAcqUnitData {
     }
     public String getUnitName(){
         return this.UnitName;
-    }
-    public void setProtocol(String Protocol){
-        this.Protocol = Protocol;
-    }
-    public String getProtocol(){
-        return this.Protocol;
     }
     public void setRemark(String Remark){
         this.Remark = Remark;
@@ -133,7 +131,11 @@ public class ExportAcqUnitData {
 
 	    private int GroupSavingInterval;
 
-	    private String Protocol;
+	    private String ProtocolCode;
+	    
+	    private String ProtocolName;
+	    
+	    private String ProtocolDeviceType;
 
 	    private int Type;
 
@@ -171,12 +173,6 @@ public class ExportAcqUnitData {
 	    public int getGroupSavingInterval(){
 	        return this.GroupSavingInterval;
 	    }
-	    public void setProtocol(String Protocol){
-	        this.Protocol = Protocol;
-	    }
-	    public String getProtocol(){
-	        return this.Protocol;
-	    }
 	    public void setType(int Type){
 	        this.Type = Type;
 	    }
@@ -195,5 +191,42 @@ public class ExportAcqUnitData {
 	    public List<AcqItem> getItemList(){
 	        return this.ItemList;
 	    }
+		public String getProtocolCode() {
+			return ProtocolCode;
+		}
+		public void setProtocolCode(String protocolCode) {
+			ProtocolCode = protocolCode;
+		}
+		public String getProtocolName() {
+			return ProtocolName;
+		}
+		public void setProtocolName(String protocolName) {
+			ProtocolName = protocolName;
+		}
+		public String getProtocolDeviceType() {
+			return ProtocolDeviceType;
+		}
+		public void setProtocolDeviceType(String protocolDeviceType) {
+			ProtocolDeviceType = protocolDeviceType;
+		}
+	}
+
+	public String getProtocolCode() {
+		return ProtocolCode;
+	}
+	public void setProtocolCode(String protocolCode) {
+		ProtocolCode = protocolCode;
+	}
+	public String getProtocolName() {
+		return ProtocolName;
+	}
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
 	}
 }

@@ -10,7 +10,11 @@ public class ExportAlarmUnitData {
 
     private String UnitName;
 
-    private String Protocol;
+    private String ProtocolCode;
+    
+    private String ProtocolName;
+    
+    private String ProtocolDeviceType;
 
     private String Remark;
     
@@ -36,12 +40,7 @@ public class ExportAlarmUnitData {
     public String getUnitName(){
         return this.UnitName;
     }
-    public void setProtocol(String Protocol){
-        this.Protocol = Protocol;
-    }
-    public String getProtocol(){
-        return this.Protocol;
-    }
+    
     public void setRemark(String Remark){
         this.Remark = Remark;
     }
@@ -200,5 +199,23 @@ public class ExportAlarmUnitData {
 	}
 	public void setCalculateType(int calculateType) {
 		CalculateType = calculateType;
+	}
+	public String getProtocolCode() {
+		return ProtocolCode;
+	}
+	public void setProtocolCode(String protocolCode) {
+		ProtocolCode = protocolCode;
+	}
+	public String getProtocolName() {
+		return ProtocolName;
+	}
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
 	}
 }

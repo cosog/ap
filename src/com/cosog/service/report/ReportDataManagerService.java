@@ -112,7 +112,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportTemplateCode=(obj[2]+"").replaceAll("null", "");
 			}
 			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
-			protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[4]+"");
 		}
 		
 		if(reportUnitCalculateType==1){
@@ -488,7 +488,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					reportTemplateCode=(obj[2]+"").replaceAll("null", "");
 				}
 				reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
-				protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
+				protocol=MemoryDataManagerTask.getProtocolByCode(obj[4]+"");
 			}
 			
 			if(reportUnitCalculateType==1){
@@ -945,7 +945,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[6]+"");
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(obj[6]+"");
 				String sheetName=deviceName+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
@@ -1398,7 +1398,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			reportUnitId=(obj[0]+"").replaceAll("null", "");
 			reportTemplateCode=(obj[1]+"").replaceAll("null", "");
 			reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
-			protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[4]+"");
 		}
 		
 		if(reportUnitCalculateType==1){
@@ -1810,7 +1810,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				reportUnitId=(obj[0]+"").replaceAll("null", "");
 				reportTemplateCode=(obj[1]+"").replaceAll("null", "");
 				reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[3]+"");
-				protocol=MemoryDataManagerTask.getProtocolByName(obj[4]+"");
+				protocol=MemoryDataManagerTask.getProtocolByCode(obj[4]+"");
 			}
 			if(reportUnitCalculateType==1){
 				calTotalTableName="VIW_SRPTIMINGCALCULATIONDATA";
@@ -2303,7 +2303,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				String reportTemplateCode=(obj[3]+"").replaceAll("null", "");
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(obj[6]+"");
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(obj[6]+"");
 				
 				String viewName="VIW_TIMINGCALCULATIONDATA";
 				calTotalTableName="";
@@ -4113,7 +4113,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		List<?> protocolList = this.findCallSql(protocolSql);
 		if(protocolList.size()>0){
 			Object[] obj=(Object[]) protocolList.get(0);
-			protocol=MemoryDataManagerTask.getProtocolByName(obj[0]+"");
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[0]+"");
 			acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(obj[1]+"");
 		}
 		
@@ -4474,7 +4474,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		List<?> protocolList = this.findCallSql(protocolSql);
 		if(protocolList.size()>0){
 			Object[] obj=(Object[]) protocolList.get(0);
-			protocol=MemoryDataManagerTask.getProtocolByName(obj[0]+"");
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[0]+"");
 			acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(obj[1]+"");
 		}
 		

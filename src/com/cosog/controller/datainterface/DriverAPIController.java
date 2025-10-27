@@ -2247,17 +2247,17 @@ public class DriverAPIController extends BaseController{
 				timeEfficiencyZoom=100;
 			}
 			if(acqGroup!=null){
-				String protocolName="";
+				String protocolCode="";
 				List<KeyValue> acqDataList=new ArrayList<>();
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				String acqProtocolType="";
 				if(acqInstanceOwnItem!=null){
-					protocolName=acqInstanceOwnItem.getProtocol();
+					protocolCode=acqInstanceOwnItem.getProtocolCode();
 					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
 				DisplayInstanceOwnItem displayInstanceOwnItem=MemoryDataManagerTask.getDisplayInstanceOwnItemByCode(deviceInfo.getDisplayInstanceCode());
 				AlarmInstanceOwnItem alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				
 				if(protocol!=null){
 					String lastSaveTime=deviceInfo.getSaveTime();
@@ -2850,14 +2850,14 @@ public class DriverAPIController extends BaseController{
 			String totalDataTable="tbl_srpdailycalculationdata";
 			String vacuateTable="tbl_srpacqdata_vacuate";
 			if(acqGroup!=null){
-				String protocolName="";
+				String protocolCode="";
 				String acqProtocolType="";
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				if(acqInstanceOwnItem!=null){
-					protocolName=acqInstanceOwnItem.getProtocol();
+					protocolCode=acqInstanceOwnItem.getProtocolCode();
 					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				
 				if(protocol!=null){
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
@@ -3637,12 +3637,12 @@ public class DriverAPIController extends BaseController{
 			String vacuateTable="tbl_pcpacqdata_vacuate";
 			if(acqGroup!=null){
 //				List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
-				String protocolName="";
+				String protocolCode="";
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				if(acqInstanceOwnItem!=null){
-					protocolName=acqInstanceOwnItem.getProtocol();
+					protocolCode=acqInstanceOwnItem.getProtocolCode();
 				}
-				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				
 				if(protocol!=null){
 					String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");

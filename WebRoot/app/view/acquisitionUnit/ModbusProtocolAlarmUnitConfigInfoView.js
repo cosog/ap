@@ -445,7 +445,7 @@ var alarmUnitConfigRightTabPanelItems=[{
     					protocolAlarmUnitConfigNumItemsHandsontableHelper=null;
     				}
             	}else if(selectedItem.data.classes==1){
-            		CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.text,selectedItem.data.classes,selectedItem.data.code,0);
+            		CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.code,selectedItem.data.classes,selectedItem.data.code,0);
             	}else if(selectedItem.data.classes==2||selectedItem.data.classes==3){
             		CreateProtocolAlarmUnitNumItemsConfigInfoTable(selectedItem.data.protocol,selectedItem.data.classes,selectedItem.data.code,selectedItem.data.calculateType);
             	}
@@ -772,7 +772,7 @@ function CreateProtocolAlarmUnitContentConfigInfoTable(record){
 
 
 
-function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,code,calculateType){
+function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolCode,classes,code,calculateType){
 	Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
@@ -830,7 +830,7 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			protocolName:protocolName,
+			protocolCode:protocolCode,
 			classes:classes,
 			code:code,
 			calculateType:calculateType
@@ -1216,7 +1216,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,unitCode,itemAddr){
+function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr){
 	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1250,7 +1250,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			protocolName:protocolName,
+			protocolCode:protocolCode,
 			classes:classes,
 			unitCode:unitCode,
 			itemAddr:itemAddr,
@@ -1422,7 +1422,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,unitCode,itemAddr){
+function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr){
 	Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1465,7 +1465,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			protocolName:protocolName,
+			protocolCode:protocolCode,
 			classes:classes,
 			unitCode:unitCode,
 			itemAddr:itemAddr,

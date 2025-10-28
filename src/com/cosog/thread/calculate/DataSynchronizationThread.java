@@ -89,26 +89,26 @@ public class DataSynchronizationThread implements Runnable{
 			
 			else if(sign==051){//添加采控实例
 				MemoryDataManagerTask.loadAcqInstanceOwnItemByNameAndUnitId(param1,param2,method);
-				EquipmentDriverServerTask.initInstanceConfig(initWellList, method);
+				EquipmentDriverServerTask.initInstanceConfigByNames(initWellList, method);
 			}else if(sign==052){//删除采控实例
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,method);
-				EquipmentDriverServerTask.initInstanceConfig(initWellList,method);
-				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,"delete");
+				EquipmentDriverServerTask.deleteInitializedInstance(initWellList);
+				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,"delete");
 				acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(param1);
 				MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
 				MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
 			}else if(sign==053){//采控实例修改，但名称未改变
-				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,method);
-				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
-				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
-				EquipmentDriverServerTask.initInstanceConfig(initWellList,method);
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,method);
-			}else if(sign==054){//采控实例修改，但名称改变
-				EquipmentDriverServerTask.initInstanceConfig(deleteList, "delete");
 				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,"update");
 				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
 				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
-				EquipmentDriverServerTask.initInstanceConfig(initWellList,"update");
+				EquipmentDriverServerTask.initInstanceConfigByNames(initWellList,method);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1,method);
+			}else if(sign==054){//采控实例修改，但名称改变
+				EquipmentDriverServerTask.deleteInitializedInstance(deleteList);
+				MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
+				MemoryDataManagerTask.loadDeviceInfoByInstanceId(param1,"update");
+				EquipmentDriverServerTask.initInstanceConfigByNames(initWellList,"update");
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(param1, "update");
 			}
 			

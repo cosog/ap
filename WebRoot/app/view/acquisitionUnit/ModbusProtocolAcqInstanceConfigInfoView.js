@@ -554,6 +554,9 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.id=selectedItem.data.id;
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
+			saveData.protocol=selectedItem.data.protocol;
+			saveData.protocolDeviceTypeAllPath=selectedItem.data.protocolDeviceTypeAllPath;
+			
 			saveData.name=propertiesData[0][2];
 			saveData.unitId=selectedItem.data.unitId;
 			saveData.unitName=propertiesData[1][2];
@@ -585,12 +588,26 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			
 			saveData.sort=propertiesData[12][2];
 			
-			SaveModbusProtocolAcqInstanceData(saveData,protocolCode);
+			SaveModbusProtocolAcqInstanceData(saveData);
 		}
 	}
 };
 
-function SaveModbusProtocolAcqInstanceData(saveData,protocolCode){
+function SaveModbusProtocolAcqInstanceData(saveData){
+	var protocolList=[];
+	var protocolTreeGridPanelSelection= Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		}else{
+			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+				}
+			}
+		}
+	}
+	var protocols=protocolList.join(",");
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveProtocolInstanceData',
@@ -614,7 +631,7 @@ function SaveModbusProtocolAcqInstanceData(saveData,protocolCode){
 		},
 		params: {
 			data: JSON.stringify(saveData),
-			protocolCode:protocolCode
+			protocols:protocols
         }
 	});
 }

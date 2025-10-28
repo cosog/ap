@@ -81,71 +81,7 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmInstanceContentTreeInfoStore', {
                     }],
                     listeners: {
                         select( v, record, index, eOpts ){
-//                        	var activeId = Ext.getCmp("importAlarmInstanceItemsConfigTabPanel_Id").getActiveTab().id;
-//                        	if(activeId=="importAlarmInstanceNumItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceNumItemsConfigInfoTable('','','');
-//                            			CreateImportAlarmInstanceCalNumItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            		CreateImportAlarmInstanceCalNumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}else if(activeId=="importAlarmInstanceSwitchItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceSwitchItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceSwitchItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}else if(activeId=="importAlarmInstanceEnumItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceEnumItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceEnumItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}else if(activeId=="importAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}else if(activeId=="importAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceRunStatusItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceRunStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}else if(activeId=="importAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
-//                        		if(record.data.classes==0){
-//                            		if(isNotVal(record.data.children) && record.data.children.length>0){
-//                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.children[0].protocol,record.data.children[0].unitName,record.data.children[0].text);
-//                            		}else{
-//                            			CreateImportAlarmInstanceCommStatusItemsConfigInfoTable('','','');
-//                            		}
-//                            	}else{
-//                            		CreateImportAlarmInstanceCommStatusItemsConfigInfoTable(record.data.protocol,record.data.unitName,record.data.text);
-//                            	}
-//                        	}
+                        	
                         }
                     }
 

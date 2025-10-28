@@ -80,7 +80,34 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                 	}else{
                 		Ext.getCmp("modbusInstanceAlarmUnit_Id").setValue(record.data.id);
                 	}
-                	
+                },
+                blur: function (t, e) {
+                    var value_ = t.getValue();
+                    if(value_!=''){
+                    	var instanceName=Ext.getCmp("formModbusProtocolAlarmInstanceName_Id").getValue();
+                    	Ext.Ajax.request({
+                            method: 'POST',
+                            params: {
+                            	instanceName: instanceName,
+                            	unitId:t.value
+                            },
+                            url: context + '/acquisitionUnitManagerController/judgeAlarmInstanceExistOrNot',
+                            success: function (response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                var msg_ = obj.msg;
+                                if (msg_ == "1") {
+                                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.alarmInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                	    if (btn == 'ok'){
+                                	    	t.focus(true, 100);
+                                	    }
+                                	});
+                                }
+                            },
+                            failure: function (response, opts) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -97,6 +124,11 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                 anchor: '100%',
                 name: "protocolAlarmInstance.id"
             },{
+				xtype : "hidden",
+				id : 'modbusInstanceAlarmUnit_Id',
+				value: 0,
+				name : "protocolAlarmInstance.AlarmUnitId"
+			},protocolAndAlarmUnitTree,{
                 id: 'formModbusProtocolAlarmInstanceName_Id',
                 name: "protocolAlarmInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
@@ -107,10 +139,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
+                        	var unitId=Ext.getCmp("modbusInstanceAlarmUnit_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	instanceName: t.value
+                                	instanceName: t.value,
+                                	unitId:unitId
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeAlarmInstanceExistOrNot',
                                 success: function (response, opts) {
@@ -132,11 +166,6 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                     }
                 }
             },{
-				xtype : "hidden",
-				id : 'modbusInstanceAlarmUnit_Id',
-				value: 0,
-				name : "protocolAlarmInstance.AlarmUnitId"
-			},protocolAndAlarmUnitTree,{
             	xtype: 'numberfield',
             	id: "modbusProtocolAlarmInstanceSort_Id",
                 name: 'protocolAlarmInstance.sort',

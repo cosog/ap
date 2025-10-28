@@ -84,6 +84,34 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
 					listeners : {
 						select: function (v,o) {
 							Ext.getCmp("formAlarmUnitProtocol_Id").setValue(this.value);
+	                    },
+	                    blur: function (t, e) {
+	                        var value_ = t.getValue();
+	                        if(value_!=''){
+	                        	var unitName=Ext.getCmp("formAlarmUnitName_Id").getValue();
+	                        	Ext.Ajax.request({
+	                                method: 'POST',
+	                                params: {
+	                                	protocolCode:t.value,
+	                                	unitName: unitName
+	                                },
+	                                url: context + '/acquisitionUnitManagerController/judgeAlarmUnitExistOrNot',
+	                                success: function (response, opts) {
+	                                    var obj = Ext.decode(response.responseText);
+	                                    var msg_ = obj.msg;
+	                                    if (msg_ == "1") {
+	                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.alarmUnitExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+	                                    	    if (btn == 'ok'){
+	                                    	    	t.focus(true, 100);
+	                                    	    }
+	                                    	});
+	                                    }
+	                                },
+	                                failure: function (response, opts) {
+	                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+	                                }
+	                            });
+	                        }
 	                    }
 					}
 				});
@@ -113,11 +141,11 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
-                        	var protocolName=Ext.getCmp("formAlarmUnitProtocol_Id").getValue();
+                        	var protocolCode=Ext.getCmp("formAlarmUnitProtocol_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	protocolName:protocolName,
+                                	protocolCode:protocolCode,
                                 	unitName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeAlarmUnitExistOrNot',

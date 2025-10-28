@@ -30,7 +30,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
         				}
         			}
         		}
-        		
         	}
         	var new_params = {
         			protocol: protocolList.join(",")
@@ -132,8 +131,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                     						tabPanel.insert(1,displayUnitConfigRightTabPanelItems[1]);
                                 		}
                     				}else if(activeId=='ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id'){
-                    					CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
-                                		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                    					CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocolCode,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                                		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocolCode,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
                     					
                     					if(propertiesTabPanel==undefined){
                     						tabPanel.insert(0,displayUnitConfigRightTabPanelItems[0]);

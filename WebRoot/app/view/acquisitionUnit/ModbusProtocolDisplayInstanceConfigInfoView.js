@@ -394,12 +394,26 @@ function SaveModbusProtocolDisplayInstanceConfigTreeData(){
 			saveData.displayUnitId=selectedItem.data.displayUnitId;
 			saveData.displayUnitName=propertiesData[1][2];
 			saveData.sort=propertiesData[2][2];
-			SaveModbusProtocolDisplayInstanceData(saveData,protocolCode);
+			SaveModbusProtocolDisplayInstanceData(saveData);
 		}
 	}
 };
 
-function SaveModbusProtocolDisplayInstanceData(saveData,protocolCode){
+function SaveModbusProtocolDisplayInstanceData(saveData){
+	var protocolList=[];
+	var protocolTreeGridPanelSelection= Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		}else{
+			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+				}
+			}
+		}
+	}
+	var protocolCodes=protocolList.join(",");
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveProtocolDisplayInstanceData',
@@ -423,7 +437,7 @@ function SaveModbusProtocolDisplayInstanceData(saveData,protocolCode){
 		},
 		params: {
 			data: JSON.stringify(saveData),
-			protocolCode:protocolCode
+			protocolCodes:protocolCodes
         }
 	});
 }

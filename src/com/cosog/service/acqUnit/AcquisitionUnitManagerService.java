@@ -99,51 +99,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	@Autowired
 	private TabInfoManagerService<?> tabInfoManagerService;
 	
-	public String doAcquisitionGroupShow(Map map,Page pager,String language) {
-		String groupName = (String) map.get("groupName");
-		String protocolName = (String) map.get("protocolName");
-		StringBuffer sqlBuffer = new StringBuffer();
-		StringBuffer jsonBuffer = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		sqlBuffer.append("select t.id as id,t.group_name as groupName,t.group_code as groupCode,"
-				+ " t.grouptiminginterval as groupTimingInterval,t.groupsavinginterval as groupSavingInterval,t.remark "
-				+ " from tbl_acq_group_conf t"
-				+ " where 1=1");
-		sqlBuffer.append(" and t.protocol='"+protocolName+"'");
-		if (StringManagerUtils.isNotNull(groupName)) {
-			sqlBuffer.append(" and t.group_name like '%" + groupName + "%' ");
-		}
-		sqlBuffer.append(" order by t.id  asc");
-		String json = "";
-//		String columns=service.showTableHeadersColumns("acquisitionUnit");
-		String columns="["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"groupName\" ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("code")+"\",\"dataIndex\":\"groupCode\" ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("groupTimingInterval")+"(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("groupSavingInterval")+"(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("description")+"\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
-				+ "]";
-		List<?> list=this.findCallSql(sqlBuffer.toString());
-		jsonBuffer.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
-		for (int i = 0; i < list.size(); i++) {
-			Object[] obj = (Object[]) list.get(i);
-			jsonBuffer.append("{\"checked\":false,");
-			jsonBuffer.append("\"id\":\""+obj[0]+"\",");
-			jsonBuffer.append("\"groupName\":\""+obj[1]+"\",");
-			jsonBuffer.append("\"groupCode\":\""+obj[2]+"\",");
-			jsonBuffer.append("\"groupTimingInterval\":\""+obj[3]+"\",");
-			jsonBuffer.append("\"groupSavingInterval\":\""+obj[4]+"\",");
-			jsonBuffer.append("\"remark\":\""+obj[5]+"\"},");
-		}
-		if(jsonBuffer.toString().endsWith(",")){
-			jsonBuffer.deleteCharAt(jsonBuffer.length() - 1);
-		}
-		jsonBuffer.append("]}");
-		return jsonBuffer.toString();
-	}
-	
 	public String getProtocolItemsConfigData(String protocolName,String classes,String code,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
@@ -4713,10 +4668,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("[");
 		
 
-		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t3.code as protocol,t.acqunitid,t2.unit_name as acqunitname,"
+		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t3.code as protocolCode,t.acqunitid,t2.unit_name as acqunitname,"
 				+ " t.calculateType, "
 				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
-				+ " t.sort"
+				+ " t.sort,t3.name as protocolName"
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.acqunitid=t2.id and t2.protocol=t3.code";
 		if(StringManagerUtils.isNotNull(protocol)){
@@ -4735,7 +4690,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"code\":\""+unitObj[1]+"\",");
 			tree_json.append("\"text\":\""+unitObj[2]+"\",");
 			tree_json.append("\"remark\":\""+unitObj[3]+"\",");
-			tree_json.append("\"protocol\":\""+unitObj[4]+"\",");
+			tree_json.append("\"protocolCode\":\""+unitObj[4]+"\",");
+			tree_json.append("\"protocol\":\""+unitObj[10]+"\",");
 			tree_json.append("\"acqUnitId\":\""+unitObj[5]+"\",");
 			tree_json.append("\"acqUnitName\":\""+unitObj[6]+"\",");
 			tree_json.append("\"calculateType\":\""+unitObj[7]+"\",");
@@ -4834,8 +4790,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
 		String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol,t.acqunitid,t2.unit_name as acqunitname "
-				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
-				+ " where t.acqunitid=t2.id  and t2.protocol='"+protocolName+"'"
+				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code"
+				+ " and t3.name='"+protocolName+"'"
 				+ " order by t.protocol,t.id";
 		List<?> unitList=this.findCallSql(unitSql);
 		
@@ -5402,8 +5359,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
 		String unitSql="select t.id,t.unit_code,t.unit_name,t.remark,t.protocol"
-				+ " from tbl_alarm_unit_conf t "
-				+ " where t.protocol='"+protocolName+"' "
+				+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
+				+ " where t.protocol=t2.code and t2.name='"+protocolName+"' "
 				+ " order by t.protocol,t.unit_code";
 		List<?> unitList=this.findCallSql(unitSql);
 		
@@ -5562,9 +5519,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//5~8
 				+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//9~11
 				+ " t.packetsendinterval,"//12
-				+ " t.sort,t.unitid,t2.unit_name,t3.name as  protocol"//13~16
-				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3 "
-				+ " where t.unitid=t2.id and t2.protocol=t3.code"
+				+ " t.sort,t.unitid,t2.unit_name,t3.name as  protocol,"//13~16
+				+ " t3.code as protocolCode,t4.allpath_zh_cn as protocolDeviceTypeAllPath" 
+				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2,tbl_protocol t3,viw_devicetypeinfo t4"
+				+ " where t.unitid=t2.id and t2.protocol=t3.code and t3.deviceType=t4.id"
 				+ " and t3.language="+user.getLanguage();
 		String deviceCountSql="select t.instancecode,count(1) "
 				+ " from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4"
@@ -5617,6 +5575,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"unitId\":"+obj[14]+",");
 			tree_json.append("\"unitName\":\""+obj[15]+"\",");
 			tree_json.append("\"protocol\":\""+obj[16]+"\",");
+			tree_json.append("\"protocolCode\":\""+obj[17]+"\",");
+			tree_json.append("\"protocolDeviceTypeAllPath\":\""+obj[18]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -5705,7 +5665,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype,t4.name as protocol  "
+		String sql="select t.id,t.name,t.code,t.displayUnitId,t2.unit_name,t.sort ,t2.calculatetype,t4.name as protocolname,t4.code as protocolCode  "
 				+ " from tbl_protocoldisplayinstance t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayUnitId=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code";
 		
@@ -5746,6 +5706,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"calculateType\":\""+obj[6]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
 			tree_json.append("\"protocol\":\""+obj[7]+"\",");
+			tree_json.append("\"protocolCode\":\""+obj[8]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -5916,7 +5877,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort,t3.name as protocol   "
+		String sql="select t.id,t.name,t.code,t.alarmUnitId,t2.unit_name,t.sort,t3.name as protocolName,t3.code as protocolCode   "
 				+ " from tbl_protocolalarminstance t ,tbl_alarm_unit_conf t2,tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code";
 		String deviceCountSql="select device.alarminstancecode,count(1)  "
@@ -5953,6 +5914,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"alarmUnitName\":\""+obj[4]+"\",");
 			tree_json.append("\"sort\":\""+obj[5]+"\",");
 			tree_json.append("\"protocol\":\""+obj[6]+"\",");
+			tree_json.append("\"protocolCode\":\""+obj[7]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -6584,10 +6546,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeAcqUnitExistOrNot(String protocolName,String unitName) {
+	public boolean judgeAcqUnitExistOrNot(String protocolCode,String unitName) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
-			String sql = "select t.id from tbl_acq_unit_conf t where t.protocol='"+protocolName+"' and t.unit_name='"+unitName+"'";
+		if (StringManagerUtils.isNotNull(protocolCode)&&StringManagerUtils.isNotNull(unitName)) {
+			String sql = "select t.id from tbl_acq_unit_conf t where t.protocol='"+protocolCode+"' and t.unit_name='"+unitName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -6596,10 +6558,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeDisplayUnitExistOrNot(String protocolName,String unitName) {
+	public boolean judgeDisplayUnitExistOrNot(String protocolCode,String unitName) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
-			String sql = "select t.id from TBL_DISPLAY_UNIT_CONF t where t.protocol='"+protocolName+"' and t.unit_name='"+unitName+"'";
+		if (StringManagerUtils.isNotNull(protocolCode)&&StringManagerUtils.isNotNull(unitName)) {
+			String sql = "select t.id from TBL_DISPLAY_UNIT_CONF t,tbl_acq_unit_conf t2"
+					+ " where t.acqunitid=t2.id "
+					+ " and t2.protocol='"+protocolCode+"' "
+					+ " and t.unit_name='"+unitName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -6608,12 +6573,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeAcqGroupExistOrNot(String protocolName,String unitName,String groupName) {
+	public boolean judgeAcqGroupExistOrNot(String unitId,String groupName) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
-			String sql = "select t.id from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2,tbl_acq_unit_conf t3 "
-					+ " where t.id=t2.groupid and t2.unitid=t3.id "
-					+ " and t3.protocol='"+protocolName+"' and t3.unit_name='"+unitName+"' and t.group_name='"+groupName+"'";
+		if (StringManagerUtils.isNotNull(unitId)&&StringManagerUtils.isNotNull(groupName)) {
+			String sql = "select t.id from TBL_ACQ_GROUP_CONF t,tbl_acq_group2unit_conf t2 "
+					+ " where t.id=t2.groupid "
+					+ " and t2.unitid="+unitId
+					+ " and t.group_name='"+groupName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -6622,10 +6588,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeAlarmUnitExistOrNot(String protocolName,String unitName) {
+	public boolean judgeAlarmUnitExistOrNot(String protocolCode,String unitName) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(protocolName)&&StringManagerUtils.isNotNull(unitName)) {
-			String sql = "select t.id from TBL_ALARM_UNIT_CONF t where t.protocol='"+protocolName+"' and t.unit_name='"+unitName+"'";
+		if (StringManagerUtils.isNotNull(protocolCode)&&StringManagerUtils.isNotNull(unitName)) {
+			String sql = "select t.id from TBL_ALARM_UNIT_CONF t"
+					+ " where t.protocol='"+protocolCode+"' "
+					+ " and t.unit_name='"+unitName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -6648,10 +6616,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeAlarmInstanceExistOrNot(String instanceName) {
+	public boolean judgeAlarmInstanceExistOrNot(String instanceName,String unitId) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLALARMINSTANCE t where  t.name='"+instanceName+"'";
+		if (StringManagerUtils.isNotNull(instanceName) && StringManagerUtils.isNotNull(unitId)) {
+			String sql = "select t.id from TBL_PROTOCOLALARMINSTANCE t "
+					+ " where  t.name='"+instanceName+"'"
+					+ " and t.alarmunitid="+unitId;
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -6660,10 +6630,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeDisplayInstanceExistOrNot(String instanceName) {
+	public boolean judgeDisplayInstanceExistOrNot(String instanceName,String unitId) {
 		boolean flag = false;
-		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLDISPLAYINSTANCE t where t.name='"+instanceName+"'";
+		if (StringManagerUtils.isNotNull(instanceName) && StringManagerUtils.isNotNull(unitId)) {
+			String sql = "select t.id from TBL_PROTOCOLDISPLAYINSTANCE t "
+					+ " where t.name='"+instanceName+"'"
+					+ " and t.displayunitid="+unitId;
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -11053,9 +11025,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"DisplayInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t3.protocol  "
-				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3"
-				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id "
+		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t4.name as protocol,t4.devicetype as protocoldevicetype  "
+				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t.id in("+instanceList+")"
 				+ " order by t.displayunitid,t.id";
 		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
@@ -11069,7 +11041,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"DisplayUnitName\":\""+displayInstanceObj[4]+"\",");
 			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
 			result_json.append("\"AcqUnitName\":\""+displayInstanceObj[6]+"\",");
-			result_json.append("\"Protocol\":\""+displayInstanceObj[7]+"\"");
+			result_json.append("\"ProtocolName\":\""+displayInstanceObj[7]+"\",");
+			result_json.append("\"ProtocolDeviceType\":\""+displayInstanceObj[8]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -11084,7 +11057,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"DisplayInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t3.protocol  "
+		String displayInstanceSql="select t.id,t.name,t.code,t.displayunitid,t2.unit_name,t.sort,t3.unit_name as acqUnitName, t4.name as protocol,t4.devicetype as protocoldevicetype  "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.devicetype in ( select t5.rd_devicetypeid from tbl_devicetype2role t5 where rd_roleid=1)"
@@ -11101,7 +11074,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"DisplayUnitName\":\""+displayInstanceObj[4]+"\",");
 			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
 			result_json.append("\"AcqUnitName\":\""+displayInstanceObj[6]+"\",");
-			result_json.append("\"Protocol\":\""+displayInstanceObj[7]+"\"");
+			result_json.append("\"ProtocolName\":\""+displayInstanceObj[7]+"\",");
+			result_json.append("\"ProtocolDeviceType\":\""+displayInstanceObj[8]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -11117,9 +11091,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"AlarmInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t2.protocol"
-				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2"
-				+ " where t.alarmunitid=t2.id and t.id in("+instanceList+")"
+		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t3.name as protocol,t3.devicetype as protocolDeviceType"
+				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code"
+				+ " and t.id in("+instanceList+")"
 				+ " order by t.alarmunitid,t.id";
 		List<?> displayInstanceQueryList = this.findCallSql(displayInstanceSql);
 		for(int i=0;i<displayInstanceQueryList.size();i++){
@@ -11131,7 +11106,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
 			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
 			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
-			result_json.append("\"Protocol\":\""+displayInstanceObj[6]+"\"");
+			result_json.append("\"ProtocolName\":\""+displayInstanceObj[6]+"\",");
+			result_json.append("\"ProtocolDeviceType\":\""+displayInstanceObj[7]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -11146,7 +11122,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"AlarmInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t2.protocol"
+		String displayInstanceSql="select t.id,t.name,t.code,t.alarmunitid,t2.unit_name,t.sort ,t3.name as protocol,t3.devicetype as protocolDeviceType"
 				+ " from TBL_PROTOCOLALARMINSTANCE t ,tbl_alarm_unit_conf t2,tbl_protocol t3"
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code"
 				+ " and t3.devicetype in ( select t4.rd_devicetypeid from tbl_devicetype2role t4 where t4.rd_roleid="+(user!=null?user.getUserType():0)+")"
@@ -11162,7 +11138,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
 			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
 			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
-			result_json.append("\"Protocol\":\""+displayInstanceObj[6]+"\"");
+			result_json.append("\"ProtocolName\":\""+displayInstanceObj[6]+"\",");
+			result_json.append("\"ProtocolDeviceType\":\""+displayInstanceObj[7]+"\"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -13145,7 +13122,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			MemoryDataManagerTask.loadAcqInstanceOwnItemById(instanceId,"update");
 			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
 			MemoryDataManagerTask.loadDeviceInfoByInstanceId(instanceId,"update");
-			EquipmentDriverServerTask.initInstanceConfig(instanceInitList,"update");
+			EquipmentDriverServerTask.initInstanceConfigByNames(instanceInitList,"update");
 			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(instanceId,"update");
 			
 			
@@ -13209,15 +13186,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
-		List<String> protoolList=new ArrayList<>();
-		String protocolSql="select t.name from tbl_protocol t "
-				+ " where t.deviceType in("+allDeviceIds+")"
-				+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
-		List<?> protoolQueryList = this.findCallSql(protocolSql);
-		for(int i=0;i<protoolQueryList.size();i++){
-			protoolList.add(protoolQueryList.get(i)+"");
-		}
-		
 		String instanceSql="select t.id,t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
@@ -13230,10 +13198,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<uploadInstanceList.size();i++){
 				String msg="";
 				int saveSign=0;//无冲突覆盖
-				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
-					String unitSql="select t.unit_name from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
-							+ " where t.acqunitid=t2.id"
-							+ " and t.id="+uploadInstanceList.get(i).getDisplayUnitId();
+				
+				String protocolSql="select t.name from tbl_protocol t "
+						+ " where t.deviceType in("+allDeviceIds+")"
+						+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")"
+						+ " and t.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+						+ " and t.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
+				List<?> protoolQueryList = this.findCallSql(protocolSql);
+				
+				
+				if(protoolQueryList.size()>0){
+					String unitSql="select t.unit_name from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+							+ " where t.acqunitid=t2.id and t2.protocol=t3.code"
+							+ " and t.name='"+uploadInstanceList.get(i).getDisplayUnitName()+"'"
+							+ " and t2.name='"+uploadInstanceList.get(i).getAcqUnitName()+"'"
+							+ " and t3.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+							+ " and t3.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
 					List<?> unitQueryList = this.findCallSql(unitSql);
 					if(unitQueryList.size()>0){
 						if(instanceQueryList.size()>0){
@@ -13260,7 +13240,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
 				tree_json.append("\"displayUnitName\":\""+uploadInstanceList.get(i).getDisplayUnitName()+"\",");
 				tree_json.append("\"acqUnitName\":\""+uploadInstanceList.get(i).getAcqUnitName()+"\",");
-				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocol()+"\",");
+				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocolName()+"\",");
+				tree_json.append("\"protocolDeviceType\":\""+uploadInstanceList.get(i).getProtocolDeviceType()+"\",");
 				tree_json.append("\"msg\":\""+msg+"\",");
 				tree_json.append("\"saveSign\":\""+saveSign+"\",");
 				tree_json.append("\"iconCls\": \"acqUnit\",");
@@ -13281,370 +13262,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getImportDisplayInstanceItemsConfigData(List<ExportDisplayInstanceData> uploadInstanceList,
-			String protocolName,String acqUnitName,String displayUnitName,String instanceName,String itemType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
-				+ "]";
-		ModbusProtocolConfig.Protocol protocolConfig =MemoryDataManagerTask.getProtocolByName(protocolName);
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		if(uploadInstanceList!=null && protocolConfig!=null){
-			for(ExportDisplayInstanceData exportDisplayInstanceData:uploadInstanceList){
-				if(protocolName.equalsIgnoreCase(exportDisplayInstanceData.getProtocol())
-						&& acqUnitName.equalsIgnoreCase(exportDisplayInstanceData.getAcqUnitName())
-						&& displayUnitName.equalsIgnoreCase(exportDisplayInstanceData.getDisplayUnitName())
-						&& instanceName.equalsIgnoreCase(exportDisplayInstanceData.getName())
-						){
-					
-					String displayUnitSql="select t.id,t.calculatetype from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
-							+ " where t.acqunitid=t2.id "
-							+ " and t2.protocol='"+protocolName+"'"
-							+ " and t2.unit_name='"+acqUnitName+"'"
-							+ " and t.unit_name='"+displayUnitName+"'";
-					List<?> displayUnitList=this.findCallSql(displayUnitSql);
-					if(displayUnitList.size()>0){
-						Object[] displayUnitObj=(Object[])displayUnitList.get(0);
-						String displayUnitId=displayUnitObj[0]+"";
-						String displayUnitCalType=displayUnitObj[1]+"";
-						
-						List<String> itemsList=new ArrayList<String>();
-						List<String> itemsCodeList=new ArrayList<String>();
-						List<String> itemsRealtimeSortList=new ArrayList<String>();
-						
-						List<String> itemsHistorySortList=new ArrayList<String>();
-						List<String> itemsBitIndexList=new ArrayList<String>();
-						List<String> itemsShowLevelList=new ArrayList<String>();
-						List<String> realtimeCurveConfList=new ArrayList<String>();
-						List<String> historyCurveConfList=new ArrayList<String>();
-						
-						List<String> realtimeColorList=new ArrayList<String>();
-						List<String> realtimeBgColorList=new ArrayList<String>();
-						List<String> historyColorList=new ArrayList<String>();
-						List<String> historyBgColorList=new ArrayList<String>();
-						
-						String sql="select t.itemname,t.bitindex,"
-								+ " t.realtimeSort,t.historySort,"
-								+ " t.showlevel,"
-								+ " t.realtimeCurveConf,historyCurveConf,"
-								+ " t.itemcode, "
-								+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
-								+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_acq_unit_conf t3"
-								+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t.type= "+itemType
-								+ " and t3.protocol='"+protocolName+"' "
-								+ " and t3.unit_name='"+acqUnitName+"' "
-								+ " and t2.unit_name='"+displayUnitName+"'"
-								+ " order by t.id";
-						
-						List<?> list=this.findCallSql(sql);
-						
-						for(int i=0;i<list.size();i++){
-							Object[] obj=(Object[])list.get(i);
-							itemsList.add(obj[0]+"");
-							itemsBitIndexList.add(obj[1]+"");
-							itemsRealtimeSortList.add(obj[2]+"");
-							itemsHistorySortList.add(obj[3]+"");
-							
-							itemsShowLevelList.add(obj[4]+"");
-							
-							itemsCodeList.add(obj[7]+"");
-							
-							realtimeColorList.add(obj[8]+"");
-							realtimeBgColorList.add(obj[9]+"");
-							historyColorList.add(obj[10]+"");
-							historyBgColorList.add(obj[11]+"");
-							
-							String realtimeCurveConfShowValue="";
-							String historyCurveConfShowValue="";
-							
-							CurveConf realtimeCurveConfObj=null;
-							if(StringManagerUtils.isNotNull(obj[5]+"") && !"\"\"".equals(obj[5]+"")){
-								type = new TypeToken<CurveConf>() {}.getType();
-								realtimeCurveConfObj=gson.fromJson(obj[5]+"", type);
-							}
-							
-							CurveConf historyCurveConfObj=null;
-							if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-								type = new TypeToken<CurveConf>() {}.getType();
-								historyCurveConfObj=gson.fromJson(obj[6]+"", type);
-							}
-							
-							if(realtimeCurveConfObj!=null){
-								realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-							}
-							if(historyCurveConfObj!=null){
-								historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-							}
-							
-							realtimeCurveConfList.add(realtimeCurveConfShowValue);
-							historyCurveConfList.add(historyCurveConfShowValue);
-						}
-						
-						if(StringManagerUtils.stringToInteger(itemType)==0 || StringManagerUtils.stringToInteger(itemType)==2 ){
-							Collections.sort(protocolConfig.getItems());
-							int index=1;
-							for(int j=0;j<protocolConfig.getItems().size();j++){
-								if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(), false)){
-									String realtimeSort="";
-									String historySort="";
-									String showLevel="";
-									
-									String realtimeCurveConfShowValue="";
-									String historyCurveConfShowValue="";
-									
-									String realtimeColor=""; 
-									String realtimeBgColor="";
-									String historyColor="";
-									String historyBgColor="";
-									
-									if(protocolConfig.getItems().get(j).getResolutionMode()==0
-											&&protocolConfig.getItems().get(j).getMeaning()!=null
-											&&protocolConfig.getItems().get(j).getMeaning().size()>0){
-										Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
-										for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-											realtimeSort="";
-											historySort="";
-											showLevel="";
-											realtimeCurveConfShowValue="";
-											historyCurveConfShowValue="";
-											realtimeColor=""; 
-											realtimeBgColor="";
-											historyColor="";
-											historyBgColor="";
-											for(int m=0;m<itemsList.size();m++){
-												if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-														&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-													){
-													realtimeSort=itemsRealtimeSortList.get(m);
-													historySort=itemsHistorySortList.get(m);
-													showLevel=itemsShowLevelList.get(m);
-													realtimeCurveConfShowValue=realtimeCurveConfList.get(m);
-													historyCurveConfShowValue=historyCurveConfList.get(m);
-													realtimeColor=realtimeColorList.get(m);
-													realtimeBgColor=realtimeBgColorList.get(m);
-													historyColor=historyColorList.get(m);
-													historyBgColor=historyBgColorList.get(m);
-													
-													result_json.append("{"
-															+ "\"id\":"+(index)+","
-															+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-															+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-															+ "\"showLevel\":\""+showLevel+"\","
-															+ "\"realtimeSort\":\""+realtimeSort+"\","
-															+ "\"realtimeColor\":\""+realtimeColor+"\","
-															+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-															+ "\"historySort\":\""+historySort+"\","
-															+ "\"historyColor\":\""+historyColor+"\","
-															+ "\"historyBgColor\":\""+historyBgColor+"\","
-															+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-															+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-															+ "},");
-													index++;
-													break;
-												}
-											}
-										}
-									}else{
-										for(int k=0;k<itemsList.size();k++){
-											if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-												realtimeSort=itemsRealtimeSortList.get(k);
-												historySort=itemsHistorySortList.get(k);
-												showLevel=itemsShowLevelList.get(k);
-												realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-												historyCurveConfShowValue=realtimeCurveConfList.get(k);
-												realtimeColor=realtimeColorList.get(k);
-												realtimeBgColor=realtimeBgColorList.get(k);
-												historyColor=historyColorList.get(k);
-												historyBgColor=historyBgColorList.get(k);
-												break;
-											}
-										}
-										result_json.append("{"
-												+ "\"id\":"+(index)+","
-												+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-												+ "\"showLevel\":\""+showLevel+"\","
-												+ "\"realtimeSort\":\""+realtimeSort+"\","
-												+ "\"realtimeColor\":\""+realtimeColor+"\","
-												+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-												+ "\"historySort\":\""+historySort+"\","
-												+ "\"historyColor\":\""+historyColor+"\","
-												+ "\"historyBgColor\":\""+historyBgColor+"\","
-												+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-												+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-												+ "},");
-										index++;
-									}
-								}
-							}
-						}else if(StringManagerUtils.stringToInteger(itemType)==1){
-							List<CalItem> calItemList=new ArrayList<>();
-							try{
-								if("1".equalsIgnoreCase(displayUnitCalType)){
-									calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-								}else if("2".equalsIgnoreCase(displayUnitCalType)){
-									calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-								}else{
-									calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-								}
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							
-							String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-									+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-									+ " tbl_datamapping t6 "
-									+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
-									+ " and t.itemname=t6.name "
-									+ " and t.dailytotalcalculate=1 and t5.id= "+displayUnitId
-									+ " order by t.id";
-							List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-							for(int i=0;i<unitDailyTotalItemsList.size();i++){
-								Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-								String itemName=obj[0]+"";
-								String name=obj[1]+"";
-								String code=(obj[2]+"_TOTAL").toUpperCase();
-								String unit="";
-								if(protocolConfig!=null&&protocolConfig.getItems()!=null){
-									for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
-										if(itemName.equalsIgnoreCase(item.getTitle())){
-											unit=item.getUnit();
-											break;
-										}
-									}
-								}
-								CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
-								calItemList.add(calItem);
-							}
-							
-							int index=1;
-							for(CalItem calItem:calItemList){
-								if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-									String realtimeSort="";
-									String historySort="";
-									String showLevel="";
-									String realtimeCurveConfShowValue="";
-									String historyCurveConfShowValue="";
-									
-									String realtimeColor=""; 
-									String realtimeBgColor="";
-									String historyColor="";
-									String historyBgColor="";
-
-									for(int k=0;k<itemsList.size();k++){
-										if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-											realtimeSort=itemsRealtimeSortList.get(k);
-											historySort=itemsHistorySortList.get(k);
-											showLevel=itemsShowLevelList.get(k);
-											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-											historyCurveConfShowValue=historyCurveConfList.get(k);
-											realtimeColor=realtimeColorList.get(k);
-											realtimeBgColor=realtimeBgColorList.get(k);
-											historyColor=historyColorList.get(k);
-											historyBgColor=historyBgColorList.get(k);
-											break;
-										}
-									}
-									result_json.append("{"
-											+ "\"id\":"+index+","
-											+ "\"title\":\""+calItem.getName()+"\","
-											+ "\"unit\":\""+calItem.getUnit()+"\","
-											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"realtimeSort\":\""+realtimeSort+"\","
-											+ "\"realtimeColor\":\""+realtimeColor+"\","
-											+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-											+ "\"historySort\":\""+historySort+"\","
-											+ "\"historyColor\":\""+historyColor+"\","
-											+ "\"historyBgColor\":\""+historyBgColor+"\","
-											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-											+ "\"dataSource\":\""+calItem.getDataSource()+"\""
-											+ "},");
-									index++;
-								}
-							}
-						}else if(StringManagerUtils.stringToInteger(itemType)==3){
-							List<CalItem> inputItemList=new ArrayList<>();
-							try{
-								if("1".equalsIgnoreCase(displayUnitCalType)){
-									inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
-								}else if("2".equalsIgnoreCase(displayUnitCalType)){
-									inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
-								}
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							int index=1;
-							for(CalItem calItem:inputItemList){
-								if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-									String realtimeSort="";
-									String historySort="";
-									String showLevel="";
-									String realtimeCurveConfShowValue="";
-									String historyCurveConfShowValue="";
-									String realtimeColor=""; 
-									String realtimeBgColor="";
-									String historyColor="";
-									String historyBgColor="";
-
-									for(int k=0;k<itemsList.size();k++){
-										if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-											realtimeSort=itemsRealtimeSortList.get(k);
-											historySort=itemsHistorySortList.get(k);
-											showLevel=itemsShowLevelList.get(k);
-											realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-											historyCurveConfShowValue=historyCurveConfList.get(k);
-											realtimeColor=realtimeColorList.get(k);
-											realtimeBgColor=realtimeBgColorList.get(k);
-											historyColor=historyColorList.get(k);
-											historyBgColor=historyBgColorList.get(k);
-											break;
-										}
-									}
-									result_json.append("{"
-											+ "\"id\":"+index+","
-											+ "\"title\":\""+calItem.getName()+"\","
-											+ "\"unit\":\""+calItem.getUnit()+"\","
-											+ "\"showLevel\":\""+showLevel+"\","
-											+ "\"realtimeSort\":\""+realtimeSort+"\","
-											+ "\"realtimeColor\":\""+realtimeColor+"\","
-											+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-											+ "\"historySort\":\""+historySort+"\","
-											+ "\"historyColor\":\""+historyColor+"\","
-											+ "\"historyBgColor\":\""+historyBgColor+"\","
-											+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-											+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-											+ "},");
-									index++;
-								}
-							}
-						}
-					}
-					
-					break;
-				}
-			}
-		}
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
 	public void importDisplayInstance(ExportDisplayInstanceData instanceData,User user){
 		Gson gson=new Gson();
 		String instanceSql="select t.id,t.code,t.displayunitid "
@@ -13656,6 +13273,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String instanceId=instanceData.getId()+"";
 		String instanceCode=instanceData.getCode();
 		String unitId=instanceData.getDisplayUnitId()+"";
+		
+		String unitSql="select t.id from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t.acqunitid=t2.id and t2.protocol=t3.code"
+				+ " and t.name='"+instanceData.getDisplayUnitName()+"'"
+				+ " and t2.name='"+instanceData.getAcqUnitName()+"'"
+				+ " and t3.name='"+instanceData.getProtocolName()+"'"
+				+ " and t3.devicetype="+instanceData.getProtocolDeviceType();
+		List<?> unitIdList=this.findCallSql(unitSql);
+		if(unitIdList.size()>0){
+			unitId=unitIdList.get(0).toString();
+		}
+		
 		int r=0;
 		if(instanceList.size()>0){
 			ProtocolDisplayInstance protocolDisplayInstance=new ProtocolDisplayInstance();
@@ -13706,15 +13335,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
-		List<String> protoolList=new ArrayList<>();
-		String protocolSql="select t.name from tbl_protocol t "
-				+ " where t.deviceType in("+allDeviceIds+")"
-				+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
-		List<?> protoolQueryList = this.findCallSql(protocolSql);
-		for(int i=0;i<protoolQueryList.size();i++){
-			protoolList.add(protoolQueryList.get(i)+"");
-		}
-		
 		String instanceSql="select t.id,t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
@@ -13727,10 +13347,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<uploadInstanceList.size();i++){
 				String msg="";
 				int saveSign=0;//无冲突覆盖
-				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
-					String unitSql="select t.unit_name from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
-							+ " where t.acqunitid=t2.id"
-							+ " and t.id="+uploadInstanceList.get(i).getDisplayUnitId();
+				String protocolSql="select t.name from tbl_protocol t "
+						+ " where t.deviceType in("+allDeviceIds+")"
+						+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")"
+						+ " and t.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+						+ " and t.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
+				List<?> protoolQueryList = this.findCallSql(protocolSql);
+				if(protoolQueryList.size()>0){
+					String unitSql="select t.unit_name from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
+							+ " where t.acqunitid=t2.id and t2.protocol=t3.code"
+							+ " and t.name='"+uploadInstanceList.get(i).getDisplayUnitName()+"'"
+							+ " and t2.name='"+uploadInstanceList.get(i).getAcqUnitName()+"'"
+							+ " and t3.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+							+ " and t3.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
 					List<?> unitQueryList = this.findCallSql(unitSql);
 					if(unitQueryList.size()>0){
 						importDisplayInstance(uploadInstanceList.get(i),user);
@@ -13754,14 +13383,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
-		List<String> protoolList=new ArrayList<>();
-		String protocolSql="select t.name from tbl_protocol t "
-				+ " where t.deviceType in("+allDeviceIds+")"
-				+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
-		List<?> protoolQueryList = this.findCallSql(protocolSql);
-		for(int i=0;i<protoolQueryList.size();i++){
-			protoolList.add(protoolQueryList.get(i)+"");
-		}
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
@@ -13775,8 +13396,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<uploadInstanceList.size();i++){
 				String msg="";
 				int saveSign=0;//无冲突覆盖
-				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
-					String unitSql="select t.unit_name from tbl_alarm_unit_conf t where t.id="+uploadInstanceList.get(i).getUnitId();
+				
+				String protocolSql="select t.name from tbl_protocol t "
+						+ " where t.deviceType in("+allDeviceIds+")"
+						+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")"
+						+ " and t.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+						+ " and t.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
+				List<?> protoolQueryList = this.findCallSql(protocolSql);
+				
+				if(protoolQueryList.size()>0){
+					String unitSql="select t.unit_name from tbl_alarm_unit_conf t,tbl_protocol t2 "
+							+ " where t.protocol=t2.code"
+							+ " and t.name='"+uploadInstanceList.get(i).getUnitName()+"'"
+							+ " and t2.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+							+ " and t2.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
 					List<?> unitQueryList = this.findCallSql(unitSql);
 					if(unitQueryList.size()>0){
 						if(instanceQueryList.size()>0){
@@ -13802,7 +13435,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
 				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
 				tree_json.append("\"unitName\":\""+uploadInstanceList.get(i).getUnitName()+"\",");
-				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocol()+"\",");
+				tree_json.append("\"protocol\":\""+uploadInstanceList.get(i).getProtocolName()+"\",");
+				tree_json.append("\"protocolDeviceType\":\""+uploadInstanceList.get(i).getProtocolDeviceType()+"\",");
 				tree_json.append("\"msg\":\""+msg+"\",");
 				tree_json.append("\"saveSign\":\""+saveSign+"\",");
 				tree_json.append("\"iconCls\": \"acqUnit\",");
@@ -13823,101 +13457,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getImportAlarmInstanceItemsData(List<ExportAlarmInstanceData> uploadInstanceList,String protocolName,String unitName,String instanceName,String alarmType,User user){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		result_json.append("{ \"success\":true,\"columns\":[],");
-		result_json.append("\"totalRoot\":[");
-		Protocol protocol=MemoryDataManagerTask.getProtocolByName(protocolName);
-		if(uploadInstanceList!=null && protocolName!=null){
-			for(ExportAlarmInstanceData exportAlarmInstanceData:uploadInstanceList){
-				if(protocolName.equalsIgnoreCase(exportAlarmInstanceData.getProtocol())
-						&& unitName.equalsIgnoreCase(exportAlarmInstanceData.getUnitName())
-						&& instanceName.equalsIgnoreCase(exportAlarmInstanceData.getName())
-						){
-					String unitSql="select t.id from tbl_alarm_unit_conf t where t.protocol='"+protocolName+"' and t.unit_name='"+unitName+"'";
-					List<?> unitList=this.findCallSql(unitSql);
-					if(unitList.size()>0){
-						String unitId=unitList.get(0)+"";
-						String itemsSql="select t.id, t.itemname,t.itemcode,t.itemaddr,"
-								+ "t.value,"
-								+ "t.upperlimit,t.lowerlimit,t.hystersis,t.delay,"
-								+ "t.bitIndex,"
-								+ "t.alarmlevel,"
-								+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
-								+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-								+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-								+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2 "
-								+ " where t.unitid=t2.id "
-								+ " and t2.id="+unitId+" "
-								+ " and t.type="+alarmType
-								+ " order by t.itemaddr";
-						List<?> list=this.findCallSql(itemsSql);
-						for(int i=0;i<list.size();i++){
-							Object[] obj = (Object[]) list.get(i);
-							int itemAddr=StringManagerUtils.stringToInteger(obj[3]+"");
-							int bitIndex=StringManagerUtils.stringToInteger(obj[9]+"");
-							int value=StringManagerUtils.stringToInteger(obj[4]+"");
-							String meaning="";
-							
-							if(StringManagerUtils.stringToInteger(alarmType)==0){
-								for(int j=0;protocol!=null&&j<protocol.getItems().size();j++){
-									if(itemAddr==protocol.getItems().get(j).getAddr()&&protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
-										for(int k=0;k<protocol.getItems().get(j).getMeaning().size();k++){
-											if(bitIndex==protocol.getItems().get(j).getMeaning().get(k).getValue()){
-												meaning=protocol.getItems().get(j).getMeaning().get(k).getMeaning();
-												break;
-											}
-										}
-										break;
-									}
-								}
-							}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-								for(int j=0;protocol!=null&&j<protocol.getItems().size();j++){
-									if(itemAddr==protocol.getItems().get(j).getAddr()&&protocol.getItems().get(j).getMeaning()!=null&&protocol.getItems().get(j).getMeaning().size()>0){
-										for(int k=0;k<protocol.getItems().get(j).getMeaning().size();k++){
-											if(value==protocol.getItems().get(j).getMeaning().get(k).getValue()){
-												meaning=protocol.getItems().get(j).getMeaning().get(k).getMeaning();
-												break;
-											}
-										}
-										break;
-									}
-								}
-							}
-							
-							result_json.append("{\"id\":"+(i+1)+","
-									+ "\"title\":\""+obj[1]+"\","
-									+ "\"code\":\""+obj[2]+"\","
-									+ "\"addr\":\""+itemAddr+"\","
-									+ "\"value\":\""+obj[4]+"\","
-									+ "\"meaning\":\""+meaning+"\","
-									+ "\"upperLimit\":\""+obj[5]+"\","
-									+ "\"lowerLimit\":\""+obj[6]+"\","
-									+ "\"hystersis\":\""+obj[7]+"\","
-									+ "\"delay\":\""+obj[8]+"\","
-									+ "\"bitIndex\":\""+bitIndex+"\","
-									+ "\"alarmLevel\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[10]+"", user.getLanguageName())+"\","
-									+ "\"alarmSign\":\""+obj[11]+"\","
-									+ "\"isSendMessage\":\""+obj[12]+"\","
-									+ "\"isSendMail\":\""+obj[13]+"\"},");
-						}
-						
-					}
-					break;
-				}
-			}
-		}
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
 	public void importAlarmInstance(ExportAlarmInstanceData instanceData,User user){
 		Gson gson=new Gson();
 		String instanceSql="select t.id,t.code,t.alarmunitid "
@@ -13929,6 +13468,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String instanceId=instanceData.getId()+"";
 		String instanceCode=instanceData.getCode();
 		String unitId=instanceData.getUnitId()+"";
+		
+		
+		String unitSql="select t.id from tbl_alarm_unit_conf t,tbl_protocol t2 "
+				+ " where t.protocol=t2.code"
+				+ " and t.name='"+instanceData.getUnitName()+"'"
+				+ " and t2.name='"+instanceData.getProtocolName()+"'"
+				+ " and t2.devicetype="+instanceData.getProtocolDeviceType();
+		List<?> list=this.findCallSql(unitSql);
+		if(list.size()>0){
+			unitId=list.get(0).toString();
+		}
+		
 		int r=0;
 		if(instanceList.size()>0){
 			ProtocolAlarmInstance protocolAlarmInstance=new ProtocolAlarmInstance();
@@ -13977,15 +13528,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
 		
-		List<String> protoolList=new ArrayList<>();
-		String protocolSql="select t.name from tbl_protocol t "
-				+ " where t.deviceType in("+allDeviceIds+")"
-				+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
-		List<?> protoolQueryList = this.findCallSql(protocolSql);
-		for(int i=0;i<protoolQueryList.size();i++){
-			protoolList.add(protoolQueryList.get(i)+"");
-		}
-		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
@@ -13998,8 +13540,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<uploadInstanceList.size();i++){
 				String msg="";
 				int saveSign=0;//无冲突覆盖
-				if(StringManagerUtils.existOrNot(protoolList, uploadInstanceList.get(i).getProtocol(), false)){
-					String unitSql="select t.unit_name from tbl_alarm_unit_conf t where t.id="+uploadInstanceList.get(i).getUnitId();
+				String protocolSql="select t.name from tbl_protocol t "
+						+ " where t.deviceType in("+allDeviceIds+")"
+						+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")"
+						+ " and t.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+						+ " and t.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
+				List<?> protoolQueryList = this.findCallSql(protocolSql);
+				if(protoolQueryList.size()>0){
+					String unitSql="select t.unit_name from tbl_alarm_unit_conf t,tbl_protocol t2 "
+							+ " where t.protocol=t2.code"
+							+ " and t.name='"+uploadInstanceList.get(i).getUnitName()+"'"
+							+ " and t2.name='"+uploadInstanceList.get(i).getProtocolName()+"'"
+							+ " and t2.devicetype="+uploadInstanceList.get(i).getProtocolDeviceType();
 					List<?> unitQueryList = this.findCallSql(unitSql);
 					if(unitQueryList.size()>0){
 						importAlarmInstance(uploadInstanceList.get(i),user);

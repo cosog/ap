@@ -193,11 +193,11 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
-                        	var protocolName=Ext.getCmp("formDisplayUnitProtocol_Id").getValue();
+                        	var protocolCode=Ext.getCmp("formDisplayUnitProtocol_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	protocolName:protocolName,
+                                	protocolCode:protocolCode,
                                 	unitName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeDisplayUnitExistOrNot',

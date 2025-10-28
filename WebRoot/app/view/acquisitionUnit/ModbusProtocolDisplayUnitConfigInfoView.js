@@ -288,8 +288,8 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                             	if(newCard.id=="ModbusProtocolDisplayUnitPropertiesConfigPanel_Id"){
                             		CreateProtocolDisplayUnitConfigPropertiesInfoTable(record.data);
                             	}else if(newCard.id=="ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id"){
-                            		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
-                            		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                            		CreateProtocolDisplayUnitAcqItemsConfigInfoTable(record.data.protocolCode,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
+                            		CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(record.data.protocolCode,record.data.classes,record.data.code,record.data.id,record.data.acqUnitId,record.data.text,record.data.calculateType);
                             	}
                             }
                         }
@@ -1206,6 +1206,22 @@ function SaveModbusProtocolDisplayUnitConfigTreeData(){
 };
 
 function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
+	var protocolList=[];
+	var protocolTreeGridPanelSelection= Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+	if(protocolTreeGridPanelSelection.length>0){
+		if(protocolTreeGridPanelSelection[0].data.classes==1){
+			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		}else{
+			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+				}
+			}
+		}
+	}
+	protocol=protocolList.join(",");
+	
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveDisplayUnitHandsontableData',
@@ -1272,7 +1288,7 @@ var grantDisplayAcqItemsPermission = function () {
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
-    var protocol=selectedItem.data.protocol;
+    var protocol=selectedItem.data.protocolCode;
     if (!isNotVal(unitCode)) {
         return false
     }
@@ -1433,7 +1449,7 @@ var grantDisplayCtrlItemsPermission = function () {
     
     var unitCode = selectedItem.data.code;
     var unitId = selectedItem.data.id;
-    var protocol=selectedItem.data.protocol;
+    var protocol=selectedItem.data.protocolCode;
     if (!isNotVal(unitCode)) {
         return false
     }

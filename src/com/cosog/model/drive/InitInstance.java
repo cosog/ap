@@ -230,6 +230,7 @@ public class InitInstance  implements Serializable {
 	            	if (entry.getValue().isArray()) {
 	            	    for (JsonNode ctrlGroup : entry.getValue()) {
 	            	    	((ObjectNode)ctrlGroup).remove("Id");
+	            	    	((ObjectNode)ctrlGroup).remove("GroupTimingInterval");
 	            	    }
 	            	}
 	            }

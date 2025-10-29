@@ -509,42 +509,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	
-	/**<p>描述：采集组数据显示方法</p>
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping("/doAcquisitionGroupShow")
-	public String doAcquisitionGroupShow() throws IOException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		groupName = ParamUtils.getParameter(request, "groupName");
-		String protocolName=ParamUtils.getParameter(request, "protocolName");
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
-		int offset = (intPage - 1) * pageSize;
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		map.put(PagingConstants.PAGE_NO, intPage);
-		map.put(PagingConstants.PAGE_SIZE, pageSize);
-		map.put(PagingConstants.OFFSET, offset);
-		map.put("groupName", groupName);
-		map.put("protocolName", protocolName);
-		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
-		this.pager = new Page("pagerForm", request);
-		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	/**
 	 * @return Null
 	 * @throws IOException
@@ -3133,7 +3097,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
-		String deviceType=ParamUtils.getParameter(request, "deviceType");
+		String protocols = ParamUtils.getParameter(request, "protocol");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<DisplayUnitHandsontableChangeData>() {}.getType();
 		DisplayUnitHandsontableChangeData displayUnitHandsontableChangeData=gson.fromJson(data, type);
@@ -3172,7 +3136,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
 							+ " where t.protocol=t2.code"
 							+ " and t.unit_name='"+acqUnitName+"' "
-							+ " and t2.code='"+protocol+"' ";
+							+ " and t2.name='"+protocol+"' ";
+					
+					if(StringManagerUtils.isNotNull(protocols)){
+						sql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocols.split(","), ",")+")";
+					}
 					sql+= " and rownum=1";
 					String acqUnitId="";
 					List<?> list = this.service.findCallSql(sql);
@@ -3551,7 +3519,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Gson gson=new Gson();
 		String json ="{success:true}";
 		String data = ParamUtils.getParameter(request, "data");
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String protocols = ParamUtils.getParameter(request, "protocols");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolInstanceSaveData>() {}.getType();
 		ModbusProtocolInstanceSaveData modbusProtocolInstanceSaveData=gson.fromJson(data, type);
 		
@@ -3564,7 +3532,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(modbusProtocolInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolInstanceSaveData.getDelidslist().size();i++){
 					List<String> deleteInstanceList=new ArrayList<String>();
-					deleteInstanceList.add(modbusProtocolInstanceSaveData.getName());
+					deleteInstanceList.add(modbusProtocolInstanceSaveData.getProtocolDeviceTypeAllPath()+"/"+modbusProtocolInstanceSaveData.getProtocol()+"/"+modbusProtocolInstanceSaveData.getName());
 					
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(052);
@@ -3600,7 +3568,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				String sql="select t.id from tbl_acq_unit_conf t,tbl_protocol t2 "
 						+ " where t.protocol=t2.code"
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t2.code='"+protocolCode+"' ";
+						+ " and t2.name='"+protocol+"' ";
+				if(StringManagerUtils.isNotNull(protocols)){
+					sql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocols.split(","), ",")+")";
+				}
 				sql+= " and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
@@ -3660,7 +3631,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
 					}else{
 						List<String> delInstanceList=new ArrayList<String>();
-						delInstanceList.add(modbusProtocolInstanceSaveData.getOldName());
+						delInstanceList.add(modbusProtocolInstanceSaveData.getProtocolDeviceTypeAllPath()+"/"+modbusProtocolInstanceSaveData.getProtocol()+"/"+modbusProtocolInstanceSaveData.getOldName());
 						List<String> instanceList=new ArrayList<String>();
 						instanceList.add(modbusProtocolInstanceSaveData.getName());
 						
@@ -3809,7 +3780,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveProtocolDisplayInstanceData() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String protocolCodes = ParamUtils.getParameter(request, "protocolCodes");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
@@ -3858,8 +3829,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 						+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t3.code='"+protocolCode+"'";
-				
+						+ " and t3.name='"+protocol+"'";
+				if(StringManagerUtils.isNotNull(protocolCodes)){
+					sql+=" and t3.code in ("+StringManagerUtils.joinStringArr2(protocolCodes.split(","), ",")+")";
+				}
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -4084,7 +4057,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveProtocolAlarmInstanceData")
 	public String saveProtocolAlarmInstanceData() throws Exception {
 		HttpSession session=request.getSession();
-		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String protocolCodes = ParamUtils.getParameter(request, "protocolCodes");
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
@@ -4121,12 +4094,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolAlarmInstanceSaveData.getName())){
 				String unitText=modbusProtocolAlarmInstanceSaveData.getAlarmUnitName();
-				String protocol="";
+				String protocolName="";
 				String unitName="";
 				if(unitText.contains("/")){
 					String[] textArr=unitText.split("/");
 					if(textArr.length==2){
-						protocol=textArr[0];
+						protocolName=textArr[0];
 						unitName=textArr[1];
 					}
 				}
@@ -4135,7 +4108,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 						+ " from tbl_alarm_unit_conf t,tbl_protocol t2 "
 						+ " where t.protocol=t2.code "
 						+ " and t.unit_name='"+unitName+"' "
-						+ " and t2.code='"+protocolCode+"'";
+						+ " and t2.name='"+protocolName+"'";
+				if(StringManagerUtils.isNotNull(protocolCodes)){
+					sql+=" and t2.code in ("+StringManagerUtils.joinStringArr2(protocolCodes.split(","), ",")+")";
+				}
+				
 				String unitId="";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -4435,9 +4412,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeAcqUnitExistOrNot")
 	public String judgeAcqUnitExistOrNot() throws IOException {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String unitName = ParamUtils.getParameter(request, "unitName");
-		boolean flag = this.acquisitionUnitManagerService.judgeAcqUnitExistOrNot(protocolName,unitName);
+		boolean flag = this.acquisitionUnitManagerService.judgeAcqUnitExistOrNot(protocolCode,unitName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -4455,9 +4432,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeDisplayUnitExistOrNot")
 	public String judgeDisplayUnitExistOrNot() throws IOException {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String unitName = ParamUtils.getParameter(request, "unitName");
-		boolean flag = this.acquisitionUnitManagerService.judgeDisplayUnitExistOrNot(protocolName,unitName);
+		boolean flag = this.acquisitionUnitManagerService.judgeDisplayUnitExistOrNot(protocolCode,unitName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -4475,10 +4452,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeAcqGroupExistOrNot")
 	public String judgeAcqGroupExistOrNot() throws IOException {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
-		String unitName = ParamUtils.getParameter(request, "unitName");
+		String unitId = ParamUtils.getParameter(request, "unitId");
 		String groupName = ParamUtils.getParameter(request, "groupName");
-		boolean flag = this.acquisitionUnitManagerService.judgeAcqGroupExistOrNot(protocolName,unitName,groupName);
+		boolean flag = this.acquisitionUnitManagerService.judgeAcqGroupExistOrNot(unitId,groupName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -4496,9 +4472,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeAlarmUnitExistOrNot")
 	public String judgeAlarmUnitExistOrNot() throws IOException {
-		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String unitName = ParamUtils.getParameter(request, "unitName");
-		boolean flag = this.acquisitionUnitManagerService.judgeAlarmUnitExistOrNot(protocolName,unitName);
+		boolean flag = this.acquisitionUnitManagerService.judgeAlarmUnitExistOrNot(protocolCode,unitName);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -4537,7 +4513,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/judgeAlarmInstanceExistOrNot")
 	public String judgeAlarmInstanceExistOrNot() throws IOException {
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeAlarmInstanceExistOrNot(instanceName);
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		boolean flag = this.acquisitionUnitManagerService.judgeAlarmInstanceExistOrNot(instanceName,unitId);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -4556,7 +4533,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/judgeDisplayInstanceExistOrNot")
 	public String judgeDisplayInstanceExistOrNot() throws IOException {
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(instanceName);
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		boolean flag = this.acquisitionUnitManagerService.judgeDisplayInstanceExistOrNot(instanceName,unitId);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -7595,44 +7573,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getImportDisplayInstanceItemsConfigData")
-	public String getImportDisplayInstanceItemsConfigData() throws IOException {
-		List<ExportDisplayInstanceData> uploadInstanceList=null;
-		String protocolName=ParamUtils.getParameter(request, "protocolName");
-		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
-		String displayUnitName=ParamUtils.getParameter(request, "displayUnitName");
-		String instanceName=ParamUtils.getParameter(request, "instanceName");
-		String type=ParamUtils.getParameter(request, "type");
-		
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String key="uploadDisplayInstanceFile"+(user!=null?user.getUserNo():0);
-		try{
-			if(session.getAttribute(key)!=null){
-				uploadInstanceList=(List<ExportDisplayInstanceData>) session.getAttribute(key);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-		}
-		String json = acquisitionUnitItemManagerService.getImportDisplayInstanceItemsConfigData(uploadInstanceList,protocolName,acqUnitName,displayUnitName,instanceName,type,language);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/saveSingelImportedDisplayInstance")
 	public String saveSingelImportedDisplayInstance() throws Exception {
 		HttpSession session=request.getSession();
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String protocolDeviceType=ParamUtils.getParameter(request, "protocolDeviceType");
 		String displayUnitName=ParamUtils.getParameter(request, "displayUnitName");
 		String acqUnitName=ParamUtils.getParameter(request, "acqUnitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
@@ -7647,7 +7592,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					while(it.hasNext()){
 						boolean isDel=true;
 						ExportDisplayInstanceData instanceData=(ExportDisplayInstanceData)it.next();
-						if(protocolName.equalsIgnoreCase(instanceData.getProtocol()) 
+						if(protocolName.equalsIgnoreCase(instanceData.getProtocolName()) 
+								&& protocolDeviceType.equalsIgnoreCase(instanceData.getProtocolDeviceType())
 								&& displayUnitName.equalsIgnoreCase(instanceData.getDisplayUnitName())
 								&& acqUnitName.equalsIgnoreCase(instanceData.getAcqUnitName())
 								&& instanceName.equalsIgnoreCase(instanceData.getName())
@@ -7820,40 +7766,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getImportAlarmInstanceItemsData")
-	public String getImportAlarmInstanceItemsData() throws IOException {
-		HttpSession session=request.getSession();
-		String protocolName=ParamUtils.getParameter(request, "protocolName");
-		String unitName=ParamUtils.getParameter(request, "unitName");
-		String instanceName=ParamUtils.getParameter(request, "instanceName");
-		String alarmType=ParamUtils.getParameter(request, "alarmType");
-		
-		
-		List<ExportAlarmInstanceData> uploadInstanceList=null;
-		User user = (User) session.getAttribute("userLogin");
-		String key="uploadAlarmInstanceFile"+(user!=null?user.getUserNo():0);
-		try{
-			if(session.getAttribute(key)!=null){
-				uploadInstanceList=(List<ExportAlarmInstanceData>) session.getAttribute(key);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-		}
-		String json = acquisitionUnitItemManagerService.getImportAlarmInstanceItemsData(uploadInstanceList,protocolName,unitName,instanceName,alarmType,user);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/saveSingelImportedAlarmInstance")
 	public String saveSingelImportedAlarmInstance() throws Exception {
 		HttpSession session=request.getSession();
 		String protocolName=ParamUtils.getParameter(request, "protocolName");
+		String protocolDeviceType=ParamUtils.getParameter(request, "protocolDeviceType");
+		
 		String unitName=ParamUtils.getParameter(request, "unitName");
 		String instanceName=ParamUtils.getParameter(request, "instanceName");
 		User user = (User) session.getAttribute("userLogin");
@@ -7867,7 +7785,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					while(it.hasNext()){
 						boolean isDel=true;
 						ExportAlarmInstanceData instanceData=(ExportAlarmInstanceData)it.next();
-						if(protocolName.equalsIgnoreCase(instanceData.getProtocol()) 
+						if(protocolName.equalsIgnoreCase(instanceData.getProtocolName()) 
+								&& protocolDeviceType.equalsIgnoreCase(instanceData.getProtocolDeviceType()) 
 								&& unitName.equalsIgnoreCase(instanceData.getUnitName())
 								&& instanceName.equalsIgnoreCase(instanceData.getName())
 								){

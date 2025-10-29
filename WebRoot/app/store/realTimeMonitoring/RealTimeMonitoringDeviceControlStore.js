@@ -56,8 +56,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                 align: 'center',
                                 pack: 'center'
                             },
-//                            layout: 'auto', // 设置为auto，在onWidgetAttach中动态设置
-                            
                             style: {
                                 margin: '0 auto',
                                 padding: '1px 0' // 增加上下内边距
@@ -84,11 +82,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                             
                             // 根据按钮数量设置行高 (每个按钮高度约30px + 间距)
                             var rowHeight = Math.max(buttonCount * 20, 22);
-                            
-//                            var rowHeight = Math.max(buttonCount * 20, 22);
-//                            if(buttonCount==2){
-//                            	rowHeight = Math.max(1 * 20, 22);
-//                            }
                             meta.tdStyle = 'height: ' + rowHeight + 'px; vertical-align: middle;';
                             return value;
                         },
@@ -98,8 +91,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                             
                             var resolutionMode = record.data.resolutionMode;
                             var itemMeaning = record.data.itemMeaning || [];
-//                            var commStatus = record.data.commStatus;
-//                            var isControl = record.data.isControl;
                             
                             var buttonsToShow = [];
                             
@@ -151,58 +142,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                     }
                                 });
                             });
-                            
-                            
-                         // 根据按钮数量设置布局
-//                            if (buttonsToShow.length === 2) {
-//                                // 2个按钮时使用水平布局
-//                                widget.setLayout({
-//                                    type: 'hbox',
-//                                    align: 'center',
-//                                    pack: 'center'
-//                                });
-//                                
-//                                // 创建水平排列的按钮
-//                                buttonsToShow.forEach(function(btnConfig, index) {
-//                                    var button = widget.add({
-//                                        xtype: 'button',
-//                                        text: btnConfig.text,
-//                                        height: 20,
-//                                        width: 35, // 稍微调小宽度以适应水平排列
-//                                        margin: '0 3', // 水平间距
-//                                        value: btnConfig.value,
-//                                        index: btnConfig.index,
-//                                        disabled: !(commStatus > 0 && isControl == 1),
-//                                        handler: function(btn) {
-//                                            controlBtnHandler(btn, btn.index);
-//                                        }
-//                                    });
-//                                });
-//                            } else {
-//                                // 1个或3个按钮时使用垂直布局
-//                                widget.setLayout({
-//                                    type: 'vbox',
-//                                    align: 'center',
-//                                    pack: 'center'
-//                                });
-//                                
-//                                // 创建垂直排列的按钮
-//                                buttonsToShow.forEach(function(btnConfig) {
-//                                    var button = widget.add({
-//                                        xtype: 'button',
-//                                        text: btnConfig.text,
-//                                        height: 20,
-//                                        width: 80,
-//                                        margin: '2 0', // 垂直间距
-//                                        value: btnConfig.value,
-//                                        index: btnConfig.index,
-//                                        disabled: !(commStatus > 0 && isControl == 1),
-//                                        handler: function(btn) {
-//                                            controlBtnHandler(btn, btn.index);
-//                                        }
-//                                    });
-//                                });
-//                            }
                         }
                     }],
                     listeners: {

@@ -81,7 +81,34 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                 	}else{
                 		Ext.getCmp("modbusInstanceDisplayUnit_Id").setValue(record.data.id);
                 	}
-                	
+                },
+                blur: function (t, e) {
+                    var value_ = t.getValue();
+                    if(value_!=''){
+                    	var instanceName=Ext.getCmp("formModbusProtocolDisplayInstanceName_Id").getValue();
+                    	Ext.Ajax.request({
+                            method: 'POST',
+                            params: {
+                            	instanceName: instanceName,
+                            	unitId:t.value
+                            },
+                            url: context + '/acquisitionUnitManagerController/judgeDisplayInstanceExistOrNot',
+                            success: function (response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                var msg_ = obj.msg;
+                                if (msg_ == "1") {
+                                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.displayInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                	    if (btn == 'ok'){
+                                	    	t.focus(true, 100);
+                                	    }
+                                	});
+                                }
+                            },
+                            failure: function (response, opts) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -98,6 +125,11 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                 anchor: '100%',
                 name: "protocolDisplayInstance.id"
             },{
+				xtype : "hidden",
+				id : 'modbusInstanceDisplayUnit_Id',
+				value: 0,
+				name : "protocolDisplayInstance.DisplayUnitId"
+			},protocolAndDisplayUnitTree,{
                 id: 'formModbusProtocolDisplayInstanceName_Id',
                 name: "protocolDisplayInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
@@ -108,10 +140,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
+                        	var unitId=Ext.getCmp("modbusInstanceDisplayUnit_Id").getValue();
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	instanceName: t.value
+                                	instanceName: t.value,
+                                	unitId:unitId
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeDisplayInstanceExistOrNot',
                                 success: function (response, opts) {
@@ -133,11 +167,6 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                     }
                 }
             },{
-				xtype : "hidden",
-				id : 'modbusInstanceDisplayUnit_Id',
-				value: 0,
-				name : "protocolDisplayInstance.DisplayUnitId"
-			},protocolAndDisplayUnitTree,{
             	xtype: 'numberfield',
             	id: "modbusProtocolDisplayInstanceSort_Id",
                 name: 'protocolDisplayInstance.sort',

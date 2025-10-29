@@ -16,7 +16,9 @@ public class ExportDisplayInstanceData {
 
     private String AcqUnitName;
 
-    private String Protocol;
+    private String ProtocolName;
+
+    private String ProtocolDeviceType;
 
     public void setId(int Id){
         this.Id = Id;
@@ -60,10 +62,16 @@ public class ExportDisplayInstanceData {
     public String getAcqUnitName(){
         return this.AcqUnitName;
     }
-    public void setProtocol(String Protocol){
-        this.Protocol = Protocol;
-    }
-    public String getProtocol(){
-        return this.Protocol;
-    }
+	public String getProtocolName() {
+		return ProtocolName;
+	}
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
+	}
 }

@@ -948,6 +948,23 @@ public class StringManagerUtils {
     public static boolean isNumber(String value) {
         return isNotNull(value) && (isInteger(value) || isDouble(value));
     }
+    
+    public static boolean isNumberArr(String value,String sign) {
+    	boolean r=true;
+    	if(!isNotNull(value)){
+    		r= false;
+    	}else{
+    		String[] valueArr=value.split(sign);
+    		for(String v:valueArr){
+    			if( !(isInteger(v) || isDouble(v)) ){
+    				r= false;
+    				break;
+    			}
+    		}
+    	}
+    	
+        return r;
+    }
 
     /**
      * 将数字转化为字符串，并格式化为指定的长度，不够位数的前面补指定字符 Input: 1, 5, '0' Output: "00001"
@@ -4734,5 +4751,69 @@ public class StringManagerUtils {
         }
         
         return null;
+    }
+    
+    /**
+     * 将整型数据转换为16位byte数组
+     * @param value 整型数据
+     * @return 16位byte数组
+     */
+    public static byte[] intTo16BitArray(int value) {
+        byte[] result = new byte[16];
+        
+        for (int i = 0; i < 16; i++) {
+            // 检查第i位是否为1
+            if ((value & (1 << i)) != 0) {
+                result[15 - i] = 1;  // 高位在前
+            } else {
+                result[15 - i] = 0;
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 将16位byte数组转换为整型
+     * @param array 16位byte数组
+     * @return 整型数值
+     */
+    public static int bitArrayToInt(byte[] array) {
+        if (array.length != 16) {
+            throw new IllegalArgumentException("数组长度必须为16");
+        }
+        
+        int result = 0;
+        for (int i = 0; i < 16; i++) {
+            if (array[i] == 1) {
+                result |= (1 << (15 - i));
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 设置数组中某一位的值
+     * @param array byte数组
+     * @param position 位置 (0-15)
+     * @param value 要设置的值 (0或1)
+     */
+    public static void setBit(byte[] array, int position, byte value) {
+        if (position < 0 || position >= 16) {
+            throw new IllegalArgumentException("位置必须在0-15之间");
+        }
+        if (value != 0 && value != 1) {
+            throw new IllegalArgumentException("值必须为0或1");
+        }
+        
+        array[position] = value;
+    }
+    
+    public static int editIntDataBit(int data,int position, byte value){
+    	byte[] bitArr=intTo16BitArray(data);
+    	setBit(bitArr,position,value);
+    	int r=bitArrayToInt(bitArr);
+    	return r;
     }
 }

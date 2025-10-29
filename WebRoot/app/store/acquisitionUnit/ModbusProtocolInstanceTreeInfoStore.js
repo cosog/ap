@@ -30,7 +30,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
         				}
         			}
         		}
-        		
         	}
         	var new_params = {
         			protocol: protocolList.join(",")
@@ -107,6 +106,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
                                                 		var configInfo={};
                                                 		configInfo.name=record.data.text;
                                                 		configInfo.deviceType=record.data.deviceType;
+                                                		configInfo.protocol=record.data.protocol;
+                                                		configInfo.protocolDeviceTypeAllPath=record.data.protocolDeviceTypeAllPath;
                                             			configInfo.delidslist=[];
                                             			configInfo.delidslist.push(record.data.id);
                                             			SaveModbusProtocolAcqInstanceData(configInfo);

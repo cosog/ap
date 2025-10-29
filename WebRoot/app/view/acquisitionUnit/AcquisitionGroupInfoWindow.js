@@ -45,8 +45,22 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 		        	if(tabTreeGridPanelSelection.length>0){
 		        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
 		        	}
+		        	var protocolList=[];
+		        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		        	if(protocolTreeGridPanelSelection.length>0){
+		        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+		        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		        		}else{
+		        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+		        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+		        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+		        				}
+		        			}
+		        		}
+		        	}
 					var new_params = {
-							deviceTypeIds: deviceTypeIds
+							deviceTypeIds: deviceTypeIds,
+							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -102,9 +116,23 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 		        	if(tabTreeGridPanelSelection.length>0){
 		        		deviceTypeIds=foreachAndSearchTabChildId(tabTreeGridPanelSelection[0]);
 		        	}
+		        	var protocolList=[];
+		        	var protocolTreeGridPanelSelection= Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id").getSelectionModel().getSelection();
+		        	if(protocolTreeGridPanelSelection.length>0){
+		        		if(protocolTreeGridPanelSelection[0].data.classes==1){
+		        			protocolList.push(protocolTreeGridPanelSelection[0].data.code);
+		        		}else{
+		        			if(isNotVal(protocolTreeGridPanelSelection[0].data.children)){
+		        				for(var i=0;i<protocolTreeGridPanelSelection[0].data.children.length;i++){
+		        					protocolList.push(protocolTreeGridPanelSelection[0].data.children[i].code);
+		        				}
+		        			}
+		        		}
+		        	}
 					var new_params = {
 						protocol:protocol,
-						deviceTypeIds:deviceTypeIds
+						deviceTypeIds:deviceTypeIds,
+						selectedProtocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -165,13 +193,11 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                     blur: function (t, e) {
                         var value_ = t.getValue();
                         if(value_!=''){
-                        	var protocolName=Ext.getCmp("formAcquisitionGroupProtocolComb_Id").rawValue;
-                        	var unitName=Ext.getCmp("formAcquisitionGroupAcqUnitComb_Id").rawValue;
+                        	var unitId=Ext.getCmp("formAcquisitionGroupAcqUnit_Id").rawValue;
                         	Ext.Ajax.request({
                                 method: 'POST',
                                 params: {
-                                	protocolName:protocolName,
-                                	unitName:unitName,
+                                	unitId:unitId,
                                 	groupName: t.value
                                 },
                                 url: context + '/acquisitionUnitManagerController/judgeAcqGroupExistOrNot',

@@ -56,6 +56,7 @@ public class EquipmentDriverServerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast(){
+		
 		CounterUtils.reset();
 		CounterUtils.timer();
 		
@@ -102,7 +103,7 @@ public class EquipmentDriverServerTask {
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","","");
-						initInstanceConfig(null,"");
+						initInstanceConfigByNames(null,"");
 						initSMSInstanceConfig(null,"");
 						if(executor!=null && executor.isCompletedByTaskCount()){
 							//清空内存
@@ -119,7 +120,7 @@ public class EquipmentDriverServerTask {
 						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
-								initInstanceConfig(null,"");
+								initInstanceConfigByNames(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
@@ -129,7 +130,7 @@ public class EquipmentDriverServerTask {
 								driverProbeResponse=adInitProbe();
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
-								initInstanceConfig(null,"");
+								initInstanceConfigByNames(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
@@ -155,7 +156,7 @@ public class EquipmentDriverServerTask {
 								){
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
-								initInstanceConfig(null,"");
+								initInstanceConfigByNames(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
@@ -165,7 +166,7 @@ public class EquipmentDriverServerTask {
 								driverProbeResponse=adInitProbe();
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
-								initInstanceConfig(null,"");
+								initInstanceConfigByNames(null,"");
 								initSMSInstanceConfig(null,"");
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
@@ -247,7 +248,7 @@ public class EquipmentDriverServerTask {
 							initProtocolConfig("","","");
 							driverProbeResponse=adInitProbe();
 						}
-						initInstanceConfig(null,"");
+						initInstanceConfigByNames(null,"");
 						initSMSInstanceConfig(null,"");
 						driverProbeResponse=adInitProbe();
 					}
@@ -260,7 +261,7 @@ public class EquipmentDriverServerTask {
 								initProtocolConfig("","","");
 								driverProbeResponse=adInitProbe();
 							}
-							initInstanceConfig(null,"");
+							initInstanceConfigByNames(null,"");
 							initSMSInstanceConfig(null,"");
 							driverProbeResponse=adInitProbe();
 						}
@@ -300,7 +301,7 @@ public class EquipmentDriverServerTask {
 				if(adStatusProbeResonanceData!=null){
 					initServerConfig();
 					initProtocolConfig("","","");
-					initInstanceConfig(null,"");
+					initInstanceConfigByNames(null,"");
 					initSMSInstanceConfig(null,"");
 					initSMSDevice(null,"");
 					initDriverAcquisitionInfoConfig(null,0,"");
@@ -786,7 +787,7 @@ public class EquipmentDriverServerTask {
 				instanceList.add(obj[0]+"");
 			}
 			if(instanceList.size()>0){
-				initInstanceConfig(instanceList,method);
+				initInstanceConfigByNames(instanceList,method);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -803,7 +804,7 @@ public class EquipmentDriverServerTask {
 				instanceList.add(obj[0]+"");
 			}
 			if(instanceList.size()>0){
-				initInstanceConfig(instanceList,method);
+				initInstanceConfigByNames(instanceList,method);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -820,7 +821,7 @@ public class EquipmentDriverServerTask {
 				instanceList.add(obj[0]+"");
 			}
 			if(instanceList.size()>0){
-				initInstanceConfig(instanceList,method);
+				initInstanceConfigByNames(instanceList,method);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -838,7 +839,7 @@ public class EquipmentDriverServerTask {
 				instanceList.add(obj[0]+"");
 			}
 			if(instanceList.size()>0){
-				initInstanceConfig(instanceList,method);
+				initInstanceConfigByNames(instanceList,method);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -855,7 +856,7 @@ public class EquipmentDriverServerTask {
 				instanceList.add(obj[0]+"");
 			}
 			if(instanceList.size()>0){
-				initInstanceConfig(instanceList,method);
+				initInstanceConfigByNames(instanceList,method);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -864,30 +865,38 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static void deleteInitializedInstance(String instanceName,String protocolName,String protocolAllPath){
-		
-		Gson gson = new Gson();
+		StringBuffer json_buff = new StringBuffer();
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
-		InitInstance initInstance=new InitInstance();
-		initInstance.setInstanceName(protocolAllPath+"/"+protocolName+"/"+instanceName);
-		initInstance.setMethod("update");
-		StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+//		InitInstance initInstance=new InitInstance();
+//		initInstance.setInstanceName(protocolAllPath+"/"+protocolName+"/"+instanceName);
+//		initInstance.setMethod("delete");
+		
+		
+		json_buff.append("{");
+		json_buff.append("\"Method\":\"delete\",");
+		json_buff.append("\"InstanceName\":\""+(protocolAllPath+"/"+protocolName+"/"+instanceName)+"\"");
+		json_buff.append("}");
+		
+		StringManagerUtils.printLog("删除实例："+json_buff.toString());
 		if(initEnable){
-			StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+			StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 		}
 		
 	}
 	
 	public static int deleteInitializedInstance(List<String> instanceNameList){
 		int t=0;
-		Gson gson = new Gson();
+		StringBuffer json_buff = new StringBuffer();
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		for(int i=0;instanceNameList!=null&&i<instanceNameList.size();i++){
-			InitInstance initInstance=new InitInstance();
-			initInstance.setInstanceName(instanceNameList.get(i));
-			initInstance.setMethod("update");
-			StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+			json_buff = new StringBuffer();
+			json_buff.append("{");
+			json_buff.append("\"Method\":\"delete\",");
+			json_buff.append("\"InstanceName\":\""+(instanceNameList.get(i))+"\"");
+			json_buff.append("}");
+			StringManagerUtils.printLog("删除实例："+json_buff.toString());
 			if(initEnable){
-				StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+				StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 			}
 			t++;
 		}
@@ -895,11 +904,11 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static int initInstanceConfig(List<String> instanceList,String method){
+	public static int initInstanceConfigByNames(List<String> instanceList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
-		String instances=StringManagerUtils.joinStringArr(instanceList, ",");
+		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
@@ -909,9 +918,9 @@ public class EquipmentDriverServerTask {
 				InitInstance initInstance=new InitInstance();
 				initInstance.setInstanceName(instanceList.get(i));
 				initInstance.setMethod(method);
-				StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
+				StringManagerUtils.printLog("删除实例："+initInstance.toString());
 				if(initEnable){
-					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
+					StringManagerUtils.sendPostMethod(initUrl, initInstance.toString(),"utf-8",0,0);
 				}
 			}
 		}else{
@@ -1038,147 +1047,6 @@ public class EquipmentDriverServerTask {
 					}
 				}
 				
-			}
-		}
-		return result;
-	}
-	
-	@SuppressWarnings("static-access")
-	public static int initInstanceConfig2(List<String> instanceList,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
-		Gson gson = new Gson();
-		int result=0;
-		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
-		if(!StringManagerUtils.isNotNull(method)){
-			method="update";
-		}
-		
-		if("delete".equalsIgnoreCase(method)){
-			for(int i=0;instanceList!=null&&i<instanceList.size();i++){
-				InitInstance initInstance=new InitInstance();
-				initInstance.setInstanceName(instanceList.get(i));
-				initInstance.setMethod(method);
-				StringManagerUtils.printLog("删除实例："+gson.toJson(initInstance));
-				if(initEnable){
-					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
-				}
-			}
-		}else{
-			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"//1~3
-					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//4~7
-					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//8~10
-					+ " t.packetsendinterval,"//11
-					+ " t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//12~16
-//					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//17
-					+ " rtrim(xmlagg(xmlparse(content t5.itemname || ',' wellformed) order by t5.id).getclobval(),',' ) key"
-					+ " from tbl_protocolinstance t "
-					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
-					+ " left outer join tbl_acq_group2unit_conf t3 on t2.id=t3.unitid "
-					+ " left outer join tbl_acq_group_conf t4 on t3.groupid=t4.id "
-					+ " left outer join tbl_acq_item2group_conf t5 on t4.id=t5.groupid  "
-					+ " where 1=1 ";
-			if(StringManagerUtils.isNotNull(instances)){
-				sql+=" and t.name in("+instances+")";
-			}
-			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
-					+ "t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
-					+ "t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
-					+ "t.packetsendinterval,"
-					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type";
-			Map<String,InitInstance> InstanceListMap=new HashMap<String,InitInstance>();
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			Connection conn = null;   
-			PreparedStatement pstmt = null;   
-			ResultSet rs = null;
-			conn=OracleJdbcUtis.getConnection();
-			if(conn==null || modbusProtocolConfig==null){
-	        	return -1;
-	        }
-			try {
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					InitInstance initInstance=InstanceListMap.get(rs.getString(1));
-					if(initInstance==null){
-						initInstance=new InitInstance();
-						initInstance.setMethod(method);
-						initInstance.setInstanceName(rs.getString(1));
-						initInstance.setProtocolName(rs.getString(12));
-						initInstance.setAcqProtocolType(rs.getString(2));
-						initInstance.setCtrlProtocolType(rs.getString(3));
-						
-						initInstance.setSignInPrefixSuffixHex(rs.getInt(4)==1);
-						initInstance.setSignInPrefix(rs.getString(5)==null?"":rs.getString(5));
-						initInstance.setSignInSuffix(rs.getString(6)==null?"":rs.getString(6));
-						initInstance.setSignInIDHex(rs.getInt(7)==1);
-						
-						initInstance.setHeartbeatPrefixSuffixHex(rs.getInt(8)==1);
-						initInstance.setHeartbeatPrefix(rs.getString(9)==null?"":rs.getString(9));
-						initInstance.setHeartbeatSuffix(rs.getString(10)==null?"":rs.getString(10));
-						
-						initInstance.setPacketSendInterval(rs.getInt(11));
-						
-						initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
-						initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
-					}
-					if(StringManagerUtils.isNotNull(rs.getString(14))){
-						InitInstance.Group group=new InitInstance.Group();
-						group.setGroupTimingInterval(rs.getInt(15));
-						group.setAddr(new ArrayList<Integer>());
-						int groupType=rs.getInt(16);
-						String itemsStr="";
-						try {
-							itemsStr=StringManagerUtils.CLOBtoString2(rs.getClob(17));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						
-						if(StringManagerUtils.isNotNull(itemsStr)){
-							String[] itemsArr=itemsStr.split(",");
-							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-								if(modbusProtocolConfig.getProtocol().get(i).getCode().equalsIgnoreCase(rs.getString(12))){
-									for(int j=0;j<itemsArr.length;j++){
-										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-											if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
-												if(!StringManagerUtils.existOrNot(group.getAddr(), modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr())){
-													String rwType=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType();
-													if((groupType==1&&(!"r".equalsIgnoreCase(rwType))) || (groupType==0&&(!"w".equalsIgnoreCase(rwType)))){
-														group.getAddr().add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr());
-													}
-												}
-												break;
-											}
-										}
-									}
-									Collections.sort(group.getAddr());
-									break;
-								}
-							}
-						}
-						if(groupType==1){//控制组
-							initInstance.getCtrlGroup().add(group);
-						}else{
-							initInstance.getAcqGroup().add(group);
-						}
-					}
-					InstanceListMap.put(initInstance.getInstanceName(), initInstance);
-				}
-				result=InstanceListMap.size();
-				for(Entry<String, InitInstance> entry:InstanceListMap.entrySet()){
-					try {
-						StringManagerUtils.printLog("实例初始化："+gson.toJson(entry.getValue()));
-						if(initEnable){
-							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8",0,0);
-						}
-					}catch (Exception e) {
-						continue;
-					}
-				}
-			} catch (SQLException e) {
-				StringManagerUtils.printLog("实例初始化sql："+sql);
-				e.printStackTrace();
-			} finally{
-				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			}
 		}
 		return result;

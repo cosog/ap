@@ -28,6 +28,7 @@ import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.model.calculate.ResultStatusData;
 import com.cosog.model.data.DataDictionary;
+import com.cosog.model.drive.AcqAddrData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
@@ -448,7 +449,7 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public int DeviceControlOperation_Mdubus(String protocolCode,String deviceId,String deviceName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
+	public int DeviceControlOperation_Mdubus(String protocolCode,String deviceId,String deviceName,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue,String bitIndex){
 		int result=-1;
 		try {
 			Gson gson = new Gson();
@@ -465,17 +466,25 @@ public class RealTimeMonitoringController extends BaseController {
 			String title="";
 			float ratio=1;
 			int quantity=1;
+			int resolutionMode=2;
+			String IFDataType="";
+			String storeDataType="";
+			ModbusProtocolConfig.Items item=null;
 			for(int i=0;i<protocol.getItems().size();i++){
 				String col="";
 				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
 					col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
 				}
 				if(itemCode.equalsIgnoreCase(col)){
+					item=protocol.getItems().get(i);
 					addr=protocol.getItems().get(i).getAddr();
 					dataType=protocol.getItems().get(i).getIFDataType();
 					title=protocol.getItems().get(i).getTitle();
 					ratio=protocol.getItems().get(i).getRatio();
 					quantity=protocol.getItems().get(i).getQuantity();
+					resolutionMode=protocol.getItems().get(i).getResolutionMode();
+					IFDataType=protocol.getItems().get(i).getIFDataType();
+					storeDataType=protocol.getItems().get(i).getStoreDataType();
 					break;
 				}
 			}
@@ -515,7 +524,7 @@ public class RealTimeMonitoringController extends BaseController {
 				}
 			}
 			
-			if(StringManagerUtils.isNotNull(title) && addr!=-99){
+			if(StringManagerUtils.isNotNull(title) && addr!=-99 && item!=null){
 				String ctrlJson="{"
 						+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
 						+ "\"Slave\":"+Slave+","
@@ -527,14 +536,51 @@ public class RealTimeMonitoringController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
+				
+				//开关量控制
 				String responseStr="";
-				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-				if(StringManagerUtils.isNotNull(responseStr)){
-					type = new TypeToken<ResultStatusData>() {}.getType();
-					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
-					result=resultStatusData.getResultStatus();
+				if(resolutionMode==0){
+					//先读取寄存器值
+					responseStr=StringManagerUtils.sendPostMethod(url, readJson,"utf-8",0,0);
+					
+//					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
+					
+					StringManagerUtils.printLog("发送读地址命令:"+readJson+";返回数据:"+responseStr);
+					type = new TypeToken<AcqAddrData>() {}.getType();
+					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
+					int readResult=acqAddrData.getResultStatus();
+					if(readResult==1 && acqAddrData.getValue()!=null && acqAddrData.getValue().size()==1){//读取成功后，再写地址
+						String readValueStr=acqAddrData.getValue().get(0).toString();
+						if(StringManagerUtils.isNotNull(readValueStr) && StringManagerUtils.isInteger(readValueStr) && StringManagerUtils.isInteger(controlValue)){
+							int readValue=StringManagerUtils.stringToInteger(readValueStr);
+							int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue));
+							ctrlJson="{"
+									+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
+									+ "\"Slave\":"+Slave+","
+									+ "\"Addr\":"+addr+","
+									+ "\"Value\":["+w+"]"
+									+ "}";
+							
+							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+							StringManagerUtils.printLog("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+							if(StringManagerUtils.isNotNull(responseStr)){
+								type = new TypeToken<ResultStatusData>() {}.getType();
+								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+								result=resultStatusData.getResultStatus();
+							}
+							realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+						}
+					}
+				}else{
+					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+					StringManagerUtils.printLog("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+					if(StringManagerUtils.isNotNull(responseStr)){
+						type = new TypeToken<ResultStatusData>() {}.getType();
+						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+						result=resultStatusData.getResultStatus();
+					}
+					realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
 				}
-				realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -551,6 +597,8 @@ public class RealTimeMonitoringController extends BaseController {
 		String password = request.getParameter("password");
 		String controlType = request.getParameter("controlType");
 		String controlValue = request.getParameter("controlValue");
+		String bitIndex = request.getParameter("bitIndex");
+		
 		String jsonLogin = "";
 		String clientIP=StringManagerUtils.getIpAddr(request);
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -580,7 +628,7 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocolCode) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocolCode,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocolCode,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue,bitIndex);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){
@@ -621,6 +669,8 @@ public class RealTimeMonitoringController extends BaseController {
 		String deviceName = request.getParameter("deviceName");
 		String controlType = request.getParameter("controlType");
 		String controlValue = request.getParameter("controlValue");
+		String bitIndex = request.getParameter("bitIndex");
+		int quantity = StringManagerUtils.stringToInteger(request.getParameter("quantity"));
 		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -629,7 +679,9 @@ public class RealTimeMonitoringController extends BaseController {
 		// 用户不存在
 		if (null != userInfo) {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
-			if (StringManagerUtils.isNotNull(controlValue) && StringManagerUtils.isNumber(controlValue)) {
+			if (StringManagerUtils.isNotNull(controlValue) && 
+					( (quantity==1 && StringManagerUtils.isNumber(controlValue)) || (quantity>1 && StringManagerUtils.isNumberArr(controlValue,",")) )
+					) {
 				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;
@@ -644,7 +696,7 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,tcpType,signinid,ipPort,slave,controlType,controlValue,bitIndex);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
 							}else if(reslut==0){

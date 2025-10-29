@@ -2292,7 +2292,7 @@ public class MemoryDataManagerTask {
 				instanceSql+=" and t.displayunitid in( "
 						+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
 						+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
-						+ " and t4.protocol='"+protocolName+"' "
+						+ " and t4.name='"+protocolName+"' "
 						+ " and t4.deviceType="+deviceType
 						+ " )";
 			}
@@ -4390,19 +4390,19 @@ public class MemoryDataManagerTask {
 		return protocol;
 	}
 	
-	public static ModbusProtocolConfig.Protocol getProtocolByName(String protocolName){
-		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
-		ModbusProtocolConfig.Protocol protocol=null;
-		if(StringManagerUtils.isNotNull(protocolName)){
-			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(i);
-					break;
-				}
-			}
-		}
-		return protocol;
-	}
+//	public static ModbusProtocolConfig.Protocol getProtocolByName(String protocolName){
+//		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
+//		ModbusProtocolConfig.Protocol protocol=null;
+//		if(StringManagerUtils.isNotNull(protocolName)){
+//			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+//					protocol=modbusProtocolConfig.getProtocol().get(i);
+//					break;
+//				}
+//			}
+//		}
+//		return protocol;
+//	}
 	
 	public static ModbusProtocolConfig.Protocol getProtocolByNameAndDevicetype(String protocolName,int deviceType){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();

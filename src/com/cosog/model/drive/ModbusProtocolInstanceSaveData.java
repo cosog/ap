@@ -27,6 +27,9 @@ public class ModbusProtocolInstanceSaveData {
 	
 	public String sort;
 	
+	public String protocol;
+	public String protocolDeviceTypeAllPath;
+	
 	private List<String> delidslist;
 
 	public int getId() {
@@ -171,5 +174,21 @@ public class ModbusProtocolInstanceSaveData {
 
 	public void setHeartbeatPrefixSuffixHex(int heartbeatPrefixSuffixHex) {
 		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	public String getProtocolDeviceTypeAllPath() {
+		return protocolDeviceTypeAllPath;
+	}
+
+	public void setProtocolDeviceTypeAllPath(String protocolDeviceTypeAllPath) {
+		this.protocolDeviceTypeAllPath = protocolDeviceTypeAllPath;
 	}
 }

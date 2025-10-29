@@ -14,7 +14,9 @@ public class ExportAlarmInstanceData {
 
     private String UnitName;
     
-    private String Protocol;
+    private String ProtocolName;
+    
+    private String ProtocolDeviceType;
 
     public void setId(int Id){
         this.Id = Id;
@@ -53,10 +55,16 @@ public class ExportAlarmInstanceData {
     public String getUnitName(){
         return this.UnitName;
     }
-	public String getProtocol() {
-		return Protocol;
+	public String getProtocolName() {
+		return ProtocolName;
 	}
-	public void setProtocol(String protocol) {
-		Protocol = protocol;
+	public void setProtocolName(String protocolName) {
+		ProtocolName = protocolName;
+	}
+	public String getProtocolDeviceType() {
+		return ProtocolDeviceType;
+	}
+	public void setProtocolDeviceType(String protocolDeviceType) {
+		ProtocolDeviceType = protocolDeviceType;
 	}
 }

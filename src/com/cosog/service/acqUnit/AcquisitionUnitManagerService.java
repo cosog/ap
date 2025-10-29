@@ -1449,6 +1449,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
 								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+							
 							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
 								for(int i=0;i<acqItemsList.size();i++){
 									if(acqItemsList.get(i).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
@@ -2263,33 +2264,42 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
 								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 							Collections.sort(protocolConfig.getItems().get(j).getMeaning());//排序
+							
 							for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-								checked=false;
-								realtimeSort="";
-								showLevel="";
-								for(int m=0;m<itemsList.size();m++){
-									if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
-											&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
-										){
-										checked=true;
-										realtimeSort=itemsRealtimeSortList.get(m);
-										showLevel=itemsShowLevelList.get(m);
+								for(int i=0;i<acqItemsList.size();i++){
+									if(acqItemsList.get(i).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+											&& acqItemsBitIndexList.get(i).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")){
+										checked=false;
+										realtimeSort="";
+										showLevel="";
+										for(int m=0;m<itemsList.size();m++){
+											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
+													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
+												){
+												checked=true;
+												realtimeSort=itemsRealtimeSortList.get(m);
+												showLevel=itemsShowLevelList.get(m);
+												break;
+											}
+										}
+										
+										result_json.append("{"
+												+ "\"checked\":"+checked+","
+												+ "\"id\":"+(index)+","
+												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+  protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
+												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
+												+ "\"RWType\":\""+RWType+"\","
+												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+												+ "\"resolutionMode\":\""+resolutionMode+"\","
+												+ "\"showLevel\":\""+showLevel+"\","
+												+ "\"realtimeSort\":\""+realtimeSort+"\""
+												+ "},");
+										index++;
 										break;
 									}
 								}
-								
-								result_json.append("{"
-										+ "\"checked\":"+checked+","
-										+ "\"id\":"+(index)+","
-										+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-										+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-										+ "\"RWType\":\""+RWType+"\","
-										+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-										+ "\"resolutionMode\":\""+resolutionMode+"\","
-										+ "\"showLevel\":\""+showLevel+"\","
-										+ "\"realtimeSort\":\""+realtimeSort+"\""
-										+ "},");
-								index++;
 							}
 						}else{
 							checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
@@ -2305,7 +2315,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							result_json.append("{\"checked\":"+checked+","
 									+ "\"id\":"+(index)+","
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+									+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+									+ "\"bitIndex\":\"\","
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"resolutionMode\":\""+resolutionMode+"\","

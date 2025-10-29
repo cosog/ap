@@ -701,13 +701,14 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
-						+"{data:'title'},"
+						+"{data:'showTitle'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
-						+"{data:'bitIndex'}"
+						+"{data:'bitIndex'},"
+						+"{data:'title'}"
 						+"]";
 				
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -786,7 +787,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [6,7,8],
+	                    columns: [6,7,8,9],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1456,14 +1457,14 @@ var grantDisplayCtrlItemsPermission = function () {
 
     Ext.Array.each(ctrlItemsData, function (name, index, countriesItSelf) {
         if ((ctrlItemsData[index][0]+'')==='true') {
-        	var itemName = ctrlItemsData[index][2];
         	
-        	var itemShowLevel = ctrlItemsData[index][4];
-        	var itemRealtimeSort = ctrlItemsData[index][5];
+        	var itemName = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'title');
+        	var itemShowLevel = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel');
+        	var itemRealtimeSort = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'realtimeSort');
         	
-        	var resolutionMode = ctrlItemsData[index][6];
-        	var itemAddr = ctrlItemsData[index][7];
-        	var bitIndex=ctrlItemsData[index][8];
+        	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
+        	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');
+        	var bitIndex=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
             
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);

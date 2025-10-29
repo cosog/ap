@@ -1177,6 +1177,9 @@ function controlBtnHandler(btn,btnIndex){
 	    var commStatus = record.data.commStatus;
 	    var resolutionMode = record.data.resolutionMode;
 	    var itemMeaning = record.data.itemMeaning;
+	    var bitIndex = record.data.bitIndex;
+	    
+	    var quantity = record.data.quantity;
 		
 	    var all_loading = new Ext.LoadMask({msg: loginUserLanguageResource.commandSending+'...',target: Ext.getBody().component});
 	    
@@ -1189,6 +1192,7 @@ function controlBtnHandler(btn,btnIndex){
                     deviceId: deviceId,
                     deviceName: deviceName,
                     controlType: itemcode,
+                    quantity: quantity,
                     controlValue: itemMeaning[btnIndex][0]
                 },
                 success: function (response, action) {
@@ -1225,6 +1229,8 @@ function controlBtnHandler(btn,btnIndex){
                         deviceId: deviceId,
                         deviceName: deviceName,
                         controlType: itemcode,
+                        bitIndex: bitIndex,
+                        quantity: quantity,
                         controlValue: 1
                     },
                     success: function (response, action) {
@@ -1260,6 +1266,8 @@ function controlBtnHandler(btn,btnIndex){
                         deviceId: deviceId,
                         deviceName: deviceName,
                         controlType: itemcode,
+                        bitIndex: bitIndex,
+                        quantity: quantity,
                         controlValue: 0
                     },
                     success: function (response, action) {

@@ -4178,6 +4178,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int isControl=StringManagerUtils.getModuleRightFlagFromMatrix(matrix,2);
 			
 			List<String> controlItems=new ArrayList<String>();
+			List<String> controlItemBitindexList=new ArrayList<String>();
 			List<String> controlColumns=new ArrayList<String>();
 			List<Integer> controlItemResolutionMode=new ArrayList<Integer>();
 			List<String> controlItemMeaningList=new ArrayList<String>();
@@ -4189,16 +4190,29 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 				if(protocol!=null){
 					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
-						if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+						if(displayInstanceOwnItem.getItemList().get(j).getType()==2 
+								&& displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 							for(int k=0;k<protocol.getItems().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(protocol.getItems().get(k).getTitle())){
 									if("rw".equalsIgnoreCase(protocol.getItems().get(k).getRWType())
 											||"w".equalsIgnoreCase(protocol.getItems().get(k).getRWType())){
 										String title=protocol.getItems().get(k).getTitle();
+										
+										if(protocol.getItems().get(k).getResolutionMode()==0 && protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0 ){
+											int bitIndex=displayInstanceOwnItem.getItemList().get(j).getBitIndex();
+											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getItems().get(k).getMeaning()){
+												if(itemsMeaning.getValue()==bitIndex){
+													title+="/"+itemsMeaning.getMeaning();
+												}
+											}
+										}
+										
+										
 										if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
 											title+="("+protocol.getItems().get(k).getUnit()+")";
 										}
 										controlItems.add(title);
+										controlItemBitindexList.add(displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"");
 										controlItemList.add(protocol.getItems().get(k));
 										String col="";
 										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
@@ -4252,8 +4266,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							+ "\"deviceId\":\""+deviceId+"\","
 							+ "\"deviceName\":\""+deviceName+"\","
 							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
-							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
 							+ "\"itemcode\":\""+controlColumns.get(i)+"\","
+							+ "\"bitIndex\":\""+controlItemBitindexList.get(i)+"\","
 							+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
 							
 							+ "\"storeDataType\":\""+controlItemList.get(i).getStoreDataType()+"\","

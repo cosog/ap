@@ -166,9 +166,9 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 			curveConfig.yAxisOpposite=yAxisOpposite;
                 			curveConfig.color=color;
                 			if(parseInt(col)==12){
-                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),20,curveConfig);
-                			}else if(parseInt(col)==19){
                 				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),21,curveConfig);
+                			}else if(parseInt(col)==19){
+                				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),22,curveConfig);
                 			}
                 		}else if(tableType==21){//单井区间报表汇总计算项
                 			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);

@@ -2140,10 +2140,16 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<acquisitionItemInfoList.size();i++){
 				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
+					String title=acquisitionItemInfoList.get(i).getTitle();
 					cs.setString(1, wellName);
 					cs.setString(2, deviceType);
 					cs.setString(3, acqTime);
-					cs.setString(4, acquisitionItemInfoList.get(i).getTitle());
+					
+					if(acquisitionItemInfoList.get(i).getType()==0 && StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(i).getResolutionMode())==0   ){
+						title=acquisitionItemInfoList.get(i).getRawTitle()+"/"+title;
+					}
+					
+					cs.setString(4, title);
 					cs.setInt(5, acquisitionItemInfoList.get(i).getAlarmType());
 					cs.setString(6, acquisitionItemInfoList.get(i).getRawValue());
 					cs.setString(7, acquisitionItemInfoList.get(i).getAlarmInfo());

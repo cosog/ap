@@ -4181,6 +4181,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> controlItemBitindexList=new ArrayList<String>();
 			List<String> controlColumns=new ArrayList<String>();
 			List<Integer> controlItemResolutionMode=new ArrayList<Integer>();
+			List<Integer> controlItemSwitchingValueShowType=new ArrayList<Integer>();
 			List<String> controlItemMeaningList=new ArrayList<String>();
 			List<ModbusProtocolConfig.Items> controlItemList=new ArrayList<>();
 			StringBuffer deviceControlList=new StringBuffer();
@@ -4202,7 +4203,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											int bitIndex=displayInstanceOwnItem.getItemList().get(j).getBitIndex();
 											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getItems().get(k).getMeaning()){
 												if(itemsMeaning.getValue()==bitIndex){
-													title+="/"+itemsMeaning.getMeaning();
+													if(displayInstanceOwnItem.getItemList().get(j).getSwitchingValueShowType()==1){
+														title+="/"+itemsMeaning.getMeaning();
+													}else{
+														title=itemsMeaning.getMeaning();
+													}
 												}
 											}
 										}

@@ -779,7 +779,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 							
 							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
 							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
-							displayUnitItem.setMatrix(module_[21]);
+							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[21]):0);
+							displayUnitItem.setMatrix(module_[22]);
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
@@ -807,7 +808,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
 							displayUnitItem.setRealtimeCurveConf(module_[14]);
 							displayUnitItem.setHistoryCurveConf(module_[15]);
-							displayUnitItem.setMatrix(module_[21]);
+							displayUnitItem.setSwitchingValueShowType(0);
+							displayUnitItem.setMatrix(module_[22]);
 							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 						}
 					}
@@ -886,7 +888,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
 						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setMatrix(module_[6]);
+						displayUnitItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(module_[6]));
+						displayUnitItem.setMatrix(module_[7]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
 					

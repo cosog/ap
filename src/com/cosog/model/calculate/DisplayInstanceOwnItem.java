@@ -44,6 +44,8 @@ public class DisplayInstanceOwnItem implements Serializable {
 		private int  historyOverviewSort;
 		private int historyData;
 		
+		private int switchingValueShowType;
+		
 		public int getItemId() {
 			return itemId;
 		}
@@ -187,6 +189,12 @@ public class DisplayInstanceOwnItem implements Serializable {
 		}
 		public void setHistoryData(int historyData) {
 			this.historyData = historyData;
+		}
+		public int getSwitchingValueShowType() {
+			return switchingValueShowType;
+		}
+		public void setSwitchingValueShowType(int switchingValueShowType) {
+			this.switchingValueShowType = switchingValueShowType;
 		}
 	}
 	

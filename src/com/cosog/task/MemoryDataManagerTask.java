@@ -2096,7 +2096,8 @@ public class MemoryDataManagerTask {
 					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 					+ "t.type,"
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
+					+ "t.switchingValueShowType "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3,"
 					+ " tbl_acq_unit_conf t4,tbl_protocol t5 "
 					+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t2.acqunitid =t4.id and t4.protocol=t5.code";
@@ -2175,6 +2176,8 @@ public class MemoryDataManagerTask {
     				displayItem.setHistoryOverview(rs.getInt(21));
     				displayItem.setHistoryOverviewSort(rs.getInt(22));
     				displayItem.setHistoryData(rs.getInt(23));
+    				
+    				displayItem.setSwitchingValueShowType(rs.getInt(24));
     				
     				int index=-1;
     				for(int i=0;i<displayInstanceOwnItem.getItemList().size();i++){

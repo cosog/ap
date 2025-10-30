@@ -496,15 +496,15 @@ var grantAcquisitionItemsPermission = function (groupType) {
     if (driverConfigItemsData.length > 0) {
         Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
             if ((driverConfigItemsData[index][0]+'')==='true') {
-            	var itemName = driverConfigItemsData[index][2];
-            	var itemAddr = driverConfigItemsData[index][3];
-            	var resolutionMode = driverConfigItemsData[index][6];
-            	var bitIndex=driverConfigItemsData[index][7];
+            	var itemName = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'title');
+            	var itemAddr = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'addr');
+            	var resolutionMode = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
+            	var bitIndex=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
             	var dailyTotalCalculate=0;
             	var dailyTotalCalculateName='';
-            	if(driverConfigItemsData[index][8]){
+            	if(protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')){
             		dailyTotalCalculate=1;
-            		dailyTotalCalculateName=driverConfigItemsData[index][9];
+            		dailyTotalCalculateName=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculateName');
             		if(!isNotVal(dailyTotalCalculateName)){
             			dailyTotalCalculateName=itemName.replace('累计','').replace('累积','')+'日累计';
             		}

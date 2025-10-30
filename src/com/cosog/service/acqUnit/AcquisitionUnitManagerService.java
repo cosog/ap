@@ -365,6 +365,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"checked\":"+checked+","
 									+ "\"id\":"+(index)+","
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+									+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
 									+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 									+ "\"quantity\":"+1+","
@@ -397,6 +398,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						result_json.append("{\"checked\":"+checked+","
 								+ "\"id\":"+(index)+","
 								+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+								+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 								+ "\"bitIndex\":\"\","
 								+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 								+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
@@ -1332,7 +1334,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<Boolean> historyDataList=new ArrayList<>();
 		
 		List<Boolean> historyOverviewList=new ArrayList<>();
-		List<String> historyOverviewSortList=new ArrayList<String>();
+		List<String> historyOverviewSortList=new ArrayList<>();
+		
+		List<Integer> switchingValueShowTypeList=new ArrayList<>();
 		
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		int index=1;
@@ -1348,7 +1352,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " t.showlevel,t.realtimeCurveConf,historyCurveConf,"
 					+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
+					+ "t.switchingValueShowType "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
 					+ " order by t.realtimeSort";
@@ -1394,6 +1399,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[15]+"")==1);
 				historyOverviewSortList.add(obj[16]+"");
 				historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
+				
+				switchingValueShowTypeList.add(StringManagerUtils.stringToInteger(obj[18]+""));
 			}
 		}
 		
@@ -1431,6 +1438,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						boolean historyOverview=false;
 						String  historyOverviewSort="";
 						boolean historyData=false;
+						
+						String switchingValueShowType="";
 						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0){
 							resolutionMode=languageResourceMap.get("switchingValue");
@@ -1476,6 +1485,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										historyOverviewSort="";
 										historyData=false;
 										
+										switchingValueShowType="";
+										
 										for(int m=0;m<itemsList.size();m++){
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
@@ -1492,6 +1503,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												historyColor=historyColorList.get(m);
 												historyBgColor=historyBgColorList.get(m);
 												
+												if(switchingValueShowTypeList.get(m)==0){
+													switchingValueShowType=languageResourceMap.get("name");
+												}else{
+													switchingValueShowType=languageResourceMap.get("name")+"/"+languageResourceMap.get("meaning");
+												}
 												
 												CurveConf realtimeCurveConfObj=null;
 												if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
@@ -1527,6 +1543,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"checked\":"+checked+","
 												+ "\"id\":"+(index)+","
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
+												
+												
 												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 												+ "\"RWType\":\""+RWType+"\","
@@ -1550,7 +1569,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"realtimeData\":"+realtimeData+","
 												+ "\"historyOverview\":"+historyOverview+","
 												+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-												+ "\"historyData\":"+historyData+""
+												+ "\"historyData\":"+historyData+","
+												+ "\"switchingValueShowType\":\""+switchingValueShowType+"\""
 												+ "},");
 										index++;
 										break;
@@ -1607,6 +1627,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							result_json.append("{\"checked\":"+checked+","
 									+ "\"id\":"+(index)+","
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+									+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 									+ "\"bitIndex\":\"\","
 									+ "\"RWType\":\""+RWType+"\","
@@ -1630,7 +1651,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"realtimeData\":"+realtimeData+","
 									+ "\"historyOverview\":"+historyOverview+","
 									+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-									+ "\"historyData\":"+historyData+""
+									+ "\"historyData\":"+historyData+","
+									+ "\"switchingValueShowType\":\"\""
 									+ "},");
 							index++;
 						}
@@ -1787,7 +1809,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				result_json.append("{\"checked\":"+checked+","
 						+ "\"id\":"+(index)+","
 						+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
+						+ "\"showTitle\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
 						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+						+ "\"resolutionMode\":\"\","
 						+ "\"showLevel\":\""+showLevel+"\","
 						+ "\"realtimeSort\":\""+realtimeSort+"\","
 						+ "\"realtimeColor\":\""+realtimeColor+"\","
@@ -1807,7 +1831,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"realtimeData\":"+realtimeData+","
 						+ "\"historyOverview\":"+historyOverview+","
 						+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-						+ "\"historyData\":"+historyData+""
+						+ "\"historyData\":"+historyData+","
+						+ "\"switchingValueShowType\":\"\""
 						+ "},");
 				index++;
 			}
@@ -1984,7 +2009,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(index)+","
 					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"showTitle\":\""+calItem.getName()+"\","
 					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"resolutionMode\":\"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"realtimeSort\":\""+realtimeSort+"\","
 					+ "\"realtimeColor\":\""+realtimeColor+"\","
@@ -2004,7 +2031,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"realtimeData\":"+realtimeData+","
 					+ "\"historyOverview\":"+historyOverview+","
 					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-					+ "\"historyData\":"+historyData+""
+					+ "\"historyData\":"+historyData+","
+					+ "\"switchingValueShowType\":\"\""
 					+ "},");
 			index++;
 		}
@@ -2148,7 +2176,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("{\"checked\":"+checked+","
 					+ "\"id\":"+(index)+","
 					+ "\"title\":\""+calItem.getName()+"\","
+					+ "\"showTitle\":\""+calItem.getName()+"\","
 					+ "\"unit\":\""+calItem.getUnit()+"\","
+					+ "\"resolutionMode\":\"\","
 					+ "\"showLevel\":\""+showLevel+"\","
 					+ "\"realtimeSort\":\""+realtimeSort+"\","
 					+ "\"realtimeColor\":\""+realtimeColor+"\","
@@ -2168,7 +2198,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"realtimeData\":"+realtimeData+","
 					+ "\"historyOverview\":"+historyOverview+","
 					+ "\"historyOverviewSort\":\""+historyOverviewSort+"\","
-					+ "\"historyData\":"+historyData+""
+					+ "\"historyData\":"+historyData+","
+					+ "\"switchingValueShowType\":\"\""
 					+ "},");
 			index++;
 		}
@@ -2204,11 +2235,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsRealtimeSortList=new ArrayList<String>();
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
+		
+		List<Integer> switchingValueShowTypeList=new ArrayList<>();
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=1";
-			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel "
+			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,t.switchingValueShowType "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=2"
 					+ " order by t.realtimeSort";
@@ -2225,6 +2258,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsBitIndexList.add(obj[1]+"");
 				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
+				switchingValueShowTypeList.add(StringManagerUtils.stringToInteger(obj[4]+""));
 			}
 		}
 
@@ -2260,6 +2294,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}else if("rw".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
 							RWType=languageResourceMap.get("readWrite");
 						}
+						String switchingValueShowType="";
+						
 						if(protocolConfig.getItems().get(j).getResolutionMode()==0
 								&&protocolConfig.getItems().get(j).getMeaning()!=null
 								&&protocolConfig.getItems().get(j).getMeaning().size()>0){
@@ -2279,9 +2315,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												checked=true;
 												realtimeSort=itemsRealtimeSortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
+												
+												if(switchingValueShowTypeList.get(m)==0){
+													switchingValueShowType=languageResourceMap.get("name");
+												}else{
+													switchingValueShowType=languageResourceMap.get("name")+"/"+languageResourceMap.get("meaning");
+												}
+												
 												break;
 											}
 										}
+										
+										
 										
 										result_json.append("{"
 												+ "\"checked\":"+checked+","
@@ -2294,7 +2339,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 												+ "\"resolutionMode\":\""+resolutionMode+"\","
 												+ "\"showLevel\":\""+showLevel+"\","
-												+ "\"realtimeSort\":\""+realtimeSort+"\""
+												+ "\"realtimeSort\":\""+realtimeSort+"\","
+												+ "\"switchingValueShowType\":\""+switchingValueShowType+"\""
 												+ "},");
 										index++;
 										break;
@@ -2322,7 +2368,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
 									+ "\"resolutionMode\":\""+resolutionMode+"\","
 									+ "\"showLevel\":\""+showLevel+"\","
-									+ "\"realtimeSort\":\""+realtimeSort+"\""
+									+ "\"realtimeSort\":\""+realtimeSort+"\","
+									+ "\"switchingValueShowType\":\""+switchingValueShowType+"\""
 									+ "},");
 							index++;
 						}

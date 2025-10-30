@@ -324,8 +324,8 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
                 var colHeaders = "[" 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','']," 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','']," 
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','','','']," 
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','','','']," 
                 	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
                 	
                 	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
@@ -334,12 +334,13 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                 	
                 	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
                 	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
-                	+"'','','','','','','']"
+                	+"'"+loginUserLanguageResource.showName+"'," 
+                	+"'','','','','','','','']"
                 	+"]";
                 var columns = "[" 
                     +"{data:'checked',type:'checkbox'}," 
                     +"{data:'id'}," 
-                    +"{data:'title'}," 
+                    +"{data:'showTitle'}," 
                     +"{data:'dataSource'}," 
                     +"{data:'unit'}," 
                     +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
@@ -360,13 +361,18 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                     +"{data:'historyColor'}," 
                     +"{data:'historyBgColor'}," 
                     +"{data:'historyCurveConfShowValue'}," //19
+                    
+                    +"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.name+"', '"+(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)+"']}," 
+                    
+                    
                     +"{data:'realtimeCurveConf'}," 
                     +"{data:'historyCurveConf'}," 
                     +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
                     +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
                     +"{data:'bitIndex'}," 
                     +"{data:'type'}," 
-                    +"{data:'code'}" 
+                    +"{data:'code'}," 
+                    +"{data:'title'}" 
                     +"]";
 
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
@@ -496,11 +502,11 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
                 hiddenColumns: {
-                    columns: [0,6,7,13,14,20, 21, 22, 23, 24, 25, 26],
+                    columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26, 27, 28],
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [25, 50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100],
+                colWidths: [25, 50, 200, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100, 100],
                 columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -583,10 +589,10 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 CurveConfigWindow.show();
 
                                 var curveConfig = null;
-                                if (column == 12 && isNotVal(row1[20])) {
-                                    curveConfig = row1[20];
-                                } else if (column == 19 && isNotVal(row1[21])) {
+                                if (column == 12 && isNotVal(row1[21])) {
                                     curveConfig = row1[21];
+                                } else if (column == 19 && isNotVal(row1[22])) {
+                                    curveConfig = row1[22];
                                 }
                                 var value = 'ff0000';
 
@@ -697,7 +703,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 			}
 			if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper==null || protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCtrlItemsConfigHandsontableHelper = ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.showName+"']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -705,6 +711,8 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
+						+"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.name+"', '"+(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)+"']}," 
+						
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
 						+"{data:'bitIndex'},"
@@ -787,11 +795,11 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [6,7,8,9],
+	                    columns: [7,8,9,10],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25,50,140,80,60,60],
+	                colWidths: [25,50,140,80,60,60,80],
 	                columns:protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1293,40 +1301,6 @@ var grantDisplayAcqItemsPermission = function () {
     if (!isNotVal(unitCode)) {
         return false
     }
-
-    
-    var columns = "[" 
-        +"{data:'checked',type:'checkbox'}," 
-        +"{data:'id'}," 
-        +"{data:'title'}," 
-        +"{data:'dataSource'}," 
-        +"{data:'unit'}," 
-        +"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        
-        +"{data:'realtimeOverview',type:'checkbox'}," 
-        +"{data:'realtimeOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        
-        +"{data:'realtimeData',type:'checkbox'}," 
-        +"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        +"{data:'realtimeColor'}," 
-        +"{data:'realtimeBgColor'}," 
-        +"{data:'realtimeCurveConfShowValue'}," //12
-        
-        +"{data:'historyOverview',type:'checkbox'}," 
-        +"{data:'historyOverviewSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        +"{data:'historyData',type:'checkbox'}," 
-        +"{data:'historySort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        +"{data:'historyColor'}," 
-        +"{data:'historyBgColor'}," 
-        +"{data:'historyCurveConfShowValue'}," //19
-        +"{data:'realtimeCurveConf'}," 
-        +"{data:'historyCurveConf'}," 
-        +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
-        +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-        +"{data:'bitIndex'}," 
-        +"{data:'type'}," 
-        +"{data:'code'}" 
-        +"]";
     
     for(var i=0;i<rowCount;i++) {
     	
@@ -1375,6 +1349,16 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var itemCode = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'code');
         	
+        	
+        	var switchingValueShowType=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'switchingValueShowType');
+        	
+        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)  ){
+        		switchingValueShowType=1;
+        	}else{
+        		switchingValueShowType=0
+        	}
+        	
+        	
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);
             var matrix_value = '0,0,0';
@@ -1398,7 +1382,8 @@ var grantDisplayAcqItemsPermission = function () {
             + itemAddr + "##" 
             + bitIndex +"##"
             + type +"##"
-            + itemCode +"##" //20
+            + itemCode +"##"//20
+            + switchingValueShowType +"##"//21
             + matrix_value+ "|";
         }
     }
@@ -1465,6 +1450,15 @@ var grantDisplayCtrlItemsPermission = function () {
         	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
         	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');
         	var bitIndex=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
+        	
+        	var switchingValueShowType=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'switchingValueShowType');
+        	
+        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)  ){
+        		switchingValueShowType=1;
+        	}else{
+        		switchingValueShowType=0
+        	}
+        	
             
             addjson.push(itemName);
             addItemRealtimeSort.push(itemRealtimeSort);
@@ -1476,6 +1470,7 @@ var grantDisplayCtrlItemsPermission = function () {
             + resolutionMode+ ":"
             + itemAddr + ":" 
             + bitIndex +":"
+            + switchingValueShowType +":"
             
             + matrix_value+ "|";
         }

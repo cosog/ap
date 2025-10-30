@@ -40,6 +40,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 	private Integer historyOverview;
 	private Integer  historyOverviewSort;
 	private Integer historyData;
+	
+	private Integer switchingValueShowType;
 
 	public DisplayUnitItem() {
 		super();
@@ -55,7 +57,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 			String realtimeColor, String realtimeBgColor,
 			String historyColor, String historyBgColor,
 			Integer realtimeOverview,Integer  realtimeOverviewSort,Integer realtimeData,
-			Integer historyOverview,Integer  historyOverviewSort,Integer historyData
+			Integer historyOverview,Integer  historyOverviewSort,Integer historyData,
+			Integer switchingValueShowType
 			) {
 		super();
 		this.id = id;
@@ -81,6 +84,8 @@ public class DisplayUnitItem implements java.io.Serializable {
 		this.historyOverview = historyOverview;
 		this.historyOverviewSort = historyOverviewSort;
 		this.historyData = historyData;
+		
+		this.switchingValueShowType = switchingValueShowType;
 	}
 
 	@Id
@@ -288,5 +293,14 @@ public class DisplayUnitItem implements java.io.Serializable {
 
 	public void setHistoryData(Integer historyData) {
 		this.historyData = historyData;
+	}
+
+	@Column(name = "SWITCHINGVALUESHOWTYPE")
+	public Integer getSwitchingValueShowType() {
+		return switchingValueShowType;
+	}
+
+	public void setSwitchingValueShowType(Integer switchingValueShowType) {
+		this.switchingValueShowType = switchingValueShowType;
 	}
 }

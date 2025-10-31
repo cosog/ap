@@ -2824,12 +2824,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
+														int switchingValueShowType=0;
 														
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 																	&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
 																	){
 																sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+																switchingValueShowType=displayInstanceOwnItem.getItemList().get(n).getSwitchingValueShowType();
+//																bitIndex=displayInstanceOwnItem.getItemList().get(n).getBitIndex()+"";
 																isMatch=true;
 																break;
 															}
@@ -2837,6 +2840,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														if(!isMatch){
 															continue;
 														}
+														
+														if(switchingValueShowType==1){
+															columnName=rawColumnName+"/"+columnName;
+														}
+														
 														if(StringManagerUtils.isNotNull(value)){
 															boolean match=false;
 															for(int m=0;valueArr!=null&&m<valueArr.length;m++){
@@ -3333,6 +3341,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								info_json.append("{\"row\":"+j+",\"col\":"+k+",\"addr\":\""+addr+"\","
 										+ "\"columnName\":\""+columnName+"\","
 										+ "\"column\":\""+column+"\","
+										+ "\"bitIndex\":\""+bitIndex+"\","
 										+ "\"value\":\""+value+"\","
 										+ "\"columnDataType\":\""+columnDataType+"\","
 										+ "\"resolutionMode\":\""+resolutionMode+"\","
@@ -3340,7 +3349,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
 										+ "\"historyColor\":\""+historyColor+"\","
 										+ "\"historyBgColor\":\""+historyBgColor+"\","
-										+ "\"type\":\""+type+"\","
+										+ "\"type\":\""+dataType+"\","
 										+ "\"alarmLevel\":"+alarmLevel+"},");
 							}
 							if(result_json.toString().endsWith(",")){
@@ -3651,18 +3660,22 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
-														
+														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 																	&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
 																	){
 																sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+																switchingValueShowType=displayInstanceOwnItem.getItemList().get(n).getSwitchingValueShowType();
 																isMatch=true;
 																break;
 															}
 														}
 														if(!isMatch){
 															continue;
+														}
+														if(switchingValueShowType==1){
+															columnName=rawColumnName+"/"+columnName;
 														}
 														if(StringManagerUtils.isNotNull(value)){
 															boolean match=false;

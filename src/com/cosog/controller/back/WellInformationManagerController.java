@@ -2885,7 +2885,7 @@ public class WellInformationManagerController extends BaseController {
 						+ " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id"
 						+ " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
 						+ " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 						+ " where t.id="+deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3168,7 +3168,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3365,7 +3365,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3582,7 +3582,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    +" where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3771,7 +3771,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -3927,7 +3927,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -4020,7 +4020,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){
@@ -4108,7 +4108,7 @@ public class WellInformationManagerController extends BaseController {
 					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
 					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
 					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
-					    + " left outer join viw_devicetypeinfo t6 where t5.devicetype=t6.id" 
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
 					    + " where t.id=" + deviceId;
 				List<?> list = this.service.findCallSql(sql);
 				if(list.size()>0){

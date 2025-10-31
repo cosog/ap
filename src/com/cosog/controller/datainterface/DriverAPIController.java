@@ -2013,13 +2013,40 @@ public class DriverAPIController extends BaseController{
 		//筛选
 		List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int j=0;j<acquisitionItemInfoList.size();j++){
-			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
+			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\","
+					+ "\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\","
+					+ "\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\","
+					+ "\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\","
+					+ "\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\","
+					+ "\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\","
+					+ "\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
 			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0,1)){
 				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
-						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()){
-							acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getRealtimeSort());
-							userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
+					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) 
+							&& displayInstanceOwnItem.getItemList().get(k).getType()!=2
+							){
+						
+						
+						
+						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0
+								||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
+								){
+							
+							boolean match=false;
+							if(acquisitionItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode())){//开关量
+								if(StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getBitIndex())==displayInstanceOwnItem.getItemList().get(k).getBitIndex()   ){
+									match=true;
+								}else{
+									continue;
+								}
+							}else{
+								match=true;
+							}
+							
+							if(match){
+								acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getRealtimeSort());
+								userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
+							}
 						}
 						break;
 					}
@@ -2060,11 +2087,13 @@ public class DriverAPIController extends BaseController{
 			for(int k=0;k<items;k++){
 				int index=items*(j-1)+k;
 				String columnName="";
+				String rawColumnName="";
 				String value="";
 				String rawValue="";
 				String column="";
 				String columnDataType="";
 				String resolutionMode="";
+				String bitIndex="";
 				String unit="";
 				int alarmLevel=0;
 				
@@ -2078,6 +2107,7 @@ public class DriverAPIController extends BaseController{
 						&& StringManagerUtils.isNotNull(finalAcquisitionItemInfoList.get(index).getTitle())
 						){
 					columnName=finalAcquisitionItemInfoList.get(index).getTitle();
+					rawColumnName=finalAcquisitionItemInfoList.get(index).getRawTitle();
 					value=finalAcquisitionItemInfoList.get(index).getValue();
 					rawValue=finalAcquisitionItemInfoList.get(index).getRawValue();
 					column=finalAcquisitionItemInfoList.get(index).getColumn();
@@ -2085,6 +2115,7 @@ public class DriverAPIController extends BaseController{
 					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
 					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
+					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
 					if(finalAcquisitionItemInfoList.get(index).getType()==1){
 						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, userInfo.getLanguageName());
 						if(calItem!=null){
@@ -2121,6 +2152,12 @@ public class DriverAPIController extends BaseController{
 							realtimeBgColor=displayItem.getRealtimeBgColor();
 							historyColor=displayItem.getHistoryColor();
 							historyBgColor=displayItem.getHistoryBgColor();
+							
+							if(displayItem.getSwitchingValueShowType()==1){
+								columnName=rawColumnName+"/"+columnName;
+							}
+							
+							
 							break;
 						}else if( ("1".equalsIgnoreCase(resolutionMode) || "2".equalsIgnoreCase(resolutionMode) )
 								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
@@ -2144,6 +2181,7 @@ public class DriverAPIController extends BaseController{
 						+ "\"col\":"+k+","
 						+ "\"columnName\":\""+columnName+"\","
 						+ "\"column\":\""+column+"\","
+						+ "\"bitIndex\":\""+bitIndex+"\","
 						+ "\"value\":\""+value+"\","
 						+ "\"rawValue\":\""+rawValue+"\","
 						+ "\"columnDataType\":\""+columnDataType+"\","
@@ -2175,6 +2213,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
+		
 //		System.out.println(webSocketSendData.toString());
 		return webSocketSendData.toString();
 	}

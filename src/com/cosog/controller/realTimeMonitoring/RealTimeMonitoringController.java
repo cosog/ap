@@ -549,7 +549,10 @@ public class RealTimeMonitoringController extends BaseController {
 					type = new TypeToken<AcqAddrData>() {}.getType();
 					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
 					int readResult=acqAddrData.getResultStatus();
-					if(readResult==1 && acqAddrData.getValue()!=null && acqAddrData.getValue().size()==1){//读取成功后，再写地址
+					if(readResult==1 
+							&& acqAddrData.getValue()!=null 
+							&& (acqAddrData.getValue().size()==1)   
+							){//读取成功后，再写地址
 						String readValueStr=acqAddrData.getValue().get(0).toString();
 						if(StringManagerUtils.isNotNull(readValueStr) && StringManagerUtils.isInteger(readValueStr) && StringManagerUtils.isInteger(controlValue)){
 							int readValue=StringManagerUtils.stringToInteger(readValueStr);

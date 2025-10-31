@@ -1504,9 +1504,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												historyBgColor=historyBgColorList.get(m);
 												
 												if(switchingValueShowTypeList.get(m)==0){
-													switchingValueShowType=languageResourceMap.get("name");
+													switchingValueShowType=languageResourceMap.get("dataColumn");
 												}else{
-													switchingValueShowType=languageResourceMap.get("name")+"/"+languageResourceMap.get("meaning");
+													switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
 												}
 												
 												CurveConf realtimeCurveConfObj=null;
@@ -2317,9 +2317,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												showLevel=itemsShowLevelList.get(m);
 												
 												if(switchingValueShowTypeList.get(m)==0){
-													switchingValueShowType=languageResourceMap.get("name");
+													switchingValueShowType=languageResourceMap.get("dataColumn");
 												}else{
-													switchingValueShowType=languageResourceMap.get("name")+"/"+languageResourceMap.get("meaning");
+													switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
 												}
 												
 												break;

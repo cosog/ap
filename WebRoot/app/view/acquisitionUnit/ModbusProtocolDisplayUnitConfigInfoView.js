@@ -362,7 +362,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                     +"{data:'historyBgColor'}," 
                     +"{data:'historyCurveConfShowValue'}," //19
                     
-                    +"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.name+"', '"+(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)+"']}," 
+                    +"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.dataColumn+"', '"+(loginUserLanguageResource.dataColumn+"/"+loginUserLanguageResource.meaning)+"']}," 
                     
                     
                     +"{data:'realtimeCurveConf'}," 
@@ -711,7 +711,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 						+"{data:'unit'},"
 						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
 						+"{data:'realtimeSort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}}," 
-						+"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.name+"', '"+(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)+"']}," 
+						+"{data:'switchingValueShowType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.dataColumn+"', '"+(loginUserLanguageResource.dataColumn+"/"+loginUserLanguageResource.meaning)+"']}," 
 						
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
@@ -1352,7 +1352,7 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var switchingValueShowType=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'switchingValueShowType');
         	
-        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)  ){
+        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.dataColumn+"/"+loginUserLanguageResource.meaning)  ){
         		switchingValueShowType=1;
         	}else{
         		switchingValueShowType=0
@@ -1453,7 +1453,7 @@ var grantDisplayCtrlItemsPermission = function () {
         	
         	var switchingValueShowType=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'switchingValueShowType');
         	
-        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.name+"/"+loginUserLanguageResource.meaning)  ){
+        	if(resolutionMode==loginUserLanguageResource.switchingValue &&  switchingValueShowType==(loginUserLanguageResource.dataColumn+"/"+loginUserLanguageResource.meaning)  ){
         		switchingValueShowType=1;
         	}else{
         		switchingValueShowType=0

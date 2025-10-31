@@ -540,7 +540,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-				if(protocolItems.size()>0){
+				if(protocolItems.size()>0 && protocol!=null){
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
 							for(DataitemsInfo dataitemsInfo: protocolItems){
@@ -634,7 +634,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}
 				
-				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+				if(protocol!=null && protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0 ){
 					if(acqDataList!=null){
 						for(int j=0;j<protocolExtendedFieldList.size();j++){
 							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
@@ -1324,7 +1324,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
-				if(protocolItems.size()>0){
+				if(protocolItems.size()>0 && protocol!=null){
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
 							for(DataitemsInfo dataitemsInfo: protocolItems){
@@ -1418,7 +1418,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}
 				
-				if(protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
+				if(protocol!=null && protocolExtendedFieldList.size()>0 && protocol.getExtendedFields()!=null){
 					if(acqDataList!=null){
 						for(int j=0;j<protocolExtendedFieldList.size();j++){
 							String title=protocolExtendedFieldList.get(j).getName_zh_CN();
@@ -1915,7 +1915,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
 						+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
 						+ "t.realtimecurveconf,t.historycurveconf,"
-						+ "t.type "
+						+ "t.type,"
+						+ "t.switchingValueShowType "
 						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type<>2"
@@ -1938,6 +1939,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
     				displayItem.setRealtimeCurveConf(obj[8]+"");
     				displayItem.setHistoryCurveConf(obj[9]+"");
     				displayItem.setType(StringManagerUtils.stringToInteger(obj[10]+""));
+    				displayItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(obj[11]+""));
     				displayItemList.add(displayItem);
 				}
 				
@@ -2079,7 +2081,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									){//开关量处理
 								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
 									if(displayItemList.get(k).getBitIndex()==itemsMeaning.getValue()){
-										header=itemsMeaning.getMeaning();
+										if(displayItemList.get(k).getSwitchingValueShowType()==1){
+											header=header+"/"+itemsMeaning.getMeaning();
+										}else{
+											header=itemsMeaning.getMeaning();
+										}
+										
 										dataIndex+="_"+itemsMeaning.getValue();
 										break;
 									}
@@ -2924,6 +2931,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
 						+ "t.realtimecurveconf,t.historycurveconf,"
 						+ "t.type "
+						+ "t.switchingValueShowType "
 						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type<>2"
@@ -2946,6 +2954,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
     				displayItem.setRealtimeCurveConf(obj[8]+"");
     				displayItem.setHistoryCurveConf(obj[9]+"");
     				displayItem.setType(StringManagerUtils.stringToInteger(obj[10]+""));
+    				displayItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(obj[11]+""));
     				displayItemList.add(displayItem);
 				}
 				//采集项
@@ -3087,7 +3096,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									){//开关量处理
 								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning: item.getMeaning()){
 									if(displayItemList.get(k).getBitIndex()==itemsMeaning.getValue()){
-										header=itemsMeaning.getMeaning();
+										if(displayItemList.get(k).getSwitchingValueShowType()==1){
+											header=header+"/"+itemsMeaning.getMeaning();
+										}else{
+											header=itemsMeaning.getMeaning();
+										}
+										
 										dataIndex+="_"+itemsMeaning.getValue();
 										break;
 									}
@@ -4002,18 +4016,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
-														
+														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 																	&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
 																	){
 																sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+																switchingValueShowType=displayInstanceOwnItem.getItemList().get(n).getSwitchingValueShowType();
 																isMatch=true;
 																break;
 															}
 														}
 														if(!isMatch){
 															continue;
+														}
+														if(switchingValueShowType==1){
+															columnName=rawColumnName+"/"+columnName;
 														}
 														if(StringManagerUtils.isNotNull(value)){
 															boolean match=false;
@@ -4857,18 +4875,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
-														
+														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 																	&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
 																	){
 																sort=displayInstanceOwnItem.getItemList().get(n).getRealtimeSort();
+																switchingValueShowType=displayInstanceOwnItem.getItemList().get(n).getSwitchingValueShowType();
 																isMatch=true;
 																break;
 															}
 														}
 														if(!isMatch){
 															continue;
+														}
+														if(switchingValueShowType==1){
+															columnName=rawColumnName+"/"+columnName;
 														}
 														if(StringManagerUtils.isNotNull(value)){
 															boolean match=false;

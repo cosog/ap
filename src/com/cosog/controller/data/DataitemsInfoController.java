@@ -29,6 +29,7 @@ import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
+import com.cosog.utils.StringManagerUtils;
 
 /**
  * 系统数据字典数据项值表
@@ -184,8 +185,10 @@ public class DataitemsInfoController extends BaseController {
 			String sysId = request.getParameter("sysId");
 			String configItemName = request.getParameter("configItemName");
 			String itemColumn = request.getParameter("itemColumn");
+			String itemBitIndex = request.getParameter("itemBitIndex");
 			dataitemsInfo.setConfigItemName(configItemName);
 			dataitemsInfo.setCode(itemColumn);
+			dataitemsInfo.setConfigItemBitIndex(StringManagerUtils.isInteger(itemBitIndex)?StringManagerUtils.stringToInteger(itemBitIndex):null);
 			jsonaddstr = dataitemsInfoService.saveDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
 			jsonaddstr = "{success:true,msg:false}";
@@ -210,10 +213,12 @@ public class DataitemsInfoController extends BaseController {
 			String sysId = request.getParameter("sysId");
 			String configItemName = request.getParameter("configItemName");
 			String itemColumn = request.getParameter("itemColumn");
+			String itemBitIndex = request.getParameter("itemBitIndex");
 			String dictItemDataItemId = request.getParameter("dictItemDataItemId");
 			dataitemsInfo.setDataitemid(dictItemDataItemId);
 			dataitemsInfo.setConfigItemName(configItemName);
 			dataitemsInfo.setCode(itemColumn);
+			dataitemsInfo.setConfigItemBitIndex(StringManagerUtils.isInteger(itemBitIndex)?StringManagerUtils.stringToInteger(itemBitIndex):null);
 			jsonaddstr = dataitemsInfoService.updateDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
 			jsonaddstr = "{success:true,msg:false}";

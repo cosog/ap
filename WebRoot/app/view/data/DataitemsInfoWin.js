@@ -276,6 +276,13 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     msgTarget: 'side',
                     readOnly: true,
                     disabled: true
+                },{
+                	id: "dictItemConfigItemBitIndex_Id",
+                    fieldLabel: loginUserLanguageResource.configureField,
+                    anchor: '95%',
+                    msgTarget: 'side',
+                    readOnly: true,
+                    disabled: true
                 },
                 sysdata_code, {
                     id: 'dictItemDataUnit_Id',

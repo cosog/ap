@@ -89,7 +89,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				+ "t.dataSource,t.dataUnit,"
 				+ "t.status,"
 				+ "t.status_cn,t.status_en,t.status_ru,"
-				+ "t.configitemname "
+				+ "t.configitemname,"
+				+ "t.configItemBitIndex "
 				+ "from tbl_dist_item t "
 				+ "where t.sysdataid='"+dictionaryId+"' "
 				+ " and t.deviceType="+deviceType;
@@ -134,7 +135,8 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
 			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
 			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
-			result_json.append("\"configItemName\":\""+obj[13]+"\"");
+			result_json.append("\"configItemName\":\""+obj[13]+"\",");
+			result_json.append("\"configItemBitIndex\":\""+obj[14]+"\"");
 			result_json.append("},");
 		}
 		if(result_json.toString().endsWith(",")){
@@ -630,6 +632,10 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				int extendedFieldIndex=0;
 				for (DataitemsInfo dataInfo : dataWhereList) {
 					int columnDataSource=dataInfo.getColumnDataSource();
+					int configItemBitIndex=dataInfo.getConfigItemBitIndex()!=null?dataInfo.getConfigItemBitIndex():-1;
+					
+					
+					
 					String dataCode = columnDataSource!=2?(dataInfo.getCode()!=null?dataInfo.getCode():""):"";// 字典英文名称对应数据库中的字段信息
 					String header="";
 					if("zh_CN".equalsIgnoreCase(language)){
@@ -649,22 +655,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						enameField="addInfoColumn"+addInfoIndex;
 					}else if(columnDataSource==1){
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
-//						if(dataInfo.getDataSource()==1){
-//							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getCalItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
-//							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
-//								header+="("+calItem.getUnit()+")";
-//							}
-//						}else if(dataInfo.getDataSource()==2){
-//							MemoryDataManagerTask.CalItem calItem=MemoryDataManagerTask.getInputItemByNameAndUnit(header,dataInfo.getDataUnit(),language);
-//							if(calItem!=null && StringManagerUtils.isNotNull(calItem.getUnit())){
-//								header+="("+calItem.getUnit()+")";
-//							}
-//						}else if(dataInfo.getDataSource()==5){
-//							
-//						}else{
-////							Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
-////							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(dataCode)!=null?loadProtocolMappingColumnMap.get(dataCode).getName():header);
-//						}
+						if(dataInfo.getConfigItemBitIndex()!=null && dataInfo.getConfigItemBitIndex()>=0){
+							enameField+="_"+dataInfo.getConfigItemBitIndex();
+						}
 					}else{
 						enameField =StringManagerUtils.isNotNull(dataCode)?dataCode.trim():"";
 					}
@@ -883,21 +876,53 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					ModbusProtocolConfig.Protocol protocol= MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					if(protocol!=null){
 						for(ModbusProtocolConfig.Items item:protocol.getItems()){
-							if(!addedItemMap.containsKey(item.getTitle())){
-								DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
-								if(dataMapping!=null){
-									addedItemMap.put(item.getTitle(), dataMapping);
-									String itemColumn=dataMapping.getMappingColumn();
-									result_json.append("{\"id\":\""+index+"\",");
-									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
-									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
-									result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
-									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
-									result_json.append("\"dataSource\":\""+dataSource+"\"},");
+							if(!"w".equalsIgnoreCase(item.getRWType())){
+								if(item.getResolutionMode()==0 && item.getMeaning()!=null && item.getMeaning().size()>0){
 									
-									totalCount++;
-									index++;
+									DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
+									if(dataMapping!=null){
+										for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+											String itemTitle=item.getTitle()+"/"+itemsMeaning.getMeaning();
+											if(!addedItemMap.containsKey(itemTitle)){
+
+												addedItemMap.put(itemTitle, dataMapping);
+												String itemColumn=dataMapping.getMappingColumn();
+												result_json.append("{\"id\":\""+index+"\",");
+												result_json.append("\"itemName\":\""+itemTitle+"\",");
+												result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+												result_json.append("\"bitIndex\":\""+itemsMeaning.getValue()+"\",");
+												result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
+												result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+												result_json.append("\"dataSource\":\""+dataSource+"\"},");
+												
+												totalCount++;
+												index++;
+											
+											}
+										}
+									}
+									
+									
+								}else{
+									if(!addedItemMap.containsKey(item.getTitle())){
+										DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
+										if(dataMapping!=null){
+											addedItemMap.put(item.getTitle(), dataMapping);
+											String itemColumn=dataMapping.getMappingColumn();
+											result_json.append("{\"id\":\""+index+"\",");
+											result_json.append("\"itemName\":\""+item.getTitle()+"\",");
+											result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+											result_json.append("\"bitIndex\":\"\",");
+											result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
+											result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
+											result_json.append("\"dataSource\":\""+dataSource+"\"},");
+											
+											totalCount++;
+											index++;
+										}
+									}
 								}
+								
 							}
 						}
 					}
@@ -927,6 +952,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 									result_json.append("{\"id\":\""+index+"\",");
 									result_json.append("\"itemName\":\""+item.getTitle()+"\",");
 									result_json.append("\"itemColumn\":\""+itemColumn+"\",");
+									result_json.append("\"bitIndex\":\"\",");
 									result_json.append("\"itemUnit\":\""+item.getUnit()+"\",");
 									result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 									result_json.append("\"dataSource\":\""+dataSource+"\"},");
@@ -949,6 +975,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						result_json.append("{\"id\":\""+index+"\",");
 						result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 						result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+						result_json.append("\"bitIndex\":\"\",");
 						result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 						result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 						result_json.append("\"dataSource\":\""+dataSource+"\",");
@@ -966,6 +993,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							result_json.append("{\"id\":\""+index+"\",");
 							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"bitIndex\":\"\",");
 							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 							result_json.append("\"dataSource\":\""+dataSource+"\",");
@@ -984,6 +1012,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							result_json.append("{\"id\":\""+index+"\",");
 							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"bitIndex\":\"\",");
 							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 							result_json.append("\"dataSource\":\""+dataSource+"\",");
@@ -1005,6 +1034,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							result_json.append("{\"id\":\""+index+"\",");
 							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"bitIndex\":\"\",");
 							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 							result_json.append("\"dataSource\":\""+dataSource+"\",");
@@ -1023,6 +1053,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 							result_json.append("{\"id\":\""+index+"\",");
 							result_json.append("\"itemName\":\""+calItem.getName()+"\",");
 							result_json.append("\"itemColumn\":\""+calItem.getCode()+"\",");
+							result_json.append("\"bitIndex\":\"\",");
 							result_json.append("\"itemUnit\":\""+calItem.getUnit()+"\",");
 							result_json.append("\"dictDataSource\":\""+dictDataSource+"\",");
 							result_json.append("\"dataSource\":\""+dataSource+"\",");
@@ -1044,6 +1075,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				result_json.append("{\"id\":\""+(i+1)+"\",");
 				result_json.append("\"itemName\":\""+list.get(i).toString()+"\",");
 				result_json.append("\"itemColumn\":\"\",");
+				result_json.append("\"bitIndex\":\"\",");
 				result_json.append("\"dictDataSource\":\""+dictDataSource+"\"},");
 			}
 		}

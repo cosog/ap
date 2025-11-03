@@ -550,7 +550,13 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
                                 } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
-                                } else {
+                                } else if(visualColIndex==20){
+	    		                    const resolutionMode = this.instance.getDataAtRowProp(row, 'resolutionMode');
+	    		                    if (resolutionMode!=loginUserLanguageResource.switchingValue) {
+	                                    cellProperties.readOnly = true;
+	                                    cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
+	                                }
+    		                	} else {
                                     if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'dropdown' &&
                                         protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[visualColIndex].type != 'checkbox') {
                                         cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellStyle;
@@ -839,10 +845,18 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 		    							cellProperties.readOnly = true;
 		    							cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
 		    		                }else{
-		    		                	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
-		    		    	            	&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
-		    		                    	cellProperties.renderer = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addCellStyle;
-		    		    	            }
+		    		                	if(visualColIndex==6){
+			    		                    const resolutionMode = this.instance.getDataAtRowProp(row, 'resolutionMode'); // 状态在第3列
+			    		                    if (resolutionMode!=loginUserLanguageResource.switchingValue) {
+			    		                    	cellProperties.readOnly = true;
+				    							cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
+			    		                    }
+		    		                	}else{
+		    		                		if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+			    		    	            	&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[visualColIndex].type!='checkbox'){
+			    		                    	cellProperties.renderer = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addCellStyle;
+			    		    	            }
+		    		                	}
 		    		                }
 		                		}
 		                	}

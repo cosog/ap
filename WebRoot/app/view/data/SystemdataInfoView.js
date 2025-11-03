@@ -210,6 +210,7 @@ iconDictItemConfig = function(value, e, record) {
 		var status_en=record.data.status_en;
 		var status_ru=record.data.status_ru;
 		var configItemName=record.data.configItemName;
+		var configItemBitIndex=record.data.configItemBitIndex;
 		
 		
 		dataitemid = encodeURIComponent(dataitemid || '');
@@ -226,18 +227,19 @@ iconDictItemConfig = function(value, e, record) {
 		status_en = encodeURIComponent(status_en || '');
 		status_ru = encodeURIComponent(status_ru || '');
 		configItemName = encodeURIComponent(configItemName || '');
+		configItemBitIndex = encodeURIComponent(configItemBitIndex || '');
 		
 		var resultstring="<a href=\"javascript:void(0)\" style=\"text-decoration:none;\" " 
 			+"onclick=callBackDictItemConfig(" 
 			+"'"+dataitemid+"','"+name+"','"+code+"','"+datavalue+"','"+sorts+"'," 
 			+"'"+columnDataSource+"','"+deviceType+"','"+dataSource+"','"+dataUnit+"'," 
-			+"'"+status+"','"+status_cn+"','"+status_en+"','"+status_ru+"','"+configItemName+"')>"
+			+"'"+status+"','"+status_cn+"','"+status_en+"','"+status_ru+"','"+configItemName+"','"+configItemBitIndex+"')>"
 			+loginUserLanguageResource.config+"...</a>";
 	}
 	return resultstring;
 }
 
-var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName) {
+var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName,configItemBitIndex) {
 	dataitemid = decodeURIComponent(dataitemid);
 	name = decodeURIComponent(name);
 	code = decodeURIComponent(code);
@@ -252,7 +254,7 @@ var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,colum
 	status_en = decodeURIComponent(status_en);
 	status_ru = decodeURIComponent(status_ru);
 	configItemName = decodeURIComponent(configItemName);
-	
+	configItemBitIndex = decodeURIComponent(configItemBitIndex);
 	
 	var adddataitemwin = Ext.create("AP.view.data.DataitemsInfoWin", {
         title: loginUserLanguageResource.editDataItem
@@ -277,6 +279,9 @@ var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,colum
     
     Ext.getCmp("sysDataCode_Ids").setValue(code);
     Ext.getCmp("dictItemConfigItemName_Id").setValue(configItemName);
+    Ext.getCmp("dictItemConfigItemBitIndex_Id").setValue(configItemBitIndex);
+    
+    
     
     Ext.getCmp("dictItemColumnDataSourceComb_Id").setValue(columnDataSource);
     Ext.getCmp("dictItemColumnDataSource_Id").setValue(columnDataSource);

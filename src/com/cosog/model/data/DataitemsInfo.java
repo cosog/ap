@@ -51,6 +51,8 @@ public class DataitemsInfo implements Serializable {
 	
 	private String configItemName;
 	
+	private Integer configItemBitIndex;
+	
 	public DataitemsInfo() {
 		super();
 	}
@@ -254,6 +256,15 @@ public class DataitemsInfo implements Serializable {
 
 	public void setConfigItemName(String configItemName) {
 		this.configItemName = configItemName;
+	}
+
+	@Column(name = "CONFIGITEMBITINDEX")
+	public Integer getConfigItemBitIndex() {
+		return configItemBitIndex;
+	}
+
+	public void setConfigItemBitIndex(Integer configItemBitIndex) {
+		this.configItemBitIndex = configItemBitIndex;
 	}
 
 }

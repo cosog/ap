@@ -311,6 +311,7 @@ function savetoSysDataItems() {
     		
     		var configItemName=dictItemSourceSelection[0].data.itemName;
     		var itemColumn=dictItemSourceSelection[0].data.itemColumn;
+    		var itemBitIndex=dictItemSourceSelection[0].data.bitIndex;
     		
             sysdataForm.getForm().submit({
                 url: context + '/dataitemsInfoController/addDataitemsInfo',
@@ -321,7 +322,8 @@ function savetoSysDataItems() {
                 params: {
                     sysId: getSysId,
                     configItemName:configItemName,
-                    itemColumn:itemColumn
+                    itemColumn:itemColumn,
+                    itemBitIndex:itemBitIndex
                 },
                 success: function (response, action) {
                     if (action.result.msg == true) {
@@ -355,6 +357,7 @@ function updateSysDataItems() {
     		
     		var configItemName=dictItemSourceSelection[0].data.itemName;
     		var itemColumn=dictItemSourceSelection[0].data.itemColumn;
+    		var itemBitIndex=dictItemSourceSelection[0].data.bitIndex;
     		
     		var dictItemDataItemId=Ext.getCmp("dictItemDataItemId_Id").getValue();
     		
@@ -368,6 +371,7 @@ function updateSysDataItems() {
                     sysId: getSysId,
                     configItemName:configItemName,
                     itemColumn:itemColumn,
+                    itemBitIndex:itemBitIndex,
                     dictItemDataItemId:dictItemDataItemId
                 },
                 success: function (response, action) {
@@ -492,6 +496,7 @@ function updateDataDictionaryItemInfoByGridBtn(record) {
     var status_cn=record.get("status_cn");
     var status_en=record.get("status_en");
     var status_ru=record.get("status_ru");
+    var configItemBitIndex=record.get("configItemBitIndex");
     Ext.Ajax.request({
 		url : context + '/dataitemsInfoController/updateDataDictionaryItemInfo',
 		method : "POST",

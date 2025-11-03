@@ -83,11 +83,12 @@ Ext.define('AP.store.data.DictItemSourceStore', {
                     	var itemName=Ext.getCmp("sysDataName_zh_CN_Ids").getValue();
                     	var itemCode=Ext.getCmp("sysDataCode_Ids").getValue();
                     	var dictItemConfigItemName=Ext.getCmp("dictItemConfigItemName_Id").getValue();
+                    	var dictItemConfigItemBitIndex=Ext.getCmp("dictItemConfigItemBitIndex_Id").getValue();
                     	for(var i=0;i<store.data.items.length;i++){
                 			if(dictDataSource==2 && dictItemConfigItemName==store.data.items[i].data.itemName){
                 				selectRow=i;
                 				break;
-                			}else if(dictDataSource==1 && itemCode==store.data.items[i].data.itemColumn){
+                			}else if(dictDataSource==1 && itemCode==store.data.items[i].data.itemColumn && dictItemConfigItemBitIndex==store.data.items[i].data.bitIndex){
                 				selectRow=i;
                 				break;
                 			}

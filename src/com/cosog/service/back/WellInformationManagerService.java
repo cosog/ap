@@ -165,6 +165,71 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String loadSignInIdComboxList(Page pager,String orgId,String deviceName,String signInId,String deviceTypeStr,String calculateTypeStr,String language) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+		String tableName="tbl_device";
+		if(deviceType>=300){
+			tableName="tbl_smsdevice";
+		}
+		String sql = " select  t.signInId as signInId,t.signInId as dm "
+				+ " from  "+tableName+" t  ,tbl_org  g "
+				+ " where t.orgId=g.org_id  "
+				+ " and g.org_id in ("+ orgId + ")";
+		if(!"tbl_smsdevice".equalsIgnoreCase(tableName)){
+			if (StringManagerUtils.isNotNull(deviceTypeStr)) {
+				if(StringManagerUtils.isNum(deviceTypeStr)){
+					sql+= " and t.devicetype="+deviceTypeStr;
+				}else{
+					sql+= " and t.devicetype in ("+deviceTypeStr+")";
+				}
+			}
+			if (StringManagerUtils.isNotNull(calculateTypeStr)) {
+				sql += " and t.calculateType="+calculateTypeStr;
+			}
+		}
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			sql += " and t.deviceName like '%" + deviceName + "%'";
+		}
+		if (StringManagerUtils.isNotNull(signInId)) {
+			sql += " and t.signInId like '%" + signInId + "%'";
+		}
+		
+		
+		sql += " order by t.signInId, t.sortNum, t.deviceName";
+		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
+		sqlCuswhere.append(""+sql);
+		int maxvalue=pager.getLimit()+pager.getStart();
+		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
+		sqlCuswhere.append(" where rn >"+pager.getStart());
+		String finalsql=sqlCuswhere.toString();
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(finalsql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
 	public String loadPumpingManufacturerComboxList(String manufacturer,String language) {
 		StringBuffer result_json = new StringBuffer();
 		String sql = " select distinct(t.manufacturer) from tbl_pumpingmodel t where 1=1";
@@ -1349,6 +1414,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String ddicCode="deviceInfo_DeviceManager";
 		String tableName="viw_device";
 		String deviceName = (String) map.get("deviceName");
+		String signInId = (String) map.get("signInId");
 		String deviceType=(String) map.get("deviceType");
 		String orgId = (String) map.get("orgId");
 		
@@ -1367,7 +1433,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where 1=1";
 		if (StringManagerUtils.isNotNull(deviceName)) {
 			sql += " and t.devicename like '%" + deviceName+ "%'";
-		};
+		}
+		if (StringManagerUtils.isNotNull(signInId)) {
+			sql += " and t.signInId like '%" + signInId+ "%'";
+		}
 		sql+= " and t.orgid in ("+orgId+" )";
 		sql+= " and t.devicetype in ("+deviceType+")";
 		sql+= " order by t.sortnum,t.devicename ";

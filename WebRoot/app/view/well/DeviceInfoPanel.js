@@ -456,6 +456,85 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     },
                     select: function (combo, record, index) {
                         try {
+                        	Ext.getCmp('signInIdListComb_Id').setValue('');
+                            CreateAndLoadDeviceInfoTable();
+                        } catch (ex) {
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                        }
+                    }
+                }
+            });
+        
+        var signInIdListCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadSignInIdComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var deviceName='';
+                    if(isNotVal(Ext.getCmp('deviceListComb_Id'))){
+                    	deviceName = Ext.getCmp('deviceListComb_Id').getValue();
+                    }
+                    var signInId='';
+                    if(isNotVal(Ext.getCmp('signInIdListComb_Id'))){
+                    	signInId = Ext.getCmp('signInIdListComb_Id').getValue();
+                    }
+                    
+                    var new_params = {
+                        orgId: leftOrg_Id,
+                        deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel"),
+                        deviceName: deviceName,
+                        signInId:signInId
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+
+        var signInIdListDeviceCombo = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: loginUserLanguageResource.signInId,
+                id: "signInIdListComb_Id",
+                labelWidth: getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage),
+                width: (getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage)+110),
+                labelAlign: 'left',
+                queryMode: 'remote',
+                typeAhead: true,
+                store: signInIdListCombStore,
+                autoSelect: false,
+                editable: true,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                pageSize: comboxPagingStatus,
+                minChars: 0,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
+                listeners: {
+                    expand: function (sm, selections) {
+                    	signInIdListDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
+                    },
+                    select: function (combo, record, index) {
+                        try {
                             CreateAndLoadDeviceInfoTable();
                         } catch (ex) {
                             Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
@@ -473,7 +552,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 handler: function (v, o) {
                 	CreateAndLoadDeviceInfoTable();
                 }
-    		},'-',deviceListDeviceCombo,{
+    		},'-',deviceListDeviceCombo,'-',signInIdListDeviceCombo,{
                 id: 'DeviceSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,
@@ -920,6 +999,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
 	}
     var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
+    var signInId = Ext.getCmp('signInIdListComb_Id').getValue();
+    
+    
     Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
     Ext.Ajax.request({
         method: 'POST',
@@ -1108,6 +1190,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         },
         params: {
         	deviceName: deviceName,
+        	signInId : signInId,
             deviceType: deviceType,
             dictDeviceType: dictDeviceType,
             recordCount: 50,
@@ -1309,38 +1392,25 @@ var DeviceInfoHandsontableHelper = {
                         			cellProperties.readOnly = true;
                         		}
                         	}else if(prop.toUpperCase() === "signInId".toUpperCase() || prop.toUpperCase() === "ipPort".toUpperCase()){
-                        		if(deviceInfoHandsontableHelper.hot!=undefined && deviceInfoHandsontableHelper.hot.getDataAtCell!=undefined){
-                        			var columns=deviceInfoHandsontableHelper.columns;
-
-                            		var tcpTypeColIndex=-1;
-                            		for(var i=0;i<columns.length;i++){
-                            			if(columns[i].data.toUpperCase() === "tcpType".toUpperCase()){
-                            				tcpTypeColIndex=i;
-                            				break;
-                                    	}
-                            		}
-                            		if(tcpTypeColIndex>=0){
-                            			var tcpType=deviceInfoHandsontableHelper.hot.getDataAtCell(row,tcpTypeColIndex);
-                            			if(tcpType=='' || tcpType==null){
-                            				cellProperties.readOnly = false;
-                            			}else{
-                            				if(prop.toUpperCase() === "signInId".toUpperCase()){
-                            					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
-                            						cellProperties.readOnly = false;
-                            					}else{
-                            						cellProperties.readOnly = true;
-                            					}
-                            				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
-                            					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
-                            						cellProperties.readOnly = false;
-                            					}else{
-                            						cellProperties.readOnly = true;
-                            					}
-                            				}
-                            			}
-                            		}
-                        		}
-                        	}else if(prop.toUpperCase() === "displayInstanceName".toUpperCase()){
+                    			var tcpType=this.instance.getDataAtRowProp(row, 'tcpType');
+                    			if(tcpType=='' || tcpType==null){
+                    				cellProperties.readOnly = false;
+                    			}else{
+                    				if(prop.toUpperCase() === "signInId".toUpperCase()){
+                    					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
+                    						cellProperties.readOnly = false;
+                    					}else{
+                    						cellProperties.readOnly = true;
+                    					}
+                    				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
+                    					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
+                    						cellProperties.readOnly = false;
+                    					}else{
+                    						cellProperties.readOnly = true;
+                    					}
+                    				}
+                    			}
+                    		}else if(prop.toUpperCase() === "displayInstanceName".toUpperCase()){
                         		
                         	}else if(prop.toUpperCase() === "alarmInstanceName".toUpperCase()){
                         		

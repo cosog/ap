@@ -202,6 +202,36 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/loadSignInIdComboxList")
+	public String loadSignInIdComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String signInId = ParamUtils.getParameter(request, "signInId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String calculateType= ParamUtils.getParameter(request, "calculateType");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		String json = this.wellInformationManagerService.loadSignInIdComboxList(pager,orgId, deviceName,signInId,deviceType,calculateType,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/loadPumpingManufacturerComboxList")
 	public String loadPumpingManufacturerComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);
@@ -598,6 +628,7 @@ public class WellInformationManagerController extends BaseController {
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String signInId=ParamUtils.getParameter(request, "signInId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		HttpSession session=request.getSession();
@@ -618,6 +649,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("deviceName", deviceName);
+		map.put("signInId", signInId);
 		map.put("deviceType", deviceType);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);

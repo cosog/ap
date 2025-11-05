@@ -399,15 +399,6 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    	this.source = protocolConfigInstancePropertiesHandsontableHelper.unitList;
-			                    	
-			                    	
-//			                    	this.source = protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList;
-//			                    	this.renderer= function(instance, td, row, col, prop, value, cellProperties) {
-//			                            const source = cellProperties.source;
-//			                            const item = source.find(item => item.value === value);
-//			                            td.textContent = item ? item.label : value;
-//			                            return td;
-//			                          }
 			                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 			                    	this.type = 'dropdown';
 			                    	this.source = ['modbus-tcp','modbus-rtu','private-kd93','private-lq1000','private-g771'];

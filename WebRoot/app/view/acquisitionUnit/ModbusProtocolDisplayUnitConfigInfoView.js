@@ -543,14 +543,14 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 cellProperties.readOnly = true;
                                 cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
                             } else {
-                                if (visualColIndex >= 1 && visualColIndex <= 4) {
+                                if (prop=='id'||prop=='showTitle'||prop=='dataSource'||prop=='unit') {
                                     cellProperties.readOnly = true;
                                     cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
-                                }else if (visualColIndex == 12 || visualColIndex == 19) {
+                                }else if (prop=='realtimeCurveConfShowValue'||prop=='historyCurveConfShowValue') {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
-                                } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
+                                } else if (prop=='realtimeColor'||prop=='realtimeBgColor'||prop=='historyColor'||prop=='historyBgColor') {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCellBgColor;
-                                } else if(visualColIndex==20){
+                                } else if(prop=='switchingValueShowType'){
 	    		                    const resolutionMode = this.instance.getDataAtRowProp(row, 'resolutionMode');
 	    		                    if (resolutionMode!=loginUserLanguageResource.switchingValue) {
 	                                    cellProperties.readOnly = true;

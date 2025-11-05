@@ -817,8 +817,12 @@ public class ResourceMonitoringTask {
 
 	// Windows专用方法
 	private static long getOracleMemoryWindows() throws Exception {
+//	    Process process = Runtime.getRuntime().exec(
+//	        "wmic process where \"name like '%oracle%'\" get WorkingSetSize");
+	    
 	    Process process = Runtime.getRuntime().exec(
-	        "wmic process where \"name like '%oracle%'\" get WorkingSetSize");
+	    	    new String[]{"powershell", "-Command", "Get-Process *oracle* | Select-Object WorkingSet"});
+	    
 	    
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 	    

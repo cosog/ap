@@ -534,6 +534,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'AlarmUnitTreeSelectUnitId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'AddNewAlarmUnitName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     id: 'ModbusProtocolAlarmUnitEnumItemsSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
@@ -2452,6 +2462,7 @@ function SaveModbusProtocolAlarmUnitConfigData(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
+					Ext.getCmp("AlarmUnitTreeSelectUnitId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
@@ -2481,6 +2492,7 @@ function grantAlarmItemsPermission(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
+					Ext.getCmp("AlarmUnitTreeSelectUnitId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

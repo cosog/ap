@@ -156,12 +156,6 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
             	Ext.getCmp("ModbusProtocolAddNewProtocolName_Id").setValue('');
             	var maxProtocolId=0;
             	var protocolCount=0;
-//            	for(var i=0;i<store.data.length;i++){
-//            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){
-//            			selectedRow=i;
-//            			break;
-//            		}
-//            	}
             	
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addProtocolName){

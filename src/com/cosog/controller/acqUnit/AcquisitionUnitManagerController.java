@@ -3750,7 +3750,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doModbusProtocolReportInstanceAdd(@ModelAttribute ProtocolReportInstance protocolReportInstance) throws IOException {
 		String result = "";
 		try {
-			if(protocolReportInstance.getId()!=null){
+			if(protocolReportInstance.getId()==null){
 				protocolReportInstance.setId(1);
 			}
 			this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceAdd(protocolReportInstance);

@@ -48,7 +48,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     useArrows: false,
                     rootVisible: false,
                     autoScroll: true,
-                    forceFit: true,
+                    forceFit: false,
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
@@ -83,6 +83,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").setValue(index);
+                        	Ext.getCmp("AlarmInstanceTreeSelectInstanceId_Id").setValue(record.data.id);
                         	CreateProtocolAlarmInstancePropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
@@ -126,15 +127,60 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                 var panel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigPanel_Id");
                 panel.add(treeGridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
-            if(selectedRow==0 || selectedRow>=store.data.length ){
+//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
+//            if(selectedRow==0 || selectedRow>=store.data.length ){
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes>0){
+//            			selectedRow=i;
+//            			break;
+//            		}
+//            	}
+//            }
+            
+            var selectedRow=0;
+            var addInstanceName=Ext.getCmp("AddNewAlarmInstanceName_Id").getValue();
+            if(isNotVal(addInstanceName)){
+            	Ext.getCmp("AddNewAlarmInstanceName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>0){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addInstanceName){
             			selectedRow=i;
-            			break;
+            			instanceCount++;
             		}
             	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addInstanceName){
+                			if(store.getAt(i).data.id>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
+            	var selectedInstanceId=parseInt(Ext.getCmp("AlarmInstanceTreeSelectInstanceId_Id").getValue());
+                if(selectedInstanceId==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedInstanceId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
+            
+            
             treeGridPanel.getSelectionModel().deselectAll(true);
             treeGridPanel.getSelectionModel().select(selectedRow, true);
         }

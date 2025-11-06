@@ -71,6 +71,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoSt
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").setValue(index);
                         	Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
+                        	Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

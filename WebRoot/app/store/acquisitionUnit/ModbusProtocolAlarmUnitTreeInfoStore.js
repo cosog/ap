@@ -79,6 +79,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(index);
+                        	Ext.getCmp("AlarmUnitTreeSelectUnitId_Id").setValue(record.data.id);
                         	
                         	var tabPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigRightTabPanel_Id");
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAlarmUnitPropertiesConfigPanel_Id");
@@ -202,17 +203,61 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
                 var panel = Ext.getCmp("ModbusProtocolAlarmUnitConfigPanel_Id");
                 panel.add(gridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue());
-            if(selectedRow==0){
+//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue());
+//            if(selectedRow==0){
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes>0){
+//            			selectedRow=i;
+//            			if(store.getAt(i).data.classes==3){
+//            				break;
+//            			}
+//            		}
+//            	}
+//            }
+            
+            var selectedRow=0;
+            var addUnitName=Ext.getCmp("AddNewAlarmUnitName_Id").getValue();
+            if(isNotVal(addUnitName)){
+            	Ext.getCmp("AddNewAlarmUnitName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>0){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
             			selectedRow=i;
-            			if(store.getAt(i).data.classes==3){
-            				break;
-            			}
+            			instanceCount++;
             		}
             	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
+                			if(store.getAt(i).data.id>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue());
+            	var selectedUnitId=parseInt(Ext.getCmp("AlarmUnitTreeSelectUnitId_Id").getValue());
+                if(selectedUnitId==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedUnitId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
+            
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         }

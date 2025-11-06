@@ -115,6 +115,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                     		}
                     	}else if(newCard.id=="ModbusProtocolReportInstanceConfigTabPanel_Id"){
                     		Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(0);
+                    		Ext.getCmp("ReportInstanceTreeSelectInstanceId_Id").setValue(0);
                     		var gridPanel=Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
                     		if(isNotVal(gridPanel)){
                     			gridPanel.getStore().load();

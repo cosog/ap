@@ -20,6 +20,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     value: 0,
                     hidden: true
                 },{
+                    id: 'DisplayInstanceTreeSelectInstanceId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'AddNewDisplayInstanceName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -422,6 +432,7 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
+					Ext.getCmp("DisplayInstanceTreeSelectInstanceId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

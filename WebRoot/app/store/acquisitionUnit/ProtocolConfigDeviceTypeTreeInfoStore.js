@@ -102,6 +102,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                             		}
                             	}else if(activeId=="ModbusProtocolReportUnitConfigTabPanel_Id"){
                             		Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(0);
+                            		Ext.getCmp("ReportUnitTreeSelectUnitId_Id").setValue(0);
                             		var treeGridPanel = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id");
                                     if (isNotVal(treeGridPanel)) {
                                     	treeGridPanel.getStore().load();
@@ -135,8 +136,16 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                             		}else{
                             			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfoStore');
                             		}
-                            	}else if(activeId=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
+                            	}else if(activeId=="ModbusProtocolReportInstanceConfigTabPanel_Id"){
                             		Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(0);
+                            		Ext.getCmp("ReportInstanceTreeSelectInstanceId_Id").setValue(0);
+                            		var treePanel=Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id");
+                            		if(isNotVal(treePanel)){
+                            			treePanel.getStore().load();
+                            		}else{
+                            			Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore');
+                            		}
+                            	}else if(activeId=="ModbusProtocolSMSInstanceConfigTabPanel_Id"){
                             		var gridPanel=Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
                             		if(isNotVal(gridPanel)){
                             			gridPanel.getStore().load();

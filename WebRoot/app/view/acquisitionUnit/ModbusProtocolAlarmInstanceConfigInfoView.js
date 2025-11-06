@@ -20,6 +20,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                     value: 0,
                     hidden: true
                 },{
+                    id: 'AlarmInstanceTreeSelectInstanceId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'AddNewAlarmInstanceName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -414,6 +424,7 @@ function SaveModbusProtocolAlarmInstanceData(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").setValue(0);
+					Ext.getCmp("AlarmInstanceTreeSelectInstanceId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

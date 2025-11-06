@@ -71,6 +71,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoSt
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(index);
                         	Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
+                        	Ext.getCmp("ScadaProtocolModbusAddNewInstanceId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

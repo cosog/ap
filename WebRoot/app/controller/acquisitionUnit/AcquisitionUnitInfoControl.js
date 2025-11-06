@@ -644,6 +644,10 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formModbusProtocolInstanceName_Id').getValue();
+            	Ext.getCmp('ScadaProtocolModbusAddNewInstanceName_Id').setValue(addInstanceName);
+            	
+            	
                 Ext.getCmp('modbusProtocolInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -687,6 +691,9 @@ var SaveAlarmUnitSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formAlarmUnitName_Id').getValue();
+            	Ext.getCmp('AddNewAlarmUnitName_Id').setValue(addInstanceName);
+            	
                 Ext.getCmp('alarmUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -730,6 +737,10 @@ var SaveDisplayUnitSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formDisplayUnitName_Id').getValue();
+            	Ext.getCmp('AddNewDisplayUnitName_Id').setValue(addInstanceName);
+            	
+            	
                 Ext.getCmp('displayUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -792,6 +803,9 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formModbusProtocolReportUnitName_Id').getValue();
+            	Ext.getCmp('AddNewReportUnitName_Id').setValue(addInstanceName);
+            	
                 Ext.getCmp('modbusProtocolReportUnitInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -825,6 +839,10 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formModbusProtocolDisplayInstanceName_Id').getValue();
+            	Ext.getCmp('AddNewDisplayInstanceName_Id').setValue(addInstanceName);
+            	
+            	
                 Ext.getCmp('modbusProtocolDisplayInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -857,6 +875,9 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formModbusProtocolReportInstanceName_Id').getValue();
+            	Ext.getCmp('AddNewReportInstanceName_Id').setValue(addInstanceName);
+            	
                 Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -900,6 +921,10 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	var addInstanceName = Ext.getCmp('formModbusProtocolAlarmInstanceName_Id').getValue();
+            	Ext.getCmp('AddNewAlarmInstanceName_Id').setValue(addInstanceName);
+            	
+            	
                 Ext.getCmp('modbusProtocolAlarmInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {

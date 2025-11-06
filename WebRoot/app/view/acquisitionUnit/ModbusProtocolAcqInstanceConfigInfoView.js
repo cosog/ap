@@ -20,6 +20,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'ScadaProtocolModbusAddNewInstanceName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
+                    id: 'ScadaProtocolModbusAddNewInstanceId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -607,6 +617,7 @@ function SaveModbusProtocolAcqInstanceData(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
+					Ext.getCmp("ScadaProtocolModbusAddNewInstanceId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

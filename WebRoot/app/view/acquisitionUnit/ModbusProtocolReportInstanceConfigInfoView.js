@@ -15,6 +15,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     value: 0,
                     hidden: true
                 },{
+                    id: 'ReportInstanceTreeSelectInstanceId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'AddNewReportInstanceName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -151,6 +161,7 @@ function SaveModbusProtocolReportInstanceData(saveData){
 			if (data.success) {
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(0);
+					Ext.getCmp("ReportInstanceTreeSelectInstanceId_Id").setValue(0);
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

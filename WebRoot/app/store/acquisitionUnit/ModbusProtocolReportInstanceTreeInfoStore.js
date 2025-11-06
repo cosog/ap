@@ -31,7 +31,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                     useArrows: false,
                     rootVisible: false,
                     autoScroll: true,
-                    forceFit: true,
+                    forceFit: false,
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
@@ -66,6 +66,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").setValue(index);
+                        	Ext.getCmp("ReportInstanceTreeSelectInstanceId_Id").setValue(record.data.id);
                         	CreateProtocolReportInstancePropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
@@ -109,15 +110,58 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportInstanceTreeInfoStore',
                 var panel = Ext.getCmp("ModbusProtocolReportInstanceConfigPanel_Id");
                 panel.add(treeGridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").getValue());
+//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").getValue());
+//            
+//            if(selectedRow==0){
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes>0){
+//            			selectedRow=i;
+//            			break;
+//            		}
+//            	}
+//            }
             
-            if(selectedRow==0){
+            var selectedRow=0;
+            var addInstanceName=Ext.getCmp("AddNewReportInstanceName_Id").getValue();
+            if(isNotVal(addInstanceName)){
+            	Ext.getCmp("AddNewReportInstanceName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>0){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addInstanceName){
             			selectedRow=i;
-            			break;
+            			instanceCount++;
             		}
             	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addInstanceName){
+                			if(store.getAt(i).data.id>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportInstanceTreeSelectRow_Id").getValue());
+            	var selectedInstanceId=parseInt(Ext.getCmp("ReportInstanceTreeSelectInstanceId_Id").getValue());
+                if(selectedInstanceId==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedInstanceId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

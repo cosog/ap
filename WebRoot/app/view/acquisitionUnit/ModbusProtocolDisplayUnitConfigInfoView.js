@@ -161,6 +161,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'DisplayUnitTreeSelectUnitId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'AddNewDisplayUnitName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -1253,6 +1263,7 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
 			if (rdata.success) {
             	if(displayUnitSaveData.delidslist!=undefined && displayUnitSaveData.delidslist.length>0){
             		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
+            		Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

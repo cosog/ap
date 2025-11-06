@@ -71,6 +71,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceProtocolTreeInfo
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAlarmInstanceProtocolSelectRow_Id").setValue(index);
                         	Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").setValue(0);
+                        	Ext.getCmp("AlarmInstanceTreeSelectInstanceId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

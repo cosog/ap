@@ -61,6 +61,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").setValue(index);
+                        	Ext.getCmp("ReportUnitTreeSelectUnitId_Id").setValue(record.data.id);
                         	if(record.data.classes==0){
                         		Ext.getCmp("ReportUnitConfigInformationLabel_Id").setHtml('');
                                 Ext.getCmp("ReportUnitConfigInformationLabel_Id").hide();
@@ -151,15 +152,58 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                 var panel = Ext.getCmp("ModbusProtocolReportUnitConfigPanel_Id");
                 panel.add(treeGridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue());
+//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue());
+//            
+//            if(selectedRow==0){
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes==1){
+//            			selectedRow=i;
+//            			break;
+//            		}
+//            	}
+//            }
             
-            if(selectedRow==0){
+            var selectedRow=0;
+            var addUnitName=Ext.getCmp("AddNewReportUnitName_Id").getValue();
+            if(isNotVal(addUnitName)){
+            	Ext.getCmp("AddNewReportUnitName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes==1){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
             			selectedRow=i;
-            			break;
+            			instanceCount++;
             		}
             	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
+                			if(store.getAt(i).data.id>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue());
+            	var selectedUnitId=parseInt(Ext.getCmp("ReportUnitTreeSelectUnitId_Id").getValue());
+                if(selectedUnitId==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedUnitId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

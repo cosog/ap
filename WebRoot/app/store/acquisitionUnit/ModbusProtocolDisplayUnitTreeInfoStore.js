@@ -78,7 +78,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(index);
-                        	
+                        	Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(record.data.id);
 
                         	var tabPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigRightTabPanel_Id");
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolDisplayUnitPropertiesConfigPanel_Id");
@@ -174,18 +174,61 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                 var panel = Ext.getCmp("ModbusProtocolDisplayUnitConfigPanel_Id");
                 panel.add(gridPanel);
             }
-            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue());
-            if(selectedRow==0){
+//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue());
+//            if(selectedRow==0){
+//            	for(var i=0;i<store.data.length;i++){
+//            		if(store.getAt(i).data.classes>0){
+//            			selectedRow=i;
+//            			if(store.getAt(i).data.classes==2){
+//            				break;
+//            			}
+//            		}
+//            	}
+//            }
+            
+            
+            var selectedRow=0;
+            var addUnitName=Ext.getCmp("AddNewDisplayUnitName_Id").getValue();
+            if(isNotVal(addUnitName)){
+            	Ext.getCmp("AddNewDisplayUnitName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.classes>0){
+            		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
             			selectedRow=i;
-            			if(store.getAt(i).data.classes==2){
-            				break;
-            			}
+            			instanceCount++;
             		}
             	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0 && store.getAt(i).data.text==addUnitName){
+                			if(store.getAt(i).data.id>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").getValue());
+            	var selectedUnitId=parseInt(Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").getValue());
+                if(selectedUnitId==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>0){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedUnitId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
             }
-            
             
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);

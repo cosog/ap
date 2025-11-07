@@ -54,6 +54,23 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
 							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					var unitCount=0;
+					for(var i=0;i<store.data.items.length;i++){
+						if(store.data.items[i].data.classes==2){
+							unitCount++;
+						}
+					}
+					if(unitCount==0){
+						Ext.getCmp("addAlarmInstanceTip_Id").show();
+						
+						Ext.getCmp("modbusInstanceProtocolAndAlarmUnit_Id").disable();
+						Ext.getCmp("formModbusProtocolAlarmInstanceName_Id").disable();
+						Ext.getCmp("modbusProtocolAlarmInstanceSort_Id").disable();
+						
+						Ext.getCmp("addFormModbusProtocolAlarmInstance_Id").disable();
+					}
 				}
             }
         });
@@ -118,6 +135,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addAlarmInstanceTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.alarmUnitDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolAlarmInstance_Id',

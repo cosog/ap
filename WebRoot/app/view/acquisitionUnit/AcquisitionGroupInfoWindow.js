@@ -235,6 +235,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 			    value:0,
 			    allowBlank: false,
 				editable : false,
+				hidden:true,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
 							data : [[0, loginUserLanguageResource.acqGroup],[1, loginUserLanguageResource.controlGroup]]

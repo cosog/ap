@@ -71,6 +71,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore'
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(index);
                         	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+                        	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowClasses_Id").setValue(0);
+                        	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

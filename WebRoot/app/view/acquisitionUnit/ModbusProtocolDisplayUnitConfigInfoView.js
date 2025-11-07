@@ -692,6 +692,34 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                             }
                         }
                     }
+                },
+                afterChange: function (changes, source) {
+                	if (!changes) return;
+                	changes.forEach(([row, prop, oldValue, newValue]) => {
+                        if (source=="CopyPaste.paste" && (prop === 'historyCurveConfShowValue' || prop === 'realtimeCurveConfShowValue')) {
+                        	if(newValue.split(";").length==3){
+                        		var curveConfigArr=newValue.split(";");
+                            	var curveConfig={};
+                    			curveConfig.sort=curveConfigArr[0];
+                    			curveConfig.lineWidth=3;
+                    			curveConfig.dashStyle='Solid';
+                    			curveConfig.yAxisOpposite=curveConfigArr[1]==loginUserLanguageResource.right?true:false;
+                    			curveConfig.color=curveConfigArr[2];
+                    			
+                    			if(prop === 'realtimeCurveConfShowValue'){
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'realtimeCurveConf',curveConfig);
+                    			}else if(prop === 'historyCurveConfShowValue'){
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf',curveConfig);                                                 
+                    			}
+                        	}else{
+                        		if(prop === 'realtimeCurveConfShowValue'){
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'realtimeCurveConf','');
+                    			}else if(prop === 'historyCurveConfShowValue'){
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf','');                                                 
+                    			}
+                        	}
+                        }
+                    });
                 }
             });
         }

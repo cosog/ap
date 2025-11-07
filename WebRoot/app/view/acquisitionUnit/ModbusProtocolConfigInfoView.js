@@ -369,7 +369,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
 						+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
 						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
-						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
+						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 						+"{data:'unit'}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}" 
 						+"]";
@@ -1066,7 +1066,8 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 								Prec=Prec!=''?Prec.replace(/\s/g, ""):Prec;
 								item.Prec=(item.IFDataType!=null && item.IFDataType.toLowerCase().indexOf('float')>=0)?(isNumber(parseFloat(Prec))?parseFloat(Prec):0):0;
 								
-								item.Ratio=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'ratio');
+								var Ratio=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'ratio');
+								item.Ratio=(isNumber(parseFloat(Ratio))?parseFloat(Ratio):1);
 								
 								var Unit=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit')+"";
 								Unit=Unit!=''?Unit.replace(/\s/g, ""):Unit;

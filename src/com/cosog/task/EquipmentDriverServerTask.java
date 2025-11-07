@@ -693,7 +693,7 @@ public class EquipmentDriverServerTask {
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
-				modbusProtocolConfig.getProtocol().remove(i);
+//				modbusProtocolConfig.getProtocol().remove(i);
 				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
 				break;
 			}
@@ -710,23 +710,11 @@ public class EquipmentDriverServerTask {
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
 		if(modbusProtocolConfig!=null){
-//			if("delete".equalsIgnoreCase(method)){
-//				initProtocol=new InitProtocol();
-//				initProtocol.setProtocolName(protocolName);
-//				initProtocol.setMethod(method);
-//				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol));
-//				if(initEnable){
-//					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
-//				}
-//			}else{}
-			
-
 			if(StringManagerUtils.isNotNull(deviceType) && StringManagerUtils.isNotNull(protocolName)){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())
 							&& StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
-//						initProtocol.setMethod(method);
 						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol));
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
@@ -902,6 +890,28 @@ public class EquipmentDriverServerTask {
 		}
 		return t;
 	}
+	
+	public static int deleteDeleteInitializedInstanceByProtocolNameAndType(String protocolName,String deviceType){
+		String sql="select t.name,t3.name as protocolName,t4.allpath_zh_cn from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3,viw_devicetypeinfo t4 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code and t3.deviceType=t4.id"
+				+ " and t3.name='"+protocolName+"'"
+				+ " and t3.deviceType="+deviceType;
+		List<String> instanceList=new ArrayList<String>();
+		List<Object[]> list=OracleJdbcUtis.query(sql);
+		try {
+			
+			for(Object[] obj:list){
+				instanceList.add(obj[2]+"/"+obj[1]+"/"+obj[0]);
+			}
+			if(instanceList.size()>0){
+				deleteInitializedInstance(instanceList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfigByNames(List<String> instanceList,String method){

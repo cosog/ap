@@ -78,6 +78,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
                         	
                         },select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(index);
+                        	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowClasses_Id").setValue(record.data.classes);
+                        	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(record.data.id);
                         	var tabPanel = Ext.getCmp("ModbusProtocolAcqUnitConfigRightTabPanel_Id");
                         	var propertiesTabPanel = tabPanel.getComponent("ModbusProtocolAcqUnitPropertiesConfigPanel_Id");
                 			var acqGroupItemsTabPanel = tabPanel.getComponent("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id");
@@ -222,6 +224,58 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
             		}
             	}
             }
+            
+            
+            var selectedRow=0;
+            var addObjectName=Ext.getCmp("ModbusProtocolAcqGroupConfigAddObjectName_Id").getValue();
+            var addObjectClasses=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigAddObjectClasses_Id").getValue());
+            if(isNotVal(addObjectName)){
+            	Ext.getCmp("ModbusProtocolAcqGroupConfigAddObjectName_Id").setValue('');
+            	Ext.getCmp("ModbusProtocolAcqGroupConfigAddObjectClasses_Id").setValue('');
+            	var maxObjectId=0;
+            	var objectCount=0;
+            	
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.classes==addObjectClasses && store.getAt(i).data.text==addObjectName){
+            			selectedRow=i;
+            			objectCount++;
+            		}
+            	}
+            	if(objectCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes==addObjectClasses && store.getAt(i).data.text==addObjectName){
+                			if(store.getAt(i).data.id>maxObjectId){
+                				maxObjectId=store.getAt(i).data.id;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+                selectedRow=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue());
+                var selectedObjectId=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").getValue());
+                var selectedObjectClasses=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowClasses_Id").getValue());
+                
+                if(selectedRow==0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.classes>=2){
+                			selectedRow=i;
+                			if(isNotVal(store.getAt(i).data.children) && store.getAt(i).data.children.length>0){
+                				selectedRow+=1;
+                			}
+                			break;
+                		}
+                	}
+                }else{
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.id==selectedObjectId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
+            }
+            
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         }

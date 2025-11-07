@@ -63,6 +63,18 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
 							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					if(records.length==0){
+						Ext.getCmp("addAlarmUnitTip_Id").show();
+						
+						Ext.getCmp("formAlarmUnitProtocolComb_Id").disable();
+						Ext.getCmp("formAlarmUnitName_Id").disable();
+						Ext.getCmp("alarmUnitSort_Id").disable();
+						Ext.getCmp("alarmUnitRemark_Id").disable();
+						
+						Ext.getCmp("addFormAlarmUnit_Id").disable();
+					}
 				}
 			}
 		});
@@ -120,6 +132,12 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addAlarmUnitTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.protocolDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formAlarmUnit_Id',

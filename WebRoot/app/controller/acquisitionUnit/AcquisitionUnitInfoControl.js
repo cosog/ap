@@ -108,6 +108,24 @@ function addAcquisitionGroupInfo() {
         title: loginUserLanguageResource.addAcqGroup
     });
     AcquisitionGroupInfoWindow.show();
+    
+    Ext.getCmp("formAcquisitionGroupType_Id").setValue(0);
+    
+    Ext.getCmp("addFormAcquisitionGroup_Id").show();
+    Ext.getCmp("updateFormaAquisitionGroup_Id").hide();
+    return false;
+};
+
+function addControlGroupInfo() {
+    var AcquisitionGroupInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
+        title: loginUserLanguageResource.addAcqGroup
+    });
+    AcquisitionGroupInfoWindow.show();
+    
+    Ext.getCmp("formAcquisitionGroupType_Id").setValue(1);
+    Ext.getCmp('formAcquisitionGroupGroupTimingInterval_Id').hide();
+	Ext.getCmp('formAcquisitionGroupGroupSavingInterval_Id').hide();
+    
     Ext.getCmp("addFormAcquisitionGroup_Id").show();
     Ext.getCmp("updateFormaAquisitionGroup_Id").hide();
     return false;
@@ -125,6 +143,11 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	
+            	Ext.getCmp('ModbusProtocolAcqGroupConfigAddObjectClasses_Id').setValue(3);
+            	Ext.getCmp('ModbusProtocolAcqGroupConfigAddObjectName_Id').setValue(Ext.getCmp('formAcquisitionGroupName_Id').getValue());
+            	
+            	
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -244,6 +267,9 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
+            	Ext.getCmp('ModbusProtocolAcqGroupConfigAddObjectClasses_Id').setValue(2);
+            	Ext.getCmp('ModbusProtocolAcqGroupConfigAddObjectName_Id').setValue(Ext.getCmp('formAcquisitionUnitName_Id').getValue());
+            	
                 Ext.getCmp('acquisitionUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
@@ -623,7 +649,7 @@ var grantAcquisitionGroupsPermission = function () {
     return false;
 };
 function addModbusProtocolInstanceConfigData() {
-    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
+	var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
         title: loginUserLanguageResource.addAcqInstance
     });
     window.show();

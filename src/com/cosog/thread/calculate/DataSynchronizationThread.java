@@ -43,7 +43,7 @@ public class DataSynchronizationThread implements Runnable{
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 				
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolNameAndType(param1,param2,method);
-				EquipmentDriverServerTask.initInstanceConfigByProtocolNameAndType(param1,param2,method);
+				EquipmentDriverServerTask.deleteDeleteInitializedInstanceByProtocolNameAndType(param1,param2);
 				EquipmentDriverServerTask.deleteInitializedProtocolConfig(param1,param2);
 				this.acquisitionUnitManagerService.doDeleteProtocolAssociation(param1,param2);
 			}else if(sign==003){//修改协议
@@ -147,11 +147,9 @@ public class DataSynchronizationThread implements Runnable{
 			}else if(sign==102){//删除抽油机井
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadDeviceInfo(deleteList,condition,method);
-//				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}else if(sign==103){//修改抽油机井
 				MemoryDataManagerTask.loadDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,condition,method);
-//				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,user,deviceType);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

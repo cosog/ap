@@ -107,6 +107,26 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'ModbusProtocolAcqGroupConfigSelectRowClasses_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'ModbusProtocolAcqGroupConfigSelectRowId_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'ModbusProtocolAcqGroupConfigAddObjectClasses_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'ModbusProtocolAcqGroupConfigAddObjectName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -134,6 +154,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     iconCls: 'add',
                     handler: function (v, o) {
                     	addAcquisitionGroupInfo();
+        			}
+        		},"-",{
+        			xtype: 'button',
+                    text: loginUserLanguageResource.addCtrlGroup,
+                    disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+                    iconCls: 'add',
+                    handler: function (v, o) {
+                    	addControlGroupInfo();
         			}
         		},"-",{
                 	xtype: 'button',
@@ -841,6 +869,8 @@ function saveAcquisitionUnitConfigData(acqUnitSaveData,protocol,deviceType){
             	
             	if(acqUnitSaveData.delidslist!=undefined && acqUnitSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowClasses_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
@@ -871,6 +901,8 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
 			if (rdata.success) {
             	if(acqGroupSaveData.delidslist!=undefined && acqGroupSaveData.delidslist.length>0){//如果删除
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowClasses_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);

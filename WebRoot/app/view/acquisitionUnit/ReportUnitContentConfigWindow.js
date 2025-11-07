@@ -539,7 +539,26 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                	}
 	                },
 	                afterChange: function (changes, source) {
-	                	if (changes != null && source=="edit") {
+	                	if (!changes) return;
+	                	if(changes != null && source=="CopyPaste.paste"){
+	                		changes.forEach(([row, prop, oldValue, newValue]) => {
+		                        if (prop === 'reportCurveConfShowValue') {
+		                        	if(newValue.split(";").length==3){
+		                        		var curveConfigArr=newValue.split(";");
+		                            	var curveConfig={};
+		                    			curveConfig.sort=curveConfigArr[0];
+		                    			curveConfig.lineWidth=3;
+		                    			curveConfig.dashStyle='Solid';
+		                    			curveConfig.yAxisOpposite=curveConfigArr[1]==loginUserLanguageResource.right?true:false;
+		                    			curveConfig.color=curveConfigArr[2];
+		                    			
+		                    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',curveConfig);
+		                        	}else{
+		                        		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+		                        	}
+		                        }
+		                    });
+	                	}else if (changes != null && source=="edit") {
 	                		var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
 	                		var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
 	                		

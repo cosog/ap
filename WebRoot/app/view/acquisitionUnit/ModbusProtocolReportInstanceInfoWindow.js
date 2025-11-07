@@ -43,6 +43,17 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
 					var new_params = {
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					if(records.length==0){
+						Ext.getCmp("addReportInstanceTip_Id").show();
+						
+						Ext.getCmp("modbusProtocolReportInstanceTemplateComb_Id").disable();
+						Ext.getCmp("formModbusProtocolReportInstanceName_Id").disable();
+						Ext.getCmp("modbusProtocolReportInstanceSort_Id").disable();
+						
+						Ext.getCmp("addFormModbusProtocolReportInstance_Id").disable();
+					}
 				}
 			}
 		});
@@ -78,6 +89,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addReportInstanceTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.reportUnitDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolReportInstance_Id',

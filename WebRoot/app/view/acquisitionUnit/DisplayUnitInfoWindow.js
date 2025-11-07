@@ -140,6 +140,20 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 						selectedProtocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					if(records.length==0){
+						Ext.getCmp("addDisplayUnitTip_Id").show();
+						
+						Ext.getCmp("formDisplayUnitProtocolComb_Id").disable();
+						Ext.getCmp("formDisplayUnitAcqUnitComb_Id").disable();
+						Ext.getCmp("formDisplayUnitName_Id").disable();
+						Ext.getCmp("formDisplayUnitCalculateTypeComb_Id").disable();
+						Ext.getCmp("displayUnitSort_Id").disable();
+						Ext.getCmp("displayUnitRemark_Id").disable();
+						
+						Ext.getCmp("addFormDisplayUnit_Id").disable();
+					}
 				}
 			}
 		});
@@ -172,6 +186,12 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addDisplayUnitTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.acqUnitDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formDisplayUnit_Id',

@@ -55,6 +55,23 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
 							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					var unitCount=0;
+					for(var i=0;i<store.data.items.length;i++){
+						if(store.data.items[i].data.classes==2){
+							unitCount++;
+						}
+					}
+					if(unitCount==0){
+						Ext.getCmp("addDisplayInstanceTip_Id").show();
+						
+						Ext.getCmp("modbusInstanceProtocolAndDisplayUnit_Id").disable();
+						Ext.getCmp("formModbusProtocolDisplayInstanceName_Id").disable();
+						Ext.getCmp("modbusProtocolDisplayInstanceSort_Id").disable();
+						
+						Ext.getCmp("addFormModbusProtocolDisplayInstance_Id").disable();
+					}
 				}
             }
         });
@@ -119,6 +136,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addDisplayInstanceTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.displayUnitDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formModbusProtocolDisplayInstance_Id',

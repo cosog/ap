@@ -45,6 +45,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
         		},'->',{
         			xtype: 'button',
                     text: loginUserLanguageResource.addAcqInstance,
+                    tooltip:'',
                     disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
                     iconCls: 'add',
                     handler: function (v, o) {

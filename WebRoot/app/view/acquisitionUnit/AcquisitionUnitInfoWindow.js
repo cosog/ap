@@ -63,6 +63,18 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
 							protocol: protocolList.join(",")
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
+				},
+				load :function( store, records, successful, operation, node, eOpts ) {
+					if(records.length==0){
+						Ext.getCmp("addAcqUnitTip_Id").show();
+						
+						Ext.getCmp("formAcquisitionUnitProtocolComb_Id").disable();
+						Ext.getCmp("formAcquisitionUnitName_Id").disable();
+						Ext.getCmp("acquisitionUnitSort_Id").disable();
+						Ext.getCmp("acquisitionUnitRemark_Id").disable();
+						
+						Ext.getCmp("addFormAcquisitionUnit_Id").disable();
+					}
 				}
 			}
 		});
@@ -92,6 +104,12 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
+                xtype: 'component',
+                id: 'addAcqUnitTip_Id',
+                html: '<div style="color: red; padding: 5px 0; margin-bottom: 10px;">'+loginUserLanguageResource.protocolDoesNotExist+'</div>',
+                hidden: true,
+                border: false
+            },{
                 xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.idx,
                 id: 'formAcquisitionUnit_Id',

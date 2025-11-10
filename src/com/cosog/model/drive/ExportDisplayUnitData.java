@@ -153,6 +153,8 @@ public class ExportDisplayUnitData {
 	    private int HistoryOverviewSort;
 	    
 	    private int HistoryData;
+	    
+	    private int SwitchingValueShowType;
 
 	    public void setId(int Id){
 	        this.Id = Id;
@@ -285,6 +287,12 @@ public class ExportDisplayUnitData {
 		}
 		public void setHistoryData(int historyData) {
 			HistoryData = historyData;
+		}
+		public int getSwitchingValueShowType() {
+			return SwitchingValueShowType;
+		}
+		public void setSwitchingValueShowType(int switchingValueShowType) {
+			SwitchingValueShowType = switchingValueShowType;
 		}
 	}
 

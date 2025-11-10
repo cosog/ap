@@ -411,6 +411,7 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,protocolDeviceTyp
                 	
                 	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
                 	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
+                	+"'"+loginUserLanguageResource.showName+"',"
                 	+"'','','','','','','']"
                 	+"]";
                 var columns = "[" 
@@ -437,6 +438,8 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,protocolDeviceTyp
                     +"{data:'historyColor'}," 
                     +"{data:'historyBgColor'}," 
                     +"{data:'historyCurveConfShowValue'}," //19
+                    +"{data:'switchingValueShowType'},"
+                    
                     +"{data:'realtimeCurveConf'}," 
                     +"{data:'historyCurveConf'}," 
                     +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
@@ -580,11 +583,11 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	                data: data,
 	                hiddenColumns: {
-	                    columns: [0,6,7,13,14,20, 21, 22, 23, 24, 25, 26],
+	                    columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26,27],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	                colWidths: [25, 50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100],
+	                colWidths: [25, 50, 140, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100, 100],
 	                columns: importDisplayUnitAcqItemsHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -685,13 +688,14 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,protocolDeviceTy
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importDisplayUnitCtrlItemsHandsontableHelper==null || importDisplayUnitCtrlItemsHandsontableHelper.hot==undefined){
 				importDisplayUnitCtrlItemsHandsontableHelper = ImportDisplayUnitCtrlItemsHandsontableHelper.createNew("importDisplayUnitCtrlItemsConfigTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.showName+"']";
 				var columns="["
 						+"{data:'id'}," 
 						+"{data:'title'},"
 						+"{data:'unit'},"
 						+"{data:'showLevel'}," 
-						+"{data:'realtimeSort'}"
+						+"{data:'realtimeSort'},"
+						+"{data:'switchingValueShowType'}"
 						+"]";
 				importDisplayUnitCtrlItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				importDisplayUnitCtrlItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -777,7 +781,7 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	        	importDisplayUnitCtrlItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,140,80,60,60],
+	        		colWidths: [50,140,80,60,60,60],
 	                columns:importDisplayUnitCtrlItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

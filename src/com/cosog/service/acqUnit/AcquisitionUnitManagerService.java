@@ -10503,7 +10503,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"DisplayUnit\",");
 		result_json.append("\"List\":[");
-		String displayUnitSql="select t.id,t.unit_code,t.unit_name,t2.name as protocolname,t2.unit_name as acqUnit,t.remark,t.calculatetype,"
+		String displayUnitSql="select t.id,t.unit_code,t.unit_name,t3.name as protocolname,t2.unit_name as acqUnit,t.remark,t.calculatetype,"
 				+ " t3.deviceType as protocolDeviceType "
 				+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.acqunitid=t2.id and t2.protocol=t3.code "
@@ -10515,6 +10515,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
 				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
+				+ " switchingValueShowType,"
 				+ "t.unitid "
 				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
@@ -10566,7 +10567,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 					result_json.append("\"HistoryOverview\":"+StringManagerUtils.stringToInteger(displayItemObj[19]+"")+",");
 					result_json.append("\"HistoryOverviewSort\":"+(StringManagerUtils.isInteger(displayItemObj[20]+"")?StringManagerUtils.stringToInteger(displayItemObj[20]+""):-99)+",");
-					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+"");
+					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+",");
+					
+					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+"");
 					
 					result_json.append("},");
 				}
@@ -10616,6 +10619,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
 				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
+				+ " t.switchingvalueshowtype,"
 				+ "t.unitid "
 				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2 "
 				+ " where t.unitid=t2.id "
@@ -10666,7 +10670,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					
 					result_json.append("\"HistoryOverview\":"+StringManagerUtils.stringToInteger(displayItemObj[19]+"")+",");
 					result_json.append("\"HistoryOverviewSort\":"+(StringManagerUtils.isInteger(displayItemObj[20]+"")?StringManagerUtils.stringToInteger(displayItemObj[20]+""):-99)+",");
-					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+"");
+					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+",");
+					
+					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+"");
 					
 					result_json.append("},");
 				}
@@ -12487,6 +12493,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String dataSource="";
 			String realtimeCurveConfShowValue="";
 			String historyCurveConfShowValue="";
+			String switchingValueShowType="";
 			if(displayItemList.get(i).getType()==0 || displayItemList.get(i).getType()==2){
 				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE","0",language);
 				ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItemList.get(i).getItemName());
@@ -12522,6 +12529,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyCurveConfShowValue=displayItemList.get(i).getHistoryCurveConf().getSort()+";"+(displayItemList.get(i).getHistoryCurveConf().getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+displayItemList.get(i).getHistoryCurveConf().getColor();
 			}
 			
+			if(displayItemList.get(i).getBitIndex()>=0){
+				if(displayItemList.get(i).getSwitchingValueShowType()>0){
+					switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
+				}else{
+					switchingValueShowType=languageResourceMap.get("dataColumn");
+				}
+			}
+			
 			result_json.append("{"
 					+ "\"id\":"+(i+1)+","
 					+ "\"title\":\""+displayItemList.get(i).getItemName()+"\","
@@ -12542,7 +12557,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"realtimeOverview\":"+(displayItemList.get(i).getRealtimeOverview()==1)+","
 					+ "\"realtimeOverviewSort\":\""+(displayItemList.get(i).getRealtimeOverviewSort()>0?displayItemList.get(i).getRealtimeOverviewSort():"")+"\","
 					+ "\"historyOverview\":"+(displayItemList.get(i).getHistoryOverview())+","
-					+ "\"historyOverviewSort\":\""+(displayItemList.get(i).getHistoryOverviewSort()>0?displayItemList.get(i).getHistoryOverviewSort():"")+"\""
+					+ "\"historyOverviewSort\":\""+(displayItemList.get(i).getHistoryOverviewSort()>0?displayItemList.get(i).getHistoryOverviewSort():"")+"\","
+					+ "\"switchingValueShowType\":\""+switchingValueShowType+"\""
 					+ "},");
 		}
 		
@@ -12621,6 +12637,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 
 					displayUnitItem.setHistoryOverview(exportDisplayUnitData.getItemList().get(i).getHistoryOverview()>0?exportDisplayUnitData.getItemList().get(i).getHistoryOverview():null);
 					displayUnitItem.setHistoryOverviewSort(exportDisplayUnitData.getItemList().get(i).getHistoryOverviewSort()>0?exportDisplayUnitData.getItemList().get(i).getHistoryOverviewSort():null);
+					
+					displayUnitItem.setSwitchingValueShowType(exportDisplayUnitData.getItemList().get(i).getSwitchingValueShowType());
 					
 					this.grantDisplayItemsPermission(displayUnitItem);
 				} catch (Exception e) {

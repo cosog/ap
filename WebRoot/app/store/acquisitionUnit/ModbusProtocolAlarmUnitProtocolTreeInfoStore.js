@@ -70,6 +70,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitProtocolTreeInfoStor
                         },
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolAlarmUnitProtocolSelectRow_Id").setValue(index);
+                        	Ext.getCmp("UnitConfigProtocolSelectCode_Id").setValue(record.data.code);
+
                         	Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").setValue(0);
                         	Ext.getCmp("AlarmUnitTreeSelectUnitId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
@@ -89,7 +91,16 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitProtocolTreeInfoStor
                 panel.add(gridPanel);
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmUnitProtocolSelectRow_Id").getValue());
-            if(selectedRow==0){
+            var selectedCode=Ext.getCmp("UnitConfigProtocolSelectCode_Id").getValue();
+            
+            if(isNotVal(selectedCode)){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.code==selectedCode){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }else{
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0){
             			selectedRow=i;

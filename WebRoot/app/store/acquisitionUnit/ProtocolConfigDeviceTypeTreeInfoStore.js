@@ -75,6 +75,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                                 	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
                                 }
                         	}else if(tabPanel.getActiveTab().id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
+                        		Ext.getCmp("UnitConfigProtocolSelectCode_Id").setValue('');
                         		var activeId = Ext.getCmp("ModbusProtocolUnitConfigTabPanel_Id").getActiveTab().id;
                         		if(activeId=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
                         			Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(0);
@@ -111,6 +112,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
                                     }
                             	}
                         	}else if(tabPanel.getActiveTab().id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
+                        		Ext.getCmp("InstanceConfigProtocolSelectCode_Id").setValue('');
                         		var activeId = Ext.getCmp("ModbusProtocolInstanceConfigTabPanel_Id").getActiveTab().id;
                         		if(activeId=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
                         			Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(0);

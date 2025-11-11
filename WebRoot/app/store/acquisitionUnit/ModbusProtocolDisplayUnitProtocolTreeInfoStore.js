@@ -70,6 +70,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoSt
                         },
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").setValue(index);
+                        	Ext.getCmp("UnitConfigProtocolSelectCode_Id").setValue(record.data.code);
                         	Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
                         	Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
@@ -88,8 +89,18 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoSt
                 var panel = Ext.getCmp("ModbusProtocolDisplayUnitProtocolListPanel_Id");
                 panel.add(gridPanel);
             }
+            
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").getValue());
-            if(selectedRow==0){
+            var selectedCode=Ext.getCmp("UnitConfigProtocolSelectCode_Id").getValue();
+            
+            if(isNotVal(selectedCode)){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.code==selectedCode){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }else{
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0){
             			selectedRow=i;
@@ -97,6 +108,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitProtocolTreeInfoSt
             		}
             	}
             }
+            
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         }

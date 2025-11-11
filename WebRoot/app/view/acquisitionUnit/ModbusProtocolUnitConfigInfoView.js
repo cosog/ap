@@ -17,6 +17,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 activeTab: 0,
                 border: false,
                 tabPosition: 'left',
+                tbar:[{
+                    id: 'UnitConfigProtocolSelectCode_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                }],
                 items: [{
                 	title:loginUserLanguageResource.acqUnit,
                 	id:'ModbusProtocolAcqUnitConfigTabPanel_Id',
@@ -70,7 +76,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(0);
                 			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
@@ -78,7 +84,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolAlarmUnitProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolAlarmUnitProtocolSelectRow_Id").setValue(0);
                     		var treePanel=Ext.getCmp("AlarmUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
@@ -86,7 +92,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolDisplayUnitProtocolSelectRow_Id").setValue(0);
                     		var treePanel=Ext.getCmp("DisplayUnitProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

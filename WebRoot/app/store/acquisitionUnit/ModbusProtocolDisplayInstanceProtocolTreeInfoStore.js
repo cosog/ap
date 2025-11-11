@@ -70,6 +70,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeIn
                         },
                         select( v, record, index, eOpts ){
                         	Ext.getCmp("ModbusProtocolDisplayInstanceProtocolSelectRow_Id").setValue(index);
+                        	Ext.getCmp("InstanceConfigProtocolSelectCode_Id").setValue(record.data.code);
                         	Ext.getCmp("ModbusProtocolDisplayInstanceTreeSelectRow_Id").setValue(0);
                         	Ext.getCmp("DisplayInstanceTreeSelectInstanceId_Id").setValue(0);
                         	var treePanel=Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
@@ -88,8 +89,17 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeIn
                 var panel = Ext.getCmp("ModbusProtocolDisplayInstanceProtocolListPanel_Id");
                 panel.add(gridPanel);
             }
+            
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolDisplayInstanceProtocolSelectRow_Id").getValue());
-            if(selectedRow==0){
+            var selectedCode=Ext.getCmp("InstanceConfigProtocolSelectCode_Id").getValue();
+            if(isNotVal(selectedCode)){
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.code==selectedCode){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+            }else{
             	for(var i=0;i<store.data.length;i++){
             		if(store.getAt(i).data.classes>0){
             			selectedRow=i;

@@ -5,6 +5,7 @@ var protocolItemsConfigHandsontableHelper=null;
 var protocolPropertiesHandsontableHelper=null;
 var protocolItemsMeaningConfigHandsontableHelper=null;
 var protocolExtendedFieldConfigHandsontableHelper=null;
+var protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
 
 //采控单元
 var protocolAcqUnitConfigItemsHandsontableHelper=null;
@@ -164,6 +165,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
                             }
                     	}else if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
+                    		Ext.getCmp("UnitConfigProtocolSelectCode_Id").setValue('');
                     		var activeId = Ext.getCmp("ModbusProtocolUnitConfigTabPanel_Id").getActiveTab().id;
                     		if(activeId=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
                     			Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").setValue(0);
@@ -200,6 +202,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                                 }
                         	}
                     	}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
+                    		Ext.getCmp("InstanceConfigProtocolSelectCode_Id").setValue('');
                     		var activeId = Ext.getCmp("ModbusProtocolInstanceConfigTabPanel_Id").getActiveTab().id;
                     		if(activeId=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
                     			Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(0);

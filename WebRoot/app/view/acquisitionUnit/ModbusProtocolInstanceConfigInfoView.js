@@ -18,6 +18,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 activeTab: 0,
                 border: false,
                 tabPosition: 'left',
+                tbar:[{
+                    id: 'InstanceConfigProtocolSelectCode_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                }],
                 items: [{
                 	title:loginUserLanguageResource.acqInstance,
                 	id:"ModbusProtocolAcqInstanceConfigTabPanel_Id",
@@ -83,7 +89,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqInstanceConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolAcqInstanceProtocolSelectRow_Id").setValue(0);
                         	var treePanel=Ext.getCmp("AcqInstanceProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
@@ -91,7 +97,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqInstanceProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolDisplayInstanceConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolDisplayInstanceProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolDisplayInstanceProtocolSelectRow_Id").setValue(0);
                     		var treePanel=Ext.getCmp("DisplayInstanceProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
@@ -99,7 +105,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceProtocolTreeInfoStore');
                     		}
                     	}else if(newCard.id=="ModbusProtocolAlarmInstanceConfigTabPanel_Id"){
-                    		Ext.getCmp("ModbusProtocolAlarmInstanceProtocolSelectRow_Id").setValue(0);
+//                    		Ext.getCmp("ModbusProtocolAlarmInstanceProtocolSelectRow_Id").setValue(0);
                     		var treePanel=Ext.getCmp("AlarmInstanceProtocolTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();

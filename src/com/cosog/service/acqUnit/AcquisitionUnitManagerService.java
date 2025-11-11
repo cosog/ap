@@ -471,25 +471,46 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)){
 					resolutionMode=protocolConfig.getItems().get(j).getResolutionMode();
 					title=protocolConfig.getItems().get(j).getTitle();
+					int quantity=protocolConfig.getItems().get(j).getQuantity();
 					if(protocolConfig.getItems().get(j).getMeaning()!=null&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 						Collections.sort(protocolConfig.getItems().get(j).getMeaning());
 					}
-					for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-						totolCount=k+1;
-						totalRoot.append("{\"id\":"+(k+1)+","
-								+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
-								+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
+					if(resolutionMode==0){
+						for(int i=0;i<quantity;i++){
+							String value=i+"";
+							String meaning="";
+							if(protocolConfig.getItems().get(j).getMeaning()!=null){
+								for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+									if(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()==i){
+										meaning=protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning();
+										break;
+									}
+								}
+							}
+							totolCount=i+1;
+							totalRoot.append("{\"id\":"+(i+1)+","
+									+ "\"value\":\""+value+"\","
+									+ "\"meaning\":\""+meaning+"\"},");
+						}
+					}else{
+						for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+							totolCount=k+1;
+							totalRoot.append("{\"id\":"+(k+1)+","
+									+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
+									+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
+						}
 					}
+					
 					break;
 				}
 			}
 		}
 	
-		if(totolCount<30){
-			for(int i=totolCount;i<20;i++){
-				totalRoot.append("{},");
-			}
-		}
+//		if(totolCount<30){
+//			for(int i=totolCount;i<20;i++){
+//				totalRoot.append("{},");
+//			}
+//		}
 		if(totalRoot.toString().endsWith(",")){
 			totalRoot.deleteCharAt(totalRoot.length() - 1);
 		}
@@ -506,6 +527,90 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
 					+ "]";
 		}
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
+		result_json.append("\"totalRoot\":"+totalRoot+"");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getProtocolSwitchingValueBitStatusConfigData(String protocolCode,String itemAddr,String language){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer totalRoot = new StringBuffer();
+		Gson gson = new Gson();
+		totalRoot.append("[");
+		
+		int resolutionMode=0;
+		String title="";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+		if(protocolConfig!=null){
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr) ){
+					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
+						int quantity=protocolConfig.getItems().get(j).getQuantity();
+						title=protocolConfig.getItems().get(j).getTitle();
+						resolutionMode=protocolConfig.getItems().get(j).getResolutionMode();
+						if(protocolConfig.getItems().get(j).getMeaning()!=null&&protocolConfig.getItems().get(j).getMeaning().size()>0){
+							Collections.sort(protocolConfig.getItems().get(j).getMeaning());
+						}
+
+						for(int i=0;i<quantity;i++){
+							
+							String status0="";
+							int bitIndex0=i;
+							int value0=0;
+							String title0=bitIndex0+"/"+value0;
+							
+							String status1="";
+							int bitIndex1=i;
+							int value1=1;
+							String title1=bitIndex1+"/"+value1;
+							
+							if(protocolConfig.getItems().get(j).getMeaning()!=null){
+								for(int k=0;k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+									if(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()==i){
+										status0=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0();
+										status1=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1();
+										
+										if(!StringManagerUtils.isNotNull(status0)){
+											status0=languageResourceMap.get("switchingCloseValue");
+										}
+										if(!StringManagerUtils.isNotNull(status1)){
+											status1=languageResourceMap.get("switchingOpenValue");
+										}
+										break;
+									}
+								}
+							}
+							
+							totalRoot.append("{\"id\":"+(i*2+1)+","
+									+ "\"title\":\""+title0+"\","
+									+ "\"status\":\""+status0+"\","
+									+ "\"bitIndex\":\""+bitIndex0+"\","
+									+ "\"value\":\""+value0+"\"},");
+							totalRoot.append("{\"id\":"+(i*2+2)+","
+									+ "\"title\":\""+title1+"\","
+									+ "\"status\":\""+status1+"\","
+									+ "\"bitIndex\":\""+bitIndex1+"\","
+									+ "\"value\":\""+value1+"\"},");
+						}
+					}
+					
+					
+					
+					break;
+				}
+			}
+		}
+		if(totalRoot.toString().endsWith(",")){
+			totalRoot.deleteCharAt(totalRoot.length() - 1);
+		}
+		totalRoot.append("]");
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
 		result_json.append("\"totalRoot\":"+totalRoot+"");
 		result_json.append("}");
@@ -1504,7 +1609,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												historyBgColor=historyBgColorList.get(m);
 												
 												if(switchingValueShowTypeList.get(m)==0){
-													switchingValueShowType=languageResourceMap.get("dataColumn");
+													switchingValueShowType=languageResourceMap.get("meaning");
 												}else{
 													switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
 												}
@@ -2317,7 +2422,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												showLevel=itemsShowLevelList.get(m);
 												
 												if(switchingValueShowTypeList.get(m)==0){
-													switchingValueShowType=languageResourceMap.get("dataColumn");
+													switchingValueShowType=languageResourceMap.get("meaning");
 												}else{
 													switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
 												}
@@ -12533,7 +12638,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(displayItemList.get(i).getSwitchingValueShowType()>0){
 					switchingValueShowType=languageResourceMap.get("dataColumn")+"/"+languageResourceMap.get("meaning");
 				}else{
-					switchingValueShowType=languageResourceMap.get("dataColumn");
+					switchingValueShowType=languageResourceMap.get("meaning");
 				}
 			}
 			

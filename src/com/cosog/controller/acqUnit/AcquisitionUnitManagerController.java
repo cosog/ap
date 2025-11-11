@@ -1308,6 +1308,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolSwitchingValueBitStatusConfigData")
+	public String getProtocolSwitchingValueBitStatusConfigData() throws Exception {
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		
+		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolItemsConfigData")
 	public String getProtocolItemsConfigData() throws Exception {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");

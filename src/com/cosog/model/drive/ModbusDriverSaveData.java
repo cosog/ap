@@ -75,6 +75,10 @@ public class ModbusDriverSaveData {
     	private int Value;
     	
     	private String Meaning;
+    	
+    	private String Status0;
+    	
+    	private String Status1;
 
 		public int getValue() {
 			return Value;
@@ -96,6 +100,22 @@ public class ModbusDriverSaveData {
 		public int compareTo(ItemsMeaning itemsMeaning) {     //重写Comparable接口的compareTo方法
 			return this.Value-itemsMeaning.getValue();   // 根据值或者位升序排列，降序修改相减顺序即可
 		}
+
+		public String getStatus0() {
+			return Status0;
+		}
+
+		public void setStatus0(String status0) {
+			Status0 = status0;
+		}
+
+		public String getStatus1() {
+			return Status1;
+		}
+
+		public void setStatus1(String status1) {
+			Status1 = status1;
+		}
     }
 	
 	public static class DataConfig implements Comparable<DataConfig>
@@ -105,6 +125,8 @@ public class ModbusDriverSaveData {
 	    private String Title;
 
 	    private int Addr;
+	    
+	    private int HighOrLowByte;
 
 	    private int Quantity;
 
@@ -233,6 +255,14 @@ public class ModbusDriverSaveData {
 
 		public void setPrec(int prec) {
 			Prec = prec;
+		}
+
+		public int getHighOrLowByte() {
+			return HighOrLowByte;
+		}
+
+		public void setHighOrLowByte(int highOrLowByte) {
+			HighOrLowByte = highOrLowByte;
 		}
 	}
 	

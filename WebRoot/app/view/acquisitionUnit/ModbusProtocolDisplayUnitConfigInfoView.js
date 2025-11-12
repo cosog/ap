@@ -334,8 +334,8 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
             if (protocolDisplayUnitAcqItemsConfigHandsontableHelper == null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot == undefined) {
                 protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
                 var colHeaders = "[" 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','','','']," 
-                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','','','']," 
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.realtimeMonitoring+"', colspan: 7},{label: '"+loginUserLanguageResource.historyQuery+"', colspan: 7},'','','','','','','','','','']," 
+                	+"['','','','','','',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.dynamicData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"',{label: '"+loginUserLanguageResource.deviceOverview+"', colspan: 2},{label: '"+loginUserLanguageResource.historyData+"', colspan: 4},'"+loginUserLanguageResource.trendCurve+"','','','','','','','','','','']," 
                 	+"['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataSource+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.showLevel+"'," 
                 	
                 	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
@@ -345,7 +345,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                 	+"'"+loginUserLanguageResource.deviceOverview+"','"+loginUserLanguageResource.columnSort+"',"
                 	+"'"+loginUserLanguageResource.historyData+"','"+loginUserLanguageResource.columnSort+"','"+loginUserLanguageResource.foregroundColor+"','"+loginUserLanguageResource.backgroundColor+"','"+loginUserLanguageResource.curveConfig+"'," 
                 	+"'"+loginUserLanguageResource.showName+"'," 
-                	+"'','','','','','','','']"
+                	+"'','','','','','','','','']"
                 	+"]";
                 var columns = "[" 
                     +"{data:'checked',type:'checkbox'}," 
@@ -379,6 +379,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                     +"{data:'historyCurveConf'}," 
                     +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
                     +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
+                    +"{data:'highOrLowByte'}," 
                     +"{data:'bitIndex'}," 
                     +"{data:'type'}," 
                     +"{data:'code'}," 
@@ -512,7 +513,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 data: data,
                 hiddenColumns: {
-                    columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26, 27, 28],
+                    columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26, 27, 28, 29],
                     indicators: false,
                     copyPasteEnabled: false
                 },
@@ -759,6 +760,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 						
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
+						+"{data:'highOrLowByte'},"
 						+"{data:'bitIndex'},"
 						+"{data:'title'}"
 						+"]";
@@ -839,7 +841,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [7,8,9,10],
+	                    columns: [7,8,9,10,11],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1396,6 +1398,7 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var resolutionMode = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
         	var itemAddr = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr');
+        	var itemHighOrLowByte = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highOrLowByte');
         	var bitIndex = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'bitIndex');
         	
         	var type = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'type');
@@ -1433,10 +1436,11 @@ var grantDisplayAcqItemsPermission = function () {
             + historyCurveConfigStr + "##" 
             + resolutionMode+ "##"
             + itemAddr + "##" 
+            + itemHighOrLowByte + "##" 
             + bitIndex +"##"
             + type +"##"
-            + itemCode +"##"//20
-            + switchingValueShowType +"##"//21
+            + itemCode +"##"//21
+            + switchingValueShowType +"##"//22
             + matrix_value+ "|";
         }
     }
@@ -1502,6 +1506,7 @@ var grantDisplayCtrlItemsPermission = function () {
         	
         	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
         	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');
+        	var itemHighOrLowByte = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highOrLowByte');
         	var bitIndex=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
         	
         	var switchingValueShowType=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'switchingValueShowType');
@@ -1522,6 +1527,7 @@ var grantDisplayCtrlItemsPermission = function () {
             
             + resolutionMode+ ":"
             + itemAddr + ":" 
+            + itemHighOrLowByte + ":" 
             + bitIndex +":"
             + switchingValueShowType +":"
             

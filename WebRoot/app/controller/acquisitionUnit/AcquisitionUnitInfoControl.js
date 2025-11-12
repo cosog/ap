@@ -524,6 +524,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
             if ((driverConfigItemsData[index][0]+'')==='true') {
             	var itemName = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'title');
             	var itemAddr = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'addr');
+            	var itemHighOrLowByte = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'highOrLowByte');
             	var resolutionMode = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
             	var bitIndex=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
             	var dailyTotalCalculate=0;
@@ -544,6 +545,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
                 }
                 matrixData += itemName + ":"
                 + itemAddr+ ":"
+                + itemHighOrLowByte+ ":"
                 + resolutionMode+ ":"
                 + bitIndex +":"
                 + matrix_value +":"

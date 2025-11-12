@@ -1142,12 +1142,22 @@ function renderControlBtn(btn,btnIndex){
         	btn.setTooltip(itemMeaning[2][1]);
     	}
     }else if(resolutionMode == 0 && itemMeaning.length > 0){
+    	var switchingOpenValue=loginUserLanguageResource.switchingOpenValue;
+    	var switchingCloseValue=loginUserLanguageResource.switchingCloseValue;
+    	
+    	for(var i = 0; i < itemMeaning.length; i++){
+    		if(itemMeaning[i][0]==1 && isNotVal(itemMeaning[i][1]) ){
+    			switchingOpenValue=itemMeaning[i][1];
+    		}else if(itemMeaning[i][0]==0 && isNotVal(itemMeaning[i][1]) ){
+    			switchingCloseValue=itemMeaning[i][1];
+    		}
+    	}
     	if(btnIndex==0){
-    		btn.setText(loginUserLanguageResource.switchingOpenValue);
-        	btn.setTooltip(loginUserLanguageResource.switchingOpenValue);
+    		btn.setText(switchingOpenValue);
+        	btn.setTooltip(switchingOpenValue);
     	}else if(btnIndex==1){
-    		btn.setText(loginUserLanguageResource.switchingCloseValue);
-        	btn.setTooltip(loginUserLanguageResource.switchingCloseValue);
+    		btn.setText(switchingCloseValue);
+        	btn.setTooltip(switchingCloseValue);
     	}
     }else{
     	if(btnIndex==0){

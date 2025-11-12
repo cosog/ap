@@ -587,13 +587,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											for(int l=0;l<item.getMeaning().size();l++){
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=dataitemsInfo.getSorts();
+												String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+												String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 												if(StringManagerUtils.isNotNull(value)){
 													boolean match=false;
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 															}else{
 																value=valueArr[m];
@@ -1371,13 +1373,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 											for(int l=0;l<item.getMeaning().size();l++){
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=dataitemsInfo.getSorts();
+												String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+												String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 												if(StringManagerUtils.isNotNull(value)){
 													boolean match=false;
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 															}else{
 																value=valueArr[m];
@@ -2345,7 +2349,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												isMatch=false;
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=9999;
-												
+												String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+												String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 												for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 													if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 															&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
@@ -2364,7 +2369,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 															}else{
 																value=valueArr[m];
@@ -3332,7 +3337,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												isMatch=false;
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=9999;
-												
+												String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+												String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 												for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 													if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
 															&&displayInstanceOwnItem.getItemList().get(n).getBitIndex()==item.getMeaning().get(l).getValue()
@@ -3351,7 +3357,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 															}else{
 																value=valueArr[m];
@@ -4016,6 +4022,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
+														String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+														String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
@@ -4039,7 +4047,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 																if(m==item.getMeaning().get(l).getValue()){
 																	bitIndex=m+"";
 																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 																	}else{
 																		value=valueArr[m];
@@ -4875,6 +4883,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
+														String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+														String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
@@ -4898,7 +4908,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 																if(m==item.getMeaning().get(l).getValue()){
 																	bitIndex=m+"";
 																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 																	}else{
 																		value=valueArr[m];

@@ -75,6 +75,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private String Title;
 
 	    private int Addr;
+	    
+	    private int HighOrLowByte;//高低字节 0-无 1-高字节 2-低字节
 
 	    private String StoreDataType;
 	    
@@ -90,7 +92,7 @@ public class ModbusProtocolConfig implements Serializable{
 
 	    private String Unit;
 	    
-	    private int ResolutionMode;
+	    private int ResolutionMode;//解析模式 0-开关量 1-灭枚举量 2-数据量
 
 	    private String AcqMode;
 	    
@@ -184,6 +186,12 @@ public class ModbusProtocolConfig implements Serializable{
 		}
 		public void setPrec(int prec) {
 			Prec = prec;
+		}
+		public int getHighOrLowByte() {
+			return HighOrLowByte;
+		}
+		public void setHighOrLowByte(int highOrLowByte) {
+			HighOrLowByte = highOrLowByte;
 		}
 	}
 	

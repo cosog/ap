@@ -105,15 +105,26 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                     });
                                 }
                             } else if (resolutionMode == 0 && itemMeaning.length > 0) {
+                            	var switchingOpenValue=loginUserLanguageResource.switchingOpenValue;
+                            	var switchingCloseValue=loginUserLanguageResource.switchingCloseValue;
+                            	
+                            	for(var i = 0; i < itemMeaning.length; i++){
+                            		if(itemMeaning[i][0]==1 && isNotVal(itemMeaning[i][1]) ){
+                            			switchingOpenValue=itemMeaning[i][1];
+                            		}else if(itemMeaning[i][0]==0 && isNotVal(itemMeaning[i][1]) ){
+                            			switchingCloseValue=itemMeaning[i][1];
+                            		}
+                            	}
+                            	
                                 buttonsToShow.push({
-                                    text: loginUserLanguageResource.switchingOpenValue,
-                                    tooltip: loginUserLanguageResource.switchingOpenValue,
+                                    text: switchingOpenValue,
+                                    tooltip: switchingOpenValue,
                                     value: 'open',
                                     index: 0
                                 });
                                 buttonsToShow.push({
-                                    text: loginUserLanguageResource.switchingCloseValue,
-                                    tooltip: loginUserLanguageResource.switchingCloseValue,
+                                    text: switchingCloseValue,
+                                    tooltip: switchingCloseValue,
                                     value: 'close',
                                     index: 1
                                 });

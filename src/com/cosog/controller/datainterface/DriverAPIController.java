@@ -1558,8 +1558,15 @@ public class DriverAPIController extends BaseController{
 											for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 												if(m==protocol.getItems().get(j).getMeaning().get(l).getValue()){
 													bitIndex=protocol.getItems().get(j).getMeaning().get(l).getValue()+"";
+													
+													
+													String status0=StringManagerUtils.isNotNull(protocol.getItems().get(j).getMeaning().get(l).getStatus0())?protocol.getItems().get(j).getMeaning().get(l).getStatus0():"关";
+													String status1=StringManagerUtils.isNotNull(protocol.getItems().get(j).getMeaning().get(l).getStatus1())?protocol.getItems().get(j).getMeaning().get(l).getStatus1():"开";
+													
+													
+													
 													if(("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)) && StringManagerUtils.isNotNull(valueArr[m])){
-														value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+														value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 														rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 													}else{
 														value="";

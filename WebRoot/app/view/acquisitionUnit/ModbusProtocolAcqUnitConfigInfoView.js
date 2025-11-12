@@ -318,19 +318,20 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
 						+"{data:'bitIndex'}," 
 						+"{data:'dailyTotalCalculate',type:'checkbox'},"
 						+"{data:'dailyTotalCalculateName'},"
-						+"{data:'title'}"
+						+"{data:'title'},"
+						+"{data:'highOrLowByte'}"
 						+"]";
 				protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAcqUnitConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				
 				if(classes==3 && type==0){
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7,10];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7,10,11];
 					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [25,25,140,60,80,80,80,80,80,80];
 				}else if(classes==3 && type==1){
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7,8,9,10];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[3,4,5,6,7,8,9,10,11];
 					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [20,20,200,60,80,80,80,80,80,80];
 				}else{
-					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[0,3,4,5,6,7,8,9,10];
+					protocolAcqUnitConfigItemsHandsontableHelper.hiddenColumns=[0,3,4,5,6,7,8,9,10,11];
 					protocolAcqUnitConfigItemsHandsontableHelper.colWidths= [20,20,240,60,80,80,80,80,80,80];
 				}
 				

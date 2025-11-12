@@ -545,7 +545,7 @@ public class RealTimeMonitoringController extends BaseController {
 					
 //					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
 					
-					StringManagerUtils.printLog("发送读地址命令:"+readJson+";返回数据:"+responseStr);
+					System.out.println("发送读地址命令:"+readJson+";返回数据:"+responseStr);
 					type = new TypeToken<AcqAddrData>() {}.getType();
 					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
 					int readResult=acqAddrData.getResultStatus();
@@ -565,7 +565,7 @@ public class RealTimeMonitoringController extends BaseController {
 									+ "}";
 							
 							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-							StringManagerUtils.printLog("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+							System.out.println("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
 							if(StringManagerUtils.isNotNull(responseStr)){
 								type = new TypeToken<ResultStatusData>() {}.getType();
 								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
@@ -576,7 +576,7 @@ public class RealTimeMonitoringController extends BaseController {
 					}
 				}else{
 					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-					StringManagerUtils.printLog("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+					System.out.println("发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
 					if(StringManagerUtils.isNotNull(responseStr)){
 						type = new TypeToken<ResultStatusData>() {}.getType();
 						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);

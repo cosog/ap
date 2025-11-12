@@ -426,9 +426,9 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0,"zh_CN").start();
 //				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0,"zh_CN").start();
 				
-//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
-//				
-//				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
+				
+				
 				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
 				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
 				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
@@ -440,9 +440,9 @@ public class EquipmentDriverServerTask {
 //				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
 //				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
 				
-//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
-//				
-//				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
+				
+				
 				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
 				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
 				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
@@ -919,6 +919,7 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
+//		instances="'螺杆泵井采控实例'";
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
@@ -1021,6 +1022,7 @@ public class EquipmentDriverServerTask {
 								group.setId(groupId);
 								group.setGroupTimingInterval(groupTimingInterval);
 								group.setAddr(new ArrayList<Integer>());
+								group.setAddrAndHighLowByte(new ArrayList<>());
 								if(groupType==0){
 									initInstance.getAcqGroup().add(group);
 								}else if(groupType==1){
@@ -1030,8 +1032,12 @@ public class EquipmentDriverServerTask {
 							InitInstance.Group group=initInstance.getGroup(groupType, groupId);
 							if(group!=null){
 								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, itemName);
-								if(item!=null && !StringManagerUtils.existOrNot(group.getAddr(), item.getAddr())){
-									group.getAddr().add(item.getAddr());
+								if(item!=null){
+									String addrAndHighLowByte=item.getAddr()+"_"+item.getHighOrLowByte();
+									if(!StringManagerUtils.existOrNot(group.getAddrAndHighLowByte(), addrAndHighLowByte,true)){
+										group.getAddr().add(item.getAddr());
+										group.getAddrAndHighLowByte().add(addrAndHighLowByte);
+									}
 								}
 							}
 						}

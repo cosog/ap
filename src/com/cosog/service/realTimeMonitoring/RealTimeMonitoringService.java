@@ -773,13 +773,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											for(int l=0;l<item.getMeaning().size();l++){
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=dataitemsInfo.getSorts();
+												String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+												String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 												if(StringManagerUtils.isNotNull(value)){
 													boolean match=false;
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 															}else{
 																value=valueArr[m];
@@ -2823,6 +2825,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													for(int l=0;l<item.getMeaning().size();l++){
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
+														String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+														String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
+														
 														sort=9999;
 														int switchingValueShowType=0;
 														
@@ -2851,7 +2856,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 																if(m==item.getMeaning().get(l).getValue()){
 																	bitIndex=m+"";
 																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 																	}else{
 																		value=valueArr[m];
@@ -3660,6 +3665,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														isMatch=false;
 														columnName=item.getMeaning().get(l).getMeaning();
 														sort=9999;
+														String status0=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus0())?item.getMeaning().get(l).getStatus0():languageResourceMap.get("switchingCloseValue");
+														String status1=StringManagerUtils.isNotNull(item.getMeaning().get(l).getStatus1())?item.getMeaning().get(l).getStatus1():languageResourceMap.get("switchingOpenValue");
 														int switchingValueShowType=0;
 														for(int n=0;n<displayInstanceOwnItem.getItemList().size();n++){
 															if(displayInstanceOwnItem.getItemList().get(n).getItemCode().equalsIgnoreCase(column) 
@@ -3683,7 +3690,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 																if(m==item.getMeaning().get(l).getValue()){
 																	bitIndex=m+"";
 																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"开":"关";
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
 																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
 																	}else{
 																		value=valueArr[m];
@@ -4172,6 +4179,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String protocolCode="";
 		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user!=null?user.getLanguageName():"");
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		try{
 			try{
@@ -4212,10 +4220,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											||"w".equalsIgnoreCase(protocol.getItems().get(k).getRWType())){
 										String title=protocol.getItems().get(k).getTitle();
 										
+										String switchingValueMeaning="[['1','"+languageResourceMap.get("switchingOpenValue")+"'],['0','"+languageResourceMap.get("switchingCloseValue")+"']]";
+										
 										if(protocol.getItems().get(k).getResolutionMode()==0 && protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0 ){
 											int bitIndex=displayInstanceOwnItem.getItemList().get(j).getBitIndex();
 											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getItems().get(k).getMeaning()){
 												if(itemsMeaning.getValue()==bitIndex){
+													switchingValueMeaning="[['1','"+(StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():languageResourceMap.get("switchingOpenValue"))+"'],['0','"+(StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():languageResourceMap.get("switchingCloseValue"))+"']]";
 													if(displayInstanceOwnItem.getItemList().get(j).getSwitchingValueShowType()==1){
 														title+="/"+itemsMeaning.getMeaning();
 													}else{
@@ -4238,8 +4249,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}
 										controlColumns.add(col);
 										controlItemResolutionMode.add(protocol.getItems().get(k).getResolutionMode());
-										if(protocol.getItems().get(k).getResolutionMode()==2){//数据量
-											controlItemMeaningList.add("[]");
+										if(protocol.getItems().get(k).getResolutionMode()==0){//开关量
+											controlItemMeaningList.add(switchingValueMeaning);
 										}else if(protocol.getItems().get(k).getResolutionMode()==1){//枚举量
 											if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 												StringBuffer itemMeaning_buff = new StringBuffer();
@@ -4256,7 +4267,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												controlItemMeaningList.add("[]");
 											}
 										}else{
-											controlItemMeaningList.add("[['true','开'],['false','关']]");
+											controlItemMeaningList.add("[]");
 										}
 									}
 									break;

@@ -277,6 +277,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolExtendedFieldConfigHandsontableHelper=null;
     				}
+    				if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
+    					if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+    						protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+    					}
+    					protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
+    				}
     				
     				//采控组HandsontableHelper资源
     				if(protocolAcqUnitConfigItemsHandsontableHelper!=null){

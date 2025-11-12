@@ -154,6 +154,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				}else if(protocolConfig.getItems().get(j).getResolutionMode()==1){
 					resolutionMode=languageResourceMap.get("enumValue");
 				}
+				
+				String highOrLowByte="";
+				if(protocolConfig.getItems().get(j).getHighOrLowByte()==1){
+					highOrLowByte=languageResourceMap.get("highByte");
+				}else if(protocolConfig.getItems().get(j).getHighOrLowByte()==2){
+					highOrLowByte=languageResourceMap.get("lowByte");
+				}
+				
 				String RWType=languageResourceMap.get("readOnly");
 				if("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())){
 					RWType=languageResourceMap.get("readOnly");
@@ -166,6 +174,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"id\":"+(j+1)+","
 						+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 						+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+						+ "\"highOrLowByte\":\""+highOrLowByte+"\","
 						+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
 						+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
 						+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
@@ -368,6 +377,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
 									+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+									+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 									+ "\"quantity\":"+1+","
 									+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
 									+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
@@ -401,6 +411,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 								+ "\"bitIndex\":\"\","
 								+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+								+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 								+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
 								+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
 								+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
@@ -455,7 +466,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr,String language){
+	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr,String highOrLowByte,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
 		Gson gson = new Gson();
@@ -468,7 +479,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)){
+				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
+						&& protocolConfig.getItems().get(j).getHighOrLowByte()==StringManagerUtils.stringToInteger(highOrLowByte)){
 					resolutionMode=protocolConfig.getItems().get(j).getResolutionMode();
 					title=protocolConfig.getItems().get(j).getTitle();
 					int quantity=protocolConfig.getItems().get(j).getQuantity();
@@ -533,7 +545,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolSwitchingValueBitStatusConfigData(String protocolCode,String itemAddr,String language){
+	public String getProtocolSwitchingValueBitStatusConfigData(String protocolCode,String itemAddr,String highOrLowByte,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
 		Gson gson = new Gson();
@@ -545,7 +557,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
 			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr) ){
+				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
+						&& protocolConfig.getItems().get(j).getHighOrLowByte()==StringManagerUtils.stringToInteger(highOrLowByte)){
 					if(protocolConfig.getItems().get(j).getResolutionMode()==0){
 						int quantity=protocolConfig.getItems().get(j).getQuantity();
 						title=protocolConfig.getItems().get(j).getTitle();
@@ -1652,6 +1665,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												
 												
 												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+												+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 												+ "\"RWType\":\""+RWType+"\","
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
@@ -1734,6 +1748,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+									+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 									+ "\"bitIndex\":\"\","
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
@@ -2439,6 +2454,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+  protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
 												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+												+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 												+ "\"RWType\":\""+RWType+"\","
 												+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
@@ -2468,6 +2484,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"showTitle\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+									+ "\"highOrLowByte\":"+protocolConfig.getItems().get(j).getHighOrLowByte()+","
 									+ "\"bitIndex\":\"\","
 									+ "\"RWType\":\""+RWType+"\","
 									+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","

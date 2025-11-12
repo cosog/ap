@@ -63,6 +63,8 @@ public class InitInstance  implements Serializable {
 	    private Integer Id;
 	    
     	private List<Integer> Addr;
+    	
+    	private List<String> AddrAndHighLowByte;
 
 	    private int GroupTimingInterval;
 
@@ -83,6 +85,12 @@ public class InitInstance  implements Serializable {
 		}
 		public void setId(Integer id) {
 			Id = id;
+		}
+		public List<String> getAddrAndHighLowByte() {
+			return AddrAndHighLowByte;
+		}
+		public void setAddrAndHighLowByte(List<String> addrAndHighLowByte) {
+			AddrAndHighLowByte = addrAndHighLowByte;
 		}
 	}
 
@@ -224,6 +232,7 @@ public class InitInstance  implements Serializable {
 	            	if (entry.getValue().isArray()) {
 	            	    for (JsonNode acqGroup : entry.getValue()) {
 	            	    	((ObjectNode)acqGroup).remove("Id");
+	            	    	((ObjectNode)acqGroup).remove("AddrAndHighLowByte");
 	            	    }
 	            	}
 	            }else if("CtrlGroup".equalsIgnoreCase(entry.getKey())){
@@ -231,6 +240,7 @@ public class InitInstance  implements Serializable {
 	            	    for (JsonNode ctrlGroup : entry.getValue()) {
 	            	    	((ObjectNode)ctrlGroup).remove("Id");
 	            	    	((ObjectNode)ctrlGroup).remove("GroupTimingInterval");
+	            	    	((ObjectNode)ctrlGroup).remove("AddrAndHighLowByte");
 	            	    }
 	            	}
 	            }

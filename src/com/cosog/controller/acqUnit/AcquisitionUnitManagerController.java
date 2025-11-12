@@ -595,14 +595,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[1]);
-						String resolutionMode=module_[2];
+						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[2]);
+						String resolutionMode=module_[3];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
-								if(itemAddr==protocol.getItems().get(j).getAddr()){
+								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
-												&&(StringManagerUtils.isNotNull(module_[3])&&StringManagerUtils.stringToInteger(module_[3])==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
+												&&(StringManagerUtils.isNotNull(module_[4])&&StringManagerUtils.stringToInteger(module_[4])==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
 											itemName=protocol.getItems().get(j).getTitle();
 											bitIndex=protocol.getItems().get(j).getMeaning().get(k).getValue();
 											break;
@@ -620,9 +621,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 							acquisitionGroupItem.setBitIndex(bitIndex);
 						}
 						
-						acquisitionGroupItem.setMatrix(module_[4]);
-						acquisitionGroupItem.setDailyTotalCalculateName(module_[5]);
-						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringToInteger(module_[6]));
+						acquisitionGroupItem.setMatrix(module_[5]);
+						acquisitionGroupItem.setDailyTotalCalculateName(module_[6]);
+						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringToInteger(module_[7]));
 						
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
@@ -743,15 +744,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						String resolutionMode=module_[16];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[17]);
-						String bitIndexStr=module_[18];
-						int type=StringManagerUtils.stringToInteger(module_[19]);
-						String itemCode=module_[20];
+						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[18]);
+						String bitIndexStr=module_[19];
+						int type=StringManagerUtils.stringToInteger(module_[20]);
+						String itemCode=module_[21];
 						
 						if(type==0){
 							int bitIndex=-99;
 							if(languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)){//如果是开关量
 								for(int j=0;j<protocol.getItems().size();j++){
-									if(itemAddr==protocol.getItems().get(j).getAddr()){
+									if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
 										for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 											if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
 													&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
@@ -792,8 +794,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 							
 							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
 							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
-							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[21]):0);
-							displayUnitItem.setMatrix(module_[22]);
+							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
+							displayUnitItem.setMatrix(module_[23]);
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
@@ -822,7 +824,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setRealtimeCurveConf(module_[14]);
 							displayUnitItem.setHistoryCurveConf(module_[15]);
 							displayUnitItem.setSwitchingValueShowType(0);
-							displayUnitItem.setMatrix(module_[22]);
+							displayUnitItem.setMatrix(module_[23]);
 							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 						}
 					}
@@ -871,12 +873,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[4]);
+						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[5]);
 						String resolutionMode=module_[3];
-						String bitIndexStr=module_[5];
+						String bitIndexStr=module_[6];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
-								if(itemAddr==protocol.getItems().get(j).getAddr()){
+								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
 												&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
@@ -901,8 +904,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[1])?StringManagerUtils.stringToInteger(module_[1]):null);
 						displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
-						displayUnitItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(module_[6]));
-						displayUnitItem.setMatrix(module_[7]);
+						displayUnitItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(module_[7]));
+						displayUnitItem.setMatrix(module_[8]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
 					
@@ -1289,6 +1292,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolItemMeaningConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
+		String highOrLowByte = ParamUtils.getParameter(request, "highOrLowByte");
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1298,7 +1302,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,language);
+		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,highOrLowByte,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1312,6 +1316,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolSwitchingValueBitStatusConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
+		String highOrLowByte = ParamUtils.getParameter(request, "highOrLowByte");
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1321,7 +1326,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,language);
+		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,highOrLowByte,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -2797,6 +2802,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getTitle())){
 											isAddItem=false;
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setHighOrLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighOrLowByte());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
@@ -2819,6 +2825,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 													ItemsMeaning itemsMeaning=new ItemsMeaning();
 													itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getValue());
 													itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getMeaning());
+													itemsMeaning.setStatus0(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getStatus0());
+													itemsMeaning.setStatus1(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getStatus1());
 													modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().add(itemsMeaning);
 												}
 												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null&&modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
@@ -2832,6 +2840,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
 										item.setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
 										item.setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
+										item.setHighOrLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighOrLowByte());
 										item.setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 										item.setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
 										item.setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
@@ -2847,6 +2856,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 												ItemsMeaning itemsMeaning=new ItemsMeaning();
 												itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getValue());
 												itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getMeaning());
+												itemsMeaning.setStatus0(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getStatus0());
+												itemsMeaning.setStatus1(modbusDriverSaveData.getDataConfig().get(j).getMeaning().get(m).getStatus1());
 												item.getMeaning().add(itemsMeaning);
 											}
 											if(item.getMeaning()!=null&&item.getMeaning().size()>0){

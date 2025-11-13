@@ -1198,6 +1198,7 @@ function controlBtnHandler(btn,btnIndex){
             Ext.Ajax.request({
                 url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                 method: "POST",
+//                timeout: 3000, // 3秒超时
                 params: {
                     deviceId: deviceId,
                     deviceName: deviceName,
@@ -1224,11 +1225,75 @@ function controlBtnHandler(btn,btnIndex){
                         Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                     }
                 },
-                failure: function () {
+                failure: function (response, options) {
                     all_loading.hide();
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+                    if (response.timedout) {
+//                    	Ext.Msg.alert('请求超时！设置的' + (options.timeout/1000) + '秒超时已到');
+                    	Ext.Msg.alert('请求超时!');
+                    } else {
+                    	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+//                        console.log('请求失败，状态码: ' + response.status);
+                    }
+                    
+                    // 还可以获取更多错误信息
+//                    console.log('错误信息: ' + response.statusText);
                 }
             });
+            
+//            var xhr = new XMLHttpRequest();
+//            var url = context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass';
+//            var params = Ext.Object.toQueryString({
+//                deviceId: deviceId,
+//                deviceName: deviceName,
+//                controlType: itemcode,
+//                quantity: quantity,
+//                controlValue: itemMeaning[btnIndex][0]
+//            });
+//
+//            xhr.timeout = 3000; // 3秒超时
+//            xhr.open('POST', url, true);
+//            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+//
+//            xhr.ontimeout = function () {
+//                all_loading.hide();
+//                console.log('✅ XMLHttpRequest 超时触发');
+//                Ext.Msg.alert('请求超时', '设置的3秒超时已到');
+//            };
+//
+//            xhr.onload = function () {
+//                all_loading.hide();
+//                if (xhr.status === 200) {
+//                    try {
+//                        var data = Ext.decode(xhr.responseText);
+//                        if (data.success == true && data.flag == false) {
+//                            Ext.MessageBox.show({
+//                                title: loginUserLanguageResource.tip,
+//                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
+//                                icon: Ext.MessageBox.INFO,
+//                                buttons: Ext.Msg.OK,
+//                                fn: function () {
+//                                    window.location.href = context + "/login";
+//                                }
+//                            });
+//                        } else if (data.flag == true && data.error == false) {
+//                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
+//                        } else if (data.flag == true && data.error == true) {
+//                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
+//                        }
+//                    } catch (e) {
+//                        Ext.Msg.alert(loginUserLanguageResource.tip, "响应数据解析错误");
+//                    }
+//                } else {
+//                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin);
+//                }
+//            };
+//
+//            xhr.onerror = function () {
+//                all_loading.hide();
+//                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin);
+//            };
+//
+//            xhr.send(params);
         }else if(resolutionMode == 0 && itemMeaning.length > 0){
 	    	if(btnIndex==0){
                 all_loading.show();

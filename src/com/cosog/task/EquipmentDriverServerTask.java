@@ -855,14 +855,16 @@ public class EquipmentDriverServerTask {
 	public static void deleteInitializedInstance(String instanceName,String protocolName,String protocolAllPath){
 		StringBuffer json_buff = new StringBuffer();
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
-//		InitInstance initInstance=new InitInstance();
-//		initInstance.setInstanceName(protocolAllPath+"/"+protocolName+"/"+instanceName);
-//		initInstance.setMethod("delete");
 		
-		
+		Map<String, Object> map = DataModelMap.getMapObject();
+		Map<String,InitInstance> initedInstanceMap=null;
+		if(map.containsKey("initedInstanceMap")){
+			initedInstanceMap=(Map<String, InitInstance>) map.get("initedInstanceMap");
+		}
+		String initName=protocolAllPath+"/"+protocolName+"/"+instanceName;
 		json_buff.append("{");
 		json_buff.append("\"Method\":\"delete\",");
-		json_buff.append("\"InstanceName\":\""+(protocolAllPath+"/"+protocolName+"/"+instanceName)+"\"");
+		json_buff.append("\"InstanceName\":\""+initName+"\"");
 		json_buff.append("}");
 		
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除实例："+json_buff.toString());
@@ -870,12 +872,27 @@ public class EquipmentDriverServerTask {
 			StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 		}
 		
+		if(initedInstanceMap!=null){
+			for(Entry<String, InitInstance> entry:initedInstanceMap.entrySet()){
+				String instanceCode=entry.getKey();
+				InitInstance value=entry.getValue();
+				if(value.getInstanceName().equals(initName)){
+					initedInstanceMap.remove(instanceCode);
+					break;
+				}
+			}
+		}
 	}
 	
 	public static int deleteInitializedInstance(List<String> instanceNameList){
 		int t=0;
 		StringBuffer json_buff = new StringBuffer();
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		Map<String,InitInstance> initedInstanceMap=null;
+		if(map.containsKey("initedInstanceMap")){
+			initedInstanceMap=(Map<String, InitInstance>) map.get("initedInstanceMap");
+		}
 		for(int i=0;instanceNameList!=null&&i<instanceNameList.size();i++){
 			json_buff = new StringBuffer();
 			json_buff.append("{");
@@ -886,6 +903,18 @@ public class EquipmentDriverServerTask {
 			if(initEnable){
 				StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 			}
+			
+			if(initedInstanceMap!=null){
+				for(Entry<String, InitInstance> entry:initedInstanceMap.entrySet()){
+					String instanceCode=entry.getKey();
+					InitInstance value=entry.getValue();
+					if(value.getInstanceName().equals(instanceNameList.get(i))){
+						initedInstanceMap.remove(instanceCode);
+						break;
+					}
+				}
+			}
+			
 			t++;
 		}
 		return t;
@@ -915,6 +944,13 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfigByNames(List<String> instanceList,String method){
+		Map<String, Object> map = DataModelMap.getMapObject();
+		Map<String,InitInstance> initedInstanceMap=null;
+		if(map.containsKey("initedInstanceMap")){
+			initedInstanceMap=(Map<String, InitInstance>) map.get("initedInstanceMap");
+		}else{
+			initedInstanceMap=new HashMap<>();
+		}
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
 		Gson gson = new Gson();
 		int result=0;
@@ -933,9 +969,19 @@ public class EquipmentDriverServerTask {
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, initInstance.toString(),"utf-8",0,0);
 				}
+				
+				for(Entry<String, InitInstance> entry:initedInstanceMap.entrySet()){
+					String instanceCode=entry.getKey();
+					InitInstance value=entry.getValue();
+					if(value.getInstanceName().equals(initInstance.getInstanceName())){
+						initedInstanceMap.remove(instanceCode);
+						break;
+					}
+				}
 			}
 		}else{
-			String instanceSql="select t.id,t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
+			String instanceSql="select t.id,t.name,t.code,"
+					+ " t.acqprotocoltype,t.ctrlprotocoltype,"
 					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
 					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
 					+ " t.packetsendinterval,"
@@ -975,26 +1021,27 @@ public class EquipmentDriverServerTask {
 					initInstance.setMethod(method);
 					
 					String instanceName=obj[1]+"";
-					String protocolName=obj[13]+"";
-					String protocolDeviceTypeAllPath=obj[14]+"";
+					String protocolName=obj[14]+"";
+					String protocolDeviceTypeAllPath=obj[15]+"";
 					
 					initInstance.setId(StringManagerUtils.stringToInteger(obj[0]+""));
 					initInstance.setInstanceName(protocolDeviceTypeAllPath+"/"+protocolName+"/"+instanceName);
 					initInstance.setProtocolName(protocolDeviceTypeAllPath+"/"+protocolName);
-					initInstance.setProtocolId(StringManagerUtils.stringToInteger(obj[12]+""));
-					initInstance.setAcqProtocolType(obj[2]+"");
-					initInstance.setCtrlProtocolType(obj[3]+"");
+					initInstance.setProtocolId(StringManagerUtils.stringToInteger(obj[13]+""));
+					initInstance.setInstanceCode(obj[2]+"");
+					initInstance.setAcqProtocolType(obj[3]+"");
+					initInstance.setCtrlProtocolType(obj[4]+"");
 					
-					initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[4]+"")==1);
-					initInstance.setSignInPrefix((obj[5]+"").replaceAll("null", ""));
-					initInstance.setSignInSuffix((obj[6]+"").replaceAll("null", ""));
-					initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[7]+"")==1);
+					initInstance.setSignInPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[5]+"")==1);
+					initInstance.setSignInPrefix((obj[6]+"").replaceAll("null", ""));
+					initInstance.setSignInSuffix((obj[7]+"").replaceAll("null", ""));
+					initInstance.setSignInIDHex(StringManagerUtils.stringToInteger(obj[8]+"")==1);
 					
-					initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[8]+"")==1);
-					initInstance.setHeartbeatPrefix((obj[9]+"").replaceAll("null", ""));
-					initInstance.setHeartbeatSuffix((obj[10]+"").replaceAll("null", ""));
+					initInstance.setHeartbeatPrefixSuffixHex(StringManagerUtils.stringToInteger(obj[9]+"")==1);
+					initInstance.setHeartbeatPrefix((obj[10]+"").replaceAll("null", ""));
+					initInstance.setHeartbeatSuffix((obj[11]+"").replaceAll("null", ""));
 					
-					initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[11]+""));
+					initInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(obj[12]+""));
 					
 					initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 					initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
@@ -1047,10 +1094,10 @@ public class EquipmentDriverServerTask {
 					InitInstance initInstance=entry.getValue();
 					int key=entry.getKey();
 					for(InitInstance.Group group:initInstance.getAcqGroup() ){
-						Collections.sort(group.getAddr());
+//						Collections.sort(group.getAddr());
 					}
 					for(InitInstance.Group group:initInstance.getCtrlGroup() ){
-						Collections.sort(group.getAddr());
+//						Collections.sort(group.getAddr());
 					}
 					
 					try {
@@ -1058,6 +1105,7 @@ public class EquipmentDriverServerTask {
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, entry.getValue().toString(),"utf-8",0,0);
 						}
+						initedInstanceMap.put(entry.getValue().getInstanceCode(), entry.getValue());
 					}catch (Exception e) {
 						continue;
 					}
@@ -1065,6 +1113,11 @@ public class EquipmentDriverServerTask {
 				
 			}
 		}
+		
+		if(!map.containsKey("initedInstanceMap")){
+			map.put("initedInstanceMap",initedInstanceMap);
+		}
+		
 		return result;
 	}
 	

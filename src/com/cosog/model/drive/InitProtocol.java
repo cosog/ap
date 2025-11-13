@@ -29,28 +29,6 @@ public class InitProtocol {
 		super();
 	}
     
-//    public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
-//    	this.setProtocolName(protocolConfig.getDeviceTypeAllPath_zh_CN()+"/"+protocolConfig.getName());
-//    	this.Addr=new ArrayList<Integer>();
-//    	this.Quantity=new ArrayList<Integer>();
-//    	this.StoreDataType=new ArrayList<String>();
-//    	this.IFDataType=new ArrayList<String>();
-//    	this.Prec=new ArrayList<Integer>();
-//    	this.RWType=new ArrayList<String>();
-//    	this.Ratio=new ArrayList<Float>();
-//    	this.AcqMode=new ArrayList<String>();
-//    	for(int i=0;i<protocolConfig.getItems().size();i++){
-//    		this.Addr.add(protocolConfig.getItems().get(i).getAddr());
-//    		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
-//    		this.StoreDataType.add(protocolConfig.getItems().get(i).getStoreDataType());
-//    		this.IFDataType.add(protocolConfig.getItems().get(i).getIFDataType());
-//    		this.Prec.add(protocolConfig.getItems().get(i).getPrec());
-//    		this.RWType.add(protocolConfig.getItems().get(i).getRWType());
-//    		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
-//    		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode());
-//    	}
-//	}
-    
     public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig,String method) {
     	this.setProtocolName(protocolConfig.getDeviceTypeAllPath_zh_CN()+"/"+protocolConfig.getName());
     	this.setMethod(method);

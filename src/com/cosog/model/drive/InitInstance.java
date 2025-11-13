@@ -22,6 +22,8 @@ public class InitInstance  implements Serializable {
 	
 	private String Method;
 	
+	private String InstanceCode;
+	
 	private String InstanceName;
 	
 	private String ProtocolName;
@@ -225,6 +227,7 @@ public class InitInstance  implements Serializable {
 			
 			jsonNodes.remove("Id");
 			jsonNodes.remove("ProtocolId");
+			jsonNodes.remove("InstanceCode");
 			Iterator<Entry<String, JsonNode>> iterator = jsonNodes.fields();
 	        while (iterator.hasNext()) {
 	            Entry<String, JsonNode> entry = iterator.next();
@@ -321,5 +324,13 @@ public class InitInstance  implements Serializable {
 
 	public void setProtocolId(int protocolId) {
 		ProtocolId = protocolId;
+	}
+
+	public String getInstanceCode() {
+		return InstanceCode;
+	}
+
+	public void setInstanceCode(String instanceCode) {
+		InstanceCode = instanceCode;
 	}
 }

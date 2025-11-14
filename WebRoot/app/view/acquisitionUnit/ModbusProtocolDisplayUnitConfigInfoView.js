@@ -379,7 +379,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
                     +"{data:'historyCurveConf'}," 
                     +"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
                     +"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitAcqItemsConfigHandsontableHelper);}}," 
-                    +"{data:'highOrLowByte'}," 
+                    +"{data:'highLowByte'}," 
                     +"{data:'bitIndex'}," 
                     +"{data:'type'}," 
                     +"{data:'code'}," 
@@ -760,7 +760,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 						
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingValue+"', '"+loginUserLanguageResource.enumValue+"','"+loginUserLanguageResource.numericValue+"']}," 
 						+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolDisplayUnitCtrlItemsConfigHandsontableHelper);}},"
-						+"{data:'highOrLowByte'},"
+						+"{data:'highLowByte'},"
 						+"{data:'bitIndex'},"
 						+"{data:'title'}"
 						+"]";
@@ -1398,7 +1398,7 @@ var grantDisplayAcqItemsPermission = function () {
         	
         	var resolutionMode = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
         	var itemAddr = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr');
-        	var itemHighOrLowByte = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highOrLowByte');
+        	var itemHighLowByte = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highLowByte');
         	var bitIndex = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'bitIndex');
         	
         	var type = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'type');
@@ -1436,7 +1436,7 @@ var grantDisplayAcqItemsPermission = function () {
             + historyCurveConfigStr + "##" 
             + resolutionMode+ "##"
             + itemAddr + "##" 
-            + itemHighOrLowByte + "##" 
+            + itemHighLowByte + "##" 
             + bitIndex +"##"
             + type +"##"
             + itemCode +"##"//21
@@ -1506,7 +1506,7 @@ var grantDisplayCtrlItemsPermission = function () {
         	
         	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
         	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');
-        	var itemHighOrLowByte = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highOrLowByte');
+        	var itemHighLowByte = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'highLowByte');
         	var bitIndex=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
         	
         	var switchingValueShowType=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'switchingValueShowType');
@@ -1527,7 +1527,7 @@ var grantDisplayCtrlItemsPermission = function () {
             
             + resolutionMode+ ":"
             + itemAddr + ":" 
-            + itemHighOrLowByte + ":" 
+            + itemHighLowByte + ":" 
             + bitIndex +":"
             + switchingValueShowType +":"
             

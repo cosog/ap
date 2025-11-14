@@ -45,20 +45,20 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitSwitchItemsStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsSelectRow_Id").setValue(index);
-                    		var selectGroupRow= Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue();
-                    		var selectedGroup=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectGroupRow);
+                    		var selectUnitRow= Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue();
+                    		var selectedUnit=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectUnitRow);
                     		
-                    		if(selectedGroup.data.classes==0){
+                    		if(selectedUnit.data.classes==0){
                     			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null){
                 					if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
                 						protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.destroy();
                 					}
                 					protocolAlarmUnitConfigSwitchItemsHandsontableHelper=null;
                 				}
-                    		}else if(selectedGroup.data.classes==1){
-                    			CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.code,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
-                        	}else if(selectedGroup.data.classes==2||selectedGroup.data.classes==3){
-                        		CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedGroup.data.protocol,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr);
+                    		}else if(selectedUnit.data.classes==1){
+                    			CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedUnit.data.code,selectedUnit.data.classes,selectedUnit.data.code,record.data.addr,record.data.highLowByte);
+                        	}else if(selectedUnit.data.classes==2||selectedUnit.data.classes==3){
+                        		CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(selectedUnit.data.protocol,selectedUnit.data.classes,selectedUnit.data.code,record.data.addr,record.data.highLowByte);
                         	}
                     	}
                     }

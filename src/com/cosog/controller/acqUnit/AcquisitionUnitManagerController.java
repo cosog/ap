@@ -595,12 +595,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[1]);
-						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[2]);
+						String itemHighLowByte=module_[2];
 						String resolutionMode=module_[3];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
-								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
+								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighLowByte.equalsIgnoreCase(protocol.getItems().get(j).getHighLowByte())){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
 												&&(StringManagerUtils.isNotNull(module_[4])&&StringManagerUtils.stringToInteger(module_[4])==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
@@ -744,7 +744,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						
 						String resolutionMode=module_[16];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[17]);
-						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[18]);
+						String itemHighLowByte=module_[18];
 						String bitIndexStr=module_[19];
 						int type=StringManagerUtils.stringToInteger(module_[20]);
 						String itemCode=module_[21];
@@ -753,7 +753,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							int bitIndex=-99;
 							if(languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)){//如果是开关量
 								for(int j=0;j<protocol.getItems().size();j++){
-									if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
+									if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighLowByte.equalsIgnoreCase(protocol.getItems().get(j).getHighLowByte())){
 										for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 											if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
 													&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
@@ -873,13 +873,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 						String module_[] = module_matrix[i].split("\\:");
 						String itemName=module_[0];
 						int itemAddr=StringManagerUtils.stringToInteger(module_[4]);
-						int itemHighOrLowByte=StringManagerUtils.stringToInteger(module_[5]);
+						String itemHighLowByte=module_[5];
 						String resolutionMode=module_[3];
 						String bitIndexStr=module_[6];
 						int bitIndex=-99;
 						if("开关量".equalsIgnoreCase(resolutionMode)){//如果是开关量
 							for(int j=0;j<protocol.getItems().size();j++){
-								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighOrLowByte==protocol.getItems().get(j).getHighOrLowByte()){
+								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighLowByte.equalsIgnoreCase(protocol.getItems().get(j).getHighLowByte())){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
 										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
 												&&(StringManagerUtils.isNotNull(bitIndexStr)&&StringManagerUtils.stringToInteger(bitIndexStr)==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
@@ -1292,7 +1292,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolItemMeaningConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
-		String highOrLowByte = ParamUtils.getParameter(request, "highOrLowByte");
+		String highLowByte = ParamUtils.getParameter(request, "highLowByte");
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1302,7 +1302,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,highOrLowByte,language);
+		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,highLowByte,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1316,7 +1316,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolSwitchingValueBitStatusConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
-		String highOrLowByte = ParamUtils.getParameter(request, "highOrLowByte");
+		String highLowByte = ParamUtils.getParameter(request, "highLowByte");
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1326,7 +1326,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,highOrLowByte,language);
+		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,highLowByte,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1471,6 +1471,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String classes = ParamUtils.getParameter(request, "classes");
 		String unitCode = ParamUtils.getParameter(request, "unitCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
+		String itemHighLowByte = ParamUtils.getParameter(request, "itemHighLowByte");
 		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1480,9 +1481,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		if("1".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemResolutionMode,language);
 		}else if("0".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemResolutionMode,language);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -2802,7 +2803,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getTitle())){
 											isAddItem=false;
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
-											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setHighOrLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighOrLowByte());
+											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setHighLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighLowByte());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
@@ -2840,7 +2841,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
 										item.setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
 										item.setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
-										item.setHighOrLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighOrLowByte());
+										item.setHighLowByte(modbusDriverSaveData.getDataConfig().get(j).getHighLowByte());
 										item.setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 										item.setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
 										item.setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());

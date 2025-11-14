@@ -126,7 +126,7 @@ public class ModbusDriverSaveData {
 
 	    private int Addr;
 	    
-	    private int HighOrLowByte;
+	    private String HighLowByte;
 
 	    private int Quantity;
 
@@ -257,12 +257,12 @@ public class ModbusDriverSaveData {
 			Prec = prec;
 		}
 
-		public int getHighOrLowByte() {
-			return HighOrLowByte;
+		public String getHighLowByte() {
+			return HighLowByte;
 		}
 
-		public void setHighOrLowByte(int highOrLowByte) {
-			HighOrLowByte = highOrLowByte;
+		public void setHighLowByte(String highLowByte) {
+			HighLowByte = highLowByte;
 		}
 	}
 	

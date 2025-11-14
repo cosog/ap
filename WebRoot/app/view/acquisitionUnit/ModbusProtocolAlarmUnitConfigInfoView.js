@@ -1226,7 +1226,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr){
+function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte){
 	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1264,6 +1264,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,un
 			classes:classes,
 			unitCode:unitCode,
 			itemAddr:itemAddr,
+			itemHighLowByte:itemHighLowByte,
 			itemResolutionMode:1
         }
 	});
@@ -1432,7 +1433,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr){
+function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte){
 	Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1479,6 +1480,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,
 			classes:classes,
 			unitCode:unitCode,
 			itemAddr:itemAddr,
+			itemHighLowByte:itemHighLowByte,
 			itemResolutionMode:0
         }
 	});

@@ -11,6 +11,8 @@ public class InitProtocol {
     
     private List<Integer> Addr;
     
+    private List<String> HighLowByte;
+    
     private List<Integer> Quantity;
     
     private List<String> StoreDataType;
@@ -34,6 +36,7 @@ public class InitProtocol {
     	this.setMethod(method);
     	if(!"delete".equalsIgnoreCase(method)){
     		this.Addr=new ArrayList<Integer>();
+    		this.HighLowByte=new ArrayList<String>();
         	this.Quantity=new ArrayList<Integer>();
         	this.StoreDataType=new ArrayList<String>();
         	this.IFDataType=new ArrayList<String>();
@@ -43,6 +46,7 @@ public class InitProtocol {
         	this.AcqMode=new ArrayList<String>();
         	for(int i=0;i<protocolConfig.getItems().size();i++){
         		this.Addr.add(protocolConfig.getItems().get(i).getAddr());
+        		this.HighLowByte.add(protocolConfig.getItems().get(i).getHighLowByte()!=null?protocolConfig.getItems().get(i).getHighLowByte():"");
         		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
         		this.StoreDataType.add(protocolConfig.getItems().get(i).getStoreDataType());
         		this.IFDataType.add(protocolConfig.getItems().get(i).getIFDataType());
@@ -132,6 +136,14 @@ public class InitProtocol {
 
 	public void setPrec(List<Integer> prec) {
 		Prec = prec;
+	}
+
+	public List<String> getHighLowByte() {
+		return HighLowByte;
+	}
+
+	public void setHighLowByte(List<String> highLowByte) {
+		HighLowByte = highLowByte;
 	}
 	
 }

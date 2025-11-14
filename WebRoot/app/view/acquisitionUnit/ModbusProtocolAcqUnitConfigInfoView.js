@@ -319,7 +319,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
 						+"{data:'dailyTotalCalculate',type:'checkbox'},"
 						+"{data:'dailyTotalCalculateName'},"
 						+"{data:'title'},"
-						+"{data:'highOrLowByte'}"
+						+"{data:'highLowByte'}"
 						+"]";
 				protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAcqUnitConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);

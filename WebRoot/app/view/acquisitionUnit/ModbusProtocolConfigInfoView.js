@@ -392,12 +392,13 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				protocolItemsConfigHandsontableHelper = ProtocolItemsConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
 				var colHeaders="[" 
 					+"['','',{label: '"+loginUserLanguageResource.lowerComputer+"', colspan: 6},{label: '"+loginUserLanguageResource.upperComputer+"', colspan: 5}]," 
-					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.startAddress+"','"+loginUserLanguageResource.highOrLowByte+"','"+loginUserLanguageResource.storeDataType+"','"+loginUserLanguageResource.quantity+"','"+loginUserLanguageResource.RWType+"','"+loginUserLanguageResource.acqMode+"','"+loginUserLanguageResource.IFDataType+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.ratio+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.resolutionMode+"']" 
+					+"['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.startAddress+"','"+loginUserLanguageResource.highLowByte+"','"+loginUserLanguageResource.storeDataType+"','"+loginUserLanguageResource.quantity+"','"+loginUserLanguageResource.RWType+"','"+loginUserLanguageResource.acqMode+"','"+loginUserLanguageResource.IFDataType+"','"+loginUserLanguageResource.prec+"','"+loginUserLanguageResource.ratio+"','"+loginUserLanguageResource.unit+"','"+loginUserLanguageResource.resolutionMode+"']" 
 					+"]";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
-					 	+"{data:'highOrLowByte',type:'dropdown',strict:true,allowInvalid:false,source:['', '"+loginUserLanguageResource.highByte+"', '"+loginUserLanguageResource.lowByte+"']}," 
+					 	+"{data:'highLowByte',type:'dropdown',strict:true,allowInvalid:false,source:['', '"+loginUserLanguageResource.highByte+"', '"+loginUserLanguageResource.lowByte+"']}," 
 					 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
+//					 	+"{data:'storeDataType'}," 
 					 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 					 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.writeOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
 					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
@@ -444,9 +445,9 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
             		}
             		
             		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'addr');
-            		var highOrLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'highOrLowByte');
+            		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'highLowByte');
             		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'resolutionMode');
-            		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highOrLowByte,resolutionMode,true);
+            		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,true);
         		}
 			}
 			protocolItemsConfigHandsontableHelper.initTitleDataMap(protocolItemsConfigHandsontableHelper.Data);
@@ -519,13 +520,13 @@ var ProtocolItemsConfigHandsontableHelper = {
                 	var value = "";
                     
                     var addr=row.addr+"";
-                    var highOrLowByte=row.highOrLowByte+"";
+                    var highLowByte=row.highLowByte+"";
                     
-                    if(addr!='' || highOrLowByte!=''){
-                    	value=addr+'_'+highOrLowByte;
+                    if(addr!='' || highLowByte!=''){
+                    	value=addr+'_'+highLowByte;
                 	}
                     
-                    if ( (row.addr==undefined && row.highOrLowByte==undefined) || !value) return;
+                    if ( (row.addr==undefined && row.highLowByte==undefined) || !value) return;
                     
                     if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(value)) {
                         protocolItemsConfigHandsontableHelper.addressDataMap.set(value, [index]);
@@ -579,26 +580,26 @@ var ProtocolItemsConfigHandsontableHelper = {
                             td.style.backgroundColor = '#FF4C42';
                         }
                     }
-                }else if (prop === 'addr' || prop === 'highOrLowByte') {
+                }else if (prop === 'addr' || prop === 'highLowByte') {
                 	var oldAddrValue='';
-                	var oldHighOrLowByteValue='';
-                	var oldAddrAndHighOrLowByteValue='';
+                	var oldHighLowByteValue='';
+                	var oldAddrAndHighLowByteValue='';
                 	
                 	if(prop === 'addr'){
                 		oldAddrValue=value;
-                		oldHighOrLowByteValue=instance.getDataAtRowProp(row,'highOrLowByte');
-                	}else if(prop === 'highOrLowByte'){
+                		oldHighLowByteValue=instance.getDataAtRowProp(row,'highLowByte');
+                	}else if(prop === 'highLowByte'){
                 		oldAddrValue=instance.getDataAtRowProp(row,'addr');
-                		oldHighOrLowByteValue=value;
+                		oldHighLowByteValue=value;
                 	}
                 	
-                	if(oldAddrValue!='' || oldHighOrLowByteValue!=''){
-                		oldAddrAndHighOrLowByteValue=oldAddrValue+'_'+oldHighOrLowByteValue;
+                	if(oldAddrValue!='' || oldHighLowByteValue!=''){
+                		oldAddrAndHighLowByteValue=oldAddrValue+'_'+oldHighLowByteValue;
                 	}
                 	
                     // 检查重复
-                    if (oldAddrAndHighOrLowByteValue+"" && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldAddrAndHighOrLowByteValue+"")) {
-                        const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(oldAddrAndHighOrLowByteValue+"");
+                    if (oldAddrAndHighLowByteValue+"" && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldAddrAndHighLowByteValue+"")) {
+                        const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(oldAddrAndHighLowByteValue+"");
                         if (rows.length > 1 && rows.includes(row)) {
                             td.style.backgroundColor = '#FF4C42';
                         }
@@ -705,6 +706,13 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
+//	                    if (prop=='storeDataType') {
+//	                    	this.type = 'dropdown';
+//	                    	this.source = ['bit','byte','int16','uint16','float32','bcd'];
+//	                    	this.strict = true;
+//	                    	this.allowInvalid = false;
+//	                    }
+	                    
 	                    if (visualColIndex ==0) {
 	                    	cellProperties.renderer = protocolItemsConfigHandsontableHelper.addBoldBg;
 	                    }else{
@@ -743,62 +751,62 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                            if (oldValue !== newValue) {
 	                            	needUpdateMap = true;
 	                            }
-	                        }else if (prop === 'addr' || prop === 'highOrLowByte') {
+	                        }else if (prop === 'addr' || prop === 'highLowByte') {
 	                        	var oldAddrValue='';
-	                        	var oldHighOrLowByteValue='';
-	                        	var oldAddrAndHighOrLowByteValue='';
+	                        	var oldHighLowByteValue='';
+	                        	var oldAddrAndHighLowByteValue='';
 	                        	
 	                        	var newAddrValue='';
-	                        	var newHighOrLowByteValue='';
-	                        	var newAddrAndHighOrLowByteValue='';
+	                        	var newHighLowByteValue='';
+	                        	var newAddrAndHighLowByteValue='';
 	                        	
 	                        	if(prop === 'addr'){
 	                        		oldAddrValue=oldValue;
-	                        		oldHighOrLowByteValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highOrLowByte');
+	                        		oldHighLowByteValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highLowByte');
 	                        		
 	                        		newAddrValue=newValue;
-	                        		newHighOrLowByteValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highOrLowByte');
-	                        	}else if(prop === 'highOrLowByte'){
+	                        		newHighLowByteValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highLowByte');
+	                        	}else if(prop === 'highLowByte'){
 	                        		oldAddrValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'addr');
-	                        		oldHighOrLowByteValue=oldValue;
+	                        		oldHighLowByteValue=oldValue;
 	                        		
 	                        		newAddrValue=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'addr');
-	                        		newHighOrLowByteValue=newValue;
+	                        		newHighLowByteValue=newValue;
 	                        	}
 	                        	
-	                        	if(oldAddrValue!='' || oldHighOrLowByteValue!=''){
-	                        		oldAddrAndHighOrLowByteValue=oldAddrValue+'_'+oldHighOrLowByteValue;
+	                        	if(oldAddrValue!='' || oldHighLowByteValue!=''){
+	                        		oldAddrAndHighLowByteValue=oldAddrValue+'_'+oldHighLowByteValue;
 	                        	}
 	                        	
-	                        	if(newAddrValue!='' || newHighOrLowByteValue!=''){
-	                        		newAddrAndHighOrLowByteValue=newAddrValue+'_'+newHighOrLowByteValue;
+	                        	if(newAddrValue!='' || newHighLowByteValue!=''){
+	                        		newAddrAndHighLowByteValue=newAddrValue+'_'+newHighLowByteValue;
 	                        	}
 	                        	
 	                        	
 	                            // 从映射中移除旧值
-	                            if (oldAddrAndHighOrLowByteValue && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldAddrAndHighOrLowByteValue+"")) {
-	                                const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(oldAddrAndHighOrLowByteValue+"");
+	                            if (oldAddrAndHighLowByteValue && protocolItemsConfigHandsontableHelper.addressDataMap.has(oldAddrAndHighLowByteValue+"")) {
+	                                const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(oldAddrAndHighLowByteValue+"");
 	                                const index = rows.indexOf(row);
 	                                if (index !== -1) {
 	                                    rows.splice(index, 1);
 	                                    if (rows.length === 0) {
-	                                        protocolItemsConfigHandsontableHelper.addressDataMap.delete(oldAddrAndHighOrLowByteValue+"");
+	                                        protocolItemsConfigHandsontableHelper.addressDataMap.delete(oldAddrAndHighLowByteValue+"");
 	                                    }
 	                                }
 	                            }
 
 	                            // 添加新值到映射
-	                            if (newAddrAndHighOrLowByteValue) {
-	                                if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(newAddrAndHighOrLowByteValue+"")) {
-	                                    protocolItemsConfigHandsontableHelper.addressDataMap.set(newAddrAndHighOrLowByteValue+"", [row]);
+	                            if (newAddrAndHighLowByteValue) {
+	                                if (!protocolItemsConfigHandsontableHelper.addressDataMap.has(newAddrAndHighLowByteValue+"")) {
+	                                    protocolItemsConfigHandsontableHelper.addressDataMap.set(newAddrAndHighLowByteValue+"", [row]);
 	                                } else {
-	                                    const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(newAddrAndHighOrLowByteValue+"");
+	                                    const rows = protocolItemsConfigHandsontableHelper.addressDataMap.get(newAddrAndHighLowByteValue+"");
 	                                    if (!rows.includes(row)) {
 	                                        rows.push(row);
 	                                    }
 	                                }
 	                            }
-	                            if (oldAddrAndHighOrLowByteValue !== newAddrAndHighOrLowByteValue) {
+	                            if (oldAddrAndHighLowByteValue !== newAddrAndHighLowByteValue) {
 	                            	needUpdateMap = true;
 	                            }
 	                        }else if (prop === 'resolutionMode') {
@@ -853,9 +861,9 @@ var ProtocolItemsConfigHandsontableHelper = {
 		                    			protocolCode=selectedProtocol.data.code;
 		                    		}
 		                    		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'addr');
-		                    		var highOrLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'highOrLowByte');
+		                    		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'highLowByte');
 		                    		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'resolutionMode');
-		                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highOrLowByte,resolutionMode,true);
+		                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,true);
 		                		}
 	                    	}else{
 	                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(startRow);
@@ -1156,12 +1164,12 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 								item.Title=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
 								item.Addr=parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'addr'));
 								
-								var itemHighOrLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highOrLowByte');
-								item.HighOrLowByte=0;
-								if(itemHighOrLowByte==loginUserLanguageResource.highByte){
-									item.HighOrLowByte=1;
-								}else if(itemHighOrLowByte==loginUserLanguageResource.lowByte){
-									item.HighOrLowByte=2;
+								var itemHighLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'highLowByte');
+								item.HighLowByte='';
+								if(itemHighLowByte==loginUserLanguageResource.highByte){
+									item.HighLowByte='high';
+								}else if(itemHighLowByte==loginUserLanguageResource.lowByte){
+									item.HighLowByte='low';
 								}
 								
 								item.StoreDataType=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'storeDataType');
@@ -1328,19 +1336,19 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 	});
 }
 
-function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highOrLowByte,resolutionMode,isNew){
+function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,isNew){
 	if(isNew&&protocolItemsMeaningConfigHandsontableHelper!=null){
 		if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
 			protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
 		}
 		protocolItemsMeaningConfigHandsontableHelper=null;
 	}
-	if(highOrLowByte==loginUserLanguageResource.highByte){
-		highOrLowByte=1;
-	}else if(highOrLowByte==loginUserLanguageResource.lowByte){
-		highOrLowByte=2;
+	if(highLowByte==loginUserLanguageResource.highByte){
+		highLowByte='high';
+	}else if(highLowByte==loginUserLanguageResource.lowByte){
+		highLowByte='low';
 	}else{
-		highOrLowByte=0;
+		highLowByte='';
 	}
 	
 	Ext.Ajax.request({
@@ -1458,7 +1466,7 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			
 			if(result.itemResolutionMode==0){
 				Ext.getCmp('ProtocolSwitchingValueBitStatusConfigPanel_Id').show();
-				CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highOrLowByte,resolutionMode,isNew);
+				CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,isNew);
 			}else{
 				if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
 					if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
@@ -1475,7 +1483,7 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 		params: {
 			protocolCode:protocolCode,
 			itemAddr:itemAddr,
-			highOrLowByte:highOrLowByte
+			highLowByte:highLowByte
         }
 	});
 };
@@ -1880,7 +1888,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highOrLowByte,resolutionMode,isNew){
+function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,isNew){
 	if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
 		if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
 			protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
@@ -1916,7 +1924,7 @@ function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemA
 		params: {
 			protocolCode:protocolCode,
 			itemAddr:itemAddr,
-			highOrLowByte:highOrLowByte
+			highLowByte:highLowByte
         }
 	});
 };

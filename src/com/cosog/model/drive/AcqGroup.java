@@ -14,6 +14,8 @@ public class AcqGroup {
 	
 	private List<Integer> Addr;
 	
+	private List<String> HighLowByte;
+	
 	private List<List<Object>> Value;
 	
 	private String RawData;
@@ -72,6 +74,14 @@ public class AcqGroup {
 
 	public void setIPPort(String iPPort) {
 		IPPort = iPPort;
+	}
+
+	public List<String> getHighLowByte() {
+		return HighLowByte;
+	}
+
+	public void setHighLowByte(List<String> highLowByte) {
+		HighLowByte = highLowByte;
 	}
 	
 }

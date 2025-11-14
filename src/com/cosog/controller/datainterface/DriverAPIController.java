@@ -845,6 +845,12 @@ public class DriverAPIController extends BaseController{
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
+					if(acqGroup.getHighLowByte()==null){
+						acqGroup.setHighLowByte(new ArrayList<>());
+						for(int i=0;i<acqGroup.getAddr().size();i++){
+							acqGroup.getHighLowByte().add("");
+						}
+					}
 					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(acqGroup.getID(), acqGroup.getSlave());
 					if(deviceInfo!=null){
 						long t1=System.nanoTime();
@@ -896,6 +902,12 @@ public class DriverAPIController extends BaseController{
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
+					if(acqGroup.getHighLowByte()==null){
+						acqGroup.setHighLowByte(new ArrayList<>());
+						for(int i=0;i<acqGroup.getAddr().size();i++){
+							acqGroup.getHighLowByte().add("");
+						}
+					}
 					DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfoByIPPort(acqGroup.getIPPort(), acqGroup.getSlave());
 					if(deviceInfo!=null){
 						long t1=System.nanoTime();
@@ -1454,10 +1466,14 @@ public class DriverAPIController extends BaseController{
 		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		Map<String,String> acqDataMap=new LinkedHashMap<>();
 		
-		if(acqGroup!=null && protocol!=null && acqInstanceOwnItem!=null){
-			for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
+		if(acqGroup!=null &&acqGroup.getAddr()!=null && protocol!=null && acqInstanceOwnItem!=null){
+			for(int i=0;i<acqGroup.getAddr().size();i++){
+				String acqItemHighLowByte=acqGroup.getHighLowByte()!=null?acqGroup.getHighLowByte().get(i):"";
 				for(int j=0;j<protocol.getItems().size();j++){
-					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+					String protocolItemHighLowByte=protocol.getItems().get(j).getHighLowByte()!=null?protocol.getItems().get(j).getHighLowByte():"";
+					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() 
+							&& acqItemHighLowByte.equalsIgnoreCase(protocolItemHighLowByte)
+							){
 						String value="";
 						String title=protocol.getItems().get(j).getTitle();
 						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(title);

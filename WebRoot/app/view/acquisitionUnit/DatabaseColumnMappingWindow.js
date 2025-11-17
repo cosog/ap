@@ -142,7 +142,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			}
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.protocolFieldName+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 
@@ -521,6 +521,7 @@ function saveProtocolRunStatusConfig(){
 		var protocolName=selectedRunStatusItem.data.protocolName;
 		var itemName=selectedRunStatusItem.data.itemName;
 		var itemColumn=selectedRunStatusItem.data.itemColumn;
+		var bitIndex=selectedRunStatusItem.data.bitIndex;
 		var deviceType=selectedRunStatusItem.data.deviceType;
 		var resolutionMode=selectedRunStatusItem.data.resolutionMode;
 		
@@ -532,7 +533,7 @@ function saveProtocolRunStatusConfig(){
 		
 		var runValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id").getSelectionModel().getSelection();
 		var stopValueSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id").getSelectionModel().getSelection();
-		if(resolutionMode==1){
+		if(resolutionMode==1 || resolutionMode==0){
 			if(runValueSelection.length>0){
 				for(var i=0;i<runValueSelection.length;i++){
 					runValue+=runValueSelection[i].data.value;
@@ -624,6 +625,7 @@ function saveProtocolRunStatusConfig(){
 				resolutionMode: resolutionMode,
 				itemName: itemName,
 				itemColumn: itemColumn,
+				bitIndex: bitIndex,
 				deviceType: deviceType,
 				runValue: runValue,
 				stopValue: stopValue,

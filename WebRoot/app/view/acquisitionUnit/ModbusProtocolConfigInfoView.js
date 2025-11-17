@@ -706,12 +706,18 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-//	                    if (prop=='storeDataType') {
-//	                    	this.type = 'dropdown';
-//	                    	this.source = ['bit','byte','int16','uint16','float32','bcd'];
-//	                    	this.strict = true;
-//	                    	this.allowInvalid = false;
-//	                    }
+	                    if (prop=='storeDataType') {
+            				var highLowByte=this.instance.getDataAtRowProp(row,'highLowByte');
+            				
+            				this.type = 'dropdown';
+                            this.strict = true;
+                            this.allowInvalid = false;
+                            if(highLowByte!=''){
+                            	this.source = ['bit','byte'];
+                            }else{
+                            	this.source = ['bit','byte','int16','uint16','float32','bcd'];
+                            }
+	                    }
 	                    
 	                    if (visualColIndex ==0) {
 	                    	cellProperties.renderer = protocolItemsConfigHandsontableHelper.addBoldBg;

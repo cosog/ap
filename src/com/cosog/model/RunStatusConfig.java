@@ -19,13 +19,23 @@ public class RunStatusConfig {
 	private String itemMappingColumn;
 	private String runValue;
 	private String stopValue;
+	
+	private Integer protocolType;
+	private Integer resolutionMode;
+	
+	private String runCondition;
+	private String stopCondition;
+	
+	private Integer bitIndex;
+	
 	public RunStatusConfig() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public RunStatusConfig(Integer id, String protocol, String itemName, String itemMappingColumn, String runValue,
-			String stopValue) {
+			String stopValue, Integer protocolType, Integer resolutionMode, String runCondition, String stopCondition,
+			Integer bitIndex) {
 		super();
 		this.id = id;
 		this.protocol = protocol;
@@ -33,8 +43,12 @@ public class RunStatusConfig {
 		this.itemMappingColumn = itemMappingColumn;
 		this.runValue = runValue;
 		this.stopValue = stopValue;
+		this.protocolType = protocolType;
+		this.resolutionMode = resolutionMode;
+		this.runCondition = runCondition;
+		this.stopCondition = stopCondition;
+		this.bitIndex = bitIndex;
 	}
-
 
 	@Id
 	@GeneratedValue
@@ -90,5 +104,50 @@ public class RunStatusConfig {
 
 	public void setStopValue(String stopValue) {
 		this.stopValue = stopValue;
+	}
+
+	@Column(name = "protocolType" )
+	public Integer getProtocolType() {
+		return protocolType;
+	}
+
+	public void setProtocolType(Integer protocolType) {
+		this.protocolType = protocolType;
+	}
+
+	@Column(name = "resolutionMode" )
+	public Integer getResolutionMode() {
+		return resolutionMode;
+	}
+
+	public void setResolutionMode(Integer resolutionMode) {
+		this.resolutionMode = resolutionMode;
+	}
+
+	@Column(name = "runCondition" )
+	public String getRunCondition() {
+		return runCondition;
+	}
+
+	public void setRunCondition(String runCondition) {
+		this.runCondition = runCondition;
+	}
+
+	@Column(name = "stopCondition" )
+	public String getStopCondition() {
+		return stopCondition;
+	}
+
+	public void setStopCondition(String stopCondition) {
+		this.stopCondition = stopCondition;
+	}
+
+	@Column(name = "bitIndex" )
+	public Integer getBitIndex() {
+		return bitIndex;
+	}
+
+	public void setBitIndex(Integer bitIndex) {
+		this.bitIndex = bitIndex;
 	}
 }

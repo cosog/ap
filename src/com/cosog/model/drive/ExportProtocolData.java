@@ -91,6 +91,8 @@ public class ExportProtocolData {
 		private String RunCondition;
 		
 		private String StopCondition;
+		
+		private int bitIndex;
 
 		public String getItemName() {
 			return ItemName;
@@ -146,6 +148,14 @@ public class ExportProtocolData {
 
 		public void setStopCondition(String stopCondition) {
 			StopCondition = stopCondition;
+		}
+
+		public int getBitIndex() {
+			return bitIndex;
+		}
+
+		public void setBitIndex(int bitIndex) {
+			this.bitIndex = bitIndex;
 		}
 	}
 

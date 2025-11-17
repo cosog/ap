@@ -6404,29 +6404,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		sql+= "order by t.id";
-		String configedRunStatusSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.protocoltype,t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition "
+		String configedRunStatusSql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.protocoltype,t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition,t.bitindex "
 				+ " from TBL_RUNSTATUSCONFIG t "
 				+ " where t.protocol='"+protocolCode+"' ";
 		int configedRunStatusIndex=-99;
-		String configedRunStatusol="";
+		String configedRunStatusCol="";
+		String configedRunStatusBitIndex="";
 		
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("protocolFieldName")+"\",\"dataIndex\":\"itemShowName\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
 		List<?> configedRunStatusList=this.findCallSql(configedRunStatusSql);
 		if(configedRunStatusList.size()>0){
 			Object[] obj = (Object[]) configedRunStatusList.get(0);
-			configedRunStatusol=obj[3]+"";
+			configedRunStatusCol=obj[3]+"";
+			configedRunStatusBitIndex=(obj[10]+"").replace("null", "");
 		}
 		
 		List<String> protocolNameList=new ArrayList<>();
 		List<String> protocolCodeList=new ArrayList<>();
 		List<String> itemNameList=new ArrayList<>();
+		List<String> itemShowNameList=new ArrayList<>();
 		List<String> itemColumnList=new ArrayList<>();
 		List<String> calColumnList=new ArrayList<>();
 		List<Integer> resolutionModeList=new ArrayList<>();
+		List<String> bitIndexList=new ArrayList<>();
 		if(modbusProtocolConfig!=null){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 
@@ -6441,12 +6445,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							for (int k = 0; k < list.size(); k++) {
 								Object[] obj = (Object[]) list.get(k);
 								if((obj[2]+"").equalsIgnoreCase(columnName)){
-									protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
-									protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
-									resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
-									itemNameList.add(obj[1]+"");
-									itemColumnList.add(obj[2]+"");
-									calColumnList.add(obj[3]+"");
+									if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode()==0 && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null){
+										for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()){
+											protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+											protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+											resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
+											
+											itemNameList.add(obj[1]+"");
+											itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
+											itemColumnList.add(obj[2]+"");
+											calColumnList.add(obj[3]+"");
+											bitIndexList.add(itemsMeaning.getValue()+"");
+										}
+									}else{
+										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+										protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+										resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
+										
+										itemNameList.add(obj[1]+"");
+										itemShowNameList.add(obj[1]+"");
+										itemColumnList.add(obj[2]+"");
+										calColumnList.add(obj[3]+"");
+										bitIndexList.add("");
+									}
+									
 								}
 							}
 						}
@@ -6461,12 +6483,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for (int k = 0; k < list.size(); k++) {
 							Object[] obj = (Object[]) list.get(k);
 							if((obj[2]+"").equalsIgnoreCase(columnName)){
-								protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
-								protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
-								resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
-								itemNameList.add(obj[1]+"");
-								itemColumnList.add(obj[2]+"");
-								calColumnList.add(obj[3]+"");
+								
+								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode()==0 && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null){
+									for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()){
+										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+										protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+										resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
+										
+										itemNameList.add(obj[1]+"");
+										itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
+										itemColumnList.add(obj[2]+"");
+										calColumnList.add(obj[3]+"");
+										bitIndexList.add(itemsMeaning.getValue()+"");
+									}
+								}else{
+									protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+									protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+									resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode());
+									
+									itemNameList.add(obj[1]+"");
+									itemShowNameList.add(obj[1]+"");
+									itemColumnList.add(obj[2]+"");
+									calColumnList.add(obj[3]+"");
+									bitIndexList.add("");
+								}
 							}
 						}
 					}
@@ -6482,10 +6522,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"protocolCode\":\""+protocolCodeList.get(i)+"\",");
 			result_json.append("\"resolutionMode\":"+resolutionModeList.get(i)+",");
 			result_json.append("\"itemName\":\""+itemNameList.get(i)+"\",");
+			result_json.append("\"itemShowName\":\""+itemShowNameList.get(i)+"\",");
 			result_json.append("\"itemColumn\":\""+itemColumnList.get(i)+"\",");
+			result_json.append("\"bitIndex\":\""+bitIndexList.get(i)+"\",");
 			result_json.append("\"calColumn\":\""+calColumnList.get(i)+"\"},");
 			
-			if(configedRunStatusol.equalsIgnoreCase(itemColumnList.get(i))){
+			if(configedRunStatusCol.equalsIgnoreCase(itemColumnList.get(i)) && configedRunStatusBitIndex.equalsIgnoreCase(bitIndexList.get(i))){
 				configedRunStatusIndex=i;
 			}
 		}
@@ -6497,7 +6539,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn,String resolutionMode,String language) {
+	public String getProtocolRunStatusItemsMeaning(String status,String deviceType,String protocolCode,String itemName,String itemColumn,String bitIndex,String resolutionMode,String language) {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
@@ -6678,6 +6720,58 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}else{
 				result_json.append("\"value\":\""+stopValue4+"\"}");
 			}
+		}else if(StringManagerUtils.stringToInteger(resolutionMode)==0){//开关
+			if(modbusProtocolConfig!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+							String columnName="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+							}
+							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
+									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
+										if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()==StringManagerUtils.stringToInteger(bitIndex)){
+											String status0=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingOpenValue");
+											String status1=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingCloseValue");
+											
+											totalCount++;
+											result_json.append("{\"id\":\""+(1)+"\",");
+											result_json.append("\"value\":\"0\",");
+											result_json.append("\"meaning\":\""+status0+"\"},");
+											
+											if(StringManagerUtils.existOrNot(runConfigValueList, 0)){
+												runValueIndexList.add(0);
+											}else if(StringManagerUtils.existOrNot(stopConfigValueList, 0)){
+												stopValueIndexList.add(0);
+											}
+										
+											
+											totalCount++;
+											result_json.append("{\"id\":\""+(2)+"\",");
+											result_json.append("\"value\":\"1\",");
+											result_json.append("\"meaning\":\""+status1+"\"},");
+											
+											if(StringManagerUtils.existOrNot(runConfigValueList, 1)){
+												runValueIndexList.add(1);
+											}else if(StringManagerUtils.existOrNot(stopConfigValueList, 1)){
+												stopValueIndexList.add(1);
+											}
+											break;
+										}
+									}
+								}
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
 		}
 		String runValueIndex=StringUtils.join(runValueIndexList, ",");
 		String stopValueIndex=StringUtils.join(stopValueIndexList, ",");
@@ -6701,21 +6795,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,
+	public int saveProtocolRunStatusConfig(String protocolCode,String resolutionMode,String itemName,String itemColumn,String bitIndex,
 			String runValue,String stopValue,String runCondition,String stopCondition) {
 		String recordCountSql="select count(1) from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' ";
 		int recordCount=this.getTotalCountRows(recordCountSql);
 		String insertOrUpdateSql="";
 		if(recordCount==0){
-			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,resolutionMode,runvalue,stopvalue,runCondition,stopCondition) "
-					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"',"+resolutionMode+",'"+runValue+"','"+stopValue+"','"+runCondition+"','"+stopCondition+"')";
+			insertOrUpdateSql="insert into tbl_runstatusconfig(protocol,itemname,itemmappingcolumn,resolutionMode,runvalue,stopvalue,runCondition,stopCondition,bitIndex) "
+					+ "values ('"+protocolCode+"','"+itemName+"','"+itemColumn+"',"+resolutionMode+",'"+runValue+"','"+stopValue+"','"+runCondition+"','"+stopCondition+"',"+(StringManagerUtils.isInteger(bitIndex)?bitIndex:null)+")";
 		}else{
 			insertOrUpdateSql="update tbl_runstatusconfig t"
 					+ " set t.resolutionMode="+resolutionMode+","
 					+ " t.itemname='"+itemName+"',t.itemmappingcolumn='"+itemColumn+"', "
 					+ " t.runValue='"+runValue+"',t.stopValue='"+stopValue+"', "
-					+ " t.runCondition='"+runCondition+"',t.stopCondition='"+stopCondition+"' "
+					+ " t.runCondition='"+runCondition+"',"
+					+ " t.stopCondition='"+stopCondition+"', "
+					+ " t.bitIndex= "+(StringManagerUtils.isInteger(bitIndex)?bitIndex:null)
 					+ " where t.protocol='"+protocolCode+"' ";
 		}
 		
@@ -11793,7 +11889,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			if(protocol.getRunStatus()!=null){
 				saveProtocolRunStatusConfig(protocol.getCode(),protocol.getRunStatus().getResolutionMode()+"",
-						protocol.getRunStatus().getItemName(),protocol.getRunStatus().getItemMappingColumn(),
+						protocol.getRunStatus().getItemName(),protocol.getRunStatus().getItemMappingColumn(),protocol.getRunStatus().getBitIndex()+"",
 						protocol.getRunStatus().getRunValue(),protocol.getRunStatus().getStopValue(),
 						protocol.getRunStatus().getRunCondition(),protocol.getRunStatus().getStopCondition());
 			}else{

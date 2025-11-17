@@ -1448,13 +1448,15 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,
 					+"{data:'id'}," 
 					+"{data:'bitIndex',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'meaning'},"
-					+"{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:['开','关']},"
+					+"{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.switchingOpenValue+"','"+loginUserLanguageResource.switchingCloseValue+"']},"
 					+"{data:'delay',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'retriggerTime',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolAlarmUnitConfigSwitchItemsHandsontableHelper);}}," 
 					+"{data:'alarmLevel',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.normal+"','"+loginUserLanguageResource.alarmLevel1+"','"+loginUserLanguageResource.alarmLevel2+"','"+loginUserLanguageResource.alarmLevel3+"']}," 
 					+"{data:'alarmSign',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"','"+loginUserLanguageResource.disable+"']}," 
 					+"{data:'isSendMessage',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
-					+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}" 
+					+"{data:'isSendMail',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.yes+"','"+loginUserLanguageResource.no+"']}," 
+					+"{data:'status0'}," 
+					+"{data:'status1'}" 
 					+"]";
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1540,7 +1542,12 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [25,50,50,120,80,100,100,120,120,120,120],
+	        		hiddenColumns: {
+	                    columns: [11,12],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	        		colWidths: [25,50,50,120,150,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1576,6 +1583,15 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 		                			cellProperties.readOnly = true;
 		                			cellProperties.renderer=protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
+		                			if(prop=='value'){
+		                				var status0=this.instance.getDataAtRowProp(row,'status0');
+		                				var status1=this.instance.getDataAtRowProp(row,'status1');
+		                				
+		                				this.type = 'dropdown';
+		                                this.source = [status1, status0];
+		                                this.strict = true;
+		                                this.allowInvalid = false;
+		                			}
 		                			if (visualColIndex >=1 && visualColIndex <=3) {
 		    							cellProperties.readOnly = true;
 		    							cellProperties.renderer=protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addReadOnlyBg;
@@ -2330,6 +2346,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 						var selectedItem=gridStore.getAt(selectRow);
 						saveData.alarmItemName=selectedItem.data.title;
 						saveData.alarmItemAddr=selectedItem.data.addr;
+						saveData.alarmItemHighLowByte=selectedItem.data.highLowByte;
 					}
 	        	}else if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id=="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
 	        		saveData.resolutionMode=1;
@@ -2378,12 +2395,13 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 							var gridStore=Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsGridPanel_Id").getStore();
 							if(gridStore.getCount()>0){
 								var selectedItem=gridStore.getAt(selectRow);
+								
 								item.bitIndex=alarmItemsData[index][2];
 								item.itemName=selectedItem.data.title;
 								item.itemAddr=selectedItem.data.addr;
-								if(alarmItemsData[index][4]=='开'){
+								if(alarmItemsData[index][4]==alarmItemsData[index][12]){
 									item.value=1;
-								}else if(alarmItemsData[index][4]=='关'){
+								}else{
 									item.value=0;
 								}
 								item.delay=alarmItemsData[index][5];

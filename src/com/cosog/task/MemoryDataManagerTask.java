@@ -719,7 +719,8 @@ public class MemoryDataManagerTask {
 			jedis.del("ProtocolRunStatusConfig".getBytes());
 			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,"
 					+ " t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition,"
-					+ " t.protocoltype "
+					+ " t.protocoltype,"
+					+ " t.bitindex "
 					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
@@ -729,6 +730,7 @@ public class MemoryDataManagerTask {
 				protocolRunStatusConfig.setItemName(obj[2]+"");
 				protocolRunStatusConfig.setItemMappingColumn(obj[3]+"");
 				protocolRunStatusConfig.setResolutionMode(StringManagerUtils.stringToInteger(obj[4]+""));
+				protocolRunStatusConfig.setBitIndex(StringManagerUtils.isInteger(obj[10]+"")?StringManagerUtils.stringToInteger(obj[10]+""):null);
 				
 				String runValueStr=obj[5]+"";
 				String stopValueStr=obj[6]+"";

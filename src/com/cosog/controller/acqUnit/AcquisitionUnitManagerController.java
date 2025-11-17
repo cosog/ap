@@ -4429,6 +4429,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String bitIndex = ParamUtils.getParameter(request, "bitIndex");
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -4436,7 +4437,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn,resolutionMode,language);
+		String json = this.acquisitionUnitManagerService.getProtocolRunStatusItemsMeaning(status,deviceType,protocolCode,itemName,itemColumn,bitIndex,resolutionMode,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4484,13 +4485,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String bitIndex = ParamUtils.getParameter(request, "bitIndex");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String runValue = ParamUtils.getParameter(request, "runValue");
 		String stopValue = ParamUtils.getParameter(request, "stopValue");
 		String runCondition = ParamUtils.getParameter(request, "runCondition");
 		String stopCondition = ParamUtils.getParameter(request, "stopCondition");
 		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
-		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,runValue,stopValue,runCondition,stopCondition);
+		this.acquisitionUnitManagerService.saveProtocolRunStatusConfig(protocolCode,resolutionMode,itemName,itemColumn,bitIndex,runValue,stopValue,runCondition,stopCondition);
 		MemoryDataManagerTask.loadProtocolRunStatusConfig();
 		
 		HttpSession session=request.getSession();

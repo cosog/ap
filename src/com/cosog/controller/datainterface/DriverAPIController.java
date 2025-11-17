@@ -1679,12 +1679,21 @@ public class DriverAPIController extends BaseController{
 		return protocolItemResolutionDataList;
 	}
 	
-	public int RunStatusProcessing(String rawValue,String code){
+	public int RunStatusProcessing(String rawValue,String code,String bitIndex){
 		int runStatus=2;
 		try{
 			ProtocolRunStatusConfig protocolRunStatusConfig=MemoryDataManagerTask.getProtocolRunStatusConfig(code);
 			if(protocolRunStatusConfig!=null && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.isNumber(rawValue)){
-				if(protocolRunStatusConfig.getResolutionMode()==1){
+				if(protocolRunStatusConfig.getResolutionMode()==0){
+					if(bitIndex.equalsIgnoreCase(protocolRunStatusConfig.getBitIndex()+"")){
+						int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
+						if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
+							runStatus=1;
+						}else if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getStopValue(), rawRunStatus)){
+							runStatus=0;
+						}
+					}
+				}else if(protocolRunStatusConfig.getResolutionMode()==1){
 					int rawRunStatus=StringManagerUtils.stringToInteger(rawValue);
 					if(StringManagerUtils.existOrNot(protocolRunStatusConfig.getRunValue(), rawRunStatus)){
 						runStatus=1;
@@ -2431,7 +2440,7 @@ public class DriverAPIController extends BaseController{
 							
 							String rawValue=protocolItemResolutionDataList.get(i).getRawValue();
 							if(runStatus==2){
-								runStatus=RunStatusProcessing(rawValue,(protocol.getCode()+"_"+mappingColumn).toUpperCase());
+								runStatus=RunStatusProcessing(rawValue,(protocol.getCode()+"_"+mappingColumn).toUpperCase(),protocolItemResolutionDataList.get(i).getBitIndex());
 							}
 							
 							if(runStatus==2){

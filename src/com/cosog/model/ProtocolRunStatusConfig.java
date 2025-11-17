@@ -9,6 +9,7 @@ public class ProtocolRunStatusConfig   implements Serializable{
 	public String protocol;
 	public String itemName;
 	public String itemMappingColumn;
+	public Integer bitIndex;
 	public List<Integer> runValue;
 	public List<Integer> stopValue;
 	public List<RunStatusCondition> runConditionList;
@@ -20,7 +21,7 @@ public class ProtocolRunStatusConfig   implements Serializable{
 		super();
 	}
 
-	public ProtocolRunStatusConfig(Integer id, String protocol, String itemName, String itemMappingColumn,
+	public ProtocolRunStatusConfig(Integer id, String protocol, String itemName, String itemMappingColumn,int bitIndex,
 			List<Integer> runValue, List<Integer> stopValue, 
 			List<RunStatusCondition> runConditionList,List<RunStatusCondition> stopConditionList,
 			Integer protocolType,Integer resolutionMode) {
@@ -29,6 +30,7 @@ public class ProtocolRunStatusConfig   implements Serializable{
 		this.protocol = protocol;
 		this.itemName = itemName;
 		this.itemMappingColumn = itemMappingColumn;
+		this.bitIndex = bitIndex;
 		this.runValue = runValue;
 		this.stopValue = stopValue;
 		this.runConditionList = runConditionList;
@@ -134,5 +136,13 @@ public class ProtocolRunStatusConfig   implements Serializable{
 
 	public void setStopConditionList(List<RunStatusCondition> stopConditionList) {
 		this.stopConditionList = stopConditionList;
+	}
+
+	public Integer getBitIndex() {
+		return bitIndex;
+	}
+
+	public void setBitIndex(Integer bitIndex) {
+		this.bitIndex = bitIndex;
 	}
 }

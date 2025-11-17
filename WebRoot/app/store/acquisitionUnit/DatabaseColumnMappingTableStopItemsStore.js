@@ -70,7 +70,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                     clicksToEdit: 2
                 }];
             	
-            	if(resolutionMode==1){
+            	if(resolutionMode==1 || resolutionMode==0){
             		newColumns=[{
                 	    text: loginUserLanguageResource.idx,
                 	    lockable: true,
@@ -105,7 +105,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                 	    }
                 	}];
             		plugins=null;
-            		selModel_mode='MULTI';
+            		if(resolutionMode==1){
+            			selModel_mode='MULTI';
+            		}
             	}
             	gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "DatabaseColumnMappingTableRunStatusMeaningGridPanel2_Id",
@@ -139,7 +141,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                         		var selectedRunStatusItem=runStatusItemsSelection[0];
                         		resolutionMode=selectedRunStatusItem.data.resolutionMode;
                         	}
-                        	if(resolutionMode==1){
+                        	if(resolutionMode==1 || resolutionMode==0){
                         		var gridPanel1 = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
                                 if (isNotVal(gridPanel1)) {
                                 	gridPanel1.getSelectionModel().deselect(index, true);
@@ -164,6 +166,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
         	var itemColumn="";
         	var deviceType=0;
         	var resolutionMode=1;
+        	var bitIndex="";
         	var runStatusItemsSelection=Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id").getSelectionModel().getSelection();
         	if(runStatusItemsSelection.length>0){
         		var selectedRunStatusItem=runStatusItemsSelection[0];
@@ -172,6 +175,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
         		itemColumn=selectedRunStatusItem.data.itemColumn;
         		deviceType=selectedRunStatusItem.data.deviceType;
         		resolutionMode=selectedRunStatusItem.data.resolutionMode;
+        		bitIndex=selectedRunStatusItem.data.bitIndex;
         	}
             var new_params = {
             		status:0,
@@ -179,6 +183,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
             		protocolCode: protocolCode,
             		itemName: itemName,
             		itemColumn: itemColumn,
+            		bitIndex:bitIndex,
             		resolutionMode: resolutionMode
                 };
             Ext.apply(store.proxy.extraParams, new_params);
